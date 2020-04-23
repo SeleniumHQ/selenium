@@ -47,8 +47,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
@@ -97,16 +97,16 @@ class GridStatusHandler implements HttpHandler {
       try {
         status = EXECUTOR_SERVICE.submit(new TracedCallable<>(tracer, span, distributor::getStatus)).get(2, SECONDS);
       } catch (ExecutionException | TimeoutException e) {
-        return new HttpResponse().setContent(utf8String(json.toJson(
+        return new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
             "ready", false,
-            "message", "Unable to read distributor status.")))));
+            "message", "Unable to read distributor status."))));
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        return new HttpResponse().setContent(utf8String(json.toJson(
+        return new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
             "ready", false,
-            "message", "Reading distributor status was interrupted.")))));
+            "message", "Reading distributor status was interrupted."))));
       }
 
       boolean ready = status.hasCapacity();
@@ -170,8 +170,7 @@ class GridStatusHandler implements HttpHandler {
         })
         .collect(toList()));
 
-      HttpResponse res = new HttpResponse().setContent(utf8String(json.toJson(
-          ImmutableMap.of("value", value.build()))));
+      HttpResponse res = new HttpResponse().setContent(asJson(ImmutableMap.of("value", value.build())));
       HTTP_RESPONSE.accept(span, res);
       return res;
     } finally {

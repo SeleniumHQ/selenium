@@ -34,7 +34,6 @@ import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.netty.server.NettyServer;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
@@ -44,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
 @AutoService(CliCommand.class)
 public class MessageBusCommand extends TemplateGridCommand {
@@ -128,7 +128,7 @@ public class MessageBusCommand extends TemplateGridCommand {
   private HttpResponse httpResponse(boolean ready, String message) {
     return new HttpResponse()
         .addHeader("Content-Type", JSON_UTF_8)
-        .setContent(Contents.asJson(ImmutableMap.of(
+        .setContent(asJson(ImmutableMap.of(
             "ready", ready,
             "message", message)));
   }

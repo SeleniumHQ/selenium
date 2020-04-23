@@ -95,7 +95,7 @@ public abstract class SessionMap implements Routable, HttpHandler {
         post("/se/grid/session")
             .to(() -> new AddToSessionMap(tracer, json, this)),
         Route.get("/se/grid/session/{sessionId}")
-            .to(params -> new GetFromSessionMap(tracer, json, this, sessionIdFrom(params))),
+            .to(params -> new GetFromSessionMap(tracer, this, sessionIdFrom(params))),
         delete("/se/grid/session/{sessionId}")
             .to(params -> new RemoveFromSession(tracer, this, sessionIdFrom(params))));
   }

@@ -76,8 +76,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -283,10 +283,10 @@ public class EndToEndTest {
   @Test
   public void shouldAllowPassthroughForW3CMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(utf8String(json.toJson(
+    request.setContent(asJson(
         ImmutableMap.of(
             "capabilities", ImmutableMap.of(
-                "alwaysMatch", ImmutableMap.of("browserName", "cheese"))))));
+                "alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);
@@ -309,10 +309,10 @@ public class EndToEndTest {
   @Test
   public void shouldAllowPassthroughForJWPMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(utf8String(json.toJson(
+    request.setContent(asJson(
         ImmutableMap.of(
             "desiredCapabilities", ImmutableMap.of(
-                "browserName", "cheese")))));
+                "browserName", "cheese"))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);

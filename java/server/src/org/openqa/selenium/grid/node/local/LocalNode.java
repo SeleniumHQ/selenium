@@ -75,8 +75,8 @@ import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public class LocalNode extends Node {
@@ -264,8 +264,8 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public HttpResponse uploadFile(HttpRequest req, Json json, SessionId id) {
-    Map<String, Object> incoming = json.toType(string(req), Json.MAP_TYPE);
+  public HttpResponse uploadFile(HttpRequest req, SessionId id) {
+    Map<String, Object> incoming = JSON.toType(string(req), Json.MAP_TYPE);
 
     File tempDir;
     try {
@@ -290,7 +290,7 @@ public class LocalNode extends Node {
     ImmutableMap<String, Object> result = ImmutableMap.of(
         "value", allFiles[0].getAbsolutePath());
 
-    return new HttpResponse().setContent(utf8String(json.toJson(result)));
+    return new HttpResponse().setContent(asJson(result));
   }
 
   @Override

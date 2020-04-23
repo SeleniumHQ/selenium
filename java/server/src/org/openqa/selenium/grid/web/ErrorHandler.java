@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.web;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.json.Json;
@@ -30,12 +31,10 @@ import java.util.Objects;
 
 public class ErrorHandler implements HttpHandler {
 
-  private final Json json;
   private final Throwable throwable;
   private final ErrorCodec errors = ErrorCodec.createDefault();
 
-  public ErrorHandler(Json json, Throwable throwable) {
-    this.json = Objects.requireNonNull(json);
+  public ErrorHandler(Throwable throwable) {
     this.throwable = Objects.requireNonNull(throwable);
   }
 
@@ -45,6 +44,6 @@ public class ErrorHandler implements HttpHandler {
       .setHeader("Cache-Control", "none")
       .setHeader("Content-Type", JSON_UTF_8.toString())
       .setStatus(errors.getHttpStatusCode(throwable))
-      .setContent(utf8String(json.toJson(errors.encode(throwable))));
+      .setContent(asJson(errors.encode(throwable)));
   }
 }

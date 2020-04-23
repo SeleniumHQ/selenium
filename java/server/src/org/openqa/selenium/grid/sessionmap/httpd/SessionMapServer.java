@@ -31,7 +31,6 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
@@ -39,6 +38,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
@@ -85,7 +85,8 @@ public class SessionMapServer extends TemplateGridCommand {
       get("/status").to(() -> req ->
         new HttpResponse()
           .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(Contents.asJson(ImmutableMap.of("ready", true, "message", "Session map is ready."))))));
+          .setContent(asJson(
+              ImmutableMap.of("ready", true, "message", "Session map is ready."))))));
     server.start();
 
     BuildInfo info = new BuildInfo();

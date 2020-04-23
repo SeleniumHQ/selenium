@@ -27,7 +27,6 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.web.Values;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -40,14 +39,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Objects;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteSessionMap extends SessionMap {
 
-  public static final Json JSON = new Json();
   private final HttpClient client;
 
   public RemoteSessionMap(Tracer tracer, HttpClient client) {
@@ -73,7 +71,7 @@ public class RemoteSessionMap extends SessionMap {
     Objects.requireNonNull(session, "Session must be set");
 
     HttpRequest request = new HttpRequest(POST, "/se/grid/session");
-    request.setContent(utf8String(JSON.toJson(session)));
+    request.setContent(asJson(session));
 
     return makeRequest(request, Boolean.class);
   }

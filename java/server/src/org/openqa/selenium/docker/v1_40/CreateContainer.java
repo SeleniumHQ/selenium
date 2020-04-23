@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 class CreateContainer {
@@ -55,7 +56,7 @@ class CreateContainer {
       client.execute(
         new HttpRequest(POST, "/v1.40/containers/create")
           .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(Contents.asJson(info))),
+          .setContent(asJson(info))),
       "Unable to create container: ",
       info);
 

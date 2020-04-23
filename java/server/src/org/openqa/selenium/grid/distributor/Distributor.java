@@ -89,13 +89,13 @@ public abstract class Distributor implements Predicate<HttpRequest>, Routable, H
         return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
       }),
       post("/se/grid/distributor/session")
-          .to(() -> new CreateSession(json, this)),
+          .to(() -> new CreateSession(this)),
       post("/se/grid/distributor/node")
           .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
       delete("/se/grid/distributor/node/{nodeId}")
           .to(params -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
       get("/se/grid/distributor/status")
-          .to(() -> new GetDistributorStatus(json, this))
+          .to(() -> new GetDistributorStatus(this))
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 

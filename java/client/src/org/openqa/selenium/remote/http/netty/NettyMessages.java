@@ -24,7 +24,6 @@ import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -32,6 +31,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.net.URI;
 
 import static org.asynchttpclient.Dsl.request;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
 import com.google.common.base.Strings;
 
@@ -95,7 +95,7 @@ class NettyMessages {
 
     toReturn.setContent(! response.hasResponseBody()
                         ? empty()
-                        : Contents.memoize(response::getResponseBodyAsStream));
+                        : memoize(response::getResponseBodyAsStream));
 
     response.getHeaders().names().forEach(
         name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));

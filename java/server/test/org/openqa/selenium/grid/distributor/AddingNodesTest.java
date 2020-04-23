@@ -222,7 +222,7 @@ public class AddingNodesTest {
     }
 
     @Override
-    public HttpResponse uploadFile(HttpRequest req, Json json, SessionId id) {
+    public HttpResponse uploadFile(HttpRequest req, SessionId id) {
       throw new UnsupportedOperationException("uploadFile");
     }
 
