@@ -19,6 +19,9 @@ namespace OpenQA.Selenium.Chrome
 
         public static ChromeOptions DefaultOptions
         {
+            // The below path to the Chrome Developer Channel executable is obviously hard-coded.
+            // On non-Windows OSes, and for custom install locations, you will need to add a
+            // property to the below options: BinaryLocation = <path to Chrome.exe>
             get { return new ChromeOptions() { BinaryLocation = @"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", AcceptInsecureCertificates = true }; }
         }
     }
