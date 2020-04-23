@@ -41,11 +41,15 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Route;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
 public class Hub extends TemplateGridCommand {
@@ -115,8 +119,9 @@ public class Hub extends TemplateGridCommand {
       null);
     handler.addHandler(distributor);
     Router router = new Router(tracer, clientFactory, sessions, distributor);
+    HttpHandler httpHandler = combine(router, Route.prefix("/wd/hub").to(combine(router)));
 
-    Server<?> server = new NettyServer(serverOptions, router);
+    Server<?> server = new NettyServer(serverOptions, httpHandler);
     server.start();
 
     BuildInfo info = new BuildInfo();
