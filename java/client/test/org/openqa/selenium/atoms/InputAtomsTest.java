@@ -25,15 +25,12 @@ import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 
 /**
  * Sanity tests against the //javascript/webdriver/atoms:inputs target.
  */
-@RunWith(JUnit4.class)
 public class InputAtomsTest {
 
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/atoms_inputs.js";
