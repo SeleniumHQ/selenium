@@ -39,12 +39,14 @@ import java.util.regex.Pattern;
 
 /**
  * Canned {@link ExpectedCondition}s which are generally useful within webdriver tests.
+ * <p>
+ * Users may define their own custom conditions in a class extending this one.
  */
 public class ExpectedConditions {
 
   private final static Logger log = Logger.getLogger(ExpectedConditions.class.getName());
 
-  private ExpectedConditions() {
+  protected ExpectedConditions() {
     // Utility class
   }
 
