@@ -32,7 +32,7 @@ class GetDistributorStatus implements HttpHandler {
 
   private final Distributor distributor;
 
-  public GetDistributorStatus(Distributor distributor) {
+  GetDistributorStatus(Distributor distributor) {
     this.distributor = Objects.requireNonNull(distributor);
   }
 

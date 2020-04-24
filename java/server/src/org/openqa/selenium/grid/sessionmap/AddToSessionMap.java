@@ -33,7 +33,6 @@ import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 

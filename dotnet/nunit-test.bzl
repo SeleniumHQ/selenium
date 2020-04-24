@@ -13,10 +13,10 @@ load(
 
 CORE_FRAMEWORK_VERSIONS = {
     "netcoreapp2.0": "2.0.9",
-    "netcoreapp2.1": "2.1.15",
+    "netcoreapp2.1": "2.1.17",
     "netcoreapp2.2": "2.2.8",
     "netcoreapp3.0": "3.0.3",
-    "netcoreapp3.1": "3.1.1",
+    "netcoreapp3.1": "3.1.3",
 }
 
 def _write_runtimeconfig(ctx, target):

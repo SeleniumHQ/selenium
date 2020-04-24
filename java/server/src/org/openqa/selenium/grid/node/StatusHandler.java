@@ -28,11 +28,11 @@ import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
-public class StatusHandler implements HttpHandler {
+class StatusHandler implements HttpHandler {
 
   private final Node node;
 
-  public StatusHandler(Node node) {
+  StatusHandler(Node node) {
     this.node = Objects.requireNonNull(node);
   }
 

@@ -31,14 +31,13 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
-
 class RemoveFromSession implements HttpHandler {
 
   private final Tracer tracer;
   private final SessionMap sessions;
   private final SessionId id;
 
-  public RemoveFromSession(Tracer tracer, SessionMap sessions, SessionId id) {
+  RemoveFromSession(Tracer tracer, SessionMap sessions, SessionId id) {
     this.tracer = Objects.requireNonNull(tracer);
     this.sessions = Objects.requireNonNull(sessions);
     this.id = Objects.requireNonNull(id);

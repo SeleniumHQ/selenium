@@ -41,7 +41,7 @@ class GetFromSessionMap implements HttpHandler {
   private final SessionMap sessions;
   private final SessionId id;
 
-  public GetFromSessionMap(Tracer tracer, SessionMap sessions, SessionId id) {
+  GetFromSessionMap(Tracer tracer, SessionMap sessions, SessionId id) {
     this.tracer = Objects.requireNonNull(tracer);
     this.sessions = Objects.requireNonNull(sessions);
     this.id = Objects.requireNonNull(id);

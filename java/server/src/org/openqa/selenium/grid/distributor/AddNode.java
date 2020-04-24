@@ -31,14 +31,14 @@ import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.string;
 
-public class AddNode implements HttpHandler {
+class AddNode implements HttpHandler {
 
   private final Tracer tracer;
   private final Distributor distributor;
   private final Json json;
   private final HttpClient.Factory httpFactory;
 
-  public AddNode(
+  AddNode(
       Tracer tracer,
       Distributor distributor,
       Json json,

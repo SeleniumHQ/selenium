@@ -48,6 +48,8 @@ import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Route;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -55,6 +57,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
 public class Standalone extends TemplateGridCommand {
@@ -128,6 +132,7 @@ public class Standalone extends TemplateGridCommand {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     combinedHandler.addHandler(distributor);
     Router router = new Router(tracer, clientFactory, sessions, distributor);
+    HttpHandler httpHandler = combine(router, Route.prefix("/wd/hub").to(combine(router)));
 
     LocalNode.Builder nodeBuilder = LocalNode.builder(
       tracer,
@@ -144,7 +149,7 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    Server<?> server = new NettyServer(new BaseServerOptions(config), router);
+    Server<?> server = new NettyServer(new BaseServerOptions(config), httpHandler);
     server.start();
 
     BuildInfo info = new BuildInfo();

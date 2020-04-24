@@ -79,7 +79,7 @@ class GridStatusHandler implements HttpHandler {
   private final HttpClient.Factory clientFactory;
   private final Distributor distributor;
 
-  public GridStatusHandler(Json json, Tracer tracer, HttpClient.Factory clientFactory, Distributor distributor) {
+  GridStatusHandler(Json json, Tracer tracer, HttpClient.Factory clientFactory, Distributor distributor) {
     this.json = Objects.requireNonNull(json, "JSON encoder must be set.");
     this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
     this.clientFactory = Objects.requireNonNull(clientFactory, "HTTP client factory must be set.");

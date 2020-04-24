@@ -30,7 +30,6 @@ import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 class NewNodeSession implements HttpHandler {
 
