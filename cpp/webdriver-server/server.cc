@@ -22,6 +22,7 @@
 #include "errorcodes.h"
 #include "uri_info.h"
 #include "logging.h"
+#include <algorithm>
 
 #define SERVER_DEFAULT_PAGE "<html><head><title>WebDriver</title></head><body><p id='main'>This is the initial start page for the WebDriver server.</p></body></html>"
 #define SERVER_DEFAULT_WHITELIST "127.0.0.1"
@@ -302,8 +303,10 @@ std::string Server::ReadRequestBody(struct mg_connection* conn,
     if (request_info->http_headers[header_index].name == NULL) {
       break;
     }
-    if (strcmp(request_info->http_headers[header_index].name,
-               "Content-Length") == 0) {
+    std::string header_name(request_info->http_headers[header_index].name);
+    std::transform(header_name.begin(), header_name.end(), header_name.begin(),
+      [](unsigned char c) { return std::tolower(c); });
+    if (header_name.compare("content-length") == 0) {
       content_length = atoi(request_info->http_headers[header_index].value);
       break;
     }
