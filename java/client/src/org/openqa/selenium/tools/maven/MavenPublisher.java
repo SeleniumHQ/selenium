@@ -207,12 +207,9 @@ public class MavenPublisher {
     Path dir = Files.createTempDirectory("maven-sign");
     Path file = dir.resolve(toSign.getFileName() + ".asc");
 
-    String[] args = new String[] {
-      "gpg", "--use-agent", "--armor", "--detach-sign", "--no-tty",
-      "-o", file.toAbsolutePath().toString(), toSign.toAbsolutePath().toString()
-    };
-
-    CommandLine gpg = new CommandLine(args);
+    CommandLine gpg = new CommandLine(
+        "gpg", "--use-agent", "--armor", "--detach-sign", "--no-tty",
+        "-o", file.toAbsolutePath().toString(), toSign.toAbsolutePath().toString());
     gpg.execute();
     if (!gpg.isSuccessful()) {
       throw new IllegalStateException("Unable to sign: " + toSign + "\n" + gpg.getStdOut());

@@ -38,6 +38,10 @@ public class CommandLine {
     process = new OsProcess(executable, args);
   }
 
+  /**
+   * @deprecated Use {@link #CommandLine(String, String...)}
+   */
+  @Deprecated
   public CommandLine(String[] cmdarray) {
     String executable = cmdarray[0];
     int length = cmdarray.length - 1;
