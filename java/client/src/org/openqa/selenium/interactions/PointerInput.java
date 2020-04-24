@@ -200,7 +200,7 @@ public class PointerInput implements InputSource, Encodable {
 
     public Object asArg() {
       Object arg = originObject;
-      while (arg instanceof WrapsElement) {
+      if (arg instanceof WrapsElement) {
         arg = ((WrapsElement) arg).getWrappedElement();
       }
       return arg;
