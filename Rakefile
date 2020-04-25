@@ -532,6 +532,7 @@ namespace :node do
   atom_list = %w[
     //javascript/atoms/fragments:is-displayed
     //javascript/webdriver/atoms:get-attribute
+    //javascript/webdriver/atoms:find-elements
   ]
 
   task atoms: atom_list do
@@ -541,7 +542,8 @@ namespace :node do
     puts 'rake outs are below'
     p rake_outs = [
       Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
-      Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
+      Rake::Task['//javascript/webdriver/atoms:get-attribute'].out,
+      Rake::Task['//javascript/webdriver/atoms:find-elements'].out
     ]
 
     rake_outs.each do |atom|
