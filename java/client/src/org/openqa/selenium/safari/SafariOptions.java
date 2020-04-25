@@ -20,8 +20,6 @@ package org.openqa.selenium.safari;
 import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.collect.ImmutableSortedMap;
-
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
@@ -66,6 +64,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   private Map<String, Object> options = new TreeMap<>();
+  private Map<String, Object> options = new HashMap<>();
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
@@ -176,9 +175,8 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
   @Override
   public Map<String, Object> asMap() {
-    return ImmutableSortedMap.<String, Object>naturalOrder()
-        .putAll(super.asMap())
-        .put(CAPABILITY, unmodifiableMap(new HashMap<>(options)))
-        .build();
+    Map<String, Object> result = new HashMap<>(super.asMap());
+    result.put(CAPABILITY, unmodifiableMap(new HashMap<>(options)));
+    return unmodifiableMap(result);
   }
 }
