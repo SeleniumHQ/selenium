@@ -40,7 +40,7 @@ public class BazelBuild {
     }
     log.info("\nBuilding " + target + " ...");
 
-    CommandLine commandLine = new CommandLine(new String[] {"bazel", "build", target});
+    CommandLine commandLine = new CommandLine("bazel", "build", target);
     commandLine.setWorkingDirectory(projectRoot.toAbsolutePath().toString());
     commandLine.copyOutputTo(System.err);
     commandLine.execute();

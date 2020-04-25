@@ -23,8 +23,6 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -111,7 +109,6 @@ public class DesiredCapabilities extends MutableCapabilities {
   }
 
   @Deprecated
-  @VisibleForTesting
   public static DesiredCapabilities htmlUnit() {
     return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
   }

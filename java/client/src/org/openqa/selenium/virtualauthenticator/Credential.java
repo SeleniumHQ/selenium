@@ -104,7 +104,7 @@ public class Credential {
 
   public Map<String, Object> toMap() {
     Base64.Encoder encoder = Base64.getUrlEncoder();
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put("credentialId", encoder.encodeToString(id));
     map.put("isResidentCredential", isResidentCredential);
     map.put("rpId", rpId);

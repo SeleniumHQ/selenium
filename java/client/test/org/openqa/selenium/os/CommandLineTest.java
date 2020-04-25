@@ -24,7 +24,6 @@ import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
 
 import org.junit.Assume;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 
@@ -34,13 +33,8 @@ import java.util.Map;
 
 public class CommandLineTest {
 
-  private static String testExecutable;
-
-  @Before
-  public void setUp() {
-    // ping can be found on every platform we support.
-    testExecutable = "ping";
-  }
+  // ping can be found on every platform we support.
+  private static String testExecutable = "ping";
 
   @Test
   public void testSetEnvironmentVariableWithNullKeyThrows() {
@@ -141,16 +135,17 @@ public class CommandLineTest {
     CommandLine commandLine = new CommandLine(
         testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     commandLine.execute();
-    assertThat(commandLine.isSuccessful()).isTrue();
+    System.out.println(commandLine.getStdOut());
     assertThat(commandLine.getExitCode()).isEqualTo(0);
+    assertThat(commandLine.isSuccessful()).isTrue();
   }
 
   @Test
   public void canDetectFailure() {
     CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.execute();
-    assertThat(commandLine.isSuccessful()).isFalse();
     assertThat(commandLine.getExitCode()).isNotEqualTo(0);
+    assertThat(commandLine.isSuccessful()).isFalse();
   }
 
   @Test

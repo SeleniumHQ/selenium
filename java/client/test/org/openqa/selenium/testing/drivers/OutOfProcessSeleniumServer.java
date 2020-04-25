@@ -28,10 +28,8 @@ import org.openqa.selenium.build.InProject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class OutOfProcessSeleniumServer {
 
@@ -64,15 +62,9 @@ public class OutOfProcessSeleniumServer {
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
-    List<String> cmdLine = new LinkedList<>();
-    cmdLine.add("java");
-    cmdLine.add("-jar");
-    cmdLine.add(serverJar);
-    cmdLine.add(mode);
-    cmdLine.add("--port");
-    cmdLine.add(String.valueOf(port));
-    cmdLine.addAll(Arrays.asList(extraFlags));
-    command = new CommandLine(cmdLine.toArray(new String[0]));
+    command = new CommandLine("java", Stream.concat(
+        Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
+        Stream.of(extraFlags)).toArray(String[]::new));
 
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);
