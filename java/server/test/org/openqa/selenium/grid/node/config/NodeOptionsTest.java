@@ -123,7 +123,7 @@ public class NodeOptionsTest {
     assertThat(node.isSupporting(toPayload("chrome"))).isTrue();
     assertThat(node.isSupporting(toPayload("firefox"))).isTrue();
     assertThat(node.isSupporting(toPayload("internet explorer"))).isFalse();
-    assertThat(node.isSupporting(toPayload("MicrosoftEdge"))).isFalse();
+    assertThat(node.isSupporting(toPayload("MicrosoftEdge"))).isTrue();
     assertThat(node.isSupporting(toPayload("safari"))).isTrue();
   }
 
