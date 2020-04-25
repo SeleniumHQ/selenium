@@ -224,7 +224,7 @@ class Builder {
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
-  
+
     /** @private {ie.ServiceBuilder} */
     this.ieService_ = null;
 
@@ -807,6 +807,7 @@ exports.Browser = capabilities.Browser;
 exports.Builder = Builder;
 exports.Button = input.Button;
 exports.By = by.By;
+exports.withTagName = by.withTagName;
 exports.Capabilities = capabilities.Capabilities;
 exports.Capability = capabilities.Capability;
 exports.Condition = webdriver.Condition;
