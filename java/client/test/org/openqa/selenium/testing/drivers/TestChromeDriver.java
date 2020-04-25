@@ -20,6 +20,7 @@ package org.openqa.selenium.testing.drivers;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverLogLevel;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DriverCommand;
@@ -49,6 +50,7 @@ public class TestChromeDriver extends ChromeDriver {
       Path logFile = Files.createTempFile("chromedriver", ".log");
       ChromeDriverService service = new ChromeDriverService.Builder()
           .withVerbose(true)
+          .withLogLevel(ChromeDriverLogLevel.ALL)
           .withLogFile(logFile.toFile())
           .build();
       LOG.info("chromedriver will log to " + logFile);
