@@ -75,7 +75,6 @@ class Preferences {
     }
   }
 
-  @VisibleForTesting
   public Preferences(Reader defaults, Reader reader) {
     readDefaultPreferences(defaults);
     try {

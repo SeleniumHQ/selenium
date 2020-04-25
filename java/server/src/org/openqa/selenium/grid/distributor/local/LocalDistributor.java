@@ -382,7 +382,6 @@ public class LocalDistributor extends Distributor {
     }
   }
 
-  @VisibleForTesting
   @Beta
   public void refresh() {
     Lock writeLock = lock.writeLock();
