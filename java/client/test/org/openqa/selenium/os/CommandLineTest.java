@@ -20,8 +20,10 @@ package org.openqa.selenium.os;
 import static java.lang.System.getenv;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
+import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
 import org.junit.Assume;
 import org.junit.Test;
@@ -132,10 +134,10 @@ public class CommandLineTest {
 
   @Test
   public void canDetectSuccess() {
+    assumeThat(isOnTravis()).as("Operation not permitted on travis").isFalse();
     CommandLine commandLine = new CommandLine(
         testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     commandLine.execute();
-    System.out.println(commandLine.getStdOut());
     assertThat(commandLine.getExitCode()).isEqualTo(0);
     assertThat(commandLine.isSuccessful()).isTrue();
   }
