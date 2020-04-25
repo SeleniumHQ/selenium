@@ -22,6 +22,7 @@
 'use strict';
 
 const by = require('./by');
+const { RelativeBy } = require('./by')
 const command = require('./command');
 const error = require('./error');
 const input = require('./input');
