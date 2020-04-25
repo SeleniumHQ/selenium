@@ -23,14 +23,13 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toList;
 
-import com.google.common.io.Files;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -234,7 +233,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
             extensionFiles.stream()
                 .map(file -> {
                   try {
-                    return Base64.getEncoder().encodeToString(Files.toByteArray(file));
+                    return Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
                   } catch (IOException e) {
                     throw new SessionNotCreatedException(e.getMessage(), e);
                   }
