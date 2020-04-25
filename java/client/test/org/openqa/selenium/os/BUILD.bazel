@@ -11,5 +11,6 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("org.assertj:assertj-core"),
         artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
     ],
 )
