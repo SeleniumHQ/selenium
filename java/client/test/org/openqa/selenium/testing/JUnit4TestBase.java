@@ -67,7 +67,7 @@ public abstract class JUnit4TestBase {
 
   @Before
   public void prepareEnvironment() {
-    environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    environment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     appServer = environment.getAppServer();
 
     pages = new Pages(appServer);

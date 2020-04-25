@@ -35,7 +35,7 @@ public class BaseSuite {
     @Override
     protected void before() {
       log.info("Preparing test environment");
-      GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+      GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
       System.setProperty("webdriver.remote.shorten_log_messages", "true");
     }
     @Override
