@@ -530,6 +530,7 @@ end
 
 namespace :node do
   atom_list = %w[
+    //javascript/atoms/fragments:find-elements
     //javascript/atoms/fragments:is-displayed
     //javascript/webdriver/atoms:get-attribute
   ]
@@ -540,6 +541,7 @@ namespace :node do
 
     puts 'rake outs are below'
     p rake_outs = [
+      Rake::Task['//javascript/atoms/fragments:find-elements'].out,
       Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
       Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
     ]
