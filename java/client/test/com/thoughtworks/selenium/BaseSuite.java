@@ -23,7 +23,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
-import org.openqa.selenium.environment.TestEnvironment;
 
 import java.util.logging.Logger;
 
@@ -38,14 +37,11 @@ public class BaseSuite {
       GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
       System.setProperty("webdriver.remote.shorten_log_messages", "true");
     }
+
     @Override
     protected void after() {
       log.info("Cleaning test environment");
-      TestEnvironment environment = GlobalTestEnvironment.get();
-      if (environment != null) {
-        environment.stop();
-        GlobalTestEnvironment.set(null);
-      }
+      GlobalTestEnvironment.stop();
     }
   };
 

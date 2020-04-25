@@ -34,10 +34,6 @@ public class GlobalTestEnvironment {
     return environment;
   }
 
-  public static void set(TestEnvironment environment) {
-    GlobalTestEnvironment.environment = environment;
-  }
-
   public static synchronized TestEnvironment getOrCreate(
       Supplier<TestEnvironment> startThisIfNothingIsAlreadyRunning) {
     if (environment == null) {
