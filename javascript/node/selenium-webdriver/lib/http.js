@@ -311,8 +311,8 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.FIND_ELEMENT, post('/session/:sessionId/element')],
   [cmd.Name.FIND_ELEMENTS, post('/session/:sessionId/elements')],
   [cmd.Name.FIND_ELEMENTS_RELATIVE, (cmd) => {
-    return toExecuteAtomCommand(cmd, Atom.findElements, 'args');
-  }], 
+    return toExecuteAtomCommand(cmd, Atom.FIND_ELEMENTS, 'args');
+  }],
   [cmd.Name.FIND_CHILD_ELEMENT, post('/session/:sessionId/element/:id/element')],
   [cmd.Name.FIND_CHILD_ELEMENTS, post('/session/:sessionId/element/:id/elements')],
   // Element interaction.
