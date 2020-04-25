@@ -23,6 +23,7 @@ pkg_npm(
         ":license",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
     ],
 )
 
@@ -48,6 +49,7 @@ nodejs_binary(
         "@npm//rimraf",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
     ],
     entry_point = "lib/test/fileserver.ts",
 )
@@ -71,6 +73,7 @@ jasmine_node_test(
     deps = [
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "@npm//jasmine",
     ],
 )
