@@ -22,6 +22,7 @@
 'use strict';
 
 const by = require('./by');
+const { RelativeBy } = require('./by')
 const command = require('./command');
 const error = require('./error');
 const input = require('./input');
@@ -957,7 +958,7 @@ class WebDriver {
   async findElements(locator) {
     let cmd;
     if (locator instanceof RelativeBy) {
-       cmd = new command.Command(command.name,FIND_ELEMENTS_RELATIVE).
+       cmd = new command.Command(command.Name.FIND_ELEMENTS_RELATIVE).
           setParameters('args', locator.marshall());
     } else {
       locator = by.checkedLocator(locator);
