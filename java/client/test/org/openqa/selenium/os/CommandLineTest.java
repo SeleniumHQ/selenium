@@ -135,16 +135,17 @@ public class CommandLineTest {
     CommandLine commandLine = new CommandLine(
         testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     commandLine.execute();
-    assertThat(commandLine.isSuccessful()).isTrue();
+    System.out.println(commandLine.getStdOut());
     assertThat(commandLine.getExitCode()).isEqualTo(0);
+    assertThat(commandLine.isSuccessful()).isTrue();
   }
 
   @Test
   public void canDetectFailure() {
     CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.execute();
-    assertThat(commandLine.isSuccessful()).isFalse();
     assertThat(commandLine.getExitCode()).isNotEqualTo(0);
+    assertThat(commandLine.isSuccessful()).isFalse();
   }
 
   @Test
