@@ -31,3 +31,4 @@ test --test_env=TRAVIS
 test --test_env=DISPLAY
 test --test_env=MOZ_HEADLESS
 test --test_env=DASHBOARD_URL
+test --test_env=LOCALAPPDATA

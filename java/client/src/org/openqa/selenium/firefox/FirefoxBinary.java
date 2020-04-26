@@ -23,8 +23,6 @@ import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.ExecutableFinder;
@@ -188,7 +186,7 @@ public class FirefoxBinary {
    * Locates the firefox binary by platform.
    */
   private static Stream<Executable> locateFirefoxBinariesFromPlatform() {
-    ImmutableList.Builder<Executable> executables = new ImmutableList.Builder<>();
+    List<Executable> executables = new ArrayList<>();
 
     Platform current = Platform.getCurrent();
     if (current.is(WINDOWS)) {
@@ -244,7 +242,7 @@ public class FirefoxBinary {
       }
     }
 
-    return executables.build().stream();
+    return executables.stream();
   }
 
   private static List<String> getPathsInProgramFiles(final String childPath) {

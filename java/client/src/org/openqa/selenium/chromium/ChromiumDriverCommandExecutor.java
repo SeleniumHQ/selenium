@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.Collections.unmodifiableMap;
+
 import java.util.HashMap;
+import java.util.Map;
 
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -32,7 +34,7 @@ import org.openqa.selenium.remote.service.DriverService;
  */
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
-  private static ImmutableMap<String, CommandInfo> buildChromiumCommandMappings(String vendorKeyword) {
+  private static Map<String, CommandInfo> buildChromiumCommandMappings(String vendorKeyword) {
     String sessionPrefix = "/session/:sessionId/";
     String chromiumPrefix = sessionPrefix + "chromium";
     String vendorPrefix = sessionPrefix + vendorKeyword;
@@ -69,7 +71,7 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
     mappings.put(ChromiumDriverCommand.SET_PERMISSION,
       new CommandInfo(sessionPrefix + "/permissions", HttpMethod.POST));
 
-    return ImmutableMap.copyOf(mappings);
+    return unmodifiableMap(mappings);
   }
 
   public ChromiumDriverCommandExecutor(String vendorPrefix, DriverService service) {
