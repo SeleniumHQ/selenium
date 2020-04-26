@@ -49,11 +49,11 @@ public class TestChromeDriver extends ChromeDriver {
     try {
       Path logFile = Files.createTempFile("chromedriver", ".log");
       ChromeDriverService service = new ChromeDriverService.Builder()
-          .withVerbose(true)
           .withLogLevel(ChromeDriverLogLevel.ALL)
           .withLogFile(logFile.toFile())
           .build();
       LOG.info("chromedriver will log to " + logFile);
+      LOG.info("chromedriver will use log level " + ChromeDriverLogLevel.ALL.toString().toUpperCase());
       service.start();
       // Fugly.
       Runtime.getRuntime().addShutdownHook(new Thread(service::stop));
