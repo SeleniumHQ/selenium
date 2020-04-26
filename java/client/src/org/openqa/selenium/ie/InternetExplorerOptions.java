@@ -66,7 +66,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private static final String FORCE_WINDOW_SHELL_API = "ie.forceShellWindowsApi";
   private static final String VALIDATE_COOKIE_DOCUMENT_TYPE = "ie.validateCookieDocumentType";
 
-  private final static List<String> CAPABILITY_NAMES = Arrays.asList(
+  private static final List<String> CAPABILITY_NAMES = Arrays.asList(
       BROWSER_ATTACH_TIMEOUT,
       ELEMENT_SCROLL_BEHAVIOR,
       ENABLE_PERSISTENT_HOVERING,

@@ -84,11 +84,12 @@ import java.util.stream.StreamSupport;
 @Beta
 public class RemoteWebDriverBuilder {
 
-  private final static Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
+  private static final Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
       "alwaysMatch",
       "capabilities",
       "firstMatch");
-  private final static AcceptedW3CCapabilityKeys OK_KEYS = new AcceptedW3CCapabilityKeys();
+  private static final AcceptedW3CCapabilityKeys OK_KEYS = new AcceptedW3CCapabilityKeys();
+
   private final List<Map<String, Object>> options = new ArrayList<>();
   private final Map<String, Object> metadata = new TreeMap<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
