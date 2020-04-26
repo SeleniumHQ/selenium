@@ -50,7 +50,7 @@ def selenium_java_deps():
             ),
             "net.bytebuddy:byte-buddy:1.10.9",
             "net.sourceforge.htmlunit:htmlunit:2.39.1",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.39.1",
+            "net.sourceforge.htmlunit:htmlunit-core-js:2.39.0",
             "org.apache.commons:commons-exec:1.3",
             "org.assertj:assertj-core:3.15.0",
             "org.asynchttpclient:async-http-client:2.12.1",
