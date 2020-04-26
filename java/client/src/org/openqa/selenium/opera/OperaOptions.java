@@ -222,18 +222,18 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
     options.put("args", unmodifiableList(new ArrayList<>(args)));
 
-    List<String> encoded_extensions = new ArrayList<>();
+    List<String> encodedExtensions = new ArrayList<>();
     for (File file : extensionFiles) {
       try {
         String encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
 
-        encoded_extensions.add(encoded);
+        encodedExtensions.add(encoded);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
     }
-    encoded_extensions.addAll(extensions);
-    options.put("extensions", unmodifiableList(encoded_extensions));
+    encodedExtensions.addAll(extensions);
+    options.put("extensions", unmodifiableList(encodedExtensions));
 
     toReturn.put(CAPABILITY, options);
 
