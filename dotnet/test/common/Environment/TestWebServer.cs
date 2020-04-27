@@ -49,6 +49,12 @@ namespace OpenQA.Selenium.Environment
                     javaExecutableName = javaExecutableName + ".exe";
                 }
 
+                string javaExecutablePath = string.Empty;
+                if (!string.IsNullOrEmpty(this.javaHomeDirectory))
+                {
+                    javaExecutablePath = Path.Combine(this.javaHomeDirectory, "bin");
+                }
+
                 List<string> javaSystemProperties = new List<string>();
 
                 StringBuilder processArgsBuilder = new StringBuilder();
@@ -70,7 +76,15 @@ namespace OpenQA.Selenium.Environment
                 processArgsBuilder.AppendFormat("-jar {0}", standaloneTestJar);
 
                 webserverProcess = new Process();
-                webserverProcess.StartInfo.FileName = javaExecutableName;
+                if (!string.IsNullOrEmpty(javaExecutablePath))
+                {
+                    webserverProcess.StartInfo.FileName = Path.Combine(javaExecutablePath, javaExecutableName);
+                }
+                else
+                {
+                    webserverProcess.StartInfo.FileName = javaExecutableName;
+                }
+
                 webserverProcess.StartInfo.Arguments = processArgsBuilder.ToString();
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.StartInfo.UseShellExecute = !(hideCommandPrompt || captureWebServerOutput);
