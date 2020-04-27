@@ -561,6 +561,24 @@ class WebElement(object):
                     "y": round(old_loc['y'])}
         else:
             return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
+        
+    @property
+    def location_into_view(self):
+        """THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover
+        where on the screen an element.
+
+        Returns the top lefthand corner location on the screen, or ``None`` if
+        the element is not visible.
+
+        """
+        if self._w3c:
+            old_loc = self._execute(Command.W3C_EXECUTE_SCRIPT, {
+                'script': "return arguments[0].getBoundingClientRect()",
+                'args': [self]})['value']
+            return {"x": round(old_loc['x']),
+                    "y": round(old_loc['y'])}
+        else:
+            return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
 
     @property
     def size(self):
