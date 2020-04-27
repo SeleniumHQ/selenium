@@ -294,7 +294,7 @@ public class DriverService {
     return outputStream;
   }
 
-  public static abstract class Builder<DS extends DriverService, B extends Builder<?, ?>> {
+  public abstract static class Builder<DS extends DriverService, B extends Builder<?, ?>> {
 
     private int port = 0;
     private File exe = null;

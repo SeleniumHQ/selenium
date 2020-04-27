@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public class UrlTemplate {
 
-  private final static Pattern GROUP_NAME = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
+  private static final Pattern GROUP_NAME = Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9]*)>");
   private final List<Matches> template;
 
   public UrlTemplate(String template) {

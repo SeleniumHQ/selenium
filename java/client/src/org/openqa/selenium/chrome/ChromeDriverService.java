@@ -48,7 +48,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines the location of the log that will be written by
    * the {@link #createDefaultService() default service}.
    */
-  public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
+  public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
    * Boolean system property that defines whether chromedriver should append to existing log file.
@@ -74,7 +74,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
-  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
+  public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
       "webdriver.chrome.whitelistedIps";
 
   /**

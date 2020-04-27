@@ -64,7 +64,7 @@ public class SessionLogsToFileRepository {
    * @param records logRecords that need to be stored
    * @throws IOException file i/o exception can occur because of a temp file created
    */
-  synchronized public void flushRecordsToLogFile(SessionId sessionId,
+  public synchronized void flushRecordsToLogFile(SessionId sessionId,
       List<LogRecord> records) throws IOException {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
 

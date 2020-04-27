@@ -44,7 +44,7 @@ public class ChromiumEdgeDriverService extends EdgeDriverService {
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to MSEdgeDriver.
    */
-  public final static String EDGE_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.edge.withAllowedIps";
+  public static final String EDGE_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.edge.withAllowedIps";
 
   public ChromiumEdgeDriverService(
       File executable,
