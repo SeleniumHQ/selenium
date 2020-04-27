@@ -34,9 +34,9 @@ def write_atom_literal(out, name, contents, lang, utf8):
 
     if "cc" == lang or "hh" == lang:
       if utf8:
-        line_format = "    L\"{}\",\n"
-      else:
         line_format = "    \"{}\",\n"
+      else:
+        line_format = "    L\"{}\",\n"
     elif "java" == lang:
         line_format = "      .append\(\"{}\")\n"
     else:
@@ -45,8 +45,8 @@ def write_atom_literal(out, name, contents, lang, utf8):
     name = get_atom_name(name)
 
     if "cc" == lang or "hh" == lang:
-        string_type = "std::wstring" if utf8 else "std::string"
-        char_type = "wchar_t" if utf8 else "char"
+        string_type = "std::string" if utf8 else "std::wstring"
+        char_type = "char" if utf8 else "wchar_t"
         out.write("const %s* const %s[] = {\n" % (char_type, name))
     elif "java" == lang:
         out.write("  %s(new StringBuilder()\n" % name)
@@ -74,7 +74,7 @@ def write_atom_literal(out, name, contents, lang, utf8):
 
 def generate_header(file_name, out, js_map, just_declare, utf8):
     define_guard = "WEBDRIVER_%s" % os.path.basename(file_name.upper()).replace(".", "_")
-    include_stddef = "\n#include <stddef.h>  // For wchar_t." if utf8 else ""
+    include_stddef = "" if utf8 else "\n#include <stddef.h>  // For wchar_t."
     out.write("""%s
     
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
@@ -88,8 +88,8 @@ namespace atoms {
     
 """ % (_copyright, define_guard, define_guard, include_stddef))
 
-    string_type = "std::wstring" if utf8 else "std::string"
-    char_type = "wchar_t" if utf8 else "char"
+    string_type = "std::string" if utf8 else "std::wstring"
+    char_type = "char" if utf8 else "wchar_t"
     
     for (name, file) in js_map.items():
         if just_declare:
