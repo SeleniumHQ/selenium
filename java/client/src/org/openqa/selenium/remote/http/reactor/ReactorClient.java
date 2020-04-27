@@ -35,7 +35,6 @@ import reactor.util.function.Tuple2;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.Channels;
 import java.util.Map;
 import java.util.Objects;
 
@@ -46,7 +45,7 @@ public class ReactorClient implements HttpClient {
                       HttpMethod.GET, io.netty.handler.codec.http.HttpMethod.GET,
                       HttpMethod.POST, io.netty.handler.codec.http.HttpMethod.POST);
 
-  private final static int MAX_CHUNK_SIZE = 1024 * 512 ; // 500k
+  private static final int MAX_CHUNK_SIZE = 1024 * 512 ; // 500k
 
   private final ClientConfig config;
   private final reactor.netty.http.client.HttpClient httpClient;
@@ -60,6 +59,8 @@ public class ReactorClient implements HttpClient {
   public HttpResponse execute(HttpRequest request) {
     Tuple2<InputStream, HttpResponse> result = httpClient
         .baseUrl(config.baseUrl().toString())
+        .headers(h -> request.getHeaderNames().forEach(
+            name -> request.getHeaders(name).forEach(value -> h.set(name, value))))
         .request(methodMap.get(request.getMethod()))
         .uri(request.getUri())
         .send((r, out) -> out.send(fromInputStream(request.getContent().get())))
@@ -77,11 +78,11 @@ public class ReactorClient implements HttpClient {
   private Flux<ByteBuf> fromInputStream(InputStream is) {
     ByteBufAllocator allocator = ByteBufAllocator.DEFAULT;
     return Flux.generate(
-        () -> Channels.newChannel(is),
-        (rbc, sync) -> {
+        () -> is,
+        (in, sync) -> {
           ByteBuf buf = allocator.buffer();
           try {
-            if (buf.writeBytes(is, MAX_CHUNK_SIZE) < 0) {
+            if (buf.writeBytes(in, MAX_CHUNK_SIZE) < 0) {
               buf.release();
               sync.complete();
             } else {
@@ -91,12 +92,12 @@ public class ReactorClient implements HttpClient {
             buf.release();
             sync.error(ex);
           }
-          return rbc;
+          return in;
         },
-        rbc -> {
+        in -> {
           try {
-            if (rbc != null) {
-              rbc.close();
+            if (in != null) {
+              in.close();
             }
           } catch (IOException e) {
             e.printStackTrace();
