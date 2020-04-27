@@ -264,7 +264,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   }
 
   @Override
-  synchronized public void publish(LogRecord record) {
+  public synchronized void publish(LogRecord record) {
     ThreadKey threadId = new ThreadKey();
     SessionId sessionId = threadToSessionMap.get(threadId);
 

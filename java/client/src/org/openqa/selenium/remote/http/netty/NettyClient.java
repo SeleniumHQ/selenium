@@ -32,7 +32,7 @@ import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
 
-  private final static AsyncHttpClient httpClient = Dsl.asyncHttpClient();
+  private static final AsyncHttpClient httpClient = Dsl.asyncHttpClient();
 
   private final HttpHandler handler;
   private BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;

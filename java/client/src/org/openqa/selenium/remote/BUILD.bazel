@@ -37,7 +37,6 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        artifact("com.google.guava:guava"),
     ],
 )
 

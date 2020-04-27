@@ -64,7 +64,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   private Map<String, Object> options = new TreeMap<>();
-  private Map<String, Object> options = new HashMap<>();
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
