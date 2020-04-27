@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  */
 public class Actions {
 
-  private final static Logger LOG = Logger.getLogger(Actions.class.getName());
+  private static final Logger LOG = Logger.getLogger(Actions.class.getName());
   private final WebDriver driver;
 
   // W3C

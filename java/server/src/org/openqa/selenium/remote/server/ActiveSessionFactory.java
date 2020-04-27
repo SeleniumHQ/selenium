@@ -56,9 +56,9 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
  */
 public class ActiveSessionFactory implements SessionFactory {
 
-  private final static Logger LOG = Logger.getLogger(ActiveSessionFactory.class.getName());
+  private static final Logger LOG = Logger.getLogger(ActiveSessionFactory.class.getName());
 
-  private final static Function<String, Class<?>> CLASS_EXISTS = name -> {
+  private static final Function<String, Class<?>> CLASS_EXISTS = name -> {
     try {
       return Class.forName(name);
     } catch (ClassNotFoundException | NoClassDefFoundError e) {

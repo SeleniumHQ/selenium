@@ -45,7 +45,7 @@ import java.util.Map;
 
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
-  private final static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
+  private static final HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
 
   private final URL remoteServer;
   private final HttpClient client;

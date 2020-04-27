@@ -58,17 +58,17 @@ public class InternetExplorerDriverService extends DriverService {
   /**
    * System property that defines host to which will be bound IEDriverServer.
    */
-  public final static String IE_DRIVER_HOST_PROPERTY = "webdriver.ie.driver.host";
+  public static final String IE_DRIVER_HOST_PROPERTY = "webdriver.ie.driver.host";
 
   /**
    * System property that defines path to which will be extracted IEDriverServer library.
    */
-  public final static String IE_DRIVER_EXTRACT_PATH_PROPERTY = "webdriver.ie.driver.extractpath";
+  public static final String IE_DRIVER_EXTRACT_PATH_PROPERTY = "webdriver.ie.driver.extractpath";
 
   /**
    * System property that defines logging to stdout for IEDriverServer.
    */
-  public final static String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
+  public static final String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
 
   /**
    * @param executable The IEDriverServer executable.

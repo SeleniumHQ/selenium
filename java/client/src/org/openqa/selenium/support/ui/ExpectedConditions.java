@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  */
 public class ExpectedConditions {
 
-  private final static Logger log = Logger.getLogger(ExpectedConditions.class.getName());
+  private static final Logger log = Logger.getLogger(ExpectedConditions.class.getName());
 
   private ExpectedConditions() {
     // Utility class

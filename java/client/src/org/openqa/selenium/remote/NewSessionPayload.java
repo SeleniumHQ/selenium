@@ -82,7 +82,7 @@ public class NewSessionPayload implements Closeable {
   private final Set<CapabilityTransform> transforms;
 
   private static final Dialect DEFAULT_DIALECT = Dialect.OSS;
-  private final static Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
+  private static final Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
 
   private final Json json = new Json();
   private final FileBackedOutputStream backingStore;

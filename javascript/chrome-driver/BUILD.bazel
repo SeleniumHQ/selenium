@@ -19,6 +19,14 @@ closure_js_library(
 )
 
 closure_fragment(
+    name = "get-location",
+    browsers = ["chrome"],
+    function = "goog.style.getPageOffset",
+    module = "goog.style",
+    deps = ["@io_bazel_rules_closure//closure/library"],
+)
+
+closure_fragment(
     name = "get-location-in-view",
     browsers = ["chrome"],
     function = "webdriver.chrome.getLocationInView",
@@ -69,6 +77,7 @@ closure_fragment(
 ATOMS = [
     ":find-element-chrome",
     ":get-first-client-rect-chrome",
+    ":get-location-chrome",
     ":get-location-in-view-chrome",
     ":get-page-zoom-chrome",
     ":is-element-clickable-chrome",
@@ -80,7 +89,6 @@ ATOMS = [
     "//javascript/atoms/fragments:execute-sql-chrome",
     "//javascript/atoms/fragments:find-elements-chrome",
     "//javascript/atoms/fragments:get-effective-style-chrome",
-    "//javascript/atoms/fragments:get-location-chrome",
     "//javascript/atoms/fragments:get-size-chrome",
     "//javascript/atoms/fragments:is-displayed-chrome",
     "//javascript/atoms/fragments:is-enabled-chrome",
