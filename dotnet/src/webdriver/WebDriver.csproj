@@ -123,11 +123,11 @@
       <Visible>False</Visible>
       <LogicalName>get-attribute.js</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/is-displayed.js">
+    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/is-displayed.js">
       <Visible>False</Visible>
       <LogicalName>is-displayed.js</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/find-elements.js">
+    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/find-elements.js">
       <Visible>False</Visible>
       <LogicalName>find-elements.js</LogicalName>
     </EmbeddedResource>
