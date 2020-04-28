@@ -47,13 +47,13 @@ public class MainTest {
   }
 
   @Test
-  public void shouldPrintAListOfCommandsWhenStartedWithoutOptions() throws Exception {
+  public void shouldPrintAListOfCommandsWhenStartedWithoutOptions() {
     new Main(toPrintStream(out), toPrintStream(err), new String[]{}).go();
     assertThat(out.toString()).contains("A list of all the commands available");
   }
 
   @Test
-  public void shouldPrintAListOfCommandsWhenStartedWithHelpOption() throws Exception {
+  public void shouldPrintAListOfCommandsWhenStartedWithHelpOption() {
     new Main(toPrintStream(out), toPrintStream(err), new String[]{"--help"}).go();
     assertThat(out.toString()).contains("A list of all the commands available");
   }
