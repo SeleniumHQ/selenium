@@ -95,22 +95,41 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
+  <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
+      <Visible>False</Visible>
+      <LogicalName>webdriver_prefs.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
+      <Visible>False</Visible>
+      <LogicalName>get-attribute.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js">
+      <Visible>False</Visible>
+      <LogicalName>is-displayed.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js">
+      <Visible>False</Visible>
+      <LogicalName>find-elements.js</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\third_party\js\selenium\webdriver_prefs\webdriver_prefs">
+  <ItemGroup Condition="'$(OS)' != 'WINDOWS_NT'">
+    <EmbeddedResource Include="$(ProjectDir)../../../third_party/js/selenium/webdriver.json">
       <Visible>False</Visible>
-      <LogicalName>WebDriver.FirefoxPreferences</LogicalName>
+      <LogicalName>webdriver_prefs.json</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\webdriver\atoms\get-attribute.js">
+    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/get-attribute.js">
       <Visible>False</Visible>
-      <LogicalName>getAttribute.js</LogicalName>
+      <LogicalName>get-attribute.js</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\atoms\fragments\is-displayed.js">
+    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/is-displayed.js">
       <Visible>False</Visible>
-      <LogicalName>isDisplayed.js</LogicalName>
+      <LogicalName>is-displayed.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/find-elements.js">
+      <Visible>False</Visible>
+      <LogicalName>find-elements.js</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -119,12 +138,12 @@
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
-    <Exec Command="echo Copying Firefox preferences file from $(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json&#xD;&#xA;copy /y &quot;$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;&#xD;&#xA;if not exist &quot;$(TargetDir)get-attribute.js&quot; (&#xD;&#xA;  echo Copying getAttribute atom&#xD;&#xA;  copy /y &quot;$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js&quot; &quot;$(TargetDir)get-attribute.js&quot; &gt; NUL&#xD;&#xA;) else (&#xD;&#xA;  echo Found getAttribute atom at $(TargetDir)get-attribute.js.&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;if not exist &quot;$(TargetDir)is-displayed.js&quot; (&#xD;&#xA;  echo Copying isDisplayed atom&#xD;&#xA;  copy /y &quot;$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js&quot; &quot;$(TargetDir)is-displayed.js&quot; &gt; NUL&#xD;&#xA;) else (&#xD;&#xA;  echo Found isDisplayed atom at $(TargetDir)is-displayed.js.&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;if not exist &quot;$(TargetDir)find-elements.js&quot; (&#xD;&#xA;  echo Copying findElements atom&#xD;&#xA;  copy /y &quot;$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js&quot; &quot;$(TargetDir)find-elements.js&quot; &gt; NUL&#xD;&#xA;) else (&#xD;&#xA;  echo Found findElements atom at $(TargetDir)find-elements.js.&#xD;&#xA;)&#xD;&#xA;" />
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
+    <Exec Command="call $(ProjectDir)WebDriver.csproj.prebuild.cmd $(ProjectDir)" />
   </Target>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
-    <Exec Command="if not exist &quot;$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js&quot; (&#xD;&#xA;  echo Building getAttribute atom&#xD;&#xA;  pushd &quot;$(ProjectDir)..\..\..&quot;&#xD;&#xA;  bazel build //javascript/webdriver/atoms:get-attribute.js&#xD;&#xA;  popd&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;if not exist  &quot;$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js&quot; (&#xD;&#xA;  echo Building isDisplayed atom&#xD;&#xA;  pushd &quot;$(ProjectDir)..\..\..&quot;&#xD;&#xA;  bazel build //javascript/atoms/fragments:is-displayed.js&#xD;&#xA;  popd&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;if not exist  &quot;$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js&quot; (&#xD;&#xA;  echo Building findElements atom&#xD;&#xA;  pushd &quot;$(ProjectDir)..\..\..&quot;&#xD;&#xA;  bazel build //javascript/atoms/fragments:find-elements.js&#xD;&#xA;  popd&#xD;&#xA;)&#xD;&#xA;" />
+  <Target Name="PreBuildNonWindows" BeforeTargets="PreBuildEvent" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="$(ProjectDir)WebDriver.csproj.prebuild.sh $(ProjectDir)" />
   </Target>
 
 </Project>

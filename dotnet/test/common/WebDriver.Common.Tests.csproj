@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net47;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>net471;netcoreapp2.1</TargetFrameworks>
     <AssemblyName>WebDriver.Common.Tests</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
   </PropertyGroup>
@@ -25,8 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="BUCK" />
-    <None Remove="build.desc" />
     <None Remove="Settings.StyleCop" />
   </ItemGroup>
 
@@ -57,7 +55,11 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
-    <Exec Command="if not exist &quot;$(ProjectDir)..\..\..\bazel-bin\java\client\test\org\openqa\selenium\environment\appserver_deploy.jar&quot; (&#xD;&#xA;  echo Building test web server&#xD;&#xA;  pushd &quot;$(ProjectDir)..\..\..&quot;&#xD;&#xA;  bazel build //java/client/test/org/openqa/selenium/environment:appserver_deploy.jar&#xD;&#xA;  popd&#xD;&#xA;)&#xD;&#xA;" />
+    <Exec Command="call &quot;$(ProjectDir)WebDriver.Common.Tests.csproj.prebuild.cmd&quot; &quot;$(ProjectDir)&quot;" />
+  </Target>
+
+  <Target Name="PreBuildNonWindows" BeforeTargets="PreBuildEvent" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="$(ProjectDir)WebDriver.Common.Tests.csproj.prebuild.sh $(ProjectDir)" />
   </Target>
 
 </Project>
