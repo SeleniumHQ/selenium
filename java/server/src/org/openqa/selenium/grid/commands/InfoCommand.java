@@ -20,22 +20,22 @@ package org.openqa.selenium.grid.commands;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
-
 import com.google.auto.service.AutoService;
 import com.google.common.io.Resources;
+import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.cli.WrappedPrintWriter;
+import org.openqa.selenium.grid.config.Role;
+import org.openqa.selenium.grid.server.HelpFlags;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
-import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.cli.WrappedPrintWriter;
-import org.openqa.selenium.grid.server.HelpFlags;
-
-import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.Set;
 
 @AutoService(CliCommand.class)
 public class InfoCommand implements CliCommand {
@@ -46,6 +46,16 @@ public class InfoCommand implements CliCommand {
 
   public String getDescription() {
     return "Prints information for commands and topics.";
+  }
+
+  @Override
+  public Set<Role> getConfigurableRoles() {
+    return Collections.emptySet();
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.emptySet();
   }
 
   public Executable configure(PrintStream out, PrintStream err, String... args) {

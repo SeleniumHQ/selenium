@@ -12,6 +12,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/events/zeromq",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",

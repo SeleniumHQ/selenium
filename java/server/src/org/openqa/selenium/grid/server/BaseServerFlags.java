@@ -18,10 +18,18 @@
 package org.openqa.selenium.grid.server;
 
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.Role;
 
-public class BaseServerFlags {
+import java.util.Collections;
+import java.util.Set;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+
+@AutoService(HasRoles.class)
+public class BaseServerFlags implements HasRoles {
 
   @Parameter(
       names = {"--host"},
@@ -68,4 +76,9 @@ public class BaseServerFlags {
   @Parameter(description = "Use a self-signed certificate for HTTPS communication", names = "--self-signed-https", hidden = true)
   @ConfigValue(section = "server", name = "https-self-signed")
   private boolean isSelfSigned = false;
+
+  @Override
+  public Set<Role> getRoles() {
+    return Collections.singleton(HTTPD_ROLE);
+  }
 }

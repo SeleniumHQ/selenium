@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-class DevMode {
+public class DevMode {
 
   // There is absolutely no way that this is going to be fragile. No way. Nada. Nope.
   private static final List<Supplier<Boolean>> DEV_MODE_CHECKS = Arrays.asList(
@@ -42,7 +42,7 @@ class DevMode {
       () -> Boolean.getBoolean("selenium.dev-mode")
   );
 
-  static boolean isInDevMode() {
+  public static boolean isInDevMode() {
     return DEV_MODE_CHECKS.stream().map(Supplier::get).reduce(Boolean::logicalOr).orElse(false);
   }
 }

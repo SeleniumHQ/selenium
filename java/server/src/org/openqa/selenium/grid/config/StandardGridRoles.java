@@ -15,31 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.httpd;
+package org.openqa.selenium.grid.config;
 
-import com.beust.jcommander.Parameter;
-
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.grid.config.ConfigValue;
-import org.openqa.selenium.grid.config.HasRoles;
-import org.openqa.selenium.grid.config.Role;
-
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
+import java.util.TreeSet;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-
-@AutoService(HasRoles.class)
-public class NodeFlags implements HasRoles {
-
-  @Parameter(
-      names = {"--detect-drivers"}, arity = 1,
-      description = "Autodetect which drivers are available on the current system, and add them to the node.")
-  @ConfigValue(section = "node", name = "detect-drivers")
-  public boolean autoconfigure = true;
-
-  @Override
-  public Set<Role> getRoles() {
-    return Collections.singleton(NODE_ROLE);
+public class StandardGridRoles {
+  private StandardGridRoles() {
+    // Constants
   }
+
+  public static final Role DISTRIBUTOR_ROLE = Role.of("grid-distributor");
+  public static final Role EVENT_BUS_ROLE = Role.of("grid-event-bus");
+  public static final Role HTTPD_ROLE = Role.of("httpd");
+  public static final Role NODE_ROLE = Role.of("grid-node");
+  public static final Role ROUTER_ROLE = Role.of("grid-router");
+  public static final Role SESSION_MAP_ROLE = Role.of("grid-session-map");
+
+  public static final Set<Role> ALL_ROLES = Collections.unmodifiableSet(
+    new TreeSet<>(Arrays.asList(DISTRIBUTOR_ROLE, EVENT_BUS_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE)));
 }
