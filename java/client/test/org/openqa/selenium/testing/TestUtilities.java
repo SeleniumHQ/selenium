@@ -63,33 +63,6 @@ public class TestUtilities {
     return userAgent.contains("MSIE") || userAgent.contains("Trident");
   }
 
-  public static boolean isIe6(WebDriver driver) {
-    return isInternetExplorer(driver)
-        && getUserAgent(driver).contains("MSIE 6");
-  }
-
-  public static boolean isIe7(WebDriver driver) {
-    return isInternetExplorer(driver)
-           && getUserAgent(driver).contains("MSIE 7");
-  }
-
-  public static boolean isOldIe(WebDriver driver) {
-    if (!isInternetExplorer(driver)) {
-      return false;
-    }
-    if (driver instanceof HtmlUnitDriver) {
-      String applicationVersion = ((HtmlUnitDriver) driver).getBrowserVersion().getApplicationVersion();
-      return Double.parseDouble(applicationVersion.split(" ")[0]) < 5;
-    }
-    try {
-      String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
-      // IE9 is trident version 5.  IE9 is the start of new IE.
-      return ((Long)((JavascriptExecutor)driver).executeScript(jsToExecute)).intValue() < 5;
-    } catch (Throwable t) {
-      return false;
-    }
-  }
-
   public static boolean isChrome(WebDriver driver) {
     return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
   }

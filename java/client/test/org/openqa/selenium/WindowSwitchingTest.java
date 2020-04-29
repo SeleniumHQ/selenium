@@ -33,7 +33,6 @@ import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.OPERA;
 import static org.openqa.selenium.testing.drivers.Browser.OPERABLINK;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 
 import org.junit.Rule;
@@ -205,7 +204,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
-    if (isInternetExplorer(driver) && !isIe6(driver)) {
+    if (isInternetExplorer(driver)) {
       Alert alert = wait.until(alertIsPresent());
       alert.accept();
     }
@@ -219,7 +218,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
-    boolean isNewIE = isInternetExplorer(driver) && !isIe6(driver);
 
     driver.get(pages.xhtmlTestPage);
 
@@ -235,7 +233,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
-    if (isNewIE) {
+    if (isInternetExplorer(driver)) {
       Alert alert = wait.until(alertIsPresent());
       alert.accept();
     }
