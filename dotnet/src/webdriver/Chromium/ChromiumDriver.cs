@@ -28,6 +28,9 @@ using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chromium
 {
+    /// <summary>
+    /// Provides an abstract way to access Chromium-based browsers to run tests.
+    /// </summary>
     public abstract class ChromiumDriver : RemoteWebDriver, ISupportsLogs, IDevTools
     {
         /// <summary>
@@ -141,6 +144,12 @@ namespace OpenQA.Selenium.Chromium
             this.Execute(SendChromeCommand, parameters);
         }
 
+        /// <summary>
+        /// Executes a custom Chrome command.
+        /// </summary>
+        /// <param name="commandName">Name of the command to execute.</param>
+        /// <param name="commandParameters">Parameters of the command to execute.</param>
+        /// <returns>An object representing the result of the command.</returns>
         public object ExecuteChromeCommandWithResult(string commandName, Dictionary<string, object> commandParameters)
         {
             if (commandName == null)

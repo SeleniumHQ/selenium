@@ -34,8 +34,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverProcessStartingEventArgs"/> class.
         /// </summary>
-        /// <param name="startInfo">The <see cref="ProcessStartInfo"/> of the
-        /// driver process to be started.</param>
+        /// <param name="driverProcess">The <see cref="Process"/> object started.</param>
         public DriverProcessStartedEventArgs(Process driverProcess)
         {
             this.processId = driverProcess.Id;
