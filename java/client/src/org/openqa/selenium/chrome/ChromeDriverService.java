@@ -20,18 +20,16 @@ package org.openqa.selenium.chrome;
 import static java.util.Collections.unmodifiableList;
 
 import com.google.auto.service.AutoService;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.service.DriverService;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.service.DriverService;
 
 /**
  * Manages the life and death of a ChromeDriver server.
@@ -55,6 +53,13 @@ public class ChromeDriverService extends DriverService {
    */
   public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY =
       "webdriver.chrome.appendLog";
+
+  /**
+   * Boolean system property that defines whether the chromedriver executable should be started
+   * with verbose logging.
+   */
+  public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY =
+      "webdriver.chrome.verboseLogging";
 
   /**
    * Boolean system property that defines whether the chromedriver executable should be started
@@ -136,9 +141,10 @@ public class ChromeDriverService extends DriverService {
       ChromeDriverService, ChromeDriverService.Builder> {
 
     private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
+    private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
-    private ChromeDriverLogLevel logLevel;
+    private ChromeDriverLogLevel logLevel = null;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -163,6 +169,17 @@ public class ChromeDriverService extends DriverService {
      */
     public Builder withAppendLog(boolean appendLog) {
       this.appendLog = appendLog;
+      return this;
+    }
+
+    /**
+     * Configures the driver server verbosity.
+     *
+     * @param verbose True for verbose output, false otherwise.
+     * @return A self reference.
+     */
+    public Builder withVerbose(boolean verbose) {
+      this.verbose = verbose;
       return this;
     }
 
@@ -215,6 +232,14 @@ public class ChromeDriverService extends DriverService {
         if (logFilePath != null) {
           withLogFile(new File(logFilePath));
         }
+      }
+
+      if (logLevel != null) {
+        withLogLevel(logLevel);
+        withVerbose(false);
+      }
+      if (verbose) {
+        withLogLevel(ChromeDriverLogLevel.ALL);
       }
 
       List<String> args = new ArrayList<>();
