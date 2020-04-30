@@ -28,7 +28,6 @@ java_library(
     srcs = [
         "IgnoreComparator.java",
         "JUnit4TestBase.java",
-        "NotificationRule.java",
         "Pages.java",
         "Safely.java",
         "SeleniumTestRunner.java",
@@ -52,11 +51,9 @@ java_library(
         "//java/client/test/org/openqa/selenium/testing/drivers",
         "//java/client/test/org/openqa/selenium/testing/drivers:browser",
         artifact("com.google.guava:guava"),
-        artifact("com.squareup.okhttp3:okhttp"),
         artifact("junit:junit"),
         artifact("org.eclipse.mylyn.github:org.eclipse.egit.github.core"),
         artifact("org.assertj:assertj-core"),
-        artifact("org.hamcrest:hamcrest"),
         artifact("org.seleniumhq.selenium:htmlunit-driver"),
     ],
 )

@@ -133,7 +133,7 @@ public class AnnotatedConfig implements Config {
           .forEach(toSet::addLast);
 
       Class<?> toAdd = clazz.getSuperclass();
-      if (!Object.class.equals(toAdd) && !seen.contains(toAdd)) {
+      if (toAdd != null && !Object.class.equals(toAdd) && !seen.contains(toAdd)) {
         toVisit.add(toAdd);
       }
       Arrays.stream(clazz.getInterfaces())

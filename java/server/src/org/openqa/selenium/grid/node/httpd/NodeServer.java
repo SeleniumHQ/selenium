@@ -27,15 +27,13 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
-import org.openqa.selenium.grid.docker.DockerFlags;
 import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -43,8 +41,13 @@ import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 
 @AutoService(CliCommand.class)
 public class NodeServer extends TemplateGridCommand {
@@ -62,12 +65,13 @@ public class NodeServer extends TemplateGridCommand {
   }
 
   @Override
-  protected Set<Object> getFlagObjects() {
-    return ImmutableSet.of(
-      new BaseServerFlags(),
-      new EventBusFlags(),
-      new NodeFlags(),
-      new DockerFlags());
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, NODE_ROLE);
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.emptySet();
   }
 
   @Override

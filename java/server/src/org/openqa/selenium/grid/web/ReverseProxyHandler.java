@@ -34,9 +34,9 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 public class ReverseProxyHandler implements HttpHandler {
 
-  private final static Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
+  private static final Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
 
-  private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
+  private static final ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
       .add("connection")
       .add("keep-alive")
       .add("proxy-authorization")

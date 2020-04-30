@@ -31,16 +31,19 @@ import static org.openqa.selenium.devtools.profiler.Profiler.startTypeProfile;
 import static org.openqa.selenium.devtools.profiler.Profiler.stop;
 import static org.openqa.selenium.devtools.profiler.Profiler.stopTypeProfile;
 import static org.openqa.selenium.devtools.profiler.Profiler.takePreciseCoverage;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.profiler.model.Profile;
 import org.openqa.selenium.devtools.profiler.model.ProfileNode;
 import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
+import org.openqa.selenium.testing.Ignore;
 
 import java.util.List;
 import java.util.Optional;
 
+@Ignore(FIREFOX)
 public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
 
   private void validateProfile(Profile profiler) {

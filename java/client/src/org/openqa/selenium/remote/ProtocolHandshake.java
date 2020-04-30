@@ -54,7 +54,7 @@ import java.util.stream.Stream;
 
 public class ProtocolHandshake {
 
-  private final static Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
+  private static final Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
 
   public Result createSession(HttpClient client, Command command)
       throws IOException {

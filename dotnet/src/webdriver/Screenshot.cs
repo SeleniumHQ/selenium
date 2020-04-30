@@ -17,7 +17,7 @@
 // </copyright>
 
 using System;
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1
 #else
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -110,7 +110,7 @@ namespace OpenQA.Selenium
         /// to save the image to.</param>
         public void SaveAsFile(string fileName, ScreenshotImageFormat format)
         {
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1
             if (format != ScreenshotImageFormat.Png)
             {
                 throw new WebDriverException(".NET Core does not support image manipulation, so only Portable Network Graphics (PNG) format is supported");
@@ -120,8 +120,8 @@ namespace OpenQA.Selenium
             using (MemoryStream imageStream = new MemoryStream(this.byteArray))
             {
                 using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-                { 
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+                {
+#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1
                     imageStream.WriteTo(fileStream);
 #else
                     using (Image screenshotImage = Image.FromStream(imageStream))
@@ -142,7 +142,7 @@ namespace OpenQA.Selenium
             return this.base64Encoded;
         }
 
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0 || NETCOREAPP2_1 || NETSTANDARD2_1
 #else
         private static ImageFormat ConvertScreenshotImageFormat(ScreenshotImageFormat format)
         {

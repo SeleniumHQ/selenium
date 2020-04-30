@@ -57,7 +57,7 @@ import java.util.Optional;
  */
 public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
-  public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
+  public static final String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
   private List<String> args = new ArrayList<>();
   private Map<String, Object> preferences = new HashMap<>();

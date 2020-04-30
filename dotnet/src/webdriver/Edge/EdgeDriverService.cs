@@ -286,6 +286,7 @@ namespace OpenQA.Selenium.Edge
         /// <summary>
         /// Creates a default instance of the EdgeDriverService.
         /// </summary>
+        /// <param name="options">An <see cref="EdgeOptions"/> object containing options for the service.</param>
         /// <returns>A EdgeDriverService that implements default settings.</returns>
         public static EdgeDriverService CreateDefaultServiceFromOptions(EdgeOptions options)
         {
@@ -297,6 +298,7 @@ namespace OpenQA.Selenium.Edge
         /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="options">An <see cref="EdgeOptions"/> object containing options for the service.</param>
         /// <returns>A EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, EdgeOptions options)
         {
@@ -308,6 +310,7 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         /// <param name="driverPath">The directory containing the WebDriver executable.</param>
         /// <param name="driverExecutableFileName">The name of the WebDriver executable file.</param>
+        /// <param name="options">An <see cref="EdgeOptions"/> object containing options for the service.</param>
         /// <returns>A EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, string driverExecutableFileName, EdgeOptions options)
         {
@@ -320,6 +323,7 @@ namespace OpenQA.Selenium.Edge
         /// <param name="driverPath">The directory containing the WebDriver executable.</param>
         /// <param name="driverExecutableFileName">The name of the WebDriver executable file</param>
         /// <param name="port">The port number on which the driver will listen</param>
+        /// <param name="options">An <see cref="EdgeOptions"/> object containing options for the service.</param>
         /// <returns>A EdgeDriverService using the specified port.</returns>
         public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, string driverExecutableFileName, int port, EdgeOptions options)
         {

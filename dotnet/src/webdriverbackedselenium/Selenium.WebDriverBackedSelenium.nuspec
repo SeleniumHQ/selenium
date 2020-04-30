@@ -38,7 +38,13 @@
       <group targetFramework=".NETFramework4.7">
         <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
       </group>
+      <group targetFramework=".NETFramework4.8">
+        <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
+      </group>
       <group targetFramework=".NETStandard2.0">
+        <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
         <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
       </group>
     </dependencies>

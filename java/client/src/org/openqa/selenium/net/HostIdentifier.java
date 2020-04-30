@@ -27,8 +27,8 @@ import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 public class HostIdentifier {
-  private final static String HOST_NAME;
-  private final static String HOST_ADDRESS;
+  private static final String HOST_NAME;
+  private static final String HOST_ADDRESS;
 
   static {
     // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows

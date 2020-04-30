@@ -58,8 +58,8 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 public class ProtocolConverter implements HttpHandler {
 
-  private final static Json JSON = new Json();
-  private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
+  private static final Json JSON = new Json();
+  private static final ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
     .add("connection")
     .add("content-length")
     .add("content-type")

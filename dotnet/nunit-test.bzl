@@ -3,6 +3,7 @@ Rules for compiling NUnit tests.
 """
 load("@d2l_rules_csharp//csharp/private:providers.bzl", "AnyTargetFrameworkInfo")
 load("@d2l_rules_csharp//csharp/private:actions/assembly.bzl", "AssemblyAction")
+load("@d2l_rules_csharp//csharp/private:actions/write_runtimeconfig.bzl", "write_runtimeconfig")
 load(
     "@d2l_rules_csharp//csharp/private:common.bzl",
     "fill_in_missing_frameworks",
@@ -10,31 +11,6 @@ load(
     "is_standard_framework",
     "is_core_framework"
 )
-
-CORE_FRAMEWORK_VERSIONS = {
-    "netcoreapp2.0": "2.0.9",
-    "netcoreapp2.1": "2.1.17",
-    "netcoreapp2.2": "2.2.8",
-    "netcoreapp3.0": "3.0.3",
-    "netcoreapp3.1": "3.1.3",
-}
-
-def _write_runtimeconfig(ctx, target):
-    tfm = target.actual_tfm
-    runtimeconfig_file_name = "bazelout/%s/%s.runtimeconfig.json" % (tfm, target.out.basename.replace("." + target.out.extension, ""))
-    runtimeconfig = None
-    if is_core_framework(tfm):
-        runtimeconfig = ctx.actions.declare_file(runtimeconfig_file_name)
-        ctx.actions.expand_template(
-            template = ctx.file.runtimeconfig_template,
-            output = runtimeconfig,
-            substitutions = {
-                "{RUNTIME_TFM}": tfm,
-                "{RUNTIME_FRAMEWORK_VERSION}": CORE_FRAMEWORK_VERSIONS[tfm],
-            },
-        )
-
-    return runtimeconfig
 
 def _generate_execution_script_file(ctx, target):
     tfm = target.actual_tfm
@@ -44,20 +20,21 @@ def _generate_execution_script_file(ctx, target):
     if ctx.attr.is_windows:
         shell_file_extension = "bat"
         execution_line = "%~dp0" + test_file_name + " %*"
+    else:
+        if is_core_framework(tfm):
+            execution_line = "dotnet " + execution_line
+        else:
+            execution_line = "mono " + execution_line
 
-    if is_core_framework(tfm):
-        execution_line = "dotnet " + execution_line
-
-    dotnet_sdk_location = ""
+    toolchain = ctx.toolchains["@d2l_rules_csharp//csharp/private:toolchain_type"]
+    dotnet_sdk_location = toolchain.runtime.executable.dirname
     environment = ""
     if not ctx.attr.is_windows:
-        # This needs to be fixed here for non-Windows platforms.
-        environment += "export HOME=%s\n" % dotnet_sdk_location
         environment += "export DOTNET_CLI_HOME=%s\n" % dotnet_sdk_location
         environment += "export APPDATA=%s\n" % dotnet_sdk_location
         environment += "export PROGRAMFILES=%s\n" % dotnet_sdk_location
         environment += "export USERPROFILE=%s\n" % dotnet_sdk_location
-        environment += "export DOTNET_CLI_TELEMETRY_OPTOUT=1%s\n"
+        environment += "export DOTNET_CLI_TELEMETRY_OPTOUT=1\n"
 
     shell_content = environment + execution_line
 
@@ -168,7 +145,7 @@ def _nunit_test_impl(ctx):
     result = providers.values()
     dependency_files_list = _copy_dependency_files(ctx, result[0])
 
-    runtimeconfig = _write_runtimeconfig(ctx, result[0])
+    runtimeconfig = write_runtimeconfig(ctx.actions, ctx.file.runtimeconfig_template, result[0].out.basename.replace("." + result[0].out.extension, ""), result[0].actual_tfm)
 
     data_runfiles = [] if ctx.attr.data == None else [d.files for d in ctx.attr.data]
 

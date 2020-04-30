@@ -48,7 +48,7 @@ public class OperaDriverService extends DriverService {
    * System property that defines the location of the log that will be written by
    * the {@link #createDefaultService() default service}.
    */
-  public final static String OPERA_DRIVER_LOG_PROPERTY = "webdriver.opera.logfile";
+  public static final String OPERA_DRIVER_LOG_PROPERTY = "webdriver.opera.logfile";
 
   /**
    * Boolean system property that defines whether the OperaDriver executable should be started
