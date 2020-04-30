@@ -21,7 +21,7 @@ import pytest
 
 
 def test_launch(driver):
-    assert driver.capabilities['browserName'] == 'safari'
+    assert driver.capabilities['browserName'] == 'Safari'
 
 
 def test_launch_with_invalid_executable_path_raises_exception(driver_class):
@@ -29,9 +29,10 @@ def test_launch_with_invalid_executable_path_raises_exception(driver_class):
     assert not os.path.exists(path)
     with pytest.raises(Exception) as e:
         driver_class(executable_path=path)
-    assert 'SafariDriver requires Safari 10 on OSX El Capitan' in str(e)
+    assert 'are you running Safari 10 or later?' in str(e)
 
 
+@pytest.mark.skipif(not os.path.exists('/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'), reason="Preview not installed")
 class TestTechnologyPreview(object):
 
     @pytest.fixture

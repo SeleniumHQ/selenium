@@ -541,6 +541,7 @@ def test_Link_With_Formatting_Tags(driver, pages):
     assert res.text == "link with formatting tags"
 
 
+@pytest.mark.xfail_safari
 def test_Driver_Can_Get_Link_By_Link_Test_Ignoring_Trailing_Whitespace(driver, pages):
     pages.load("simpleTest.html")
     link = driver.find_element(By.LINK_TEXT, "link with trailing space")

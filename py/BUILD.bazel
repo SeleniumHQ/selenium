@@ -281,9 +281,9 @@ py_test_suite(
     name = "test-safari",
     size = "large",
     srcs = glob([
-        #        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/safari/**/*.py",
-        #        "test/selenium/webdriver/support/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
         "--instafail",
@@ -291,6 +291,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "exclusive"
     ],
     deps = [
         ":init-tree",
