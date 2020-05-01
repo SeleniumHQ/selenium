@@ -53,7 +53,6 @@ setup_args = {
     'packages': ['selenium',
                  'selenium.common',
                  'selenium.webdriver',
-                 'selenium.webdriver.android',
                  'selenium.webdriver.chromium',
                  'selenium.webdriver.chrome',
                  'selenium.webdriver.common',
