@@ -159,6 +159,7 @@ def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
 
 @pytest.mark.xfail_firefox(reason='Fails on travis')
 @pytest.mark.xfail_remote(reason='Fails on travis')
+@pytest.mark.xfail_safari
 def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
@@ -172,6 +173,7 @@ def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
 
 @pytest.mark.xfail_firefox(reason='Fails on travis')
 @pytest.mark.xfail_remote(reason='Fails on travis')
+@pytest.mark.xfail_safari
 def testShouldAllowUsersToAcceptAnAlertInANestedFrame(driver, pages):
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithIframe"))
@@ -227,6 +229,7 @@ def testHandlesTwoAlertsFromOneInteraction(driver, pages):
     assert driver.find_element(By.ID, "text2").text == "cheddar"
 
 
+@pytest.mark.xfail_safari
 def testShouldHandleAlertOnPageLoad(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "open-page-with-onload-alert").click()

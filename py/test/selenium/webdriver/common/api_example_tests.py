@@ -288,6 +288,7 @@ def testChangeWindowSize(driver, pages):
 
 @pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote
+@pytest.mark.xfail_safari
 def testGetLogTypes(driver, pages):
     pages.load("blank.html")
     assert isinstance(driver.log_types, list)
@@ -295,6 +296,7 @@ def testGetLogTypes(driver, pages):
 
 @pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote
+@pytest.mark.xfail_safari
 def testGetLog(driver, pages):
     pages.load("blank.html")
     for log_type in driver.log_types:

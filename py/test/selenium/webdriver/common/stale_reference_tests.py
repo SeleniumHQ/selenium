@@ -29,6 +29,7 @@ def testOldPage(driver, pages):
         elem.click()
 
 
+@pytest.mark.xfail_safari
 def testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement(driver, pages):
     pages.load("simpleTest.html")
     elem = driver.find_element(by=By.ID, value="links")
@@ -37,6 +38,7 @@ def testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement(driver, pages):
         elem.size
 
 
+@pytest.mark.xfail_safari
 def testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement(driver, pages):
     pages.load("xhtmlTest.html")
     heading = driver.find_element(by=By.XPATH, value="//h1")
