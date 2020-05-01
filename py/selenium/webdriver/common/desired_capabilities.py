@@ -107,13 +107,6 @@ class DesiredCapabilities(object):
         "platform": "MAC",
     }
 
-    PHANTOMJS = {
-        "browserName": "phantomjs",
-        "version": "",
-        "platform": "ANY",
-        "javascriptEnabled": True,
-    }
-
     WEBKITGTK = {
         "browserName": "MiniBrowser",
         "version": "",
