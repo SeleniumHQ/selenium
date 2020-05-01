@@ -102,9 +102,29 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
-  public static final String BINARY = "firefox_binary";
-  public static final String PROFILE = "firefox_profile";
-  public static final String MARIONETTE = "marionette";
+  /**
+   * @deprecated Use {@link Capability#BINARY}
+   */
+  @Deprecated
+  public static final String BINARY = Capability.BINARY;
+
+  /**
+   * @deprecated Use {@link Capability#PROFILE}
+   */
+  @Deprecated
+  public static final String PROFILE = Capability.PROFILE;
+
+  /**
+   * @deprecated Use {@link Capability#MARIONETTE}
+   */
+  @Deprecated
+  public static final String MARIONETTE = Capability.MARIONETTE;
+
+  public static final class Capability {
+    public static final String BINARY = "firefox_binary";
+    public static final String PROFILE = "firefox_profile";
+    public static final String MARIONETTE = "marionette";
+  }
 
   private static class ExtraCommands {
     static String INSTALL_EXTENSION = "installExtension";
@@ -208,7 +228,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     if (forceMarionette != null) {
       return !forceMarionette;
     }
-    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
+    Object marionette = desiredCapabilities.getCapability(Capability.MARIONETTE);
     return marionette instanceof Boolean && ! (Boolean) marionette;
   }
 
@@ -270,7 +290,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     MutableCapabilities caps;
 
     if (isLegacy(capabilities)) {
-      final Set<String> toRemove = Sets.newHashSet(BINARY, PROFILE);
+      final Set<String> toRemove = Sets.newHashSet(Capability.BINARY, Capability.PROFILE);
       caps = new MutableCapabilities(
           Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
     } else {
