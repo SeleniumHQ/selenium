@@ -70,7 +70,7 @@ public abstract class EdgeDriverService extends DriverService {
           unmodifiableMap(new HashMap<>(environment)));
   }
 
-  public static abstract class Builder<DS extends EdgeDriverService, B extends EdgeDriverService.Builder<?, ?>>
+  public abstract static class Builder<DS extends EdgeDriverService, B extends EdgeDriverService.Builder<?, ?>>
       extends DriverService.Builder<DS, B> {
 
     public abstract boolean isLegacy();

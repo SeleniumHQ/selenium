@@ -42,7 +42,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * JUnit4 test runner for Closure-based JavaScript tests.
@@ -120,7 +119,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
       public void evaluate() throws Throwable {
         TestEnvironment testEnvironment = null;
         try {
-          testEnvironment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+          testEnvironment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
           suite.evaluate();
         } finally {
           if (testEnvironment != null) {

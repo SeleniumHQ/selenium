@@ -79,5 +79,8 @@ config_setting(
         "@bazel_tools//src/conditions:host_windows": True,
         "//conditions:default": False,
     }),
-    local = True,
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
 ) for (target_name, config_setting) in SUPPORTED_BROWSERS]

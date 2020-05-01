@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.chrome;
 
+import static java.util.Collections.unmodifiableList;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -28,6 +29,7 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +48,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines the location of the log that will be written by
    * the {@link #createDefaultService() default service}.
    */
-  public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
+  public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
    * Boolean system property that defines whether chromedriver should append to existing log file.
@@ -72,7 +74,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
-  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
+  public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
       "webdriver.chrome.whitelistedIps";
 
   /**
@@ -208,25 +210,26 @@ public class ChromeDriverService extends DriverService {
         }
       }
 
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+      List<String> args = new ArrayList<>();
+
+      args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
-        argsBuilder.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
       }
       if (appendLog) {
-        argsBuilder.add("--append-log");
+        args.add("--append-log");
       }
       if (verbose) {
-        argsBuilder.add("--verbose");
+        args.add("--verbose");
       }
       if (silent) {
-        argsBuilder.add("--silent");
+        args.add("--silent");
       }
       if (whitelistedIps != null) {
-        argsBuilder.add(String.format("--whitelisted-ips=%s", whitelistedIps));
+        args.add(String.format("--whitelisted-ips=%s", whitelistedIps));
       }
 
-      return argsBuilder.build();
+      return unmodifiableList(args);
     }
 
     @Override

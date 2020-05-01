@@ -33,6 +33,7 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")
@@ -149,6 +150,7 @@ def test_context_click(driver, pages):
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 @pytest.mark.xfail_remote(reason="Fails on Travis")
 def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""

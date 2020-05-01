@@ -26,7 +26,6 @@ import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 import static org.openqa.selenium.grid.distributor.local.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.local.Slot.Status.AVAILABLE;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
@@ -239,7 +238,6 @@ class Host {
     }
   }
 
-  @VisibleForTesting
   void runHealthCheck() {
     performHealthCheck.run();
   }

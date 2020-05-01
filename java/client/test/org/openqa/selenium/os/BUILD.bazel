@@ -8,7 +8,9 @@ java_test_suite(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/os",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("org.assertj:assertj-core"),
         artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
     ],
 )

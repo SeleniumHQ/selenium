@@ -325,18 +325,6 @@ task javadocs: %i[//java/server/src/org/openqa/selenium/grid:all-javadocs] do
   }
 end
 
-task py_prep_for_install_release: [
-  :chrome,
-  'py:prep'
-]
-
-task py_docs: 'py:docs'
-task py_install: 'py:install'
-
-task py_release: :py_prep_for_install_release do
-  sh 'python setup.py sdist bdist_wheel upload'
-end
-
 file 'cpp/iedriver/sizzle.h' => ['//third_party/js/sizzle:sizzle:header'] do
   cp 'build/third_party/js/sizzle/sizzle.h', 'cpp/iedriver/sizzle.h'
 end
@@ -530,6 +518,7 @@ end
 
 namespace :node do
   atom_list = %w[
+    //javascript/atoms/fragments:find-elements
     //javascript/atoms/fragments:is-displayed
     //javascript/webdriver/atoms:get-attribute
   ]
@@ -541,7 +530,8 @@ namespace :node do
     puts 'rake outs are below'
     p rake_outs = [
       Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
-      Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
+      Rake::Task['//javascript/webdriver/atoms:get-attribute'].out,
+      Rake::Task['//javascript/atoms/fragments:find-elements'].out
     ]
 
     rake_outs.each do |atom|
@@ -616,7 +606,7 @@ namespace :py do
     end
   end
 
-  %w[chrome ff marionette ie edge blackberry remote_firefox safari].each do |browser|
+  %w[chrome ff marionette ie edge remote_firefox safari].each do |browser|
     browser_data = SeleniumRake::Browsers::BROWSERS[browser]
     deps = browser_data[:deps] || []
     deps += [:prep]

@@ -71,7 +71,7 @@ import java.util.function.Supplier;
  */
 public class FluentWait<T> implements Wait<T> {
 
-  protected final static long DEFAULT_SLEEP_TIMEOUT = 500;
+  protected static final long DEFAULT_SLEEP_TIMEOUT = 500;
 
   private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 

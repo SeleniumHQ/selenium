@@ -69,7 +69,7 @@ public class WebDriverBackedSeleniumHandlerTest {
 
   @Before
   public void prepTheEnvironment() {
-    TestEnvironment environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    TestEnvironment environment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     appServer = environment.getAppServer();
 
     pages = new Pages(appServer);

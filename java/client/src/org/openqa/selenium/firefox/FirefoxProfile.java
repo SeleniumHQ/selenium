@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Beta;
@@ -36,7 +35,6 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
 
 public class FirefoxProfile {
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
@@ -69,7 +67,6 @@ public class FirefoxProfile {
     this(null, profileDir);
   }
 
-  @VisibleForTesting
   @Beta
   protected FirefoxProfile(Reader defaultsReader, File profileDir) {
     if (defaultsReader == null) {

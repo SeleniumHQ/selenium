@@ -250,6 +250,92 @@ class By {
   }
 }
 
+function withTagName(tagName) {
+  return new RelativeBy(tagName);
+}
+
+
+/**
+ * Describes a mechanism for locating an element relative to others 
+ * on the page.
+ * @final
+ */
+class RelativeBy {
+
+  /**
+   * @param {string} tagName 
+   * @param {Array<Object>} filters 
+   */
+  constructor(tagName, filters = null) {
+    this.root = tagName;
+    this.filters = filters || [];
+  }
+
+  /**
+   * Look for elements above the root element passed in
+   * @param {string|WebElement} locatorOrElement 
+   * @return {!RelativeBy} Return this object
+   */
+  above(locatorOrElement) {
+    this.filters.push({ "kind": "above", "args": [locatorOrElement] });
+    return this;
+  }
+
+  /**
+   * Look for elements below the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  below(locatorOrElement) {
+    this.filters.push({ "kind": "below", "args": [locatorOrElement] });
+    return this;
+  }
+
+  /**
+   * Look for elements left the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  toLeftOf(locatorOrElement) {
+    this.filters.push({ "kind": "left", "args": [locatorOrElement] });
+    return this;
+  }
+
+  /**
+  * Look for elements right the root element passed in
+  * @param {string|WebElement} locatorOrElement
+  * @return {!RelativeBy} Return this object
+  */
+  toRightOf(locatorOrElement) {
+    this.filters.push({ "kind": "right", "args": [locatorOrElement] });
+    return this;
+  }
+
+  /**
+  * Look for elements near the root element passed in
+  * @param {string|WebElement} locatorOrElement
+  * @return {!RelativeBy} Return this object
+  */
+  near(locatorOrElement) {
+    this.filters.push({ "kind": "near", "args": [locatorOrElement]});
+    return this;
+  }
+
+  /**
+   * Returns a marshalled version of the {@link RelativeBy}
+   * @return {!Object} Object representation of a {@link WebElement}
+   *     that will be used in {@link #findElements}.
+   */
+  marshall() {
+    return {
+      "relative": {
+        "root": this.root,
+        "filters": this.filters,
+      }
+    }
+  }
+}
+
 
 /**
  * Checks if a value is a valid locator.
@@ -284,5 +370,7 @@ function check(locator) {
 
 module.exports = {
   By: By,
+  RelativeBy: RelativeBy,
+  withTagName: withTagName,
   checkedLocator: check,
 };

@@ -30,10 +30,10 @@ public class WebDriverException extends RuntimeException {
   public static final String DRIVER_INFO = "Driver info";
   protected static final String BASE_SUPPORT_URL = "https://selenium.dev/exceptions/";
 
-  private final static String HOST_NAME = HostIdentifier.getHostName();
-  private final static String HOST_ADDRESS = HostIdentifier.getHostAddress();
+  private static final String HOST_NAME = HostIdentifier.getHostName();
+  private static final String HOST_ADDRESS = HostIdentifier.getHostAddress();
 
-  private Map<String, String> extraInfo = new HashMap<>();
+  private final Map<String, String> extraInfo = new HashMap<>();
 
   public WebDriverException() {
     super();

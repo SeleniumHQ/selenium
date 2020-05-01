@@ -15,15 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.grid.config;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
+import java.util.Set;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-})
-public class HtmlUnitDriverTests {
+public interface HasRoles {
+
+  /**
+   * Obtains the set of commands that this set of flags applies to. Examples include things like
+   * "distributor", "session-map". Maps to {@link org.openqa.selenium.cli.CliCommand#getName()}
+   *
+   * @return
+   */
+  Set<Role> getRoles();
+
 }

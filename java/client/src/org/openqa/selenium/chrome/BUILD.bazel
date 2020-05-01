@@ -19,6 +19,5 @@ java_export(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
-        artifact("com.google.guava:guava"),
     ],
 )

@@ -188,6 +188,10 @@ namespace OpenQA.Selenium.Edge
             return this.useChromium ? ToChromiumCapabilities() : ToLegacyCapabilities();
         }
 
+        /// <summary>
+        /// Adds vendor-specific capabilities for Chromium-based browsers.
+        /// </summary>
+        /// <param name="capabilities">The capabilities to add.</param>
         protected override void AddVendorSpecificChromiumCapabilities(IWritableCapabilities capabilities)
         {
             capabilities.SetCapability(EdgeOptions.UseChromiumCapability, this.useChromium);

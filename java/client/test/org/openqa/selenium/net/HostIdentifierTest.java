@@ -14,23 +14,17 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.net;
 
-package org.openqa.selenium.firefox;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-import java.net.URL;
+import org.junit.Test;
 
-/**
- * @deprecated Unused exception class. To be removed in 4.0
- */
-@Deprecated
-public class NotConnectedException extends IOException {
-  public NotConnectedException(URL url, long timeToWaitInMilliSeconds, String consoleOutput) {
-    super(getMessage(url, timeToWaitInMilliSeconds, consoleOutput));
-  }
+public class HostIdentifierTest {
 
-  private static String getMessage(URL url, long timeToWaitInMilliSeconds, String consoleOutput) {
-    return String.format("Unable to connect to host %s on port %d after %d ms. Firefox console output:\n%s",
-        url.getHost(), url.getPort(), timeToWaitInMilliSeconds, consoleOutput);
+  @Test
+  public void itWorks() {
+    assertThat(HostIdentifier.getHostName()).isNotEmpty();
+    assertThat(HostIdentifier.getHostAddress()).isNotEmpty();
   }
 }

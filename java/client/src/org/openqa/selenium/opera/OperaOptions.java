@@ -24,14 +24,13 @@ import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.io.Files;
-
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -223,19 +222,18 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
     options.put("args", unmodifiableList(new ArrayList<>(args)));
 
-    List<String> encoded_extensions = new ArrayList<>(
-        extensionFiles.size() + extensions.size());
-    for (File path : extensionFiles) {
+    List<String> encodedExtensions = new ArrayList<>();
+    for (File file : extensionFiles) {
       try {
-        String encoded = Base64.getEncoder().encodeToString(Files.toByteArray(path));
+        String encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
 
-        encoded_extensions.add(encoded);
+        encodedExtensions.add(encoded);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
     }
-    encoded_extensions.addAll(extensions);
-    options.put("extensions", unmodifiableList(encoded_extensions));
+    encodedExtensions.addAll(extensions);
+    options.put("extensions", unmodifiableList(encodedExtensions));
 
     toReturn.put(CAPABILITY, options);
 

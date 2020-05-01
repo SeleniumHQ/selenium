@@ -19,15 +19,22 @@ package org.openqa.selenium.os;
 
 import static java.lang.System.getenv;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
+import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
 import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,93 +43,71 @@ public class CommandLineTest {
   // ping can be found on every platform we support.
   private static String testExecutable = "ping";
 
-  @Test
-  public void testSetEnvironmentVariableWithNullKeyThrows() {
-    String key = null;
-    String value = "Bar";
-    CommandLine commandLine = new CommandLine(testExecutable);
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> commandLine.setEnvironmentVariable(key, value));
-    assertThat(commandLine.getEnvironment()).doesNotContainValue(value);
-  }
+  private CommandLine commandLine = new CommandLine(testExecutable);
+  private OsProcess process = spyProcess(commandLine);
 
   @Test
-  public void testSetEnvironmentVariableWithNullValueThrows() {
-    String key = "Foo";
-    String value = null;
-    CommandLine commandLine = new CommandLine(testExecutable);
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> commandLine.setEnvironmentVariable(key, value));
-    assertThat(commandLine.getEnvironment()).doesNotContainKey(key);
-  }
-
-  @Test
-  public void testSetEnvironmentVariableWithNonNullValueSets() {
-    String key = "Foo";
-    String value = "Bar";
-    CommandLine commandLine = new CommandLine(testExecutable);
+  public void testSetEnvironmentVariableDelegatesToProcess() {
+    String key = "foo";
+    String value = "bar";
     commandLine.setEnvironmentVariable(key, value);
-    assertThat(commandLine.getEnvironment()).containsEntry(key, value);
+    verify(process).setEnvironmentVariable(key, value);
+    verifyNoMoreInteractions(process);
   }
 
   @Test
-  public void testSetEnvironmentVariablesWithNullValueThrows() {
-    Map<String, String> input = new HashMap<>();
-    input.put("key1", "value1");
-    input.put("key2", null);
-    CommandLine commandLine = new CommandLine(testExecutable);
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> commandLine.setEnvironmentVariables(input));
-    assertThat(commandLine.getEnvironment()).doesNotContainKey("key2");
-  }
-
-  @Test
-  public void testSetEnvironmentVariablesWithNonNullValueSetsAll() {
-    Map<String, String> input = new HashMap<>();
-    input.put("key1", "value1");
-    input.put("key2", "value2");
-    CommandLine commandLine = new CommandLine(testExecutable);
-    commandLine.setEnvironmentVariables(input);
-    assertThat(commandLine.getEnvironment())
-        .containsEntry("key1", "value1")
-        .containsEntry("key2", "value2");
+  public void testSetEnvironmentVariablesDelegatesToProcess() {
+    Map<String, String> env = new HashMap<>();
+    env.put("k1", "v1");
+    env.put("k2", "v2");
+    commandLine.setEnvironmentVariables(env);
+    verify(process).setEnvironmentVariable("k1", "v1");
+    verify(process).setEnvironmentVariable("k2", "v2");
+    verifyNoMoreInteractions(process);
   }
 
   @Test
   public void testSetDynamicLibraryPathWithNullValueIgnores() {
-    String value = null;
-    CommandLine commandLine = new CommandLine(testExecutable);
-    commandLine.setDynamicLibraryPath(value);
-    assertThat(commandLine.getEnvironment()).doesNotContainKey(getLibraryPathPropertyName());
+    commandLine.setDynamicLibraryPath(null);
+    verifyNoInteractions(process);
   }
 
   @Test
   public void testSetDynamicLibraryPathWithNonNullValueSets() {
     String value = "Bar";
-    CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.setDynamicLibraryPath(value);
-    assertThat(commandLine.getEnvironment().get(getLibraryPathPropertyName())).isEqualTo(value);
+    verify(process).setEnvironmentVariable(getLibraryPathPropertyName(), value);
+    verifyNoMoreInteractions(process);
+  }
+
+  @Test
+  public void executeWaitsForProcessFinish() throws InterruptedException {
+    commandLine.execute();
+    verify(process).executeAsync();
+    verify(process).waitFor();
+    verifyNoMoreInteractions(process);
   }
 
   @Test
   public void testDestroy() {
-    CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.executeAsync();
+    verify(process).executeAsync();
     assertThat(commandLine.isRunning()).isTrue();
+    verify(process).isRunning();
     commandLine.destroy();
+    verify(process).destroy();
     assertThat(commandLine.isRunning()).isFalse();
+    verify(process, atLeastOnce()).isRunning();
   }
 
   @Test
   public void canHandleOutput() {
-    CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.execute();
     assertThat(commandLine.getStdOut()).isNotEmpty().contains("ping");
   }
 
   @Test
   public void canCopyOutput() {
-    CommandLine commandLine = new CommandLine(testExecutable);
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     commandLine.copyOutputTo(buffer);
     commandLine.execute();
@@ -132,28 +117,39 @@ public class CommandLineTest {
 
   @Test
   public void canDetectSuccess() {
+    assumeThat(isOnTravis()).as("Operation not permitted on travis").isFalse();
     CommandLine commandLine = new CommandLine(
         testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     commandLine.execute();
-    assertThat(commandLine.isSuccessful()).isTrue();
     assertThat(commandLine.getExitCode()).isEqualTo(0);
+    assertThat(commandLine.isSuccessful()).isTrue();
   }
 
   @Test
   public void canDetectFailure() {
-    CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.execute();
-    assertThat(commandLine.isSuccessful()).isFalse();
     assertThat(commandLine.getExitCode()).isNotEqualTo(0);
+    assertThat(commandLine.isSuccessful()).isFalse();
   }
 
   @Test
   public void canUpdateLibraryPath() {
     Assume.assumeTrue(Platform.getCurrent().is(WINDOWS));
-    CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.updateDynamicLibraryPath("C:\\My\\Tools");
-    assertThat(commandLine.getEnvironment())
-        .containsEntry(getLibraryPathPropertyName(),
-                       String.format("%s;%s", getenv("PATH"), "C:\\My\\Tools"));
+    verify(process).setEnvironmentVariable(
+        getLibraryPathPropertyName(), String.format("%s;%s", getenv("PATH"), "C:\\My\\Tools"));
+  }
+
+  private OsProcess spyProcess(CommandLine commandLine) {
+    try {
+      Field processField = CommandLine.class.getDeclaredField("process");
+      processField.setAccessible(true);
+      OsProcess process = (OsProcess) processField.get(commandLine);
+      OsProcess spyProcess = spy(process);
+      processField.set(commandLine, spyProcess);
+      return spyProcess;
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
