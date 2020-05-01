@@ -49,9 +49,9 @@ class WebDriver(RemoteWebDriver):
     _web_element_cls = FirefoxWebElement
 
     def __init__(self, firefox_profile=None, firefox_binary=None,
-                 timeout=30, capabilities=None, proxy=None,
+                 capabilities=None, proxy=None,
                  executable_path=DEFAULT_EXECUTABLE_PATH, options=None,
-                 service_log_path=DEFAULT_SERVICE_LOG_PATH, firefox_options=None,
+                 service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  service_args=None, service=None, desired_capabilities=None, 
                  log_path=DEFAULT_LOG_PATH, keep_alive=True):
         """Starts a new local session of Firefox.
@@ -87,8 +87,6 @@ class WebDriver(RemoteWebDriver):
         :param firefox_binary: Deprecated: Instance of ``FirefoxBinary`` or full
             path to the Firefox binary.  If undefined, the system default
             Firefox installation will  be used.
-        :param timeout: Time to wait for Firefox to launch when using
-            the extension connection.
         :param capabilities: Deprecated: Dictionary of desired capabilities.
         :param proxy: Deprecated: The proxy settings to use when communicating with
             Firefox via the extension connection.
