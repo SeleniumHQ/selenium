@@ -608,7 +608,7 @@ namespace :py do
     end
   end
 
-  %w[chrome ff marionette ie edge blackberry remote_firefox safari].each do |browser|
+  %w[chrome ff marionette ie edge remote_firefox safari].each do |browser|
     browser_data = SeleniumRake::Browsers::BROWSERS[browser]
     deps = browser_data[:deps] || []
     deps += [:prep]
