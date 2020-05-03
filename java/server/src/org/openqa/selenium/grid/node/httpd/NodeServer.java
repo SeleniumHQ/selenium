@@ -20,9 +20,10 @@ package org.openqa.selenium.grid.node.httpd;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.trace.Tracer;
+import net.jodah.failsafe.Failsafe;
+import net.jodah.failsafe.RetryPolicy;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.component.HealthCheck;
@@ -41,13 +42,16 @@ import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.data.NodeAddedEvent.NODE_ADDED;
 
 @AutoService(CliCommand.class)
 public class NodeServer extends TemplateGridCommand {
@@ -121,20 +125,32 @@ public class NodeServer extends TemplateGridCommand {
       info.getBuildRevision(),
       server.getUrl()));
 
-    Regularly regularly = new Regularly("Register Node with Distributor");
+    bus.addListener(NODE_ADDED, event -> {
+      UUID nodeId = event.getData(UUID.class);
+      if (node.getId().equals(nodeId)) {
+        LOG.info("Node has been registered");
+      }
+    });
 
-    regularly.submit(
+    // Unlimited attempts, initial 5 seconds interval, backoff rate of 1.0005, max interval of 5 minutes
+    RetryPolicy<Object> registrationPolicy =  new RetryPolicy<>()
+      .withMaxAttempts(-1)
+      .handleResultIf(result -> true)
+    .withBackoff(Duration.ofSeconds(5).toSeconds(), Duration.ofMinutes(5).toSeconds(), ChronoUnit.SECONDS, 1.0005);
+
+    LOG.info("Starting registration process for node id " + node.getId());
+    Failsafe.with(registrationPolicy).run(
       () -> {
+        LOG.fine("Sending registration event");
         HealthCheck.Result check = node.getHealthCheck().check();
         if (!check.isAlive()) {
           LOG.severe("Node is not alive: " + check.getMessage());
           // Throw an exception to force another check sooner.
           throw new UnsupportedOperationException("Node cannot be registered");
         }
-
         bus.fire(new NodeStatusEvent(node.getStatus()));
-      },
-      Duration.ofMinutes(5),
-      Duration.ofSeconds(30));
+      }
+    );
   }
+
 }
