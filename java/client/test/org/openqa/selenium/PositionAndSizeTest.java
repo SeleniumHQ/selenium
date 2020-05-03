@@ -18,7 +18,6 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -34,7 +33,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.TestUtilities;
 
 @Ignore(value = HTMLUNIT,
           reason = "Getting coordinates requires rendering, others: not tested")
@@ -144,7 +142,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @NotYetImplemented(EDGE)
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
-    assumeFalse("Ignoring fixed-position elements in IE6", TestUtilities.isIe6(driver));
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
     assertThat(getLocationInViewPort(By.id("fixed")).getY()).isEqualTo(0);
     assertThat(getLocationOnPage(By.id("fixed")).getY()).isEqualTo(0);

@@ -53,6 +53,7 @@ def selenium_java_deps():
                 ],
             ),
             "net.bytebuddy:byte-buddy:1.10.9",
+            "net.jodah:failsafe:2.3.5",
             "net.sourceforge.htmlunit:htmlunit:2.39.1",
             "net.sourceforge.htmlunit:htmlunit-core-js:2.39.0",
             "org.apache.commons:commons-exec:1.3",

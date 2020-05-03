@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.firefox.xpi;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.auto.service.AutoService;

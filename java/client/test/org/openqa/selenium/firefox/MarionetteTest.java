@@ -144,7 +144,7 @@ public class MarionetteTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.PROFILE, profile);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.PROFILE, profile);
 
     localDriver = new FirefoxDriver(caps);
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
@@ -158,7 +158,7 @@ public class MarionetteTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.PROFILE, profile);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.PROFILE, profile);
 
     localDriver = new FirefoxDriver(
         new FirefoxOptions()

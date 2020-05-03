@@ -42,8 +42,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ReactorClient implements HttpClient {
+
+  private static final Logger log = Logger.getLogger(ReactorClient.class.getName());
 
   private static final Map<HttpMethod, io.netty.handler.codec.http.HttpMethod> methodMap =
       ImmutableMap.of(HttpMethod.DELETE, io.netty.handler.codec.http.HttpMethod.DELETE,
@@ -106,7 +110,7 @@ public class ReactorClient implements HttpClient {
               in.close();
             }
           } catch (IOException e) {
-            e.printStackTrace();
+            log.log(Level.INFO, e.getMessage(), e);
           }
         });
   }

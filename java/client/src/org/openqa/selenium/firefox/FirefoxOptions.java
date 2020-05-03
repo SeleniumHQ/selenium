@@ -21,9 +21,9 @@ import static java.util.Collections.singletonMap;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
 
 import com.google.common.collect.ImmutableSortedMap;
 
@@ -204,7 +204,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   public FirefoxOptions setProfile(FirefoxProfile profile) {
-    setCapability(FirefoxDriver.PROFILE, profile);
+    setCapability(FirefoxDriver.Capability.PROFILE, profile);
     return this;
   }
 
