@@ -136,7 +136,7 @@ public class NodeServer extends TemplateGridCommand {
     RetryPolicy<Object> registrationPolicy =  new RetryPolicy<>()
       .withMaxAttempts(-1)
       .handleResultIf(result -> true)
-    .withBackoff(Duration.ofSeconds(5).toSeconds(), Duration.ofMinutes(5).toSeconds(), ChronoUnit.SECONDS, 1.0005);
+    .withBackoff(Duration.ofSeconds(5).getSeconds(), Duration.ofMinutes(5).getSeconds(), ChronoUnit.SECONDS, 1.0005);
 
     LOG.info("Starting registration process for node id " + node.getId());
     Failsafe.with(registrationPolicy).run(
