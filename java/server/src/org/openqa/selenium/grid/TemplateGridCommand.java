@@ -50,10 +50,12 @@ public abstract class TemplateGridCommand implements CliCommand {
     allFlags.add(helpFlags);
     allFlags.add(configFlags);
 
-    ServiceLoader.load(HasRoles.class).stream()
-      .map(ServiceLoader.Provider::get)
-      .filter(flags -> !Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty())
-      .forEach(allFlags::add);
+    ServiceLoader.load(HasRoles.class)
+      .forEach(flags -> {
+        if (!Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty()) {
+          allFlags.add(flags);
+        }
+      });
 
     allFlags.addAll(getFlagObjects());
 
