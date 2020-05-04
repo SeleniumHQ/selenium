@@ -65,6 +65,7 @@ java_binary(
     main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
     visibility = [
         "//dotnet/test:__subpackages__",
+        "//:__pkg__"
     ],
     runtime_deps = [
         ":environment",
