@@ -11,3 +11,8 @@ alias(
     name = "grid",
     actual = "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
 )
+
+alias(
+    name = "debug-server",
+    actual="//java/client/test/org/openqa/selenium/environment:appserver"
+)

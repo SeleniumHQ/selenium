@@ -150,7 +150,6 @@ task chrome: ['//java/client/src/org/openqa/selenium/chrome']
 task grid: [:'selenium-server-standalone']
 task ie: ['//java/client/src/org/openqa/selenium/ie']
 task firefox: ['//java/client/src/org/openqa/selenium/firefox']
-task 'debug-server': '//java/client/test/org/openqa/selenium/environment:appserver:run'
 task remote: %i[remote_server remote_client]
 task remote_client: ['//java/client/src/org/openqa/selenium/remote']
 task remote_server: ['//java/server/src/org/openqa/selenium/remote/server']
