@@ -20,6 +20,7 @@ import logging
 import platform
 import socket
 import string
+from http.cookies import SimpleCookie
 
 import certifi
 import urllib3
@@ -91,7 +92,7 @@ class RemoteConnection(object):
         cls._ca_certs = path
 
     @classmethod
-    def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
+    def get_remote_connection_headers(cls, parsed_url, keep_alive=False, cookies=None):
         """
         Get headers for remote request.
 
@@ -121,15 +122,22 @@ class RemoteConnection(object):
                 'Connection': 'keep-alive'
             })
 
+        if cookies:
+            headers.update({
+                'Cookie': '; '.join([key + '=' + value for key, value in cookies.items()])
+            })
+
         return headers
 
-    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None):
+    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None, set_cookies=False):
         if resolve_ip is not None:
             import warnings
             warnings.warn(
                 "'resolve_ip' option removed; ip addresses are now always resolved by urllib3.",
                 DeprecationWarning)
         self.keep_alive = keep_alive
+        self.set_cookies = set_cookies
+        self.cookies = None
         self._url = remote_server_addr
         if keep_alive:
             pool_manager_init_args = {
@@ -392,7 +400,11 @@ class RemoteConnection(object):
         LOGGER.debug('%s %s %s' % (method, url, body))
 
         parsed_url = parse.urlparse(url)
-        headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
+        headers = self.get_remote_connection_headers(
+            parsed_url,
+            keep_alive=self.keep_alive,
+            cookies=self.cookies,
+        )
         resp = None
         if body and method != 'POST' and method != 'PUT':
             body = None
@@ -417,6 +429,12 @@ class RemoteConnection(object):
                     resp.getheader = lambda x: resp.headers.getheader(x)
                 elif hasattr(resp.headers, 'get'):
                     resp.getheader = lambda x: resp.headers.get(x)
+
+        set_cookies = resp.getheader('Set-Cookie')
+        if self.set_cookies and set_cookies:
+            cookies = SimpleCookie()
+            cookies.load(set_cookies)
+            self.cookies = {key: value.value for key, value in cookies.items()}
 
         data = resp.data.decode('UTF-8')
         try:

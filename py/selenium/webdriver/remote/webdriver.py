@@ -101,7 +101,7 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
-def get_remote_connection(capabilities, command_executor, keep_alive):
+def get_remote_connection(capabilities, command_executor, keep_alive, set_cookies):
     from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
     from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
@@ -112,7 +112,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive):
         RemoteConnection
     )
 
-    return handler(command_executor, keep_alive=keep_alive)
+    return handler(command_executor, keep_alive=keep_alive, set_cookies=set_cookies)
 
 
 class WebDriver(object):
@@ -134,7 +134,7 @@ class WebDriver(object):
 
     def __init__(self, command_executor='http://127.0.0.1:4444',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=True, file_detector=None, options=None):
+                 keep_alive=True, file_detector=None, options=None, set_cookies=False):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -152,6 +152,8 @@ class WebDriver(object):
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
+         - set_cookies - Whether or not to keep track of Set-Cookie headers and send those
+             cookies on subsequent requests
         """
         capabilities = {}
         if options is not None:
@@ -163,7 +165,12 @@ class WebDriver(object):
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
-            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
+            self.command_executor = get_remote_connection(
+                capabilities,
+                command_executor=command_executor,
+                keep_alive=keep_alive,
+                set_cookies=set_cookies,
+            )
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
