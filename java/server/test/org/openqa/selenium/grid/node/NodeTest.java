@@ -61,7 +61,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -71,6 +70,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -134,7 +135,7 @@ public class NodeTest {
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
 
-    assertThat(session.isPresent()).isFalse();
+    assertThat(session).isNotPresent();
   }
 
   @Test
@@ -142,7 +143,7 @@ public class NodeTest {
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
 
-    assertThat(session.isPresent()).isTrue();
+    assertThat(session).isPresent();
   }
 
   @Test
@@ -153,26 +154,26 @@ public class NodeTest {
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
-    assertThat(session.isPresent()).isTrue();
+    assertThat(session).isPresent();
 
     session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
-    assertThat(session.isPresent()).isFalse();
+    assertThat(session).isNotPresent();
   }
 
   @Test
   public void willRefuseToCreateMoreSessionsThanTheMaxSessionCount() {
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
-    assertThat(session.isPresent()).isTrue();
+    assertThat(session).isPresent();
 
     session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
-    assertThat(session.isPresent()).isTrue();
+    assertThat(session).isPresent();
 
     session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
-    assertThat(session.isPresent()).isFalse();
+    assertThat(session).isNotPresent();
   }
 
   @Test
@@ -307,7 +308,7 @@ public class NodeTest {
     Optional<Session> session = local.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
 
-    assertThat(session.isPresent()).isFalse();
+    assertThat(session).isNotPresent();
   }
 
   @Test
@@ -318,7 +319,7 @@ public class NodeTest {
         .build();
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
-    assertThat(session.isPresent()).isTrue();
+    assertThat(session).isPresent();
     assertThat(session.get().getUri()).isEqualTo(uri);
   }
 
@@ -350,26 +351,24 @@ public class NodeTest {
     assertThat(res.getStatus()).isEqualTo(200);
     Map<String, Object> status = new Json().toType(string(res), MAP_TYPE);
     assertThat(status).containsOnlyKeys("value");
-    Map<String, Object> value = (Map<String, Object>) status.get("value");
-    assertThat(value)
+    assertThat(status).extracting("value").asInstanceOf(MAP)
         .containsEntry("ready", true)
         .containsEntry("message", "Ready")
         .containsKey("node");
-    Map<String, Object> nodeStatus = (Map<String, Object>) value.get("node");
-    assertThat(nodeStatus)
+    assertThat(status).extracting("value.node").asInstanceOf(MAP)
         .containsKey("id")
         .containsEntry("uri", "http://localhost:1234")
         .containsEntry("maxSessions", (long) 2)
         .containsKey("stereotypes")
         .containsKey("sessions");
-    List<Map<String, Object>> stereotypes = (List<Map<String, Object>>) nodeStatus.get("stereotypes");
-    assertThat(stereotypes).hasSize(1);
-    assertThat(stereotypes.get(0))
+    assertThat(status).extracting("value.node.stereotypes").asInstanceOf(LIST)
+        .hasSize(1)
+        .element(0).asInstanceOf(MAP)
         .containsEntry("capabilities", Collections.singletonMap("browserName", "cheese"))
         .containsEntry("count", (long) 3);
-    List<Map<String, Object>> sessions = (List<Map<String, Object>>) nodeStatus.get("sessions");
-    assertThat(sessions).hasSize(1);
-    assertThat(sessions.get(0))
+    assertThat(status).extracting("value.node.sessions").asInstanceOf(LIST)
+        .hasSize(1)
+        .element(0).asInstanceOf(MAP)
         .containsEntry("currentCapabilities", Collections.singletonMap("browserName", "cheese"))
         .containsEntry("stereotype", Collections.singletonMap("browserName", "cheese"))
         .containsKey("sessionId");
@@ -381,9 +380,8 @@ public class NodeTest {
     HttpResponse res = node.execute(req);
     assertThat(res.getStatus()).isEqualTo(404);
     Map<String, Object> content = new Json().toType(string(res), MAP_TYPE);
-    assertThat(content).containsOnlyKeys("value");
-    Map<String, Object> value = (Map<String, Object>) content.get("value");
-    assertThat(value)
+    assertThat(content).containsOnlyKeys("value")
+        .extracting("value").asInstanceOf(MAP)
         .containsEntry("error", "unknown command")
         .containsEntry("message", "Unable to find handler for (GET) /foo");
   }
