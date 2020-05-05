@@ -20,8 +20,8 @@ Webdriver.common
 .. autosummary::
    :toctree: webdriver
 
-   selenium.webdriver.common.action_chains
    selenium.webdriver.common.alert
+   selenium.webdriver.common.action_chains
    selenium.webdriver.common.by
    selenium.webdriver.common.desired_capabilities
    selenium.webdriver.common.keys
