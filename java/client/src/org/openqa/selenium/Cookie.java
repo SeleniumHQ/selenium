@@ -234,7 +234,7 @@ public class Cookie implements Serializable {
     toReturn.put("httpOnly", isHttpOnly());
 
     if (getSameSite() != null) {
-      toReturn.put("samesite", getSameSite());
+      toReturn.put("sameSite", getSameSite());
     }
 
     return toReturn;
