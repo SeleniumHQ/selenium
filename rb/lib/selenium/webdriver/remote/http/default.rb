@@ -61,8 +61,6 @@ module Selenium
             end
           end
 
-
-
           def start(http)
             http.start
           end
