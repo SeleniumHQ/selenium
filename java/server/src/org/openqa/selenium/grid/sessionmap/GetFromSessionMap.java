@@ -22,7 +22,6 @@ import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -32,20 +31,18 @@ import java.util.Objects;
 
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 class GetFromSessionMap implements HttpHandler {
 
   private final Tracer tracer;
-  private final Json json;
   private final SessionMap sessions;
   private final SessionId id;
 
-  public GetFromSessionMap(Tracer tracer, Json json, SessionMap sessions, SessionId id) {
+  GetFromSessionMap(Tracer tracer, SessionMap sessions, SessionId id) {
     this.tracer = Objects.requireNonNull(tracer);
-    this.json = Objects.requireNonNull(json);
     this.sessions = Objects.requireNonNull(sessions);
     this.id = Objects.requireNonNull(id);
   }
@@ -63,7 +60,7 @@ class GetFromSessionMap implements HttpHandler {
       CAPABILITIES.accept(span, session.getCapabilities());
       span.setAttribute("session.uri", session.getUri().toString());
 
-      return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", session))));
+      return new HttpResponse().setContent(asJson(ImmutableMap.of("value", session)));
     } finally {
       span.end();
     }

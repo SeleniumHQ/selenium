@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static com.google.common.base.Throwables.getRootCause;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.fail;
@@ -32,7 +33,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
@@ -469,7 +469,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
 
-    List<Integer> nums = ImmutableList.of(1, 2);
+    List<Integer> nums = Arrays.asList(1, 2);
     Map<String, Object> args = ImmutableMap.of("bar", "test", "foo", nums);
 
     Object res = ((JavascriptExecutor) driver).executeScript("return arguments[0]['foo'][1]", args);
@@ -551,7 +551,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
     Object args = ImmutableMap.of(
         "top", ImmutableMap.of(
-            "key", ImmutableList.of(ImmutableMap.of(
+            "key", singletonList(ImmutableMap.of(
                 "subkey", expected))));
     WebElement seen = (WebElement) executeScript(
         "return arguments[0].top.key[0].subkey", args);

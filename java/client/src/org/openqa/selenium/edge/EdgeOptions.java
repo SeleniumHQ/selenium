@@ -35,7 +35,7 @@ import org.openqa.selenium.remote.CapabilityType;
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"),
+ *     new URL("http://localhost:4444/"),
  *     new EdgeOptions());
  * </code></pre>
  *
@@ -86,14 +86,8 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   @Override
   public void setCapability(String key, Object value) {
-    switch (key) {
-      case USE_CHROMIUM:
-        if (value instanceof Boolean) {
-          useChromium = (Boolean)value;
-        }
-        break;
-      default:
-        // Do nothing
+    if (USE_CHROMIUM.equals(key) && value instanceof Boolean) {
+      useChromium = (Boolean) value;
     }
     super.setCapability(key, value);
   }

@@ -53,7 +53,6 @@ setup_args = {
     'packages': ['selenium',
                  'selenium.common',
                  'selenium.webdriver',
-                 'selenium.webdriver.android',
                  'selenium.webdriver.chromium',
                  'selenium.webdriver.chrome',
                  'selenium.webdriver.common',
@@ -63,11 +62,10 @@ setup_args = {
                  'selenium.webdriver.ie',
                  'selenium.webdriver.edge',
                  'selenium.webdriver.opera',
-                 'selenium.webdriver.phantomjs',
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
     'include_package_data': True,
-    'install_requires': ['urllib3'],
+    'install_requires': ['urllib3[secure]'],
     'zip_safe': False
 }
 

@@ -19,8 +19,6 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.common.base.Suppliers;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -75,7 +73,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     Optional<Supplier<WebDriver>> delegate = createDelegate(desiredCapabilities);
     delegate = createForExternalServer(desiredCapabilities, delegate);
 
-    return delegate.orElse(Suppliers.ofInstance(null)).get();
+    return delegate.orElse(()-> null).get();
   }
 
   private static Optional<Supplier<WebDriver>> createForExternalServer(

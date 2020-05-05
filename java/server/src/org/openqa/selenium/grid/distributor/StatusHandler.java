@@ -19,23 +19,20 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
 class StatusHandler implements HttpHandler {
 
   private final Distributor distributor;
-  private final Json json;
 
-  public StatusHandler(Distributor distributor, Json json) {
+  StatusHandler(Distributor distributor) {
     this.distributor = Objects.requireNonNull(distributor);
-    this.json = Objects.requireNonNull(json);
   }
 
   @Override
@@ -48,6 +45,6 @@ class StatusHandler implements HttpHandler {
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
             "grid", status));
 
-    return new HttpResponse().setContent(utf8String(json.toJson(report)));
+    return new HttpResponse().setContent(asJson(report));
   }
 }

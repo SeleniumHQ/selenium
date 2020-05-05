@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -29,7 +28,7 @@ import java.util.Map;
 
 class SafariDriverCommandExecutor extends DriverCommandExecutor {
 
-  private static final Map<String, CommandInfo> SAFARI_COMMANDS = ImmutableMap.of(
+  private static final Map<String, CommandInfo> SAFARI_COMMANDS = singletonMap(
       "SAFARI_NEW_WINDOW", new CommandInfo("/session/:sessionId/apple/window/new", POST));
 
   SafariDriverCommandExecutor(DriverService service) {

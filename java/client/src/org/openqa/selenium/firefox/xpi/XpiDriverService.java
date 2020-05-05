@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.firefox.xpi;
 
+import static java.util.Collections.singletonList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 
 import com.google.auto.service.AutoService;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
@@ -79,8 +79,8 @@ public class XpiDriverService extends FirefoxDriverService {
       File executable,
       int port,
       Duration timeout,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment,
+      List<String> args,
+      Map<String, String> environment,
       FirefoxBinary binary,
       FirefoxProfile profile,
       File logFile)
@@ -227,13 +227,15 @@ public class XpiDriverService extends FirefoxDriverService {
   }
 
   @Override
-  protected void waitUntilAvailable() throws MalformedURLException {
+  protected void waitUntilAvailable() {
     try {
       // Use a longer timeout, because 45 seconds was the default timeout in the predecessor to
       // XpiDriverService. This has to wait for Firefox to start, not just a service, and some users
       // may be running tests on really slow machines.
       URL status = new URL(getUrl(port).toString() + "/status");
       new UrlChecker().waitUntilAvailable(45, SECONDS, status);
+    } catch (MalformedURLException e) {
+      throw new WebDriverException("Driver server status URL is malformed.", e);
     } catch (UrlChecker.TimeoutException e) {
       throw new WebDriverException("Timed out waiting 45 seconds for Firefox to start.", e);
     }
@@ -288,9 +290,9 @@ public class XpiDriverService extends FirefoxDriverService {
     Builder builder = new Builder().usingAnyFreePort();
 
     Stream.<Supplier<FirefoxProfile>>of(
-        () -> (FirefoxProfile) caps.getCapability(FirefoxDriver.PROFILE),
+        () -> (FirefoxProfile) caps.getCapability(FirefoxDriver.Capability.PROFILE),
         () -> { try {
-          return FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.PROFILE));
+          return FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.Capability.PROFILE));
         } catch (IOException ex) {
           throw new RuntimeException(ex);
         }},
@@ -324,7 +326,7 @@ public class XpiDriverService extends FirefoxDriverService {
         .findFirst()
         .ifPresent(builder::withProfile);
 
-    Object binary = caps.getCapability(FirefoxDriver.BINARY);
+    Object binary = caps.getCapability(FirefoxDriver.Capability.BINARY);
     if (binary != null) {
       FirefoxBinary actualBinary;
       if (binary instanceof FirefoxBinary) {
@@ -360,17 +362,17 @@ public class XpiDriverService extends FirefoxDriverService {
 
     @Override
     public int score(Capabilities capabilities) {
-      if (capabilities.is(FirefoxDriver.MARIONETTE)) {
+      if (capabilities.is(FirefoxDriver.Capability.MARIONETTE)) {
         return 0;
       }
 
       int score = 0;
 
-      if (capabilities.getCapability(FirefoxDriver.BINARY) != null) {
+      if (capabilities.getCapability(FirefoxDriver.Capability.BINARY) != null) {
         score++;
       }
 
-      if (capabilities.getCapability(FirefoxDriver.PROFILE) != null) {
+      if (capabilities.getCapability(FirefoxDriver.Capability.PROFILE) != null) {
         score++;
       }
 
@@ -392,7 +394,7 @@ public class XpiDriverService extends FirefoxDriverService {
       FirefoxProfile profile = options.getProfile();
       if (profile == null) {
         profile = new FirefoxProfile();
-        options.setCapability(FirefoxDriver.PROFILE, profile);
+        options.setCapability(FirefoxDriver.Capability.PROFILE, profile);
       }
       withBinary(options.getBinary());
       withProfile(profile);
@@ -408,8 +410,8 @@ public class XpiDriverService extends FirefoxDriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
-      return ImmutableList.of("-foreground");
+    protected List<String> createArgs() {
+      return singletonList("-foreground");
     }
 
     @Override
@@ -422,8 +424,8 @@ public class XpiDriverService extends FirefoxDriverService {
         File exe,
         int port,
         Duration timeout,
-        ImmutableList<String> args,
-        ImmutableMap<String, String> environment) {
+        List<String> args,
+        Map<String, String> environment) {
       try {
         return new XpiDriverService(
             exe,

@@ -26,6 +26,7 @@ import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
@@ -146,7 +147,7 @@ public class JsonHttpResponseCodecTest {
 
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(HTTP_OK);
-    httpResponse.setContent(utf8String(new Json().toJson(response)));
+    httpResponse.setContent(asJson(response));
 
     Response decoded = codec.decode(httpResponse);
     assertThat(decoded.getStatus()).isEqualTo(response.getStatus());
@@ -180,9 +181,9 @@ public class JsonHttpResponseCodecTest {
   public void shouldConvertElementReferenceToRemoteWebElement() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(utf8String(new Json().toJson(ImmutableMap.of(
+    response.setContent(asJson(ImmutableMap.of(
         "status", 0,
-        "value", ImmutableMap.of(Dialect.OSS.getEncodedElementKey(), "345678")))));
+        "value", ImmutableMap.of(Dialect.OSS.getEncodedElementKey(), "345678"))));
 
     Response decoded = codec.decode(response);
     assertThat(((RemoteWebElement) decoded.getValue()).getId()).isEqualTo("345678");
@@ -197,7 +198,7 @@ public class JsonHttpResponseCodecTest {
 
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(HTTP_CLIENT_TIMEOUT);
-    httpResponse.setContent(utf8String(new Json().toJson(response)));
+    httpResponse.setContent(asJson(response));
 
     Response decoded = codec.decode(httpResponse);
     assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.ASYNC_SCRIPT_TIMEOUT);

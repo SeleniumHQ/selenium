@@ -28,7 +28,7 @@ public class ImmutableCapabilitiesTest {
   @Test
   public void canCreateEmptyCapabilities() {
     Capabilities caps = new ImmutableCapabilities();
-    assertThat(caps.asMap()).isEqualTo(ImmutableMap.of());
+    assertThat(caps.asMap()).isEmpty();
   }
 
   @Test

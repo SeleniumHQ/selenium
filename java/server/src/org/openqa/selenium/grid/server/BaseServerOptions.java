@@ -47,18 +47,16 @@ public class BaseServerOptions {
   }
 
   public int getPort() {
-    if (port != -1) {
-      return port;
+    if (port == -1) {
+      int newPort = config.getInt(SERVER_SECTION, "port")
+          .orElseGet(PortProber::findFreePort);
+
+      if (newPort < 0) {
+        throw new ConfigException("Port cannot be less than 0: " + newPort);
+      }
+
+      port = newPort;
     }
-
-    int port = config.getInt(SERVER_SECTION, "port")
-        .orElseGet(PortProber::findFreePort);
-
-    if (port < 0) {
-      throw new ConfigException("Port cannot be less than 0: " + port);
-    }
-
-    this.port = port;
 
     return port;
   }

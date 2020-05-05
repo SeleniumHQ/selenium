@@ -20,11 +20,9 @@ package org.openqa.selenium.remote.service;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -44,6 +42,10 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -76,8 +78,8 @@ public class DriverService {
 
   private final String executable;
   private final Duration timeout;
-  private final ImmutableList<String> args;
-  private final ImmutableMap<String, String> environment;
+  private final List<String> args;
+  private final Map<String, String> environment;
   private OutputStream outputStream = System.err;
 
   /**
@@ -93,8 +95,8 @@ public class DriverService {
      File executable,
      int port,
      Duration timeout,
-     ImmutableList<String> args,
-     ImmutableMap<String, String> environment) throws IOException {
+     List<String> args,
+     Map<String, String> environment) throws IOException {
    this.executable = executable.getCanonicalPath();
    this.timeout = timeout;
    this.args = args;
@@ -193,7 +195,29 @@ public class DriverService {
       process.copyOutputTo(getOutputStream());
       process.executeAsync();
 
-      waitUntilAvailable();
+      CompletableFuture<Boolean> serverStarted = CompletableFuture.supplyAsync(() -> {
+        waitUntilAvailable();
+        return true;
+      });
+
+      CompletableFuture<Boolean> processFinished = CompletableFuture.supplyAsync(() -> {
+        process.waitFor(getTimeout().toMillis());
+        return false;
+      });
+
+      try {
+        boolean started = (Boolean) CompletableFuture.anyOf(serverStarted, processFinished)
+            .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
+        if (!started) {
+          process = null;
+          throw new WebDriverException("Driver server process died prematurely.");
+        }
+      } catch (ExecutionException | TimeoutException e) {
+        throw new WebDriverException("Timed out waiting for driver server to start.", e);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new WebDriverException("Timed out waiting for driver server to start.", e);
+      }
     } finally {
       lock.unlock();
     }
@@ -203,14 +227,13 @@ public class DriverService {
     return timeout;
   }
 
-  protected void waitUntilAvailable() throws MalformedURLException {
+  protected void waitUntilAvailable() {
     try {
       URL status = new URL(url.toString() + "/status");
-      new UrlChecker().waitUntilAvailable(getTimeout().toMillis(), MILLISECONDS, status);
+      new UrlChecker().waitUntilAvailable(getTimeout().toMillis(), TimeUnit.MILLISECONDS, status);
+    } catch (MalformedURLException e) {
+      throw new WebDriverException("Driver server status URL is malformed.", e);
     } catch (UrlChecker.TimeoutException e) {
-      if (process != null && !process.isRunning()) {
-        process.checkForError();
-      }
       throw new WebDriverException("Timed out waiting for driver server to start.", e);
     }
   }
@@ -271,11 +294,11 @@ public class DriverService {
     return outputStream;
   }
 
-  public static abstract class Builder<DS extends DriverService, B extends Builder<?, ?>> {
+  public abstract static class Builder<DS extends DriverService, B extends Builder<?, ?>> {
 
     private int port = 0;
     private File exe = null;
-    private ImmutableMap<String, String> environment = ImmutableMap.of();
+    private Map<String, String> environment = ImmutableMap.of();
     private File logFile;
     private Duration timeout;
 
@@ -393,7 +416,7 @@ public class DriverService {
         timeout = getDefaultTimeout();
       }
 
-      ImmutableList<String> args = createArgs();
+      List<String> args = createArgs();
 
       DS service = createDriverService(exe, port, timeout, args, environment);
       port = 0; // reset port to allow reusing this builder
@@ -403,9 +426,9 @@ public class DriverService {
 
     protected abstract File findDefaultExecutable();
 
-    protected abstract ImmutableList<String> createArgs();
+    protected abstract List<String> createArgs();
 
-    protected abstract DS createDriverService(File exe, int port, Duration timeout, ImmutableList<String> args,
-        ImmutableMap<String, String> environment);
+    protected abstract DS createDriverService(File exe, int port, Duration timeout, List<String> args,
+        Map<String, String> environment);
   }
 }

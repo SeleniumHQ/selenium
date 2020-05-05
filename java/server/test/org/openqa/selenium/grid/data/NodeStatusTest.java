@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 

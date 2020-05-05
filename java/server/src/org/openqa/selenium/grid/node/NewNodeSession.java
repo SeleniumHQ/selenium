@@ -28,8 +28,8 @@ import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Objects;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 class NewNodeSession implements HttpHandler {
 
@@ -50,6 +50,6 @@ class NewNodeSession implements HttpHandler {
     HashMap<String, Object> value = new HashMap<>();
     value.put("value", sessionResponse);
 
-    return new HttpResponse().setContent(utf8String(json.toJson(value)));
+    return new HttpResponse().setContent(asJson(value));
   }
 }

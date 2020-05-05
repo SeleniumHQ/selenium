@@ -26,20 +26,75 @@ test.suite(function(env) {
   let driver;
 
   describe('Internet Explorer options', function() {
-    test.ignore(env.browsers(Browser.SAFARI, Browser.FIREFOX, Browser.CHROME, Browser.EDGE)).
     it('can set fileUploadDialogTimeout', async function() {
       let timeOut = 10000;
       let options = new ie.Options().
-          fileUploadDialogTimeout(timeOut);
+      fileUploadDialogTimeout(timeOut);
 
       driver = await env.builder()
           .setIeOptions(options)
           .build();
 
       let caps = await driver.getCapabilities();
-       caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.FILE_UPLOAD_DIALOG_TIMEOUT];
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.FILE_UPLOAD_DIALOG_TIMEOUT];
       assert.equal(caps, timeOut);
       await driver.quit();
     });
+
+    it('can set browserAttachTimeout', async function() {
+      let timeOut = 10000;
+      let options = new ie.Options().
+      browserAttachTimeout(timeOut);
+
+      driver = await env.builder()
+          .setIeOptions(options)
+          .build();
+
+      let caps = await driver.getCapabilities();
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.BROWSER_ATTACH_TIMEOUT];
+      assert.equal(caps, timeOut);
+      await driver.quit();
+    });
+
+    it('can set elementScrollBehaviour - TOP', async function() {
+      let options = new ie.Options().
+      setScrollBehavior(ie.Behavior.TOP);
+      driver = await env.builder()
+          .setIeOptions(options)
+          .build();
+
+      let caps = await driver.getCapabilities();
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.ELEMENT_SCROLL_BEHAVIOR];
+      assert.equal(caps, ie.Behavior.TOP);
+      await driver.quit();
+    });
+
+    it('can set elementScrollBehaviour - BOTTOM', async function() {
+      let options = new ie.Options().
+      setScrollBehavior(ie.Behavior.TOP);
+      driver = await env.builder()
+          .setIeOptions(options)
+          .build();
+
+      let caps = await driver.getCapabilities();
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.ELEMENT_SCROLL_BEHAVIOR];
+      assert.equal(caps, ie.Behavior.TOP);
+      await driver.quit();
+    });
+
+    it('can set multiple command-line switches', async function() {
+      let options = new ie.Options();
+      options.addArguments('-k');
+      options.addArguments('-private');
+      options.forceCreateProcessApi(true);
+      driver = await env.builder()
+          .setIeOptions(options)
+          .build();
+
+      let caps = await driver.getCapabilities();
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.BROWSER_COMMAND_LINE_SWITCHES];
+      assert.equal(caps, '-k -private');
+      await driver.quit();
+    });
   });
-});
+}, {browsers: ['internet explorer']});

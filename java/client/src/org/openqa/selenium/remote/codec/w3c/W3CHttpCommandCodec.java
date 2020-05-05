@@ -107,6 +107,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   private final KeyInput keyboard = new KeyInput("keyboard");
 
   public W3CHttpCommandCodec() {
+    String sessionId = "/session/:sessionId";
+
     alias(GET_ELEMENT_ATTRIBUTE, EXECUTE_SCRIPT);
     alias(GET_ELEMENT_LOCATION, GET_ELEMENT_RECT);
     alias(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, EXECUTE_SCRIPT);
@@ -114,8 +116,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(IS_ELEMENT_DISPLAYED, EXECUTE_SCRIPT);
     alias(SUBMIT_ELEMENT, EXECUTE_SCRIPT);
 
-    defineCommand(EXECUTE_SCRIPT, post("/session/:sessionId/execute/sync"));
-    defineCommand(EXECUTE_ASYNC_SCRIPT, post("/session/:sessionId/execute/async"));
+    defineCommand(EXECUTE_SCRIPT, post(sessionId + "/execute/sync"));
+    defineCommand(EXECUTE_ASYNC_SCRIPT, post(sessionId + "/execute/async"));
 
     alias(GET_PAGE_SOURCE, EXECUTE_SCRIPT);
     alias(CLEAR_LOCAL_STORAGE, EXECUTE_SCRIPT);
@@ -131,24 +133,26 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(GET_SESSION_STORAGE_ITEM, EXECUTE_SCRIPT);
     alias(GET_SESSION_STORAGE_SIZE, EXECUTE_SCRIPT);
 
-    defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
-    defineCommand(MINIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/minimize"));
-    defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/rect"));
-    defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/rect"));
+    String window = sessionId + "/window";
+    defineCommand(MAXIMIZE_CURRENT_WINDOW, post(window + "/maximize"));
+    defineCommand(MINIMIZE_CURRENT_WINDOW, post(window + "/minimize"));
+    defineCommand(GET_CURRENT_WINDOW_SIZE, get(window + "/rect"));
+    defineCommand(SET_CURRENT_WINDOW_SIZE, post(window + "/rect"));
     alias(GET_CURRENT_WINDOW_POSITION, GET_CURRENT_WINDOW_SIZE);
     alias(SET_CURRENT_WINDOW_POSITION, SET_CURRENT_WINDOW_SIZE);
-    defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));
-    defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
+    defineCommand(GET_CURRENT_WINDOW_HANDLE, get(window));
+    defineCommand(GET_WINDOW_HANDLES, get(window + "/handles"));
 
-    defineCommand(ACCEPT_ALERT, post("/session/:sessionId/alert/accept"));
-    defineCommand(DISMISS_ALERT, post("/session/:sessionId/alert/dismiss"));
-    defineCommand(GET_ALERT_TEXT, get("/session/:sessionId/alert/text"));
-    defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert/text"));
+    String alert = sessionId + "/alert";
+    defineCommand(ACCEPT_ALERT, post(alert + "/accept"));
+    defineCommand(DISMISS_ALERT, post(alert + "/dismiss"));
+    defineCommand(GET_ALERT_TEXT, get(alert + "/text"));
+    defineCommand(SET_ALERT_VALUE, post(alert + "/text"));
 
-    defineCommand(GET_ACTIVE_ELEMENT, get("/session/:sessionId/element/active"));
+    defineCommand(GET_ACTIVE_ELEMENT, get(sessionId + "/element/active"));
 
-    defineCommand(ACTIONS, post("/session/:sessionId/actions"));
-    defineCommand(CLEAR_ACTIONS_STATE, delete("/session/:sessionId/actions"));
+    defineCommand(ACTIONS, post(sessionId + "/actions"));
+    defineCommand(CLEAR_ACTIONS_STATE, delete(sessionId + "/actions"));
 
     // Emulate the old Actions API since everyone still likes to call these things.
     alias(CLICK, ACTIONS);
@@ -157,8 +161,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(MOUSE_UP, ACTIONS);
     alias(MOVE_TO, ACTIONS);
 
-    defineCommand(GET_LOG, post("/session/:sessionId/se/log"));
-    defineCommand(GET_AVAILABLE_LOG_TYPES, get("/session/:sessionId/se/log/types"));
+    defineCommand(GET_LOG, post(sessionId + "/se/log"));
+    defineCommand(GET_AVAILABLE_LOG_TYPES, get(sessionId + "/se/log/types"));
   }
 
   @Override
@@ -197,45 +201,27 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         String using = (String) parameters.get("using");
         String value = (String) parameters.get("value");
 
-        Map<String, Object> toReturn = new HashMap<>(parameters);
-
         switch (using) {
           case "class name":
             if (value.matches(".*\\s.*")) {
               throw new InvalidSelectorException("Compound class names not permitted");
             }
-            toReturn.put("using", "css selector");
-            toReturn.put("value", "." + cssEscape(value));
-            break;
+            return amendLocatorToCssSelector(parameters, "." + cssEscape(value));
 
           case "id":
-            toReturn.put("using", "css selector");
-            toReturn.put("value", "#" + cssEscape(value));
-            break;
-
-          case "link text":
-            // Do nothing
-            break;
+            return amendLocatorToCssSelector(parameters, "#" + cssEscape(value));
 
           case "name":
-            toReturn.put("using", "css selector");
-            toReturn.put("value", "*[name='" + value + "']");
-            break;
-
-          case "partial link text":
-            // Do nothing
-            break;
+            return amendLocatorToCssSelector(parameters, "*[name='" + value + "']");
 
           case "tag name":
-            toReturn.put("using", "css selector");
-            toReturn.put("value", cssEscape(value));
-            break;
+            return amendLocatorToCssSelector(parameters, cssEscape(value));
 
-          case "xpath":
+          default:
             // Do nothing
             break;
         }
-        return toReturn;
+        return parameters;
 
       case GET_ELEMENT_ATTRIBUTE:
         // Read the atom, wrap it, execute it.
@@ -445,5 +431,12 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       using = "\\" + Integer.toString(30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
     }
     return using;
+  }
+
+  private Map<String, ?> amendLocatorToCssSelector(Map<String, ?> parameters, String value) {
+    Map<String, Object> amended = new HashMap<>(parameters);
+    amended.put("using", "css selector");
+    amended.put("value", value);
+    return amended;
   }
 }

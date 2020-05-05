@@ -25,6 +25,9 @@ using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chromium
 {
+    /// <summary>
+    /// Abstract class to manage options specific to Chromium-based browsers.
+    /// </summary>
     public abstract class ChromiumOptions : DriverOptions
     {
         private const string ArgumentsChromeOption = "args";
@@ -59,6 +62,9 @@ namespace OpenQA.Selenium.Chromium
         private ChromiumMobileEmulationDeviceSettings mobileEmulationDeviceSettings;
         private ChromiumPerformanceLoggingPreferences perfLoggingPreferences;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromiumOptions"/> class.
+        /// </summary>
         public ChromiumOptions() : base()
         {
             this.BrowserName = BrowserNameValue;
@@ -415,7 +421,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Allows the Chromium browser to emulate a mobile device.
         /// </summary>
-        /// <param name="deviceSettings">The <see cref="ChromeMobileEmulationDeviceSettings"/>
+        /// <param name="deviceSettings">The <see cref="ChromiumMobileEmulationDeviceSettings"/>
         /// object containing the settings of the device to emulate.</param>
         /// <exception cref="ArgumentException">Thrown if the device settings option does
         /// not have a user agent string set.</exception>
@@ -572,7 +578,13 @@ namespace OpenQA.Selenium.Chromium
             return capabilities.AsReadOnly();
         }
 
-        protected virtual void AddVendorSpecificChromiumCapabilities(IWritableCapabilities capabilities) { }
+        /// <summary>
+        /// Adds vendor-specific capabilities for Chromium-based browsers.
+        /// </summary>
+        /// <param name="capabilities">The capabilities to add.</param>
+        protected virtual void AddVendorSpecificChromiumCapabilities(IWritableCapabilities capabilities)
+        {
+        }
 
         private Dictionary<string, object> BuildChromeOptionsDictionary()
         {

@@ -24,7 +24,6 @@ import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -32,6 +31,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.net.URI;
 
 import static org.asynchttpclient.Dsl.request;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
 import com.google.common.base.Strings;
 
@@ -44,14 +44,15 @@ class NettyMessages {
   protected static Request toNettyRequest(URI baseUrl, HttpRequest request) {
     String rawUrl;
 
-    if (request.getUri().startsWith("ws://")) {
-      rawUrl = "http://" + request.getUri().substring("ws://".length());
-    } else if (request.getUri().startsWith("wss://")) {
-      rawUrl = "https://" + request.getUri().substring("wss://".length());
-    } else if (request.getUri().startsWith("http://") || request.getUri().startsWith("https://")) {
-      rawUrl = request.getUri();
+    String uri = request.getUri();
+    if (uri.startsWith("ws://")) {
+      rawUrl = "http://" + uri.substring("ws://".length());
+    } else if (uri.startsWith("wss://")) {
+      rawUrl = "https://" + uri.substring("wss://".length());
+    } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
+      rawUrl = uri;
     } else {
-      rawUrl = baseUrl.toString().replaceAll("/$", "") + request.getUri();
+      rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
     }
 
     RequestBuilder builder = request(request.getMethod().toString(), rawUrl);
@@ -94,7 +95,7 @@ class NettyMessages {
 
     toReturn.setContent(! response.hasResponseBody()
                         ? empty()
-                        : Contents.memoize(response::getResponseBodyAsStream));
+                        : memoize(response::getResponseBodyAsStream));
 
     response.getHeaders().names().forEach(
         name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));

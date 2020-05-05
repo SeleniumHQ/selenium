@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.chrome;
 
+import static java.util.Collections.unmodifiableList;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -29,6 +29,9 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manages the life and death of a ChromeDriver server.
@@ -45,7 +48,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines the location of the log that will be written by
    * the {@link #createDefaultService() default service}.
    */
-  public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
+  public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
    * Boolean system property that defines whether chromedriver should append to existing log file.
@@ -71,7 +74,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
-  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
+  public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
       "webdriver.chrome.whitelistedIps";
 
   /**
@@ -84,8 +87,8 @@ public class ChromeDriverService extends DriverService {
   public ChromeDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
@@ -101,8 +104,8 @@ public class ChromeDriverService extends DriverService {
       File executable,
       int port,
       Duration timeout,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -199,7 +202,7 @@ public class ChromeDriverService extends DriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
+    protected List<String> createArgs() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
         if (logFilePath != null) {
@@ -207,25 +210,26 @@ public class ChromeDriverService extends DriverService {
         }
       }
 
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+      List<String> args = new ArrayList<>();
+
+      args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
-        argsBuilder.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
       }
       if (appendLog) {
-        argsBuilder.add("--append-log");
+        args.add("--append-log");
       }
       if (verbose) {
-        argsBuilder.add("--verbose");
+        args.add("--verbose");
       }
       if (silent) {
-        argsBuilder.add("--silent");
+        args.add("--silent");
       }
       if (whitelistedIps != null) {
-        argsBuilder.add(String.format("--whitelisted-ips=%s", whitelistedIps));
+        args.add(String.format("--whitelisted-ips=%s", whitelistedIps));
       }
 
-      return argsBuilder.build();
+      return unmodifiableList(args);
     }
 
     @Override
@@ -233,8 +237,8 @@ public class ChromeDriverService extends DriverService {
         File exe,
         int port,
         Duration timeout,
-        ImmutableList<String> args,
-        ImmutableMap<String, String> environment) {
+        List<String> args,
+        Map<String, String> environment) {
       try {
         return new ChromeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

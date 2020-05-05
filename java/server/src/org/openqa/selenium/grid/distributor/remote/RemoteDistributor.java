@@ -25,7 +25,6 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.Values;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -37,14 +36,13 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteDistributor extends Distributor {
 
-  public static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Remote)");
   private final HttpHandler client;
 
@@ -75,7 +73,7 @@ public class RemoteDistributor extends Distributor {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
     Span span = tracer.getCurrentSpan();
     HttpTracing.inject(tracer, span, request);
-    request.setContent(utf8String(JSON.toJson(node.getStatus())));
+    request.setContent(asJson(node.getStatus()));
 
     HttpResponse response = client.execute(request);
 

@@ -81,6 +81,7 @@ def testShouldReturnWhenGettingAUrlThatDoesNotConnect(driver):
 #     self.assertEqual(driver.title, anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToNavigateBackInTheBrowserHistory(driver, pages):
     pages.load("formPage.html")
 
@@ -91,6 +92,7 @@ def testShouldBeAbleToNavigateBackInTheBrowserHistory(driver, pages):
     assert driver.title == "We Leave From Here"
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(driver, pages):
     pages.load("xhtmlTest.html")
 

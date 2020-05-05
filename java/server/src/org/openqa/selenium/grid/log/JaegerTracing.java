@@ -20,6 +20,9 @@ package org.openqa.selenium.grid.log;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * We use an awful lof of reflection here because it's the only way we can
@@ -28,34 +31,39 @@ import java.lang.reflect.Method;
  */
 class JaegerTracing {
 
-  static SpanExporter findJaegerExporter() {
+  private static final Logger LOGGER = Logger.getLogger(JaegerTracing.class.getName());
+
+  static Optional<SpanExporter> findJaegerExporter() {
     String host = System.getProperty("JAEGER_AGENT_HOST");
     if (host == null) {
-      return null;
+      return Optional.empty();
     }
 
     String rawPort = System.getProperty("JAEGER_AGENT_PORT", "14250");
     int port = -1;
     try {
       port = Integer.parseInt(rawPort);
-    } catch (NumberFormatException ignored) {
-      return null;
+    } catch (NumberFormatException e) {
+      LOGGER.log(Level.WARNING, "Error parsing port from JAEGER_AGENT_PORT environment variable", e);
+      return Optional.empty();
     }
     if (port == -1) {
-      return null;
+      return Optional.empty();
     }
 
     try {
       Object jaegerChannel = createManagedChannel(host, port);
       SpanExporter toReturn = (SpanExporter) createJaegerGrpcSpanExporter(jaegerChannel);
 
-      if (toReturn != null) {
-        System.out.printf("Attaching Jaeger tracing to %s:%s\n", host, port);
+      if (toReturn == null) {
+        return Optional.empty();
       }
 
-      return toReturn;
+      LOGGER.info(String.format("Attaching Jaeger tracing to %s:%s", host, port));
+      return Optional.of(toReturn);
     } catch (ReflectiveOperationException e) {
-      return null;
+      LOGGER.log(Level.WARNING, "Cannot instantiate Jaeger tracer", e);
+      return Optional.empty();
     }
   }
 
@@ -81,7 +89,7 @@ class JaegerTracing {
     // return JaegerGrpcSpanExporter.newBuilder()
     //   .setServiceName("selenium")
     //   .setChannel(jaegerChannel)
-    //   .setDeadline(30000)
+    //   .setDeadlineMs(30000)
     //   .build();
 
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -99,7 +107,7 @@ class JaegerTracing {
     Method setChannel = builderClazz.getMethod("setChannel", managedChannelClazz);
     builderObj = setChannel.invoke(builderObj, jaegerChannel);
 
-    Method setDeadline = builderClazz.getMethod("setDeadline", long.class);
+    Method setDeadline = builderClazz.getMethod("setDeadlineMs", long.class);
     builderObj = setDeadline.invoke(builderObj, 3000);
 
     Method build = builderClazz.getMethod("build");

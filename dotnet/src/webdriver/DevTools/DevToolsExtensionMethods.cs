@@ -8,8 +8,17 @@ using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.DevTools
 {
+    /// <summary>
+    /// Provides extension methods for translation to and from the Chrome DevTools Protocol data structures.
+    /// </summary>
     public static class DevToolsExtensionMethods
     {
+        /// <summary>
+        /// Translates a <see cref="Cookie"/> to the format to use with the Chrome DevTools Protocol cookie
+        /// manipulation methods.
+        /// </summary>
+        /// <param name="cookie">The <see cref="Cookie"/> to translate.</param>
+        /// <returns>A command settings object suitable for use with the Chromium DevTools Protocol manipulation methods.</returns>
         public static Network.SetCookieCommandSettings ToDevToolsSetCookieCommandSettings(this Cookie cookie)
         {
             Network.SetCookieCommandSettings commandSettings = new Network.SetCookieCommandSettings();
@@ -23,6 +32,11 @@ namespace OpenQA.Selenium.DevTools
             return commandSettings;
         }
 
+        /// <summary>
+        /// Converts an array of Chrome DevTools Protocol cookie objects to a list of Selenium <see cref="Cookie"/> objects.
+        /// </summary>
+        /// <param name="cookies">The array of Chrome DevTools Protocol cookies to convert.</param>
+        /// <returns>A ReadOnlyCollection of <see cref="Cookie"/> objects.</returns>
         public static ReadOnlyCollection<Cookie> ToSeleniumCookies(this Network.Cookie[] cookies)
         {
             List<Cookie> seleniumCookies = new List<Cookie>();
@@ -34,6 +48,11 @@ namespace OpenQA.Selenium.DevTools
             return seleniumCookies.AsReadOnly();
         }
 
+        /// <summary>
+        /// Converts a Chrome DevTools Protocol cookie object to a Selenium <see cref="Cookie"/> objects.
+        /// </summary>
+        /// <param name="cookies">The Chrome DevTools Protocol cookie to convert.</param>
+        /// <returns>A Selenium <see cref="Cookie"/> object.</returns>
         public static Cookie ToSeleniumCookie(this Network.Cookie cookie)
         {
             Dictionary<string, object> cookieValues = new Dictionary<string, object>();

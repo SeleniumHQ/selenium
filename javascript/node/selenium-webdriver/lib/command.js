@@ -109,6 +109,7 @@ const Name = {
   GET_ACTIVE_ELEMENT: 'getActiveElement',
   FIND_ELEMENT: 'findElement',
   FIND_ELEMENTS: 'findElements',
+  FIND_ELEMENTS_RELATIVE: "findElementsRelative",
   FIND_CHILD_ELEMENT: 'findChildElement',
   FIND_CHILD_ELEMENTS: 'findChildElements',
 

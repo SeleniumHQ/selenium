@@ -31,8 +31,8 @@ import java.util.Objects;
 
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
@@ -63,7 +63,7 @@ class AddToSessionMap implements HttpHandler {
 
       sessions.add(session);
 
-      return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", true))));
+      return new HttpResponse().setContent(asJson(ImmutableMap.of("value", true)));
     } finally {
       span.end();
     }

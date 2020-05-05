@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.netty.server;
 
+import static org.openqa.selenium.remote.http.Contents.memoize;
+
 import com.google.common.io.ByteStreams;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -27,7 +29,6 @@ import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.ReferenceCountUtil;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -40,7 +41,6 @@ import java.io.UncheckedIOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-
 
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
@@ -78,7 +78,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       out = new PipedOutputStream();
       InputStream in = new PipedInputStream(out);
 
-      req.setContent(Contents.memoize(() -> in));
+      req.setContent(memoize(() -> in));
       ctx.fireChannelRead(req);
     }
 

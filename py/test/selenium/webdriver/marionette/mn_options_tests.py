@@ -22,6 +22,7 @@ try:
 except NameError:  # Python 3.x
     basestring = str
 
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
@@ -37,7 +38,7 @@ def driver_kwargs(driver_kwargs):
 class TestIntegration(object):
     def test_we_can_pass_options(self, driver, pages):
         pages.load("formPage.html")
-        driver.find_element_by_id("cheese")
+        driver.find_element(By.ID, "cheese")
 
 
 class TestUnit(object):

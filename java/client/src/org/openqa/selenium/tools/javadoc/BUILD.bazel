@@ -7,6 +7,7 @@ java_binary(
         "-target", "11",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/tools/zip",
     ],
     visibility = [

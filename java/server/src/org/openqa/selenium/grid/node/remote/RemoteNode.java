@@ -50,9 +50,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -96,7 +96,7 @@ public class RemoteNode extends Node {
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
     HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
-    req.setContent(utf8String(JSON.toJson(sessionRequest)));
+    req.setContent(asJson(sessionRequest));
 
     HttpResponse res = client.execute(req);
 
@@ -129,6 +129,11 @@ public class RemoteNode extends Node {
 
   @Override
   public HttpResponse executeWebDriverCommand(HttpRequest req) {
+    return client.execute(req);
+  }
+
+  @Override
+  public HttpResponse uploadFile(HttpRequest req, SessionId id) {
     return client.execute(req);
   }
 

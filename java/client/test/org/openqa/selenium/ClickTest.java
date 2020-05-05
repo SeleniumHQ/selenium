@@ -31,8 +31,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.base.Throwables;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -369,13 +367,6 @@ public class ClickTest extends JUnit4TestBase {
   public void clickingOnADisabledElementIsANoOp() {
     driver.get(appServer.whereIs("click_tests/disabled_element.html"));
 
-    WebElement element = driver.findElement(By.name("disabled"));
-
-    try {
-      element.click();
-      // A failing implementation will throw an exception
-    } catch (WebDriverException e) {
-      fail("The click should have been a no-op.\n" + Throwables.getStackTraceAsString(e));
-    }
+    driver.findElement(By.name("disabled")).click(); // Should not throw
   }
 }

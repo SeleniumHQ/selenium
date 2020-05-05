@@ -422,6 +422,9 @@ namespace OpenQA.Selenium.Interactions
             this.actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
         }
 
+        /// <summary>
+        /// Clears the list of actions to be performed.
+        /// </summary>
         public void Reset()
         {
             this.actionBuilder = new ActionBuilder();

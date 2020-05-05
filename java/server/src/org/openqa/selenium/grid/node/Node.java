@@ -25,6 +25,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -34,13 +35,15 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 
+import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -111,18 +114,37 @@ public abstract class Node implements Routable, HttpHandler {
         // "getSessionId" is aggressive about finding session ids, so this needs to be the last
         // route the is checked.
         matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
-            .to(() -> new ForwardWebDriverCommand(this)).with(new SpanDecorator(tracer, req -> "node.forward_command")),
-        post("/session/{sessionId}/file").to(() -> new UploadFile(this, json)).with(new SpanDecorator(tracer, req -> "node.upload_file")),
+            .to(() -> new ForwardWebDriverCommand(this))
+            .with(spanDecorator("node.forward_command")),
+        post("/session/{sessionId}/file")
+            .to(params -> new UploadFile(this, sessionIdFrom(params)))
+            .with(spanDecorator("node.upload_file")),
         get("/se/grid/node/owner/{sessionId}")
-            .to(params -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
+            .to(params -> new IsSessionOwner(this, sessionIdFrom(params)))
+            .with(spanDecorator("node.is_session_owner")),
         delete("/se/grid/node/session/{sessionId}")
-            .to(params -> new StopNodeSession(this, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.stop_session")),
+            .to(params -> new StopNodeSession(this, sessionIdFrom(params)))
+            .with(spanDecorator("node.stop_session")),
         get("/se/grid/node/session/{sessionId}")
-            .to(params -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.get_session")),
-        post("/se/grid/node/session").to(() -> new NewNodeSession(this, json)).with(new SpanDecorator(tracer, req -> "node.new_session")),
+            .to(params -> new GetNodeSession(this, sessionIdFrom(params)))
+            .with(spanDecorator("node.get_session")),
+        post("/se/grid/node/session")
+            .to(() -> new NewNodeSession(this, json))
+            .with(spanDecorator("node.new_session")),
         get("/se/grid/node/status")
-            .to(() -> req -> new HttpResponse().setContent(utf8String(json.toJson(getStatus())))).with(new SpanDecorator(tracer, req -> "node.node_status")),
-        get("/status").to(() -> new StatusHandler(this, json)).with(new SpanDecorator(tracer, req -> "node.status")));
+            .to(() -> req -> new HttpResponse().setContent(asJson(getStatus())))
+            .with(spanDecorator("node.node_status")),
+        get("/status")
+            .to(() -> new StatusHandler(this))
+            .with(spanDecorator("node.status")));
+  }
+
+  private SessionId sessionIdFrom(Map<String, String> params) {
+    return new SessionId(params.get("sessionId"));
+  }
+
+  private SpanDecorator spanDecorator(String name) {
+    return new SpanDecorator(tracer, req -> name);
   }
 
   public UUID getId() {
@@ -138,6 +160,12 @@ public abstract class Node implements Routable, HttpHandler {
   public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
   public abstract Session getSession(SessionId id) throws NoSuchSessionException;
+
+  public TemporaryFilesystem getTemporaryFilesystem(SessionId id) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  public abstract HttpResponse uploadFile(HttpRequest req, SessionId id);
 
   public abstract void stop(SessionId id) throws NoSuchSessionException;
 

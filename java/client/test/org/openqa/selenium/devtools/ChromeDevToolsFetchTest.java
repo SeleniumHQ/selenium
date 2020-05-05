@@ -17,7 +17,6 @@
 package org.openqa.selenium.devtools;
 
 import static org.openqa.selenium.devtools.fetch.Fetch.continueRequest;
-import static org.openqa.selenium.devtools.fetch.Fetch.disable;
 import static org.openqa.selenium.devtools.fetch.Fetch.enable;
 import static org.openqa.selenium.devtools.fetch.Fetch.failRequest;
 import static org.openqa.selenium.devtools.fetch.Fetch.fulfillRequest;

@@ -71,8 +71,8 @@ def test_should_set_the_position_of_the_current_window(driver):
     target_y = position.get('y') + 10
     driver.set_window_position(x=target_x, y=target_y)
 
-    WebDriverWait(driver, 2).until(lambda d: d.get_window_position()['x'] != position['x'] and
-                                   d.get_window_position()['y'] != position['y'])
+    WebDriverWait(driver, 2)\
+        .until(lambda d: d.get_window_position()['x'] != position['x'] and d.get_window_position()['y'] != position['y'])
 
     new_position = driver.get_window_position()
     assert new_position.get('x') == target_x
@@ -101,8 +101,8 @@ def test_should_set_the_rect_of_the_current_window(driver):
 
     driver.set_window_rect(x=target_x, y=target_y, width=target_width, height=target_height)
 
-    WebDriverWait(driver, 2).until(lambda d: d.get_window_position()['x'] != rect['x'] and
-                                   d.get_window_position()['y'] != rect['y'])
+    WebDriverWait(driver, 2)\
+        .until(lambda d: d.get_window_position()['x'] != rect['x'] and d.get_window_position()['y'] != rect['y'])
 
     new_rect = driver.get_window_rect()
 
@@ -123,8 +123,8 @@ def test_should_fullscreen_the_current_window(driver):
 
     driver.fullscreen_window()
 
-    WebDriverWait(driver, 2).until(lambda d: driver.execute_script('return window.innerWidth;') >
-                                   start_width)
+    WebDriverWait(driver, 2)\
+        .until(lambda d: driver.execute_script('return window.innerWidth;') > start_width)
 
     end_width = driver.execute_script('return window.innerWidth;')
     end_height = driver.execute_script('return window.innerHeight;')

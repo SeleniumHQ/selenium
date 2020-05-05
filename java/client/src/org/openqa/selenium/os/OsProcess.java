@@ -18,11 +18,9 @@
 package org.openqa.selenium.os;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableMap.copyOf;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.Platform.WINDOWS;
-
-import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.commons.exec.DaemonExecutor;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -78,9 +76,8 @@ class OsProcess {
     env.put(name, value);
   }
 
-  @VisibleForTesting
   public Map<String, String> getEnvironment() {
-    return copyOf(env);
+    return unmodifiableMap(new HashMap<>(env));
   }
 
   private Map<String, String> getMergedEnv() {
@@ -161,6 +158,9 @@ class OsProcess {
     long until = System.currentTimeMillis() + timeout;
     boolean timedOut = true;
     while (System.currentTimeMillis() < until) {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
       if (handler.hasResult()) {
         timedOut = false;
         break;

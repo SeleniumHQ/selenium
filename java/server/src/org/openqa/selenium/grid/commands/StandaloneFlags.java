@@ -17,18 +17,9 @@
 
 package org.openqa.selenium.grid.commands;
 
-import com.beust.jcommander.Parameter;
-
 import org.openqa.selenium.grid.config.ConfigValue;
 
 public class StandaloneFlags {
-
-  @Parameter(
-      names = {"--detect-drivers"},
-      description = "Autodetect which drivers are available on the current system, and add them to the node.",
-      arity = 1)
-  @ConfigValue(section = "node", name = "detect-drivers")
-  public boolean autoconfigure = true;
 
   @ConfigValue(section = "server", name = "port")
   public int port = 4444;

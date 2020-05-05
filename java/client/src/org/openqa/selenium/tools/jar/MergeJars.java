@@ -18,6 +18,7 @@
 package org.openqa.selenium.tools.jar;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,6 +46,8 @@ import java.util.zip.ZipInputStream;
 
 import static java.util.zip.Deflater.BEST_COMPRESSION;
 import static java.util.zip.ZipOutputStream.DEFLATED;
+
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class MergeJars {
 
@@ -91,12 +94,15 @@ public class MergeJars {
 
     // To keep things simple, we expand all the inputs jars into a single directory,
     // merge the manifests, and then create our own zip.
-    Path temp = Files.createTempDirectory("mergejars");
+    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("mergejars", "");
+    Path temp = tempDir.toPath();
 
     Manifest manifest = new Manifest();
     manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 
-    SortedMap<Path, SortedMap<Path, Path>> allPaths = new TreeMap<>();
+    Map<String, Set<String>> allServices = new TreeMap<>();
+
+    Map<Path, SortedMap<Path, Path>> allPaths = new TreeMap<>();
 
     for (Path source : sources) {
       try (InputStream fis = Files.newInputStream(source);
@@ -116,7 +122,13 @@ public class MergeJars {
             continue;
           }
 
-          // TODO: merge services files
+          if (entry.getName().startsWith("META-INF/services/")) {
+            String servicesName = entry.getName().substring("META-INF/services/".length());
+            Set<String> services = allServices.computeIfAbsent(servicesName, key -> new TreeSet<>());
+            String content = new String(zis.readAllBytes());
+            services.addAll(Arrays.asList(content.split("\n")));
+            continue;
+          }
 
           Path outPath = temp.resolve(entry.getName()).normalize();
           if (!outPath.startsWith(temp)) {
@@ -162,6 +174,23 @@ public class MergeJars {
       jos.write(bos.toByteArray());
       jos.closeEntry();
 
+      if (!allServices.isEmpty()) {
+        entry = new JarEntry("META-INF/services/");
+        entry = resetTime(entry);
+        jos.putNextEntry(entry);
+        jos.closeEntry();
+        for (Map.Entry<String, Set<String>> kv : allServices.entrySet()) {
+          entry = new JarEntry("META-INF/services/" + kv.getKey());
+          entry = resetTime(entry);
+          bos = new ByteArrayOutputStream();
+          bos.write(String.join("\n", kv.getValue()).getBytes());
+          entry.setSize(bos.size());
+          jos.putNextEntry(entry);
+          jos.write(bos.toByteArray());
+          jos.closeEntry();
+        }
+      }
+
       allPaths.forEach((dir, entries) -> {
         try {
           String name = dir.toString().replace('\\', '/') + "/";
@@ -190,6 +219,8 @@ public class MergeJars {
         }
       });
     }
+
+    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tempDir);
   }
 
   private static JarEntry resetTime(JarEntry entry) {

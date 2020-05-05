@@ -4,9 +4,11 @@ java_library(
     visibility = [
         "//java/client/src/org/openqa/selenium/os:__pkg__",
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/src/org/openqa/selenium/tools/jar:__pkg__",
+        "//java/client/src/org/openqa/selenium/tools/javadoc:__pkg__",
+        "//java/client/src/org/openqa/selenium/tools/modules:__pkg__",
         "//java/client/test/org/openqa/selenium/io:__pkg__",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium:core",
     ],
 )

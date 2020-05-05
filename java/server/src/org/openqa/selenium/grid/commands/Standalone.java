@@ -23,21 +23,19 @@ import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
-import org.openqa.selenium.grid.docker.DockerFlags;
 import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -48,11 +46,20 @@ import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Route;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
 public class Standalone extends TemplateGridCommand {
@@ -70,12 +77,13 @@ public class Standalone extends TemplateGridCommand {
   }
 
   @Override
-  protected Set<Object> getFlagObjects() {
-    return ImmutableSet.of(
-      new BaseServerFlags(),
-      new DockerFlags(),
-      new EventBusFlags(),
-      new StandaloneFlags());
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE);
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.singleton(new StandaloneFlags());
   }
 
   @Override
@@ -89,7 +97,7 @@ public class Standalone extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) throws Exception {
+  protected void execute(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 
@@ -105,17 +113,19 @@ public class Standalone extends TemplateGridCommand {
 
     int port = config.getInt("server", "port")
       .orElseThrow(() -> new IllegalArgumentException("No port to use configured"));
-    URI localhost = null;
+    URI localhost;
+    URL localhostURL;
     try {
       localhost = new URI("http", null, hostName, port, null, null, null);
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+      localhostURL = localhost.toURL();
+    } catch (URISyntaxException | MalformedURLException e) {
+      throw new IllegalArgumentException(e);
     }
 
     NetworkOptions networkOptions = new NetworkOptions(config);
     CombinedHandler combinedHandler = new CombinedHandler();
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      localhost.toURL(),
+      localhostURL,
       combinedHandler,
       networkOptions.getHttpClientFactory(tracer));
 
@@ -124,6 +134,7 @@ public class Standalone extends TemplateGridCommand {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     combinedHandler.addHandler(distributor);
     Router router = new Router(tracer, clientFactory, sessions, distributor);
+    HttpHandler httpHandler = combine(router, Route.prefix("/wd/hub").to(combine(router)));
 
     LocalNode.Builder nodeBuilder = LocalNode.builder(
       tracer,
@@ -140,7 +151,7 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    Server<?> server = new NettyServer(new BaseServerOptions(config), router);
+    Server<?> server = new NettyServer(new BaseServerOptions(config), httpHandler);
     server.start();
 
     BuildInfo info = new BuildInfo();

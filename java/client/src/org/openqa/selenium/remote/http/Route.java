@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.json.Json;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +34,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -42,8 +42,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
 public abstract class Route implements HttpHandler, Routable {
-
-  private static final Json JSON = new Json();
 
   public HttpHandler fallbackTo(Supplier<HttpHandler> handler) {
     Objects.requireNonNull(handler, "Handler to use must be set.");
@@ -60,11 +58,11 @@ public abstract class Route implements HttpHandler, Routable {
     if (!matches(req)) {
       return new HttpResponse()
         .setStatus(HTTP_NOT_FOUND)
-        .setContent(utf8String(JSON.toJson(ImmutableMap.of(
+        .setContent(asJson(ImmutableMap.of(
           "value", ImmutableMap.of(
             "error", "unknown command",
             "message", "Unable to find handler for " + req,
-            "stacktrace", "")))));
+            "stacktrace", ""))));
     }
 
     HttpResponse res = handle(req);
@@ -77,11 +75,11 @@ public abstract class Route implements HttpHandler, Routable {
       .setStatus(HTTP_INTERNAL_ERROR)
       .addHeader("WebDriver-Error", "unsupported operation")
       .addHeader("Selenium-Route", "NULL_RES")
-      .setContent(utf8String(JSON.toJson(ImmutableMap.of(
+      .setContent(asJson(ImmutableMap.of(
         "value", ImmutableMap.of(
           "error", "unsupported operation",
           "message", String.format("Found handler for %s, but nothing was returned", req),
-          "stacktrace", "")))));
+          "stacktrace", ""))));
   }
 
   protected abstract HttpResponse handle(HttpRequest req);

@@ -54,6 +54,9 @@ namespace OpenQA.Selenium.Chrome
     {
         private const string ChromeOptionsCapabilityName = "chromeOptions";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeOptions"/> class.
+        /// </summary>
         public ChromeOptions()
         {
         }

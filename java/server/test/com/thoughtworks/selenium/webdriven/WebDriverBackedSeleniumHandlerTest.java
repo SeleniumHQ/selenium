@@ -37,8 +37,8 @@ import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.testing.Pages;
 
 import java.net.MalformedURLException;
-import java.util.Map;
 
+import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Safely.safelyCall;
@@ -58,7 +58,7 @@ public class WebDriverBackedSeleniumHandlerTest {
     ActiveSessions sessions = new ActiveSessions(3, MINUTES);
 
     server = new JreServer(
-      new BaseServerOptions(new MapConfig(Map.of())),
+      new BaseServerOptions(new MapConfig(emptyMap())),
       new WebDriverBackedSeleniumHandler(tracer, sessions));
 
     // Wait until the server is actually started.
@@ -69,7 +69,7 @@ public class WebDriverBackedSeleniumHandlerTest {
 
   @Before
   public void prepTheEnvironment() {
-    TestEnvironment environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    TestEnvironment environment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     appServer = environment.getAppServer();
 
     pages = new Pages(appServer);

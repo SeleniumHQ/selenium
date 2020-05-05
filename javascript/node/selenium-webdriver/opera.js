@@ -92,6 +92,15 @@ const http = require('./http'),
 const OPERADRIVER_EXE =
     process.platform === 'win32' ? 'operadriver.exe' : 'operadriver';
 
+/**
+ * _Synchronously_ attempts to locate the operadriver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return io.findInPath(OPERADRIVER_EXE, true);
+}
 
 /**
  * Creates {@link remote.DriverService} instances that manages an
@@ -107,7 +116,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || io.findInPath(OPERADRIVER_EXE, true);
+    let exe = opt_exe || locateSynchronously();
     if (!exe) {
       throw Error(
           'The OperaDriver could not be found on the current PATH. Please ' +
@@ -403,3 +412,4 @@ exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;
+exports.locateSynchronously = locateSynchronously;

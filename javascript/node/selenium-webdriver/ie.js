@@ -37,10 +37,15 @@ const promise = require('./lib/promise');
 const remote = require('./remote');
 const webdriver = require('./lib/webdriver');
 const {Browser, Capabilities, Capability} = require('./lib/capabilities');
+const error = require('./lib/error');
 
 
 const IEDRIVER_EXE = 'IEDriverServer.exe';
 const OPTIONS_CAPABILITY_KEY = 'se:ieOptions';
+const SCROLL_BEHAVIOUR  = {
+  BOTTOM : 1,
+  TOP : 0,
+};
 
 /**
  * IEDriverServer logging levels.
@@ -66,6 +71,7 @@ const Key = {
   INITIAL_BROWSER_URL: 'initialBrowserUrl',
   ENABLE_PERSISTENT_HOVER: 'enablePersistentHover',
   ENABLE_ELEMENT_CACHE_CLEANUP: 'enableElementCacheCleanup',
+  ELEMENT_SCROLL_BEHAVIOR : 'elementScrollBehavior',
   REQUIRE_WINDOW_FOCUS: 'requireWindowFocus',
   BROWSER_ATTACH_TIMEOUT: 'browserAttachTimeout',
   FORCE_CREATE_PROCESS: 'ie.forceCreateProcessApi',
@@ -78,6 +84,8 @@ const Key = {
   EXTRACT_PATH: 'extractPath',
   SILENT: 'silent',
   FILE_UPLOAD_DIALOG_TIMEOUT: 'ie.fileUploadDialogTimeout',
+  ATTACH_TO_EDGE_CHROMIUM: "ie.edgechromium",
+  EDGE_EXECUTABLE_PATH: "ie.edgepath",
 };
 
 
@@ -211,18 +219,21 @@ class Options extends Capabilities {
     return this;
   }
 
-  /**
-   * Specifies command-line switches to use when launching Internet Explorer.
-   * This is only valid when used with {@link #forceCreateProcessApi}.
-   *
-   * @param {...(string|!Array.<string>)} args The arguments to add.
-   * @return {!Options} A self reference.
-   */
-  addArguments(...args) {
-    let current = this.get(Key.BROWSER_COMMAND_LINE_SWITCHES) || [];
-    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat.apply(current, args);
-    return this;
-  }
+ /**
+  * Specifies command-line switches to use when launching Internet Explorer.
+  * This is only valid when used with {@link #forceCreateProcessApi}.
+  *
+  * @param {...(string|!Array.<string>)} args The arguments to add.
+  * @return {!Options} A self reference.
+  */
+
+ addArguments(...args) {
+   let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || [];
+   if(typeof current == 'string')
+     current = current.split(" ");
+   this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat(args).join(" ");
+   return this;
+ }
 
   /**
    * Configures whether proxies should be configured on a per-process basis. If
@@ -311,6 +322,43 @@ class Options extends Capabilities {
     this.options_[Key.FILE_UPLOAD_DIALOG_TIMEOUT] = Math.max(timeout, 0);
     return this;
   }
+
+  /**
+   * Sets the path of the EdgeChromium driver.
+   * @param {string} path The EdgeChromium driver path.
+   * @return {!Options} A self reference.
+   */
+  setEdgePath(path) {
+    this.options_[Key.EDGE_EXECUTABLE_PATH] = path;
+    return this;
+  }
+
+
+  /**
+   * Sets the IEDriver to drive Chromium-based Edge in Internet Explorer mode.
+   *
+   * @param {boolean} attachEdgeChromium Whether to run in Chromium-based-Edge in IE mode
+   * @return {!Options} A self reference.
+   */
+  setEdgeChromium(attachEdgeChromium) {
+    this.options_[Key.ATTACH_TO_EDGE_CHROMIUM] = !!attachEdgeChromium;
+    return this;
+  }
+
+  /**
+   * Sets how elements should be scrolled into view for interaction.
+   * @param {number} behavior The desired scroll behavior: either 0 to align with
+   *     the top of the viewport or 1 to align with the bottom.
+   * @return {!Options} A self reference.
+   */
+  setScrollBehavior(behavior) {
+    if(behavior && behavior !== SCROLL_BEHAVIOUR.TOP && behavior !== SCROLL_BEHAVIOUR.BOTTOM){
+      throw new error.InvalidArgumentError(`Element Scroll Behavior out of range. 
+      It should be either ${SCROLL_BEHAVIOUR.TOP} or ${SCROLL_BEHAVIOUR.BOTTOM}`);
+    }
+    this.options_[Key.ELEMENT_SCROLL_BEHAVIOR] = behavior;
+    return this;
+  }
 }
 
 
@@ -322,7 +370,7 @@ class Options extends Capabilities {
  */
 function locateSynchronously() {
   return process.platform === 'win32'
-      ? io.findInPath(IEDRIVER_EXE, true) : null;
+         ? io.findInPath(IEDRIVER_EXE, true) : null;
 }
 
 
@@ -343,22 +391,22 @@ function createServiceFromCapabilities(capabilities) {
         'ensure it can be found on your system PATH.');
   }
 
-  var args = [];
-  if (capabilities.has(Key.HOST)) {
-    args.push('--host=' + capabilities.get(Key.HOST));
-  }
-  if (capabilities.has(Key.LOG_FILE)) {
-    args.push('--log-file=' + capabilities.get(Key.LOG_FILE));
-  }
-  if (capabilities.has(Key.LOG_LEVEL)) {
-    args.push('--log-level=' + capabilities.get(Key.LOG_LEVEL));
-  }
-  if (capabilities.has(Key.EXTRACT_PATH)) {
-    args.push('--extract-path=' + capabilities.get(Key.EXTRACT_PATH));
-  }
-  if (capabilities.get(Key.SILENT)) {
-    args.push('--silent');
-  }
+ var args = [];
+ if (capabilities.has(Key.HOST)) {
+   args.push('--host=' + capabilities.get(Key.HOST));
+ }
+ if (capabilities.has(Key.LOG_FILE)) {
+   args.push('--log-file=' + capabilities.get(Key.LOG_FILE));
+ }
+ if (capabilities.has(Key.LOG_LEVEL)) {
+   args.push('--log-level=' + capabilities.get(Key.LOG_LEVEL));
+ }
+ if (capabilities.has(Key.EXTRACT_PATH)) {
+   args.push('--extract-path=' + capabilities.get(Key.EXTRACT_PATH));
+ }
+ if (capabilities.get(Key.SILENT)) {
+   args.push('--silent');
+ }
 
   var port = portprober.findFreePort();
   return new remote.DriverService(exe, {
@@ -437,5 +485,6 @@ exports.Level = Level;
 exports.ServiceBuilder = ServiceBuilder;
 exports.Key = Key;
 exports.VENDOR_COMMAND_PREFIX = OPTIONS_CAPABILITY_KEY;
+exports.Behavior = SCROLL_BEHAVIOUR;
 exports.locateSynchronously = locateSynchronously;
 

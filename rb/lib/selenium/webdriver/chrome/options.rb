@@ -209,6 +209,17 @@ module Selenium
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
           raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
         end
+
+        def generate_as_json(value, camelize_keys: true)
+          if value.is_a?(Hash)
+            value.each_with_object({}) do |(key, val), hash|
+              key = convert_json_key(key, camelize: camelize_keys)
+              hash[key] = generate_as_json(val, camelize_keys: key != 'prefs')
+            end
+          else
+            super
+          end
+        end
       end # Options
     end # Chrome
   end # WebDriver

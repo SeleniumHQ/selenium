@@ -23,6 +23,9 @@ namespace OpenQA.Selenium.Edge
         public static EdgeOptions DefaultOptions
         {
             get {
+                // The below path to the Edge Developer Channel executable is obviously hard-coded.
+                // On non-Windows OSes, and for custom install locations, you will need to add a
+                // property to the below options: BinaryLocation = <path to MSEdge.exe>
                 return new EdgeOptions()
                 {
                     UseChromium = true,

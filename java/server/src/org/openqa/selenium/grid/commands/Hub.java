@@ -25,13 +25,12 @@ import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -41,9 +40,17 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Route;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
 public class Hub extends TemplateGridCommand {
@@ -61,10 +68,13 @@ public class Hub extends TemplateGridCommand {
   }
 
   @Override
-  protected Set<Object> getFlagObjects() {
-    return ImmutableSet.of(
-      new BaseServerFlags(),
-      new EventBusFlags());
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(HTTPD_ROLE);
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.emptySet();
   }
 
   @Override
@@ -78,7 +88,7 @@ public class Hub extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) throws Exception {
+  protected void execute(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 
@@ -92,9 +102,16 @@ public class Hub extends TemplateGridCommand {
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
+    URL externalUrl;
+    try {
+      externalUrl = serverOptions.getExternalUri().toURL();
+    } catch (MalformedURLException e) {
+      throw new IllegalArgumentException(e);
+    }
+
     NetworkOptions networkOptions = new NetworkOptions(config);
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      serverOptions.getExternalUri().toURL(),
+      externalUrl,
       handler,
       networkOptions.getHttpClientFactory(tracer));
 
@@ -106,8 +123,9 @@ public class Hub extends TemplateGridCommand {
       null);
     handler.addHandler(distributor);
     Router router = new Router(tracer, clientFactory, sessions, distributor);
+    HttpHandler httpHandler = combine(router, Route.prefix("/wd/hub").to(combine(router)));
 
-    Server<?> server = new NettyServer(serverOptions, router);
+    Server<?> server = new NettyServer(serverOptions, httpHandler);
     server.start();
 
     BuildInfo info = new BuildInfo();

@@ -23,7 +23,8 @@ module Selenium
   module WebDriver
     module IE
       describe Driver do
-        let(:service) { instance_double(Service, start: true, uri: 'http://localhost') }
+        let(:service) { instance_double(Service, launch: service_manager) }
+        let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
         let(:valid_response) do
           {status: 200,
            body: {value: {sessionId: 0, capabilities: Remote::Capabilities.ie}}.to_json,
@@ -33,12 +34,12 @@ module Selenium
         def expect_request(body: nil, endpoint: nil)
           body = (body || {capabilities: {firstMatch: [browserName: "internet explorer",
                                                        platformName: 'windows']}}).to_json
-          endpoint ||= "#{service.uri}/session"
+          endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
 
         before do
-          allow(Service).to receive(:new).and_return(service)
+          allow(Service).to receive_messages(new: service)
         end
 
         it 'does not require any parameters' do

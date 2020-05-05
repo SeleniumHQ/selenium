@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.JreAppServer;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Route;
 
 import java.net.MalformedURLException;
 import java.net.URL;

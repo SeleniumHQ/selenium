@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -62,6 +63,9 @@ public class UrlChecker {
 
         long sleepMillis = MIN_POLL_INTERVAL_MS;
         while (true) {
+          if (Thread.interrupted()) {
+            throw new InterruptedException();
+          }
           for (URL url : urls) {
             try {
               log.fine("Polling " + url);
@@ -86,9 +90,10 @@ public class UrlChecker {
       throw new TimeoutException(String.format(
           "Timed out waiting for %s to be available after %d ms",
           Arrays.toString(urls), MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
-    } catch (RuntimeException e) {
-      throw e;
-    } catch (Exception e) {
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    } catch (ExecutionException e) {
       throw new RuntimeException(e);
     }
   }

@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Status;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -68,44 +73,60 @@ public class DriverServiceSessionFactory implements SessionFactory {
       return Optional.empty();
     }
 
-    DriverService service = builder.build();
-    try {
-      service.start();
-
-      HttpClient client = clientFactory.createClient(service.getUrl());
-
-      Command command = new Command(
-          null,
-          DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
-
-      ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
-
-      Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
-      Dialect upstream = result.getDialect();
-      Dialect downstream = downstreamDialects.contains(result.getDialect()) ?
-                           result.getDialect() :
-                           downstreamDialects.iterator().next();
-
-      Response response = result.createResponse();
-
-      return Optional.of(
-          new ProtocolConvertingSession(
-              tracer,
-              client,
-              new SessionId(response.getSessionId()),
-              service.getUrl(),
-              downstream,
-              upstream,
-              new ImmutableCapabilities((Map<?, ?>)response.getValue())) {
-            @Override
-            public void stop() {
-              service.stop();
-            }
-          });
-    } catch (Exception e) {
-      service.stop();
+    if (!test(sessionRequest.getCapabilities())) {
       return Optional.empty();
     }
 
+    Span parentSpan = tracer.getCurrentSpan();
+    Span span = tracer.spanBuilder("driver_service_factory.apply").setParent(parentSpan).startSpan();
+    CAPABILITIES.accept(span, sessionRequest.getCapabilities());
+
+    try (Scope scope = tracer.withSpan(span)) {
+      span.updateName("driver_service_factory.apply");
+      DriverService service = builder.build();
+      try {
+        service.start();
+
+        HttpClient client = clientFactory.createClient(service.getUrl());
+
+        Command command = new Command(
+            null,
+            DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
+
+        ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
+
+        Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
+        Dialect upstream = result.getDialect();
+        Dialect downstream = downstreamDialects.contains(result.getDialect()) ?
+                             result.getDialect() :
+                             downstreamDialects.iterator().next();
+
+        Response response = result.createResponse();
+
+        return Optional.of(
+            new ProtocolConvertingSession(
+                tracer,
+                client,
+                new SessionId(response.getSessionId()),
+                service.getUrl(),
+                downstream,
+                upstream,
+                new ImmutableCapabilities((Map<?, ?>)response.getValue())) {
+              @Override
+              public void stop() {
+                service.stop();
+              }
+            });
+      } catch (Exception e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.UNKNOWN.withDescription(e.getMessage()));
+        service.stop();
+        return Optional.empty();
+      }
+    } catch (Exception e) {
+      return Optional.empty();
+    } finally {
+      span.end();
+    }
   }
 }

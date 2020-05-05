@@ -27,7 +27,7 @@ class ForwardWebDriverCommand implements HttpHandler {
 
   private final Node node;
 
-  public ForwardWebDriverCommand(Node node) {
+  ForwardWebDriverCommand(Node node) {
     this.node = Objects.requireNonNull(node);
   }
 

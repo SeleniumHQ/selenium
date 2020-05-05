@@ -3,18 +3,50 @@ Rules for compiling NUnit tests.
 """
 load("@d2l_rules_csharp//csharp/private:providers.bzl", "AnyTargetFrameworkInfo")
 load("@d2l_rules_csharp//csharp/private:actions/assembly.bzl", "AssemblyAction")
+load("@d2l_rules_csharp//csharp/private:actions/write_runtimeconfig.bzl", "write_runtimeconfig")
 load(
     "@d2l_rules_csharp//csharp/private:common.bzl",
     "fill_in_missing_frameworks",
     "is_debug",
     "is_standard_framework",
+    "is_core_framework"
 )
 
-def _is_windows():
-    return select({
-        "@bazel_tools//src/conditions:windows": True,
-        "//conditions:default": False,
-    })
+def _generate_execution_script_file(ctx, target):
+    tfm = target.actual_tfm
+    test_file_name = target.out.basename
+    shell_file_extension = "sh"
+    execution_line = "$( cd \"$(dirname \"$BASH_SOURCE[0]}\")\" >/dev/null 2>&1 && pwd -P )/" + test_file_name + " $@"
+    if ctx.attr.is_windows:
+        shell_file_extension = "bat"
+        execution_line = "%~dp0" + test_file_name + " %*"
+    else:
+        if is_core_framework(tfm):
+            execution_line = "dotnet " + execution_line
+        else:
+            execution_line = "mono " + execution_line
+
+    toolchain = ctx.toolchains["@d2l_rules_csharp//csharp/private:toolchain_type"]
+    dotnet_sdk_location = toolchain.runtime.executable.dirname
+    environment = ""
+    if not ctx.attr.is_windows:
+        environment += "export DOTNET_CLI_HOME=%s\n" % dotnet_sdk_location
+        environment += "export APPDATA=%s\n" % dotnet_sdk_location
+        environment += "export PROGRAMFILES=%s\n" % dotnet_sdk_location
+        environment += "export USERPROFILE=%s\n" % dotnet_sdk_location
+        environment += "export DOTNET_CLI_TELEMETRY_OPTOUT=1\n"
+
+    shell_content = environment + execution_line
+
+    shell_file_name = "bazelout/%s/%s.%s" % (tfm, test_file_name, shell_file_extension)
+    shell_file = ctx.actions.declare_file(shell_file_name)
+    ctx.actions.write(
+        output = shell_file,
+        content = shell_content,
+        is_executable = True,
+    )
+
+    return shell_file
 
 def _copy_cmd(ctx, file_list, target_dir):
     dest_list = []
@@ -23,7 +55,7 @@ def _copy_cmd(ctx, file_list, target_dir):
       return dest_list
 
     shell_content = ""
-    batch_file_name = "%s/%s-cmd.bat" % (target_dir, ctx.attr.out)
+    batch_file_name = "%s/%s-copydeps.bat" % (target_dir, ctx.attr.out)
     bat = ctx.actions.declare_file(batch_file_name)
     for src_file in file_list:
         dest_file = ctx.actions.declare_file(target_dir + src_file.basename)
@@ -73,7 +105,7 @@ def _copy_dependency_files(ctx, provider_value):
     src_list =  provider_value.transitive_runfiles.to_list()
     target_dir = "bazelout/%s/" % (provider_value.actual_tfm)
     dest_list = []
-    if _is_windows():
+    if ctx.attr.is_windows:
         dest_list = _copy_cmd(ctx, src_list, target_dir)
     else:
         dest_list = _copy_bash(ctx, src_list, target_dir)
@@ -113,15 +145,23 @@ def _nunit_test_impl(ctx):
     result = providers.values()
     dependency_files_list = _copy_dependency_files(ctx, result[0])
 
+    runtimeconfig = write_runtimeconfig(ctx.actions, ctx.file.runtimeconfig_template, result[0].out.basename.replace("." + result[0].out.extension, ""), result[0].actual_tfm)
+
     data_runfiles = [] if ctx.attr.data == None else [d.files for d in ctx.attr.data]
 
+    shell_file = _generate_execution_script_file(ctx, result[0])
+
+    direct_runfiles = [result[0].out, result[0].pdb]
+    if runtimeconfig != None:
+        direct_runfiles += [runtimeconfig]
+
     result.append(DefaultInfo(
-        executable = result[0].out,
+        executable = shell_file,
         runfiles = ctx.runfiles(
-            files = [result[0].out, result[0].pdb],
+            files = direct_runfiles,
             transitive_files = depset(dependency_files_list, transitive = data_runfiles),
         ),
-        files = depset([result[0].out, result[0].refout, result[0].pdb]),
+        files = depset([result[0].out, result[0].refout, result[0].pdb, shell_file]),
     ))
 
     return result
@@ -170,6 +210,11 @@ nunit_test = rule(
             doc = "Whether to reference @net//:StandardReferences (the default set of references that MSBuild adds to every project).",
             default = True,
         ),
+        "runtimeconfig_template": attr.label(
+            doc = "A template file to use for generating runtimeconfig.json",
+            default = "@d2l_rules_csharp//csharp/private:runtimeconfig.json.tpl",
+            allow_single_file = True,
+        ),
         "_stdrefs": attr.label(
             doc = "The standard set of assemblies to reference.",
             default = "@net//:StandardReferences",
@@ -197,6 +242,7 @@ nunit_test = rule(
             providers = AnyTargetFrameworkInfo,
             default = "@NUnit//:nunit.framework",
         ),
+        "is_windows": attr.bool(default=False),
     },
     test = True,
     executable = True,

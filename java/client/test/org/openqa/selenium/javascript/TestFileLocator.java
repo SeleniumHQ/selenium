@@ -20,9 +20,9 @@ package org.openqa.selenium.javascript;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.System.getProperty;
+import static java.util.Collections.emptySet;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.build.InProject;
 
@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -45,11 +46,11 @@ class TestFileLocator {
 
   public static List<Path> findTestFiles() throws IOException {
     Path directory = getTestDirectory();
-    ImmutableSet<Path> excludedFiles = getExcludedFiles(directory);
+    Set<Path> excludedFiles = getExcludedFiles(directory);
     return findTestFiles(directory, excludedFiles);
   }
 
-  private static List<Path> findTestFiles(Path directory, ImmutableSet<Path> excludedFiles)
+  private static List<Path> findTestFiles(Path directory, Set<Path> excludedFiles)
     throws IOException {
     return Files.find(
       directory,
@@ -88,17 +89,16 @@ class TestFileLocator {
     return testDir;
   }
 
-  private static ImmutableSet<Path> getExcludedFiles(final Path testDirectory) {
+  private static Set<Path> getExcludedFiles(final Path testDirectory) {
     String excludedFiles = getProperty(TEST_EXCLUDES_PROPERTY);
     if (excludedFiles == null) {
-      return ImmutableSet.of();
+      return emptySet();
     }
 
     Iterable<String> splitExcludes = Splitter.on(',').omitEmptyStrings().split(excludedFiles);
 
-    return ImmutableSet.copyOf(
-        StreamSupport.stream(splitExcludes.spliterator(), false)
-            .map(testDirectory::resolve).collect(Collectors.toList()));
+    return StreamSupport.stream(splitExcludes.spliterator(), false)
+        .map(testDirectory::resolve).collect(Collectors.toSet());
   }
 
   public static String getTestFilePath(Path baseDir, Path testFile) {

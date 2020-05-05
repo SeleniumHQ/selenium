@@ -19,12 +19,19 @@ package org.openqa.selenium.grid.distributor.config;
 
 
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.Role;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.Set;
 
-public class DistributorFlags {
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+
+@AutoService(HasRoles.class)
+public class DistributorFlags implements HasRoles {
 
   @Parameter(names = {"--distributor", "-d"}, description = "Address of the distributor.")
   @ConfigValue(section = "distributor", name = "host")
@@ -47,4 +54,9 @@ public class DistributorFlags {
     description = "Host on which the distributor is listening.")
   @ConfigValue(section = "distributor", name = "hostname")
   private String distributorServerHostName;
+
+  @Override
+  public Set<Role> getRoles() {
+    return Collections.singleton(DISTRIBUTOR_ROLE);
+  }
 }

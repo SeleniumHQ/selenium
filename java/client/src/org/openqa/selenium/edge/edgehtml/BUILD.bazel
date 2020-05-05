@@ -14,6 +14,5 @@ java_export(
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium/edge:edgeium",
         "//java/client/src/org/openqa/selenium/remote",
-        artifact("com.google.guava:guava"),
     ],
 )

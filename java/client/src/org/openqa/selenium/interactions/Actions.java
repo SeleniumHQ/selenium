@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  */
 public class Actions {
 
-  private final static Logger LOG = Logger.getLogger(Actions.class.getName());
+  private static final Logger LOG = Logger.getLogger(Actions.class.getName());
   private final WebDriver driver;
 
   // W3C
@@ -351,7 +351,7 @@ public class Actions {
 
   /**
    * Moves the mouse to the middle of the element. The element is scrolled into view and its
-   * location is calculated using getBoundingClientRect.
+   * location is calculated using getClientRects.
    * @param target element to move to.
    * @return A self reference.
    */
@@ -365,7 +365,7 @@ public class Actions {
 
   /**
    * Moves the mouse to an offset from the center of the element.
-   * The element is scrolled into view and its location is calculated using getBoundingClientRect.
+   * The element is scrolled into view and its location is calculated using getClientRects.
    * @param target element to move to.
    * @param xOffset Offset from the center. A negative value means coordinates left from
    * the element.

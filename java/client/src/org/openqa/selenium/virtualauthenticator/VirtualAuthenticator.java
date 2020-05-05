@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
-import org.openqa.selenium.virtualauthenticator.Credential;
-
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents a virtual authenticator.
@@ -30,40 +27,40 @@ public interface VirtualAuthenticator {
   /**
    * @return the authenticator unique identifier.
    */
-  public String getId();
+  String getId();
 
   /**
    * Injects a credential into the authenticator.
    */
-  public void addCredential(Credential credential);
+  void addCredential(Credential credential);
 
   /**
    * @return the list of credentials owned by the authenticator.
    */
-  public List<Credential> getCredentials();
+  List<Credential> getCredentials();
 
   /**
    * Removes a credential from the authenticator.
    * @param credentialId the ID of the credential to be removed.
    */
-  public void removeCredential(byte[] credentialId);
+  void removeCredential(byte[] credentialId);
 
   /**
    * Removes a credential from the authenticator.
    * @param credentialId the ID of the credential to be removed as a base64url
    *                     string.
    */
-  public void removeCredential(String credentialId);
+  void removeCredential(String credentialId);
 
   /**
    * Removes all the credentials from the authenticator.
    */
-  public void removeAllCredentials();
+  void removeAllCredentials();
 
   /**
    * Sets whether the authenticator will simulate success or fail on user verification.
    * @param verified true if the authenticator will pass user verification,
    *                 false otherwise.
    */
-  public void setUserVerified(boolean verified);
+  void setUserVerified(boolean verified);
 }

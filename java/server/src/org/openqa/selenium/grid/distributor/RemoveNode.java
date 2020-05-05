@@ -29,7 +29,7 @@ class RemoveNode implements HttpHandler {
   private final Distributor distributor;
   private final UUID nodeId;
 
-  public RemoveNode(Distributor distributor, UUID nodeId) {
+  RemoveNode(Distributor distributor, UUID nodeId) {
     this.distributor = Objects.requireNonNull(distributor);
     this.nodeId = Objects.requireNonNull(nodeId);
   }

@@ -26,7 +26,7 @@ public class NodeAddedEvent extends Event {
 
   public static final Type NODE_ADDED = new Type("node-added");
 
-    public NodeAddedEvent(UUID nodeId) {
+  public NodeAddedEvent(UUID nodeId) {
     super(NODE_ADDED, nodeId);
   }
 }

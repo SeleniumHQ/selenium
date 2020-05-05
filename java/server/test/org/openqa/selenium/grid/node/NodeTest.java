@@ -36,6 +36,9 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -45,14 +48,21 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,6 +72,9 @@ import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class NodeTest {
@@ -211,7 +224,7 @@ public class NodeTest {
   }
 
   @Test
-  public void willRespondToWebDriverCommandsSentToOwnedSessions() throws IOException {
+  public void willRespondToWebDriverCommandsSentToOwnedSessions() {
     AtomicBoolean called = new AtomicBoolean(false);
 
     class Recording extends Session implements HttpHandler {
@@ -324,6 +337,96 @@ public class NodeTest {
     // let's play it safe.
     Wait<AtomicReference<Object>> wait = new FluentWait<>(obj).withTimeout(ofSeconds(2));
     wait.until(ref -> ref.get() != null);
+  }
+
+  @Test
+  public void canReturnStatus() {
+    Session session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
+        .orElseThrow(() -> new AssertionError("Cannot create session"));
+
+    HttpRequest req = new HttpRequest(GET, "/status");
+    HttpResponse res = node.execute(req);
+    assertThat(res.getStatus()).isEqualTo(200);
+    Map<String, Object> status = new Json().toType(string(res), MAP_TYPE);
+    assertThat(status).containsOnlyKeys("value");
+    Map<String, Object> value = (Map<String, Object>) status.get("value");
+    assertThat(value)
+        .containsEntry("ready", true)
+        .containsEntry("message", "Ready")
+        .containsKey("node");
+    Map<String, Object> nodeStatus = (Map<String, Object>) value.get("node");
+    assertThat(nodeStatus)
+        .containsKey("id")
+        .containsEntry("uri", "http://localhost:1234")
+        .containsEntry("maxSessions", (long) 2)
+        .containsKey("stereotypes")
+        .containsKey("sessions");
+    List<Map<String, Object>> stereotypes = (List<Map<String, Object>>) nodeStatus.get("stereotypes");
+    assertThat(stereotypes).hasSize(1);
+    assertThat(stereotypes.get(0))
+        .containsEntry("capabilities", Collections.singletonMap("browserName", "cheese"))
+        .containsEntry("count", (long) 3);
+    List<Map<String, Object>> sessions = (List<Map<String, Object>>) nodeStatus.get("sessions");
+    assertThat(sessions).hasSize(1);
+    assertThat(sessions.get(0))
+        .containsEntry("currentCapabilities", Collections.singletonMap("browserName", "cheese"))
+        .containsEntry("stereotype", Collections.singletonMap("browserName", "cheese"))
+        .containsKey("sessionId");
+  }
+
+  @Test
+  public void returns404ForAnUnknownCommand() {
+    HttpRequest req = new HttpRequest(GET, "/foo");
+    HttpResponse res = node.execute(req);
+    assertThat(res.getStatus()).isEqualTo(404);
+    Map<String, Object> content = new Json().toType(string(res), MAP_TYPE);
+    assertThat(content).containsOnlyKeys("value");
+    Map<String, Object> value = (Map<String, Object>) content.get("value");
+    assertThat(value)
+        .containsEntry("error", "unknown command")
+        .containsEntry("message", "Unable to find handler for (GET) /foo");
+  }
+
+  @Test
+  public void canUploadAFile() throws IOException {
+    Session session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
+        .orElseThrow(() -> new AssertionError("Cannot create session"));
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/file", session.getId()));
+    String hello = "Hello, world!";
+    String zip = Zip.zip(createTmpFile(hello));
+    String payload = new Json().toJson(Collections.singletonMap("file", zip));
+    req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+    node.execute(req);
+
+    File baseDir = getTemporaryFilesystemBaseDir(local.getTemporaryFilesystem(session.getId()));
+    assertThat(baseDir.listFiles()).hasSize(1);
+    File uploadDir = baseDir.listFiles()[0];
+    assertThat(uploadDir.listFiles()).hasSize(1);
+    assertThat(new String(Files.readAllBytes(uploadDir.listFiles()[0].toPath()))).isEqualTo(hello);
+
+    node.stop(session.getId());
+    assertThat(baseDir).doesNotExist();
+  }
+
+  private File createTmpFile(String content) {
+    try {
+      File f = File.createTempFile("webdriver", "tmp");
+      f.deleteOnExit();
+      Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
+      return f;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private File getTemporaryFilesystemBaseDir(TemporaryFilesystem tempFS) {
+    File tmp = tempFS.createTempDir("tmp", "");
+    File baseDir = tmp.getParentFile();
+    tempFS.deleteTempDir(tmp);
+    return baseDir;
   }
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {

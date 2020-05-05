@@ -45,10 +45,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class WebSocketServingTest {
@@ -114,7 +114,7 @@ public class WebSocketServingTest {
   public void shouldStillBeAbleToServeHttpTraffic() {
     server = new NettyServer(
       defaultOptions(),
-      req -> new HttpResponse().setContent(Contents.string("Brie!", UTF_8)),
+      req -> new HttpResponse().setContent(utf8String("Brie!")),
       (uri, sink) -> {
         if ("/foo".equals(uri)) {
           return Optional.of(msg -> sink.accept(new TextMessage("Peas!")));

@@ -33,7 +33,6 @@ import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 
 import java.io.UncheckedIOException;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -90,13 +89,14 @@ public abstract class Distributor implements Predicate<HttpRequest>, Routable, H
         return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
       }),
       post("/se/grid/distributor/session")
-        .to(() -> new CreateSession(json, this)),
+          .to(() -> new CreateSession(this)),
       post("/se/grid/distributor/node")
-        .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
+          .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
       delete("/se/grid/distributor/node/{nodeId}")
-        .to((Map<String, String> params) -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
+          .to(params -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
       get("/se/grid/distributor/status")
-        .to(() -> new GetDistributorStatus(json, this)).with(new SpanDecorator(tracer, req -> "distributor.status")));
+          .to(() -> new GetDistributorStatus(this))
+          .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
   public abstract CreateSessionResponse newSession(HttpRequest request)

@@ -39,6 +39,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
+        "//third_party/py:certifi",
         "//third_party/py:urllib3",
     ],
 )
@@ -132,7 +133,6 @@ py_library(
     ],
     data = [
         "//common/src/web",
-        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     deps = [],
 )
@@ -243,6 +243,9 @@ py_test_suite(
     tags = [
         "no-sandbox",
     ],
+    data = [
+        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    ],
     deps = [
         ":init-tree",
         ":selenium",
@@ -278,9 +281,9 @@ py_test_suite(
     name = "test-safari",
     size = "large",
     srcs = glob([
-        #        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/safari/**/*.py",
-        #        "test/selenium/webdriver/support/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
         "--instafail",
@@ -288,6 +291,7 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+        "exclusive"
     ],
     deps = [
         ":init-tree",

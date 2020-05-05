@@ -45,7 +45,7 @@ import java.util.Map;
 
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
-  private final static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
+  private static final HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
 
   private final URL remoteServer;
   private final HttpClient client;
@@ -79,7 +79,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       HttpClient.Factory httpClientFactory) {
     try {
       remoteServer = addressOfRemoteServer == null
-          ? new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/wd/hub"))
+          ? new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"))
           : addressOfRemoteServer;
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);

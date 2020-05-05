@@ -30,7 +30,6 @@ import static org.openqa.selenium.logging.LogType.CLIENT;
 import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.logging.LogType.SERVER;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 
@@ -51,6 +50,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +75,7 @@ public class JsonTest {
   @Test
   public void canRoundTripNumbers() {
     Map<String, Object> original = ImmutableMap.of(
-        "options", ImmutableMap.of("args", ImmutableList.of(1L, "hello")));
+        "options", ImmutableMap.of("args", Arrays.asList(1L, "hello")));
 
     Json json = new Json();
     String converted = json.toJson(original);
@@ -101,7 +101,7 @@ public class JsonTest {
   @Test
   public void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
     // This is needed since Grid expects each of the capabilities to be mutable
-    List<Capabilities> expected = ImmutableList.of(
+    List<Capabilities> expected = Arrays.asList(
         new ImmutableCapabilities("cheese", "brie"),
         new ImmutableCapabilities("peas", 42L));
 

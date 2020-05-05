@@ -128,7 +128,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   @BeforeClass
   public static void initializeServer() {
-    GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
   }
 
   public TestWatcher traceMethodName = new TestWatcher() {
