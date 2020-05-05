@@ -49,6 +49,14 @@ module Selenium
             Net::HTTP::Persistent.new name: 'webdriver', proxy: proxy
           end
 
+          def set_ssl_options(client)
+            # Net::HTTP::Persistent manages its own SSL config for older version
+            if client.respond_to? :use_ssl=
+              client.use_ssl = true
+              client.verify_mode = OpenSSL::SSL::VERIFY_NONE  
+            end
+          end
+
           def response_for(request)
             http.request server_url, request
           end

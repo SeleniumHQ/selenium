@@ -50,11 +50,8 @@ module Selenium
           def http
             @http ||= begin
               http = new_http_client
-              if server_url.scheme == 'https'
-                http.use_ssl = true
-                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-              end
-
+              set_ssl_options(new_http_client) if server_url.scheme == 'https'
+                
               # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
               http.open_timeout = open_timeout
               http.read_timeout = read_timeout if read_timeout
@@ -63,6 +60,8 @@ module Selenium
               http
             end
           end
+
+
 
           def start(http)
             http.start
@@ -137,6 +136,11 @@ module Selenium
             else
               Net::HTTP.new server_url.host, server_url.port
             end
+          end
+
+          def set_ssl_options(client)
+            client.use_ssl = true
+            client.verify_mode = OpenSSL::SSL::VERIFY_NONE  
           end
 
           def proxy
