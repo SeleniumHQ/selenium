@@ -45,18 +45,6 @@ public class BaseServerFlags implements HasRoles {
   @ConfigValue(section = "server", name = "max-threads")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
-  @Parameter(description = "Configure logging", hidden = true, names = "--configure-logging", arity = 1)
-  @ConfigValue(section = "logging", name = "enable")
-  private Boolean configureLogging = true;
-
-  @Parameter(description = "Use structured logs", names = "--structured-logs")
-  @ConfigValue(section = "logging", name = "structured-logs")
-  private Boolean structuredLogs = false;
-
-  @Parameter(description = "Use plain log lines", names = "--plain-logs", arity = 1)
-  @ConfigValue(section = "logging", name = "plain-logs")
-  private Boolean plainLogs = true;
-
   @Parameter(description = "Whether the Selenium server should allow web browser connections from any host", names = "--allow-cors")
   @ConfigValue(section = "server", name = "allow-cors")
   private Boolean allowCORS = false;
