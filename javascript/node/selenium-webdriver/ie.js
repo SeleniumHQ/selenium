@@ -227,7 +227,7 @@ class Options extends Capabilities {
   * @return {!Options} A self reference.
   */
 
- addArguments(...args) {
+ addBrowserCommandSwitches(...args) {
    let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || [];
    if(typeof current == 'string')
      current = current.split(" ");
