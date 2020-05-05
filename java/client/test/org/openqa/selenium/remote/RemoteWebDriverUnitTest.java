@@ -625,7 +625,7 @@ public class RemoteWebDriverUnitTest {
     CommandExecutor executor = prepareExecutorMock(
         echoCapabilities,
         valueResponder(Arrays.asList(
-            ImmutableMap.of("name", "cookie1", "value", "value1", "samesite", "Lax"),
+            ImmutableMap.of("name", "cookie1", "value", "value1", "sameSite", "Lax"),
             ImmutableMap.of("name", "cookie2", "value", "value2"))));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
