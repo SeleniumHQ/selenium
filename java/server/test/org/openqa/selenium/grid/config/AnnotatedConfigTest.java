@@ -124,6 +124,9 @@ public class AnnotatedConfigTest {
     // There's no way to tell the difference between the default values and the value having been
     // set to the default. Best not worry about it.
     class Defaults {
+      // We leave booleans out --- in order to allow us to differentiate
+      // "default value" from "user set value", we need to use `Boolean`
+      // instead.
       @ConfigValue(section = "default", name = "bool")
       private boolean bool;
       @ConfigValue(section = "default", name = "int")
@@ -134,8 +137,8 @@ public class AnnotatedConfigTest {
 
     Config config = new AnnotatedConfig(new Defaults());
 
-    assertFalse(config.get("default", "bool").isPresent());
-    assertFalse(config.getBool("default", "bool").isPresent());
+    assertTrue(config.get("default", "bool").isPresent());
+    assertTrue(config.getBool("default", "bool").isPresent());
     assertFalse(config.get("default", "int").isPresent());
     assertFalse(config.getInt("default", "int").isPresent());
     assertFalse(config.get("default", "string").isPresent());

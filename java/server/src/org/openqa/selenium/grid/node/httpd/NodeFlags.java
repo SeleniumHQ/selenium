@@ -36,7 +36,7 @@ public class NodeFlags implements HasRoles {
       names = {"--detect-drivers"}, arity = 1,
       description = "Autodetect which drivers are available on the current system, and add them to the node.")
   @ConfigValue(section = "node", name = "detect-drivers")
-  public boolean autoconfigure = true;
+  public Boolean autoconfigure = true;
 
   @Override
   public Set<Role> getRoles() {
