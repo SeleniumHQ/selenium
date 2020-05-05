@@ -297,6 +297,7 @@ closure_js_deps(
     visibility = [
         "//javascript:__pkg__",
         "//javascript/webdriver:__pkg__",
+        "//:__pkg__"
     ],
     deps = [
         ":action",

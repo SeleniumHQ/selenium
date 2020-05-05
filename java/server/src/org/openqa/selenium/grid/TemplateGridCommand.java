@@ -37,6 +37,7 @@ import java.io.PrintStream;
 import java.util.LinkedHashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 public abstract class TemplateGridCommand implements CliCommand {
 
@@ -50,12 +51,9 @@ public abstract class TemplateGridCommand implements CliCommand {
     allFlags.add(helpFlags);
     allFlags.add(configFlags);
 
-    ServiceLoader.load(HasRoles.class)
-      .forEach(flags -> {
-        if (!Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty()) {
-          allFlags.add(flags);
-        }
-      });
+    StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), true)
+      .filter(flags -> !Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty())
+      .forEach(allFlags::add);
 
     allFlags.addAll(getFlagObjects());
 

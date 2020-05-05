@@ -38,8 +38,7 @@ fi
 
 if [[ ! -z "$NPM" ]]; then
   if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^javascript/' >/dev/null; then
-    ./go --verbose node:atoms
-    cd javascript/node/selenium-webdriver; npm install; npm run $NPM
+    bazel test //javascript/node/selenium-webdriver:tests
   fi
 fi
 
