@@ -192,6 +192,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
+    boolean isIE = isInternetExplorer(driver);
 
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -204,7 +205,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
-    if (isInternetExplorer(driver)) {
+    if (isIE) {
       Alert alert = wait.until(alertIsPresent());
       alert.accept();
     }
