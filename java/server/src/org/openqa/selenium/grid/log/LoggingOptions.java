@@ -95,7 +95,7 @@ public class LoggingOptions {
     TracerSdkProvider tracerFactory = OpenTelemetrySdk.getTracerProvider();
 
     List<SpanProcessor> exporters = new LinkedList<>();
-    exporters.add(SimpleSpansProcessor.newBuilder(new SpanExporter() {
+    exporters.add(SimpleSpansProcessor.create(new SpanExporter() {
       @Override
       public ResultCode export(Collection<SpanData> spans) {
         spans.forEach(span -> {
@@ -105,17 +105,22 @@ public class LoggingOptions {
       }
 
       @Override
+      public ResultCode flush() {
+        return ResultCode.SUCCESS;
+      }
+
+      @Override
       public void shutdown() {
         // no-op
       }
-    }).build());
+    }));
 
     // The Jaeger exporter doesn't yet have a `TracerFactoryProvider`, so we
     //shall look up the class using reflection, and beg for forgiveness
     // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
-      exporter -> exporters.add(SimpleSpansProcessor.newBuilder(exporter).build()));
+      exporter -> exporters.add(SimpleSpansProcessor.create(exporter)));
     tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
 
     return new OpenTelemetryTracer(
