@@ -26,8 +26,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -585,7 +583,6 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
-    assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
     driver.get(pages.javascriptPage);
 
     WebElement silent = driver.findElement(By.name("suppress"));

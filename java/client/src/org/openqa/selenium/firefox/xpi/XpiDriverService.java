@@ -290,9 +290,9 @@ public class XpiDriverService extends FirefoxDriverService {
     Builder builder = new Builder().usingAnyFreePort();
 
     Stream.<Supplier<FirefoxProfile>>of(
-        () -> (FirefoxProfile) caps.getCapability(FirefoxDriver.PROFILE),
+        () -> (FirefoxProfile) caps.getCapability(FirefoxDriver.Capability.PROFILE),
         () -> { try {
-          return FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.PROFILE));
+          return FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.Capability.PROFILE));
         } catch (IOException ex) {
           throw new RuntimeException(ex);
         }},
@@ -326,7 +326,7 @@ public class XpiDriverService extends FirefoxDriverService {
         .findFirst()
         .ifPresent(builder::withProfile);
 
-    Object binary = caps.getCapability(FirefoxDriver.BINARY);
+    Object binary = caps.getCapability(FirefoxDriver.Capability.BINARY);
     if (binary != null) {
       FirefoxBinary actualBinary;
       if (binary instanceof FirefoxBinary) {
@@ -362,17 +362,17 @@ public class XpiDriverService extends FirefoxDriverService {
 
     @Override
     public int score(Capabilities capabilities) {
-      if (capabilities.is(FirefoxDriver.MARIONETTE)) {
+      if (capabilities.is(FirefoxDriver.Capability.MARIONETTE)) {
         return 0;
       }
 
       int score = 0;
 
-      if (capabilities.getCapability(FirefoxDriver.BINARY) != null) {
+      if (capabilities.getCapability(FirefoxDriver.Capability.BINARY) != null) {
         score++;
       }
 
-      if (capabilities.getCapability(FirefoxDriver.PROFILE) != null) {
+      if (capabilities.getCapability(FirefoxDriver.Capability.PROFILE) != null) {
         score++;
       }
 
@@ -394,7 +394,7 @@ public class XpiDriverService extends FirefoxDriverService {
       FirefoxProfile profile = options.getProfile();
       if (profile == null) {
         profile = new FirefoxProfile();
-        options.setCapability(FirefoxDriver.PROFILE, profile);
+        options.setCapability(FirefoxDriver.Capability.PROFILE, profile);
       }
       withBinary(options.getBinary());
       withProfile(profile);

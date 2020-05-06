@@ -18,7 +18,6 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -31,7 +30,6 @@ import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
 
 public class TextHandlingTest extends JUnit4TestBase {
 
@@ -233,8 +231,6 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
-    assumeFalse("IE version < 9 doesn't support application/xhtml+xml mime type", TestUtilities.isOldIe(driver));
-
     driver.get(pages.xhtmlFormPage);
     String text = driver.findElement(By.id("self-closed")).getText();
 

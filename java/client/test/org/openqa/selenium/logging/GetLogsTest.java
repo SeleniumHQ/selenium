@@ -18,9 +18,6 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.TestUtilities.getChromeVersion;
-import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -63,7 +60,6 @@ public class GetLogsTest extends JUnit4TestBase {
 
   @Test
   public void logBufferShouldBeResetAfterEachGetLogCall() {
-    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -81,7 +77,6 @@ public class GetLogsTest extends JUnit4TestBase {
 
   @Test
   public void differentLogsShouldNotContainTheSameLogEntries() {
-    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -124,7 +119,6 @@ public class GetLogsTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   public void turningOffLogShouldMeanNoLogMessages() {
-    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       createWebDriverWithLogging(logType, Level.OFF);

@@ -95,7 +95,7 @@
     <ProjectReference Include="..\webdriver\WebDriver.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
+  <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">
     <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js\injectableSelenium.js">
       <Visible>False</Visible>
       <LogicalName>injectableSelenium.js</LogicalName>

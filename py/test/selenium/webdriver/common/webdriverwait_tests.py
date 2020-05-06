@@ -167,6 +167,7 @@ def testExpectedConditionTitleContains(driver, pages):
         WebDriverWait(driver, 0.7).until(EC.title_contains("blanket"))
 
 
+@pytest.mark.xfail_safari
 def testExpectedConditionVisibilityOfElementLocated(driver, pages):
     pages.load("javascriptPage.html")
     with pytest.raises(TimeoutException):
@@ -176,6 +177,7 @@ def testExpectedConditionVisibilityOfElementLocated(driver, pages):
     assert element.is_displayed() is True
 
 
+@pytest.mark.xfail_safari
 def testExpectedConditionVisibilityOf(driver, pages):
     pages.load("javascriptPage.html")
     hidden = driver.find_element(By.ID, 'clickToHide')
@@ -235,6 +237,7 @@ def testExpectedConditionInvisiblityOfElementLocated(driver, pages):
     assert element.is_displayed() is False
 
 
+@pytest.mark.xfail_safari
 def testExpectedConditionElementToBeClickable(driver, pages):
     pages.load("javascriptPage.html")
     with pytest.raises(TimeoutException):

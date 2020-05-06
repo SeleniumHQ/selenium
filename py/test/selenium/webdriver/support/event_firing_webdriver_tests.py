@@ -78,6 +78,7 @@ def test_should_fire_navigation_events(driver, log, pages):
             b"after_navigate_forward") == log.getvalue()
 
 
+@pytest.mark.xfail_safari
 def test_should_fire_click_event(driver, log, pages):
 
     class EventListener(AbstractEventListener):
@@ -232,6 +233,7 @@ def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
     assert to_click.get_attribute('value') == 'Clicked'
 
 
+@pytest.mark.xfail_safari
 def test_can_use_key_input_with_event_firing_webdriver(driver, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     pages.load("javascriptPage.html")

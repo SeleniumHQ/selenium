@@ -148,7 +148,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.PROFILE, profile);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.PROFILE, profile);
 
     localDriver = new FirefoxDriver(caps);
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
@@ -158,7 +158,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Ignore(value = MARIONETTE, reason = "Assumed to be covered by tests for GeckoDriverService")
   public void canSetBinaryInCapabilities() {
     FirefoxBinary binary = spy(new FirefoxBinary());
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.BINARY, binary);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binary);
 
     localDriver = new FirefoxDriver(caps);
 
@@ -168,7 +168,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void canSetBinaryPathInCapabilities() {
     String binPath = new FirefoxBinary().getPath();
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.BINARY, binPath);
+    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binPath);
 
     localDriver = new FirefoxDriver(caps);
   }

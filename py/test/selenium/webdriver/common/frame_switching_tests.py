@@ -184,6 +184,7 @@ def testShouldBeAbleToSwitchToParentFrame(driver, pages):
     assert driver.find_element(By.ID, "pageNumber").text == "1"
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "fourth"))
@@ -229,6 +230,7 @@ def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(driver, pages):
                            reason='https://github.com/mozilla/geckodriver/issues/610')
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='https://github.com/mozilla/geckodriver/issues/610')
+@pytest.mark.xfail_safari
 def testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(0)
@@ -373,6 +375,7 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='https://github.com/mozilla/geckodriver/issues/614')
 @pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
+@pytest.mark.xfail_safari
 def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
@@ -398,6 +401,7 @@ def testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame(driver, pages):
 
 
 @pytest.mark.xfail_chrome(reason="Fails on Travis")
+@pytest.mark.xfail_safari
 def testShouldNotSwitchMagicallyToTheTopWindow(driver, pages):
     pages.load("frame_switching_tests/bug4876.html")
     driver.switch_to.frame(0)

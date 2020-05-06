@@ -150,7 +150,6 @@ task chrome: ['//java/client/src/org/openqa/selenium/chrome']
 task grid: [:'selenium-server-standalone']
 task ie: ['//java/client/src/org/openqa/selenium/ie']
 task firefox: ['//java/client/src/org/openqa/selenium/firefox']
-task 'debug-server': '//java/client/test/org/openqa/selenium/environment:appserver:run'
 task remote: %i[remote_server remote_client]
 task remote_client: ['//java/client/src/org/openqa/selenium/remote']
 task remote_server: ['//java/server/src/org/openqa/selenium/remote/server']
@@ -323,18 +322,6 @@ task javadocs: %i[//java/server/src/org/openqa/selenium/grid:all-javadocs] do
     EOF
     )
   }
-end
-
-task py_prep_for_install_release: [
-  :chrome,
-  'py:prep'
-]
-
-task py_docs: 'py:docs'
-task py_install: 'py:install'
-
-task py_release: :py_prep_for_install_release do
-  sh 'python setup.py sdist bdist_wheel upload'
 end
 
 file 'cpp/iedriver/sizzle.h' => ['//third_party/js/sizzle:sizzle:header'] do
@@ -533,7 +520,6 @@ namespace :node do
     //javascript/atoms/fragments:find-elements
     //javascript/atoms/fragments:is-displayed
     //javascript/webdriver/atoms:get-attribute
-    //javascript/atoms/fragments:find-elements
   ]
 
   task atoms: atom_list do
@@ -542,7 +528,6 @@ namespace :node do
 
     puts 'rake outs are below'
     p rake_outs = [
-      Rake::Task['//javascript/atoms/fragments:find-elements'].out,
       Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
       Rake::Task['//javascript/webdriver/atoms:get-attribute'].out,
       Rake::Task['//javascript/atoms/fragments:find-elements'].out
@@ -620,7 +605,7 @@ namespace :py do
     end
   end
 
-  %w[chrome ff marionette ie edge blackberry remote_firefox safari].each do |browser|
+  %w[chrome ff marionette ie edge remote_firefox safari].each do |browser|
     browser_data = SeleniumRake::Browsers::BROWSERS[browser]
     deps = browser_data[:deps] || []
     deps += [:prep]
