@@ -4,7 +4,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 def selenium_java_deps():
     jetty_version = "9.4.28.v20200408"
     netty_version = "4.1.49.Final"
-    opentelemetry_version = "0.2.4"
+    opentelemetry_version = "0.3.0"
 
     maven_install(
         artifacts = [
@@ -18,6 +18,7 @@ def selenium_java_deps():
             "com.squareup.okhttp3:okhttp:4.5.0",
             "com.squareup.okio:okio:2.6.0",
             "com.typesafe.netty:netty-reactive-streams:2.0.4",
+            "io.grpc:grpc-context:1.28.0",
             "io.lettuce:lettuce-core:5.2.2.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,

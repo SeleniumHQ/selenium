@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
+import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
@@ -33,6 +34,7 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -195,7 +197,7 @@ public class TracerTest {
     TracerSdkProvider provider = OpenTelemetrySdk.getTracerProvider();
     provider.addSpanProcessor(SimpleSpansProcessor.newBuilder(new SpanExporter() {
       @Override
-      public ResultCode export(List<SpanData> spans) {
+      public ResultCode export(Collection<SpanData> spans) {
         exportTo.addAll(spans);
         return ResultCode.SUCCESS;
       }
@@ -208,6 +210,6 @@ public class TracerTest {
     io.opentelemetry.trace.Tracer otTracer = provider.get("get");
     return new OpenTelemetryTracer(
       otTracer,
-      otTracer.getHttpTextFormat());
+      OpenTelemetry.getPropagators().getHttpTextFormat());
   }
 }

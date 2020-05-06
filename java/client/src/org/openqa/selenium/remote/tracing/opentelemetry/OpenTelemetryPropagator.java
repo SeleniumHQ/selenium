@@ -18,8 +18,10 @@
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import com.google.common.base.Preconditions;
+import io.grpc.Context;
 import io.opentelemetry.context.propagation.HttpTextFormat;
-import io.opentelemetry.trace.SpanContext;
+import io.opentelemetry.trace.DefaultSpan;
+import io.opentelemetry.trace.SpanId;
 import io.opentelemetry.trace.Tracer;
 import io.opentelemetry.trace.TracingContextUtils;
 import org.openqa.selenium.remote.tracing.Propagator;
@@ -31,9 +33,9 @@ import java.util.function.BiFunction;
 class OpenTelemetryPropagator implements Propagator {
 
   private final Tracer tracer;
-  private final HttpTextFormat<SpanContext> httpTextFormat;
+  private final HttpTextFormat httpTextFormat;
 
-  OpenTelemetryPropagator(Tracer tracer, HttpTextFormat<SpanContext> httpTextFormat) {
+  OpenTelemetryPropagator(Tracer tracer, HttpTextFormat httpTextFormat) {
     this.tracer = Objects.requireNonNull(tracer);
     this.httpTextFormat = Objects.requireNonNull(httpTextFormat);
   }
@@ -61,11 +63,14 @@ class OpenTelemetryPropagator implements Propagator {
     Preconditions.checkArgument(
       existing instanceof OpenTelemetryContext, "Expected OpenTelemetry to be used: " + existing);
 
-    SpanContext extracted = httpTextFormat.extract(carrier, getter::apply);
+    Context extracted =
+      httpTextFormat.extract(
+        ((OpenTelemetryContext) existing).getContext(), carrier, getter::apply);
 
     // If the extracted context is the root context, then we continue to be a
     // child span of the existing context.
-    if (extracted == null || SpanContext.getInvalid().getSpanId().equals(extracted.getSpanId())) {
+    SpanId id = TracingContextUtils.getSpan(extracted).getContext().getSpanId();
+    if (DefaultSpan.getInvalid().getContext().getSpanId().equals(id)) {
       return (OpenTelemetryContext) existing;
     }
 

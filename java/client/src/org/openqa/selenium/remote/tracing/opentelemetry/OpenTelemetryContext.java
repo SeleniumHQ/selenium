@@ -18,10 +18,13 @@
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.grpc.Context;
 import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.DefaultSpan;
 import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.Tracer;
+import io.opentelemetry.trace.TracingContextUtils;
 import org.openqa.selenium.remote.tracing.SpanId;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
@@ -30,11 +33,19 @@ import java.util.concurrent.Callable;
 
 public class OpenTelemetryContext implements TraceContext {
   private final Tracer tracer;
+  private final Context context;
   private final SpanContext spanContext;
 
-  public OpenTelemetryContext(Tracer tracer, SpanContext spanContext) {
+  public OpenTelemetryContext(Tracer tracer, Context context) {
     this.tracer = Objects.requireNonNull(tracer);
-    this.spanContext = Objects.requireNonNull(spanContext);
+    this.context = Objects.requireNonNull(context);
+
+    spanContext = TracingContextUtils.getSpan(context).getContext();
+  }
+
+  @Override
+  public SpanId getId() {
+    return new SpanId(spanContext.getSpanId());
   }
 
   @SuppressWarnings("MustBeClosedChecker")
@@ -42,36 +53,32 @@ public class OpenTelemetryContext implements TraceContext {
   public OpenTelemetrySpan createSpan(String name) {
     Objects.requireNonNull(name, "Name to use must be set.");
 
-    Span span = tracer.spanBuilder(name).setParent(this.spanContext).startSpan();
+    Span span = tracer.spanBuilder(name).setParent(spanContext).startSpan();
+    Context prev = Context.current();
 
     // Now update the context
     Scope scope = tracer.withSpan(span);
 
-    return new OpenTelemetrySpan(tracer, span, scope);
-  }
+    if (prev.equals(Context.current())) {
+      throw new IllegalStateException("Context has not been changed");
+    }
 
-  @Override
-  public SpanId getId() {
-    return new SpanId(getContext().getSpanId());
+    return new OpenTelemetrySpan(tracer, Context.current(), span, scope);
   }
 
   @VisibleForTesting
-  SpanContext getContext() {
-    return spanContext;
+  Context getContext() {
+    return context;
   }
 
   @Override
   public Runnable wrap(Runnable runnable) {
-    Objects.requireNonNull(runnable, "Runnable to use must be set");
-
-    throw new UnsupportedOperationException("wrap");
+    return context.wrap(runnable);
   }
 
   @Override
   public <V> Callable<V> wrap(Callable<V> callable) {
-    Objects.requireNonNull(callable, "Callable to use must be set");
-
-    throw new UnsupportedOperationException("wrap");
+    return context.wrap(callable);
   }
 
   @Override
@@ -80,22 +87,22 @@ public class OpenTelemetryContext implements TraceContext {
       return false;
     }
     OpenTelemetryContext that = (OpenTelemetryContext) o;
-    return Objects.equals(this.spanContext, that.spanContext);
+    return Objects.equals(this.context, that.context);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(spanContext);
+    return Objects.hash(context);
   }
 
   @Override
   public String toString() {
-    SpanContext context = spanContext;
 
     return "OpenTelemetryContext{" +
       "tracer=" + tracer +
-      ", span id=" + context.getSpanId() +
-      ", trace id=" + context.getTraceId() +
+      ", context=" + this.context +
+      ", span id=" + spanContext.getSpanId() +
+      ", trace id=" + spanContext.getTraceId() +
       '}';
   }
 }

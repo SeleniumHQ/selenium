@@ -10,6 +10,7 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing",
         artifact("com.google.guava:guava"),
+        artifact("io.grpc:grpc-context"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("io.opentelemetry:opentelemetry-context-prop"),
         artifact("io.opentelemetry:opentelemetry-sdk"),

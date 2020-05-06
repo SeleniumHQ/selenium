@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.context.propagation.HttpTextFormat;
+import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
@@ -25,13 +25,13 @@ import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.trace.SpanContext;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,7 +97,7 @@ public class LoggingOptions {
     List<SpanProcessor> exporters = new LinkedList<>();
     exporters.add(SimpleSpansProcessor.newBuilder(new SpanExporter() {
       @Override
-      public ResultCode export(List<SpanData> spans) {
+      public ResultCode export(Collection<SpanData> spans) {
         spans.forEach(span -> {
           LOG.fine(String.valueOf(span));
         });
@@ -118,9 +118,9 @@ public class LoggingOptions {
       exporter -> exporters.add(SimpleSpansProcessor.newBuilder(exporter).build()));
     tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
 
-    io.opentelemetry.trace.Tracer otTracer = tracerFactory.get("default");
-    HttpTextFormat<SpanContext> httpTextFormat = otTracer.getHttpTextFormat();
-    return new OpenTelemetryTracer(otTracer, httpTextFormat);
+    return new OpenTelemetryTracer(
+      tracerFactory.get("default"),
+      OpenTelemetry.getPropagators().getHttpTextFormat());
   }
 
   public void configureLogging() {

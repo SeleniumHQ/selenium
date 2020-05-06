@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
-import com.google.common.base.Throwables;
 import com.google.common.primitives.Primitives;
+import io.grpc.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.Tracer;
@@ -26,27 +26,18 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 
 import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, Span {
 
   private static final Logger LOG = Logger.getLogger(OpenTelemetrySpan.class.getName());
-  private final io.opentelemetry.trace.Tracer tracer;
   private final io.opentelemetry.trace.Span span;
   private final Scope scope;
-  private Throwable stackTraceOfClose;
 
-  public OpenTelemetrySpan(Tracer tracer, io.opentelemetry.trace.Span span, Scope scope) {
-    super(tracer, span.getContext());
-    this.tracer = Objects.requireNonNull(tracer);
+  public OpenTelemetrySpan(Tracer tracer, Context context, io.opentelemetry.trace.Span span, Scope scope) {
+    super(tracer, context);
     this.span = Objects.requireNonNull(span);
     this.scope = Objects.requireNonNull(scope);
-
-    span.setAttribute("thread.id", Thread.currentThread().getId());
-
-    LOG.log(Level.INFO, String.format("New span %d - %s", System.identityHashCode(this), span), new Throwable());
   }
 
   @Override
@@ -130,42 +121,9 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
   }
 
   @Override
-  public Runnable wrap(Runnable runnable) {
-    Objects.requireNonNull(runnable, "Runnable to use must be set.");
-
-    return () -> {
-      try (Scope scope = tracer.withSpan(span)) {
-        runnable.run();
-      }
-    };
-  }
-
-  @Override
-  public <V> Callable<V> wrap(Callable<V> callable) {
-    Objects.requireNonNull(callable, "Callable to use must be set.");
-
-    return () -> {
-      try (Scope scope = tracer.withSpan(span)) {
-        return callable.call();
-      }
-    };
-  }
-
-  @Override
   public void close() {
-    if (stackTraceOfClose != null) {
-      String message = String.format(
-        "Closing span more than once. Original stacktrace of close:\n%s",
-        Throwables.getStackTraceAsString(stackTraceOfClose));
-
-      LOG.log(Level.WARNING, message, new Throwable());
-      throw new IllegalStateException(message);
-    }
-
     scope.close();
     span.end();
-
-    stackTraceOfClose = new Throwable();
   }
 
   @Override

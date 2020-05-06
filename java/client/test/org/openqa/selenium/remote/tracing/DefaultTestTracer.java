@@ -23,7 +23,8 @@ import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 public class DefaultTestTracer {
 
   public static Tracer createTracer() {
-    io.opentelemetry.trace.Tracer otTracer = OpenTelemetry.getTracerProvider().get("default");
-    return new OpenTelemetryTracer(otTracer, otTracer.getHttpTextFormat());
+    return new OpenTelemetryTracer(
+      OpenTelemetry.getTracerProvider().get("default"),
+      OpenTelemetry.getPropagators().getHttpTextFormat());
   }
 }

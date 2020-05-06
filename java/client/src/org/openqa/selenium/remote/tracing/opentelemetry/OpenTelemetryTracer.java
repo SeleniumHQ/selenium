@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
+import io.grpc.Context;
 import io.opentelemetry.context.propagation.HttpTextFormat;
-import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
@@ -38,16 +38,11 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
 
   @Override
   public TraceContext getCurrentContext() {
-    Span currentSpan = tracer.getCurrentSpan();
-    return new OpenTelemetryContext(tracer, currentSpan.getContext());
+    return new OpenTelemetryContext(tracer, Context.current());
   }
 
   @Override
   public Propagator getPropagator() {
     return telemetryFormat;
-  }
-
-  io.opentelemetry.trace.Tracer getTracer() {
-    return tracer;
   }
 }
