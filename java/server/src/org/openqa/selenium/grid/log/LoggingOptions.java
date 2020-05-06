@@ -28,6 +28,7 @@ import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.trace.SpanContext;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
 import java.util.Arrays;
@@ -69,6 +70,12 @@ public class LoggingOptions {
   }
 
   public Tracer getTracer() {
+    boolean tracingEnabled = config.getBool("logging", "tracing").orElse(true);
+    if (!tracingEnabled) {
+      LOG.info("Using null tracer");
+      return new NullTracer();
+    }
+
     LOG.info("Using OpenTelemetry for tracing");
 
     if (tracer != null) {

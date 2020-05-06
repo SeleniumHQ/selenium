@@ -4,6 +4,7 @@ java_library(
     name = "tracing",
     exports = [
         ":tracing-lib",
+        "//java/client/src/org/openqa/selenium/remote/tracing/empty",
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
