@@ -6,7 +6,7 @@
     - setEdgePath
     - setEdgeChromium
     - setScrollBehavior
-    - Supports adding multiple command-line switches using options.addArguments()
+    - For consistent naming, deprecating `addArguments(...args)` in favor of `addBrowserCommandSwitches(...args)`
 * Add relative locators
 
 ### API Changes
