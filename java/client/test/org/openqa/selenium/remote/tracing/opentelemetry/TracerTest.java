@@ -135,6 +135,7 @@ public class TracerTest {
           child = parent.createSpan("child");
           assertThat(child.getId()).isEqualTo(tracer.getCurrentContext().getId());
         } finally {
+          assert child != null;
           child.close();
         }
 
@@ -195,17 +196,21 @@ public class TracerTest {
 
   private Tracer createTracer(List<SpanData> exportTo) {
     TracerSdkProvider provider = OpenTelemetrySdk.getTracerProvider();
-    provider.addSpanProcessor(SimpleSpansProcessor.newBuilder(new SpanExporter() {
+    provider.addSpanProcessor(SimpleSpansProcessor.create(new SpanExporter() {
       @Override
       public ResultCode export(Collection<SpanData> spans) {
         exportTo.addAll(spans);
         return ResultCode.SUCCESS;
       }
 
+      @Override public ResultCode flush() {
+        return ResultCode.SUCCESS;
+      }
+
       @Override
       public void shutdown() {
       }
-    }).build());
+    }));
 
     io.opentelemetry.trace.Tracer otTracer = provider.get("get");
     return new OpenTelemetryTracer(
