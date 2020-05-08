@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.node.remote;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
@@ -37,6 +36,7 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -95,7 +95,7 @@ public class RemoteNode extends Node {
     Objects.requireNonNull(sessionRequest, "Capabilities for session are not set");
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
-    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
     req.setContent(asJson(sessionRequest));
 
     HttpResponse res = client.execute(req);
@@ -108,7 +108,7 @@ public class RemoteNode extends Node {
     Objects.requireNonNull(id, "Session ID has not been set");
 
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/owner/" + id);
-    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -120,7 +120,7 @@ public class RemoteNode extends Node {
     Objects.requireNonNull(id, "Session ID has not been set");
 
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/session/" + id);
-    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -141,7 +141,7 @@ public class RemoteNode extends Node {
   public void stop(SessionId id) throws NoSuchSessionException {
     Objects.requireNonNull(id, "Session ID has not been set");
     HttpRequest req = new HttpRequest(DELETE, "/se/grid/node/session/" + id);
-    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -151,7 +151,7 @@ public class RemoteNode extends Node {
   @Override
   public NodeStatus getStatus() {
     HttpRequest req = new HttpRequest(GET, "/status");
-    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 

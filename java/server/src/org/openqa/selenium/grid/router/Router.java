@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.json.Json;
@@ -27,6 +26,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Objects;
 

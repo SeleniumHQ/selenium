@@ -17,28 +17,32 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
+import java.util.Objects;
 
-import java.util.concurrent.Callable;
+public class SpanId {
 
-public class TracedCallable<T> implements Callable<T> {
+  private final Object underlyingId;
 
-  private final Tracer tracer;
-  private final Span span;
-  private final Callable<T> delegate;
-
-  public TracedCallable(Tracer tracer, Span span, Callable<T> delegate) {
-    this.tracer = tracer;
-    this.span = span;
-    this.delegate = delegate;
+  public SpanId(Object underlyingId) {
+    this.underlyingId = Objects.requireNonNull(underlyingId);
   }
 
   @Override
-  public T call() throws Exception {
-    try (Scope scope = tracer.withSpan(span)) {
-      return delegate.call();
+  public String toString() {
+    return underlyingId.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof SpanId)) {
+      return false;
     }
+    SpanId that = (SpanId) o;
+    return Objects.equals(this.underlyingId, that.underlyingId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(underlyingId);
   }
 }

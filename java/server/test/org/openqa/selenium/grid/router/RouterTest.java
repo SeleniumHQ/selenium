@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -40,6 +38,8 @@ import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -64,7 +64,7 @@ public class RouterTest {
 
   @Before
   public void setUp() {
-    tracer = OpenTelemetry.getTracerProvider().get("default");
+    tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();

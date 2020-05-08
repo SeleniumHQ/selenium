@@ -20,16 +20,18 @@ package org.openqa.selenium.grid.distributor.local;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Status;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.*;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeRejectedEvent;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -39,6 +41,9 @@ import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -106,10 +111,9 @@ public class LocalDistributor extends Distributor {
   @Override
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
-    Span span = newSpanAsChildOf(tracer, request, "distributor.new_session").startSpan();
 
+    Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
     try (
-      Scope scope = tracer.withSpan(span);
       Reader reader = reader(request);
       NewSessionPayload payload = NewSessionPayload.create(reader)) {
       Objects.requireNonNull(payload, "Requests to process must be set.");
@@ -179,7 +183,7 @@ public class LocalDistributor extends Distributor {
       span.setStatus(Status.UNKNOWN.withDescription(e.getMessage()));
       throw new SessionNotCreatedException(e.getMessage(), e);
     } finally {
-      span.end();
+      span.close();
     }
   }
 

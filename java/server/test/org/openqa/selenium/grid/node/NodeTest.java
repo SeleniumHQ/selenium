@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -45,6 +43,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -90,7 +90,7 @@ public class NodeTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    tracer = OpenTelemetry.getTracerProvider().get("default");
+    tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
     clientFactory = HttpClient.Factory.createDefault();
@@ -342,9 +342,9 @@ public class NodeTest {
 
   @Test
   public void canReturnStatus() {
-    Session session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new AssertionError("Cannot create session"));
+    node.newSession(createSessionRequest(caps))
+      .map(CreateSessionResponse::getSession)
+      .orElseThrow(() -> new AssertionError("Cannot create session"));
 
     HttpRequest req = new HttpRequest(GET, "/status");
     HttpResponse res = node.execute(req);

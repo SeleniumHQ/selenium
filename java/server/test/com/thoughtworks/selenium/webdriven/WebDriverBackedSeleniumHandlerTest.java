@@ -20,8 +20,6 @@ package com.thoughtworks.selenium.webdriven;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +32,9 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.jre.server.JreServer;
 import org.openqa.selenium.remote.server.ActiveSessions;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.testing.Pages;
-
-import java.net.MalformedURLException;
 
 import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -51,8 +49,8 @@ public class WebDriverBackedSeleniumHandlerTest {
   private Pages pages;
 
   @Before
-  public void setUpServer() throws MalformedURLException {
-    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
+  public void setUpServer() {
+    Tracer tracer = DefaultTestTracer.createTracer();
 
     // Register the emulator
     ActiveSessions sessions = new ActiveSessions(3, MINUTES);

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.config;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.primitives.Primitives;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -105,7 +106,7 @@ public class AnnotatedConfig implements Config {
       throw new ConfigException("Collection fields may not be used for configuration: " + value);
     }
 
-    if (Boolean.FALSE.equals(value)) {
+    if (Boolean.FALSE.equals(value) && !Primitives.isWrapperType(value.getClass())) {
       return null;
     }
 

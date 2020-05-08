@@ -2,16 +2,26 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 
 java_library(
     name = "tracing",
-    srcs = glob(["*.java"]),
+    exports = [
+        ":tracing-lib",
+        "//java/client/src/org/openqa/selenium/remote/tracing/empty",
+    ],
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote/tracing:__subpackages__",
         "//java/client/test/org/openqa/selenium/remote/tracing:__subpackages__",
     ],
+)
+
+java_library(
+    name = "tracing-lib",
+    srcs = glob(["*.java"]),
     exports = [
         # Exposed by tracing APIs
         "//java/client/src/org/openqa/selenium/remote/http",
-        artifact("io.opentelemetry:opentelemetry-api"),
-        artifact("io.opentelemetry:opentelemetry-context-prop"),
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote/tracing/empty:__pkg__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",

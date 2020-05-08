@@ -13,6 +13,7 @@ java_test_suite(
         "//java/client/src/com/thoughtworks/selenium",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/com/thoughtworks/selenium/webdriven",
         "//java/server/src/org/openqa/selenium/remote/server",

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
@@ -34,6 +33,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.net.URI;

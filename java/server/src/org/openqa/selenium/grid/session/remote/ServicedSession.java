@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.session.remote;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -35,6 +34,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

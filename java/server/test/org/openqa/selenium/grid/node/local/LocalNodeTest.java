@@ -17,13 +17,8 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.remote.Dialect.W3C;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -38,12 +33,15 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.remote.Dialect.W3C;
 
 public class LocalNodeTest {
 
@@ -52,7 +50,7 @@ public class LocalNodeTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     URI uri = new URI("http://localhost:1234");

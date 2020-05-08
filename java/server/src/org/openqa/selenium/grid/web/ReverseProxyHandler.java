@@ -18,19 +18,20 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tags;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 
 public class ReverseProxyHandler implements HttpHandler {
 
@@ -58,11 +59,8 @@ public class ReverseProxyHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Span span = newSpanAsChildOf(tracer, req, "reverse_proxy").startSpan();
-
-    try (Scope scope = tracer.withSpan(span)) {
-      span.setAttribute("http.method", req.getMethod().toString());
-      span.setAttribute("http.url", req.getUri());
+    try (Span span = newSpanAsChildOf(tracer, req, "reverse_proxy")) {
+      HTTP_REQUEST.accept(span, req);
 
       HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
 
@@ -96,8 +94,6 @@ public class ReverseProxyHandler implements HttpHandler {
       IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
 
       return resp;
-    } finally {
-      span.end();
     }
   }
 }

@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.server;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -29,6 +28,7 @@ import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.grid.session.remote.ServicedSession;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.List;
 import java.util.Objects;

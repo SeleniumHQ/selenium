@@ -15,27 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.tracing;
+package org.openqa.selenium.remote.tracing.empty;
 
-import io.opentelemetry.trace.Span;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Propagator;
+import org.openqa.selenium.remote.tracing.TraceContext;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.util.function.BiConsumer;
-
-public class HttpTags {
-
-  private HttpTags() {
-    // Utility class
+public class NullTracer implements Tracer {
+  @Override
+  public TraceContext getCurrentContext() {
+    return new NullContext();
   }
 
-  public static BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
-    span.setAttribute("http.method", req.getMethod().toString());
-    span.setAttribute("http.url", req.getUri());
-  };
-
-  public static BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
-    span.setAttribute("http.status_code", res.getStatus());
-  };
-
+  @Override
+  public Propagator getPropagator() {
+    return new NullPropagator();
+  }
 }

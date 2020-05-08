@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
