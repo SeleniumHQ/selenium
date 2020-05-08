@@ -9,6 +9,7 @@ build --javacopt="-target 8"
 
 # Require java dependencies to be used and first-order
 build --strict_java_deps=strict
+build --explicit_java_test_deps
 
 build --workspace_status_command=scripts/build-info.py
 
@@ -21,7 +22,6 @@ build --noexperimental_sandbox_default_allow_network
 
 # Turn on the "Managed Directories" feature.
 # This allows Bazel to share the same node_modules directory with other tools
-# NB: this option was introduced in Bazel 0.26
 # See https://docs.bazel.build/versions/master/command-line-reference.html#flag--experimental_allow_incremental_repository_updates
 common --experimental_allow_incremental_repository_updates
 

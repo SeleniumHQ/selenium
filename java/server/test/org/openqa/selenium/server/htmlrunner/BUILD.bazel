@@ -16,5 +16,6 @@ java_test_suite(
       "//java/client/test/org/openqa/selenium/environment",
       "//java/server/src/org/openqa/selenium/server/htmlrunner",
       artifact("com.google.guava:guava"),
+      artifact("junit:junit"),
     ],
 )
