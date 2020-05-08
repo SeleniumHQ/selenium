@@ -50,30 +50,26 @@ public class NettyServerTest {
 
     AtomicInteger count = new AtomicInteger(0);
 
-    try {
-      Server<?> server = new NettyServer(
-          new BaseServerOptions(
-              new MapConfig(
-                  ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
-          req -> {
-            count.incrementAndGet();
-            return new HttpResponse().setContent(utf8String("Count is " + count.get()));
-          }
-      ).start();
+    Server<?> server = new NettyServer(
+      new BaseServerOptions(
+        new MapConfig(
+          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+      req -> {
+        count.incrementAndGet();
+        return new HttpResponse().setContent(utf8String("Count is " + count.get()));
+      }
+    ).start();
 
-      // Very deliberately uses OkHttp.
-      HttpClient client = new OkHttpClient.Factory().createClient(server.getUrl());
+    // Very deliberately uses OkHttp.
+    HttpClient client = new OkHttpClient.Factory().createClient(server.getUrl());
 
-      HttpResponse res = client.execute(new HttpRequest(GET, "/does-not-matter"));
-      outputHeaders(res);
-      assertThat(count.get()).isEqualTo(1);
+    HttpResponse res = client.execute(new HttpRequest(GET, "/does-not-matter"));
+    outputHeaders(res);
+    assertThat(count.get()).isEqualTo(1);
 
-      client.execute(new HttpRequest(GET, "/does-not-matter"));
-      outputHeaders(res);
-      assertThat(count.get()).isEqualTo(2);
-    } catch (RuntimeException e) {
-
-    }
+    client.execute(new HttpRequest(GET, "/does-not-matter"));
+    outputHeaders(res);
+    assertThat(count.get()).isEqualTo(2);
   }
 
   private void outputHeaders(HttpResponse res) {
