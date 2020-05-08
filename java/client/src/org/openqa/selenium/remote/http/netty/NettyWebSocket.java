@@ -75,6 +75,13 @@ class NettyWebSocket implements WebSocket {
             }
 
             @Override
+            public void onBinaryFrame(byte[] payload, boolean finalFragment, int rsv) {
+              if (payload != null) {
+                listener.onBinary(payload);
+              }
+            }
+
+            @Override
             public void onTextFrame(String payload, boolean finalFragment, int rsv) {
               if (payload != null) {
                 listener.onText(payload);

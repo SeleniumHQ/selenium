@@ -100,7 +100,7 @@ public class RouterServer extends TemplateGridCommand {
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
 
-    Server<?> server = new NettyServer(serverOptions, router);
+    Server<?> server = new NettyServer(serverOptions, router, new ProxyCdp(clientFactory, sessions));
     server.start();
 
     BuildInfo info = new BuildInfo();
