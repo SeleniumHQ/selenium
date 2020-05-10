@@ -17,32 +17,32 @@
 
 package org.openqa.selenium.chromium;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.devtools.Connection;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.devtools.Connection;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-import java.util.Optional;
-
-class ChromiumDevToolsLocator {
+public class ChromiumDevToolsLocator {
 
   private static final Json JSON = new Json();
+  private static final Logger LOG = Logger.getLogger(ChromiumDevToolsLocator.class.getName());
 
-  public static Optional<Connection> getChromeConnector(
-      HttpClient.Factory clientFactory,
-      Capabilities caps,
-      String capabilityKey) {
+  public static Optional<URI> getUri(String capabilityKey, Capabilities caps) {
     Object raw = caps.getCapability(capabilityKey);
     if (!(raw instanceof Map)) {
       return Optional.empty();
@@ -59,9 +59,29 @@ class ChromiumDevToolsLocator {
     }
 
     try {
-      URL url = new URL(String.format("http://%s", raw));
+      URI uri = new URI(String.format("http://%s", raw));
+      return Optional.of(uri);
+    } catch (URISyntaxException e) {
+      LOG.warning("Unable to creeate URI from: " + raw);
+      return Optional.empty();
+    }
+  }
 
-      HttpClient client = clientFactory.createClient(url);
+  public static Optional<Connection> getChromeConnector(
+      HttpClient.Factory clientFactory,
+      Capabilities caps,
+      String capabilityKey) {
+
+    try {
+      Optional<HttpClient> config = getUri(capabilityKey, caps)
+        .map(uri -> ClientConfig.defaultConfig().baseUri(uri))
+        .map(clientFactory::createClient);
+
+      if (!config.isPresent()) {
+        return Optional.empty();
+      }
+
+      HttpClient client = config.get();
 
       HttpResponse res = client.execute(new HttpRequest(GET, "/json/version"));
       if (res.getStatus() != HTTP_OK) {
@@ -69,7 +89,7 @@ class ChromiumDevToolsLocator {
       }
 
       Map<String, Object> versionData = JSON.toType(string(res), MAP_TYPE);
-      raw = versionData.get("webSocketDebuggerUrl");
+      Object raw = versionData.get("webSocketDebuggerUrl");
 
       if (!(raw instanceof String)) {
         return Optional.empty();
@@ -78,7 +98,8 @@ class ChromiumDevToolsLocator {
       String debuggerUrl = (String) raw;
 
       return Optional.of(new Connection(client, debuggerUrl));
-    } catch (IOException | JsonException e) {
+    } catch (Exception e) {
+      LOG.log(Level.WARNING, "Unable to create CDP connection", e);
       return Optional.empty();
     }
   }
