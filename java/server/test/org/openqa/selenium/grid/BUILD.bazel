@@ -8,6 +8,7 @@ java_test_suite(
     deps = [
         "//java/server/src/org/openqa/selenium/grid",
         artifact("com.beust:jcommander"),
+        artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],
 )

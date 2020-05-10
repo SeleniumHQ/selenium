@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import org.junit.Test;
+import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
+import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
 
 import java.util.List;
 import java.util.Map;
+import org.junit.Test;
 
 public class ChromeOptionsTest {
 
@@ -43,6 +45,12 @@ public class ChromeOptionsTest {
     List<String> args = (List<String>) googOptions.get("args");
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> args.add("-help"));
+  }
+
+  @Test
+  public void canBuildLogLevelFromStringRepresentation() {
+    assertThat(ChromeDriverLogLevel.fromString("off")).isEqualTo(OFF);
+    assertThat(ChromeDriverLogLevel.fromString("SEVERE")).isEqualTo(SEVERE);
   }
 
 
