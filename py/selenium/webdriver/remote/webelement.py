@@ -21,6 +21,7 @@ import os
 import pkgutil
 import warnings
 import zipfile
+from io import BytesIO
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -35,14 +36,11 @@ except NameError:
 
 try:
     from base64 import encodebytes
-except ImportError:  # 3+
+except ImportError:  # Python 2
     from base64 import encodestring as encodebytes
 
-try:
-    from StringIO import StringIO as IOStream
-except ImportError:  # 3+
-    from io import BytesIO as IOStream
 
+# TODO: when dropping Python 2.7, use built in importlib_resources.files
 # not relying on __package__ here as it can be `None` in some situations (see #4558)
 _pkg = '.'.join(__name__.split('.')[:-1])
 getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
@@ -752,7 +750,7 @@ class WebElement(object):
         return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
-        fp = IOStream()
+        fp = BytesIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         zipped.write(filename, os.path.split(filename)[1])
         zipped.close()
