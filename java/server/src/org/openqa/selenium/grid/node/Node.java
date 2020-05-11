@@ -169,7 +169,7 @@ public abstract class Node implements Routable, HttpHandler {
 
   public abstract void stop(SessionId id) throws NoSuchSessionException;
 
-  protected abstract boolean isSessionOwner(SessionId id);
+  public abstract boolean isSessionOwner(SessionId id);
 
   public abstract boolean isSupporting(Capabilities capabilities);
 

@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,27 +43,61 @@ public class ChromiumDevToolsLocator {
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(ChromiumDevToolsLocator.class.getName());
 
-  public static Optional<URI> getUri(String capabilityKey, Capabilities caps) {
+  public static Optional<URI> getReportedUri(String capabilityKey, Capabilities caps) {
     Object raw = caps.getCapability(capabilityKey);
     if (!(raw instanceof Map)) {
+      LOG.fine("No capabilities for " + capabilityKey);
       return Optional.empty();
     }
 
     raw = ((Map<?, ?>) raw).get("debuggerAddress");
     if (!(raw instanceof String)) {
+      LOG.fine("No debugger address");
       return Optional.empty();
     }
 
     int index = ((String) raw).lastIndexOf(':');
     if (index == -1 || index == ((String) raw).length() - 1) {
+      LOG.fine("No index in " + raw);
       return Optional.empty();
     }
 
     try {
       URI uri = new URI(String.format("http://%s", raw));
+      LOG.fine("URI found: " + uri);
       return Optional.of(uri);
     } catch (URISyntaxException e) {
       LOG.warning("Unable to creeate URI from: " + raw);
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<URI> getCdpEndPoint(
+    HttpClient.Factory clientFactory,
+    URI reportedUri) {
+    Objects.requireNonNull(clientFactory);
+    Objects.requireNonNull(reportedUri);
+
+    ClientConfig config = ClientConfig.defaultConfig().baseUri(reportedUri);
+    HttpClient client = clientFactory.createClient(config);
+
+    HttpResponse res = client.execute(new HttpRequest(GET, "/json/version"));
+    if (res.getStatus() != HTTP_OK) {
+      return Optional.empty();
+    }
+
+    Map<String, Object> versionData = JSON.toType(string(res), MAP_TYPE);
+    Object raw = versionData.get("webSocketDebuggerUrl");
+
+    if (!(raw instanceof String)) {
+      return Optional.empty();
+    }
+
+    String debuggerUrl = (String) raw;
+    try {
+      return Optional.of(new URI(debuggerUrl));
+    } catch (URISyntaxException e) {
+      LOG.warning("Invalid URI for endpoint " + raw);
       return Optional.empty();
     }
   }
@@ -73,31 +108,11 @@ public class ChromiumDevToolsLocator {
       String capabilityKey) {
 
     try {
-      Optional<HttpClient> config = getUri(capabilityKey, caps)
-        .map(uri -> ClientConfig.defaultConfig().baseUri(uri))
-        .map(clientFactory::createClient);
-
-      if (!config.isPresent()) {
-        return Optional.empty();
-      }
-
-      HttpClient client = config.get();
-
-      HttpResponse res = client.execute(new HttpRequest(GET, "/json/version"));
-      if (res.getStatus() != HTTP_OK) {
-        return Optional.empty();
-      }
-
-      Map<String, Object> versionData = JSON.toType(string(res), MAP_TYPE);
-      Object raw = versionData.get("webSocketDebuggerUrl");
-
-      if (!(raw instanceof String)) {
-        return Optional.empty();
-      }
-
-      String debuggerUrl = (String) raw;
-
-      return Optional.of(new Connection(client, debuggerUrl));
+      return getReportedUri(capabilityKey, caps)
+        .flatMap(uri -> getCdpEndPoint(clientFactory, uri))
+        .map(uri -> new Connection(
+          clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
+          uri.toString()));
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Unable to create CDP connection", e);
       return Optional.empty();

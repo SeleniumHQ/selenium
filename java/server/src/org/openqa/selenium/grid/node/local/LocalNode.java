@@ -80,6 +80,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 public class LocalNode extends Node {
 
   public static final Json JSON = new Json();
+  private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
   private final URI externalUri;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
@@ -162,7 +163,7 @@ public class LocalNode extends Node {
     Objects.requireNonNull(sessionRequest, "Session request has not been set.");
 
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
-      Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
+      LOG.fine("Creating new session using span: " + span);
       span.setAttribute("session_count", getCurrentSessionCount());
 
       if (getCurrentSessionCount() >= maxSessionCount) {
@@ -211,7 +212,7 @@ public class LocalNode extends Node {
   }
 
   @Override
-  protected boolean isSessionOwner(SessionId id) {
+  public boolean isSessionOwner(SessionId id) {
     Objects.requireNonNull(id, "Session ID has not been set");
     return currentSessions.getIfPresent(id) != null;
   }

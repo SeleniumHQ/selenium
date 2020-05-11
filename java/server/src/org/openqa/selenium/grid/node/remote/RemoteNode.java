@@ -104,7 +104,7 @@ public class RemoteNode extends Node {
   }
 
   @Override
-  protected boolean isSessionOwner(SessionId id) {
+  public boolean isSessionOwner(SessionId id) {
     Objects.requireNonNull(id, "Session ID has not been set");
 
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/owner/" + id);

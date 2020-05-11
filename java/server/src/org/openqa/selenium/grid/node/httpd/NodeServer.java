@@ -115,7 +115,7 @@ public class NodeServer extends TemplateGridCommand {
 
     LocalNode node = builder.build();
 
-    Server<?> server = new NettyServer(serverOptions, node);
+    Server<?> server = new NettyServer(serverOptions, node, new ProxyCdp(clientFactory, node));
     server.start();
 
     BuildInfo info = new BuildInfo();

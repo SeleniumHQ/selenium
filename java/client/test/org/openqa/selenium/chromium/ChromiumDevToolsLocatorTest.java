@@ -31,7 +31,7 @@ public class ChromiumDevToolsLocatorTest {
 
   @Test
   public void shouldReturnEmptyIfNoDebuggerAddressIsGiven() {
-    Optional<URI> uri = ChromiumDevToolsLocator.getUri("foo:options", new ImmutableCapabilities());
+    Optional<URI> uri = ChromiumDevToolsLocator.getReportedUri("foo:options", new ImmutableCapabilities());
 
     assertThat(uri).isEmpty();
   }
@@ -41,7 +41,7 @@ public class ChromiumDevToolsLocatorTest {
     Capabilities caps = new Json().toType("{\"ms:edgeOptions\": { \"debuggerAddress\": \"localhost:55498\" }}",
       Capabilities.class);
 
-    Optional<URI> uri = ChromiumDevToolsLocator.getUri("ms:edgeOptions", caps);
+    Optional<URI> uri = ChromiumDevToolsLocator.getReportedUri("ms:edgeOptions", caps);
 
     assertThat(uri.get()).isEqualTo(URI.create("http://localhost:55498"));
   }

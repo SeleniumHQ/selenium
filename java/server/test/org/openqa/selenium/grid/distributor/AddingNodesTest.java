@@ -243,7 +243,7 @@ public class AddingNodesTest {
     }
 
     @Override
-    protected boolean isSessionOwner(SessionId id) {
+    public boolean isSessionOwner(SessionId id) {
       return running != null && running.getId().equals(id);
     }
 
