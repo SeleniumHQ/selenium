@@ -43,7 +43,6 @@ public class HttpTracing {
     Objects.requireNonNull(name, "Name to use must be set.");
 
     TraceContext parent = extract(tracer, request);
-    System.out.println(parent);
     return parent.createSpan(name);
   }
 

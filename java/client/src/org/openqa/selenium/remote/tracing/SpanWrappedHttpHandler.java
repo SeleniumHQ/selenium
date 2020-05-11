@@ -65,7 +65,7 @@ public class SpanWrappedHttpHandler implements HttpHandler {
       req.setAttribute("selenium.tracing.span", span);
 
       if (!(after.getClass().getName().equals("org.openqa.selenium.remote.tracing.empty.NullContext"))) {
-        LOG.info(String.format("Wrapping request. Before %s and after %s", before, after));
+        LOG.fine(String.format("Wrapping request. Before %s and after %s", before, after));
       }
 
       KIND.accept(span, Span.Kind.SERVER);
