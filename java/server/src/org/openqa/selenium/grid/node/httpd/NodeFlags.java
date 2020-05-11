@@ -25,6 +25,7 @@ import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
@@ -37,6 +38,18 @@ public class NodeFlags implements HasRoles {
       description = "Autodetect which drivers are available on the current system, and add them to the node.")
   @ConfigValue(section = "node", name = "detect-drivers")
   public Boolean autoconfigure = true;
+
+  @Parameter(
+    names = "--max-sessions",
+    description = "Maximum number of concurrent sessions.")
+  @ConfigValue(section = "node", name = "max-concurrent-sessions")
+  public int maxSessions = Runtime.getRuntime().availableProcessors();
+
+  @Parameter(
+    names = {"-I", "--driver-implementation"},
+    description = "Drivers that should be checked. If specified, will skip autoconfiguration. Example: -I \"firefox\" -I \"chrome\"")
+  @ConfigValue(section = "node", name = "drivers")
+  public Set<String> driverNames = new HashSet<>();
 
   @Override
   public Set<Role> getRoles() {
