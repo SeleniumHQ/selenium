@@ -20,6 +20,7 @@ import warnings
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 from .options import Options
+from selenium.webdriver.common import utils
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
