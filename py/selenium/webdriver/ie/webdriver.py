@@ -62,7 +62,6 @@ class WebDriver(RemoteWebDriver):
         if port != DEFAULT_PORT:
             warnings.warn('port has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        self.port = port
         if timeout != DEFAULT_TIMEOUT:
             warnings.warn('timeout has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
@@ -76,6 +75,9 @@ class WebDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
+        self.port = port
+        if self.port == 0:
+            self.port = utils.free_port()
 
         # If both capabilities and desired capabilities are set, ignore desired capabilities.
         if capabilities is None and desired_capabilities:
