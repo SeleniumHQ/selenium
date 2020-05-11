@@ -20,6 +20,11 @@ package org.openqa.selenium.grid;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openqa.selenium.devtools.Connection;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.SeleniumCdpConnection;
+import org.openqa.selenium.devtools.network.Network;
+import org.openqa.selenium.devtools.page.Page;
 import org.openqa.selenium.grid.commands.MessageBusCommand;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.distributor.httpd.DistributorServer;
@@ -31,6 +36,7 @@ import org.openqa.selenium.grid.sessionmap.httpd.SessionMapServer;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -43,9 +49,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
 import static java.time.Duration.ofSeconds;
-import static org.assertj.core.api.Assertions.fail;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -54,7 +63,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 public class SmokeTest {
 
   @Test
-  public void ensureBasicFunctionality() throws MalformedURLException {
+  public void ensureBasicFunctionality() throws MalformedURLException, InterruptedException {
     Browser browser = Objects.requireNonNull(Browser.detect());
 
     assumeThat(browser.supportsCdp()).isTrue();
@@ -116,7 +125,20 @@ public class SmokeTest {
       req -> new HttpResponse().setContent(Contents.utf8String("I like cheese")))
       .start();
 
-    fail("Oh noes!");
+    RemoteWebDriver driver = new RemoteWebDriver(new URL("http://localhost:" + routerPort), browser.getCapabilities());
+
+    CountDownLatch latch = new CountDownLatch(1);
+    try (
+      Connection connection = SeleniumCdpConnection.create(driver).orElseThrow(() -> new RuntimeException("Cannot get connection"));
+      DevTools devTools = new DevTools(connection)) {
+      devTools.createSessionIfThereIsNotOne();
+      devTools.send(Page.enable());
+      devTools.addListener(Network.loadingFinished(), res -> latch.countDown());
+      devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+      devTools.send(Page.navigate(server.getUrl().toString(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+      assertThat(latch.await(10, SECONDS)).isTrue();
+    }
   }
 
   private String[] mergeArgs(String[] baseFlags, String... allTheArgs) {
