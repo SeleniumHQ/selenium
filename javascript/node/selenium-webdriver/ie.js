@@ -138,7 +138,7 @@ class Options extends Capabilities {
 
   /**
    * Sets the initial URL loaded when IE starts. This is intended to be used with
-   * {@link #ignoreProtectedModeSettings} to allow the user to initialize IE in
+   * {@link #introduceFlakinessByIgnoringProtectedModeSettings} to allow the user to initialize IE in
    * the proper Protected Mode zone. Setting this option may cause browser
    * instability or flaky and unresponsive code. Only "best effort" support is
    * provided when using this option.
@@ -219,11 +219,28 @@ class Options extends Capabilities {
     return this;
   }
 
+   /**
+    * Specifies command-line switches to use when launching Internet Explorer.
+    * This is only valid when used with {@link #forceCreateProcessApi}.
+    *
+    * @param {...(string|!Array.<string>)} args The arguments to add.
+    * @return {!Options} A self reference.
+    */
+
+   addBrowserCommandSwitches(...args) {
+     let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || [];
+     if(typeof current == 'string')
+       current = current.split(" ");
+     this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat(args).join(" ");
+     return this;
+   }
+
  /**
   * Specifies command-line switches to use when launching Internet Explorer.
   * This is only valid when used with {@link #forceCreateProcessApi}.
   *
   * @param {...(string|!Array.<string>)} args The arguments to add.
+  * @deprecated Use {@link #addBrowserCommandSwitches} instead.
   * @return {!Options} A self reference.
   */
 
