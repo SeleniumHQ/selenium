@@ -27,7 +27,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -54,12 +56,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
@@ -301,7 +305,49 @@ public class LocalNode extends Node {
   }
 
   private Session createExternalSession(ActiveSession other, URI externalUri) {
-    return new Session(other.getId(), externalUri, other.getCapabilities());
+    Capabilities toUse = ImmutableCapabilities.copyOf(other.getCapabilities());
+
+    // Rewrite the se:options if necessary
+    Object rawSeleniumOptions = other.getCapabilities().getCapability("se:options");
+    if (rawSeleniumOptions instanceof Map) {
+      @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
+      Map<String, Object> updated = new TreeMap<>(original);
+
+      Object cdp = original.get("cdp");
+      String cdpPath = String.format("/session/%s/se/cdp", other.getId());
+      if (cdp instanceof URI) {
+        updated.put("cdp", rewrite((URI) cdp, cdpPath));
+      } else if (cdp instanceof String) {
+        updated.put("cdp", rewrite((String) cdp, cdpPath));
+      }
+
+      toUse = new PersistentCapabilities(toUse).setCapability("se:options", updated);
+    }
+
+    return new Session(other.getId(), externalUri, toUse);
+  }
+
+  private URI rewrite(String from, String path) {
+    try {
+      return rewrite(new URI(from), path);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private URI rewrite(URI from, String path) {
+    try {
+      return new URI(
+        from.getScheme(),
+        externalUri.getUserInfo(),
+        externalUri.getHost(),
+        externalUri.getPort(),
+        path,
+        null,
+        null);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void killSession(SessionSlot slot) {
