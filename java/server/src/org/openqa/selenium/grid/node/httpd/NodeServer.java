@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -115,7 +116,7 @@ public class NodeServer extends TemplateGridCommand {
 
     LocalNode node = builder.build();
 
-    Server<?> server = new NettyServer(serverOptions, node, new ProxyCdp(clientFactory, node));
+    Server<?> server = new NettyServer(serverOptions, node, new ProxyNodeCdp(clientFactory, node));
     server.start();
 
     BuildInfo info = new BuildInfo();

@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.router.Router;
@@ -151,7 +152,7 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    Server<?> server = new NettyServer(new BaseServerOptions(config), httpHandler);
+    Server<?> server = new NettyServer(new BaseServerOptions(config), httpHandler, new ProxyNodeCdp(clientFactory, node));
     server.start();
 
     BuildInfo info = new BuildInfo();

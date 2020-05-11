@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.router.httpd;
+package org.openqa.selenium.grid.router;
 
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
@@ -40,13 +40,13 @@ import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-class ProxyCdp implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
+public class ProxyCdpIntoGrid implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
 
-  private static final Logger LOG = Logger.getLogger(ProxyCdp.class.getName());
+  private static final Logger LOG = Logger.getLogger(ProxyCdpIntoGrid.class.getName());
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
 
-  public ProxyCdp(HttpClient.Factory clientFactory, SessionMap sessions) {
+  public ProxyCdpIntoGrid(HttpClient.Factory clientFactory, SessionMap sessions) {
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.sessions = Objects.requireNonNull(sessions);
   }

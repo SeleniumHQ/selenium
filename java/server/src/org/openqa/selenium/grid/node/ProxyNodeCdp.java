@@ -15,12 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.httpd;
+package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumDevToolsLocator;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -42,14 +41,14 @@ import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-class ProxyCdp implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
+public class ProxyNodeCdp implements BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> {
 
   private static final UrlTemplate CDP_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/cdp");
-  private static final Logger LOG = Logger.getLogger(ProxyCdp.class.getName());
+  private static final Logger LOG = Logger.getLogger(ProxyNodeCdp.class.getName());
   private final HttpClient.Factory clientFactory;
   private final Node node;
 
-  public ProxyCdp(HttpClient.Factory clientFactory, Node node) {
+  public ProxyNodeCdp(HttpClient.Factory clientFactory, Node node) {
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.node = Objects.requireNonNull(node);
   }

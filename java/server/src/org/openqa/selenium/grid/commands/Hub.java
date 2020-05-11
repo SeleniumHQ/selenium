@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
@@ -125,7 +126,7 @@ public class Hub extends TemplateGridCommand {
     Router router = new Router(tracer, clientFactory, sessions, distributor);
     HttpHandler httpHandler = combine(router, Route.prefix("/wd/hub").to(combine(router)));
 
-    Server<?> server = new NettyServer(serverOptions, httpHandler);
+    Server<?> server = new NettyServer(serverOptions, httpHandler, new ProxyCdpIntoGrid(clientFactory, sessions));
     server.start();
 
     BuildInfo info = new BuildInfo();

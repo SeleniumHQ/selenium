@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.router.httpd;
+package org.openqa.selenium.grid.router;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +67,7 @@ public class ProxyCdpTest {
 
     // Set up the proxy we'll be using
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    ProxyCdp proxy = new ProxyCdp(clientFactory, sessions);
+    ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
     proxyServer = new NettyServer(new BaseServerOptions(emptyConfig), nullHandler, proxy).start();
   }
 
