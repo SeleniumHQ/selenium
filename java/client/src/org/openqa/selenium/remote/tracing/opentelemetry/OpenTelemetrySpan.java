@@ -26,11 +26,9 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, Span {
 
-  private static final Logger LOG = Logger.getLogger(OpenTelemetrySpan.class.getName());
   private final io.opentelemetry.trace.Span span;
   private final Scope scope;
 
