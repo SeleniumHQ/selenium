@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.http.netty;
 import com.google.auto.service.AutoService;
 
 import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
@@ -35,7 +36,11 @@ import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
 
-  private static final AsyncHttpClient httpClient = Dsl.asyncHttpClient();
+  private static final AsyncHttpClient httpClient = Dsl.asyncHttpClient(
+    new DefaultAsyncHttpClientConfig.Builder()
+      .setAggregateWebSocketFrameFragments(true)
+      .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
+      .setWebSocketMaxFrameSize(Integer.MAX_VALUE));
 
   private final HttpHandler handler;
   private BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
