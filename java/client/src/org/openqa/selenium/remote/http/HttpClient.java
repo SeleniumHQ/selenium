@@ -19,6 +19,9 @@ package org.openqa.selenium.remote.http;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
 
@@ -31,44 +34,29 @@ public interface HttpClient extends HttpHandler {
 
   interface Factory {
 
+    static Factory create(String name) {
+      ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class);
+      Set<Factory> factories = loader.stream()
+          .filter(p -> p.type().isAnnotationPresent(HttpClientName.class))
+          .filter(p -> name.equals(p.type().getAnnotation(HttpClientName.class).value()))
+          .map(ServiceLoader.Provider::get)
+          .collect(Collectors.toSet());
+      if (factories.isEmpty()) {
+        throw new IllegalArgumentException("Unknown HttpClient factory " + name);
+      }
+      if (factories.size() > 1) {
+        throw new IllegalStateException(String.format(
+            "There are multiple HttpClient factories by name %s, check your classpath", name));
+      }
+      return factories.iterator().next();
+    }
+
     /**
      * Use the {@code webdriver.http.factory} system property to determine which implementation of
      * {@link HttpClient} should be used.
      */
     static Factory createDefault() {
-      String defaultFactory = System.getProperty("webdriver.http.factory", "netty");
-      switch (defaultFactory) {
-        case "netty":
-          try {
-            Class<? extends Factory> clazz =
-                Class.forName("org.openqa.selenium.remote.http.netty.NettyClient$Factory")
-                    .asSubclass(Factory.class);
-            return clazz.getConstructor().newInstance();
-          } catch (ReflectiveOperationException e) {
-            throw new UnsupportedOperationException("Unable to create HTTP client factory", e);
-          }
-
-        case "okhttp":
-          try {
-            Class<? extends Factory> clazz =
-                Class.forName("org.openqa.selenium.remote.http.okhttp.OkHttpClient$Factory")
-                    .asSubclass(Factory.class);
-            return clazz.getConstructor().newInstance();
-          } catch (ReflectiveOperationException e) {
-            throw new UnsupportedOperationException("Unable to create HTTP client factory", e);
-          }
-
-        case "reactor":
-        default:
-          try {
-            Class<? extends Factory> clazz =
-                Class.forName("org.openqa.selenium.remote.http.reactor.ReactorClient$Factory")
-                    .asSubclass(Factory.class);
-            return clazz.getConstructor().newInstance();
-          } catch (ReflectiveOperationException e) {
-            throw new UnsupportedOperationException("Unable to create HTTP client factory", e);
-          }
-      }
+      return create(System.getProperty("webdriver.http.factory", "reactor"));
     }
 
     /**

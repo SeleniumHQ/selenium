@@ -8,6 +8,7 @@ java_library(
         "//java/client/test/org/openqa/selenium/remote/http/reactor:__pkg__",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
         artifact("io.netty:netty-buffer"),

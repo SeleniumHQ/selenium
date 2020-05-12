@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.remote.http.reactor;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpClientName;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -142,6 +144,8 @@ public class ReactorClient implements HttpClient {
     return this;
   }
 
+  @AutoService(HttpClient.Factory.class)
+  @HttpClientName("reactor")
   public static class Factory implements HttpClient.Factory {
 
     @Override

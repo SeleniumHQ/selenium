@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.remote.http.okhttp;
 
+import com.google.auto.service.AutoService;
+
 import okhttp3.ConnectionPool;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpClientName;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -65,6 +68,8 @@ public class OkHttpClient implements HttpClient {
     return new OkHttpClient(handler.with(filter), toWebSocket);
   }
 
+  @AutoService(HttpClient.Factory.class)
+  @HttpClientName("okhttp")
   public static class Factory implements HttpClient.Factory {
 
     private final ConnectionPool pool = new ConnectionPool();
