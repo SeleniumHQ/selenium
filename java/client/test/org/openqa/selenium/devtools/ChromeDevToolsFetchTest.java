@@ -51,12 +51,13 @@ public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
         p -> {
           Assert.assertNotNull(p);
           devTools.send(
-              fulfillRequest(
-                  p.getRequestId(),
-                  204,
-                  p.getResponseHeaders().get(),
-                  Optional.empty(),
-                  Optional.empty()));
+            fulfillRequest(
+              p.getRequestId(),
+              204,
+              Optional.of(p.getResponseHeaders().get()),
+              Optional.empty(),
+              Optional.empty(),
+              Optional.empty()));
         });
     List<RequestPattern> patterns = new ArrayList<>();
     patterns.add(new RequestPattern(

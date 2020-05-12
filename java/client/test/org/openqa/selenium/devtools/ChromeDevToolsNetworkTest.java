@@ -92,9 +92,16 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     assertEquals(0, allCookies.size());
 
     boolean setCookie = devTools.send(setCookie(
-        "name", "value", Optional.of("http://localhost/devtools/test"),
-        Optional.of("localhost"), Optional.of("/devtools/test"),
-        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+      "name",
+      "value",
+      Optional.of("http://localhost/devtools/test"),
+      Optional.of("localhost"),
+      Optional.of("/devtools/test"),
+      Optional.empty(),
+      Optional.empty(),
+      Optional.empty(),
+      Optional.empty(),
+      Optional.empty()));
     assertTrue(setCookie);
 
     assertEquals(1, devTools.send(getAllCookies()).size());
@@ -108,9 +115,16 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     assertEquals(0, devTools.send(getAllCookies()).size());
 
     setCookie = devTools.send(setCookie(
-        "name", "value", Optional.of("http://localhost/devtools/test"),
-        Optional.of("localhost"), Optional.of("/devtools/test"),
-        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+      "name",
+      "value",
+      Optional.of("http://localhost/devtools/test"),
+      Optional.of("localhost"),
+      Optional.of("/devtools/test"),
+      Optional.empty(),
+      Optional.empty(),
+      Optional.empty(),
+      Optional.empty(),
+      Optional.empty()));
     assertTrue(setCookie);
 
     assertEquals(1, devTools.send(getAllCookies()).size());
@@ -219,7 +233,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
-    devTools.send(setUserAgentOverride("userAgent", Optional.empty(), Optional.empty()));
+    devTools.send(setUserAgentOverride("userAgent", Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.addListener(requestWillBeSent(),
                          requestWillBeSent -> assertEquals("userAgent",

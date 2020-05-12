@@ -130,9 +130,11 @@ public class NetworkInterceptor implements Closeable {
       devTools.send(Fetch.fulfillRequest(
         incoming.getRequestId(),
         res.getStatus(),
-        headers.build(),
+        Optional.of(headers.build()),
         Optional.ofNullable(body),
+        Optional.empty(),
         Optional.empty()));
+
     } catch (Exception e) {
       LOG.log(
         Level.WARNING,

@@ -2,8 +2,9 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_selenium_test_suite")
 
 java_selenium_test_suite(
-    name = "LargeTests",
+    name = "large-tests",
     srcs = glob(["*Test.java"]),
+    size = "large",
     browsers = [
         "chrome",
         "firefox",

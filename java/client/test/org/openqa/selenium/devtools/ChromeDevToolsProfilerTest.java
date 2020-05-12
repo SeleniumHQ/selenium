@@ -19,9 +19,11 @@ package org.openqa.selenium.devtools;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.devtools.profiler.Profiler;
 import org.openqa.selenium.devtools.profiler.model.Profile;
 import org.openqa.selenium.devtools.profiler.model.ProfileNode;
 import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
+import org.openqa.selenium.testing.Ignore;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,16 +43,6 @@ import static org.openqa.selenium.devtools.profiler.Profiler.stop;
 import static org.openqa.selenium.devtools.profiler.Profiler.stopTypeProfile;
 import static org.openqa.selenium.devtools.profiler.Profiler.takePreciseCoverage;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.selenium.devtools.profiler.model.Profile;
-import org.openqa.selenium.devtools.profiler.model.ProfileNode;
-import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
-import org.openqa.selenium.testing.Ignore;
-
-import java.util.List;
-import java.util.Optional;
 
 @Ignore(FIREFOX)
 public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
@@ -85,9 +77,9 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
   public void sampleSetStartPreciseCoverageTest() {
     devTools.send(enable());
     driver.get(appServer.whereIs("devToolsProfilerTest.html"));
-    devTools.send(startPreciseCoverage(Optional.of(true), Optional.of(true)));
+    devTools.send(startPreciseCoverage(Optional.of(true), Optional.of(true), Optional.empty()));
     devTools.send(start());
-    List<ScriptCoverage> pc = devTools.send(takePreciseCoverage());
+    Profiler.TakePreciseCoverageResponse pc = devTools.send(takePreciseCoverage());
     assertNotNull(pc);
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
