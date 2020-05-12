@@ -23,7 +23,6 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
-import org.openqa.selenium.remote.tracing.Tags;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
