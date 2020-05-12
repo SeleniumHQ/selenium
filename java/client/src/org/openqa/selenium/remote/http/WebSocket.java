@@ -35,9 +35,9 @@ public interface WebSocket extends Closeable {
   @Override
   void close();
 
-  class Listener implements Consumer<Message> {
+  interface Listener extends Consumer<Message> {
 
-    public void accept(Message message) {
+    default void accept(Message message) {
       if (message instanceof BinaryMessage) {
         onBinary(((BinaryMessage) message).data());
       } else if (message instanceof CloseMessage) {
@@ -47,19 +47,19 @@ public interface WebSocket extends Closeable {
       }
     }
 
-    public void onBinary(byte[] data) {
+    default void onBinary(byte[] data) {
       // Does nothing
     }
 
-    public void onClose(int code, String reason) {
+    default void onClose(int code, String reason) {
       // Does nothing
     }
 
-    public void onText(CharSequence data) {
+    default void onText(CharSequence data) {
       // Does nothing
     }
 
-    public void onError(Throwable cause) {
+    default void onError(Throwable cause) {
       // Does nothing
     }
   }

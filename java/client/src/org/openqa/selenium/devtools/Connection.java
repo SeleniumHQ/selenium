@@ -127,7 +127,7 @@ public class Connection implements Closeable {
     socket.close();
   }
 
-  private class Listener extends WebSocket.Listener {
+  private class Listener implements WebSocket.Listener {
 
     @Override
     public void onText(CharSequence data) {
