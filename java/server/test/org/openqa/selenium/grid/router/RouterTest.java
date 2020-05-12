@@ -57,7 +57,6 @@ public class RouterTest {
   private Tracer tracer;
   private EventBus bus;
   private CombinedHandler handler;
-  private HttpClient.Factory clientFactory;
   private SessionMap sessions;
   private Distributor distributor;
   private Router router;
@@ -68,7 +67,7 @@ public class RouterTest {
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
-    clientFactory = new PassthroughHttpClient.Factory(handler);
+    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(handler);
 
     sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
@@ -92,7 +91,7 @@ public class RouterTest {
 
     AtomicBoolean isUp = new AtomicBoolean(false);
 
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
@@ -110,7 +109,7 @@ public class RouterTest {
 
     AtomicBoolean isUp = new AtomicBoolean(true);
 
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))

@@ -32,7 +32,6 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -52,10 +51,9 @@ public class LocalNodeTest {
   public void setUp() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     URI uri = new URI("http://localhost:1234");
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
-    node = LocalNode.builder(tracer, bus, clientFactory, uri, null)
+    node = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .build();
 

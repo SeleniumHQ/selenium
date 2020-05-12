@@ -140,7 +140,7 @@ public class Standalone extends TemplateGridCommand {
     LocalNode.Builder nodeBuilder = LocalNode.builder(
       tracer,
       bus,
-      clientFactory,
+      localhost,
       localhost,
       null)
       .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);

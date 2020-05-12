@@ -27,9 +27,9 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -39,7 +39,7 @@ import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 public class LocalSessionMap extends SessionMap {
 
   private final EventBus bus;
-  private final Map<SessionId, Session> knownSessions = new HashMap<>();
+  private final Map<SessionId, Session> knownSessions = new ConcurrentHashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* be fair */ true);
 
   public LocalSessionMap(Tracer tracer, EventBus bus) {

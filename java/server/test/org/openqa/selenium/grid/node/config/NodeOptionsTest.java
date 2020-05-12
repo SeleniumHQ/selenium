@@ -67,7 +67,7 @@ public class NodeOptionsTest {
     EventBus bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     URI uri = new URI("http://localhost:1234");
-    builder = LocalNode.builder(tracer, bus, clientFactory, uri, null);
+    builder = LocalNode.builder(tracer, bus, uri, uri, null);
     builderSpy = spy(builder);
   }
 

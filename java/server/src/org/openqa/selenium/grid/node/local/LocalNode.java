@@ -45,7 +45,6 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
@@ -86,6 +85,7 @@ public class LocalNode extends Node {
   public static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
   private final URI externalUri;
+  private final URI gridUri;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
   private final List<SessionSlot> factories;
@@ -98,6 +98,7 @@ public class LocalNode extends Node {
     Tracer tracer,
     EventBus bus,
     URI uri,
+    URI gridUri,
     HealthCheck healthCheck,
     int maxSessionCount,
     Ticker ticker,
@@ -111,6 +112,7 @@ public class LocalNode extends Node {
       "Only a positive number of sessions can be run: " + maxSessionCount);
 
     this.externalUri = Objects.requireNonNull(uri);
+    this.gridUri = Objects.requireNonNull(gridUri);
     this.healthCheck = Objects.requireNonNull(healthCheck);
     this.maxSessionCount = Math.min(maxSessionCount, factories.size());
     this.factories = ImmutableList.copyOf(factories);
@@ -315,11 +317,7 @@ public class LocalNode extends Node {
 
       Object cdp = original.get("cdp");
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
-      if (cdp instanceof URI) {
-        updated.put("cdp", rewrite((URI) cdp, cdpPath));
-      } else if (cdp instanceof String) {
-        updated.put("cdp", rewrite((String) cdp, cdpPath));
-      }
+      updated.put("cdp", rewrite(cdpPath));
 
       toUse = new PersistentCapabilities(toUse).setCapability("se:options", updated);
     }
@@ -327,21 +325,13 @@ public class LocalNode extends Node {
     return new Session(other.getId(), externalUri, toUse);
   }
 
-  private URI rewrite(String from, String path) {
-    try {
-      return rewrite(new URI(from), path);
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private URI rewrite(URI from, String path) {
+  private URI rewrite(String path) {
     try {
       return new URI(
-        from.getScheme(),
-        externalUri.getUserInfo(),
-        externalUri.getHost(),
-        externalUri.getPort(),
+        gridUri.getScheme(),
+        gridUri.getUserInfo(),
+        gridUri.getHost(),
+        gridUri.getPort(),
         path,
         null,
         null);
@@ -397,18 +387,18 @@ public class LocalNode extends Node {
   public static Builder builder(
     Tracer tracer,
     EventBus bus,
-    HttpClient.Factory httpClientFactory,
     URI uri,
+    URI gridUri,
     String registrationSecret) {
-    return new Builder(tracer, bus, httpClientFactory, uri, registrationSecret);
+    return new Builder(tracer, bus, uri, gridUri, registrationSecret);
   }
 
   public static class Builder {
 
     private final Tracer tracer;
     private final EventBus bus;
-    private final HttpClient.Factory httpClientFactory;
     private final URI uri;
+    private final URI gridUri;
     private final String registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
@@ -419,13 +409,13 @@ public class LocalNode extends Node {
     public Builder(
       Tracer tracer,
       EventBus bus,
-      HttpClient.Factory httpClientFactory,
       URI uri,
+      URI gridUri,
       String registrationSecret) {
       this.tracer = Objects.requireNonNull(tracer);
       this.bus = Objects.requireNonNull(bus);
-      this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
+      this.gridUri = Objects.requireNonNull(gridUri);
       this.registrationSecret = registrationSecret;
       this.factories = ImmutableList.builder();
     }
@@ -463,6 +453,7 @@ public class LocalNode extends Node {
         tracer,
         bus,
         uri,
+        gridUri,
         check,
         maxCount,
         ticker,

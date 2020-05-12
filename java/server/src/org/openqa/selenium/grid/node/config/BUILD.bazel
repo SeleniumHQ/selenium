@@ -9,6 +9,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/chromium",
+        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/data",

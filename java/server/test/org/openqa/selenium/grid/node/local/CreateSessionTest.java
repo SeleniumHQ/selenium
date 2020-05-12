@@ -30,7 +30,6 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 
@@ -65,7 +64,7 @@ public class CreateSessionTest {
     Node node = LocalNode.builder(
       DefaultTestTracer.createTracer(),
         new GuavaEventBus(),
-        HttpClient.Factory.createDefault(),
+        uri,
         uri,
         null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
@@ -116,7 +115,7 @@ public class CreateSessionTest {
     Node node = LocalNode.builder(
       DefaultTestTracer.createTracer(),
         new GuavaEventBus(),
-        HttpClient.Factory.createDefault(),
+        uri,
         uri,
         null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
@@ -159,7 +158,7 @@ public class CreateSessionTest {
     Node node = LocalNode.builder(
       DefaultTestTracer.createTracer(),
         new GuavaEventBus(),
-        HttpClient.Factory.createDefault(),
+        uri,
         uri,
         null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))

@@ -47,6 +47,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
@@ -104,17 +105,26 @@ public class NodeServer extends TemplateGridCommand {
 
     LOG.info("Reporting self as: " + serverOptions.getExternalUri());
 
+    NodeOptions nodeOptions = new NodeOptions(config);
+
     LocalNode.Builder builder = LocalNode.builder(
       tracer,
       bus,
-      clientFactory,
       serverOptions.getExternalUri(),
+      nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
       serverOptions.getRegistrationSecret());
 
-    new NodeOptions(config).configure(tracer, clientFactory, builder);
+    nodeOptions.configure(tracer, clientFactory, builder);
     new DockerOptions(config).configure(tracer, clientFactory, builder);
 
     LocalNode node = builder.build();
+
+    bus.addListener(NODE_ADDED, event -> {
+      UUID nodeId = event.getData(UUID.class);
+      if (node.getId().equals(nodeId)) {
+        LOG.info("Node has been registered");
+      }
+    });
 
     Server<?> server = new NettyServer(serverOptions, node, new ProxyNodeCdp(clientFactory, node));
     server.start();
@@ -126,13 +136,6 @@ public class NodeServer extends TemplateGridCommand {
       info.getBuildRevision(),
       server.getUrl()));
 
-    bus.addListener(NODE_ADDED, event -> {
-      UUID nodeId = event.getData(UUID.class);
-      if (node.getId().equals(nodeId)) {
-        LOG.info("Node has been registered");
-      }
-    });
-
     // Unlimited attempts, initial 5 seconds interval, backoff rate of 1.0005, max interval of 5 minutes
     RetryPolicy<Object> registrationPolicy =  new RetryPolicy<>()
       .withMaxAttempts(-1)
@@ -140,18 +143,20 @@ public class NodeServer extends TemplateGridCommand {
     .withBackoff(Duration.ofSeconds(5).getSeconds(), Duration.ofMinutes(5).getSeconds(), ChronoUnit.SECONDS, 1.0005);
 
     LOG.info("Starting registration process for node id " + node.getId());
-    Failsafe.with(registrationPolicy).run(
-      () -> {
-        LOG.fine("Sending registration event");
-        HealthCheck.Result check = node.getHealthCheck().check();
-        if (!check.isAlive()) {
-          LOG.severe("Node is not alive: " + check.getMessage());
-          // Throw an exception to force another check sooner.
-          throw new UnsupportedOperationException("Node cannot be registered");
+    Executors.newSingleThreadExecutor().submit(() -> {
+      Failsafe.with(registrationPolicy).run(
+        () -> {
+          LOG.fine("Sending registration event");
+          HealthCheck.Result check = node.getHealthCheck().check();
+          if (!check.isAlive()) {
+            LOG.severe("Node is not alive: " + check.getMessage());
+            // Throw an exception to force another check sooner.
+            throw new UnsupportedOperationException("Node cannot be registered");
+          }
+          bus.fire(new NodeStatusEvent(node.getStatus()));
         }
-        bus.fire(new NodeStatusEvent(node.getStatus()));
-      }
-    );
+      );
+    });
   }
 
 }

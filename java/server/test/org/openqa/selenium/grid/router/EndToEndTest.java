@@ -141,7 +141,7 @@ public class EndToEndTest {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
@@ -189,7 +189,7 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
+    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
 

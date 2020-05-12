@@ -18,12 +18,12 @@
 package org.openqa.selenium.grid.node.httpd;
 
 import com.beust.jcommander.Parameter;
-
 import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
 
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,6 +50,12 @@ public class NodeFlags implements HasRoles {
     description = "Drivers that should be checked. If specified, will skip autoconfiguration. Example: -I \"firefox\" -I \"chrome\"")
   @ConfigValue(section = "node", name = "drivers")
   public Set<String> driverNames = new HashSet<>();
+
+  @Parameter(
+    names = {"--public-url"},
+    description = "Public URL of the Grid as a whole (typically the address of the hub or the router)")
+  @ConfigValue(section = "node", name = "grid-url")
+  public URL gridUri;
 
   @Override
   public Set<Role> getRoles() {
