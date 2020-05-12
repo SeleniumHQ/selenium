@@ -37,6 +37,8 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -66,7 +68,7 @@ public class NetworkOptionsTest {
     rootLogger.addHandler(handler);
 
     try {
-      Config config = new MapConfig(Map.of());
+      Config config = new MapConfig(emptyMap());
       Tracer tracer = DefaultTestTracer.createTracer();
       HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 
@@ -109,7 +111,7 @@ public class NetworkOptionsTest {
     }
 
     public List<String> getMessages(Level level) {
-      return recordedMessages.getOrDefault(level, List.of());
+      return recordedMessages.getOrDefault(level, emptyList());
     }
   }
 }
