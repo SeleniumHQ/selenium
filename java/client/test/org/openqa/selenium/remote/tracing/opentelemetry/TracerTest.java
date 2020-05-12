@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.ArrayList;
@@ -57,15 +58,18 @@ public class TracerTest {
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       span.setAttribute("cheese", "gouda");
+      span.setStatus(Status.NOT_FOUND);
     }
 
     Set<SpanData> values = allSpans.stream()
       .filter(data -> data.getAttributes().containsKey("cheese"))
       .collect(Collectors.toSet());
 
-    assertThat(values.size()).isEqualTo(1);
-
-    assertThat(values.iterator().next().getAttributes().get("cheese").getStringValue()).isEqualTo("gouda");
+    assertThat(values).hasSize(1);
+    assertThat(values).element(0)
+        .extracting(SpanData::getStatus).isEqualTo(io.opentelemetry.trace.Status.NOT_FOUND);
+    assertThat(values).element(0)
+        .extracting(el -> el.getAttributes().get("cheese").getStringValue()).isEqualTo("gouda");
   }
 
   @Test

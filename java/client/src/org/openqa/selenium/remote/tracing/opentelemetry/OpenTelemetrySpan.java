@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import io.grpc.Context;
 import io.opentelemetry.context.Scope;
@@ -25,6 +26,7 @@ import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 
+import java.util.Map;
 import java.util.Objects;
 
 class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, Span {
@@ -76,39 +78,23 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     return this;
   }
 
+  private static final Map<Status.Kind, io.opentelemetry.trace.Status> statuses
+      = new ImmutableMap.Builder<Status.Kind, io.opentelemetry.trace.Status>()
+      .put(Status.Kind.ABORTED, io.opentelemetry.trace.Status.ABORTED)
+      .put(Status.Kind.CANCELLED, io.opentelemetry.trace.Status.CANCELLED)
+      .put(Status.Kind.NOT_FOUND, io.opentelemetry.trace.Status.NOT_FOUND)
+      .put(Status.Kind.OK, io.opentelemetry.trace.Status.OK)
+      .put(Status.Kind.RESOURCE_EXHAUSTED, io.opentelemetry.trace.Status.RESOURCE_EXHAUSTED)
+      .put(Status.Kind.UNKNOWN, io.opentelemetry.trace.Status.UNKNOWN)
+      .build();
+
   @Override
   public Span setStatus(Status status) {
     Objects.requireNonNull(status, "Status to use must be set.");
 
-    io.opentelemetry.trace.Status otStatus = null;
-
-    switch (status.getKind()) {
-      case ABORTED:
-        otStatus = io.opentelemetry.trace.Status.ABORTED;
-        break;
-
-      case CANCELLED:
-        otStatus = io.opentelemetry.trace.Status.CANCELLED;
-        break;
-
-      case NOT_FOUND:
-        otStatus = io.opentelemetry.trace.Status.NOT_FOUND;
-        break;
-
-      case OK:
-        otStatus = io.opentelemetry.trace.Status.OK;
-        break;
-
-      case RESOURCE_EXHAUSTED:
-        otStatus = io.opentelemetry.trace.Status.RESOURCE_EXHAUSTED;
-        break;
-
-      case UNKNOWN:
-        otStatus = io.opentelemetry.trace.Status.UNKNOWN;
-        break;
-
-      default:
-        throw new IllegalArgumentException("Unrecognized status kind: " + status.getKind());
+    io.opentelemetry.trace.Status otStatus = statuses.get(status.getKind());
+    if (otStatus == null) {
+      throw new IllegalArgumentException("Unrecognized status kind: " + status.getKind());
     }
 
     otStatus.withDescription(status.getDescription());
