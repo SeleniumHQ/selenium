@@ -12,6 +12,7 @@ java_test_suite(
     deps = [
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/http/reactor",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),

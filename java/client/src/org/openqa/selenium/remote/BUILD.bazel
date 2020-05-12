@@ -92,6 +92,7 @@ java_export(
         "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote/http/netty",
         "//java/client/src/org/openqa/selenium/remote/http/okhttp",
+        "//java/client/src/org/openqa/selenium/remote/http/reactor",
         "//java/client/src/org/openqa/selenium/remote/tracing",
         artifact("com.google.guava:guava"),
         artifact("net.bytebuddy:byte-buddy"),
