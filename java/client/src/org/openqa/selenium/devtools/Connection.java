@@ -61,15 +61,44 @@ public class Connection implements Closeable {
     socket = client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
+  private static class NamedConsumer<X> implements Consumer<X> {
+
+    private final String name;
+    private final Consumer<X> delegate;
+
+    private NamedConsumer(String name, Consumer<X> delegate) {
+      this.name = name;
+      this.delegate = delegate;
+    }
+
+    public static <X> Consumer<X> of(String name, Consumer<X> delegate) {
+      return new NamedConsumer<>(name, delegate);
+    }
+
+    @Override
+    public void accept(X x) {
+      delegate.accept(x);
+    }
+
+    @Override
+    public String toString() {
+      return "Consumer for " + name;
+    }
+  }
+
   public <X> CompletableFuture<X> send(SessionID sessionId, Command<X> command) {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
     if (command.getSendsResponse()) {
-      methodCallbacks.put(id, input -> {
-        X value = command.getMapper().apply(input);
-        result.complete(value);
-      });
+      methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), input -> {
+        try {
+          X value = command.getMapper().apply(input);
+          result.complete(value);
+        } catch (Throwable e) {
+          result.completeExceptionally(e);
+        }
+      }));
     }
 
     ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
@@ -80,7 +109,7 @@ public class Connection implements Closeable {
       serialized.put("sessionId", sessionId);
     }
 
-    LOG.info(JSON.toJson(serialized.build()));
+    LOG.fine(JSON.toJson(serialized.build()));
     socket.sendText(JSON.toJson(serialized.build()));
 
     if (!command.getSendsResponse() ) {
@@ -136,7 +165,7 @@ public class Connection implements Closeable {
       // TODO: decode once, and once only
 
       String asString = String.valueOf(data);
-      LOG.info(asString);
+      LOG.fine(asString);
 
       Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
       if (raw.get("id") instanceof Number && raw.get("result") != null) {
@@ -151,6 +180,7 @@ public class Connection implements Closeable {
           while (input.hasNext()) {
             switch (input.nextName()) {
               case "result":
+                LOG.fine("Sending result to consumer: " + consumer);
                 consumer.accept(input);
                 break;
 
