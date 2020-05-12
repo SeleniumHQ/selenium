@@ -10,6 +10,7 @@ java_test_suite(
         "-target", "11",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
