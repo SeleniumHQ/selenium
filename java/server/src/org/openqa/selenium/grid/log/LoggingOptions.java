@@ -70,7 +70,7 @@ public class LoggingOptions {
   }
 
   public Tracer getTracer() {
-    boolean tracingEnabled = config.getBool("logging", "tracing").orElse(true);
+    boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing").orElse(true);
     if (!tracingEnabled) {
       LOG.info("Using null tracer");
       return new NullTracer();
@@ -98,9 +98,7 @@ public class LoggingOptions {
     exporters.add(SimpleSpansProcessor.create(new SpanExporter() {
       @Override
       public ResultCode export(Collection<SpanData> spans) {
-        spans.forEach(span -> {
-          LOG.fine(String.valueOf(span));
-        });
+        spans.forEach(span -> LOG.fine(String.valueOf(span)));
         return ResultCode.SUCCESS;
       }
 
