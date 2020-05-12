@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
 
@@ -44,10 +45,9 @@ public interface HttpClient extends HttpHandler {
      */
     static Factory create(String name) {
       ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class);
-      Set<Factory> factories = loader.stream()
-          .filter(p -> p.type().isAnnotationPresent(HttpClientName.class))
-          .filter(p -> name.equals(p.type().getAnnotation(HttpClientName.class).value()))
-          .map(ServiceLoader.Provider::get)
+      Set<Factory> factories = StreamSupport.stream(loader.spliterator(), true)
+          .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
+          .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
           .collect(Collectors.toSet());
       if (factories.isEmpty()) {
         throw new IllegalArgumentException("Unknown HttpClient factory " + name);
