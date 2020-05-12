@@ -47,8 +47,12 @@ public class DevTools implements Closeable {
 
   @Override
   public void close() {
-    connection.sendAndWait(
-        cdpSession, Target.detachFromTarget(Optional.of(cdpSession), Optional.empty()), timeout);
+    if (cdpSession != null) {
+      SessionID id = cdpSession;
+      cdpSession = null;
+      connection.sendAndWait(
+        cdpSession, Target.detachFromTarget(Optional.of(id), Optional.empty()), timeout);
+    }
   }
 
   public <X> X send(Command<X> command) {
