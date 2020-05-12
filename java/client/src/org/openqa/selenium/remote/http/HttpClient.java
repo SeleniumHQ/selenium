@@ -34,6 +34,14 @@ public interface HttpClient extends HttpHandler {
 
   interface Factory {
 
+    /**
+     * Creates a new instance of {@link HttpClient.Factory} with the given name. It uses
+     * {@link ServiceLoader} to find all available implementations and selects the class
+     * that has an {@link @HttpClientName} annotation with the given name as the value.
+     *
+     * @throws IllegalArgumentException if no implementation with the given name can be found
+     * @throws IllegalStateException if more than one implementation with the given name can be found
+     */
     static Factory create(String name) {
       ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class);
       Set<Factory> factories = loader.stream()
@@ -53,7 +61,9 @@ public interface HttpClient extends HttpHandler {
 
     /**
      * Use the {@code webdriver.http.factory} system property to determine which implementation of
-     * {@link HttpClient} should be used.
+     * {@link HttpClient.Factory} should be used.
+     *
+     * {@see create}
      */
     static Factory createDefault() {
       return create(System.getProperty("webdriver.http.factory", "reactor"));
