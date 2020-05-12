@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.devtools;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.openqa.selenium.devtools.profiler.model.Profile;
+import org.openqa.selenium.devtools.profiler.model.ProfileNode;
+import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
+
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.openqa.selenium.devtools.profiler.Profiler.consoleProfileFinished;
@@ -52,7 +61,7 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
     assertNotNull(profiler.getStartTime());
     assertNotNull(profiler.getEndTime());
     assertNotNull(profiler.getTimeDeltas());
-    for (Integer integer : profiler.getTimeDeltas()) {
+    for (Integer integer : profiler.getTimeDeltas().get()) {
       assertNotNull(integer);
     }
     for (ProfileNode n : profiler.getNodes()) {

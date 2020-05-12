@@ -37,7 +37,7 @@ public class ChromeDevToolsSecurityTest extends DevToolsTestBase {
 
     devTools.addListener(Security.securityStateChanged(),
                          securityStateChanged -> assertTrue(securityStateChanged
-                           .getSummary().contains("This page has a non-HTTPS secure origin")));
+                           .getSummary().get().contains("This page has a non-HTTPS secure origin")));
 
     driver.get(appServer.whereIs("devToolsSecurityTest"));
 
