@@ -32,11 +32,13 @@ import org.openqa.selenium.remote.http.WebSocket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufInputStream;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.function.Tuple2;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -80,7 +82,9 @@ public class ReactorClient implements HttpClient {
           toReturn.setStatus(res.status().code());
           res.responseHeaders().entries().forEach(
               entry -> toReturn.addHeader(entry.getKey(), entry.getValue()));
-          return buf.asInputStream().zipWith(Mono.just(toReturn));
+          return buf.asInputStream()
+              .switchIfEmpty(Mono.just(new ByteArrayInputStream("".getBytes())))
+              .zipWith(Mono.just(toReturn));
         }).block();
     result.getT2().setContent(result::getT1);
     return result.getT2();
