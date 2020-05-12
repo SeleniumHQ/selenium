@@ -14,6 +14,9 @@ java_library(
         "NotYetImplementedList.java",
         "SwitchToTopAfterTest.java",
     ],
+    exports = [
+        "//java/client/test/org/openqa/selenium/testing/drivers:browser",
+    ],
     visibility = [
         "//java/client/test:__subpackages__",
     ],
