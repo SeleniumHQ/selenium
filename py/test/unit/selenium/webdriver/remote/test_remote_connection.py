@@ -67,7 +67,7 @@ def test_get_proxy_url_https(mock_proxy_settings):
     assert proxy_url == proxy
 
 
-def test_get_proxy_url_https(mock_proxy_settings_missing):
+def test_get_proxy_url_none(mock_proxy_settings_missing):
     remote_connection = RemoteConnection('https://remote', keep_alive=False)
     proxy_url = remote_connection._get_proxy_url()
     assert proxy_url is None
