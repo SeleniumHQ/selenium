@@ -35,8 +35,11 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -83,8 +86,10 @@ public class TracerTest {
       }
     }
 
-    SpanData parent = allSpans.stream().filter(data -> data.getName().equals("parent")).findFirst().orElseThrow();
-    SpanData child = allSpans.stream().filter(data -> data.getName().equals("child")).findFirst().orElseThrow();
+    SpanData parent = allSpans.stream().filter(data -> data.getName().equals("parent"))
+        .findFirst().orElseThrow(NoSuchElementException::new);
+    SpanData child = allSpans.stream().filter(data -> data.getName().equals("child"))
+        .findFirst().orElseThrow(NoSuchElementException::new);
 
     assertThat(child.getParentSpanId()).isEqualTo(parent.getSpanId());
   }
@@ -103,8 +108,10 @@ public class TracerTest {
       future.get();
     }
 
-    SpanData parent = allSpans.stream().filter(data -> data.getName().equals("parent")).findFirst().orElseThrow();
-    SpanData child = allSpans.stream().filter(data -> data.getName().equals("child")).findFirst().orElseThrow();
+    SpanData parent = allSpans.stream().filter(data -> data.getName().equals("parent"))
+        .findFirst().orElseThrow(NoSuchElementException::new);
+    SpanData child = allSpans.stream().filter(data -> data.getName().equals("child"))
+        .findFirst().orElseThrow(NoSuchElementException::new);
 
     assertThat(child.getParentSpanId()).isEqualTo(parent.getSpanId());
   }
@@ -166,7 +173,7 @@ public class TracerTest {
 
     handler.addHandler(Route.get("/status").to(() -> req -> {
       try (Span span = HttpTracing.newSpanAsChildOf(tracer, req, "status")) {
-        executors.submit(span.wrap(() -> Set.of("cheese", "peas"))).get();
+        executors.submit(span.wrap(() -> new HashSet<>(Arrays.asList("cheese", "peas")))).get();
 
         CompletableFuture<String> toReturn = new CompletableFuture<>();
         executors.submit(() -> {
