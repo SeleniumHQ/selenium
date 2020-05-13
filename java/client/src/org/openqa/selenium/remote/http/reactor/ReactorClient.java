@@ -32,7 +32,6 @@ import org.openqa.selenium.remote.http.WebSocket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufInputStream;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.websocket.WebsocketOutbound;

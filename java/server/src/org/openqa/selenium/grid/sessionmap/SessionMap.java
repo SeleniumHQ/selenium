@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.post;
 

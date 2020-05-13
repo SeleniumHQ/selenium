@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Context;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.DefaultSpan;
 import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.Tracer;
