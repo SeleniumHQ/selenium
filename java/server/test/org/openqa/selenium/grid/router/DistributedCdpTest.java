@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid;
+package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
@@ -59,7 +59,7 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class SmokeTest {
+public class DistributedCdpTest {
 
   @Test
   public void ensureBasicFunctionality() throws MalformedURLException, InterruptedException {

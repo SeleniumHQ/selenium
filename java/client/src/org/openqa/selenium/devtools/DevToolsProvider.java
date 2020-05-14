@@ -24,6 +24,7 @@ import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 @AutoService(AugmenterProvider.class)
@@ -44,15 +45,15 @@ public class DevToolsProvider implements AugmenterProvider {
     Preconditions.checkArgument(value instanceof Capabilities, "Expected to be given capabilities");
 
     Capabilities caps = (Capabilities) value;
+    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps)
+      .map(DevTools::new);
 
     return (executeMethod, self, method, args) -> {
       if (!"getDevTools".equals(method.getName())) {
         throw new IllegalStateException("Unexpected call to " + method);
       }
 
-      return SeleniumCdpConnection.create(caps)
-        .map(DevTools::new)
-        .orElseThrow(() -> new IllegalStateException("Unable to create connection to "));
+      return devTools.orElseThrow(() -> new IllegalStateException("Unable to create connection to " + caps));
     };
   }
 
