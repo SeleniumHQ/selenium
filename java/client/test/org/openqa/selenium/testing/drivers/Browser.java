@@ -34,7 +34,9 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 public enum Browser {
   ALL(new ImmutableCapabilities(), false),
   CHROME(new ChromeOptions(), true),
-  EDGE(new EdgeOptions(), false),
+  // This is not strictly true, but it's true enough: original Edge
+  // doesn't support CDP
+  EDGE(new EdgeOptions(), true),
   CHROMIUMEDGE(new EdgeOptions(), true),
   HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), false),
   FIREFOX(new FirefoxOptions(), false),

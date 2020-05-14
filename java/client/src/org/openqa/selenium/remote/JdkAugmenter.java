@@ -17,12 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.reflect.AbstractInvocationHandler;
-
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.InvocationHandler;
@@ -33,7 +31,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Enhance the interfaces implemented by an instance of the
@@ -61,10 +63,13 @@ public class JdkAugmenter extends BaseAugmenter {
     }
     return null;
   }
+
   @Override
-  protected <X> X create(RemoteWebDriver driver, Map<String, AugmenterProvider> augmentors,
-      X objectToAugment) {
-    Map<String, Object> capabilities = driver.getCapabilities().asMap();
+  protected <X> X create(
+    RemoteWebDriver driver,
+    Map<Predicate<Capabilities>, AugmenterProvider> augmentors,
+    X objectToAugment) {
+    Capabilities capabilities = ImmutableCapabilities.copyOf(driver.getCapabilities());
     Map<Method, InterfaceImplementation> augmentationHandlers = new HashMap<>();
 
     Set<Class<?>> proxiedInterfaces = new HashSet<>();
@@ -75,27 +80,23 @@ public class JdkAugmenter extends BaseAugmenter {
       superClass = superClass.getSuperclass();
     }
 
-    for (Map.Entry<String, Object> capabilityName : capabilities.entrySet()) {
-      AugmenterProvider augmenter = augmentors.get(capabilityName.getKey());
-      if (augmenter == null) {
+    for (Map.Entry<Predicate<Capabilities>, AugmenterProvider> entry : augmentors.entrySet()) {
+      if (!entry.getKey().test(capabilities)) {
         continue;
       }
 
-      Object value = capabilityName.getValue();
-      if (value instanceof Boolean && !((Boolean) value)) {
-        continue;
-      }
+      AugmenterProvider augmenter = entry.getValue();
 
       Class<?> interfaceProvided = augmenter.getDescribedInterface();
       checkState(interfaceProvided.isInterface(),
-          "JdkAugmenter can only augment interfaces. %s is not an interface.", interfaceProvided);
+        "JdkAugmenter can only augment interfaces. %s is not an interface.", interfaceProvided);
       proxiedInterfaces.add(interfaceProvided);
-      InterfaceImplementation augmentedImplementation = augmenter.getImplementation(value);
+      InterfaceImplementation augmentedImplementation = augmenter.getImplementation(capabilities);
       for (Method method : interfaceProvided.getMethods()) {
         InterfaceImplementation oldHandler = augmentationHandlers.put(method,
-            augmentedImplementation);
+          augmentedImplementation);
         checkState(null == oldHandler, "Both %s and %s attempt to define %s.",
-            oldHandler, augmentedImplementation.getClass(), method.getName());
+          oldHandler, augmentedImplementation.getClass(), method.getName());
       }
     }
 
@@ -105,11 +106,11 @@ public class JdkAugmenter extends BaseAugmenter {
     }
 
     InvocationHandler proxyHandler = new JdkHandler<>(driver,
-        objectToAugment, augmentationHandlers);
+      objectToAugment, augmentationHandlers);
     return (X) Proxy.newProxyInstance(
-        getClass().getClassLoader(),
-        proxiedInterfaces.toArray(new Class<?>[proxiedInterfaces.size()]),
-        proxyHandler);
+      getClass().getClassLoader(),
+      proxiedInterfaces.toArray(new Class<?>[proxiedInterfaces.size()]),
+      proxyHandler);
   }
 
   private static class JdkHandler<X> extends AbstractInvocationHandler
@@ -121,9 +122,9 @@ public class JdkAugmenter extends BaseAugmenter {
     private JdkHandler(RemoteWebDriver driver, X realInstance,
         Map<Method, InterfaceImplementation> handlers) {
       super();
-      this.driver = checkNotNull(driver);
-      this.realInstance = checkNotNull(realInstance);
-      this.handlers = checkNotNull(handlers);
+      this.driver = Objects.requireNonNull(driver);
+      this.realInstance = Objects.requireNonNull(realInstance);
+      this.handlers = Objects.requireNonNull(handlers);
     }
 
     @Override

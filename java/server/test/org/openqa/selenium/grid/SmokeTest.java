@@ -18,11 +18,10 @@
 package org.openqa.selenium.grid;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openqa.selenium.devtools.Connection;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.SeleniumCdpConnection;
+import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.network.Network;
 import org.openqa.selenium.devtools.page.Page;
 import org.openqa.selenium.grid.commands.MessageBusCommand;
@@ -36,6 +35,7 @@ import org.openqa.selenium.grid.sessionmap.httpd.SessionMapServer;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -59,7 +59,6 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-@Ignore
 public class SmokeTest {
 
   @Test
@@ -125,12 +124,11 @@ public class SmokeTest {
       req -> new HttpResponse().setContent(Contents.utf8String("I like cheese")))
       .start();
 
-    RemoteWebDriver driver = new RemoteWebDriver(new URL("http://localhost:" + routerPort), browser.getCapabilities());
+    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:" + routerPort), browser.getCapabilities());
+    driver = new Augmenter().augment(driver);
 
     CountDownLatch latch = new CountDownLatch(1);
-    try (
-      Connection connection = SeleniumCdpConnection.create(driver).orElseThrow(() -> new RuntimeException("Cannot get connection"));
-      DevTools devTools = new DevTools(connection)) {
+    try (DevTools devTools = ((HasDevTools) driver).getDevTools()) {
       devTools.createSessionIfThereIsNotOne();
       devTools.send(Page.enable());
       devTools.addListener(Network.loadingFinished(), res -> latch.countDown());

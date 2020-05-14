@@ -65,6 +65,7 @@ java_export(
         "org.openqa.selenium.remote.internal",
     ],
     uses = [
+        "org.openqa.selenium.remote.AugmenterProvider",
         "org.openqa.selenium.remote.session.CapabilitiesFilter",
         "org.openqa.selenium.remote.session.CapabilityTransform",
         "org.openqa.selenium.remote.service.DriverService$Builder",
