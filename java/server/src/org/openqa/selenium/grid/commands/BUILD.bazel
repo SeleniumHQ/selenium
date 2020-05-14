@@ -6,6 +6,7 @@ java_library(
     resources = glob(["*.txt"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid:__pkg__",
     ],
     runtime_deps = [
         "//java/server/src/org/openqa/selenium/events/local",
