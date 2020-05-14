@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.Event;
@@ -41,6 +42,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -61,7 +63,7 @@ public class MessageBusCommand extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return Collections.singleton(HTTPD_ROLE);
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE);
   }
 
   @Override
