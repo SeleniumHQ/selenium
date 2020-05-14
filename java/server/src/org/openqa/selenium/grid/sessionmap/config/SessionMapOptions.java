@@ -79,7 +79,7 @@ public class SessionMapOptions {
 
   public SessionMap getSessionMap() {
     String clazz = config.get(SESSIONS_SECTION, "implementation").orElse(DEFAULT_SESSION_MAP);
-    LOG.info("Creating event bus: " + clazz);
+    LOG.info("Creating session map: " + clazz);
     try {
       Class<?> busClazz = Class.forName(clazz);
       Method create = busClazz.getMethod("create", Config.class);
