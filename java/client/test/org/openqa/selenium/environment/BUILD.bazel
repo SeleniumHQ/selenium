@@ -33,8 +33,10 @@ java_library(
         "//third_party/js/sizzle",
     ],
     javacopts = [
-        "-source", "11",
-        "-target", "11",
+        "-source",
+        "11",
+        "-target",
+        "11",
     ],
     visibility = [
         "//java/client/test:__subpackages__",
@@ -64,8 +66,8 @@ java_binary(
     name = "appserver",
     main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
     visibility = [
+        "//:__pkg__",
         "//dotnet/test:__subpackages__",
-        "//:__pkg__"
     ],
     runtime_deps = [
         ":environment",
@@ -82,7 +84,6 @@ java_binary(
         ":environment",
     ],
 )
-
 
 java_library(
     name = "test-base",

@@ -28,10 +28,10 @@ genrule(
 )
 
 genrule(
-    name="find-elements",
-    srcs=["//javascript/atoms/fragments:find-elements.js"],
-    outs=["find-elements.js"],
-    cmd="$(location :make_atoms_module) $< $@",
-    tools=[":make_atoms_module"],
-    visibility=["//javascript/node/selenium-webdriver:__pkg__"],
+    name = "find-elements",
+    srcs = ["//javascript/atoms/fragments:find-elements.js"],
+    outs = ["find-elements.js"],
+    cmd = "$(location :make_atoms_module) $< $@",
+    tools = [":make_atoms_module"],
+    visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
 )

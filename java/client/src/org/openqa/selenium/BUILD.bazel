@@ -25,11 +25,11 @@ java_export(
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
     pom_template = ":template-pom",
+    visibility = ["//visibility:public"],
     deps = [
         # Nothing from third party
         ":manifest",
     ],
-    visibility = ["//visibility:public"],
 )
 
 java_export(
@@ -75,13 +75,13 @@ java_dist_zip(
 
 javadoc(
     name = "client-javadoc",
-    deps = [
-        ":client-combined",
-    ],
-    transitive = True,
     third_party_prefixes = [
         "@maven//",
         "//third_party",
+    ],
+    transitive = True,
+    deps = [
+        ":client-combined",
     ],
 )
 

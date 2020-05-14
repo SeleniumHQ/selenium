@@ -13,5 +13,5 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/json",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ]
+    ],
 )

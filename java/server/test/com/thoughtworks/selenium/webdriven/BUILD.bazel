@@ -6,8 +6,10 @@ java_test_suite(
     size = "medium",
     srcs = glob(["*Test.java"]),
     javacopts = [
-        "-source", "11",
-        "-target", "11",
+        "-source",
+        "11",
+        "-target",
+        "11",
     ],
     deps = [
         "//java/client/src/com/thoughtworks/selenium",
@@ -16,9 +18,9 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/com/thoughtworks/selenium/webdriven",
-        "//java/server/src/org/openqa/selenium/remote/server",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/jre/server",
+        "//java/server/src/org/openqa/selenium/remote/server",
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),
     ],

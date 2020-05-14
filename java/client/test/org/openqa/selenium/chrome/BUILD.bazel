@@ -4,8 +4,8 @@ load("//java:defs.bzl", "java_selenium_test_suite")
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
-    browsers = ["chrome"],
     srcs = glob(["*Test.java"]),
+    browsers = ["chrome"],
     data = [
         "//third_party/chrome_ext:backspace.crx",
     ],
@@ -19,5 +19,5 @@ java_selenium_test_suite(
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
-    ]
+    ],
 )

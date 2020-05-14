@@ -1,15 +1,16 @@
 """
 Rules for compiling NUnit tests.
 """
+
 load("@d2l_rules_csharp//csharp/private:providers.bzl", "AnyTargetFrameworkInfo")
 load("@d2l_rules_csharp//csharp/private:actions/assembly.bzl", "AssemblyAction")
 load("@d2l_rules_csharp//csharp/private:actions/write_runtimeconfig.bzl", "write_runtimeconfig")
 load(
     "@d2l_rules_csharp//csharp/private:common.bzl",
     "fill_in_missing_frameworks",
+    "is_core_framework",
     "is_debug",
     "is_standard_framework",
-    "is_core_framework"
 )
 
 def _generate_execution_script_file(ctx, target):
@@ -20,11 +21,10 @@ def _generate_execution_script_file(ctx, target):
     if ctx.attr.is_windows:
         shell_file_extension = "bat"
         execution_line = "%~dp0" + test_file_name + " %*"
+    elif is_core_framework(tfm):
+        execution_line = "dotnet " + execution_line
     else:
-        if is_core_framework(tfm):
-            execution_line = "dotnet " + execution_line
-        else:
-            execution_line = "mono " + execution_line
+        execution_line = "mono " + execution_line
 
     toolchain = ctx.toolchains["@d2l_rules_csharp//csharp/private:toolchain_type"]
     dotnet_sdk_location = toolchain.runtime.executable.dirname
@@ -52,7 +52,7 @@ def _copy_cmd(ctx, file_list, target_dir):
     dest_list = []
 
     if file_list == None or len(file_list) == 0:
-      return dest_list
+        return dest_list
 
     shell_content = ""
     batch_file_name = "%s/%s-copydeps.bat" % (target_dir, ctx.attr.out)
@@ -62,7 +62,7 @@ def _copy_cmd(ctx, file_list, target_dir):
         dest_list.append(dest_file)
         shell_content += "@copy /Y \"%s\" \"%s\" >NUL\n" % (
             src_file.path.replace("/", "\\"),
-            dest_file.path.replace("/", "\\")
+            dest_file.path.replace("/", "\\"),
         )
 
     ctx.actions.write(
@@ -102,7 +102,7 @@ def _copy_bash(ctx, src_list, target_dir):
     return dest_list
 
 def _copy_dependency_files(ctx, provider_value):
-    src_list =  provider_value.transitive_runfiles.to_list()
+    src_list = provider_value.transitive_runfiles.to_list()
     target_dir = "bazelout/%s/" % (provider_value.actual_tfm)
     dest_list = []
     if ctx.attr.is_windows:
@@ -242,7 +242,7 @@ nunit_test = rule(
             providers = AnyTargetFrameworkInfo,
             default = "@NUnit//:nunit.framework",
         ),
-        "is_windows": attr.bool(default=False),
+        "is_windows": attr.bool(default = False),
     },
     test = True,
     executable = True,

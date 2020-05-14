@@ -2,7 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 LARGE_TESTS = [
-  "DistributedCdpTest.java",
+    "DistributedCdpTest.java",
 ]
 
 java_selenium_test_suite(
@@ -30,7 +30,10 @@ java_selenium_test_suite(
 java_test_suite(
     name = "medium-tests",
     size = "medium",
-    srcs = glob(["*Test.java"], exclude = LARGE_TESTS),
+    srcs = glob(
+        ["*Test.java"],
+        exclude = LARGE_TESTS,
+    ),
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",

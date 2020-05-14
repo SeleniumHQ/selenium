@@ -25,7 +25,10 @@ java_library(
 
 java_export(
     name = "grid",
-    srcs = glob(["*.java"], exclude = BASE_COMMAND_SRCS),
+    srcs = glob(
+        ["*.java"],
+        exclude = BASE_COMMAND_SRCS,
+    ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     uses = [
@@ -69,7 +72,7 @@ java_binary(
     ],
     runtime_deps = [
         ":grid",
-        artifact("org.slf4j:slf4j-jdk14")
+        artifact("org.slf4j:slf4j-jdk14"),
     ],
 )
 
@@ -97,12 +100,12 @@ java_dist_zip(
 
 javadoc(
     name = "all-javadocs",
-    deps = [
-        ":grid",
-    ],
-    transitive = True,
     third_party_prefixes = [
         "@maven//",
         "//third_party",
+    ],
+    transitive = True,
+    deps = [
+        ":grid",
     ],
 )

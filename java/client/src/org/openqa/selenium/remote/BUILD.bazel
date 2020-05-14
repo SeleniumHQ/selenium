@@ -60,17 +60,17 @@ java_export(
         "html5/AddWebStorage.java",
         "mobile/AddNetworkConnection.java",
     ],
-    maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
     hides = [
         "org.openqa.selenium.remote.internal",
     ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     uses = [
         "org.openqa.selenium.remote.AugmenterProvider",
         "org.openqa.selenium.remote.session.CapabilitiesFilter",
         "org.openqa.selenium.remote.session.CapabilityTransform",
         "org.openqa.selenium.remote.service.DriverService$Builder",
     ],
-    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = ["//visibility:public"],
     exports = [
         ":api",

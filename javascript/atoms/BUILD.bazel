@@ -295,9 +295,9 @@ closure_js_deps(
     name = "deps",
     testonly = 1,
     visibility = [
+        "//:__pkg__",
         "//javascript:__pkg__",
         "//javascript/webdriver:__pkg__",
-        "//:__pkg__"
     ],
     deps = [
         ":action",

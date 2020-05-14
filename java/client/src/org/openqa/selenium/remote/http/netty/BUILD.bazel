@@ -21,6 +21,5 @@ java_library(
         artifact("io.netty:netty-transport-native-kqueue"),
         artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
         artifact("io.netty:netty-transport-native-unix-common"),
-
     ],
 )

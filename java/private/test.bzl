@@ -35,7 +35,7 @@ def java_selenium_test_suite(
         name = "%s-base-lib" % name,
         srcs = srcs,
         deps = deps,
-        **kwargs,
+        **kwargs
     )
 
     suites = []
@@ -83,7 +83,7 @@ def java_test_suite(
 
         (prefix, ignored, file_name) = src.rpartition("/")
         if len(prefix):
-          prefix = prefix + "/"
+            prefix = prefix + "/"
 
         for identifier in test_identifiers:
             if file_name.startswith(identifier) or src.endswith(identifier):

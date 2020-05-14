@@ -78,9 +78,9 @@ def selenium_java_deps():
             "org.seleniumhq.selenium:htmlunit-driver:2.39.0",
         ],
         excluded_artifacts = [
-            "org.hamcrest:hamcrest-all", # Replaced by hamcrest 2
+            "org.hamcrest:hamcrest-all",  # Replaced by hamcrest 2
             "org.hamcrest:hamcrest-core",
-            "io.netty:netty-all", # Depend on the actual things you need
+            "io.netty:netty-all",  # Depend on the actual things you need
         ],
         override_targets = {
             "org.seleniumhq.selenium:selenium-api": "@//java/client/src/org/openqa/selenium:core",

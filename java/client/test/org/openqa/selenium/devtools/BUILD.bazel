@@ -3,8 +3,8 @@ load("//java:defs.bzl", "java_selenium_test_suite")
 
 java_selenium_test_suite(
     name = "large-tests",
-    srcs = glob(["*Test.java"]),
     size = "large",
+    srcs = glob(["*Test.java"]),
     browsers = [
         "chrome",
         "firefox",

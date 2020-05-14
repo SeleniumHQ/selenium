@@ -14,10 +14,10 @@ alias(
 
 alias(
     name = "debug-server",
-    actual="//java/client/test/org/openqa/selenium/environment:appserver"
+    actual = "//java/client/test/org/openqa/selenium/environment:appserver",
 )
 
-alias (
+alias(
     name = "calcdeps",
-    actual = "//javascript/atoms:deps"
+    actual = "//javascript/atoms:deps",
 )

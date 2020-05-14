@@ -5,25 +5,25 @@ load("//:copy_file.bzl", "copy_file")
 load("//dotnet:nuget.bzl", "nuget_package")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
-    "ASSEMBLY_VERSION",
-    "SE_VERSION",
-    "SUPPORTED_NET_FRAMEWORKS",
-    "SUPPORTED_NET_STANDARD_VERSIONS",
     "ASSEMBLY_COMPANY",
     "ASSEMBLY_COPYRIGHT",
     "ASSEMBLY_INFORMATIONAL_VERSION",
     "ASSEMBLY_PRODUCT",
+    "ASSEMBLY_VERSION",
+    "SE_VERSION",
+    "SUPPORTED_NET_FRAMEWORKS",
+    "SUPPORTED_NET_STANDARD_VERSIONS",
 )
 
 generated_assembly_info(
     name = "assembly-info",
-    version = ASSEMBLY_VERSION,
     company = ASSEMBLY_COMPANY,
     copyright = ASSEMBLY_COPYRIGHT,
     description = "Selenium WebDriver API .NET Bindings",
+    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
     product = ASSEMBLY_PRODUCT,
     title = "Selenium WebDriver",
-    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
+    version = ASSEMBLY_VERSION,
 )
 
 [csharp_library(
@@ -44,6 +44,7 @@ generated_assembly_info(
         "Safari/*.cs",
         "Support/*.cs",
     ]) + [":assembly-info"],
+    out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -66,7 +67,6 @@ generated_assembly_info(
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
     ],
-    out = "WebDriver",
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 [csharp_library(
@@ -87,6 +87,7 @@ generated_assembly_info(
         "Safari/*.cs",
         "Support/*.cs",
     ]) + [":assembly-info"],
+    out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
@@ -99,7 +100,6 @@ generated_assembly_info(
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
-    out = "WebDriver",
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
 [csharp_library(
@@ -120,6 +120,7 @@ generated_assembly_info(
         "Safari/*.cs",
         "Support/*.cs",
     ]) + [":assembly-info"],
+    out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -142,7 +143,6 @@ generated_assembly_info(
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
     ],
-    out = "strongnamed/WebDriver",
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 [csharp_library(
@@ -163,6 +163,7 @@ generated_assembly_info(
         "Safari/*.cs",
         "Support/*.cs",
     ]) + [":assembly-info"],
+    out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -176,7 +177,6 @@ generated_assembly_info(
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
-    out = "strongnamed/WebDriver",
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
 [merged_assembly(
