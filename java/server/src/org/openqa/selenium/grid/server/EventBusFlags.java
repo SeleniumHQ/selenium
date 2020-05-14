@@ -45,7 +45,8 @@ public class EventBusFlags implements HasRoles {
 
   @Parameter(
       names = {"--bind-bus"},
-      description = "Whether the connection string should be bound or connected")
+      description = "Whether the connection string should be bound or connected",
+      arity = 1)
   @ConfigValue(section = "events", name = "bind")
   // We use the Boolean here so we can differentiate between there being no option, and a default
   // false value.
