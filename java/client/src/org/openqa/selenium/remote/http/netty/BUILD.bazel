@@ -5,7 +5,7 @@ java_library(
     srcs = glob(["*.java"]),
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
-        "//java/client/test/org/openqa/selenium/remote/http/netty:__pkg__",
+        "//java/client/test/org/openqa/selenium/remote/http:__subpackages__",
     ],
     deps = [
         "//java:auto-service",

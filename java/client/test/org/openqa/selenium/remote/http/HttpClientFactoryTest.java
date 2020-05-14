@@ -47,7 +47,7 @@ public class HttpClientFactoryTest {
   @Test
   public void canCreateDefaultHttpClientFactory() {
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
-    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("reactor");
+    assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("netty");
   }
 
   @Test
