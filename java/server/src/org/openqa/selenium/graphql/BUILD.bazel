@@ -1,0 +1,18 @@
+exports_files(
+    ["selenium-grid-schema.graphqls"],
+)
+
+java_library(
+    name = "graphql",
+    srcs = glob(["*.java"]),
+    resources = [
+        "selenium-grid-schema.graphqls",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/graphql:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid/graphql:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/json",
+    ],
+)

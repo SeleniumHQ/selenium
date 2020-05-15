@@ -1,0 +1,11 @@
+schema {
+  query: GridQuery
+}
+
+type GridQuery {
+  grid: Grid!
+}
+
+type Grid {
+  url: String!
+}
