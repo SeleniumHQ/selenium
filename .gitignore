@@ -61,6 +61,7 @@ py/selenium/webdriver/firefox/amd64/
 py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/webdriver_prefs.json
 py/selenium/webdriver/firefox/x86/
+py/selenium/webdriver/remote/findElements.js
 py/selenium/webdriver/remote/getAttribute.js
 py/selenium/webdriver/remote/isDisplayed.js
 py/docs/build/
