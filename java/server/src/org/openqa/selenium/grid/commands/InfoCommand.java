@@ -85,6 +85,11 @@ public class InfoCommand implements CliCommand {
       String toDisplay;
       String title;
       switch (topic.topic) {
+        case "config":
+          title = "Configuring Selenium";
+          toDisplay = "config.txt";
+          break;
+
         case "security":
           title = "About Security";
           toDisplay = "security.txt";
