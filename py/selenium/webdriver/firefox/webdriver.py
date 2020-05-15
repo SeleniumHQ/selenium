@@ -36,7 +36,7 @@ from .webelement import FirefoxWebElement
 
 
 # Default for log_path variable. To be deleted when deprecations for arguments are removed.
-DEFAULT_LOG_PATH= None
+DEFAULT_LOG_PATH = None
 DEFAULT_EXECUTABLE_PATH = "geckodriver"
 DEFAULT_SERVICE_LOG_PATH = "geckodriver.log"
 
@@ -52,7 +52,7 @@ class WebDriver(RemoteWebDriver):
                  capabilities=None, proxy=None,
                  executable_path=DEFAULT_EXECUTABLE_PATH, options=None,
                  service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 service_args=None, service=None, desired_capabilities=None, 
+                 service_args=None, service=None, desired_capabilities=None,
                  log_path=DEFAULT_LOG_PATH, keep_alive=True):
         """Starts a new local session of Firefox.
 
@@ -126,7 +126,7 @@ class WebDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if service_args != None:
+        if service_args is not None:
             warnings.warn('service_args has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 

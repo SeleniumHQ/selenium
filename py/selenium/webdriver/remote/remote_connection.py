@@ -23,6 +23,7 @@ import string
 
 import certifi
 import urllib3
+import os
 
 try:
     from urllib import parse
@@ -123,6 +124,23 @@ class RemoteConnection(object):
 
         return headers
 
+    def _get_proxy_url(self):
+        if self._url.startswith('https://'):
+            return os.environ.get('https_proxy', os.environ.get('HTTPS_PROXY'))
+        elif self._url.startswith('http://'):
+            return os.environ.get('http_proxy', os.environ.get('HTTP_PROXY'))
+
+    def _get_connection_manager(self):
+        pool_manager_init_args = {
+            'timeout': self._timeout
+        }
+        if self._ca_certs:
+            pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
+            pool_manager_init_args['ca_certs'] = self._ca_certs
+
+        return urllib3.PoolManager(**pool_manager_init_args) if self._proxy_url is None else \
+            urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
+
     def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None):
         if resolve_ip is not None:
             import warnings
@@ -131,14 +149,9 @@ class RemoteConnection(object):
                 DeprecationWarning)
         self.keep_alive = keep_alive
         self._url = remote_server_addr
+        self._proxy_url = self._get_proxy_url()
         if keep_alive:
-            pool_manager_init_args = {
-                'timeout': self._timeout
-            }
-            if self._ca_certs:
-                pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
-                pool_manager_init_args['ca_certs'] = self._ca_certs
-            self._conn = urllib3.PoolManager(**pool_manager_init_args)
+            self._conn = self._get_connection_manager()
 
         self._commands = {
             Command.STATUS: ('GET', '/status'),
@@ -402,13 +415,8 @@ class RemoteConnection(object):
 
             statuscode = resp.status
         else:
-            pool_manager_init_args = {
-                'timeout': self._timeout
-            }
-            if self._ca_certs:
-                pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
-                pool_manager_init_args['ca_certs'] = self._ca_certs
-            with urllib3.PoolManager(**pool_manager_init_args) as http:
+            conn = self._get_connection_manager()
+            with conn as http:
                 resp = http.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status
