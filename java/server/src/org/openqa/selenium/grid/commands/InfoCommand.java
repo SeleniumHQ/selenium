@@ -140,8 +140,13 @@ public class InfoCommand implements CliCommand {
         } else if ("```".equals(line)) {
           inCode = !inCode;
         } else {
+          if (line.startsWith("=")) {
+            formattedText.append("\n");
+          }
           formattedText.append(line);
-          if (inCode || line.startsWith("* ")) {
+          if (inCode ||
+            line.matches("^\\s*\\*.*") ||
+            line.matches("^\\s*\\d+\\..*")) {
             formattedText.append("\n");
           } else {
             formattedText.append(" ");
