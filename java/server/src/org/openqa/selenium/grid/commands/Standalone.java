@@ -29,6 +29,7 @@ import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.docker.DockerOptions;
+import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
@@ -135,7 +136,13 @@ public class Standalone extends TemplateGridCommand {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     combinedHandler.addHandler(distributor);
     Router router = new Router(tracer, clientFactory, sessions, distributor);
-    HttpHandler httpHandler = combine(router, Route.prefix("/wd/hub").to(combine(router)));
+
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri().toString());
+    HttpHandler httpHandler = combine(
+      router,
+      Route.prefix("/wd/hub").to(combine(router)),
+      Route.post("/graphql").to(() -> graphqlHandler));
 
     LocalNode.Builder nodeBuilder = LocalNode.builder(
       tracer,
@@ -152,7 +159,7 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    Server<?> server = new NettyServer(new BaseServerOptions(config), httpHandler, new ProxyNodeCdp(clientFactory, node));
+    Server<?> server = new NettyServer(serverOptions, httpHandler, new ProxyNodeCdp(clientFactory, node));
     server.start();
 
     BuildInfo info = new BuildInfo();

@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
+import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
 import org.openqa.selenium.grid.router.Router;
@@ -38,6 +39,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Collections;
@@ -99,9 +101,13 @@ public class RouterServer extends TemplateGridCommand {
     DistributorOptions distributorOptions = new DistributorOptions(config);
     Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
 
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri().toString());
 
-    Server<?> server = new NettyServer(serverOptions, router, new ProxyCdpIntoGrid(clientFactory, sessions));
+    Route handler = Route.combine(
+      new Router(tracer, clientFactory, sessions, distributor),
+      Route.post("/graphql").to(() -> graphqlHandler));
+
+    Server<?> server = new NettyServer(serverOptions, handler, new ProxyCdpIntoGrid(clientFactory, sessions));
     server.start();
 
     BuildInfo info = new BuildInfo();

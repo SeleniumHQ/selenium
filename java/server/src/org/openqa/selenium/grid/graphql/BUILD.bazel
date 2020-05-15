@@ -4,6 +4,7 @@ java_library(
     name = "graphql",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid/graphql:__pkg__",
     ],
     deps = [
