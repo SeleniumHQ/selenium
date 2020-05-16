@@ -136,6 +136,7 @@ of security.
        --detect-drivers \
        --registration-secret cheese
 ```
+
 Note: If the registration-secret from the Node to the Distributor (or Router) is
 incorrect, there is nothing to indicate that returned to the Node. There is an ERROR
 level log entry produced on the servers. You should be monitoring the logs for that
