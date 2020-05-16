@@ -19,14 +19,24 @@ package org.openqa.selenium.grid.config;
 
 import com.beust.jcommander.Parameter;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import org.openqa.selenium.json.Json;
 
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ConfigFlags {
 
+  private static final ImmutableSet<String> IGNORED_SECTIONS = ImmutableSet.of("java", "lc", "term");
+
   @Parameter(names = "--config", description = "Config file to read from (may be specified more than once)")
   private List<Path> configFiles;
+
+  @Parameter(names = "--dump-config", description = "Dump the config of the server as JSON.", hidden = true)
+  private boolean dumpConfig;
 
   public Config readConfigFiles() {
     if (configFiles == null || configFiles.isEmpty()) {
@@ -37,5 +47,28 @@ public class ConfigFlags {
       configFiles.stream()
         .map(Configs::from)
         .toArray(Config[]::new));
+  }
+
+  public boolean dumpConfig(Config config, PrintStream dumpTo) {
+    if (!dumpConfig) {
+      return false;
+    }
+
+    Map<String, Map<String, Object>> toOutput = new TreeMap<>();
+    for (String section : config.getSectionNames()) {
+      if (section.isEmpty() || IGNORED_SECTIONS.contains(section)) {
+        continue;
+      }
+
+      config.getOptions(section).forEach(option ->
+        config.get(section, option).ifPresent(value ->
+          toOutput.computeIfAbsent(section, ignored -> new TreeMap<>()).put(option, value)
+        )
+      );
+    }
+
+    dumpTo.print(new Json().toJson(toOutput));
+
+    return true;
   }
 }
