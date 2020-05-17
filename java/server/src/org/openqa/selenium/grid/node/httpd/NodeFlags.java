@@ -36,25 +36,26 @@ public class NodeFlags implements HasRoles {
   @Parameter(
       names = {"--detect-drivers"}, arity = 1,
       description = "Autodetect which drivers are available on the current system, and add them to the node.")
-  @ConfigValue(section = "node", name = "detect-drivers")
+  @ConfigValue(section = "node", name = "detect-drivers", example = "true")
   public Boolean autoconfigure = true;
 
   @Parameter(
     names = "--max-sessions",
     description = "Maximum number of concurrent sessions.")
-  @ConfigValue(section = "node", name = "max-concurrent-sessions")
+  @ConfigValue(section = "node", name = "max-concurrent-sessions", example = "8")
   public int maxSessions = Runtime.getRuntime().availableProcessors();
 
   @Parameter(
     names = {"-I", "--driver-implementation"},
     description = "Drivers that should be checked. If specified, will skip autoconfiguration. Example: -I \"firefox\" -I \"chrome\"")
-  @ConfigValue(section = "node", name = "drivers")
+  @ConfigValue(section = "node", name = "drivers", example = "[\"firefox\", \"chrome\"]")
   public Set<String> driverNames = new HashSet<>();
 
   @Parameter(
     names = {"--public-url"},
     description = "Public URL of the Grid as a whole (typically the address of the hub or the router)")
-  @ConfigValue(section = "node", name = "grid-url")
+  @ConfigValue(section = "node", name = "grid-url", example = "\"https://grid.example.com\"")
+
   public URL gridUri;
 
   @Override

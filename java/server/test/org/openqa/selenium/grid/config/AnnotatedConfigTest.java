@@ -37,7 +37,7 @@ public class AnnotatedConfigTest {
   public void shouldAllowConfigsToBeAnnotated() {
 
     class WithAnnotations {
-      @ConfigValue(section = "cheese", name = "type")
+      @ConfigValue(section = "cheese", name = "type", example = "\"cheddar\"")
       private final String cheese = "brie";
     }
 
@@ -50,9 +50,9 @@ public class AnnotatedConfigTest {
   @Test
   public void shouldAllowFieldsToBeSomethingOtherThanStrings() {
     class WithTypes {
-      @ConfigValue(section = "types", name = "bool")
+      @ConfigValue(section = "types", name = "bool", example = "false")
       private final boolean boolField = true;
-      @ConfigValue(section = "types", name = "int")
+      @ConfigValue(section = "types", name = "int", example = "0")
       private final int intField = 42;
     }
 
@@ -64,7 +64,7 @@ public class AnnotatedConfigTest {
   @Test
   public void shouldAllowCollectionTypeFieldsToBeAnnotated() {
     class WithBadAnnotation {
-      @ConfigValue(section = "the", name = "collection")
+      @ConfigValue(section = "the", name = "collection", example = "[]")
       private final Set<String> cheeses = ImmutableSet.of("cheddar", "gouda");
     }
 
@@ -80,7 +80,7 @@ public class AnnotatedConfigTest {
   @Test(expected = ConfigException.class)
   public void shouldNotAllowMapTypeFieldsToBeAnnotated() {
     class WithBadAnnotation {
-      @ConfigValue(section = "bad", name = "map")
+      @ConfigValue(section = "bad", name = "map", example = "")
       private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
     }
 
@@ -90,7 +90,7 @@ public class AnnotatedConfigTest {
   @Test
   public void shouldWalkInheritanceHierarchy() {
     class Parent {
-      @ConfigValue(section = "cheese", name = "type")
+      @ConfigValue(section = "cheese", name = "type", example = "")
       private final String value = "cheddar";
     }
 
@@ -105,12 +105,12 @@ public class AnnotatedConfigTest {
   @Test
   public void configValuesFromChildClassesAreMoreImportant() {
     class Parent {
-      @ConfigValue(section = "cheese", name = "type")
+      @ConfigValue(section = "cheese", name = "type", example = "\"gouda\"")
       private final String value = "cheddar";
     }
 
     class Child extends Parent {
-      @ConfigValue(section = "cheese", name = "type")
+      @ConfigValue(section = "cheese", name = "type", example = "\"gouda\"")
       private final String cheese = "gorgonzola";
     }
 
@@ -127,11 +127,11 @@ public class AnnotatedConfigTest {
       // We leave booleans out --- in order to allow us to differentiate
       // "default value" from "user set value", we need to use `Boolean`
       // instead.
-      @ConfigValue(section = "default", name = "bool")
+      @ConfigValue(section = "default", name = "bool", example = "")
       private boolean bool;
-      @ConfigValue(section = "default", name = "int")
+      @ConfigValue(section = "default", name = "int", example = "")
       private int integer;
-      @ConfigValue(section = "default", name = "string")
+      @ConfigValue(section = "default", name = "string", example = "")
       private String string;
     }
 

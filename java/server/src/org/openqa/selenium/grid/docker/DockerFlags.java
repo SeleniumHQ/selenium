@@ -35,8 +35,9 @@ public class DockerFlags implements HasRoles {
 
   @Parameter(
       names = {"--docker-url"},
-      description = "URL for connecting to the docker daemon")
-  @ConfigValue(section = "docker", name = "url")
+      description = "URL for connecting to the docker daemon"
+  )
+  @ConfigValue(section = "docker", name = "url", example = "\"unix:/var/run/docker\"")
   private URL dockerUrl;
 
   @Parameter(
@@ -45,7 +46,10 @@ public class DockerFlags implements HasRoles {
                     "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}')",
       arity = 2,
       variableArity = true)
-  @ConfigValue(section = "docker", name = "configs")
+  @ConfigValue(
+    section = "docker",
+    name = "configs",
+    example = "[\"selenium/standalone-firefox:latest\", \"{\\\"browserName\\\": \\\"firefox\\\"}\"]")
   private List<String> images2Capabilities;
 
   @Override

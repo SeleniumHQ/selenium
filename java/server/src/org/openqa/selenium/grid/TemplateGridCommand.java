@@ -87,6 +87,10 @@ public abstract class TemplateGridCommand implements CliCommand {
         return;
       }
 
+      if (configFlags.dumpConfigHelp(config, getConfigurableRoles(), out)) {
+        return;
+      }
+
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 

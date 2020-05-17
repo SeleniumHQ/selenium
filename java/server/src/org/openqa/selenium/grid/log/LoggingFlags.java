@@ -31,19 +31,19 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 public class LoggingFlags implements HasRoles {
 
   @Parameter(description = "Configure logging", hidden = true, names = "--configure-logging", arity = 1)
-  @ConfigValue(section = "logging", name = "enable")
+  @ConfigValue(section = "logging", name = "enable", example = "true")
   private Boolean configureLogging = true;
 
   @Parameter(description = "Use structured logs", names = "--structured-logs")
-  @ConfigValue(section = "logging", name = "structured-logs")
+  @ConfigValue(section = "logging", name = "structured-logs", example = "false")
   private Boolean structuredLogs = false;
 
   @Parameter(description = "Use plain log lines", names = "--plain-logs", arity = 1)
-  @ConfigValue(section = "logging", name = "plain-logs")
+  @ConfigValue(section = "logging", name = "plain-logs", example = "true")
   private Boolean plainLogs = true;
 
   @Parameter(description = "Enable trace collection", hidden = true, names = "--tracing", arity = 1)
-  @ConfigValue(section = "logging", name = "tracing")
+  @ConfigValue(section = "logging", name = "tracing", example = "true")
   private Boolean enableTracing = true;
 
   @Override
