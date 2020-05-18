@@ -26,7 +26,17 @@ public class DevMode {
   // There is absolutely no way that this is going to be fragile. No way. Nada. Nope.
   private static final List<Supplier<Boolean>> DEV_MODE_CHECKS = Arrays.asList(
       // Check for IntelliJ
-      () -> System.getProperty("java.class.path", "").contains("idea_rt.jar"),
+      () -> {
+        if (System.getProperty("java.class.path", "").contains("idea_rt.jar")) {
+          return true;
+        }
+        try {
+          Class.forName("com.intellij.rt.execution.CommandLineWrapper");
+          return true;
+        } catch (ReflectiveOperationException e) {
+          return false;
+        }
+      },
 
       // Check for Eclipse
       () -> {
