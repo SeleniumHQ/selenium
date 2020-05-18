@@ -20,9 +20,10 @@
 from abc import ABCMeta
 import base64
 import copy
-from contextlib import contextmanager
+from contextlib import (contextmanager, asynccontextmanager)
 import pkgutil
 import warnings
+import sys
 
 from .command import Command
 from .errorhandler import ErrorHandler
@@ -1419,3 +1420,20 @@ class WebDriver(BaseWebDriver):
                 driver.get_log('server')
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
+
+    @asynccontextmanager
+    async def get_devtools_connection(self):
+        assert sys.version_info >= (3, 6)
+
+        from selenium.webdriver.support import cdp
+        ws_url = None
+        if self.capabilities.get("se:options"):
+            ws_url = self.capabilities.get("se:options")
+        else:
+            ws_url = self.capabilities.get(self.vendor_prefix["debuggerAddress"])
+
+        if ws_url is None:
+            raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        async with cdp.open_cdp(ws_url) as conn:
+            yield conn

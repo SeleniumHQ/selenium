@@ -15,8 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import sys
 import warnings
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -68,6 +70,8 @@ class ChromiumDriver(RemoteWebDriver):
                 desired_capabilities = options.to_capabilities()
             else:
                 desired_capabilities.update(options.to_capabilities())
+
+        self.vendor_prefix = vendor_prefix
 
         if service is None:
             raise AttributeError('service cannot be None')
