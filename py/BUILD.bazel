@@ -29,7 +29,9 @@ copy_file(
 
 py_library(
     name = "selenium",
-    srcs = glob(["selenium/**/*.py"]),
+    srcs = glob(["selenium/**/*.py"],
+                exclude= ["generate.py"]
+    ) + [":create-cdp-srcs"],
     data = [
         ":find-elements",
         ":firefox-driver-prefs",
@@ -52,6 +54,8 @@ py_package(
         "py.selenium.webdriver",
         "py.selenium.webdriver.chrome",
         "py.selenium.webdriver.chromium",
+        "py.selenium.webdriver.common",
+        "py.selenium.webdriver.common.devtools",
         "py.selenium.webdriver.edge",
         "py.selenium.webdriver.firefox",
         "py.selenium.webdriver.remote",
@@ -108,6 +112,31 @@ py_library(
     deps = [
         ":webserver",
     ],
+)
+
+genrule(
+    name="create-cdp-srcs",
+    srcs=[
+        "generate.py",
+        "//py:browser_protocol",
+        "//py:js_protocol",
+    ],
+    outs=["selenium/webdriver/common/devtools"],
+    cmd="python $(location generate.py) $(location :browser_protocol) $(location :js_protocol)",
+    tools=[
+    ],
+)
+
+copy_file(
+    name="browser_protocol",
+    src="//common/devtools:browser_protocol.json",
+    out="browser_protocol.json",
+)
+
+copy_file(
+    name="js_protocol",
+    src="//common/devtools:js_protocol.json",
+    out="js_protocol.json",
 )
 
 py_test_suite(

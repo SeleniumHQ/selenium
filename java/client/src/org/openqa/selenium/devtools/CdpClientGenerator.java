@@ -60,7 +60,7 @@ public class CdpClientGenerator {
   public static void main(String[] args) throws IOException {
     Path browserProtocol = Paths.get(args[0]);
     Path jsProtocol = Paths.get(args[1]);
-
+    
     Path target = Files.createTempDirectory("devtools");
     String devtoolsDir = "org/openqa/selenium/devtools/";
 
