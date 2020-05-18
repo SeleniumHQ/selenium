@@ -9,7 +9,7 @@ filegroup(
 
 alias(
     name = "grid",
-    actual = "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    actual = "//java/server/src/org/openqa/selenium/grid:executable-grid",
 )
 
 alias(
