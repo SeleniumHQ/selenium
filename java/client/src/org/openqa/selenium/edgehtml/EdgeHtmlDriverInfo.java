@@ -14,16 +14,41 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.edge.edgehtml;
+package org.openqa.selenium.edgehtml;
+
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.auto.service.AutoService;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
-import org.openqa.selenium.edge.EdgeDriverInfo;
+import org.openqa.selenium.remote.BrowserType;
+
+import java.util.Optional;
 
 @AutoService(WebDriverInfo.class)
-public class EdgeHtmlDriverInfo extends EdgeDriverInfo {
+public class EdgeHtmlDriverInfo implements WebDriverInfo {
+
+  @Override
+  public String getDisplayName() {
+    return "EdgeHTML";
+  }
+
+  @Override
+  public Capabilities getCanonicalCapabilities() {
+    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.EDGEHTML);
+  }
+
+  @Override
+  public boolean isSupporting(Capabilities capabilities) {
+    return BrowserType.EDGEHTML.equals(capabilities.getBrowserName()) ||
+           capabilities.getCapability("ms:edgeOptions") != null ||
+           capabilities.getCapability("edgeOptions") != null;
+  }
 
   @Override
   public boolean isAvailable() {
@@ -38,5 +63,15 @@ public class EdgeHtmlDriverInfo extends EdgeDriverInfo {
   @Override
   public int getMaximumSimultaneousSessions() {
     return 1;
+  }
+
+  @Override
+  public Optional<WebDriver> createDriver(Capabilities capabilities)
+      throws SessionNotCreatedException {
+    if (!isAvailable()) {
+      return Optional.empty();
+    }
+
+    return Optional.of(new EdgeHtmlDriver(capabilities));
   }
 }

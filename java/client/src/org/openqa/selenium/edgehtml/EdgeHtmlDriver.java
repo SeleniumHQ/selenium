@@ -14,15 +14,13 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.edge;
+package org.openqa.selenium.edgehtml;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chromium.ChromiumDriver;
-import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.util.Objects;
 
@@ -32,7 +30,7 @@ import java.util.Objects;
  * which each instance communicates with will live and die with the instance.
  *
  * To avoid unnecessarily restarting the Microsoft WebDriver server with each instance, use a
- * {@link RemoteWebDriver} coupled with the desired {@link EdgeDriverService}, which is managed
+ * {@link RemoteWebDriver} coupled with the desired {@link EdgeHtmlDriverService}, which is managed
  * separately. For example: <pre>{@code
  *
  * import org.junit.jupiter.api.*;
@@ -40,8 +38,8 @@ import java.util.Objects;
  * import org.openqa.selenium.WebDriver;
  * import org.openqa.selenium.WebDriverException;
  * import org.openqa.selenium.WebElement;
- * import org.openqa.selenium.edge.EdgeDriverService;
- * import org.openqa.selenium.edge.EdgeOptions;
+ * import org.openqa.selenium.edgehtml.EdgeHtmlDriverService;
+ * import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
  * import org.openqa.selenium.remote.RemoteWebDriver;
  * import org.openqa.selenium.remote.service.DriverService;
  *
@@ -51,17 +49,14 @@ import java.util.Objects;
  *
  * import static org.junit.jupiter.api.Assertions.assertEquals;
  *
- * public class EdgeTest {
+ * public class EdgeHtmlTest {
  *
- *     private static EdgeDriverService service;
+ *     private static EdgeHtmlDriverService service;
  *     private WebDriver driver;
  *
  *     {@Literal @BeforeAll}
  *     public static void createAndStartService() {
- *         // Setting this property to false in order to launch Chromium Edge
- *         // Otherwise, old Edge will be launched by default
- *         System.setProperty("webdriver.edge.edgehtml", "false");
- *         EdgeDriverService.Builder builder = = new EdgeDriverService.Builder();
+ *         EdgeHtmlDriverService.Builder builder = new EdgeHtmlDriverService.Builder();
  *         service = builder.build();
  *         try {
  *             service.start();
@@ -79,7 +74,7 @@ import java.util.Objects;
  *     {@Literal @BeforeEach}
  *     public void createDriver() {
  *         driver = new RemoteWebDriver(service.getUrl(),
- *                 new EdgeOptions());
+ *                 new EdgeHtmlOptions());
  *     }
  *
  *     {@Literal @AfterEach}
@@ -97,24 +92,24 @@ import java.util.Objects;
  *     }
  * }}</pre>
  */
-public class EdgeDriver extends ChromiumDriver {
+public class EdgeHtmlDriver extends RemoteWebDriver {
 
-  public EdgeDriver() { this(new EdgeOptions()); }
+  public EdgeHtmlDriver() { this(new EdgeHtmlOptions()); }
 
-  public EdgeDriver(EdgeOptions options) {
-    super(toExecutor(options), options, EdgeOptions.CAPABILITY);
+  public EdgeHtmlDriver(EdgeHtmlOptions options) {
+    super(toExecutor(options), options);
   }
 
   @Deprecated
-  public EdgeDriver(Capabilities capabilities) {
-    super(toExecutor(new EdgeOptions()), capabilities, EdgeOptions.CAPABILITY);
+  public EdgeHtmlDriver(Capabilities capabilities) {
+    super(toExecutor(new EdgeHtmlOptions()), capabilities);
   }
 
-  private static CommandExecutor toExecutor(EdgeOptions options) {
+  private static CommandExecutor toExecutor(EdgeHtmlOptions options) {
     Objects.requireNonNull(options, "No options to construct executor from");
 
-    EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
+    EdgeHtmlDriverService.Builder builder = new EdgeHtmlDriverService.Builder();
 
-    return new ChromiumDriverCommandExecutor("ms", builder.build());
+    return new DriverCommandExecutor(builder.build());
   }
 }

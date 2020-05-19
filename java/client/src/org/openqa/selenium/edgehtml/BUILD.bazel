@@ -12,7 +12,7 @@ java_export(
     ],
     deps = [
         "//java:auto-service",
-        "//java/client/src/org/openqa/selenium/edge:edgeium",
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote",
     ],
 )

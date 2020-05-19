@@ -29,7 +29,7 @@ import org.junit.Test;
 import java.io.File;
 import java.time.Duration;
 
-public class ChromiumEdgeDriverServiceTest {
+public class EdgeDriverServiceTest {
 
   @Test
   public void builderPassesTimeoutToDriverService() {
@@ -37,7 +37,7 @@ public class ChromiumEdgeDriverServiceTest {
     Duration defaultTimeout = Duration.ofSeconds(20);
     Duration customTimeout = Duration.ofSeconds(60);
 
-    ChromiumEdgeDriverService.Builder builderMock = spy(ChromiumEdgeDriverService.Builder.class);
+    EdgeDriverService.Builder builderMock = spy(EdgeDriverService.Builder.class);
     doReturn(exe).when(builderMock).findDefaultExecutable();
     builderMock.build();
 
