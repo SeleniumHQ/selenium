@@ -72,10 +72,11 @@ public enum Browser {
     }
 
     if ("edge".equals(browserName.toLowerCase())) {
-      if (System.getProperty("webdriver.edge.edgehtml") == null || Boolean.getBoolean("webdriver.edge.edgehtml"))
-        return EDGE;
-
       return CHROMIUMEDGE;
+    }
+
+    if ("edgehtml".equals(browserName.toLowerCase())) {
+      return EDGE;
     }
 
     try {

@@ -14,41 +14,40 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.edge;
+package org.openqa.selenium.edgehtml;
+
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.chromium.ChromiumOptions;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
 
 /**
- * Class to manage options specific to {@link EdgeDriver}.
+ * Class to manage options specific to {@link EdgeHtmlDriver}.
  *
  * <p>Example usage:
  * <pre><code>
- * EdgeOptions options = new EdgeOptions()
- * options.addExtensions(new File("/path/to/extension.crx"))
+ * EdgeHtmlOptions options = new EdgeHtmlOptions()
  * options.setBinary(new File("/path/to/edge"));
  *
  * // For use with EdgeDriver:
- * EdgeDriver driver = new EdgeDriver(options);
+ * EdgeHtmlDriver driver = new EdgeHtmlDriver(options);
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
  *     new URL("http://localhost:4444/"),
- *     new EdgeOptions());
+ *     new EdgeHtmlDriver());
  * </code></pre>
  *
  */
-public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
+public class EdgeHtmlOptions extends AbstractDriverOptions<EdgeHtmlOptions> {
 
   /**
-   * Key used to store a set of ChromeOptions in a {@link Capabilities}
-   * object.
+   * Key used to store a set of EdgeHtmlOptions in a {@link Capabilities} object.
    */
   public static final String CAPABILITY = "ms:edgeOptions";
 
-  public EdgeOptions() {
-    super(CapabilityType.BROWSER_NAME, "MicrosoftEdge", CAPABILITY);
+  public EdgeHtmlOptions() {
+    setCapability(BROWSER_NAME, BrowserType.EDGEHTML);
   }
 }

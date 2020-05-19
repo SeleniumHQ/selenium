@@ -14,7 +14,8 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.edge.edgehtml;
+
+package org.openqa.selenium.edgehtml;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -22,8 +23,6 @@ import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.edge.EdgeDriverService;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -35,7 +34,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class EdgeHtmlDriverService extends EdgeDriverService {
+public class EdgeHtmlDriverService extends DriverService {
+
+  /**
+   * System property that defines the location of the MicrosoftWebDriver executable that will be
+   * used by the default service.
+   */
+  public static final String EDGEHTML_DRIVER_EXE_PROPERTY = "webdriver.edgehtml.driver";
+
+  /**
+   * System property that defines the default location where MicrosoftWebDriver output is logged.
+   */
+  public static final String EDGEHTML_DRIVER_LOG_PROPERTY = "webdriver.edgehtml.logfile";
+
+  /**
+   * Boolean system property that defines whether the MicrosoftWebDriver executable should be started
+   * with verbose logging.
+   */
+  public static final String EDGEHTML_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.edgehtml.verboseLogging";
 
   public EdgeHtmlDriverService(File executable, int port,
                                List<String> args,
@@ -53,7 +69,7 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
   /**
    * Configures and returns a new {@link EdgeHtmlDriverService} using the default configuration. In
    * this configuration, the service will use the MicrosoftWebDriver executable identified by the
-   * {@link #EDGE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * {@link #EDGEHTML_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
    * be configured to use a free port on the current system.
    *
    * @return A new EdgeDriverService using the default configuration.
@@ -63,26 +79,16 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
   }
 
   @AutoService(DriverService.Builder.class)
-  public static class Builder extends EdgeDriverService.Builder<
+  public static class Builder extends DriverService.Builder<
       EdgeHtmlDriverService, EdgeHtmlDriverService.Builder> {
 
-    private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
-
-    @Override
-    public boolean isLegacy() {
-      return true;
-    }
+    private boolean verbose = Boolean.getBoolean(EDGEHTML_DRIVER_VERBOSE_LOG_PROPERTY);
 
     @Override
     public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.EDGE.equals(capabilities.getBrowserName())) {
-        score++;
-      }
-
-      if (capabilities.getCapability(EdgeOptions.USE_CHROMIUM) != null &&
-          !Boolean.parseBoolean(capabilities.getCapability(EdgeOptions.USE_CHROMIUM).toString())) {
+      if (BrowserType.EDGEHTML.equals(capabilities.getBrowserName())) {
         score++;
       }
 
@@ -94,15 +100,14 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
      *
      * @param verbose whether verbose output is used
      */
-    @Override
-    public EdgeDriverService.Builder withVerbose(boolean verbose) {
+    public EdgeHtmlDriverService.Builder withVerbose(boolean verbose) {
       this.verbose = verbose;
       return this;
     }
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable("MicrosoftWebDriver", EDGE_DRIVER_EXE_PROPERTY,
+      return findExecutable("MicrosoftWebDriver", EDGEHTML_DRIVER_EXE_PROPERTY,
                             "https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver",
                             "http://go.microsoft.com/fwlink/?LinkId=619687");
     }
@@ -131,7 +136,7 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
         if (getLogFile() != null) {
           service.sendOutputTo(new FileOutputStream(getLogFile()));
         } else {
-          String logFile = System.getProperty(EDGE_DRIVER_LOG_PROPERTY);
+          String logFile = System.getProperty(EDGEHTML_DRIVER_LOG_PROPERTY);
           if (logFile != null) {
             service.sendOutputTo(new FileOutputStream(logFile));
           }

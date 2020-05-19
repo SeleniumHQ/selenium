@@ -19,6 +19,11 @@ package org.openqa.selenium.edge;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 
+import com.google.auto.service.AutoService;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -32,7 +37,7 @@ import java.util.Map;
 /**
  * Manages the life and death of the EdgeDriver (MicrosoftWebDriver or MSEdgeDriver).
  */
-public abstract class EdgeDriverService extends DriverService {
+public class EdgeDriverService extends DriverService {
 
   /**
    * System property that defines the location of the EdgeDriver executable that will be used by
@@ -50,6 +55,30 @@ public abstract class EdgeDriverService extends DriverService {
    * with verbose logging.
    */
   public static final String EDGE_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.edge.verboseLogging";
+
+  /**
+   * Boolean system property that defines whether the MSEdgeDriver executable should be started
+   * in silent mode.
+   */
+  public static final String EDGE_DRIVER_SILENT_OUTPUT_PROPERTY = "webdriver.edge.silentOutput";
+
+  /**
+   * System property that defines comma-separated list of remote IPv4 addresses which are
+   * allowed to connect to MSEdgeDriver.
+   */
+  public static final String EDGE_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.edge.withAllowedIps";
+
+  /**
+   * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
+   * this configuration, the service will use the MSEdgeDriver executable identified by the
+   * {@link #EDGE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * be configured to use a free port on the current system.
+   *
+   * @return A new ChromiumEdgeDriverService using the default configuration.
+   */
+  public static EdgeDriverService createDefaultService() {
+    return new EdgeDriverService.Builder().build();
+  }
 
   /**
    * @param executable The EdgeDriver executable.
@@ -70,11 +99,113 @@ public abstract class EdgeDriverService extends DriverService {
           unmodifiableMap(new HashMap<>(environment)));
   }
 
-  public abstract static class Builder<DS extends EdgeDriverService, B extends EdgeDriverService.Builder<?, ?>>
-      extends DriverService.Builder<DS, B> {
+  /**
+   * Builder used to configure new {@link EdgeDriverService} instances.
+   */
+  @AutoService(DriverService.Builder.class)
+  public static class Builder extends DriverService.Builder<
+      EdgeDriverService, EdgeDriverService.Builder> {
 
-    public abstract boolean isLegacy();
-    public abstract EdgeDriverService.Builder withVerbose(boolean verbose);
+    private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
+    private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
+    private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
 
+    @Override
+    public int score(Capabilities capabilities) {
+      int score = 0;
+
+      if (BrowserType.EDGE.equals(capabilities.getBrowserName())) {
+        score++;
+      }
+
+      if (capabilities.getCapability(EdgeOptions.CAPABILITY) != null) {
+        score++;
+      }
+
+      return score;
+    }
+
+    /**
+     * Configures the driver server verbosity.
+     *
+     * @param verbose whether verbose output is used
+     * @return A self reference.
+     */
+    public EdgeDriverService.Builder withVerbose(boolean verbose) {
+      this.verbose = verbose;
+      return this;
+    }
+
+    /**
+     * Configures the driver server for silent output.
+     *
+     * @param silent whether silent output is used
+     * @return A self reference.
+     */
+    public EdgeDriverService.Builder withSilent(boolean silent) {
+      this.silent = silent;
+      return this;
+    }
+
+    /**
+     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
+     * to the driver server.
+     *
+     * @param allowedListIps Comma-separated list of remote IPv4 addresses.
+     * @return A self reference.
+     */
+    public EdgeDriverService.Builder withAllowedListIps(String allowedListIps) {
+      this.allowedListIps = allowedListIps;
+      return this;
+    }
+
+    @Override
+    protected File findDefaultExecutable() {
+      return findExecutable(
+          "msedgedriver", EDGE_DRIVER_EXE_PROPERTY,
+          "https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver",
+          "https://msedgecdn.azurewebsites.net/webdriver/index.html");
+    }
+
+    @Override
+    protected List<String> createArgs() {
+      if (getLogFile() == null) {
+        String logFilePath = System.getProperty(EDGE_DRIVER_LOG_PROPERTY);
+        if (logFilePath != null) {
+          withLogFile(new File(logFilePath));
+        }
+      }
+
+      List<String> args = new ArrayList<>();
+      args.add(String.format("--port=%d", getPort()));
+      if (getLogFile() != null) {
+        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+      }
+      if (verbose) {
+        args.add("--verbose");
+      }
+      if (silent) {
+        args.add("--silent");
+      }
+      if (allowedListIps != null) {
+        args.add(String.format("--whitelisted-ips=%s", allowedListIps));
+      }
+
+      return unmodifiableList(args);
+    }
+
+    @Override
+    protected EdgeDriverService createDriverService(
+        File exe,
+        int port,
+        Duration timeout,
+        List<String> args,
+        Map<String, String> environment) {
+      try {
+        return new EdgeDriverService(exe, port, timeout, args, environment);
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
+    }
   }
 }

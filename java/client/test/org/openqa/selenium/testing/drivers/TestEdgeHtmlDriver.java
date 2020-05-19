@@ -19,8 +19,8 @@ package org.openqa.selenium.testing.drivers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.edge.EdgeDriverService;
-import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.edgehtml.EdgeHtmlDriverService;
+import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -31,29 +31,26 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
  * Customized RemoteWebDriver that will communicate with a service that lives and dies with the
- * entire test suite. We do not use {@link org.openqa.selenium.edge.EdgeDriver} since that starts and stops the service
+ * entire test suite. We do not use {@link org.openqa.selenium.edgehtml.EdgeHtmlDriver} since that starts and stops the service
  * with each instance (and that is too expensive for our purposes).
  */
-public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, LocationContext {
-  private final static Logger LOG = Logger.getLogger(TestEdgeDriver.class.getName());
+public class TestEdgeHtmlDriver extends RemoteWebDriver implements WebStorage, LocationContext {
+  private final static Logger LOG = Logger.getLogger(TestEdgeHtmlDriver.class.getName());
 
-  private static EdgeDriverService service;
+  private static EdgeHtmlDriverService service;
   private RemoteWebStorage webStorage;
   private RemoteLocationContext locationContext;
 
-  public TestEdgeDriver(Capabilities capabilities) {
-    super(getServiceUrl(capabilities), edgeWithCustomCapabilities(capabilities));
+  public TestEdgeHtmlDriver(Capabilities capabilities) {
+    super(getServiceUrl(capabilities), new EdgeHtmlOptions());
     webStorage = new RemoteWebStorage(getExecuteMethod());
     locationContext = new RemoteLocationContext(getExecuteMethod());
   }
@@ -61,9 +58,9 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
   private static URL getServiceUrl(Capabilities capabilities) {
     try {
       if (service == null) {
-        Path logFile = Files.createTempFile("edgedriver", ".log");
+        Path logFile = Files.createTempFile("edgehtmldriver", ".log");
 
-        EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
+        EdgeHtmlDriverService.Builder builder = new EdgeHtmlDriverService.Builder();
         service = builder.withVerbose(true).withLogFile(logFile.toFile()).build();
         LOG.info("edgedriver will log to " + logFile);
         service.start();
@@ -73,26 +70,6 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private static Capabilities edgeWithCustomCapabilities(Capabilities originalCapabilities) {
-    EdgeOptions options = new EdgeOptions();
-
-    options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
-    Map<String, Object> prefs = new HashMap<>();
-    prefs.put("exit_type", "None");
-    prefs.put("exited_cleanly", true);
-    options.setExperimentalOption("prefs", prefs);
-    String edgePath = System.getProperty("webdriver.edge.binary");
-    if (edgePath != null) {
-      options.setBinary(new File(edgePath));
-    }
-
-    if (originalCapabilities != null) {
-      options.merge(originalCapabilities);
-    }
-
-    return options;
   }
 
   @Override
