@@ -103,7 +103,7 @@ class WebDriver(RemoteWebDriver):
              HTTP keep-alive.
         """
 
-        if executable_path != 'geckodriver':
+        if executable_path != DEFAULT_EXECUTABLE_PATH:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if capabilities is not None or desired_capabilities is not None:
