@@ -166,7 +166,7 @@ class WebElement(object):
         """Finds element within this element's children by ID.
 
         :Args:
-         - id\_ - ID of child element to locate.
+         - id\\_ - ID of child element to locate.
 
         :Returns:
          - WebElement - the element if it was found

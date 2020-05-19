@@ -365,7 +365,7 @@ class WebDriver(object):
         """Finds an element by id.
 
         :Args:
-         - id\_ - The id of the element to be found.
+         - id\\_ - The id of the element to be found.
 
         :Returns:
          - WebElement - the element if it was found
