@@ -167,6 +167,12 @@ class WebDriver(RemoteWebDriver):
             self.profile = firefox_profile
             options.profile = firefox_profile
 
+        # TODO: Remove when we remove capabilities code. Firefox
+        # is being strict here, like it should. When we can remove capabilities
+        # for options this will be good to be deleted.
+        if capabilities.get("acceptInsecureCerts"):
+            options.accept_insecure_certs = capabilities.get("acceptInsecureCerts")
+
         if self.service is None:
             self.service = Service(
                 executable_path,
