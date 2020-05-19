@@ -41,6 +41,7 @@ namespace OpenQA.Selenium.DevTools
             m_endpointAddress = endpointAddress;
 
             m_sessionSocket = new ClientWebSocket();
+            m_sessionSocket.Options.KeepAliveInterval = TimeSpan.Zero;
         }
 
         /// <summary>
