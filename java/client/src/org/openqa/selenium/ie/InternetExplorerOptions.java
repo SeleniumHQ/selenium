@@ -32,8 +32,7 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.base.Preconditions;
-
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -178,7 +177,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   }
 
   public InternetExplorerOptions withInitialBrowserUrl(String url) {
-    return amend(INITIAL_BROWSER_URL, Preconditions.checkNotNull(url));
+    return amend(INITIAL_BROWSER_URL, Require.nonNull("Initial browser URL", url));
   }
 
   public InternetExplorerOptions requireWindowFocus() {

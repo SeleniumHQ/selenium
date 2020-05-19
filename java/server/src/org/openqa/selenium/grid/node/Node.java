@@ -24,6 +24,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -38,7 +39,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -105,9 +105,9 @@ public abstract class Node implements Routable, HttpHandler {
   private final Route routes;
 
   protected Node(Tracer tracer, UUID id, URI uri) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.id = Objects.requireNonNull(id);
-    this.uri = Objects.requireNonNull(uri);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.id = Require.nonNull("Node id", id);
+    this.uri = Require.nonNull("URI", uri);
 
     Json json = new Json();
     routes = combine(

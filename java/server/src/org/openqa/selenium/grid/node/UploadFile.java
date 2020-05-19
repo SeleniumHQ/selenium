@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.grid.node;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 
 class UploadFile implements HttpHandler {
 
@@ -31,8 +31,8 @@ class UploadFile implements HttpHandler {
   private final SessionId id;
 
   UploadFile(Node node, SessionId id) {
-    this.node = Objects.requireNonNull(node);
-    this.id = Objects.requireNonNull(id);
+    this.node = Require.nonNull("Node", node);
+    this.id = Require.nonNull("Session id", id);
   }
 
   @Override

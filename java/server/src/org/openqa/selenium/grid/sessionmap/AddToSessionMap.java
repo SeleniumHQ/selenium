@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.sessionmap;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -42,9 +43,9 @@ class AddToSessionMap implements HttpHandler {
   private final SessionMap sessions;
 
   AddToSessionMap(Tracer tracer, Json json, SessionMap sessions) {
-    this.tracer = tracer;
-    this.json = Objects.requireNonNull(json);
-    this.sessions = Objects.requireNonNull(sessions);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.json = Require.nonNull("Json converter", json);
+    this.sessions = Require.nonNull("Session map", sessions);
   }
 
   @Override

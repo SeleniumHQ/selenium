@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
@@ -40,11 +41,11 @@ public class Session {
   private final Capabilities capabilities;
 
   public Session(SessionId id, URI uri, Capabilities capabilities) {
-    this.id = Objects.requireNonNull(id, "Session ID must be set.");
-    this.uri = Objects.requireNonNull(uri, "Where the session is running must be set.");
+    this.id = Require.nonNull("Session ID", id);
+    this.uri = Require.nonNull("Where the session is running", uri);
 
-    Objects.requireNonNull(capabilities, "Session capabilities must be set");
-    this.capabilities = ImmutableCapabilities.copyOf(capabilities);
+    this.capabilities = ImmutableCapabilities.copyOf(
+        Require.nonNull("Session capabilities", capabilities));
   }
 
   public SessionId getId() {

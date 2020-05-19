@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.config;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Objects;
 
 public class Role implements Comparable<Role> {
@@ -24,12 +26,11 @@ public class Role implements Comparable<Role> {
   private final String roleName;
 
   public Role(String roleName) {
-    this.roleName = Objects.requireNonNull(roleName, "Role name must be set.");
+    this.roleName = Require.nonNull("Role name", roleName);
   }
 
   public static Role of(String name) {
-    Objects.requireNonNull(name, "Role name must be set.");
-    return new Role(name);
+    return new Role(Require.nonNull("Role name", name));
   }
 
   public String getRoleName() {

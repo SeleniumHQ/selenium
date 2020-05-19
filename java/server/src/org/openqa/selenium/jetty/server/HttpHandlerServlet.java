@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.jetty.server;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Objects;
 
 import static org.openqa.selenium.grid.server.JeeInterop.execute;
 
@@ -31,7 +31,7 @@ class HttpHandlerServlet extends HttpServlet {
   private final HttpHandler handler;
 
   public HttpHandlerServlet(HttpHandler handler) {
-    this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
+    this.handler = Require.nonNull("Handler", handler);
   }
 
   @Override

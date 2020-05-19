@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.http.netty;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
 import io.netty.bootstrap.Bootstrap;
@@ -47,6 +46,8 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpVersion;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -64,7 +65,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -84,7 +84,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
   public NettyDomainSocketClient(ClientConfig config) {
     super(config);
     URI uri = config.baseUri();
-    Preconditions.checkArgument("unix".equals(uri.getScheme()), "URI scheme must be `unix`");
+    Require.argument("URI scheme", uri.getScheme()).equalTo("unix");
 
     if (Epoll.isAvailable()) {
       this.eventLoopGroup = new EpollEventLoopGroup();
@@ -101,7 +101,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Objects.requireNonNull(req, "Request to send must be set.");
+    Require.nonNull("Request to send", req);
 
     AtomicReference<HttpResponse> outRef = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);

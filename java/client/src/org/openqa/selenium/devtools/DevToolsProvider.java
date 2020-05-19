@@ -18,8 +18,8 @@
 package org.openqa.selenium.devtools;
 
 import com.google.auto.service.AutoService;
-import com.google.common.base.Preconditions;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
@@ -42,7 +42,7 @@ public class DevToolsProvider implements AugmenterProvider {
 
   @Override
   public InterfaceImplementation getImplementation(Object value) {
-    Preconditions.checkArgument(value instanceof Capabilities, "Expected to be given capabilities");
+    Require.argument("Implementation", value).instanceOf(Capabilities.class);
 
     Capabilities caps = (Capabilities) value;
     Optional<DevTools> devTools = SeleniumCdpConnection.create(caps)

@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -26,7 +27,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.HashMap;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -37,8 +37,8 @@ class NewNodeSession implements HttpHandler {
   private final Json json;
 
   NewNodeSession(Node node, Json json) {
-    this.node = Objects.requireNonNull(node);
-    this.json = Objects.requireNonNull(json);
+    this.node = Require.nonNull("Node", node);
+    this.json = Require.nonNull("Json converter", json);
   }
 
   @Override

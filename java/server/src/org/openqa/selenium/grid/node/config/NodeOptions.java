@@ -24,6 +24,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
@@ -50,7 +50,7 @@ public class NodeOptions {
   private final Config config;
 
   public NodeOptions(Config config) {
-    this.config = Objects.requireNonNull(config);
+    this.config = Require.nonNull("Config", config);
   }
 
   public Optional<URI> getPublicGridUri() {

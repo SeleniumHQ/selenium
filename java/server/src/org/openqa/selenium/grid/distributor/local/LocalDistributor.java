@@ -36,6 +36,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -99,10 +100,10 @@ public class LocalDistributor extends Distributor {
       SessionMap sessions,
       String registrationSecret) {
     super(tracer, clientFactory);
-    this.tracer = Objects.requireNonNull(tracer);
-    this.bus = Objects.requireNonNull(bus);
-    this.clientFactory = Objects.requireNonNull(clientFactory);
-    this.sessions = Objects.requireNonNull(sessions);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.bus = Require.nonNull("Event bus", bus);
+    this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.sessions = Require.nonNull("Session map", sessions);
     this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
@@ -282,7 +283,7 @@ public class LocalDistributor extends Distributor {
   }
 
   private void refresh(NodeStatus status) {
-    Objects.requireNonNull(status);
+    Require.nonNull("Node status", status);
 
     LOG.fine("Refreshing: " + status.getUri());
 

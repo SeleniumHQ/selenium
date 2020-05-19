@@ -26,6 +26,7 @@ import com.google.common.net.MediaType;
 
 import org.openqa.selenium.grid.server.JeeInterop;
 import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -39,7 +40,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -79,7 +79,7 @@ public class WebDriverServlet extends HttpServlet {
     logger = configureLogging();
     logger.info("Initialising WebDriverServlet");
 
-    this.allSessions = Objects.requireNonNull(allSessions);
+    this.allSessions = Require.nonNull("Active sessions", allSessions);
 
     scheduled.scheduleWithFixedDelay(allSessions::cleanUp, 5, 5, TimeUnit.SECONDS);
 

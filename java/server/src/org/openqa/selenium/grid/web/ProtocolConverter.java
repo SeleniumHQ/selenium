@@ -18,10 +18,11 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -86,15 +87,13 @@ public class ProtocolConverter implements HttpHandler {
     HttpClient client,
     Dialect downstream,
     Dialect upstream) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.client = Objects.requireNonNull(client);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.client = Require.nonNull("HTTP client", client);
 
-    Objects.requireNonNull(downstream);
-    this.downstream = getCommandCodec(downstream);
+    this.downstream = getCommandCodec(Require.nonNull("Downstream dialect", downstream));
     this.downstreamResponse = getResponseCodec(downstream);
 
-    Objects.requireNonNull(upstream);
-    this.upstream = getCommandCodec(upstream);
+    this.upstream = getCommandCodec(Require.nonNull("Upstream dialect", upstream));
     this.upstreamResponse = getResponseCodec(upstream);
 
     converter = new JsonToWebElementConverter(null);
@@ -176,8 +175,8 @@ public class ProtocolConverter implements HttpHandler {
   private HttpResponse createW3CNewSessionResponse(HttpResponse response) {
     Map<String, Object> value = JSON.toType(string(response), MAP_TYPE);
 
-    Preconditions.checkState(value.get("sessionId") != null);
-    Preconditions.checkState(value.get("value") instanceof Map);
+    Require.state("Session id", value.get("sessionId")).nonNull();
+    Require.state("Response payload", value.get("value")).instanceOf(Map.class);
 
     return createResponse(ImmutableMap.of(
       "value", ImmutableMap.of(
@@ -189,8 +188,8 @@ public class ProtocolConverter implements HttpHandler {
     Map<String, Object> value = Objects.requireNonNull(Values.get(response, MAP_TYPE));
 
     // Check to see if the values we need are set
-    Preconditions.checkState(value.get("sessionId") != null);
-    Preconditions.checkState(value.get("capabilities") instanceof Map);
+    Require.state("Session id", value.get("sessionId")).nonNull();
+    Require.state("Response payload", value.get("capabilities")).instanceOf(Map.class);
 
     return createResponse(ImmutableMap.of(
       "status", 0,

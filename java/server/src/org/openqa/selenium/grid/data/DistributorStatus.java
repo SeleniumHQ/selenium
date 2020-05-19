@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.lang.reflect.Type;
@@ -31,7 +32,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -97,12 +97,12 @@ public class DistributorStatus {
         int maxSessionCount,
         Map<Capabilities, Integer> stereotypes,
         Map<Capabilities, Integer> usedStereotypes) {
-      this.nodeId = Objects.requireNonNull(nodeId);
-      this.uri = Objects.requireNonNull(uri);
+      this.nodeId = Require.nonNull("Node id", nodeId);
+      this.uri = Require.nonNull("URI", uri);
       this.up = up;
       this.maxSessionCount = maxSessionCount;
-      this.stereotypes = ImmutableMap.copyOf(Objects.requireNonNull(stereotypes));
-      this.used = ImmutableMap.copyOf(Objects.requireNonNull(usedStereotypes));
+      this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereoytpes", stereotypes));
+      this.used = ImmutableMap.copyOf(Require.nonNull("User stereotypes", usedStereotypes));
     }
 
     public UUID getNodeId() {

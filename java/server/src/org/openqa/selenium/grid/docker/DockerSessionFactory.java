@@ -28,6 +28,7 @@ import org.openqa.selenium.docker.Port;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Dialect;
@@ -74,12 +75,12 @@ public class DockerSessionFactory implements SessionFactory {
       Docker docker,
       Image image,
       Capabilities stereotype) {
-    this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
-    this.clientFactory = Objects.requireNonNull(clientFactory, "HTTP client must be set.");
-    this.docker = Objects.requireNonNull(docker, "Docker command must be set.");
-    this.image = Objects.requireNonNull(image, "Docker image to use must be set.");
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.clientFactory = Require.nonNull("HTTP client", clientFactory);
+    this.docker = Require.nonNull("Docker command", docker);
+    this.image = Require.nonNull("Docker image", image);
     this.stereotype = ImmutableCapabilities.copyOf(
-        Objects.requireNonNull(stereotype, "Stereotype must be set."));
+        Require.nonNull("Stereotype", stereotype));
   }
 
   @Override

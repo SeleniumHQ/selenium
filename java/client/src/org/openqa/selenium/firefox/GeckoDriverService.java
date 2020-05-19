@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -26,6 +25,7 @@ import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
@@ -168,7 +168,7 @@ public class GeckoDriverService extends FirefoxDriverService {
      * @return A self reference.
      */
     public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
-      checkNotNull(firefoxBinary);
+      Require.nonNull("Firefox binary", firefoxBinary);
       checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
       return this;

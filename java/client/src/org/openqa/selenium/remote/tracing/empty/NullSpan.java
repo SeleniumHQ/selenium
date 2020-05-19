@@ -17,42 +17,41 @@
 
 package org.openqa.selenium.remote.tracing.empty;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
-
-import java.util.Objects;
 
 public class NullSpan extends NullContext implements Span {
 
   @Override
   public Span setName(String name) {
-    Objects.requireNonNull(name, "Name to use must be set.");
+    Require.nonNull("Name", name);
     return this;
   }
 
   @Override
   public Span setAttribute(String key, boolean value) {
-    Objects.requireNonNull(key, "Key to use must be set.");
+    Require.nonNull("Key", key);
     return this;
   }
 
   @Override
   public Span setAttribute(String key, Number value) {
-    Objects.requireNonNull(key, "Key to use must be set.");
-    Objects.requireNonNull(value, "Value to use must be set.");
+    Require.nonNull("Key", key);
+    Require.nonNull("Value", value);
     return this;
   }
 
   @Override
   public Span setAttribute(String key, String value) {
-    Objects.requireNonNull(key, "Key to use must be set.");
-    Objects.requireNonNull(value, "Value to use must be set.");
+    Require.nonNull("Key", key);
+    Require.nonNull("Value", value);
     return this;
   }
 
   @Override
   public Span setStatus(Status status) {
-    Objects.requireNonNull(status, "Status to use must be set.");
+    Require.nonNull("Status", status);
     return this;
   }
 

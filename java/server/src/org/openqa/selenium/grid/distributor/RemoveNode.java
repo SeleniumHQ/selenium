@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Objects;
 import java.util.UUID;
 
 class RemoveNode implements HttpHandler {
@@ -30,8 +30,8 @@ class RemoveNode implements HttpHandler {
   private final UUID nodeId;
 
   RemoveNode(Distributor distributor, UUID nodeId) {
-    this.distributor = Objects.requireNonNull(distributor);
-    this.nodeId = Objects.requireNonNull(nodeId);
+    this.distributor = Require.nonNull("Distributor", distributor);
+    this.nodeId = Require.nonNull("Node id", nodeId);
   }
 
   @Override

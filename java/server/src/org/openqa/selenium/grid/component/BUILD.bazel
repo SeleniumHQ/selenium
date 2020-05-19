@@ -6,4 +6,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/netty/server:__pkg__",
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+    ],
 )

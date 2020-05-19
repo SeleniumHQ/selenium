@@ -24,6 +24,8 @@ import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.Tracer;
 import io.opentelemetry.trace.TracingContextUtils;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.SpanId;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
@@ -36,8 +38,8 @@ public class OpenTelemetryContext implements TraceContext {
   private final SpanContext spanContext;
 
   public OpenTelemetryContext(Tracer tracer, Context context) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.context = Objects.requireNonNull(context);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.context = Require.nonNull("Context", context);
 
     spanContext = TracingContextUtils.getSpan(context).getContext();
   }
@@ -50,7 +52,7 @@ public class OpenTelemetryContext implements TraceContext {
   @SuppressWarnings("MustBeClosedChecker")
   @Override
   public OpenTelemetrySpan createSpan(String name) {
-    Objects.requireNonNull(name, "Name to use must be set.");
+    Require.nonNull("Name", name);
 
     Span span = tracer.spanBuilder(name).setParent(spanContext).startSpan();
     Context prev = Context.current();

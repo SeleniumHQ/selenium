@@ -27,6 +27,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Objects;
@@ -41,9 +42,9 @@ public class Slot {
   private Session currentSession;
 
   public Slot(Node node, Capabilities capabilities, Status status) {
-    this.node = Objects.requireNonNull(node);
-    this.registeredCapabilities = Objects.requireNonNull(capabilities);
-    this.currentStatus = Objects.requireNonNull(status);
+    this.node = Require.nonNull("Node", node);
+    this.registeredCapabilities = Require.nonNull("Capabilities", capabilities);
+    this.currentStatus = Require.nonNull("Status", status);
   }
 
   public Capabilities getStereotype() {
@@ -97,7 +98,7 @@ public class Slot {
 
     this.lastStartedNanos = System.nanoTime();
     this.currentStatus = ACTIVE;
-    this.currentSession = Objects.requireNonNull(session);
+    this.currentSession = Require.nonNull("Session", session);
   }
 
   public void onEnd(SessionId id) {

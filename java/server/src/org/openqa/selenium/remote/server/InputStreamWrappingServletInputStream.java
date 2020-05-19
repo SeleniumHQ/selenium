@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
-import com.google.common.base.Preconditions;
+import org.openqa.selenium.internal.Require;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,14 +25,13 @@ import java.io.InputStream;
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
-
 class InputStreamWrappingServletInputStream extends ServletInputStream {
 
   private final InputStream delegate;
   private int lastRead;
 
   public InputStreamWrappingServletInputStream(InputStream delegate) {
-    this.delegate = Preconditions.checkNotNull(delegate);
+    this.delegate = Require.nonNull("Delegate", delegate);
 
   }
 

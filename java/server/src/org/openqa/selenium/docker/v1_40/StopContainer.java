@@ -18,11 +18,11 @@
 package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.ContainerId;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.time.Duration;
-import java.util.Objects;
 
 import static org.openqa.selenium.docker.v1_40.DockerMessages.throwIfNecessary;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -31,12 +31,12 @@ class StopContainer {
   private final HttpHandler client;
 
   public StopContainer(HttpHandler client) {
-    this.client = Objects.requireNonNull(client);
+    this.client = Require.nonNull("HTTP client", client);
   }
 
   public void apply(ContainerId id, Duration timeout) {
-    Objects.requireNonNull(id);
-    Objects.requireNonNull(timeout);
+    Require.nonNull("Container id", id);
+    Require.nonNull("Timeout", timeout);
 
     String seconds = String.valueOf(timeout.toMillis() / 1000);
 

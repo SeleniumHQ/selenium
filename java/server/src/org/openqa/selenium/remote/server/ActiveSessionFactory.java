@@ -27,11 +27,11 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.grid.session.remote.ServicedSession;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Function;
@@ -111,8 +111,8 @@ public class ActiveSessionFactory implements SessionFactory {
   public synchronized ActiveSessionFactory bind(
       Predicate<Capabilities> onThis,
       SessionFactory useThis) {
-    Objects.requireNonNull(onThis, "Predicated needed.");
-    Objects.requireNonNull(useThis, "SessionFactory is required");
+    Require.nonNull("Predicate", onThis);
+    Require.nonNull("SessionFactory", useThis);
 
     LOG.info(String.format("Binding %s to respond to %s", useThis, onThis));
 
@@ -149,12 +149,12 @@ public class ActiveSessionFactory implements SessionFactory {
   }
 
   private static Predicate<Capabilities> browserName(String browserName) {
-    Objects.requireNonNull(browserName, "Browser name must be set");
+    Require.nonNull("Browser name", browserName);
     return toCompare -> browserName.equals(toCompare.getBrowserName());
   }
 
   private static Predicate<Capabilities> containsKey(String keyName) {
-    Objects.requireNonNull(keyName, "Key name must be set");
+    Require.nonNull("Key name", keyName);
     return toCompare -> toCompare.getCapability(keyName) != null;
   }
 

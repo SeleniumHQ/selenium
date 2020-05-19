@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
@@ -62,7 +63,7 @@ abstract class AbstractCapabilities implements Capabilities {
   }
 
   protected void setCapability(String key, Object value) {
-    Objects.requireNonNull(key, "Cannot set a capability without a name");
+    Require.nonNull("Capability name", key);
 
     if (value == null) {
       caps.remove(key);

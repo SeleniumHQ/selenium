@@ -13,6 +13,7 @@ SMALL_TESTS = [
     "PlatformTest.java",
     "PointTest.java",
     "ProxyTest.java",
+    "RequireTest.java",
     "WebDriverExceptionTest.java",
 ]
 

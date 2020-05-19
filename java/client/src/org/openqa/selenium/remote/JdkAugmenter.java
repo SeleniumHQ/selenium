@@ -22,6 +22,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.Require;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -31,11 +32,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Enhance the interfaces implemented by an instance of the
@@ -88,14 +86,14 @@ public class JdkAugmenter extends BaseAugmenter {
       AugmenterProvider augmenter = entry.getValue();
 
       Class<?> interfaceProvided = augmenter.getDescribedInterface();
-      checkState(interfaceProvided.isInterface(),
+      Require.stateCondition(interfaceProvided.isInterface(),
         "JdkAugmenter can only augment interfaces. %s is not an interface.", interfaceProvided);
       proxiedInterfaces.add(interfaceProvided);
       InterfaceImplementation augmentedImplementation = augmenter.getImplementation(capabilities);
       for (Method method : interfaceProvided.getMethods()) {
         InterfaceImplementation oldHandler = augmentationHandlers.put(method,
           augmentedImplementation);
-        checkState(null == oldHandler, "Both %s and %s attempt to define %s.",
+        Require.state(oldHandler).nonNull("Both %s and %s attempt to define %s.",
           oldHandler, augmentedImplementation.getClass(), method.getName());
       }
     }
@@ -122,9 +120,9 @@ public class JdkAugmenter extends BaseAugmenter {
     private JdkHandler(RemoteWebDriver driver, X realInstance,
         Map<Method, InterfaceImplementation> handlers) {
       super();
-      this.driver = Objects.requireNonNull(driver);
-      this.realInstance = Objects.requireNonNull(realInstance);
-      this.handlers = Objects.requireNonNull(handlers);
+      this.driver = Require.nonNull("Driver", driver);
+      this.realInstance = Require.nonNull("Real instance", realInstance);
+      this.handlers = Require.nonNull("Handlers", handlers);
     }
 
     @Override

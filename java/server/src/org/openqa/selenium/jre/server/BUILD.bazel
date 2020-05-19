@@ -13,6 +13,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/server",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/server",
         artifact("com.google.guava:guava"),

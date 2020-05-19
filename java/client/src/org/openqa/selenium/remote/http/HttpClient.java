@@ -18,13 +18,14 @@
 package org.openqa.selenium.remote.http;
 
 import java.net.URL;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
+
+import org.openqa.selenium.internal.Require;
 
 /**
  * Defines a simple client for making HTTP requests.
@@ -75,7 +76,7 @@ public interface HttpClient extends HttpHandler {
      * @param url URL The base URL for requests.
      */
     default HttpClient createClient(URL url) {
-      Objects.requireNonNull(url, "URL to use as base URL must be set.");
+      Require.nonNull("URL to use as base URL", url);
       return createClient(defaultConfig().baseUrl(url));
     }
 

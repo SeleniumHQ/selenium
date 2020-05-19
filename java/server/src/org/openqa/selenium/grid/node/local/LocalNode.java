@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.node.local;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -41,6 +40,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -60,7 +60,6 @@ import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -107,14 +106,10 @@ public class LocalNode extends Node {
     String registrationSecret) {
     super(tracer, UUID.randomUUID(), uri);
 
-    Preconditions.checkArgument(
-      maxSessionCount > 0,
-      "Only a positive number of sessions can be run: " + maxSessionCount);
-
-    this.externalUri = Objects.requireNonNull(uri);
-    this.gridUri = Objects.requireNonNull(gridUri);
-    this.healthCheck = Objects.requireNonNull(healthCheck);
-    this.maxSessionCount = Math.min(maxSessionCount, factories.size());
+    this.externalUri = Require.nonNull("Remote node URI", uri);
+    this.gridUri = Require.nonNull("Grid URI", gridUri);
+    this.healthCheck = Require.nonNull("Health checker", healthCheck);
+    this.maxSessionCount = Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.factories = ImmutableList.copyOf(factories);
     this.registrationSecret = registrationSecret;
 
@@ -166,7 +161,7 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Objects.requireNonNull(sessionRequest, "Session request has not been set.");
+    Require.nonNull("Session request", sessionRequest);
 
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
       LOG.fine("Creating new session using span: " + span);
@@ -219,13 +214,13 @@ public class LocalNode extends Node {
 
   @Override
   public boolean isSessionOwner(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
     return currentSessions.getIfPresent(id) != null;
   }
 
   @Override
   public Session getSession(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
     SessionSlot slot = currentSessions.getIfPresent(id);
     if (slot == null) {
@@ -295,7 +290,7 @@ public class LocalNode extends Node {
 
   @Override
   public void stop(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
     SessionSlot slot = currentSessions.getIfPresent(id);
     if (slot == null) {
@@ -412,17 +407,17 @@ public class LocalNode extends Node {
       URI uri,
       URI gridUri,
       String registrationSecret) {
-      this.tracer = Objects.requireNonNull(tracer);
-      this.bus = Objects.requireNonNull(bus);
-      this.uri = Objects.requireNonNull(uri);
-      this.gridUri = Objects.requireNonNull(gridUri);
+      this.tracer = Require.nonNull("Tracer", tracer);
+      this.bus = Require.nonNull("Event bus", bus);
+      this.uri = Require.nonNull("Remote node URI", uri);
+      this.gridUri = Require.nonNull("Grid URI", gridUri);
       this.registrationSecret = registrationSecret;
       this.factories = ImmutableList.builder();
     }
 
     public Builder add(Capabilities stereotype, SessionFactory factory) {
-      Objects.requireNonNull(stereotype, "Capabilities must be set.");
-      Objects.requireNonNull(factory, "Session factory must be set.");
+      Require.nonNull("Capabilities", stereotype);
+      Require.nonNull("Session factory", factory);
 
       factories.add(new SessionSlot(bus, stereotype, factory));
 
@@ -430,11 +425,7 @@ public class LocalNode extends Node {
     }
 
     public Builder maximumConcurrentSessions(int maxCount) {
-      Preconditions.checkArgument(
-        maxCount > 0,
-        "Only a positive number of sessions can be run: " + maxCount);
-
-      this.maxCount = maxCount;
+      this.maxCount = Require.positive("Max session count", maxCount);
       return this;
     }
 
@@ -479,7 +470,7 @@ public class LocalNode extends Node {
       }
 
       public Advanced healthCheck(HealthCheck healthCheck) {
-        Builder.this.healthCheck = Objects.requireNonNull(healthCheck, "Health check must be set.");
+        Builder.this.healthCheck = Require.nonNull("Health check", healthCheck);
         return this;
       }
 

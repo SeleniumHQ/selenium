@@ -23,6 +23,7 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.web.PathResource;
 import org.openqa.selenium.grid.web.ResourceHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.jre.server.JreServer;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
@@ -38,7 +39,6 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Objects;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
@@ -60,7 +60,7 @@ public class JreAppServer implements AppServer {
   }
 
   public JreAppServer(HttpHandler handler) {
-    Objects.requireNonNull(handler, "Handler to use must be set");
+    Require.nonNull("Handler", handler);
 
     int port = PortProber.findFreePort();
     server = new JreServer(

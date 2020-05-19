@@ -26,6 +26,7 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
@@ -35,7 +36,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
@@ -58,7 +58,7 @@ public class LoggingOptions {
   private final Config config;
 
   public LoggingOptions(Config config) {
-    this.config = Objects.requireNonNull(config);
+    this.config = Require.nonNull("Config", config);
   }
 
   public boolean isUsingStructuredLogging() {

@@ -21,13 +21,14 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
 import static java.util.Comparator.naturalOrder;
+
+import org.openqa.selenium.internal.Require;
 
 public class CompoundConfig implements Config {
 
@@ -43,8 +44,8 @@ public class CompoundConfig implements Config {
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    Objects.requireNonNull(section, "Section name not set");
-    Objects.requireNonNull(option, "Option name not set");
+    Require.nonNull("Section name", section);
+    Require.nonNull("Option name", option);
 
     List<String> values = allConfigs.stream()
       .map(config -> config.getAll(section, option))
@@ -66,7 +67,7 @@ public class CompoundConfig implements Config {
 
   @Override
   public Set<String> getOptions(String section) {
-    Objects.requireNonNull(section, "Section name to get options for must be set.");
+    Require.nonNull("Section name to get options for", section);
 
     return allConfigs.stream()
       .map(config -> config.getOptions(section))

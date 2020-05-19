@@ -21,12 +21,13 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
 import static java.util.Comparator.naturalOrder;
+
+import org.openqa.selenium.internal.Require;
 
 /**
  * Exposes environment variables as config settings by mapping
@@ -38,8 +39,8 @@ public class EnvConfig implements Config {
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    Objects.requireNonNull(section, "Section name not set");
-    Objects.requireNonNull(option, "Option name not set");
+    Require.nonNull("Section name", section);
+    Require.nonNull("Option name", option);
 
     String key = String.format("%s_%s", section, option)
       .toUpperCase(Locale.ENGLISH)
@@ -70,7 +71,7 @@ public class EnvConfig implements Config {
 
   @Override
   public Set<String> getOptions(String section) {
-    Objects.requireNonNull(section, "Section name to get options for must be set.");
+    Require.nonNull("Section name to get options for", section);
 
     String prefix = String.format("%s_", section).toUpperCase(Locale.ENGLISH);
     return System.getenv().keySet().stream()

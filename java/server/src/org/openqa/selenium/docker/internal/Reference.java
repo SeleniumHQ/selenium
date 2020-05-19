@@ -19,8 +19,10 @@ package org.openqa.selenium.docker.internal;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.docker.DockerException;
+import org.openqa.selenium.internal.Require;
 
 import java.util.Map;
 import java.util.Objects;
@@ -67,9 +69,9 @@ public class Reference {
 
   @VisibleForTesting
   Reference(String domain, String repository, String name, String tag, String digest) {
-    this.domain = Objects.requireNonNull(domain);
-    this.repository = Objects.requireNonNull(repository);
-    this.name = Objects.requireNonNull(name);
+    this.domain = Require.nonNull("Domain", domain);
+    this.repository = Require.nonNull("Repository", repository);
+    this.name = Require.nonNull("Name", name);
     this.tag = tag;
     this.digest = digest;
   }
@@ -119,7 +121,7 @@ public class Reference {
   }
 
   public static Reference parse(String input) {
-    Objects.requireNonNull(input, "Reference to parse must be set.");
+    Require.nonNull("Reference to parse", input);
 
     for (Map.Entry<Pattern, Function<Matcher, Reference>> entry : PATTERNS.entrySet()) {
       Matcher matcher = entry.getKey().matcher(input);

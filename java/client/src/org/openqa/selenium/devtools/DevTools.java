@@ -24,11 +24,11 @@ import org.openqa.selenium.devtools.target.Target;
 import org.openqa.selenium.devtools.target.model.SessionID;
 import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.internal.Require;
 
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -56,13 +56,13 @@ public class DevTools implements Closeable {
   }
 
   public <X> X send(Command<X> command) {
-    Objects.requireNonNull(command, "Command to send must be set.");
+    Require.nonNull("Command to send", command);
     return connection.sendAndWait(cdpSession, command, timeout);
   }
 
   public <X> void addListener(Event<X> event, Consumer<X> handler) {
-    Objects.requireNonNull(event, "Event to listen for must be set.");
-    Objects.requireNonNull(handler, "Handler to call must be set.");
+    Require.nonNull("Event to listen for", event);
+    Require.nonNull("Handler to call", handler);
 
     connection.addListener(event, handler);
   }

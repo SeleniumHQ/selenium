@@ -25,6 +25,7 @@ import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
@@ -41,7 +42,6 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -95,10 +95,10 @@ public class ServicedSession extends RemoteSession {
     private final String serviceClassName;
 
     public Factory(Tracer tracer, Predicate<Capabilities> key, String serviceClassName) {
-      this.tracer = Objects.requireNonNull(tracer);
-      this.key = Objects.requireNonNull(key);
+      this.tracer = Require.nonNull("Tracer", tracer);
+      this.key = Require.nonNull("Accepted capabilities predicate", key);
 
-      this.serviceClassName = Objects.requireNonNull(serviceClassName);
+      this.serviceClassName = Require.nonNull("Driver service class name", serviceClassName);
       try {
         Class<? extends DriverService> driverClazz =
             Class.forName(serviceClassName).asSubclass(DriverService.class);
@@ -151,7 +151,7 @@ public class ServicedSession extends RemoteSession {
 
     @Override
     public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
-      Objects.requireNonNull(sessionRequest);
+      Require.nonNull("Session creation request", sessionRequest);
       DriverService service = createService.apply(sessionRequest.getCapabilities());
 
       try {

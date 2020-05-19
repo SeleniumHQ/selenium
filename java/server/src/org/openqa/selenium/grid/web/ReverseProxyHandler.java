@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -26,7 +28,6 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
@@ -52,8 +53,8 @@ public class ReverseProxyHandler implements HttpHandler {
   private final HttpClient upstream;
 
   public ReverseProxyHandler(Tracer tracer, HttpClient httpClient) {
-    this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
-    this.upstream = Objects.requireNonNull(httpClient, "HTTP client to use must be set.");
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.upstream = Require.nonNull("HTTP client", httpClient);
   }
 
   @Override

@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.Routable;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 public class SpanWrappedRoutable extends SpanWrappedHttpHandler implements Routable {
@@ -29,7 +29,7 @@ public class SpanWrappedRoutable extends SpanWrappedHttpHandler implements Routa
   public SpanWrappedRoutable(Tracer tracer, Function<HttpRequest, String> namer, Routable delegate) {
     super(tracer, namer, delegate);
 
-    this.delegate = Objects.requireNonNull(delegate, "Routable to use must be set.");
+    this.delegate = Require.nonNull("Routable to delegate to", delegate);
   }
 
   @Override

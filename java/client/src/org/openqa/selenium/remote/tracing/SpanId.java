@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Objects;
 
 public class SpanId {
@@ -24,7 +26,7 @@ public class SpanId {
   private final Object underlyingId;
 
   public SpanId(Object underlyingId) {
-    this.underlyingId = Objects.requireNonNull(underlyingId);
+    this.underlyingId = Require.nonNull("Underlying id", underlyingId);
   }
 
   @Override

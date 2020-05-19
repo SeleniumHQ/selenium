@@ -20,12 +20,12 @@ package org.openqa.selenium.grid.web;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 
 public class ErrorHandler implements HttpHandler {
 
@@ -33,7 +33,7 @@ public class ErrorHandler implements HttpHandler {
   private final ErrorCodec errors = ErrorCodec.createDefault();
 
   public ErrorHandler(Throwable throwable) {
-    this.throwable = Objects.requireNonNull(throwable);
+    this.throwable = Require.nonNull("Exception", throwable);
   }
 
   @Override

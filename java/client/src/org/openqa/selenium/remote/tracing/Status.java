@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public class Status {
 
@@ -32,14 +32,12 @@ public class Status {
   public static final Status UNKNOWN = new Status(Kind.UNKNOWN, "");
 
   private Status(Kind kind, String description) {
-    this.kind = Objects.requireNonNull(kind, "Kind to use must be set.");
-    this.description = Objects.requireNonNull(description, "Description to use must be set.");
+    this.kind = Require.nonNull("Kind", kind);
+    this.description = Require.nonNull("Description", description);
   }
 
   public Status withDescription(String description) {
-    Objects.requireNonNull(description, "Description to use must be set");
-
-    return new Status(getKind(), description);
+    return new Status(getKind(), Require.nonNull("Description", description));
   }
 
   public Kind getKind() {

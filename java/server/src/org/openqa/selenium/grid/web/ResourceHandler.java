@@ -18,13 +18,14 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.net.MediaType;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.UrlPath;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,7 @@ public class ResourceHandler implements Routable {
   private final Resource resource;
 
   public ResourceHandler(Resource resource) {
-    this.resource = Objects.requireNonNull(resource);
+    this.resource = Require.nonNull("Resource", resource);
   }
 
   @Override

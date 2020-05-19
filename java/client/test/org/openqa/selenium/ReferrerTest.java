@@ -32,7 +32,6 @@ import static org.openqa.selenium.build.InProject.locate;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import com.google.common.net.HostAndPort;
 import com.google.common.net.HttpHeaders;
 
@@ -41,6 +40,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.openqa.selenium.environment.webserver.JettyAppServer;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -427,7 +427,7 @@ public class ReferrerTest extends JUnit4TestBase {
     }
 
     HostAndPort getHostAndPort() {
-      return Preconditions.checkNotNull(hostAndPort);
+      return Require.state(hostAndPort).nonNull();
     }
 
     String getBaseUrl() {

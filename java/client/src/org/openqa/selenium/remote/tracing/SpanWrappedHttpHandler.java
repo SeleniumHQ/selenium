@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -41,9 +42,9 @@ public class SpanWrappedHttpHandler implements HttpHandler {
   private final HttpHandler delegate;
 
   public SpanWrappedHttpHandler(Tracer tracer, Function<HttpRequest, String> namer, HttpHandler delegate) {
-    this.tracer = Objects.requireNonNull(tracer, "Tracer to use must be set.");
-    this.namer = Objects.requireNonNull(namer, "Naming function must be set.");
-    this.delegate = Objects.requireNonNull(delegate, "Actual handler must be set.");
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.namer = Require.nonNull("Naming function", namer);
+    this.delegate = Require.nonNull("Actual handler", delegate);
   }
 
   @Override

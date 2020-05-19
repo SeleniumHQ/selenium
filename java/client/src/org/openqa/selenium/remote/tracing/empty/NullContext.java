@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.remote.tracing.empty;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.SpanId;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -36,19 +36,17 @@ public class NullContext implements TraceContext {
 
   @Override
   public Span createSpan(String name) {
-    Objects.requireNonNull(name, "Name to use must be set.");
+    Require.nonNull("Name", name);
     return new NullSpan();
   }
 
   @Override
   public Runnable wrap(Runnable runnable) {
-    Objects.requireNonNull(runnable, "Runnable to use must be set.");
-    return runnable;
+    return Require.nonNull("Runnable", runnable);
   }
 
   @Override
   public <V> Callable<V> wrap(Callable<V> callable) {
-    Objects.requireNonNull(callable, "Callable to use must be set.");
-    return callable;
+    return Require.nonNull("Callable", callable);
   }
 }

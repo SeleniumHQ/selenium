@@ -8,6 +8,7 @@ java_library(
         "//java/client/test/org/openqa/selenium/remote/tracing:__subpackages__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/tracing",
         artifact("com.google.guava:guava"),
         artifact("io.grpc:grpc-context"),

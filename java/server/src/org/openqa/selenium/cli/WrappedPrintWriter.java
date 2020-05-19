@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.cli;
 
-import com.google.common.base.Preconditions;
+import org.openqa.selenium.internal.Require;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -36,12 +36,8 @@ public class WrappedPrintWriter extends PrintWriter {
 
   public WrappedPrintWriter(Writer out, int lineLength, int indentBy) {
     super(out);
-
-    Preconditions.checkArgument(lineLength > 10, "Lines must be 10 or more characters.");
-    Preconditions.checkArgument(indentBy >= 0, "An indent cannot be less than 0.");
-
-    this.lineLength = lineLength;
-    this.indentBy = indentBy;
+    this.lineLength = Require.argument("Line length", lineLength).greaterThan(9, "Lines must be 10 or more characters");
+    this.indentBy = Require.nonNegative("An indent", indentBy);
 
   }
 

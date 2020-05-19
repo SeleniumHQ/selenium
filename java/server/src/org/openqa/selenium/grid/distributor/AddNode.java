@@ -20,14 +20,13 @@ package org.openqa.selenium.grid.distributor;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.string;
 
@@ -43,10 +42,10 @@ class AddNode implements HttpHandler {
       Distributor distributor,
       Json json,
       HttpClient.Factory httpFactory) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.distributor = Objects.requireNonNull(distributor);
-    this.json = Objects.requireNonNull(json);
-    this.httpFactory = Objects.requireNonNull(httpFactory);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.distributor = Require.nonNull("Distributor", distributor);
+    this.json = Require.nonNull("Json converter", json);
+    this.httpFactory = Require.nonNull("HTTP Factory", httpFactory);
   }
 
   @Override

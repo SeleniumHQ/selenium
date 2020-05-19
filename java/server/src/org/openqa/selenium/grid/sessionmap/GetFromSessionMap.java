@@ -19,14 +19,13 @@ package org.openqa.selenium.grid.sessionmap;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
-
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -41,9 +40,9 @@ class GetFromSessionMap implements HttpHandler {
   private final SessionId id;
 
   GetFromSessionMap(Tracer tracer, SessionMap sessions, SessionId id) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.sessions = Objects.requireNonNull(sessions);
-    this.id = Objects.requireNonNull(id);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.sessions = Require.nonNull("Session map", sessions);
+    this.id = Require.nonNull("Session id", id);
   }
 
   @Override

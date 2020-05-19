@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.chromium;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import java.io.File;
@@ -89,7 +88,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @param path Path to Chrome executable.
    */
   public T setBinary(File path) {
-    binary = checkNotNull(path).getPath();
+    binary = Require.nonNull("Path to the chrome executable", path).getPath();
     return (T) this;
   }
 
@@ -101,7 +100,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @param path Path to Chrome executable.
    */
   public T setBinary(String path) {
-    binary = checkNotNull(path);
+    binary = Require.nonNull("Path to the chrome executable", path);
     return (T) this;
   }
 
@@ -150,12 +149,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @param paths Paths to the extensions to install.
    */
   public T addExtensions(List<File> paths) {
-    for (File path : paths) {
-      checkNotNull(path);
-      checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
-      checkArgument(!path.isDirectory(), "%s is a directory",
-          path.getAbsolutePath());
-    }
+    paths.forEach(path -> Require.argument("Extension", path).isFile());
     extensionFiles.addAll(paths);
     return (T) this;
   }
@@ -177,7 +171,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    */
   public T addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
-      checkNotNull(extension);
+      Require.nonNull("Encoded extension", extension);
     }
     extensions.addAll(encoded);
     return (T) this;
@@ -192,7 +186,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    *     to JSON.
    */
   public T setExperimentalOption(String name, Object value) {
-    experimentalOptions.put(checkNotNull(name), value);
+    experimentalOptions.put(Require.nonNull("Option name", name), value);
     return (T) this;
   }
 

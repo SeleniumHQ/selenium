@@ -18,13 +18,12 @@ package org.openqa.selenium.edge;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.util.Objects;
 
 /**
  * A {@link WebDriver} implementation that controls an Edge browser running on the local machine.
@@ -111,7 +110,7 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   private static CommandExecutor toExecutor(EdgeOptions options) {
-    Objects.requireNonNull(options, "No options to construct executor from");
+    Require.nonNull("Driver options", options);
 
     EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
 

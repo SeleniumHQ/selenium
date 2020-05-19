@@ -20,13 +20,13 @@ package org.openqa.selenium.firefox;
 import static java.util.Collections.singletonMap;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
-import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
 
 import com.google.common.collect.ImmutableSortedMap;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -223,12 +223,12 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   public FirefoxOptions addPreference(String key, Object value) {
-    preferences.put(requireNonNull(key), value);
+    preferences.put(Require.nonNull("Key", key), value);
     return this;
   }
 
   public FirefoxOptions setLogLevel(FirefoxDriverLogLevel logLevel) {
-    this.logLevel = Objects.requireNonNull(logLevel, "Log level must be set");
+    this.logLevel = Require.nonNull("Log level", logLevel);
     return this;
   }
 
@@ -244,7 +244,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public void setCapability(String key, Object value) {
     switch (key) {
       case BINARY:
-        binary = new Binary(requireNonNull(value, "Binary value cannot be null"));
+        binary = new Binary(Require.nonNull("Binary value", value));
         value = binary.asCapability();
         break;
 

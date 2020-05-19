@@ -27,6 +27,7 @@ import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -36,7 +37,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -53,7 +53,7 @@ public class DockerOptions {
   private final Config config;
 
   public DockerOptions(Config config) {
-    this.config = Objects.requireNonNull(config);
+    this.config = Require.nonNull("Config", config);
   }
 
   private URI getDockerUri() {

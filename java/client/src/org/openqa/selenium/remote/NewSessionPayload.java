@@ -37,6 +37,7 @@ import com.google.common.io.FileBackedOutputStream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
@@ -75,7 +76,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 public class NewSessionPayload implements Closeable {
 
   private final Set<CapabilitiesFilter> adapters;
@@ -95,9 +95,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   public static NewSessionPayload create(Map<String, ?> source) {
-    Objects.requireNonNull(source, "Payload must be set");
-
-    String json = new Json().toJson(source);
+    String json = new Json().toJson(Require.nonNull("Payload", source));
     return new NewSessionPayload(new StringReader(json));
   }
 

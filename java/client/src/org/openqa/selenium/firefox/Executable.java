@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.firefox;
 
-import com.google.common.base.Preconditions;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,11 +37,7 @@ class Executable {
   private FirefoxBinary.Channel channel;
 
   public Executable(File userSpecifiedBinaryPath) {
-    Preconditions.checkState(userSpecifiedBinaryPath != null,
-                             "Path to the firefox binary should not be null");
-    Preconditions.checkState(userSpecifiedBinaryPath.exists() && userSpecifiedBinaryPath.isFile(),
-                             "Specified firefox binary location does not exist or is not a real file: " +
-                             userSpecifiedBinaryPath);
+    Require.argument("Path to the firefox binary", userSpecifiedBinaryPath).isFile();
     binary = userSpecifiedBinaryPath;
   }
 

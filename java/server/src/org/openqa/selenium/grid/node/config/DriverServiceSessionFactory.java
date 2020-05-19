@@ -26,6 +26,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.DriverCommand;
@@ -41,7 +42,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -60,10 +60,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
       HttpClient.Factory clientFactory,
       Predicate<Capabilities> predicate,
       DriverService.Builder builder) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.clientFactory = Objects.requireNonNull(clientFactory);
-    this.predicate = Objects.requireNonNull(predicate);
-    this.builder = Objects.requireNonNull(builder);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
+    this.builder = Require.nonNull("Driver service bulder", builder);
   }
 
   @Override

@@ -22,6 +22,7 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.KIND;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -29,7 +30,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.net.URL;
-import java.util.Objects;
 
 public class TracedHttpClient implements HttpClient {
 
@@ -37,8 +37,8 @@ public class TracedHttpClient implements HttpClient {
   private final HttpClient delegate;
 
   private TracedHttpClient(Tracer tracer, HttpClient delegate) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.delegate = Objects.requireNonNull(delegate);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.delegate = Require.nonNull("Actual handler", delegate);
   }
 
   @Override
@@ -64,8 +64,8 @@ public class TracedHttpClient implements HttpClient {
     private final HttpClient.Factory delegate;
 
     public Factory(Tracer tracer, HttpClient.Factory delegate) {
-      this.tracer = Objects.requireNonNull(tracer);
-      this.delegate = Objects.requireNonNull(delegate);
+      this.tracer = Require.nonNull("Tracer", tracer);
+      this.delegate = Require.nonNull("Actual handler", delegate);
     }
 
     public HttpClient createClient(ClientConfig config) {

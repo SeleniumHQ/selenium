@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.chrome;
 
-import java.util.Objects;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
@@ -58,7 +58,7 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
   }
 
   public ChromeOptions setLogLevel(ChromeDriverLogLevel logLevel){
-    this.logLevel = Objects.requireNonNull(logLevel, "Log level must be set");
+    this.logLevel = Require.nonNull("Log level", logLevel);
     return this;
   }
 

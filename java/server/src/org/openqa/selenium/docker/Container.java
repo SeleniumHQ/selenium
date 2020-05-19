@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.docker;
 
+import org.openqa.selenium.internal.Require;
+
 import java.time.Duration;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class Container {
@@ -28,9 +29,9 @@ public class Container {
   private final ContainerId id;
 
   public Container(DockerProtocol protocol, ContainerId id) {
+    this.protocol = Require.nonNull("Protocol", protocol);
+    this.id = Require.nonNull("Container id", id);
     LOG.info("Created container " + id);
-    this.protocol = Objects.requireNonNull(protocol);
-    this.id = Objects.requireNonNull(id);
   }
 
   public ContainerId getId() {
@@ -43,7 +44,7 @@ public class Container {
   }
 
   public void stop(Duration timeout) {
-    Objects.requireNonNull(timeout, "Timeout to wait for must be set.");
+    Require.nonNull("Timeout to wait for", timeout);
 
     if (protocol.exists(id)) {
       LOG.info("Stopping " + getId());

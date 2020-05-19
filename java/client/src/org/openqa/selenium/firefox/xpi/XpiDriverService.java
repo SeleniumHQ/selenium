@@ -23,7 +23,6 @@ import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 
 import com.google.auto.service.AutoService;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
@@ -39,6 +38,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxDriverService;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
@@ -87,9 +87,7 @@ public class XpiDriverService extends FirefoxDriverService {
       throws IOException {
     super(executable, port, timeout, args, environment);
 
-    Preconditions.checkState(port > 0, "Port must be set");
-
-    this.port = port;
+    this.port = Require.positive("Port", port);
     this.binary = binary;
     this.profile = profile;
 
@@ -380,12 +378,12 @@ public class XpiDriverService extends FirefoxDriverService {
     }
 
     public Builder withBinary(FirefoxBinary binary) {
-      this.binary = Preconditions.checkNotNull(binary);
+      this.binary = Require.nonNull("Firefox binary", binary);
       return this;
     }
 
     public Builder withProfile(FirefoxProfile profile) {
-      this.profile = Preconditions.checkNotNull(profile);
+      this.profile = Require.nonNull("Firefox profile", profile);
       return this;
     }
 

@@ -20,20 +20,19 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import io.grpc.Context;
 import io.opentelemetry.context.propagation.HttpTextFormat;
 import io.opentelemetry.trace.Tracer;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
-
-import java.util.Objects;
 
 public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.Tracer {
   private final Tracer tracer;
   private final OpenTelemetryPropagator telemetryFormat;
 
   public OpenTelemetryTracer(Tracer tracer, HttpTextFormat httpTextFormat) {
-    this.tracer = Objects.requireNonNull(tracer, "Tracer to use must be set.");
-
-    Objects.requireNonNull(httpTextFormat, "Formatter to use must be set.");
-    this.telemetryFormat = new OpenTelemetryPropagator(tracer, httpTextFormat);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.telemetryFormat = new OpenTelemetryPropagator(
+        tracer, Require.nonNull("Formatter", httpTextFormat));
   }
 
   @Override

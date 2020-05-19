@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -29,7 +30,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
@@ -48,7 +48,7 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
       Capabilities capabilities) {
     super(id, url, downstream, upstream, capabilities);
 
-    Objects.requireNonNull(client);
+    Require.nonNull("HTTP client", client);
 
     if (downstream.equals(upstream)) {
       this.handler = new ReverseProxyHandler(tracer, client);

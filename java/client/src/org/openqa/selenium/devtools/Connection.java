@@ -21,6 +21,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import org.openqa.selenium.devtools.target.model.SessionID;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -32,7 +33,6 @@ import java.io.StringReader;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -62,8 +62,8 @@ public class Connection implements Closeable {
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
 
   public Connection(HttpClient client, String url) {
-    Objects.requireNonNull(client, "HTTP client must be set.");
-    Objects.requireNonNull(url, "URL to connect to must be set.");
+    Require.nonNull("HTTP client", client);
+    Require.nonNull("URL to connect to", url);
 
     socket = client.openSocket(new HttpRequest(GET, url), new Listener());
   }
@@ -146,8 +146,8 @@ public class Connection implements Closeable {
   }
 
   public <X> void addListener(Event<X> event, Consumer<X> handler) {
-    Objects.requireNonNull(event);
-    Objects.requireNonNull(handler);
+    Require.nonNull("Event to listen for", event);
+    Require.nonNull("Handler to call", handler);
 
     synchronized (eventCallbacks) {
       eventCallbacks.put(event, handler);

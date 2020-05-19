@@ -22,6 +22,7 @@ import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerInfo;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.DockerProtocol;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.Contents;
@@ -31,7 +32,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -47,8 +47,8 @@ class CreateContainer {
   private final HttpHandler client;
 
   public CreateContainer(DockerProtocol protocol, HttpHandler client) {
-    this.protocol = Objects.requireNonNull(protocol);
-    this.client = Objects.requireNonNull(client);
+    this.protocol = Require.nonNull("Protocol", protocol);
+    this.client = Require.nonNull("HTTP client", client);
   }
 
   public Container apply(ContainerInfo info) {

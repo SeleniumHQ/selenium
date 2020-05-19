@@ -18,8 +18,10 @@
 package org.openqa.selenium.docker.internal;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.docker.ImageId;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
@@ -27,7 +29,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Beta
@@ -38,8 +39,8 @@ public class ImageSummary {
   private final Set<String> repoTags;
 
   public ImageSummary(ImageId id, Collection<String> repoTags) {
-    this.id = Objects.requireNonNull(id);
-    this.repoTags = ImmutableSet.copyOf(Objects.requireNonNull(repoTags));
+    this.id = Require.nonNull("Image id", id);
+    this.repoTags = ImmutableSet.copyOf(Require.nonNull("Repo tags", repoTags));
   }
 
   public ImageId getId() {

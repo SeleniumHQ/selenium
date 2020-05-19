@@ -23,6 +23,7 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -34,7 +35,6 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -54,9 +54,9 @@ class HandleSession implements HttpHandler {
     Tracer tracer,
     HttpClient.Factory httpClientFactory,
     SessionMap sessions) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
-    this.sessions = Objects.requireNonNull(sessions);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
+    this.sessions = Require.nonNull("Sessions", sessions);
 
     this.knownSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(Duration.ofMinutes(1))

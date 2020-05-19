@@ -21,6 +21,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.FileBackedOutputStream;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
 import java.io.ByteArrayInputStream;
@@ -47,26 +49,26 @@ public class Contents {
   }
 
   public static Supplier<InputStream> utf8String(CharSequence value) {
-    Objects.requireNonNull(value, "Value to return must be set.");
+    Require.nonNull("Value to return", value);
 
     return string(value, UTF_8);
   }
 
   public static Supplier<InputStream> string(CharSequence value, Charset charset) {
-    Objects.requireNonNull(value, "Value to return must be set.");
-    Objects.requireNonNull(charset, "Character set to use must be set.");
+    Require.nonNull("Value to return", value);
+    Require.nonNull("Character set", charset);
 
     return bytes(value.toString().getBytes(charset));
   }
 
   public static Supplier<InputStream> bytes(byte[] bytes) {
-    Objects.requireNonNull(bytes, "Bytes to return must be set but may be empty.");
+    Require.nonNull("Bytes to return", bytes, "may be empty");
 
     return () -> new ByteArrayInputStream(bytes);
   }
 
   public static byte[] bytes(Supplier<InputStream> supplier) {
-    Objects.requireNonNull(supplier, "Supplier of input must be set.");
+    Require.nonNull("Supplier of input", supplier);
 
     try (InputStream is = supplier.get();
          ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
@@ -82,8 +84,8 @@ public class Contents {
   }
 
   public static String string(Supplier<InputStream> supplier, Charset charset) {
-    Objects.requireNonNull(supplier, "Supplier of input must be set.");
-    Objects.requireNonNull(charset, "Character set to use must be set.");
+    Require.nonNull("Supplier of input", supplier);
+    Require.nonNull("Character set", charset);
 
     return new String(bytes(supplier), charset);
   }
@@ -93,14 +95,14 @@ public class Contents {
   }
 
   public static Reader utf8Reader(Supplier<InputStream> supplier) {
-    Objects.requireNonNull(supplier, "Supplier of input must be set.");
+    Require.nonNull("Supplier", supplier);
 
     return reader(supplier, UTF_8);
   }
 
   public static Reader reader(Supplier<InputStream> supplier, Charset charset) {
-    Objects.requireNonNull(supplier, "Supplier of input must be set.");
-    Objects.requireNonNull(charset, "Character set to use must be set.");
+    Require.nonNull("Supplier of input", supplier);
+    Require.nonNull("Character set", charset);
 
     return new InputStreamReader(supplier.get(), charset);
   }

@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class HttpTracing {
@@ -31,16 +31,16 @@ public class HttpTracing {
   }
 
   private static TraceContext extract(Tracer tracer, HttpRequest request) {
-    Objects.requireNonNull(tracer, "Tracer to use must be set.");
-    Objects.requireNonNull(request, "Request must be set.");
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
 
     return tracer.getPropagator().extractContext(tracer.getCurrentContext(), request, (req, key) -> req.getHeader(key));
   }
 
   public static Span newSpanAsChildOf(Tracer tracer, HttpRequest request, String name) {
-    Objects.requireNonNull(tracer, "Tracer to use must be set.");
-    Objects.requireNonNull(request, "Request must be set.");
-    Objects.requireNonNull(name, "Name to use must be set.");
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
+    Require.nonNull("Name", name);
 
     TraceContext parent = extract(tracer, request);
     return parent.createSpan(name);
@@ -52,8 +52,8 @@ public class HttpTracing {
       return;
     }
 
-    Objects.requireNonNull(tracer, "Tracer to use must be set.");
-    Objects.requireNonNull(request, "Request must be set.");
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
 
     StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
     LOG.fine(String.format("Injecting %s into %s at %s:%d", request, context, caller.getClassName(), caller.getLineNumber()));

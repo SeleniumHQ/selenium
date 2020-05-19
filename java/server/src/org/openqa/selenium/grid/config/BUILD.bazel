@@ -15,6 +15,7 @@ java_library(
     ],
     deps = [
         "//java:auto-service",
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),

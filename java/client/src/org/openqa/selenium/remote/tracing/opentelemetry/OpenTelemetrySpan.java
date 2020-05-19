@@ -23,6 +23,8 @@ import io.grpc.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.Tracer;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 
@@ -36,29 +38,26 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
 
   public OpenTelemetrySpan(Tracer tracer, Context context, io.opentelemetry.trace.Span span, Scope scope) {
     super(tracer, context);
-    this.span = Objects.requireNonNull(span);
-    this.scope = Objects.requireNonNull(scope);
+    this.span = Require.nonNull("Span", span);
+    this.scope = Require.nonNull("Scope", scope);
   }
 
   @Override
   public Span setName(String name) {
-    Objects.requireNonNull(name, "Name to update to must be set.");
-    span.updateName(name);
-
+    span.updateName(Require.nonNull("Name to update to", name));
     return this;
   }
 
   @Override
   public Span setAttribute(String key, boolean value) {
-    Objects.requireNonNull(key, "Key to use must be set.");
-    span.setAttribute(key, value);
+    span.setAttribute(Require.nonNull("Key", key), value);
     return this;
   }
 
   @Override
   public Span setAttribute(String key, Number value) {
-    Objects.requireNonNull(key, "Key to use must be set.");
-    Objects.requireNonNull(value, "Value to use must be set.");
+    Require.nonNull("Key", key);
+    Require.nonNull("Value", value);
 
     Class<? extends Number> unwrapped = Primitives.unwrap(value.getClass());
     if (double.class.equals(unwrapped) || float.class.equals(unwrapped)) {
@@ -72,8 +71,8 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
 
   @Override
   public Span setAttribute(String key, String value) {
-    Objects.requireNonNull(key, "Key to use must be set.");
-    Objects.requireNonNull(value, "Value to use must be set.");
+    Require.nonNull("Key", key);
+    Require.nonNull("Value", value);
     span.setAttribute(key, value);
     return this;
   }
@@ -90,7 +89,7 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
 
   @Override
   public Span setStatus(Status status) {
-    Objects.requireNonNull(status, "Status to use must be set.");
+    Require.nonNull("Status", status);
 
     io.opentelemetry.trace.Status otStatus = statuses.get(status.getKind());
     if (otStatus == null) {

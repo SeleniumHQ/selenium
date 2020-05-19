@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -39,7 +40,6 @@ import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
 
 public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
@@ -63,7 +63,7 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public boolean add(Session session) {
-    Objects.requireNonNull(session, "Session to add must be set.");
+    Require.nonNull("Session to add", session);
 
     RedisCommands<String, String> commands = connection.sync();
     commands.mset(
@@ -76,7 +76,7 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public Session get(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
     URI uri = getUri(id);
 
@@ -91,7 +91,7 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public URI getUri(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
     RedisCommands<String, String> commands = connection.sync();
 
@@ -111,7 +111,7 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public void remove(SessionId id) {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
     RedisCommands<String, String> commands = connection.sync();
 
@@ -124,13 +124,13 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
   }
 
   private String uriKey(SessionId id) {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
     return "session:" + id.toString() + ":uri";
   }
 
   private String capabilitiesKey(SessionId id) {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
     return "session:" + id.toString() + ":capabilities";
   }
