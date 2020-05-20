@@ -133,7 +133,7 @@ public class ReactorClient implements HttpClient {
               name -> request.getHeaders(name).forEach(value -> h.set(name, value))))
           .websocket().uri(wsUri.toString()), listener);
     } catch (URISyntaxException e) {
-      e.printStackTrace();
+      log.log(Level.INFO, e.getMessage(), e);
       return null;
     }
   }
