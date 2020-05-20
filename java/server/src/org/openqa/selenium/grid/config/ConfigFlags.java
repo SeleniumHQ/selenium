@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.config;
 
 import com.beust.jcommander.Parameter;
-import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
@@ -33,9 +32,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 
-@AutoService(HasRoles.class)
 public class ConfigFlags implements HasRoles {
 
   private static final ImmutableSet<String> IGNORED_SECTIONS = ImmutableSet.of("java", "lc", "term");
