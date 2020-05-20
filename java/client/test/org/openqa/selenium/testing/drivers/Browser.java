@@ -21,6 +21,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
@@ -34,9 +35,7 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 public enum Browser {
   ALL(new ImmutableCapabilities(), false),
   CHROME(new ChromeOptions(), true),
-  // This is not strictly true, but it's true enough: original Edge
-  // doesn't support CDP
-  EDGE(new EdgeOptions(), true),
+  EDGE(new EdgeHtmlOptions(), false),
   CHROMIUMEDGE(new EdgeOptions(), true),
   HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), false),
   FIREFOX(new FirefoxOptions(), false),
