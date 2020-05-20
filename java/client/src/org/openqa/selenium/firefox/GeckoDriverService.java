@@ -37,6 +37,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
@@ -195,7 +196,15 @@ public class GeckoDriverService extends FirefoxDriverService {
       if (firefoxBinary != null) {
         args.add("-b");
         args.add(firefoxBinary.getPath());
-      } // else GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
+      } else {
+        // Read system property for Firefox binary and use those if they are set
+        Optional<Executable> executable = Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
+        executable.ifPresent( e -> {
+          args.add("-b");
+          args.add(e.getPath());
+        });
+      }
+      // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
       return unmodifiableList(args);
     }
 

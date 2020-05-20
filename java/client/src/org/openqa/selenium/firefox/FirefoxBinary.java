@@ -151,7 +151,7 @@ public class FirefoxBinary {
    * Locates the firefox binary from a system property. Will throw an exception if the binary cannot
    * be found.
    */
-  private static Executable locateFirefoxBinaryFromSystemProperty() {
+   static Executable locateFirefoxBinaryFromSystemProperty() {
     String binaryName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
     if (binaryName == null)
       return null;
