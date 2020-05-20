@@ -221,10 +221,6 @@ public final class Require {
     }
   }
 
-  public static <T> StateChecker<T> state(T state) {
-    return new StateChecker<>("State", state);
-  }
-
   public static <T> StateChecker<T> state(String name, T state) {
     return new StateChecker<>(name, state);
   }

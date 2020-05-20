@@ -427,7 +427,7 @@ public class ReferrerTest extends JUnit4TestBase {
     }
 
     HostAndPort getHostAndPort() {
-      return Require.state(hostAndPort).nonNull();
+      return Require.state("Host and port", hostAndPort).nonNull();
     }
 
     String getBaseUrl() {

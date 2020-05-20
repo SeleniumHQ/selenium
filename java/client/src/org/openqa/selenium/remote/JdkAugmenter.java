@@ -93,7 +93,7 @@ public class JdkAugmenter extends BaseAugmenter {
       for (Method method : interfaceProvided.getMethods()) {
         InterfaceImplementation oldHandler = augmentationHandlers.put(method,
           augmentedImplementation);
-        Require.state(oldHandler).nonNull("Both %s and %s attempt to define %s.",
+        Require.stateCondition(oldHandler == null, "Both %s and %s attempt to define %s.",
           oldHandler, augmentedImplementation.getClass(), method.getName());
       }
     }

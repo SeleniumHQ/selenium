@@ -67,7 +67,7 @@ class TestFileLocator {
   }
 
   private static Path getTestDirectory() {
-    String testDirName = Require.state(getProperty(TEST_DIRECTORY_PROPERTY)).nonNull(
+    String testDirName = Require.state("Test directory", getProperty(TEST_DIRECTORY_PROPERTY)).nonNull(
                                  "You must specify the test directory with the %s system property",
                                  TEST_DIRECTORY_PROPERTY);
     

@@ -204,21 +204,13 @@ public class RequireTest {
   @Test
   public void canCheckStateForNull() {
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state(null).nonNull())
-        .withMessage("State must not be null");
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state(null).nonNull("%s must be set", "it"))
-        .withMessage("it must be set");
-    assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("x", (Object) null).nonNull())
         .withMessage("x must not be null");
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("x", (Object) null).nonNull("%s must be set", "it"))
         .withMessage("it must be set");
     String arg = "this";
-    assertThat(Require.state(arg).nonNull()).isSameAs(arg);
     assertThat(Require.state("x", arg).nonNull()).isSameAs(arg);
-    assertThat(Require.state(arg).nonNull("test")).isSameAs(arg);
     assertThat(Require.state("x", arg).nonNull("test")).isSameAs(arg);
   }
 

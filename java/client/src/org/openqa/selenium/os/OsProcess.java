@@ -59,8 +59,8 @@ class OsProcess {
   private final Map<String, String> env = new ConcurrentHashMap<>();
 
   public OsProcess(String executable, String... args) {
-    String actualExe = Require.state(
-        new ExecutableFinder().find(executable)).nonNull("Unable to find executable for: %s", executable);
+    String actualExe = new ExecutableFinder().find(executable);
+    Require.state("Actual executable", actualExe).nonNull("Unable to find executable for: %s", executable);
     cl = new org.apache.commons.exec.CommandLine(actualExe);
     cl.addArguments(args, false);
   }

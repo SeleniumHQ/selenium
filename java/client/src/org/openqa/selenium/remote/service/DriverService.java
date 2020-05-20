@@ -139,7 +139,7 @@ public class DriverService {
       String exeDownload) {
     String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
-    Require.state(exePath).nonNull(
+    Require.state("The path to the driver executable", exePath).nonNull(
         "The path to the driver executable must be set by the %s system property;"
             + " for more information, see %s. "
             + "The latest version can be downloaded from %s",
