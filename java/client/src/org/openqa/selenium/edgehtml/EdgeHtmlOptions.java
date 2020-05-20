@@ -19,6 +19,7 @@ package org.openqa.selenium.edgehtml;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.BrowserType;
 
@@ -49,5 +50,11 @@ public class EdgeHtmlOptions extends AbstractDriverOptions<EdgeHtmlOptions> {
 
   public EdgeHtmlOptions() {
     setCapability(BROWSER_NAME, BrowserType.EDGEHTML);
+  }
+
+  @Override
+  public EdgeHtmlOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
   }
 }

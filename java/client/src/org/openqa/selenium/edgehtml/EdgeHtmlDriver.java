@@ -16,7 +16,6 @@
 // under the License.
 package org.openqa.selenium.edgehtml;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -98,11 +97,6 @@ public class EdgeHtmlDriver extends RemoteWebDriver {
 
   public EdgeHtmlDriver(EdgeHtmlOptions options) {
     super(toExecutor(options), options);
-  }
-
-  @Deprecated
-  public EdgeHtmlDriver(Capabilities capabilities) {
-    super(toExecutor(new EdgeHtmlOptions()), capabilities);
   }
 
   private static CommandExecutor toExecutor(EdgeHtmlOptions options) {

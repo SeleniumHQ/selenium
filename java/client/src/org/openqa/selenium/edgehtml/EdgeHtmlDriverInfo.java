@@ -72,6 +72,6 @@ public class EdgeHtmlDriverInfo implements WebDriverInfo {
       return Optional.empty();
     }
 
-    return Optional.of(new EdgeHtmlDriver(capabilities));
+    return Optional.of(new EdgeHtmlDriver(new EdgeHtmlOptions().merge(capabilities)));
   }
 }
