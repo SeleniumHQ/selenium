@@ -116,6 +116,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @NotYetImplemented(EDGE)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
@@ -130,6 +131,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @NotYetImplemented(EDGE)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));
     driver.switchTo().frame("ifr");
