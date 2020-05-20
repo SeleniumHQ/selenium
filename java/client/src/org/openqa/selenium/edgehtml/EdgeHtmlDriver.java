@@ -17,11 +17,10 @@
 package org.openqa.selenium.edgehtml;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
-
-import java.util.Objects;
 
 /**
  * A {@link WebDriver} implementation that controls an Edge browser running on the local machine.
@@ -100,7 +99,7 @@ public class EdgeHtmlDriver extends RemoteWebDriver {
   }
 
   private static CommandExecutor toExecutor(EdgeHtmlOptions options) {
-    Objects.requireNonNull(options, "No options to construct executor from");
+    Require.nonNull("Driver options", options);
 
     EdgeHtmlDriverService.Builder builder = new EdgeHtmlDriverService.Builder();
 

@@ -20,13 +20,13 @@ package org.openqa.selenium.devtools;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public class SeleniumCdpConnection extends Connection {
@@ -44,13 +44,13 @@ public class SeleniumCdpConnection extends Connection {
   }
 
   public static Optional<Connection> create(Capabilities capabilities) {
-    Objects.requireNonNull(capabilities, "Capabilities to check must be set.");
+    Require.nonNull("Capabilities", capabilities);
     return create(HttpClient.Factory.createDefault(), capabilities);
   }
 
   public static Optional<Connection> create(HttpClient.Factory clientFactory, Capabilities capabilities) {
-    Objects.requireNonNull(clientFactory, "HTTP client factory to use must be set.");
-    Objects.requireNonNull(capabilities, "Capabilities to check must be set.");
+    Require.nonNull("HTTP client factory", clientFactory);
+    Require.nonNull("Capabilities", capabilities);
 
     return getCdpUri(capabilities).map(uri -> new SeleniumCdpConnection(
       clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri)),

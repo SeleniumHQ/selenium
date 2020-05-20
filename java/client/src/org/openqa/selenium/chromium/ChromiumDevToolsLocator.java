@@ -19,6 +19,7 @@ package org.openqa.selenium.chromium;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.Connection;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -28,7 +29,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,8 +75,8 @@ public class ChromiumDevToolsLocator {
   public static Optional<URI> getCdpEndPoint(
     HttpClient.Factory clientFactory,
     URI reportedUri) {
-    Objects.requireNonNull(clientFactory);
-    Objects.requireNonNull(reportedUri);
+    Require.nonNull("HTTP client factory", clientFactory);
+    Require.nonNull("DevTools URI", reportedUri);
 
     ClientConfig config = ClientConfig.defaultConfig().baseUri(reportedUri);
     HttpClient client = clientFactory.createClient(config);

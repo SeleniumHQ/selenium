@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -49,7 +48,7 @@ public abstract class Route implements HttpHandler, Routable {
       if (matches(req)) {
         return Route.this.execute(req);
       }
-      return Objects.requireNonNull(handler.get(), "Handler must be set").execute(req);
+      return Require.state("Handler", handler.get()).nonNull().execute(req);
     };
   }
 
@@ -290,9 +289,9 @@ public abstract class Route implements HttpHandler, Routable {
         .collect(toImmutableList());
       toForward.setAttribute(ROUTE_PREFIX_KEY, prefixes);
 
-      request.getQueryParameterNames().forEach(name -> {
-        request.getQueryParameters(name).forEach(value -> toForward.addQueryParameter(name, value));
-      });
+      request.getQueryParameterNames().forEach(name ->
+        request.getQueryParameters(name).forEach(value -> toForward.addQueryParameter(name, value))
+      );
 
       toForward.setContent(request.getContent());
 

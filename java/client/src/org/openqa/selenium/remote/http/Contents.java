@@ -33,7 +33,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class Contents {
@@ -154,7 +153,7 @@ public class Contents {
       }
 
       try {
-        return Objects.requireNonNull(fos.asByteSource()).openBufferedStream();
+        return Require.state("Source", fos.asByteSource()).nonNull().openBufferedStream();
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }

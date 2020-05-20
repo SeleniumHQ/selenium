@@ -19,6 +19,7 @@ package org.openqa.selenium.json;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.internal.Require;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
@@ -123,7 +123,7 @@ class JsonTypeCoercer {
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
 
     // We need to keep null checkers happy, apparently.
-    @SuppressWarnings("unchecked") T result = (T) Objects.requireNonNull(coercer).apply(json, setter);
+    @SuppressWarnings("unchecked") T result = (T) Require.nonNull("Coercer", coercer).apply(json, setter);
 
     return result;
   }

@@ -55,7 +55,7 @@ public final class Require {
 
   public static <T> T nonNull(String argName, T arg, String message, Object... args) {
     if (arg == null) {
-      throw new IllegalArgumentException(String.format(message, args));
+      throw new IllegalArgumentException(String.join(" ", argName, String.format(message, args)));
     }
     return arg;
   }
@@ -244,7 +244,7 @@ public final class Require {
 
     public T nonNull(String message, Object... args) {
       if (state == null) {
-        throw new IllegalStateException(String.format(message, args));
+        throw new IllegalStateException(String.join(" ", name, String.format(message, args)));
       }
       return state;
     }

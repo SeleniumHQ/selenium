@@ -23,7 +23,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -55,7 +54,7 @@ public class SpanWrappedHttpHandler implements HttpHandler {
       return delegate.execute(req);
     }
 
-    String name = Objects.requireNonNull(namer.apply(req), "Operation name must be set for " + req);
+    String name = Require.state("Operation name", namer.apply(req)).nonNull("must be set for %s", req);
 
     TraceContext before = tracer.getCurrentContext();
     Span span = newSpanAsChildOf(tracer, req, name);

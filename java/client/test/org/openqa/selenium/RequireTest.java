@@ -55,8 +55,8 @@ public class RequireTest {
         .isThrownBy(() -> Require.nonNull("x", null))
         .withMessage("x must be set");
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> nonNull("x", null, "%s cannot be null", "it"))
-        .withMessage("it cannot be null");
+        .isThrownBy(() -> nonNull("x", null, "cannot be %s", "null"))
+        .withMessage("x cannot be null");
   }
 
   @Test
@@ -207,8 +207,8 @@ public class RequireTest {
         .isThrownBy(() -> Require.state("x", (Object) null).nonNull())
         .withMessage("x must not be null");
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> Require.state("x", (Object) null).nonNull("%s must be set", "it"))
-        .withMessage("it must be set");
+        .isThrownBy(() -> Require.state("x", (Object) null).nonNull("must not be %s", "null"))
+        .withMessage("x must not be null");
     String arg = "this";
     assertThat(Require.state("x", arg).nonNull()).isSameAs(arg);
     assertThat(Require.state("x", arg).nonNull("test")).isSameAs(arg);

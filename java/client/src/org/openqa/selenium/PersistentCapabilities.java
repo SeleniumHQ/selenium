@@ -17,6 +17,8 @@
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -40,15 +42,15 @@ public class PersistentCapabilities implements Capabilities {
   }
 
   private PersistentCapabilities(Capabilities previousValues, Capabilities newValues) {
-    Objects.requireNonNull(previousValues, "Source capabilities may be empty, but must be set.");
-    Objects.requireNonNull(newValues, "Additional capabilities may be empty, but must be set.");
+    Require.nonNull("Source capabilities", previousValues, "may be empty, but must be set.");
+    Require.nonNull("Additional capabilities", newValues, "may be empty, but must be set.");
     this.caps = ImmutableCapabilities.copyOf(previousValues);
     this.overrides = ImmutableCapabilities.copyOf(newValues);
   }
 
   public PersistentCapabilities setCapability(String name, Object value) {
-    Objects.requireNonNull(name, "Name to use must be set.");
-    Objects.requireNonNull(value, "Value to use must be set.");
+    Require.nonNull("Name", name);
+    Require.nonNull("Value", value);
 
     return new PersistentCapabilities(caps, new ImmutableCapabilities(name, value));
   }
@@ -61,7 +63,7 @@ public class PersistentCapabilities implements Capabilities {
 
   @Override
   public Object getCapability(String capabilityName) {
-    Objects.requireNonNull(capabilityName, "Capability name must be set.");
+    Require.nonNull("Capability name", capabilityName);
     Object capability = overrides.getCapability(capabilityName);
     if (capability != null) {
       return capability;
@@ -71,7 +73,7 @@ public class PersistentCapabilities implements Capabilities {
 
   @Override
   public Capabilities merge(Capabilities other) {
-    Objects.requireNonNull(other, "Other capabilities may be empty, but must be set.");
+    Require.nonNull("Other capabilities", other, "may be empty, but must be set.");
     return new PersistentCapabilities(this, other);
   }
 

@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.html5.AddApplicationCache;
 import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
@@ -27,7 +28,6 @@ import org.openqa.selenium.remote.mobile.AddNetworkConnection;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
@@ -76,8 +76,8 @@ public abstract class BaseAugmenter {
   }
 
   public void addDriverAugmentation(Predicate<Capabilities> predicate, AugmenterProvider handlerClass) {
-    Objects.requireNonNull(predicate, "Check to use must be set.");
-    Objects.requireNonNull(handlerClass, "Handler class to use must be set.");
+    Require.nonNull("Predicate", predicate);
+    Require.nonNull("Handler class", handlerClass);
     driverAugmentors.put(predicate, handlerClass);
   }
 
@@ -95,14 +95,14 @@ public abstract class BaseAugmenter {
   }
 
   public void addElementAugmentation(Predicate<Capabilities> predicate, AugmenterProvider handlerClass) {
-    Objects.requireNonNull(predicate, "Check to use must be set.");
-    Objects.requireNonNull(handlerClass, "Handler class to use must be set.");
+    Require.nonNull("Predicate", predicate);
+    Require.nonNull("Handler class", handlerClass);
     elementAugmentors.put(predicate, handlerClass);
   }
 
   private Predicate<Capabilities> check(String capabilityName) {
     return caps -> {
-      Objects.requireNonNull(capabilityName, "Capability name to check must be set.");
+      Require.nonNull("Capability name", capabilityName);
 
       Object value = caps.getCapability(capabilityName);
       if (value instanceof Boolean && !((Boolean) value)) {
