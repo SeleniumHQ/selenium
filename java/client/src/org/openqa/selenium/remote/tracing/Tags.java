@@ -28,17 +28,16 @@ public class Tags {
     // Utility class
   }
 
-  public static BiConsumer<Span, Span.Kind> KIND = (span, kind) -> {
+  public static final BiConsumer<Span, Span.Kind> KIND = (span, kind) -> {
     span.setAttribute("span.kind", kind.toString());
   };
 
-  public static BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
+  public static final BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
     span.setAttribute("http.method", req.getMethod().toString());
     span.setAttribute("http.url", req.getUri());
   };
 
-  public static BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
+  public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
     span.setAttribute("http.status_code", res.getStatus());
   };
-
 }
