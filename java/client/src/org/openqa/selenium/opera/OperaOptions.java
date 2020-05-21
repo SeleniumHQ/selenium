@@ -19,7 +19,7 @@ package org.openqa.selenium.opera;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
-import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.BrowserType.OPERA;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.internal.Require;
@@ -71,7 +71,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
   private Map<String, Object> experimentalOptions = new HashMap<>();
 
   public OperaOptions() {
-    setCapability(BROWSER_NAME, OPERA_BLINK);
+    setCapability(BROWSER_NAME, OPERA);
   }
 
   @Override

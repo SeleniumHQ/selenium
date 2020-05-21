@@ -202,7 +202,6 @@ public class WebDriverBackedSeleniumHandler implements Routable {
           break;
 
         case "*opera":
-        case "*operablink":
           caps = new OperaOptions();
           break;
 

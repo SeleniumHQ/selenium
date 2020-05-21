@@ -26,7 +26,6 @@ import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
 import static org.openqa.selenium.remote.BrowserType.IE;
 import static org.openqa.selenium.remote.BrowserType.OPERA;
-import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
@@ -62,7 +61,6 @@ public class DefaultDriverFactory implements DriverFactory {
             .put(FIREFOX, "org.openqa.selenium.firefox.FirefoxDriver")
             .put(CHROME, "org.openqa.selenium.chrome.ChromeDriver")
             .put(OPERA, "com.opera.core.systems.OperaDriver")
-            .put(OPERA_BLINK, "org.openqa.selenium.opera.OperaDriver")
             .put(PHANTOMJS, "org.openqa.selenium.phantomjs.PhantomJSDriver")
             .put(HTMLUNIT, "org.openqa.selenium.htmlunit.HtmlUnitDriver")
             .build().entrySet().stream()
