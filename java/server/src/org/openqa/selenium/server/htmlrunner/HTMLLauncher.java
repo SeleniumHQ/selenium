@@ -313,6 +313,7 @@ public class HTMLLauncher {
         return new EdgeDriver();
 
       case "*opera":
+      case "*operablink":
         return new OperaDriver();
 
       case "*safari":

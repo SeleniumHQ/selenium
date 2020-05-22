@@ -108,7 +108,7 @@ public class CapabilitiesComparatorTest {
   public void shouldPickCorrectBrowser() {
     Capabilities chrome = new DesiredCapabilities(BrowserType.CHROME, "10", Platform.ANY);
     Capabilities firefox = new DesiredCapabilities(BrowserType.FIREFOX, "10", Platform.ANY);
-    Capabilities opera = new DesiredCapabilities(BrowserType.OPERA, "10", Platform.ANY);
+    Capabilities opera = new DesiredCapabilities(BrowserType.OPERA_BLINK, "10", Platform.ANY);
     List<Capabilities> list = asList(chrome, firefox, opera);
 
     DesiredCapabilities desired = new DesiredCapabilities();
@@ -119,7 +119,7 @@ public class CapabilitiesComparatorTest {
     desired.setBrowserName(BrowserType.FIREFOX);
     assertThat(getBestMatch(desired, list)).isEqualTo(firefox);
 
-    desired.setBrowserName(BrowserType.OPERA);
+    desired.setBrowserName(BrowserType.OPERA_BLINK);
     assertThat(getBestMatch(desired, list)).isEqualTo(opera);
   }
 

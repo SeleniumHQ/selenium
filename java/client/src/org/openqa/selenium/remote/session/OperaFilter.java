@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.session;
 
 import com.google.common.collect.ImmutableMap;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,6 +28,7 @@ public class OperaFilter implements CapabilitiesFilter {
     ImmutableMap<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && "opera".equals(entry.getValue())) ||
+                    ("browserName".equals(entry.getKey()) && "operablink".equals(entry.getValue())) ||
                     "operaOptions".equals(entry.getKey()))
         .distinct()
         .filter(entry -> Objects.nonNull(entry.getValue()))

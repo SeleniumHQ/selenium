@@ -26,8 +26,12 @@ public interface BrowserType {
   String FIREFOX_CHROME = "firefoxchrome";
   String GOOGLECHROME = "googlechrome";
   String SAFARI = "safari";
-
+  /**
+   * @deprecated Use OPERA_BLINK
+   */
+  @Deprecated
   String OPERA = "opera";
+  String OPERA_BLINK = "operablink";
   String EDGE = "edgium";
   String EDGEHTML = "MicrosoftEdge";
   String IEXPLORE= "iexplore";

@@ -117,6 +117,10 @@ public class OperaDriverService extends DriverService {
     public int score(Capabilities capabilities) {
       int score = 0;
 
+      if (BrowserType.OPERA_BLINK.equals(capabilities.getBrowserName())) {
+        score++;
+      }
+
       if (BrowserType.OPERA.equals(capabilities.getBrowserName())) {
         score++;
       }
