@@ -19,7 +19,6 @@ package org.openqa.selenium.edgehtml;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.BrowserType;
 
@@ -37,11 +36,16 @@ import org.openqa.selenium.remote.BrowserType;
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
  *     new URL("http://localhost:4444/"),
- *     new EdgeHtmlDriver());
+ *     new EdgeHtmlOptions());
  * </code></pre>
  *
  */
 public class EdgeHtmlOptions extends AbstractDriverOptions<EdgeHtmlOptions> {
+
+  /**
+   * Key used to indicate whether to use an Edge Chromium or Edge Legacy driver.
+   */
+  public static final String USE_CHROMIUM = "ms:edgeChromium";
 
   /**
    * Key used to store a set of EdgeHtmlOptions in a {@link Capabilities} object.
@@ -49,7 +53,8 @@ public class EdgeHtmlOptions extends AbstractDriverOptions<EdgeHtmlOptions> {
   public static final String CAPABILITY = "ms:edgeOptions";
 
   public EdgeHtmlOptions() {
-    setCapability(BROWSER_NAME, BrowserType.EDGEHTML);
+    setCapability(BROWSER_NAME, BrowserType.EDGE);
+    setCapability(USE_CHROMIUM, false);
   }
 
   @Override

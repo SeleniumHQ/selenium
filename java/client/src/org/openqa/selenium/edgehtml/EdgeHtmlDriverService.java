@@ -33,6 +33,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class EdgeHtmlDriverService extends DriverService {
 
@@ -88,8 +89,13 @@ public class EdgeHtmlDriverService extends DriverService {
     public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.EDGEHTML.equals(capabilities.getBrowserName())) {
+      if (BrowserType.EDGE.equals(capabilities.getBrowserName())) {
         score++;
+      }
+
+      Object useChromium = capabilities.getCapability(EdgeHtmlOptions.USE_CHROMIUM);
+      if (useChromium == null || Objects.equals(useChromium, true)) {
+        score--;
       }
 
       return score;

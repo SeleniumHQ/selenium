@@ -28,6 +28,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @AutoService(WebDriverInfo.class)
@@ -40,14 +41,16 @@ public class EdgeHtmlDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.EDGEHTML);
+    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.EDGE, EdgeHtmlOptions.USE_CHROMIUM, false);
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.EDGEHTML.equals(capabilities.getBrowserName()) ||
-           capabilities.getCapability("ms:edgeOptions") != null ||
-           capabilities.getCapability("edgeOptions") != null;
+    return (BrowserType.EDGE.equals(capabilities.getBrowserName())
+            || capabilities.getCapability("ms:edgeOptions") != null
+            || capabilities.getCapability("edgeOptions") != null)
+           &&
+           Objects.equals(capabilities.getCapability(EdgeHtmlOptions.USE_CHROMIUM), false);
   }
 
   @Override

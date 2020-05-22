@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Manages the life and death of the EdgeDriver (MicrosoftWebDriver or MSEdgeDriver).
@@ -116,6 +117,11 @@ public class EdgeDriverService extends DriverService {
 
       if (BrowserType.EDGE.equals(capabilities.getBrowserName())) {
         score++;
+      }
+
+      Object useChromium = capabilities.getCapability(EdgeOptions.USE_CHROMIUM);
+      if (Objects.equals(useChromium, false)) {
+        score--;
       }
 
       if (capabilities.getCapability(EdgeOptions.CAPABILITY) != null) {

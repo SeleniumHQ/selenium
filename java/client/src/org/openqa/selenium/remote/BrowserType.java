@@ -32,8 +32,8 @@ public interface BrowserType {
   @Deprecated(since = "4.0", forRemoval = true)
   String OPERA_BLINK = "operablink";
   String OPERA = "opera";
-  String EDGE = "edgium";
-  String EDGEHTML = "MicrosoftEdge";
+  String EDGE = "MicrosoftEdge";
+  String EDGEHTML = "EdgeHTML";
   String IEXPLORE= "iexplore";
   String IEXPLORE_PROXY= "iexploreproxy";
   String SAFARI_PROXY = "safariproxy";

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.edgehtml;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -24,7 +25,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.openqa.selenium.edge.EdgeOptions;
 
 import java.io.File;
 import java.time.Duration;
@@ -46,5 +49,12 @@ public class EdgeHtmlDriverServiceTest {
     builderMock.withTimeout(customTimeout);
     builderMock.build();
     verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
+  }
+
+  @Test
+  public void testScoring() {
+    EdgeHtmlDriverService.Builder builder = new EdgeHtmlDriverService.Builder();
+    assertThat(builder.score(new EdgeHtmlOptions())).isGreaterThan(0);
+    assertThat(builder.score(new EdgeOptions())).isEqualTo(0);
   }
 }
