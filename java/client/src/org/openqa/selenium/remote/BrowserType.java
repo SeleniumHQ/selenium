@@ -27,11 +27,11 @@ public interface BrowserType {
   String GOOGLECHROME = "googlechrome";
   String SAFARI = "safari";
   /**
-   * @deprecated Use OPERA_BLINK
+   * @deprecated Use {@link #OPERA}
    */
-  @Deprecated
-  String OPERA = "opera";
+  @Deprecated(since = "4.0", forRemoval = true)
   String OPERA_BLINK = "operablink";
+  String OPERA = "opera";
   String EDGE = "edgium";
   String EDGEHTML = "MicrosoftEdge";
   String IEXPLORE= "iexplore";
