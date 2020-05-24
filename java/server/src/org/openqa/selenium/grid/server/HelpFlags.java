@@ -19,14 +19,9 @@ package org.openqa.selenium.grid.server;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.json.Json;
 
 import java.io.PrintStream;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class HelpFlags {
 
