@@ -25,7 +25,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.openqa.selenium.edge.EdgeOptions;
 

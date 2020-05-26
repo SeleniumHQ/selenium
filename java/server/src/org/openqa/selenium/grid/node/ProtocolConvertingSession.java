@@ -61,6 +61,9 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
 
   @Override
   public HttpResponse execute(HttpRequest req) {
+    String host = "host";
+    req.removeHeader(host);
+    req.addHeader(host, String.format("%s:%s", getUri().getHost(), getUri().getPort()));
     HttpResponse res = handler.execute(req);
     if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
       stop();

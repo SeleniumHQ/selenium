@@ -550,7 +550,7 @@ public class Actions {
 
   /**
    * Generates a composite action containing all actions so far, ready to be performed (and
-   * resets the internal builder state, so subsequent calls to {@link #build()} will contain fresh
+   * resets the internal builder state, so subsequent calls to this method will contain fresh
    * sequences).
    *
    * @return the composite action
