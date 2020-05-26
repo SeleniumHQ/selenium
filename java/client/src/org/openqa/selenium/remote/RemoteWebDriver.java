@@ -569,7 +569,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this.level = level;
   }
 
-  Response execute(CommandPayload payload) {
+  protected Response execute(CommandPayload payload) {
     Command command = new Command(sessionId, payload);
     Response response;
 
