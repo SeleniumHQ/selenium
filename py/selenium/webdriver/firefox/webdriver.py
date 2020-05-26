@@ -25,7 +25,7 @@ import warnings
 from contextlib import contextmanager
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver, WebElement
 
 from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
@@ -341,3 +341,17 @@ class WebDriver(RemoteWebDriver):
                 driver.get_full_page_screenshot_as_base64()
         """
         return self.execute("FULL_PAGE_SCREENSHOT")['value']
+
+    def _wrap_value(self, value):
+        """Overload the _wrap_value so that custom WebElement types can be checked against"""
+        if isinstance(value, dict):
+            converted = {}
+            for key, val in value.items():
+                converted[key] = self._wrap_value(val)
+            return converted
+        elif isinstance(value, (self._web_element_cls, WebElement)):
+            return {'ELEMENT': value.id, 'element-6066-11e4-a52e-4f735466cecf': value.id}
+        elif isinstance(value, list):
+            return list(self._wrap_value(item) for item in value)
+        else:
+            return value

@@ -17,6 +17,7 @@
 
 """The WebDriver implementation."""
 
+from abc import ABCMeta
 import base64
 import copy
 from contextlib import contextmanager
@@ -36,10 +37,8 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         NoSuchCookieException,
                                         UnknownMethodException)
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
-
 from selenium.webdriver.common.timeouts import Timeouts
-
+from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
 
 try:
@@ -115,7 +114,17 @@ def get_remote_connection(capabilities, command_executor, keep_alive):
     return handler(command_executor, keep_alive=keep_alive)
 
 
-class WebDriver(object):
+class BaseWebDriver(object):
+    """
+    Abstract Base Class for all Webdriver subtypes.
+    ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
+    will succeed.
+    """
+    __metaclass__ = ABCMeta
+    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove all Python 2 metaclass declarations.
+
+
+class WebDriver(BaseWebDriver):
     """
     Controls a browser by sending commands to a remote server.
     This server is expected to be running the WebDriver wire protocol
@@ -162,7 +171,7 @@ class WebDriver(object):
             else:
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
+        if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
