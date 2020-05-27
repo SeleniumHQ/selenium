@@ -118,9 +118,7 @@ public class MutableCapabilities implements Capabilities {
       LoggingPreferences prefs = new LoggingPreferences();
       @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;
 
-      for (String logType : prefsMap.keySet()) {
-        prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
-      }
+      prefsMap.forEach((pKey, pValue) -> prefs.enable(pKey, LogLevelMapping.toLevel(pValue)));
       caps.put(key, prefs);
       return;
     }
