@@ -102,6 +102,6 @@ public class EdgeHtmlDriver extends RemoteWebDriver {
   }
 
   public EdgeHtmlDriver(EdgeHtmlDriverService service, EdgeHtmlOptions options) {
-    super(new DriverCommandExecutor(new EdgeHtmlDriverService.Builder().build()), Require.nonNull("Driver options", options));
+    super(new DriverCommandExecutor(service), Require.nonNull("Driver options", options));
   }
 }
