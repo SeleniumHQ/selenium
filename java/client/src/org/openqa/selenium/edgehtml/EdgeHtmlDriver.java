@@ -18,7 +18,6 @@ package org.openqa.selenium.edgehtml;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
@@ -95,14 +94,14 @@ public class EdgeHtmlDriver extends RemoteWebDriver {
   public EdgeHtmlDriver() { this(new EdgeHtmlOptions()); }
 
   public EdgeHtmlDriver(EdgeHtmlOptions options) {
-    super(toExecutor(options), options);
+    this(new EdgeHtmlDriverService.Builder().build(), options);
   }
 
-  private static CommandExecutor toExecutor(EdgeHtmlOptions options) {
-    Require.nonNull("Driver options", options);
+  public EdgeHtmlDriver(EdgeHtmlDriverService service) {
+    this(service, new EdgeHtmlOptions());
+  }
 
-    EdgeHtmlDriverService.Builder builder = new EdgeHtmlDriverService.Builder();
-
-    return new DriverCommandExecutor(builder.build());
+  public EdgeHtmlDriver(EdgeHtmlDriverService service, EdgeHtmlOptions options) {
+    super(new DriverCommandExecutor(service), Require.nonNull("Driver options", options));
   }
 }

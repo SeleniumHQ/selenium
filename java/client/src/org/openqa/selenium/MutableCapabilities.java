@@ -21,7 +21,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,9 +33,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MutableCapabilities implements Capabilities, Serializable {
-
-  private static final long serialVersionUID = -112816287184979465L;
+public class MutableCapabilities implements Capabilities {
 
   private static final Set<String> OPTION_KEYS;
   static {
@@ -121,9 +118,7 @@ public class MutableCapabilities implements Capabilities, Serializable {
       LoggingPreferences prefs = new LoggingPreferences();
       @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;
 
-      for (String logType : prefsMap.keySet()) {
-        prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
-      }
+      prefsMap.forEach((pKey, pValue) -> prefs.enable(pKey, LogLevelMapping.toLevel(pValue)));
       caps.put(key, prefs);
       return;
     }
