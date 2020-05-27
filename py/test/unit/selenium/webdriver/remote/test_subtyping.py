@@ -29,7 +29,7 @@ def test_web_element_not_subclassed():
 
     # Test that non registered class instance is not instance of Remote WebElement
     my_web_element = MyWebElement('parent', '1')
-    assert not instance(my_web_element, WebElement)
+    assert not isinstance(my_web_element, WebElement)
 
     # Register the class as a subtype of WebElement
     WebElement.register('MyWebElement')
