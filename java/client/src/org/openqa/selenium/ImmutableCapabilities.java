@@ -19,12 +19,9 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.internal.Require;
 
-import java.io.Serializable;
 import java.util.Map;
 
-public class ImmutableCapabilities implements Capabilities, Serializable {
-
-  private static final long serialVersionUID = 665766108972704060L;
+public class ImmutableCapabilities implements Capabilities {
 
   private MutableCapabilities delegate = new MutableCapabilities();
 

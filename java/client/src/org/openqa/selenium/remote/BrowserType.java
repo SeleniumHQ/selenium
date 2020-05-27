@@ -29,7 +29,7 @@ public interface BrowserType {
   /**
    * @deprecated Use {@link #OPERA}
    */
-  @Deprecated(since = "4.0", forRemoval = true)
+  @Deprecated
   String OPERA_BLINK = "operablink";
   String OPERA = "opera";
   String EDGE = "MicrosoftEdge";
