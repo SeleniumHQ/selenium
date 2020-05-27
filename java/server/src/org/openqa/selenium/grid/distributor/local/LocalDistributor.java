@@ -298,16 +298,26 @@ public class LocalDistributor extends Distributor {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<Host> existing = hosts.stream()
+      Optional<Host> existingByNodeId = hosts.stream()
           .filter(host -> host.getId().equals(status.getNodeId()))
           .findFirst();
 
-      if (existing.isPresent()) {
+      if (existingByNodeId.isPresent()) {
         // Modify the state
         LOG.fine("Modifying existing state");
-        existing.get().update(status);
+        existingByNodeId.get().update(status);
       } else {
-        // No match made. Add a new host.
+        Optional<Host> existingByUri = hosts.stream()
+          .filter(host -> host.asSummary().getUri().equals(status.getUri()))
+          .findFirst();
+        // There is a URI match, probably means a node was restarted. We need to remove
+        // the previous one so we add the new request.
+        existingByUri.ifPresent(host -> {
+          LOG.fine("Removing old node, a new one is registering with the same URI");
+          remove(host.getId());
+        });
+
+        // Add a new host.
         LOG.info("Creating a new remote node for " + status.getUri());
         Node node = new RemoteNode(
             tracer,

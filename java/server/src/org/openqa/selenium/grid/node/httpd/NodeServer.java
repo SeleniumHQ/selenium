@@ -122,7 +122,7 @@ public class NodeServer extends TemplateGridCommand {
     bus.addListener(NODE_ADDED, event -> {
       UUID nodeId = event.getData(UUID.class);
       if (node.getId().equals(nodeId)) {
-        LOG.info("Node has been registered");
+        LOG.info("Node has been added");
       }
     });
 
