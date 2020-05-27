@@ -21,7 +21,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 
@@ -101,19 +100,19 @@ public class EdgeDriver extends ChromiumDriver {
   public EdgeDriver() { this(new EdgeOptions()); }
 
   public EdgeDriver(EdgeOptions options) {
-    super(toExecutor(options), options, EdgeOptions.CAPABILITY);
+    this(new EdgeDriverService.Builder().build(), options);
+  }
+
+  public EdgeDriver(EdgeDriverService service) {
+    this(service, new EdgeOptions());
+  }
+
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
+    super(new ChromiumDriverCommandExecutor("ms", service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
   }
 
   @Deprecated
   public EdgeDriver(Capabilities capabilities) {
-    super(toExecutor(new EdgeOptions()), capabilities, EdgeOptions.CAPABILITY);
-  }
-
-  private static CommandExecutor toExecutor(EdgeOptions options) {
-    Require.nonNull("Driver options", options);
-
-    EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
-
-    return new ChromiumDriverCommandExecutor("ms", builder.build());
+    this(new EdgeDriverService.Builder().build(), new EdgeOptions().merge(capabilities));
   }
 }
