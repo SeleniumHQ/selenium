@@ -105,6 +105,7 @@ To list all available targets, you can append the `-T` flag:
 * `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE). 
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
+* [Bazel](https://docs.bazel.build/versions/master/install.html)
 * [Python](https://www.python.org/)
 * `python` on the PATH
 * [The Requests Library](http://python-requests.org) for Python: `pip install requests`
