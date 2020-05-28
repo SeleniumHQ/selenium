@@ -75,7 +75,7 @@ module Selenium
         #
 
         def initialize(profile: nil, encoded_extensions: nil, **opts)
-          super(opts)
+          super(**opts)
 
           @profile = profile
           @options[:encoded_extensions] = encoded_extensions if encoded_extensions
