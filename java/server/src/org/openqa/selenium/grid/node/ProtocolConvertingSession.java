@@ -30,6 +30,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
@@ -62,7 +64,10 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
   @Override
   public HttpResponse execute(HttpRequest req) {
     String host = "host";
-    req.removeHeader(host);
+    StreamSupport.stream(req.getHeaderNames().spliterator(), true)
+      .filter(host::equalsIgnoreCase)
+      .collect(Collectors.toList())
+      .forEach(req::removeHeader);
     req.addHeader(host, String.format("%s:%s", getUri().getHost(), getUri().getPort()));
     HttpResponse res = handler.execute(req);
     if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
