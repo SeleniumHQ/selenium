@@ -21,6 +21,7 @@ import os
 import pkgutil
 import warnings
 import zipfile
+from abc import ABCMeta
 from io import BytesIO
 
 from selenium.common.exceptions import WebDriverException
@@ -47,7 +48,15 @@ getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
-class WebElement(object):
+class BaseWebElement(object):
+    """
+    Abstract Base Class for WebElement.
+    ABC's will allow custom types to be registered as a WebElement to pass type checks.
+    """
+    __metaclass__ = ABCMeta
+
+
+class WebElement(BaseWebElement):
     """Represents a DOM element.
 
     Generally, all interesting operations that interact with a document will be
@@ -138,18 +147,18 @@ class WebElement(object):
 
         """
 
-        attributeValue = ''
+        attribute_value = ''
         if self._w3c:
-            attributeValue = self.parent.execute_script(
+            attribute_value = self.parent.execute_script(
                 "return (%s).apply(null, arguments);" % getAttribute_js,
                 self, name)
         else:
             resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
-            attributeValue = resp.get('value')
-            if attributeValue is not None:
-                if name != 'value' and attributeValue.lower() in ('true', 'false'):
-                    attributeValue = attributeValue.lower()
-        return attributeValue
+            attribute_value = resp.get('value')
+            if attribute_value is not None:
+                if name != 'value' and attribute_value.lower() in ('true', 'false'):
+                    attribute_value = attribute_value.lower()
+        return attribute_value
 
     def is_selected(self):
         """Returns whether the element is selected.
