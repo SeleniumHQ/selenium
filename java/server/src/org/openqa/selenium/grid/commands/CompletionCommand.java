@@ -94,11 +94,11 @@ public class CompletionCommand implements CliCommand {
 
       switch (commander.getParsedCommand()) {
         case "zsh":
-          outputZshCompletions(System.out);
+          outputZshCompletions(out);
           break;
 
         default:
-          System.err.println("Unrecognised shell: " + commander.getParsedCommand());
+          err.println("Unrecognised shell: " + commander.getParsedCommand());
           System.exit(1);
           break;
       }

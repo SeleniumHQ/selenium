@@ -150,6 +150,28 @@ public class AddingNodesTest {
   }
 
   @Test
+  public void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents() throws URISyntaxException {
+    URI sessionUri = new URI("http://example:1234");
+    Node firstNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+      .build();
+    Node secondNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+      .build();
+    handler.addHandler(firstNode);
+    handler.addHandler(secondNode);
+
+    bus.fire(new NodeStatusEvent(firstNode.getStatus()));
+    bus.fire(new NodeStatusEvent(secondNode.getStatus()));
+
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
+    Set<DistributorStatus.NodeSummary> nodes = distributor.getStatus().getNodes();
+
+    assertEquals(1, nodes.size());
+  }
+
+  @Test
   public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");

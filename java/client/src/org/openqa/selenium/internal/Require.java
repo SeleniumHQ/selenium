@@ -98,7 +98,7 @@ public final class Require {
       return arg;
     }
 
-    public T instanceOf(Class cls) {
+    public T instanceOf(Class<?> cls) {
       if (arg == null) {
         throw new IllegalArgumentException(argName + " must be set");
       }
@@ -249,7 +249,7 @@ public final class Require {
       return state;
     }
 
-    public T instanceOf(Class cls) {
+    public T instanceOf(Class<?> cls) {
       if (state == null) {
         throw new IllegalStateException(name + " must be set");
       }

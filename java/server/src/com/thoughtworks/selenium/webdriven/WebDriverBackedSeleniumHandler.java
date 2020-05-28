@@ -79,7 +79,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
         PROCESSORS.remove(session.getId());
       }
     };
-    sessions.addListener(listener);
+    this.sessions.addListener(listener);
 
     this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory(tracer)).create();
   }
