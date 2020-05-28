@@ -21,3 +21,8 @@ alias(
     name = "calcdeps",
     actual = "//javascript/atoms:deps",
 )
+
+alias(
+    name = "selenium-server-standalone",
+    actual = "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar"
+)
