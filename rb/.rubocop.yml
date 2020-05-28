@@ -8,16 +8,13 @@ AllCops:
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Style/BracesAroundHashParameters:
-  EnforcedStyle: context_dependent
-
 Style/BlockDelimiters:
   EnforcedStyle: braces_for_chaining
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Enabled: false
 
 Style/RegexpLiteral:
@@ -36,7 +33,7 @@ Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   AllowedNames:
     - x
     - y
@@ -72,7 +69,7 @@ Metrics/AbcSize:
     - 'lib/selenium/webdriver/remote/http/curb.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 130
   IgnoredPatterns:
       - '\s+# rubocop'
@@ -145,3 +142,33 @@ RSpec/InstanceVariable:
 
 RSpec/DescribedClass:
   EnforcedStyle: explicit
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Style/ExponentialNotation:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Style/SlicingWithRange:
+  Enabled: true

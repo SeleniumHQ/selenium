@@ -27,6 +27,7 @@ module Selenium
           Class.new(WebDriver::Driver) do
             include HasNetworkConnection
             attr_reader :bridge
+
             def initialize(bridge)
               @bridge = bridge
             end
