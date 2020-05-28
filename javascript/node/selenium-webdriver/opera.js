@@ -72,15 +72,12 @@
 
 'use strict';
 
-const fs = require('fs');
-
 const http = require('./http'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
     promise = require('./lib/promise'),
     Symbols = require('./lib/symbols'),
     webdriver = require('./lib/webdriver'),
-    portprober = require('./net/portprober'),
     remote = require('./remote');
 
 
