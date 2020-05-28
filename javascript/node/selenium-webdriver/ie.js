@@ -28,12 +28,9 @@
 'use strict';
 
 const fs = require('fs');
-const util = require('util');
-
 const http = require('./http');
 const io = require('./io');
 const portprober = require('./net/portprober');
-const promise = require('./lib/promise');
 const remote = require('./remote');
 const webdriver = require('./lib/webdriver');
 const {Browser, Capabilities, Capability} = require('./lib/capabilities');
