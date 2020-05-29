@@ -24,11 +24,12 @@ import zipfile
 from abc import ABCMeta
 from io import BytesIO
 
-from selenium.common.compat import add_metaclass
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
+
+from six import add_metaclass
 
 # Python 3 imports
 try:

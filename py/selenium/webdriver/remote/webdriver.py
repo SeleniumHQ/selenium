@@ -32,7 +32,6 @@ from .remote_connection import RemoteConnection
 from .switch_to import SwitchTo
 from .webelement import WebElement
 
-from selenium.common.compat import add_metaclass
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
@@ -41,6 +40,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
+
+from six import add_metaclass
 
 try:
     str = basestring

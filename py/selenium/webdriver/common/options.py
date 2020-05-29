@@ -17,7 +17,7 @@
 
 from abc import ABCMeta, abstractmethod
 
-from selenium.common.compat import add_metaclass
+from six import add_metaclass
 
 
 @add_metaclass(ABCMeta)

@@ -17,8 +17,8 @@
 
 from abc import ABCMeta, abstractmethod
 import os
-from selenium.common.compat import add_metaclass
 from selenium.webdriver.common.utils import keys_to_typing
+from six import add_metaclass
 
 
 @add_metaclass(ABCMeta)
