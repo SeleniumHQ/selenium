@@ -172,7 +172,7 @@ let's start there.  Working on the JavaScript is easy.  First of all,
 start the development server:
 
 ```sh
-./go debug-server
+bazel run debug-server
 ```
 
 Now, navigate to
