@@ -17,12 +17,14 @@
 
 from abc import ABCMeta, abstractmethod
 
+from selenium.common.compat import add_metaclass
 
+
+@add_metaclass(ABCMeta)
 class BaseOptions(object):
     """
     Base class for individual browser options
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self):
         self._caps = self.default_capabilities

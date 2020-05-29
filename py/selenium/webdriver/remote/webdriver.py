@@ -32,6 +32,7 @@ from .remote_connection import RemoteConnection
 from .switch_to import SwitchTo
 from .webelement import WebElement
 
+from selenium.common.compat import add_metaclass
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
@@ -114,14 +115,14 @@ def get_remote_connection(capabilities, command_executor, keep_alive):
     return handler(command_executor, keep_alive=keep_alive)
 
 
+@add_metaclass(ABCMeta)
 class BaseWebDriver(object):
     """
     Abstract Base Class for all Webdriver subtypes.
     ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
     will succeed.
     """
-    __metaclass__ = ABCMeta
-    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove all Python 2 metaclass declarations.
+    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove metaclass decorator.
 
 
 class WebDriver(BaseWebDriver):

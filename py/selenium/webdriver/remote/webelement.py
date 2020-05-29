@@ -24,6 +24,7 @@ import zipfile
 from abc import ABCMeta
 from io import BytesIO
 
+from selenium.common.compat import add_metaclass
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
@@ -48,12 +49,13 @@ getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
+@add_metaclass(ABCMeta)
 class BaseWebElement(object):
     """
     Abstract Base Class for WebElement.
     ABC's will allow custom types to be registered as a WebElement to pass type checks.
     """
-    __metaclass__ = ABCMeta
+    pass
 
 
 class WebElement(BaseWebElement):
