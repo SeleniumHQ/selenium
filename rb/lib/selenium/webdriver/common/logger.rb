@@ -40,7 +40,7 @@ module Selenium
                      :close,
                      :debug, :debug?,
                      :info, :info?,
-                     :warn, :warn?,
+                     :warn?,
                      :error, :error?,
                      :fatal, :fatal?,
                      :level, :level=

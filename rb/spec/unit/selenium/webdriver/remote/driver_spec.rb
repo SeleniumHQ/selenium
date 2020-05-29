@@ -132,7 +132,7 @@ module Selenium
           expect_request(body: {capabilities: {firstMatch: [browserName: 'chrome', "goog:chromeOptions": opts]}})
 
           expect {
-            expect { Driver.new(options: Chrome::Options.new(opts)) }.to have_deprecated(:browser_options)
+            expect { Driver.new(options: Chrome::Options.new(**opts)) }.to have_deprecated(:browser_options)
           }.not_to raise_exception
         end
 
@@ -142,7 +142,7 @@ module Selenium
 
           expect {
             expect {
-              Driver.new(desired_capabilities: :chrome, options: Chrome::Options.new(opts))
+              Driver.new(desired_capabilities: :chrome, options: Chrome::Options.new(**opts))
             }.to have_deprecated(%i[browser_options desired_capabilities])
           }.not_to raise_exception
         end

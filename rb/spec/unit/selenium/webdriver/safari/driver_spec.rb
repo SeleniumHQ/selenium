@@ -126,7 +126,7 @@ module Selenium
                                                             "safari:automaticInspection": true]}})
 
           expect {
-            expect { Driver.new(options: Options.new(opts)) }.to have_deprecated(:browser_options)
+            expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
           }.not_to raise_exception
         end
 
@@ -140,7 +140,7 @@ module Selenium
 
           expect {
             expect {
-              Driver.new(options: Options.new(browser_opts), desired_capabilities: caps)
+              Driver.new(options: Options.new(**browser_opts), desired_capabilities: caps)
             }.to have_deprecated(%i[browser_options desired_capabilities])
           }.not_to raise_exception
         end
@@ -219,7 +219,7 @@ module Selenium
               expect_request(body: {capabilities: {firstMatch: [browserName: "safari",
                                                                 'safari:automaticInspection': true]}})
 
-              expect { Driver.new(capabilities: [Options.new(browser_opts)]) }.not_to raise_exception
+              expect { Driver.new(capabilities: [Options.new(**browser_opts)]) }.not_to raise_exception
             end
 
             it 'with Capabilities instance' do

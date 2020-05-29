@@ -1,3 +1,33 @@
+Selenium 4.0 Alpha 6
+
+* Add Abstract Base Class to WebElement and WebDriver #7127 (#8348)
+* Copy `acceptInsecureCerts` to Options for Firefox. Fixes #8261
+* Correct check on DEFAULT_EXECUTABLE_PATH
+* Use ProxyManager instead of PoolManager in remote_connection (#8297)
+* Check offsets are cast to int. Fixes #7639
+* Fixes an issue where IE server port is set '0' by default (#8294)
+* Favor Python3 constructs and Python 2.7 compatibility (#8290)
+* Remove Unused Arguments from Firefox
+* Fixup Firefox deprecations
+* Delete support for Blackberry Driver
+* Delete PhantomJS capabilities
+* Delete Android Driver support
+* Remove python crazyfun references
+* Enable and update Safari tests
+* Use same port in remote executor and service (#8255)
+* Update tests and docs to not use deprecated methods
+* mark various tests as failing in Firefox
+* Use callback functions instead callable objects as expected conditions (#7765)
+* Fix error in webelemet not created, verifing if is str or dict. (#3481)
+* verify command_executor ssl certificate by default (#6536)
+* Correct documentation for ChromiumDriver
+* Deprecating find_element(s)_* calls in event firing webdriver
+* Fixing path to selenium server for remote tests
+* Fixing relative locator constructor
+* Changing environment variable we use to check if the tests are running on travis
+* Fixing HSL to RGBa color converter
+* Deprecate use of AppCache APIs
+
 Selenium 4.0 Alpha 5
 
 * Correct service usage in IE Binding. Fixes  #7749
@@ -19,7 +49,7 @@ Selenium 4.0 Alpha 5
 * Build python code with Bazel
 * Parse python docstring example as code snippet
 * correct python_requires in setup
-*  Fix grammar typo in exceptions.py (#7657) 
+*  Fix grammar typo in exceptions.py (#7657)
 * Fixed references to chromedriver website
 
 Selenium 4.0 Alpha 3
@@ -750,4 +780,3 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
-

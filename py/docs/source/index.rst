@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.0.0a5.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.0.0a6.tar.gz), unarchive it, and run::
 
     python setup.py install
 

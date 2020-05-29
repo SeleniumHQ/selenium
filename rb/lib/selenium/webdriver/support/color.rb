@@ -72,7 +72,7 @@ module Selenium
           end
         end
 
-        def self.from_hsl(h, s, l, a) # rubocop:disable Naming/UncommunicativeMethodParamName
+        def self.from_hsl(h, s, l, a) # rubocop:disable Naming/MethodParameterName
           h = Float(h) / 360
           s = Float(s) / 100
           l = Float(l) / 100
@@ -138,7 +138,7 @@ module Selenium
         end
 
         def hex
-          format '#%02x%02x%02x', red, green, blue
+          format '#%<red>02x%<green>02x%<blue>02x', red: red, green: green, blue: blue
         end
       end # Color
     end # Support
