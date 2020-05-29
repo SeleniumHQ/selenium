@@ -6,15 +6,15 @@
 <title>
   Class: Selenium::WebDriver::Manager
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::Manager";
   relpath = '../../';
 </script>
@@ -300,8 +300,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Create a new top-level browsing context <a
-href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-window</a>.</p>
+<p>Create a new top-level browsing context <a href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-window</a>.</p>
 </div></span>
   
 </li>
@@ -373,7 +372,7 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
-<p>Returns a new instance of Manager</p>
+<p>Returns a new instance of Manager.</p>
 
 
   </div>
@@ -515,6 +514,22 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
         </li>
       
         <li>
+          <span class="name">:same_site</span>
+          <span class="type">(<tt>String</tt>)</span>
+          <span class="default">
+            
+              &mdash; default:
+              <tt>Strict or Lax</tt>
+            
+          </span>
+          
+            &mdash; <div class='inline'>
+<p>currently supported only in chrome 80+ versions</p>
+</div>
+          
+        </li>
+      
+        <li>
           <span class="name">:expires</span>
           <span class="type">(<tt>Time</tt>, <tt>DateTime</tt>, <tt>Numeric</tt>, <tt>nil</tt>)</span>
           <span class="default">
@@ -558,7 +573,6 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
       <pre class="lines">
 
 
-44
 45
 46
 47
@@ -569,10 +583,14 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
 52
 53
 54
-55</pre>
+55
+56
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_cookie'>add_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>name is required</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span>
@@ -580,6 +598,9 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
 
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:path</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/</span><span class='tstring_end'>&#39;</span></span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:secure</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='kw'>false</span>
+
+  <span class='id identifier rubyid_same_site'>same_site</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:same_site</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:sameSite</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_same_site'>same_site</span> <span class='kw'>if</span> <span class='id identifier rubyid_same_site'>same_site</span>
 
   <span class='id identifier rubyid_obj'>obj</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:expires</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expiry</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_seconds_from'>seconds_from</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_obj'>obj</span>
@@ -635,12 +656,12 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
       <pre class="lines">
 
 
-92
-93
-94</pre>
+96
+97
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 96</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_cookies'>all_cookies</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_cookies'>cookies</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_cookie'>cookie</span><span class='op'>|</span> <span class='id identifier rubyid_convert_cookie'>convert_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -714,12 +735,12 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
       <pre class="lines">
 
 
-64
-65
-66</pre>
+68
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookie_named'>cookie_named</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_convert_cookie'>convert_cookie</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_cookie'>cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -755,12 +776,12 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
       <pre class="lines">
 
 
-82
-83
-84</pre>
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
@@ -816,12 +837,12 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
       <pre class="lines">
 
 
-74
-75
-76</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_cookie'>delete_cookie</span> <span class='id identifier rubyid_name'>name</span>
@@ -855,12 +876,12 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
       <pre class="lines">
 
 
-104
-105
-106</pre>
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_logs'>logs</span>
   <span class='ivar'>@logs</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Logs.html" title="Selenium::WebDriver::Logs (class)">Logs</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Logs.html#initialize-instance_method" title="Selenium::WebDriver::Logs#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -882,8 +903,7 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Create a new top-level browsing context <a
-href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-window</a></p>
+<p>Create a new top-level browsing context <a href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-window</a></p>
 
 
   </div>
@@ -905,9 +925,7 @@ href="https://w3c.github.io/webdriver/#new-window">w3c.github.io/webdriver/#new-
       
         &mdash;
         <div class='inline'>
-<p>Supports two values: :tab and :window. Use :tab if you&#39;d like the new
-window to share an OS-level window with the current browsing context. Use
-:window otherwise</p>
+<p>Supports two values: :tab and :window. Use :tab if you&#39;d like the new window to share an OS-level window with the current browsing context. Use :window otherwise</p>
 </div>
       
     </li>
@@ -939,10 +957,6 @@ window to share an OS-level window with the current browsing context. Use
       <pre class="lines">
 
 
-117
-118
-119
-120
 121
 122
 123
@@ -952,10 +966,14 @@ window to share an OS-level window with the current browsing context. Use
 127
 128
 129
-130</pre>
+130
+131
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 117</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_new_window'>new_window</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:tab</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_type'>type</span>
@@ -991,12 +1009,12 @@ window to share an OS-level window with the current browsing context. Use
       <pre class="lines">
 
 
-96
-97
-98</pre>
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeouts'>timeouts</span>
   <span class='ivar'>@timeouts</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Timeouts.html" title="Selenium::WebDriver::Timeouts (class)">Timeouts</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Timeouts.html#initialize-instance_method" title="Selenium::WebDriver::Timeouts#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -1030,12 +1048,12 @@ window to share an OS-level window with the current browsing context. Use
       <pre class="lines">
 
 
-136
-137
-138</pre>
+140
+141
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/manager.rb', line 140</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span>
   <span class='ivar'>@window</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Window.html" title="Selenium::WebDriver::Window (class)">Window</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Window.html#initialize-instance_method" title="Selenium::WebDriver::Window#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -1050,9 +1068,9 @@ window to share an OS-level window with the current browsing context. Use
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:39 2019 by
+  Generated on Fri May 29 06:55:43 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

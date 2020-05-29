@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: Selenium::WebDriver::DevTools::DOMDebugger
+  
+    &mdash; Documentation by YARD 0.9.25
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "Selenium::WebDriver::DevTools::DOMDebugger";
+  relpath = '../../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../../_index.html">Index (D)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../DevTools.html" title="Selenium::WebDriver::DevTools (class)">DevTools</a></span></span>
+     &raquo; 
+    <span class="title">DOMDebugger</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: Selenium::WebDriver::DevTools::DOMDebugger
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::DevTools::DOMDebugger</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>build/rb/lib/selenium/webdriver/devtools/domdebugger.rb</dd>
+  </dl>
+  
+</div>
+
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_event_listeners-instance_method" title="#get_event_listeners (instance method)">#<strong>get_event_listeners</strong>(object_id:, depth: nil, pierce: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(devtools)  &#x21d2; DOMDebugger </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of DOMDebugger.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#on-instance_method" title="#on (instance method)">#<strong>on</strong>(event, &amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_dombreakpoint-instance_method" title="#remove_dombreakpoint (instance method)">#<strong>remove_dombreakpoint</strong>(node_id:, type:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_event_listener_breakpoint-instance_method" title="#remove_event_listener_breakpoint (instance method)">#<strong>remove_event_listener_breakpoint</strong>(event_name:, target_name: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_instrumentation_breakpoint-instance_method" title="#remove_instrumentation_breakpoint (instance method)">#<strong>remove_instrumentation_breakpoint</strong>(event_name:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_xhrbreakpoint-instance_method" title="#remove_xhrbreakpoint (instance method)">#<strong>remove_xhrbreakpoint</strong>(url:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_dombreakpoint-instance_method" title="#set_dombreakpoint (instance method)">#<strong>set_dombreakpoint</strong>(node_id:, type:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_event_listener_breakpoint-instance_method" title="#set_event_listener_breakpoint (instance method)">#<strong>set_event_listener_breakpoint</strong>(event_name:, target_name: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_instrumentation_breakpoint-instance_method" title="#set_instrumentation_breakpoint (instance method)">#<strong>set_instrumentation_breakpoint</strong>(event_name:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_xhrbreakpoint-instance_method" title="#set_xhrbreakpoint (instance method)">#<strong>set_xhrbreakpoint</strong>(url:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(devtools)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DevTools::DOMDebugger (class)">DOMDebugger</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of DOMDebugger.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_devtools'>devtools</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span> <span class='op'>=</span> <span class='id identifier rubyid_devtools'>devtools</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="get_event_listeners-instance_method">
+  
+    #<strong>get_event_listeners</strong>(object_id:, depth: nil, pierce: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41
+42
+43
+44</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_event_listeners'>get_event_listeners</span><span class='lparen'>(</span><span class='label'>object_id:</span><span class='comma'>,</span> <span class='label'>depth:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>pierce:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.getEventListeners</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='comma'>,</span>
+                     <span class='label'>depth:</span> <span class='id identifier rubyid_depth'>depth</span><span class='comma'>,</span>
+                     <span class='label'>pierce:</span> <span class='id identifier rubyid_pierce'>pierce</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="on-instance_method">
+  
+    #<strong>on</strong>(event, &amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+34
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 34</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_on'>on</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_event'>event</span> <span class='op'>=</span> <span class='const'>EVENTS</span><span class='lbracket'>[</span><span class='id identifier rubyid_event'>event</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_callbacks'>callbacks</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>DOMDebugger.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_event'>event</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_block'>block</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_dombreakpoint-instance_method">
+  
+    #<strong>remove_dombreakpoint</strong>(node_id:, type:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48
+49
+50</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_dombreakpoint'>remove_dombreakpoint</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>type:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.removeDOMBreakpoint</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_event_listener_breakpoint-instance_method">
+  
+    #<strong>remove_event_listener_breakpoint</strong>(event_name:, target_name: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+52
+53
+54
+55
+56</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 52</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_event_listener_breakpoint'>remove_event_listener_breakpoint</span><span class='lparen'>(</span><span class='label'>event_name:</span><span class='comma'>,</span> <span class='label'>target_name:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.removeEventListenerBreakpoint</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>eventName:</span> <span class='id identifier rubyid_event_name'>event_name</span><span class='comma'>,</span>
+                     <span class='label'>targetName:</span> <span class='id identifier rubyid_target_name'>target_name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_instrumentation_breakpoint-instance_method">
+  
+    #<strong>remove_instrumentation_breakpoint</strong>(event_name:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+58
+59
+60
+61</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 58</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_instrumentation_breakpoint'>remove_instrumentation_breakpoint</span><span class='lparen'>(</span><span class='label'>event_name:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.removeInstrumentationBreakpoint</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>eventName:</span> <span class='id identifier rubyid_event_name'>event_name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_xhrbreakpoint-instance_method">
+  
+    #<strong>remove_xhrbreakpoint</strong>(url:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+63
+64
+65
+66</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 63</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_xhrbreakpoint'>remove_xhrbreakpoint</span><span class='lparen'>(</span><span class='label'>url:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.removeXHRBreakpoint</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_dombreakpoint-instance_method">
+  
+    #<strong>set_dombreakpoint</strong>(node_id:, type:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+68
+69
+70
+71
+72</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 68</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_dombreakpoint'>set_dombreakpoint</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>type:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.setDOMBreakpoint</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_event_listener_breakpoint-instance_method">
+  
+    #<strong>set_event_listener_breakpoint</strong>(event_name:, target_name: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+74
+75
+76
+77
+78</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 74</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_event_listener_breakpoint'>set_event_listener_breakpoint</span><span class='lparen'>(</span><span class='label'>event_name:</span><span class='comma'>,</span> <span class='label'>target_name:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.setEventListenerBreakpoint</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>eventName:</span> <span class='id identifier rubyid_event_name'>event_name</span><span class='comma'>,</span>
+                     <span class='label'>targetName:</span> <span class='id identifier rubyid_target_name'>target_name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_instrumentation_breakpoint-instance_method">
+  
+    #<strong>set_instrumentation_breakpoint</strong>(event_name:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+80
+81
+82
+83</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 80</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_instrumentation_breakpoint'>set_instrumentation_breakpoint</span><span class='lparen'>(</span><span class='label'>event_name:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.setInstrumentationBreakpoint</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>eventName:</span> <span class='id identifier rubyid_event_name'>event_name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_xhrbreakpoint-instance_method">
+  
+    #<strong>set_xhrbreakpoint</strong>(url:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+85
+86
+87
+88</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 85</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_xhrbreakpoint'>set_xhrbreakpoint</span><span class='lparen'>(</span><span class='label'>url:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOMDebugger.setXHRBreakpoint</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Fri May 29 06:55:45 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.25 (ruby-2.7.0).
+</div>
+
+    </div>
+  </body>
+</html>

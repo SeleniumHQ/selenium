@@ -6,15 +6,15 @@
 <title>
   Class: Selenium::WebDriver::Element
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::Element";
   relpath = '../../';
 </script>
@@ -183,8 +183,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>For Rails 3 - <a
-href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian.com/2010/04/rails-to_json-or-as_json</a>/.</p>
+<p>For Rails 3 - <a href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian.com/2010/04/rails-to_json-or-as_json</a>/.</p>
 </div></span>
   
 </li>
@@ -450,8 +449,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Determine an element&#39;s location on the screen once it has been scrolled
-into view.</p>
+<p>Determine an element&#39;s location on the screen once it has been scrolled into view.</p>
 </div></span>
   
 </li>
@@ -820,8 +818,7 @@ into view.</p>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
-<p>For Rails 3 - <a
-href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian.com/2010/04/rails-to_json-or-as_json</a>/</p>
+<p>For Rails 3 - <a href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian.com/2010/04/rails-to_json-or-as_json</a>/</p>
 
 
   </div>
@@ -866,24 +863,11 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Get the value of a the given attribute of the element. Will return the
-current value, even if this has been modified after the page has been
-loaded. More exactly, this method will return the value of the given
-attribute, unless that attribute is not present, in which case the value of
-the property with the same name is returned. If neither value is set, nil
-is returned. The “style” attribute is converted as best can be to a text
-representation with a trailing semi-colon. The following are deemed to be
-“boolean” attributes, and will return either “true” or “false”:</p>
+<p>Get the value of a the given attribute of the element. Will return the current value, even if this has been modified after the page has been loaded. More exactly, this method will return the value of the given attribute, unless that attribute is not present, in which case the value of the property with the same name is returned. If neither value is set, nil is returned. The “style” attribute is converted as best can be to a text representation with a trailing semi-colon. The following are deemed to be “boolean” attributes, and will return either “true” or “false”:</p>
 
-<p>async, autofocus, autoplay, checked, compact, complete, controls, declare,
-defaultchecked, defaultselected, defer, disabled, draggable, ended,
-formnovalidate, hidden, indeterminate, iscontenteditable, ismap, itemscope,
-loop, multiple, muted, nohref, noresize, noshade, novalidate, nowrap, open,
-paused, pubdate, readonly, required, reversed, scoped, seamless, seeking,
-selected, spellcheck, truespeed, willvalidate</p>
+<p>async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked, defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate, iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade, novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless, seeking, selected, spellcheck, truespeed, willvalidate</p>
 
-<p>Finally, the following commonly mis-capitalized attribute/property names
-are evaluated as expected:</p>
+<p>Finally, the following commonly mis-capitalized attribute/property names are evaluated as expected:</p>
 
 <p>class, readonly</p>
 
@@ -964,15 +948,9 @@ are evaluated as expected:</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>If this element is a text entry element, this will clear the value. Has no
-effect on other elements. Text entry elements are INPUT and TEXTAREA
-elements.</p>
+<p>If this element is a text entry element, this will clear the value. Has no effect on other elements. Text entry elements are INPUT and TEXTAREA elements.</p>
 
-<p>Note that the events fired by this event may not be as you&#39;d expect. 
-In particular, we don&#39;t fire any keyboard or mouse events.  If you want
-to ensure keyboard events are fired, consider using #send_keys with the
-backspace key. To ensure you get a change event, consider following with a
-call to #send_keys with the tab key.</p>
+<p>Note that the events fired by this event may not be as you&#39;d expect.  In particular, we don&#39;t fire any keyboard or mouse events.  If you want to ensure keyboard events are fired, consider using #send_keys with the backspace key. To ensure you get a change event, consider following with a call to #send_keys with the tab key.</p>
 
 
   </div>
@@ -1013,17 +991,9 @@ call to #send_keys with the tab key.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Click this element. If this causes a new page to load, this method will
-attempt to block until the page has loaded.  At this point, you should
-discard all references to this element and any further operations performed
-on this element will raise a StaleElementReferenceError unless you know
-that the element and the page will still be present. If click() causes a
-new page to be loaded via an event or is done by sending a native event
-then the method will <strong>not</strong> wait for it to be loaded and the
-caller should verify that a new page has been loaded.</p>
+<p>Click this element. If this causes a new page to load, this method will attempt to block until the page has loaded.  At this point, you should discard all references to this element and any further operations performed on this element will raise a StaleElementReferenceError unless you know that the element and the page will still be present. If click() causes a new page to be loaded via an event or is done by sending a native event then the method will <strong>not</strong> wait for it to be loaded and the caller should verify that a new page has been loaded.</p>
 
-<p>There are some preconditions for an element to be clicked.  The element
-must be visible and it must have a height and width greater then 0.</p>
+<p>There are some preconditions for an element to be clicked.  The element must be visible and it must have a height and width greater then 0.</p>
 
 <p>Equivalent to:</p>
 
@@ -1106,11 +1076,7 @@ must be visible and it must have a height and width greater then 0.</p>
     
 <p>Get the value of the given CSS property</p>
 
-<p>Note that shorthand CSS properties (e.g. background, font, border,
-border-top, margin, margin-top, padding, padding-top, list-style, outline,
-pause, cue) are not returned, in accordance with the DOM CSS2 specification
-- you should directly access the longhand properties (e.g.
-background-color) to access the desired values.</p>
+<p>Note that shorthand CSS properties (e.g. background, font, border, border-top, margin, margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned, in accordance with the DOM CSS2 specification - you should directly access the longhand properties (e.g. background-color) to access the desired values.</p>
 
 
   </div>
@@ -1380,8 +1346,7 @@ background-color) to access the desired values.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Determine an element&#39;s location on the screen once it has been scrolled
-into view.</p>
+<p>Determine an element&#39;s location on the screen once it has been scrolled into view.</p>
 
 
   </div>
@@ -1435,8 +1400,7 @@ into view.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Get the value of a the given property with the same name of the element. If
-the value is not set, nil is returned.</p>
+<p>Get the value of a the given property with the same name of the element. If the value is not set, nil is returned.</p>
 
 
   </div>
@@ -2013,9 +1977,9 @@ the value is not set, nil is returned.</p>
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:39 2019 by
+  Generated on Fri May 29 06:55:43 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

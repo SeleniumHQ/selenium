@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: Selenium::WebDriver::DevTools::CSS
+  
+    &mdash; Documentation by YARD 0.9.25
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "Selenium::WebDriver::DevTools::CSS";
+  relpath = '../../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../../_index.html">Index (C)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../DevTools.html" title="Selenium::WebDriver::DevTools (class)">DevTools</a></span></span>
+     &raquo; 
+    <span class="title">CSS</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: Selenium::WebDriver::DevTools::CSS
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::DevTools::CSS</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>build/rb/lib/selenium/webdriver/devtools/css.rb</dd>
+  </dl>
+  
+</div>
+
+
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="EVENTS-constant" class="">EVENTS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='label'>fonts_updated:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>fontsUpdated</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>media_query_result_changed:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>mediaQueryResultChanged</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>style_sheet_added:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>styleSheetAdded</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>style_sheet_changed:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>styleSheetChanged</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>style_sheet_removed:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>styleSheetRemoved</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+<span class='rbrace'>}</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_rule-instance_method" title="#add_rule (instance method)">#<strong>add_rule</strong>(style_sheet_id:, rule_text:, location:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#collect_class_names-instance_method" title="#collect_class_names (instance method)">#<strong>collect_class_names</strong>(style_sheet_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#create_style_sheet-instance_method" title="#create_style_sheet (instance method)">#<strong>create_style_sheet</strong>(frame_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#disable-instance_method" title="#disable (instance method)">#<strong>disable</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#enable-instance_method" title="#enable (instance method)">#<strong>enable</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#force_pseudo_state-instance_method" title="#force_pseudo_state (instance method)">#<strong>force_pseudo_state</strong>(node_id:, forced_pseudo_classes:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_background_colors-instance_method" title="#get_background_colors (instance method)">#<strong>get_background_colors</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_computed_style_for_node-instance_method" title="#get_computed_style_for_node (instance method)">#<strong>get_computed_style_for_node</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_inline_styles_for_node-instance_method" title="#get_inline_styles_for_node (instance method)">#<strong>get_inline_styles_for_node</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_matched_styles_for_node-instance_method" title="#get_matched_styles_for_node (instance method)">#<strong>get_matched_styles_for_node</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_media_queries-instance_method" title="#get_media_queries (instance method)">#<strong>get_media_queries</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_platform_fonts_for_node-instance_method" title="#get_platform_fonts_for_node (instance method)">#<strong>get_platform_fonts_for_node</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_style_sheet_text-instance_method" title="#get_style_sheet_text (instance method)">#<strong>get_style_sheet_text</strong>(style_sheet_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(devtools)  &#x21d2; CSS </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of CSS.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#on-instance_method" title="#on (instance method)">#<strong>on</strong>(event, &amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_effective_property_value_for_node-instance_method" title="#set_effective_property_value_for_node (instance method)">#<strong>set_effective_property_value_for_node</strong>(node_id:, property_name:, value:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_keyframe_key-instance_method" title="#set_keyframe_key (instance method)">#<strong>set_keyframe_key</strong>(style_sheet_id:, range:, key_text:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_media_text-instance_method" title="#set_media_text (instance method)">#<strong>set_media_text</strong>(style_sheet_id:, range:, text:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_rule_selector-instance_method" title="#set_rule_selector (instance method)">#<strong>set_rule_selector</strong>(style_sheet_id:, range:, selector:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_style_sheet_text-instance_method" title="#set_style_sheet_text (instance method)">#<strong>set_style_sheet_text</strong>(style_sheet_id:, text:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_style_texts-instance_method" title="#set_style_texts (instance method)">#<strong>set_style_texts</strong>(edits:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#start_rule_usage_tracking-instance_method" title="#start_rule_usage_tracking (instance method)">#<strong>start_rule_usage_tracking</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#stop_rule_usage_tracking-instance_method" title="#stop_rule_usage_tracking (instance method)">#<strong>stop_rule_usage_tracking</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#take_coverage_delta-instance_method" title="#take_coverage_delta (instance method)">#<strong>take_coverage_delta</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(devtools)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DevTools::CSS (class)">CSS</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of CSS.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_devtools'>devtools</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span> <span class='op'>=</span> <span class='id identifier rubyid_devtools'>devtools</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="add_rule-instance_method">
+  
+    #<strong>add_rule</strong>(style_sheet_id:, rule_text:, location:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48
+49
+50
+51</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_rule'>add_rule</span><span class='lparen'>(</span><span class='label'>style_sheet_id:</span><span class='comma'>,</span> <span class='label'>rule_text:</span><span class='comma'>,</span> <span class='label'>location:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.addRule</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>styleSheetId:</span> <span class='id identifier rubyid_style_sheet_id'>style_sheet_id</span><span class='comma'>,</span>
+                     <span class='label'>ruleText:</span> <span class='id identifier rubyid_rule_text'>rule_text</span><span class='comma'>,</span>
+                     <span class='label'>location:</span> <span class='id identifier rubyid_location'>location</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="collect_class_names-instance_method">
+  
+    #<strong>collect_class_names</strong>(style_sheet_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_collect_class_names'>collect_class_names</span><span class='lparen'>(</span><span class='label'>style_sheet_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.collectClassNames</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>styleSheetId:</span> <span class='id identifier rubyid_style_sheet_id'>style_sheet_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="create_style_sheet-instance_method">
+  
+    #<strong>create_style_sheet</strong>(frame_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+58
+59
+60
+61</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 58</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_create_style_sheet'>create_style_sheet</span><span class='lparen'>(</span><span class='label'>frame_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.createStyleSheet</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>frameId:</span> <span class='id identifier rubyid_frame_id'>frame_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="disable-instance_method">
+  
+    #<strong>disable</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 63</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_disable'>disable</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.disable</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="enable-instance_method">
+  
+    #<strong>enable</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 67</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_enable'>enable</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.enable</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="force_pseudo_state-instance_method">
+  
+    #<strong>force_pseudo_state</strong>(node_id:, forced_pseudo_classes:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+71
+72
+73
+74
+75</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 71</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_force_pseudo_state'>force_pseudo_state</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>forced_pseudo_classes:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.forcePseudoState</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>forcedPseudoClasses:</span> <span class='id identifier rubyid_forced_pseudo_classes'>forced_pseudo_classes</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_background_colors-instance_method">
+  
+    #<strong>get_background_colors</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+77
+78
+79
+80</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 77</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_background_colors'>get_background_colors</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.getBackgroundColors</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_computed_style_for_node-instance_method">
+  
+    #<strong>get_computed_style_for_node</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+82
+83
+84
+85</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 82</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_computed_style_for_node'>get_computed_style_for_node</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.getComputedStyleForNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_inline_styles_for_node-instance_method">
+  
+    #<strong>get_inline_styles_for_node</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+87
+88
+89
+90</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 87</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_inline_styles_for_node'>get_inline_styles_for_node</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.getInlineStylesForNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_matched_styles_for_node-instance_method">
+  
+    #<strong>get_matched_styles_for_node</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+92
+93
+94
+95</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 92</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_matched_styles_for_node'>get_matched_styles_for_node</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.getMatchedStylesForNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_media_queries-instance_method">
+  
+    #<strong>get_media_queries</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 97</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_media_queries'>get_media_queries</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.getMediaQueries</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_platform_fonts_for_node-instance_method">
+  
+    #<strong>get_platform_fonts_for_node</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+101
+102
+103
+104</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 101</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_platform_fonts_for_node'>get_platform_fonts_for_node</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.getPlatformFontsForNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_style_sheet_text-instance_method">
+  
+    #<strong>get_style_sheet_text</strong>(style_sheet_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+106
+107
+108
+109</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 106</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_style_sheet_text'>get_style_sheet_text</span><span class='lparen'>(</span><span class='label'>style_sheet_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.getStyleSheetText</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>styleSheetId:</span> <span class='id identifier rubyid_style_sheet_id'>style_sheet_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="on-instance_method">
+  
+    #<strong>on</strong>(event, &amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+41
+42
+43
+44</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 41</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_on'>on</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_event'>event</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#EVENTS-constant" title="Selenium::WebDriver::DevTools::CSS::EVENTS (constant)">EVENTS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_event'>event</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_callbacks'>callbacks</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CSS.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_event'>event</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_block'>block</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_effective_property_value_for_node-instance_method">
+  
+    #<strong>set_effective_property_value_for_node</strong>(node_id:, property_name:, value:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+111
+112
+113
+114
+115
+116</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 111</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_effective_property_value_for_node'>set_effective_property_value_for_node</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>property_name:</span><span class='comma'>,</span> <span class='label'>value:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.setEffectivePropertyValueForNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>propertyName:</span> <span class='id identifier rubyid_property_name'>property_name</span><span class='comma'>,</span>
+                     <span class='label'>value:</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_keyframe_key-instance_method">
+  
+    #<strong>set_keyframe_key</strong>(style_sheet_id:, range:, key_text:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+118
+119
+120
+121
+122
+123</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 118</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_keyframe_key'>set_keyframe_key</span><span class='lparen'>(</span><span class='label'>style_sheet_id:</span><span class='comma'>,</span> <span class='label'>range:</span><span class='comma'>,</span> <span class='label'>key_text:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.setKeyframeKey</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>styleSheetId:</span> <span class='id identifier rubyid_style_sheet_id'>style_sheet_id</span><span class='comma'>,</span>
+                     <span class='label'>range:</span> <span class='id identifier rubyid_range'>range</span><span class='comma'>,</span>
+                     <span class='label'>keyText:</span> <span class='id identifier rubyid_key_text'>key_text</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_media_text-instance_method">
+  
+    #<strong>set_media_text</strong>(style_sheet_id:, range:, text:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+125
+126
+127
+128
+129
+130</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 125</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_media_text'>set_media_text</span><span class='lparen'>(</span><span class='label'>style_sheet_id:</span><span class='comma'>,</span> <span class='label'>range:</span><span class='comma'>,</span> <span class='label'>text:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.setMediaText</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>styleSheetId:</span> <span class='id identifier rubyid_style_sheet_id'>style_sheet_id</span><span class='comma'>,</span>
+                     <span class='label'>range:</span> <span class='id identifier rubyid_range'>range</span><span class='comma'>,</span>
+                     <span class='label'>text:</span> <span class='id identifier rubyid_text'>text</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_rule_selector-instance_method">
+  
+    #<strong>set_rule_selector</strong>(style_sheet_id:, range:, selector:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+132
+133
+134
+135
+136
+137</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 132</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_rule_selector'>set_rule_selector</span><span class='lparen'>(</span><span class='label'>style_sheet_id:</span><span class='comma'>,</span> <span class='label'>range:</span><span class='comma'>,</span> <span class='label'>selector:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.setRuleSelector</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>styleSheetId:</span> <span class='id identifier rubyid_style_sheet_id'>style_sheet_id</span><span class='comma'>,</span>
+                     <span class='label'>range:</span> <span class='id identifier rubyid_range'>range</span><span class='comma'>,</span>
+                     <span class='label'>selector:</span> <span class='id identifier rubyid_selector'>selector</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_style_sheet_text-instance_method">
+  
+    #<strong>set_style_sheet_text</strong>(style_sheet_id:, text:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+139
+140
+141
+142
+143</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 139</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_style_sheet_text'>set_style_sheet_text</span><span class='lparen'>(</span><span class='label'>style_sheet_id:</span><span class='comma'>,</span> <span class='label'>text:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.setStyleSheetText</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>styleSheetId:</span> <span class='id identifier rubyid_style_sheet_id'>style_sheet_id</span><span class='comma'>,</span>
+                     <span class='label'>text:</span> <span class='id identifier rubyid_text'>text</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_style_texts-instance_method">
+  
+    #<strong>set_style_texts</strong>(edits:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+145
+146
+147
+148</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 145</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_style_texts'>set_style_texts</span><span class='lparen'>(</span><span class='label'>edits:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.setStyleTexts</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>edits:</span> <span class='id identifier rubyid_edits'>edits</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="start_rule_usage_tracking-instance_method">
+  
+    #<strong>start_rule_usage_tracking</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+150
+151
+152</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 150</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_start_rule_usage_tracking'>start_rule_usage_tracking</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.startRuleUsageTracking</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="stop_rule_usage_tracking-instance_method">
+  
+    #<strong>stop_rule_usage_tracking</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+154
+155
+156</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 154</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_stop_rule_usage_tracking'>stop_rule_usage_tracking</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.stopRuleUsageTracking</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="take_coverage_delta-instance_method">
+  
+    #<strong>take_coverage_delta</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+158
+159
+160</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 158</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_take_coverage_delta'>take_coverage_delta</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CSS.takeCoverageDelta</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Fri May 29 06:55:42 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.25 (ruby-2.7.0).
+</div>
+
+    </div>
+  </body>
+</html>

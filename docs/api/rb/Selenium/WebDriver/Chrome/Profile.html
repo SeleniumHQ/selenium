@@ -6,15 +6,15 @@
 <title>
   Class: Selenium::WebDriver::Chrome::Profile
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::Chrome::Profile";
   relpath = '../../../';
 </script>
@@ -104,6 +104,10 @@
   
 </div>
 
+<div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="../EdgeChrome/Profile.html" title="Selenium::WebDriver::EdgeChrome::Profile (class)">EdgeChrome::Profile</a></span></p>
+</div>
 
 
 
@@ -326,7 +330,7 @@
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../ProfileHelper.html" title="Selenium::WebDriver::ProfileHelper (module)">ProfileHelper</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../ProfileHelper.html#included-class_method" title="Selenium::WebDriver::ProfileHelper.included (method)">included</a></span>, <span class='object_link'><a href="../ProfileHelper.html#to_json-instance_method" title="Selenium::WebDriver::ProfileHelper#to_json (method)">#to_json</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../ProfileHelper.html#decoded-class_method" title="Selenium::WebDriver::ProfileHelper.decoded (method)">decoded</a></span>, <span class='object_link'><a href="../ProfileHelper.html#encoded-instance_method" title="Selenium::WebDriver::ProfileHelper#encoded (method)">#encoded</a></span>, <span class='object_link'><a href="../ProfileHelper.html#included-class_method" title="Selenium::WebDriver::ProfileHelper.included (method)">included</a></span>, <span class='object_link'><a href="../ProfileHelper.html#to_json-instance_method" title="Selenium::WebDriver::ProfileHelper#to_json (method)">#to_json</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -342,7 +346,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns a new instance of Profile</p>
+<p>Returns a new instance of Profile.</p>
 
 
   </div>
@@ -394,7 +398,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute directory</p>
+<p>Returns the value of attribute directory.</p>
 
 
   </div>
@@ -476,8 +480,7 @@
     
 <p>Set a preference in the profile.</p>
 
-<p>See <a
-href="https://src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc">src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc</a></p>
+<p>See <a href="https://src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc">src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc</a></p>
 
 
   </div>
@@ -631,8 +634,8 @@ href="https://src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc">src.ch
 
   <span class='id identifier rubyid_extensions'>extensions</span><span class='period'>.</span><span class='id identifier rubyid_concat'>concat</span><span class='lparen'>(</span><span class='ivar'>@encoded_extensions</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>directory:</span> <span class='id identifier rubyid_directory'>directory</span> <span class='op'>||</span> <span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rbrace'>}</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:extensions</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_extensions'>extensions</span> <span class='kw'>if</span> <span class='id identifier rubyid_extensions'>extensions</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
+  <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>directory</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_directory'>directory</span> <span class='op'>||</span> <span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>extensions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_extensions'>extensions</span> <span class='kw'>if</span> <span class='id identifier rubyid_extensions'>extensions</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span>
   <span class='id identifier rubyid_opts'>opts</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -685,9 +688,9 @@ href="https://src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc">src.ch
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:39 2019 by
+  Generated on Fri May 29 06:55:43 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

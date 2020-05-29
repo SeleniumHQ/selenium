@@ -6,15 +6,15 @@
 <title>
   Class: Selenium::Server
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::Server";
   relpath = '../';
 </script>
@@ -526,7 +526,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns a new instance of Server</p>
+<p>Returns a new instance of Server.</p>
 
 
   </div>
@@ -684,7 +684,7 @@
   <span class='ivar'>@timeout</span>    <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='comma'>,</span> <span class='int'>30</span><span class='rparen'>)</span>
   <span class='ivar'>@background</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:background</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@log</span>        <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:log</span><span class='rbracket'>]</span>
-
+  <span class='ivar'>@log_file</span>   <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='ivar'>@additional_args</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -952,7 +952,7 @@
             <span class='id identifier rubyid_segment_count'>segment_count</span> <span class='op'>+=</span> <span class='int'>1</span>
 
             <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_segment_count'>segment_count</span> <span class='op'>%</span> <span class='int'>15</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_zero?'>zero?</span>
-              <span class='id identifier rubyid_percent'>percent</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_progress'>progress</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='id identifier rubyid_total'>total</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='int'>100</span>
+              <span class='id identifier rubyid_percent'>percent</span> <span class='op'>=</span> <span class='id identifier rubyid_progress'>progress</span><span class='period'>.</span><span class='id identifier rubyid_fdiv'>fdiv</span><span class='lparen'>(</span><span class='id identifier rubyid_total'>total</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='int'>100</span>
               <span class='id identifier rubyid_print'>print</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="#CL_RESET-constant" title="Selenium::Server::CL_RESET (constant)">CL_RESET</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>Downloading </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_percent'>percent</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='embexpr_end'>}</span><span class='tstring_content'>% (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_progress'>progress</span><span class='embexpr_end'>}</span><span class='tstring_content'> / </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_total'>total</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
               <span class='id identifier rubyid_segment_count'>segment_count</span> <span class='op'>=</span> <span class='int'>0</span>
             <span class='kw'>end</span>
@@ -964,7 +964,7 @@
         <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Server/Error.html" title="Selenium::Server::Error (class)">Error</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_resp'>resp</span><span class='period'>.</span><span class='id identifier rubyid_code'>code</span><span class='embexpr_end'>}</span><span class='tstring_content'> for </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_resp'>resp</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>HTTPSuccess</span>
       <span class='kw'>end</span>
     <span class='kw'>end</span>
-  <span class='kw'>rescue</span>
+  <span class='kw'>rescue</span> <span class='const'>StandardError</span>
     <span class='const'>FileUtils</span><span class='period'>.</span><span class='id identifier rubyid_rm'>rm</span> <span class='id identifier rubyid_download_file_name'>download_file_name</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_exist?'>exist?</span> <span class='id identifier rubyid_download_file_name'>download_file_name</span>
     <span class='id identifier rubyid_raise'>raise</span>
   <span class='kw'>end</span>
@@ -1270,9 +1270,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:37 2019 by
+  Generated on Fri May 29 06:55:41 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

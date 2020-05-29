@@ -6,15 +6,15 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Profile
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::Firefox::Profile";
   relpath = '../../../';
 </script>
@@ -118,22 +118,6 @@
         </dt>
         <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>String</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
-        <dt id="WEBDRIVER_EXTENSION_PATH-constant" class="">WEBDRIVER_EXTENSION_PATH =
-          
-        </dt>
-        <dd><pre class="code"><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../WebDriver.html#root-class_method" title="Selenium::WebDriver.root (method)">root</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/webdriver.xpi</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span></pre></dd>
-      
-        <dt id="WEBDRIVER_PREFS-constant" class="">WEBDRIVER_PREFS =
-          
-        </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='label'>native_events:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_enable_native_events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>untrusted_certs:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_accept_untrusted_certs</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>untrusted_issuer:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_assume_untrusted_issuer</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_firefox_port</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='label'>log_file:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver.log.file</span><span class='tstring_end'>&#39;</span></span>
-<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-      
     </dl>
   
 
@@ -231,35 +215,6 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#native_events=-instance_method" title="#native_events= (instance method)">#<strong>native_events</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-    
-    
-      <span class="note title writeonly">writeonly</span>
-    
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Sets the attribute native_events.</p>
-</div></span>
-  
-</li>
-
-    
-      <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#secure_ssl=-instance_method" title="#secure_ssl= (instance method)">#<strong>secure_ssl</strong>  &#x21d2; Object </a>
     
 
@@ -302,7 +257,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#default_preferences-class_method" title="default_preferences (class method)">.<strong>default_preferences</strong>  &#x21d2; Object </a>
+      <a href="#decoded-class_method" title="decoded (class method)">.<strong>decoded</strong>(json)  &#x21d2; Object </a>
     
 
     
@@ -416,97 +371,8 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Add the extension (directory, .zip or .xpi) at the given path to the
-profile.</p>
+<p>Add the extension (directory, .zip or .xpi) at the given path to the profile.</p>
 </div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#add_webdriver_extension-instance_method" title="#add_webdriver_extension (instance method)">#<strong>add_webdriver_extension</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#assume_untrusted_certificate_issuer=-instance_method" title="#assume_untrusted_certificate_issuer= (instance method)">#<strong>assume_untrusted_certificate_issuer=</strong>(bool)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#assume_untrusted_certificate_issuer%3F-instance_method" title="#assume_untrusted_certificate_issuer? (instance method)">#<strong>assume_untrusted_certificate_issuer?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#encoded-instance_method" title="#encoded (instance method)">#<strong>encoded</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -541,50 +407,6 @@ profile.</p>
   <span class="summary_signature">
     
       <a href="#layout_on_disk-instance_method" title="#layout_on_disk (instance method)">#<strong>layout_on_disk</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#load_no_focus_lib%3F-instance_method" title="#load_no_focus_lib? (instance method)">#<strong>load_no_focus_lib?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#native_events%3F-instance_method" title="#native_events? (instance method)">#<strong>native_events?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -647,28 +469,6 @@ profile.</p>
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#secure_ssl%3F-instance_method" title="#secure_ssl? (instance method)">#<strong>secure_ssl?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -682,7 +482,7 @@ profile.</p>
   
   
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../ProfileHelper.html" title="Selenium::WebDriver::ProfileHelper (module)">ProfileHelper</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../ProfileHelper.html#as_json-instance_method" title="Selenium::WebDriver::ProfileHelper#as_json (method)">#as_json</a></span>, <span class='object_link'><a href="../ProfileHelper.html#included-class_method" title="Selenium::WebDriver::ProfileHelper.included (method)">included</a></span>, <span class='object_link'><a href="../ProfileHelper.html#to_json-instance_method" title="Selenium::WebDriver::ProfileHelper#to_json (method)">#to_json</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../ProfileHelper.html#encoded-instance_method" title="Selenium::WebDriver::ProfileHelper#encoded (method)">#encoded</a></span>, <span class='object_link'><a href="../ProfileHelper.html#included-class_method" title="Selenium::WebDriver::ProfileHelper.included (method)">included</a></span>, <span class='object_link'><a href="../ProfileHelper.html#to_json-instance_method" title="Selenium::WebDriver::ProfileHelper#to_json (method)">#to_json</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -729,34 +529,20 @@ profile.</p>
       <pre class="lines">
 
 
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82</pre>
+60
+61
+62
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_model'>model</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@model</span> <span class='op'>=</span> <span class='id identifier rubyid_verify_model'>verify_model</span><span class='lparen'>(</span><span class='id identifier rubyid_model'>model</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_model_prefs'>model_prefs</span> <span class='op'>=</span> <span class='id identifier rubyid_read_model_prefs'>read_model_prefs</span>
-
-  <span class='kw'>if</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-    <span class='id identifier rubyid_assign_default_preferences'>assign_default_preferences</span>
-  <span class='kw'>else</span>
-    <span class='id identifier rubyid_assign_updated_preferences'>assign_updated_preferences</span><span class='lparen'>(</span><span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
-
+  <span class='ivar'>@additional_prefs</span> <span class='op'>=</span> <span class='id identifier rubyid_read_model_prefs'>read_model_prefs</span>
   <span class='ivar'>@extensions</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -817,12 +603,12 @@ profile.</p>
       <pre class="lines">
 
 
-37
-38
-39</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_load_no_focus_lib='>load_no_focus_lib=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -846,7 +632,7 @@ profile.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute log_file</p>
+<p>Returns the value of attribute log_file.</p>
 
 
   </div>
@@ -860,12 +646,12 @@ profile.</p>
       <pre class="lines">
 
 
-36
-37
-38</pre>
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log_file'>log_file</span>
   <span class='ivar'>@log_file</span>
@@ -889,7 +675,7 @@ profile.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute name</p>
+<p>Returns the value of attribute name.</p>
 
 
   </div>
@@ -903,78 +689,15 @@ profile.</p>
       <pre class="lines">
 
 
-36
-37
-38</pre>
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_name'>name</span>
   <span class='ivar'>@name</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      
-      <span id=""></span>
-      <div class="method_details ">
-  <h3 class="signature " id="native_events=-instance_method">
-  
-    #<strong>native_events=</strong>(value)  &#x21d2; <tt>Object</tt>  <span class="extras">(writeonly)</span>
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Sets the attribute native_events</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>value</span>
-      
-      
-        <span class='type'></span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the value to set the attribute native_events to.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-37
-38
-39</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 37</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_native_events='>native_events=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='ivar'>@native_events</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1029,12 +752,12 @@ profile.</p>
       <pre class="lines">
 
 
-37
-38
-39</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_secure_ssl='>secure_ssl=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@secure_ssl</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -1052,9 +775,9 @@ profile.</p>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="default_preferences-class_method">
+  <h3 class="signature first" id="decoded-class_method">
   
-    .<strong>default_preferences</strong>  &#x21d2; <tt>Object</tt> 
+    .<strong>decoded</strong>(json)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1066,19 +789,15 @@ profile.</p>
       <pre class="lines">
 
 
-51
-52
-53
-54
-55</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 43</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_default_preferences'>default_preferences</span>
-  <span class='ivar'>@default_preferences</span> <span class='op'>||=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span>
-    <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='lparen'>(</span><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../WebDriver.html#root-class_method" title="Selenium::WebDriver.root (method)">root</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/prefs.json</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_decoded'>decoded</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='rparen'>)</span>
+  <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1122,15 +841,15 @@ profile.</p>
       <pre class="lines">
 
 
-44
-45
-46
-47
-48
-49</pre>
+36
+37
+38
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_from_name'>from_name</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='id identifier rubyid_ini'>ini</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
@@ -1158,12 +877,12 @@ profile.</p>
       <pre class="lines">
 
 
-40
-41
-42</pre>
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ini'>ini</span>
   <span class='ivar'>@ini</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="ProfilesIni.html" title="Selenium::WebDriver::Firefox::ProfilesIni (class)">ProfilesIni</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ProfilesIni.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::ProfilesIni#initialize (method)">new</a></span></span>
@@ -1214,20 +933,20 @@ profile.</p>
       <pre class="lines">
 
 
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113</pre>
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#VALID_PREFERENCE_TYPES-constant" title="Selenium::WebDriver::Firefox::Profile::VALID_PREFERENCE_TYPES (constant)">VALID_PREFERENCE_TYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span>
@@ -1257,8 +976,7 @@ profile.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Add the extension (directory, .zip or .xpi) at the given path to the
-profile.</p>
+<p>Add the extension (directory, .zip or .xpi) at the given path to the profile.</p>
 
 
   </div>
@@ -1272,161 +990,15 @@ profile.</p>
       <pre class="lines">
 
 
-134
-135
-136</pre>
+111
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 111</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_extension_name_for'>extension_name_for</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='ivar'>@extensions</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Extension.html" title="Selenium::WebDriver::Firefox::Extension (class)">Extension</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Extension.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Extension#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="add_webdriver_extension-instance_method">
-  
-    #<strong>add_webdriver_extension</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-124
-125
-126
-127
-128</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 124</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_add_webdriver_extension'>add_webdriver_extension</span>
-  <span class='kw'>return</span> <span class='kw'>if</span> <span class='ivar'>@extensions</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:webdriver</span><span class='rparen'>)</span>
-
-  <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#WEBDRIVER_EXTENSION_PATH-constant" title="Selenium::WebDriver::Firefox::Profile::WEBDRIVER_EXTENSION_PATH (constant)">WEBDRIVER_EXTENSION_PATH</a></span></span><span class='comma'>,</span> <span class='symbol'>:webdriver</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="assume_untrusted_certificate_issuer=-instance_method">
-  
-    #<strong>assume_untrusted_certificate_issuer=</strong>(bool)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-154
-155
-156</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 154</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_assume_untrusted_certificate_issuer='>assume_untrusted_certificate_issuer=</span><span class='lparen'>(</span><span class='id identifier rubyid_bool'>bool</span><span class='rparen'>)</span>
-  <span class='ivar'>@untrusted_issuer</span> <span class='op'>=</span> <span class='id identifier rubyid_bool'>bool</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="assume_untrusted_certificate_issuer?-instance_method">
-  
-    #<strong>assume_untrusted_certificate_issuer?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-150
-151
-152</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 150</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_assume_untrusted_certificate_issuer?'>assume_untrusted_certificate_issuer?</span>
-  <span class='ivar'>@untrusted_issuer</span> <span class='op'>==</span> <span class='kw'>true</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="encoded-instance_method">
-  
-    #<strong>encoded</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-181
-182
-183</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 181</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_encoded'>encoded</span>
-  <span class='const'><span class='object_link'><a href="../Zipper.html" title="Selenium::WebDriver::Zipper (module)">Zipper</a></span></span><span class='period'>.</span><span class='id identifier rubyid_zip'><span class='object_link'><a href="../Zipper.html#zip-class_method" title="Selenium::WebDriver::Zipper.zip (method)">zip</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1448,20 +1020,20 @@ profile.</p>
       <pre class="lines">
 
 
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94</pre>
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span>
   <span class='id identifier rubyid_profile_dir'>profile_dir</span> <span class='op'>=</span> <span class='ivar'>@model</span> <span class='op'>?</span> <span class='id identifier rubyid_create_tmp_copy'>create_tmp_copy</span><span class='lparen'>(</span><span class='ivar'>@model</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id identifier rubyid_mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver-profile</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -1473,110 +1045,6 @@ profile.</p>
   <span class='id identifier rubyid_update_user_prefs_in'>update_user_prefs_in</span><span class='lparen'>(</span><span class='id identifier rubyid_profile_dir'>profile_dir</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_profile_dir'>profile_dir</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="load_no_focus_lib?-instance_method">
-  
-    #<strong>load_no_focus_lib?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-142
-143
-144</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 142</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_load_no_focus_lib?'>load_no_focus_lib?</span>
-  <span class='ivar'>@load_no_focus_lib</span> <span class='op'>==</span> <span class='kw'>true</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="native_events?-instance_method">
-  
-    #<strong>native_events?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-138
-139
-140</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 138</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_native_events?'>native_events?</span>
-  <span class='ivar'>@native_events</span> <span class='op'>==</span> <span class='kw'>true</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1598,15 +1066,15 @@ profile.</p>
       <pre class="lines">
 
 
-115
-116
-117</pre>
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_port='>port=</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="#WEBDRIVER_PREFS-constant" title="Selenium::WebDriver::Firefox::Profile::WEBDRIVER_PREFS (constant)">WEBDRIVER_PREFS</a></span></span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
+  <span class='kw'>self</span><span class='lbracket'>[</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1650,31 +1118,31 @@ profile.</p>
       <pre class="lines">
 
 
-158
-159
-160
-161
-162
-163
-164
-165
-166
-167
-168
-169
-170
-171
-172
-173
-174
-175
-176
-177
-178
-179</pre>
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_proxy='>proxy=</span><span class='lparen'>(</span><span class='id identifier rubyid_proxy'>proxy</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../Proxy.html" title="Selenium::WebDriver::Proxy (class)">Proxy</a></span></span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'><span class='object_link'><a href="../Proxy.html" title="Selenium::WebDriver::Proxy (class)">Proxy</a></span></span>
@@ -1703,66 +1171,14 @@ profile.</p>
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="secure_ssl?-instance_method">
-  
-    #<strong>secure_ssl?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-146
-147
-148</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/profile.rb', line 146</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_secure_ssl?'>secure_ssl?</span>
-  <span class='ivar'>@secure_ssl</span> <span class='op'>==</span> <span class='kw'>true</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:40 2019 by
+  Generated on Fri May 29 06:55:44 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

@@ -6,15 +6,15 @@
 <title>
   Class: Selenium::WebDriver::Service
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::Service";
   relpath = '../../';
 </script>
@@ -102,8 +102,7 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>Base class implementing default behavior of service object, responsible for
-starting and stopping driver implementations.</p>
+<p>Base class implementing default behavior of service object, responsible for storing a service manager configuration.</p>
 
 
   </div>
@@ -113,34 +112,8 @@ starting and stopping driver implementations.</p>
 
 </div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Chrome::Service</a></span>, <span class='object_link'><a href="Edge/Service.html" title="Selenium::WebDriver::Edge::Service (class)">Edge::Service</a></span>, <span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Firefox::Service</a></span>, <span class='object_link'><a href="IE/Service.html" title="Selenium::WebDriver::IE::Service (class)">IE::Service</a></span>, <span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Selenium::WebDriver::Safari::Service</a></span></p>
+  <p class="children"><span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Chrome::Service</a></span>, <span class='object_link'><a href="EdgeHtml/Service.html" title="Selenium::WebDriver::EdgeHtml::Service (class)">EdgeHtml::Service</a></span>, <span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Firefox::Service</a></span>, <span class='object_link'><a href="IE/Service.html" title="Selenium::WebDriver::IE::Service (class)">IE::Service</a></span>, <span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Selenium::WebDriver::Safari::Service</a></span></p>
 </div>
-
-  
-    <h2>
-      Constant Summary
-      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
-    </h2>
-
-    <dl class="constants">
-      
-        <dt id="START_TIMEOUT-constant" class="">START_TIMEOUT =
-          
-        </dt>
-        <dd><pre class="code"><span class='int'>20</span></pre></dd>
-      
-        <dt id="SOCKET_LOCK_TIMEOUT-constant" class="">SOCKET_LOCK_TIMEOUT =
-          
-        </dt>
-        <dd><pre class="code"><span class='int'>45</span></pre></dd>
-      
-        <dt id="STOP_TIMEOUT-constant" class="">STOP_TIMEOUT =
-          
-        </dt>
-        <dd><pre class="code"><span class='int'>20</span></pre></dd>
-      
-    </dl>
-  
 
 
 
@@ -212,6 +185,35 @@ starting and stopping driver implementations.</p>
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#extra_args-instance_method" title="#extra_args (instance method)">#<strong>extra_args</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute extra_args.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#host-instance_method" title="#host (instance method)">#<strong>host</strong>  &#x21d2; Object </a>
     
 
@@ -236,6 +238,35 @@ starting and stopping driver implementations.</p>
 </li>
 
     
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#port-instance_method" title="#port (instance method)">#<strong>port</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute port.</p>
+</div></span>
+  
+</li>
+
+    
   </ul>
 
 
@@ -252,7 +283,7 @@ starting and stopping driver implementations.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#chrome-class_method" title="chrome (class method)">.<strong>chrome</strong>(*args)  &#x21d2; Object </a>
+      <a href="#chrome-class_method" title="chrome (class method)">.<strong>chrome</strong>(**opts)  &#x21d2; Object </a>
     
 
     
@@ -274,7 +305,7 @@ starting and stopping driver implementations.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#edge-class_method" title="edge (class method)">.<strong>edge</strong>(*args)  &#x21d2; Object </a>
+      <a href="#edge-class_method" title="edge (class method)">.<strong>edge</strong>(**opts)  &#x21d2; Object </a>
     
 
     
@@ -296,7 +327,7 @@ starting and stopping driver implementations.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#firefox-class_method" title="firefox (class method)">.<strong>firefox</strong>(*args)  &#x21d2; Object </a>
+      <a href="#edge_chrome-class_method" title="edge_chrome (class method)">.<strong>edge_chrome</strong>(**opts)  &#x21d2; Object </a>
     
 
     
@@ -318,7 +349,51 @@ starting and stopping driver implementations.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#ie-class_method" title="ie (class method)">.<strong>ie</strong>(*args)  &#x21d2; Object </a>
+      <a href="#edge_html-class_method" title="edge_html (class method)">.<strong>edge_html</strong>(**opts)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#firefox-class_method" title="firefox (class method)">.<strong>firefox</strong>(**opts)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#ie-class_method" title="ie (class method)">.<strong>ie</strong>(**opts)  &#x21d2; Object </a>
     
 
     
@@ -342,7 +417,7 @@ starting and stopping driver implementations.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#safari-class_method" title="safari (class method)">.<strong>safari</strong>(*args)  &#x21d2; Object </a>
+      <a href="#safari-class_method" title="safari (class method)">.<strong>safari</strong>(**opts)  &#x21d2; Object </a>
     
 
     
@@ -390,8 +465,7 @@ starting and stopping driver implementations.</p>
 
   
     <span class="summary_desc"><div class='inline'>
-<p>End users should use a class method for the desired driver, rather than
-using this directly.</p>
+<p>End users should use a class method for the desired driver, rather than using this directly.</p>
 </div></span>
   
 </li>
@@ -400,7 +474,7 @@ using this directly.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#start-instance_method" title="#start (instance method)">#<strong>start</strong>  &#x21d2; Object </a>
+      <a href="#launch-instance_method" title="#launch (instance method)">#<strong>launch</strong>  &#x21d2; Object </a>
     
 
     
@@ -422,29 +496,7 @@ using this directly.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#stop-instance_method" title="#stop (instance method)">#<strong>stop</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#uri-instance_method" title="#uri (instance method)">#<strong>uri</strong>  &#x21d2; Object </a>
+      <a href="#shutdown_supported-instance_method" title="#shutdown_supported (instance method)">#<strong>shutdown_supported</strong>  &#x21d2; Object </a>
     
 
     
@@ -485,8 +537,7 @@ using this directly.</p>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
-<p>End users should use a class method for the desired driver, rather than
-using this directly.</p>
+<p>End users should use a class method for the desired driver, rather than using this directly.</p>
 
 
   </div>
@@ -513,10 +564,6 @@ using this directly.</p>
       <pre class="lines">
 
 
-71
-72
-73
-74
 75
 76
 77
@@ -525,10 +572,14 @@ using this directly.</p>
 80
 81
 82
-83</pre>
+83
+84
+85
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>path:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
@@ -567,7 +618,7 @@ using this directly.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute driver_path</p>
+<p>Returns the value of attribute driver_path.</p>
 
 
   </div>
@@ -581,12 +632,12 @@ using this directly.</p>
       <pre class="lines">
 
 
-33
-34
-35</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_driver_path'>driver_path</span>
   <span class='ivar'>@driver_path</span>
@@ -615,7 +666,7 @@ using this directly.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute executable_path</p>
+<p>Returns the value of attribute executable_path.</p>
 
 
   </div>
@@ -629,15 +680,58 @@ using this directly.</p>
       <pre class="lines">
 
 
-63
-64
-65</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_executable_path'>executable_path</span>
   <span class='ivar'>@executable_path</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="extra_args-instance_method">
+  
+    #<strong>extra_args</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute extra_args.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 67</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_extra_args'>extra_args</span>
+  <span class='ivar'>@extra_args</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -658,7 +752,7 @@ using this directly.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the value of attribute host</p>
+<p>Returns the value of attribute host.</p>
 
 
   </div>
@@ -672,15 +766,58 @@ using this directly.</p>
       <pre class="lines">
 
 
-62
-63
-64</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_host'>host</span>
   <span class='ivar'>@host</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="port-instance_method">
+  
+    #<strong>port</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute port.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 67</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_port'>port</span>
+  <span class='ivar'>@port</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -697,7 +834,7 @@ using this directly.</p>
       <div class="method_details first">
   <h3 class="signature first" id="chrome-class_method">
   
-    .<strong>chrome</strong>(*args)  &#x21d2; <tt>Object</tt> 
+    .<strong>chrome</strong>(**opts)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -709,15 +846,15 @@ using this directly.</p>
       <pre class="lines">
 
 
-35
-36
-37</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 31</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_chrome'>chrome</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_chrome'>chrome</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -727,7 +864,37 @@ using this directly.</p>
       <div class="method_details ">
   <h3 class="signature " id="edge-class_method">
   
-    .<strong>edge</strong>(*args)  &#x21d2; <tt>Object</tt> 
+    .<strong>edge</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+44
+45
+46</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 44</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_edge'>edge</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../WebDriver.html#Edge-constant" title="Selenium::WebDriver::Edge (constant)">Edge</a></span></span><span class='op'>::</span><span class='const'>Service</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="edge_chrome-class_method">
+  
+    .<strong>edge_chrome</strong>(**opts)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -746,8 +913,8 @@ using this directly.</p>
     <td>
       <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 48</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_edge'>edge</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Edge.html" title="Selenium::WebDriver::Edge (module)">Edge</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Edge/Service.html" title="Selenium::WebDriver::Edge::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_edge_chrome'>edge_chrome</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="EdgeChrome.html" title="Selenium::WebDriver::EdgeChrome (module)">EdgeChrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EdgeChrome/Service.html" title="Selenium::WebDriver::EdgeChrome::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -755,73 +922,9 @@ using this directly.</p>
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="firefox-class_method">
+  <h3 class="signature " id="edge_html-class_method">
   
-    .<strong>firefox</strong>(*args)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-39
-40
-41</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 39</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="ie-class_method">
-  
-    .<strong>ie</strong>(*args)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-    <span class="aliases">Also known as:
-    <span class="names"><span id='internet_explorer-class_method'>internet_explorer</span></span>
-    </span>
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-43
-44
-45</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 43</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_ie'>ie</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="IE/Service.html" title="Selenium::WebDriver::IE::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="safari-class_method">
-  
-    .<strong>safari</strong>(*args)  &#x21d2; <tt>Object</tt> 
+    .<strong>edge_html</strong>(**opts)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -840,8 +943,102 @@ using this directly.</p>
     <td>
       <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 52</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_safari'>safari</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_edge_html'>edge_html</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="EdgeHtml.html" title="Selenium::WebDriver::EdgeHtml (module)">EdgeHtml</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EdgeHtml/Service.html" title="Selenium::WebDriver::EdgeHtml::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="firefox-class_method">
+  
+    .<strong>firefox</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="ie-class_method">
+  
+    .<strong>ie</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='internet_explorer-class_method'>internet_explorer</span></span>
+    </span>
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_ie'>ie</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="IE/Service.html" title="Selenium::WebDriver::IE::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="safari-class_method">
+  
+    .<strong>safari</strong>(**opts)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+56
+57
+58</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 56</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_safari'>safari</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -855,9 +1052,9 @@ using this directly.</p>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="start-instance_method">
+  <h3 class="signature first" id="launch-instance_method">
   
-    #<strong>start</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>launch</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -869,31 +1066,19 @@ using this directly.</p>
       <pre class="lines">
 
 
-85
-86
-87
-88
 89
 90
 91
 92
-93
-94
-95</pre>
+93</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 89</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>already started: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_uri'>uri</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='ivar'>@executable_path</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_process_running?'>process_running?</span>
-
-  <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_exit_hook'><span class='object_link'><a href="Platform.html#exit_hook-class_method" title="Selenium::WebDriver::Platform.exit_hook (method)">exit_hook</a></span></span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:stop</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='comment'># make sure we don&#39;t leave the server running
-</span>
-  <span class='id identifier rubyid_socket_lock'>socket_lock</span><span class='period'>.</span><span class='id identifier rubyid_locked'>locked</span> <span class='kw'>do</span>
-    <span class='id identifier rubyid_find_free_port'>find_free_port</span>
-    <span class='id identifier rubyid_start_process'>start_process</span>
-    <span class='id identifier rubyid_connect_until_stable'>connect_until_stable</span>
-  <span class='kw'>end</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
+  <span class='id identifier rubyid_sm'>sm</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="ServiceManager.html" title="Selenium::WebDriver::ServiceManager (class)">ServiceManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ServiceManager.html#initialize-instance_method" title="Selenium::WebDriver::ServiceManager#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_sm'>sm</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
+  <span class='id identifier rubyid_sm'>sm</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -901,9 +1086,9 @@ using this directly.</p>
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="stop-instance_method">
+  <h3 class="signature " id="shutdown_supported-instance_method">
   
-    #<strong>stop</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>shutdown_supported</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -915,59 +1100,15 @@ using this directly.</p>
       <pre class="lines">
 
 
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106</pre>
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 95</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
-  <span class='kw'>return</span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>SHUTDOWN_SUPPORTED</span>
-
-  <span class='id identifier rubyid_stop_server'>stop_server</span>
-  <span class='ivar'>@process</span><span class='period'>.</span><span class='id identifier rubyid_poll_for_exit'>poll_for_exit</span> <span class='const'><span class='object_link'><a href="#STOP_TIMEOUT-constant" title="Selenium::WebDriver::Service::STOP_TIMEOUT (constant)">STOP_TIMEOUT</a></span></span>
-<span class='kw'>rescue</span> <span class='const'>ChildProcess</span><span class='op'>::</span><span class='const'>TimeoutError</span>
-  <span class='kw'>nil</span> <span class='comment'># noop
-</span><span class='kw'>ensure</span>
-  <span class='id identifier rubyid_stop_process'>stop_process</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="uri-instance_method">
-  
-    #<strong>uri</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-108
-109
-110</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/service.rb', line 108</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_uri'>uri</span>
-  <span class='ivar'>@uri</span> <span class='op'>||=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_shutdown_supported'>shutdown_supported</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>SHUTDOWN_SUPPORTED</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -979,9 +1120,9 @@ using this directly.</p>
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:39 2019 by
+  Generated on Fri May 29 06:55:43 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

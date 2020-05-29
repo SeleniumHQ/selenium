@@ -1,0 +1,2725 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: Selenium::WebDriver::DevTools
+  
+    &mdash; Documentation by YARD 0.9.25
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "Selenium::WebDriver::DevTools";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../_index.html">Index (D)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
+     &raquo; 
+    <span class="title">DevTools</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: Selenium::WebDriver::DevTools
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::DevTools</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>build/rb/lib/selenium/webdriver/devtools.rb<span class="defines">,<br />
+  build/rb/lib/selenium/webdriver/devtools/io.rb,<br /> build/rb/lib/selenium/webdriver/devtools/css.rb,<br /> build/rb/lib/selenium/webdriver/devtools/dom.rb,<br /> build/rb/lib/selenium/webdriver/devtools/log.rb,<br /> build/rb/lib/selenium/webdriver/devtools/cast.rb,<br /> build/rb/lib/selenium/webdriver/devtools/page.rb,<br /> build/rb/lib/selenium/webdriver/devtools/fetch.rb,<br /> build/rb/lib/selenium/webdriver/devtools/input.rb,<br /> build/rb/lib/selenium/webdriver/devtools/media.rb,<br /> build/rb/lib/selenium/webdriver/devtools/audits.rb,<br /> build/rb/lib/selenium/webdriver/devtools/memory.rb,<br /> build/rb/lib/selenium/webdriver/devtools/schema.rb,<br /> build/rb/lib/selenium/webdriver/devtools/target.rb,<br /> build/rb/lib/selenium/webdriver/devtools/browser.rb,<br /> build/rb/lib/selenium/webdriver/devtools/console.rb,<br /> build/rb/lib/selenium/webdriver/devtools/network.rb,<br /> build/rb/lib/selenium/webdriver/devtools/overlay.rb,<br /> build/rb/lib/selenium/webdriver/devtools/runtime.rb,<br /> build/rb/lib/selenium/webdriver/devtools/storage.rb,<br /> build/rb/lib/selenium/webdriver/devtools/tracing.rb,<br /> build/rb/lib/selenium/webdriver/devtools/database.rb,<br /> build/rb/lib/selenium/webdriver/devtools/debugger.rb,<br /> build/rb/lib/selenium/webdriver/devtools/profiler.rb,<br /> build/rb/lib/selenium/webdriver/devtools/security.rb,<br /> build/rb/lib/selenium/webdriver/devtools/animation.rb,<br /> build/rb/lib/selenium/webdriver/devtools/emulation.rb,<br /> build/rb/lib/selenium/webdriver/devtools/inspector.rb,<br /> build/rb/lib/selenium/webdriver/devtools/tethering.rb,<br /> build/rb/lib/selenium/webdriver/devtools/web_audio.rb,<br /> build/rb/lib/selenium/webdriver/devtools/web_authn.rb,<br /> build/rb/lib/selenium/webdriver/devtools/domstorage.rb,<br /> build/rb/lib/selenium/webdriver/devtools/indexed_db.rb,<br /> build/rb/lib/selenium/webdriver/devtools/layer_tree.rb,<br /> build/rb/lib/selenium/webdriver/devtools/domdebugger.rb,<br /> build/rb/lib/selenium/webdriver/devtools/domsnapshot.rb,<br /> build/rb/lib/selenium/webdriver/devtools/performance.rb,<br /> build/rb/lib/selenium/webdriver/devtools/system_info.rb,<br /> build/rb/lib/selenium/webdriver/devtools/accessibility.rb,<br /> build/rb/lib/selenium/webdriver/devtools/cache_storage.rb,<br /> build/rb/lib/selenium/webdriver/devtools/heap_profiler.rb,<br /> build/rb/lib/selenium/webdriver/devtools/service_worker.rb,<br /> build/rb/lib/selenium/webdriver/devtools/application_cache.rb,<br /> build/rb/lib/selenium/webdriver/devtools/background_service.rb,<br /> build/rb/lib/selenium/webdriver/devtools/device_orientation.rb,<br /> build/rb/lib/selenium/webdriver/devtools/headless_experimental.rb</span>
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="DevTools/Accessibility.html" title="Selenium::WebDriver::DevTools::Accessibility (class)">Accessibility</a></span>, <span class='object_link'><a href="DevTools/Animation.html" title="Selenium::WebDriver::DevTools::Animation (class)">Animation</a></span>, <span class='object_link'><a href="DevTools/ApplicationCache.html" title="Selenium::WebDriver::DevTools::ApplicationCache (class)">ApplicationCache</a></span>, <span class='object_link'><a href="DevTools/Audits.html" title="Selenium::WebDriver::DevTools::Audits (class)">Audits</a></span>, <span class='object_link'><a href="DevTools/BackgroundService.html" title="Selenium::WebDriver::DevTools::BackgroundService (class)">BackgroundService</a></span>, <span class='object_link'><a href="DevTools/Browser.html" title="Selenium::WebDriver::DevTools::Browser (class)">Browser</a></span>, <span class='object_link'><a href="DevTools/CSS.html" title="Selenium::WebDriver::DevTools::CSS (class)">CSS</a></span>, <span class='object_link'><a href="DevTools/CacheStorage.html" title="Selenium::WebDriver::DevTools::CacheStorage (class)">CacheStorage</a></span>, <span class='object_link'><a href="DevTools/Cast.html" title="Selenium::WebDriver::DevTools::Cast (class)">Cast</a></span>, <span class='object_link'><a href="DevTools/Console.html" title="Selenium::WebDriver::DevTools::Console (class)">Console</a></span>, <span class='object_link'><a href="DevTools/DOM.html" title="Selenium::WebDriver::DevTools::DOM (class)">DOM</a></span>, <span class='object_link'><a href="DevTools/DOMDebugger.html" title="Selenium::WebDriver::DevTools::DOMDebugger (class)">DOMDebugger</a></span>, <span class='object_link'><a href="DevTools/DOMSnapshot.html" title="Selenium::WebDriver::DevTools::DOMSnapshot (class)">DOMSnapshot</a></span>, <span class='object_link'><a href="DevTools/DOMStorage.html" title="Selenium::WebDriver::DevTools::DOMStorage (class)">DOMStorage</a></span>, <span class='object_link'><a href="DevTools/Database.html" title="Selenium::WebDriver::DevTools::Database (class)">Database</a></span>, <span class='object_link'><a href="DevTools/Debugger.html" title="Selenium::WebDriver::DevTools::Debugger (class)">Debugger</a></span>, <span class='object_link'><a href="DevTools/DeviceOrientation.html" title="Selenium::WebDriver::DevTools::DeviceOrientation (class)">DeviceOrientation</a></span>, <span class='object_link'><a href="DevTools/Emulation.html" title="Selenium::WebDriver::DevTools::Emulation (class)">Emulation</a></span>, <span class='object_link'><a href="DevTools/Fetch.html" title="Selenium::WebDriver::DevTools::Fetch (class)">Fetch</a></span>, <span class='object_link'><a href="DevTools/HeadlessExperimental.html" title="Selenium::WebDriver::DevTools::HeadlessExperimental (class)">HeadlessExperimental</a></span>, <span class='object_link'><a href="DevTools/HeapProfiler.html" title="Selenium::WebDriver::DevTools::HeapProfiler (class)">HeapProfiler</a></span>, <span class='object_link'><a href="DevTools/IO.html" title="Selenium::WebDriver::DevTools::IO (class)">IO</a></span>, <span class='object_link'><a href="DevTools/IndexedDB.html" title="Selenium::WebDriver::DevTools::IndexedDB (class)">IndexedDB</a></span>, <span class='object_link'><a href="DevTools/Input.html" title="Selenium::WebDriver::DevTools::Input (class)">Input</a></span>, <span class='object_link'><a href="DevTools/Inspector.html" title="Selenium::WebDriver::DevTools::Inspector (class)">Inspector</a></span>, <span class='object_link'><a href="DevTools/LayerTree.html" title="Selenium::WebDriver::DevTools::LayerTree (class)">LayerTree</a></span>, <span class='object_link'><a href="DevTools/Log.html" title="Selenium::WebDriver::DevTools::Log (class)">Log</a></span>, <span class='object_link'><a href="DevTools/Media.html" title="Selenium::WebDriver::DevTools::Media (class)">Media</a></span>, <span class='object_link'><a href="DevTools/Memory.html" title="Selenium::WebDriver::DevTools::Memory (class)">Memory</a></span>, <span class='object_link'><a href="DevTools/Network.html" title="Selenium::WebDriver::DevTools::Network (class)">Network</a></span>, <span class='object_link'><a href="DevTools/Overlay.html" title="Selenium::WebDriver::DevTools::Overlay (class)">Overlay</a></span>, <span class='object_link'><a href="DevTools/Page.html" title="Selenium::WebDriver::DevTools::Page (class)">Page</a></span>, <span class='object_link'><a href="DevTools/Performance.html" title="Selenium::WebDriver::DevTools::Performance (class)">Performance</a></span>, <span class='object_link'><a href="DevTools/Profiler.html" title="Selenium::WebDriver::DevTools::Profiler (class)">Profiler</a></span>, <span class='object_link'><a href="DevTools/Runtime.html" title="Selenium::WebDriver::DevTools::Runtime (class)">Runtime</a></span>, <span class='object_link'><a href="DevTools/Schema.html" title="Selenium::WebDriver::DevTools::Schema (class)">Schema</a></span>, <span class='object_link'><a href="DevTools/Security.html" title="Selenium::WebDriver::DevTools::Security (class)">Security</a></span>, <span class='object_link'><a href="DevTools/ServiceWorker.html" title="Selenium::WebDriver::DevTools::ServiceWorker (class)">ServiceWorker</a></span>, <span class='object_link'><a href="DevTools/Storage.html" title="Selenium::WebDriver::DevTools::Storage (class)">Storage</a></span>, <span class='object_link'><a href="DevTools/SystemInfo.html" title="Selenium::WebDriver::DevTools::SystemInfo (class)">SystemInfo</a></span>, <span class='object_link'><a href="DevTools/Target.html" title="Selenium::WebDriver::DevTools::Target (class)">Target</a></span>, <span class='object_link'><a href="DevTools/Tethering.html" title="Selenium::WebDriver::DevTools::Tethering (class)">Tethering</a></span>, <span class='object_link'><a href="DevTools/Tracing.html" title="Selenium::WebDriver::DevTools::Tracing (class)">Tracing</a></span>, <span class='object_link'><a href="DevTools/WebAudio.html" title="Selenium::WebDriver::DevTools::WebAudio (class)">WebAudio</a></span>, <span class='object_link'><a href="DevTools/WebAuthn.html" title="Selenium::WebDriver::DevTools::WebAuthn (class)">WebAuthn</a></span>
+    
+  
+</p>
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#accessibility-instance_method" title="#accessibility (instance method)">#<strong>accessibility</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#animation-instance_method" title="#animation (instance method)">#<strong>animation</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#application_cache-instance_method" title="#application_cache (instance method)">#<strong>application_cache</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#audits-instance_method" title="#audits (instance method)">#<strong>audits</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#background_service-instance_method" title="#background_service (instance method)">#<strong>background_service</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#browser-instance_method" title="#browser (instance method)">#<strong>browser</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cache_storage-instance_method" title="#cache_storage (instance method)">#<strong>cache_storage</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#callbacks-instance_method" title="#callbacks (instance method)">#<strong>callbacks</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cast-instance_method" title="#cast (instance method)">#<strong>cast</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#console-instance_method" title="#console (instance method)">#<strong>console</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#css-instance_method" title="#css (instance method)">#<strong>css</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#database-instance_method" title="#database (instance method)">#<strong>database</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#debugger-instance_method" title="#debugger (instance method)">#<strong>debugger</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#device_orientation-instance_method" title="#device_orientation (instance method)">#<strong>device_orientation</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dom-instance_method" title="#dom (instance method)">#<strong>dom</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#domdebugger-instance_method" title="#domdebugger (instance method)">#<strong>domdebugger</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#domsnapshot-instance_method" title="#domsnapshot (instance method)">#<strong>domsnapshot</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#domstorage-instance_method" title="#domstorage (instance method)">#<strong>domstorage</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#emulation-instance_method" title="#emulation (instance method)">#<strong>emulation</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fetch-instance_method" title="#fetch (instance method)">#<strong>fetch</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#headless_experimental-instance_method" title="#headless_experimental (instance method)">#<strong>headless_experimental</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#heap_profiler-instance_method" title="#heap_profiler (instance method)">#<strong>heap_profiler</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#indexed_db-instance_method" title="#indexed_db (instance method)">#<strong>indexed_db</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(url)  &#x21d2; DevTools </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of DevTools.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#input-instance_method" title="#input (instance method)">#<strong>input</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#inspector-instance_method" title="#inspector (instance method)">#<strong>inspector</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#io-instance_method" title="#io (instance method)">#<strong>io</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#layer_tree-instance_method" title="#layer_tree (instance method)">#<strong>layer_tree</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#log-instance_method" title="#log (instance method)">#<strong>log</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#media-instance_method" title="#media (instance method)">#<strong>media</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#memory-instance_method" title="#memory (instance method)">#<strong>memory</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#network-instance_method" title="#network (instance method)">#<strong>network</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#overlay-instance_method" title="#overlay (instance method)">#<strong>overlay</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#page-instance_method" title="#page (instance method)">#<strong>page</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#performance-instance_method" title="#performance (instance method)">#<strong>performance</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#profiler-instance_method" title="#profiler (instance method)">#<strong>profiler</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#runtime-instance_method" title="#runtime (instance method)">#<strong>runtime</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#schema-instance_method" title="#schema (instance method)">#<strong>schema</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#security-instance_method" title="#security (instance method)">#<strong>security</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#send_cmd-instance_method" title="#send_cmd (instance method)">#<strong>send_cmd</strong>(method, **params)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#service_worker-instance_method" title="#service_worker (instance method)">#<strong>service_worker</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#storage-instance_method" title="#storage (instance method)">#<strong>storage</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#system_info-instance_method" title="#system_info (instance method)">#<strong>system_info</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#target-instance_method" title="#target (instance method)">#<strong>target</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#tethering-instance_method" title="#tethering (instance method)">#<strong>tethering</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#tracing-instance_method" title="#tracing (instance method)">#<strong>tracing</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#web_audio-instance_method" title="#web_audio (instance method)">#<strong>web_audio</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#web_authn-instance_method" title="#web_authn (instance method)">#<strong>web_authn</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(url)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DevTools (class)">DevTools</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of DevTools.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools.rb', line 26</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
+  <span class='ivar'>@messages</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@uri</span> <span class='op'>=</span> <span class='const'>URI</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_url'>url</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_process_handshake'>process_handshake</span>
+  <span class='id identifier rubyid_attach_socket_listener'>attach_socket_listener</span>
+
+  <span class='id identifier rubyid_target'>target</span><span class='period'>.</span><span class='id identifier rubyid_attach_to_target'>attach_to_target</span><span class='lparen'>(</span><span class='label'>target_id:</span> <span class='id identifier rubyid_page_target'>page_target</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_target'>target</span><span class='period'>.</span><span class='id identifier rubyid_set_auto_attach'>set_auto_attach</span><span class='lparen'>(</span><span class='label'>auto_attach:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>wait_for_debugger_on_start:</span> <span class='kw'>false</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="accessibility-instance_method">
+  
+    #<strong>accessibility</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/accessibility.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_accessibility'>accessibility</span>
+  <span class='ivar'>@accessibility</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Accessibility.html" title="Selenium::WebDriver::DevTools::Accessibility (class)">Accessibility</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Accessibility.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Accessibility#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="animation-instance_method">
+  
+    #<strong>animation</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/animation.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_animation'>animation</span>
+  <span class='ivar'>@animation</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Animation.html" title="Selenium::WebDriver::DevTools::Animation (class)">Animation</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Animation.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Animation#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="application_cache-instance_method">
+  
+    #<strong>application_cache</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/application_cache.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_application_cache'>application_cache</span>
+  <span class='ivar'>@application_cache</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/ApplicationCache.html" title="Selenium::WebDriver::DevTools::ApplicationCache (class)">ApplicationCache</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/ApplicationCache.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::ApplicationCache#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="audits-instance_method">
+  
+    #<strong>audits</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/audits.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_audits'>audits</span>
+  <span class='ivar'>@audits</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Audits.html" title="Selenium::WebDriver::DevTools::Audits (class)">Audits</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Audits.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Audits#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="background_service-instance_method">
+  
+    #<strong>background_service</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/background_service.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_background_service'>background_service</span>
+  <span class='ivar'>@background_service</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/BackgroundService.html" title="Selenium::WebDriver::DevTools::BackgroundService (class)">BackgroundService</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/BackgroundService.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::BackgroundService#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="browser-instance_method">
+  
+    #<strong>browser</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/browser.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
+  <span class='ivar'>@browser</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Browser.html" title="Selenium::WebDriver::DevTools::Browser (class)">Browser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Browser.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Browser#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="cache_storage-instance_method">
+  
+    #<strong>cache_storage</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/cache_storage.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cache_storage'>cache_storage</span>
+  <span class='ivar'>@cache_storage</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/CacheStorage.html" title="Selenium::WebDriver::DevTools::CacheStorage (class)">CacheStorage</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/CacheStorage.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::CacheStorage#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="callbacks-instance_method">
+  
+    #<strong>callbacks</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_callbacks'>callbacks</span>
+  <span class='ivar'>@callbacks</span> <span class='op'>||=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_callbacks'>callbacks</span><span class='comma'>,</span> <span class='id identifier rubyid_event'>event</span><span class='op'>|</span> <span class='id identifier rubyid_callbacks'>callbacks</span><span class='lbracket'>[</span><span class='id identifier rubyid_event'>event</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="cast-instance_method">
+  
+    #<strong>cast</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/cast.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cast'>cast</span>
+  <span class='ivar'>@cast</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Cast.html" title="Selenium::WebDriver::DevTools::Cast (class)">Cast</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Cast.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Cast#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="console-instance_method">
+  
+    #<strong>console</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/console.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_console'>console</span>
+  <span class='ivar'>@console</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Console.html" title="Selenium::WebDriver::DevTools::Console (class)">Console</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Console.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Console#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="css-instance_method">
+  
+    #<strong>css</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/css.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_css'>css</span>
+  <span class='ivar'>@css</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/CSS.html" title="Selenium::WebDriver::DevTools::CSS (class)">CSS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/CSS.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::CSS#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="database-instance_method">
+  
+    #<strong>database</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/database.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_database'>database</span>
+  <span class='ivar'>@database</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Database.html" title="Selenium::WebDriver::DevTools::Database (class)">Database</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Database.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Database#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="debugger-instance_method">
+  
+    #<strong>debugger</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/debugger.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_debugger'>debugger</span>
+  <span class='ivar'>@debugger</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Debugger.html" title="Selenium::WebDriver::DevTools::Debugger (class)">Debugger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Debugger.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Debugger#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="device_orientation-instance_method">
+  
+    #<strong>device_orientation</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/device_orientation.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_device_orientation'>device_orientation</span>
+  <span class='ivar'>@device_orientation</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/DeviceOrientation.html" title="Selenium::WebDriver::DevTools::DeviceOrientation (class)">DeviceOrientation</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/DeviceOrientation.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::DeviceOrientation#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dom-instance_method">
+  
+    #<strong>dom</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_dom'>dom</span>
+  <span class='ivar'>@dom</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/DOM.html" title="Selenium::WebDriver::DevTools::DOM (class)">DOM</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/DOM.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::DOM#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="domdebugger-instance_method">
+  
+    #<strong>domdebugger</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domdebugger.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_domdebugger'>domdebugger</span>
+  <span class='ivar'>@domdebugger</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/DOMDebugger.html" title="Selenium::WebDriver::DevTools::DOMDebugger (class)">DOMDebugger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/DOMDebugger.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::DOMDebugger#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="domsnapshot-instance_method">
+  
+    #<strong>domsnapshot</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domsnapshot.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_domsnapshot'>domsnapshot</span>
+  <span class='ivar'>@domsnapshot</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/DOMSnapshot.html" title="Selenium::WebDriver::DevTools::DOMSnapshot (class)">DOMSnapshot</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/DOMSnapshot.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::DOMSnapshot#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="domstorage-instance_method">
+  
+    #<strong>domstorage</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/domstorage.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_domstorage'>domstorage</span>
+  <span class='ivar'>@domstorage</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/DOMStorage.html" title="Selenium::WebDriver::DevTools::DOMStorage (class)">DOMStorage</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/DOMStorage.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::DOMStorage#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="emulation-instance_method">
+  
+    #<strong>emulation</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/emulation.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_emulation'>emulation</span>
+  <span class='ivar'>@emulation</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Emulation.html" title="Selenium::WebDriver::DevTools::Emulation (class)">Emulation</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Emulation.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Emulation#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fetch-instance_method">
+  
+    #<strong>fetch</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/fetch.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_fetch'>fetch</span>
+  <span class='ivar'>@fetch</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Fetch.html" title="Selenium::WebDriver::DevTools::Fetch (class)">Fetch</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Fetch.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Fetch#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="headless_experimental-instance_method">
+  
+    #<strong>headless_experimental</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/headless_experimental.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_headless_experimental'>headless_experimental</span>
+  <span class='ivar'>@headless_experimental</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/HeadlessExperimental.html" title="Selenium::WebDriver::DevTools::HeadlessExperimental (class)">HeadlessExperimental</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/HeadlessExperimental.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::HeadlessExperimental#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="heap_profiler-instance_method">
+  
+    #<strong>heap_profiler</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/heap_profiler.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_heap_profiler'>heap_profiler</span>
+  <span class='ivar'>@heap_profiler</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/HeapProfiler.html" title="Selenium::WebDriver::DevTools::HeapProfiler (class)">HeapProfiler</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/HeapProfiler.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::HeapProfiler#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="indexed_db-instance_method">
+  
+    #<strong>indexed_db</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/indexed_db.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_indexed_db'>indexed_db</span>
+  <span class='ivar'>@indexed_db</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/IndexedDB.html" title="Selenium::WebDriver::DevTools::IndexedDB (class)">IndexedDB</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/IndexedDB.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::IndexedDB#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="input-instance_method">
+  
+    #<strong>input</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/input.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_input'>input</span>
+  <span class='ivar'>@input</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Input.html" title="Selenium::WebDriver::DevTools::Input (class)">Input</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Input.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Input#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="inspector-instance_method">
+  
+    #<strong>inspector</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/inspector.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_inspector'>inspector</span>
+  <span class='ivar'>@inspector</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Inspector.html" title="Selenium::WebDriver::DevTools::Inspector (class)">Inspector</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Inspector.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Inspector#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="io-instance_method">
+  
+    #<strong>io</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/io.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_io'>io</span>
+  <span class='ivar'>@io</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/IO.html" title="Selenium::WebDriver::DevTools::IO (class)">IO</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/IO.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::IO#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="layer_tree-instance_method">
+  
+    #<strong>layer_tree</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/layer_tree.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_layer_tree'>layer_tree</span>
+  <span class='ivar'>@layer_tree</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/LayerTree.html" title="Selenium::WebDriver::DevTools::LayerTree (class)">LayerTree</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/LayerTree.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::LayerTree#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="log-instance_method">
+  
+    #<strong>log</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/log.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span>
+  <span class='ivar'>@log</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Log.html" title="Selenium::WebDriver::DevTools::Log (class)">Log</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Log.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Log#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="media-instance_method">
+  
+    #<strong>media</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/media.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_media'>media</span>
+  <span class='ivar'>@media</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Media.html" title="Selenium::WebDriver::DevTools::Media (class)">Media</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Media.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Media#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="memory-instance_method">
+  
+    #<strong>memory</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/memory.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_memory'>memory</span>
+  <span class='ivar'>@memory</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Memory.html" title="Selenium::WebDriver::DevTools::Memory (class)">Memory</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Memory.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Memory#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="network-instance_method">
+  
+    #<strong>network</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/network.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_network'>network</span>
+  <span class='ivar'>@network</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Network.html" title="Selenium::WebDriver::DevTools::Network (class)">Network</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Network.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Network#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="overlay-instance_method">
+  
+    #<strong>overlay</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_overlay'>overlay</span>
+  <span class='ivar'>@overlay</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Overlay.html" title="Selenium::WebDriver::DevTools::Overlay (class)">Overlay</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Overlay.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Overlay#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="page-instance_method">
+  
+    #<strong>page</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/page.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_page'>page</span>
+  <span class='ivar'>@page</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Page.html" title="Selenium::WebDriver::DevTools::Page (class)">Page</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Page.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Page#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="performance-instance_method">
+  
+    #<strong>performance</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/performance.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_performance'>performance</span>
+  <span class='ivar'>@performance</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Performance.html" title="Selenium::WebDriver::DevTools::Performance (class)">Performance</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Performance.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Performance#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="profiler-instance_method">
+  
+    #<strong>profiler</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/profiler.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_profiler'>profiler</span>
+  <span class='ivar'>@profiler</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Profiler.html" title="Selenium::WebDriver::DevTools::Profiler (class)">Profiler</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Profiler.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Profiler#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="runtime-instance_method">
+  
+    #<strong>runtime</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_runtime'>runtime</span>
+  <span class='ivar'>@runtime</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Runtime.html" title="Selenium::WebDriver::DevTools::Runtime (class)">Runtime</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Runtime.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Runtime#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="schema-instance_method">
+  
+    #<strong>schema</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/schema.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_schema'>schema</span>
+  <span class='ivar'>@schema</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Schema.html" title="Selenium::WebDriver::DevTools::Schema (class)">Schema</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Schema.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Schema#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="security-instance_method">
+  
+    #<strong>security</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/security.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_security'>security</span>
+  <span class='ivar'>@security</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Security.html" title="Selenium::WebDriver::DevTools::Security (class)">Security</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Security.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Security#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="send_cmd-instance_method">
+  
+    #<strong>send_cmd</strong>(method, **params)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools.rb', line 41</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='id identifier rubyid_next_id'>next_id</span>
+  <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='label'>method:</span> <span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_out_frame'>out_frame</span> <span class='op'>=</span> <span class='const'>WebSocket</span><span class='op'>::</span><span class='const'>Frame</span><span class='op'>::</span><span class='const'>Outgoing</span><span class='op'>::</span><span class='const'>Client</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>version:</span> <span class='id identifier rubyid_ws'>ws</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span><span class='comma'>,</span> <span class='label'>data:</span> <span class='id identifier rubyid_data'>data</span><span class='comma'>,</span> <span class='label'>type:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_socket'>socket</span><span class='period'>.</span><span class='id identifier rubyid_write'>write</span><span class='lparen'>(</span><span class='id identifier rubyid_out_frame'>out_frame</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_message'>message</span> <span class='op'>=</span> <span class='id identifier rubyid_wait'>wait</span><span class='period'>.</span><span class='id identifier rubyid_until'>until</span> <span class='kw'>do</span>
+    <span class='ivar'>@messages</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_m'>m</span><span class='op'>|</span> <span class='id identifier rubyid_m'>m</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='id identifier rubyid_id'>id</span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_error_message'>error_message</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>error</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_message'>message</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>error</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+
+  <span class='id identifier rubyid_message'>message</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="service_worker-instance_method">
+  
+    #<strong>service_worker</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/service_worker.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_service_worker'>service_worker</span>
+  <span class='ivar'>@service_worker</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/ServiceWorker.html" title="Selenium::WebDriver::DevTools::ServiceWorker (class)">ServiceWorker</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/ServiceWorker.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::ServiceWorker#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="storage-instance_method">
+  
+    #<strong>storage</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/storage.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_storage'>storage</span>
+  <span class='ivar'>@storage</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Storage.html" title="Selenium::WebDriver::DevTools::Storage (class)">Storage</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Storage.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Storage#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="system_info-instance_method">
+  
+    #<strong>system_info</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/system_info.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_system_info'>system_info</span>
+  <span class='ivar'>@system_info</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/SystemInfo.html" title="Selenium::WebDriver::DevTools::SystemInfo (class)">SystemInfo</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/SystemInfo.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::SystemInfo#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="target-instance_method">
+  
+    #<strong>target</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/target.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_target'>target</span>
+  <span class='ivar'>@target</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Target.html" title="Selenium::WebDriver::DevTools::Target (class)">Target</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Target.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Target#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="tethering-instance_method">
+  
+    #<strong>tethering</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/tethering.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_tethering'>tethering</span>
+  <span class='ivar'>@tethering</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Tethering.html" title="Selenium::WebDriver::DevTools::Tethering (class)">Tethering</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Tethering.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Tethering#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="tracing-instance_method">
+  
+    #<strong>tracing</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/tracing.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_tracing'>tracing</span>
+  <span class='ivar'>@tracing</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/Tracing.html" title="Selenium::WebDriver::DevTools::Tracing (class)">Tracing</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/Tracing.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::Tracing#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="web_audio-instance_method">
+  
+    #<strong>web_audio</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/web_audio.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_web_audio'>web_audio</span>
+  <span class='ivar'>@web_audio</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/WebAudio.html" title="Selenium::WebDriver::DevTools::WebAudio (class)">WebAudio</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/WebAudio.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::WebAudio#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="web_authn-instance_method">
+  
+    #<strong>web_authn</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/web_authn.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_web_authn'>web_authn</span>
+  <span class='ivar'>@web_authn</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="DevTools/WebAuthn.html" title="Selenium::WebDriver::DevTools::WebAuthn (class)">WebAuthn</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="DevTools/WebAuthn.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::WebAuthn#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Fri May 29 06:55:41 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.25 (ruby-2.7.0).
+</div>
+
+    </div>
+  </body>
+</html>

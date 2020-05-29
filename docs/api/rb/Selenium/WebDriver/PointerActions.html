@@ -6,15 +6,15 @@
 <title>
   Module: Selenium::WebDriver::PointerActions
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::PointerActions";
   relpath = '../../';
 </script>
@@ -249,9 +249,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>A convenience method that performs click-and-hold at the location of the
-source element, moves to the location of the target element, then releases
-the mouse.</p>
+<p>A convenience method that performs click-and-hold at the location of the source element, moves to the location of the target element, then releases the mouse.</p>
 </div></span>
   
 </li>
@@ -275,8 +273,7 @@ the mouse.</p>
 
   
     <span class="summary_desc"><div class='inline'>
-<p>A convenience method that performs click-and-hold at the location of the
-source element, moves by a given offset, then releases the mouse.</p>
+<p>A convenience method that performs click-and-hold at the location of the source element, moves by a given offset, then releases the mouse.</p>
 </div></span>
   
 </li>
@@ -372,8 +369,7 @@ source element, moves by a given offset, then releases the mouse.</p>
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Presses (without releasing) at the current location of the PointerInput
-device.</p>
+<p>Presses (without releasing) at the current location of the PointerInput device.</p>
 </div></span>
   
 </li>
@@ -397,8 +393,7 @@ device.</p>
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Releases the pressed mouse button at the current mouse location of the
-PointerInput device.</p>
+<p>Releases the pressed mouse button at the current mouse location of the PointerInput device.</p>
 </div></span>
   
 </li>
@@ -559,11 +554,12 @@ PointerInput device.</p>
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
-<p>optional name of the PointerInput device with the button that will be
-clicked</p>
+<p>optional name of the PointerInput device with the button that will be clicked</p>
 </div>
       
     </li>
@@ -628,8 +624,7 @@ clicked</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Clicks (without releasing) in the middle of the given element. This is
-equivalent to:</p>
+<p>Clicks (without releasing) in the middle of the given element. This is equivalent to:</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span>
 </code></pre>
@@ -680,6 +675,8 @@ equivalent to:</p>
       
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -747,11 +744,9 @@ equivalent to:</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Performs a context-click at middle of the given element. First performs a
-move_to to the location of the element.</p>
+<p>Performs a context-click at middle of the given element. First performs a move_to to the location of the element.</p>
 
-<p>When no element is passed, the current mouse position will be
-context-clicked.</p>
+<p>When no element is passed, the current mouse position will be context-clicked.</p>
 
 
   </div>
@@ -808,11 +803,12 @@ context-clicked.</p>
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
-<p>optional name of the PointerInput device with the button that will be
-context-clicked</p>
+<p>optional name of the PointerInput device with the button that will be context-clicked</p>
 </div>
       
     </li>
@@ -882,8 +878,7 @@ context-clicked</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span>
 </code></pre>
 
-<p>When no element is passed, the current mouse position will be
-double-clicked.</p>
+<p>When no element is passed, the current mouse position will be double-clicked.</p>
 
 
   </div>
@@ -940,11 +935,12 @@ double-clicked.</p>
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
-<p>optional name of the PointerInput device with the button that will be
-double-clicked</p>
+<p>optional name of the PointerInput device with the button that will be double-clicked</p>
 </div>
       
     </li>
@@ -1009,9 +1005,7 @@ double-clicked</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>A convenience method that performs click-and-hold at the location of the
-source element, moves to the location of the target element, then releases
-the mouse.</p>
+<p>A convenience method that performs click-and-hold at the location of the source element, moves to the location of the target element, then releases the mouse.</p>
 
 
   </div>
@@ -1075,11 +1069,12 @@ the mouse.</p>
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
-<p>optional name of the PointerInput device with the button that will perform
-the drag and drop</p>
+<p>optional name of the PointerInput device with the button that will perform the drag and drop</p>
 </div>
       
     </li>
@@ -1144,8 +1139,7 @@ the drag and drop</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>A convenience method that performs click-and-hold at the location of the
-source element, moves by a given offset, then releases the mouse.</p>
+<p>A convenience method that performs click-and-hold at the location of the source element, moves by a given offset, then releases the mouse.</p>
 
 
   </div>
@@ -1224,11 +1218,12 @@ source element, moves by a given offset, then releases the mouse.</p>
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
-<p>optional name of the PointerInput device with the button that will perform
-the drag and drop</p>
+<p>optional name of the PointerInput device with the button that will perform the drag and drop</p>
 </div>
       
     </li>
@@ -1293,9 +1288,7 @@ the drag and drop</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Moves the mouse from its current position by the given offset. If the
-coordinates provided are outside the viewport (the mouse will end up
-outside the browser window) then the viewport is scrolled to match.</p>
+<p>Moves the mouse from its current position by the given offset. If the coordinates provided are outside the viewport (the mouse will end up outside the browser window) then the viewport is scrolled to match.</p>
 
 
   </div>
@@ -1356,6 +1349,8 @@ outside the browser window) then the viewport is scrolled to match.</p>
       
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -1449,12 +1444,9 @@ outside the browser window) then the viewport is scrolled to match.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Moves the mouse to the middle of the given element. The element is scrolled
-into view and its location is calculated using getBoundingClientRect.  Then
-the mouse is moved to optional offset coordinates from the element.</p>
+<p>Moves the mouse to the middle of the given element. The element is scrolled into view and its location is calculated using getBoundingClientRect.  Then the mouse is moved to optional offset coordinates from the element.</p>
 
-<p>This is adapted to be backward compatible from non- actions.  calculates
-offset from the center point of the element</p>
+<p>This is adapted to be backward compatible from non- actions.  calculates offset from the center point of the element</p>
 
 <p>Note that when using offsets, both coordinates need to be passed.</p>
 
@@ -1513,8 +1505,7 @@ offset from the center point of the element</p>
       
         &mdash;
         <div class='inline'>
-<p>Optional offset from the top-left corner. A negative value means
-coordinates to the left of the element.</p>
+<p>Optional offset from the top-left corner. A negative value means coordinates to the left of the element.</p>
 </div>
       
     </li>
@@ -1532,8 +1523,7 @@ coordinates to the left of the element.</p>
       
         &mdash;
         <div class='inline'>
-<p>Optional offset from the top-left corner. A negative value means
-coordinates above the element.</p>
+<p>Optional offset from the top-left corner. A negative value means coordinates above the element.</p>
 </div>
       
     </li>
@@ -1545,6 +1535,8 @@ coordinates above the element.</p>
       
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -1642,9 +1634,7 @@ coordinates above the element.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Moves the mouse to a given location in the viewport. If the coordinates
-provided are outside the viewport (the mouse will end up outside the
-browser window) then the viewport is scrolled to match.</p>
+<p>Moves the mouse to a given location in the viewport. If the coordinates provided are outside the viewport (the mouse will end up outside the browser window) then the viewport is scrolled to match.</p>
 
 
   </div>
@@ -1705,6 +1695,8 @@ browser window) then the viewport is scrolled to match.</p>
       
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -1798,8 +1790,7 @@ browser window) then the viewport is scrolled to match.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Presses (without releasing) at the current location of the PointerInput
-device. This is equivalent to:</p>
+<p>Presses (without releasing) at the current location of the PointerInput device. This is equivalent to:</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='kw'>nil</span><span class='rparen'>)</span>
 </code></pre>
@@ -1848,11 +1839,12 @@ device. This is equivalent to:</p>
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
-<p>optional name of the PointerInput device with the button that will be
-pressed</p>
+<p>optional name of the PointerInput device with the button that will be pressed</p>
 </div>
       
     </li>
@@ -1911,8 +1903,7 @@ pressed</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Releases the pressed mouse button at the current mouse location of the
-PointerInput device.</p>
+<p>Releases the pressed mouse button at the current mouse location of the PointerInput device.</p>
 
 
   </div>
@@ -1958,11 +1949,12 @@ PointerInput device.</p>
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
-<p>optional name of the PointerInput device with the button that will be
-released</p>
+<p>optional name of the PointerInput device with the button that will be released</p>
 </div>
       
     </li>
@@ -2052,11 +2044,12 @@ released</p>
         <span class='type'>(<tt>Symbol || String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
-<p>optional name of the PointerInput device with the button that will be
-released</p>
+<p>optional name of the PointerInput device with the button that will be released</p>
 </div>
       
     </li>
@@ -2110,9 +2103,9 @@ released</p>
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:37 2019 by
+  Generated on Fri May 29 06:55:41 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

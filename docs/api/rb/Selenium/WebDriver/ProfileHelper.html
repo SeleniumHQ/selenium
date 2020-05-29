@@ -6,15 +6,15 @@
 <title>
   Module: Selenium::WebDriver::ProfileHelper
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::ProfileHelper";
   relpath = '../../';
 </script>
@@ -95,8 +95,7 @@
   You should avoid using this module if possible, as it may be removed or be changed in the future.
 </p>
 
-<p>Common methods for Chrome::Profile and Firefox::Profile Includers must
-implement #layout_on_disk</p>
+<p>Common methods for Chrome::Profile and Firefox::Profile Includers must implement #layout_on_disk</p>
 
 
   </div>
@@ -128,6 +127,28 @@ implement #layout_on_disk</p>
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#decoded-class_method" title="decoded (class method)">.<strong>decoded</strong>(json)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -185,6 +206,28 @@ implement #layout_on_disk</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#encoded-instance_method" title="#encoded (instance method)">#<strong>encoded</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#to_json-instance_method" title="#to_json (instance method)">#<strong>to_json</strong>  &#x21d2; Object </a>
     
 
@@ -214,7 +257,50 @@ implement #layout_on_disk</p>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="included-class_method">
+  <h3 class="signature first" id="decoded-class_method">
+  
+    .<strong>decoded</strong>(json)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+34
+35
+36</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 34</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_decoded'>decoded</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='rparen'>)</span>
+  <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>zip</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="included-class_method">
   
     .<strong>included</strong>(base)  &#x21d2; <tt>Object</tt> 
   
@@ -290,15 +376,58 @@ implement #layout_on_disk</p>
       <pre class="lines">
 
 
-34
-35
-36</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
-  <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>zip</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='const'><span class='object_link'><a href="Zipper.html" title="Selenium::WebDriver::Zipper (module)">Zipper</a></span></span><span class='period'>.</span><span class='id identifier rubyid_zip'><span class='object_link'><a href="Zipper.html#zip-class_method" title="Selenium::WebDriver::Zipper.zip (method)">zip</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rparen'>)</span><span class='rbrace'>}</span>
+  <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>zip</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_encoded'>encoded</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="encoded-instance_method">
+  
+    #<strong>encoded</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 38</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_encoded'>encoded</span>
+  <span class='const'><span class='object_link'><a href="Zipper.html" title="Selenium::WebDriver::Zipper (module)">Zipper</a></span></span><span class='period'>.</span><span class='id identifier rubyid_zip'><span class='object_link'><a href="Zipper.html#zip-class_method" title="Selenium::WebDriver::Zipper.zip (method)">zip</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -333,12 +462,12 @@ implement #layout_on_disk</p>
       <pre class="lines">
 
 
-38
-39
-40</pre>
+46
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span> <span class='id identifier rubyid_as_json'>as_json</span>
@@ -353,9 +482,9 @@ implement #layout_on_disk</p>
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:36 2019 by
+  Generated on Fri May 29 06:55:40 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

@@ -6,15 +6,15 @@
 <title>
   Class: Selenium::WebDriver::Wait
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::Wait";
   relpath = '../../';
 </script>
@@ -428,8 +428,8 @@
     <span class='kw'>begin</span>
       <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='kw'>yield</span>
       <span class='kw'>return</span> <span class='id identifier rubyid_result'>result</span> <span class='kw'>if</span> <span class='id identifier rubyid_result'>result</span>
-    <span class='kw'>rescue</span> <span class='op'>*</span><span class='ivar'>@ignored</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_last_error'>last_error</span>
-      <span class='comment'># swallowed
+    <span class='kw'>rescue</span> <span class='op'>*</span><span class='ivar'>@ignored</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_last_error'>last_error</span> <span class='comment'># rubocop:disable Naming/RescuedExceptionsVariableName
+</span>      <span class='comment'># swallowed
 </span>    <span class='kw'>end</span>
 
     <span class='id identifier rubyid_sleep'>sleep</span> <span class='ivar'>@interval</span>
@@ -455,9 +455,9 @@
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:37 2019 by
+  Generated on Fri May 29 06:55:41 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

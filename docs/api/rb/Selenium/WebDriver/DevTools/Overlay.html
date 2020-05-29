@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: Selenium::WebDriver::DevTools::Overlay
+  
+    &mdash; Documentation by YARD 0.9.25
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "Selenium::WebDriver::DevTools::Overlay";
+  relpath = '../../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../../_index.html">Index (O)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../DevTools.html" title="Selenium::WebDriver::DevTools (class)">DevTools</a></span></span>
+     &raquo; 
+    <span class="title">Overlay</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: Selenium::WebDriver::DevTools::Overlay
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::DevTools::Overlay</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>build/rb/lib/selenium/webdriver/devtools/overlay.rb</dd>
+  </dl>
+  
+</div>
+
+
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="EVENTS-constant" class="">EVENTS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='label'>inspect_node_requested:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>inspectNodeRequested</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>node_highlight_requested:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>nodeHighlightRequested</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>screenshot_requested:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>screenshotRequested</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>inspect_mode_canceled:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>inspectModeCanceled</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+<span class='rbrace'>}</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#disable-instance_method" title="#disable (instance method)">#<strong>disable</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#enable-instance_method" title="#enable (instance method)">#<strong>enable</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_highlight_object_for_test-instance_method" title="#get_highlight_object_for_test (instance method)">#<strong>get_highlight_object_for_test</strong>(node_id:, include_distance: nil, include_style: nil, color_format: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#hide_highlight-instance_method" title="#hide_highlight (instance method)">#<strong>hide_highlight</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#highlight_frame-instance_method" title="#highlight_frame (instance method)">#<strong>highlight_frame</strong>(frame_id:, content_color: nil, content_outline_color: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#highlight_node-instance_method" title="#highlight_node (instance method)">#<strong>highlight_node</strong>(highlight_config:, node_id: nil, backend_node_id: nil, object_id: nil, selector: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#highlight_quad-instance_method" title="#highlight_quad (instance method)">#<strong>highlight_quad</strong>(quad:, color: nil, outline_color: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#highlight_rect-instance_method" title="#highlight_rect (instance method)">#<strong>highlight_rect</strong>(x:, y:, width:, height:, color: nil, outline_color: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(devtools)  &#x21d2; Overlay </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Overlay.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#on-instance_method" title="#on (instance method)">#<strong>on</strong>(event, &amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_inspect_mode-instance_method" title="#set_inspect_mode (instance method)">#<strong>set_inspect_mode</strong>(mode:, highlight_config: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_paused_in_debugger_message-instance_method" title="#set_paused_in_debugger_message (instance method)">#<strong>set_paused_in_debugger_message</strong>(message: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_ad_highlights-instance_method" title="#set_show_ad_highlights (instance method)">#<strong>set_show_ad_highlights</strong>(show:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_debug_borders-instance_method" title="#set_show_debug_borders (instance method)">#<strong>set_show_debug_borders</strong>(show:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_fpscounter-instance_method" title="#set_show_fpscounter (instance method)">#<strong>set_show_fpscounter</strong>(show:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_hinge-instance_method" title="#set_show_hinge (instance method)">#<strong>set_show_hinge</strong>(hinge_config: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_hit_test_borders-instance_method" title="#set_show_hit_test_borders (instance method)">#<strong>set_show_hit_test_borders</strong>(show:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_layout_shift_regions-instance_method" title="#set_show_layout_shift_regions (instance method)">#<strong>set_show_layout_shift_regions</strong>(result:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_paint_rects-instance_method" title="#set_show_paint_rects (instance method)">#<strong>set_show_paint_rects</strong>(result:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_scroll_bottleneck_rects-instance_method" title="#set_show_scroll_bottleneck_rects (instance method)">#<strong>set_show_scroll_bottleneck_rects</strong>(show:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_show_viewport_size_on_resize-instance_method" title="#set_show_viewport_size_on_resize (instance method)">#<strong>set_show_viewport_size_on_resize</strong>(show:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(devtools)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DevTools::Overlay (class)">Overlay</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of Overlay.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+36
+37
+38</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 36</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_devtools'>devtools</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span> <span class='op'>=</span> <span class='id identifier rubyid_devtools'>devtools</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="disable-instance_method">
+  
+    #<strong>disable</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+45
+46
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 45</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_disable'>disable</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.disable</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="enable-instance_method">
+  
+    #<strong>enable</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+49
+50
+51</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_enable'>enable</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.enable</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_highlight_object_for_test-instance_method">
+  
+    #<strong>get_highlight_object_for_test</strong>(node_id:, include_distance: nil, include_style: nil, color_format: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56
+57
+58
+59</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_highlight_object_for_test'>get_highlight_object_for_test</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>include_distance:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>include_style:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>color_format:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.getHighlightObjectForTest</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>includeDistance:</span> <span class='id identifier rubyid_include_distance'>include_distance</span><span class='comma'>,</span>
+                     <span class='label'>includeStyle:</span> <span class='id identifier rubyid_include_style'>include_style</span><span class='comma'>,</span>
+                     <span class='label'>colorFormat:</span> <span class='id identifier rubyid_color_format'>color_format</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="hide_highlight-instance_method">
+  
+    #<strong>hide_highlight</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+61
+62
+63</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 61</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_hide_highlight'>hide_highlight</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.hideHighlight</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="highlight_frame-instance_method">
+  
+    #<strong>highlight_frame</strong>(frame_id:, content_color: nil, content_outline_color: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+65
+66
+67
+68
+69
+70</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 65</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_highlight_frame'>highlight_frame</span><span class='lparen'>(</span><span class='label'>frame_id:</span><span class='comma'>,</span> <span class='label'>content_color:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>content_outline_color:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.highlightFrame</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>frameId:</span> <span class='id identifier rubyid_frame_id'>frame_id</span><span class='comma'>,</span>
+                     <span class='label'>contentColor:</span> <span class='id identifier rubyid_content_color'>content_color</span><span class='comma'>,</span>
+                     <span class='label'>contentOutlineColor:</span> <span class='id identifier rubyid_content_outline_color'>content_outline_color</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="highlight_node-instance_method">
+  
+    #<strong>highlight_node</strong>(highlight_config:, node_id: nil, backend_node_id: nil, object_id: nil, selector: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+72
+73
+74
+75
+76
+77
+78
+79</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 72</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_highlight_node'>highlight_node</span><span class='lparen'>(</span><span class='label'>highlight_config:</span><span class='comma'>,</span> <span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>selector:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.highlightNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>highlightConfig:</span> <span class='id identifier rubyid_highlight_config'>highlight_config</span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='comma'>,</span>
+                     <span class='label'>selector:</span> <span class='id identifier rubyid_selector'>selector</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="highlight_quad-instance_method">
+  
+    #<strong>highlight_quad</strong>(quad:, color: nil, outline_color: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+81
+82
+83
+84
+85
+86</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 81</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_highlight_quad'>highlight_quad</span><span class='lparen'>(</span><span class='label'>quad:</span><span class='comma'>,</span> <span class='label'>color:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>outline_color:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.highlightQuad</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>quad:</span> <span class='id identifier rubyid_quad'>quad</span><span class='comma'>,</span>
+                     <span class='label'>color:</span> <span class='id identifier rubyid_color'>color</span><span class='comma'>,</span>
+                     <span class='label'>outlineColor:</span> <span class='id identifier rubyid_outline_color'>outline_color</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="highlight_rect-instance_method">
+  
+    #<strong>highlight_rect</strong>(x:, y:, width:, height:, color: nil, outline_color: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+88
+89
+90
+91
+92
+93
+94
+95
+96</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 88</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_highlight_rect'>highlight_rect</span><span class='lparen'>(</span><span class='label'>x:</span><span class='comma'>,</span> <span class='label'>y:</span><span class='comma'>,</span> <span class='label'>width:</span><span class='comma'>,</span> <span class='label'>height:</span><span class='comma'>,</span> <span class='label'>color:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>outline_color:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.highlightRect</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span>
+                     <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span>
+                     <span class='label'>width:</span> <span class='id identifier rubyid_width'>width</span><span class='comma'>,</span>
+                     <span class='label'>height:</span> <span class='id identifier rubyid_height'>height</span><span class='comma'>,</span>
+                     <span class='label'>color:</span> <span class='id identifier rubyid_color'>color</span><span class='comma'>,</span>
+                     <span class='label'>outlineColor:</span> <span class='id identifier rubyid_outline_color'>outline_color</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="on-instance_method">
+  
+    #<strong>on</strong>(event, &amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+40
+41
+42
+43</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 40</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_on'>on</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_event'>event</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#EVENTS-constant" title="Selenium::WebDriver::DevTools::Overlay::EVENTS (constant)">EVENTS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_event'>event</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_callbacks'>callbacks</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Overlay.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_event'>event</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_block'>block</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_inspect_mode-instance_method">
+  
+    #<strong>set_inspect_mode</strong>(mode:, highlight_config: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+98
+99
+100
+101
+102</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 98</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_inspect_mode'>set_inspect_mode</span><span class='lparen'>(</span><span class='label'>mode:</span><span class='comma'>,</span> <span class='label'>highlight_config:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setInspectMode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>mode:</span> <span class='id identifier rubyid_mode'>mode</span><span class='comma'>,</span>
+                     <span class='label'>highlightConfig:</span> <span class='id identifier rubyid_highlight_config'>highlight_config</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_paused_in_debugger_message-instance_method">
+  
+    #<strong>set_paused_in_debugger_message</strong>(message: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+109
+110
+111
+112</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 109</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_paused_in_debugger_message'>set_paused_in_debugger_message</span><span class='lparen'>(</span><span class='label'>message:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setPausedInDebuggerMessage</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>message:</span> <span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_ad_highlights-instance_method">
+  
+    #<strong>set_show_ad_highlights</strong>(show:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+104
+105
+106
+107</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 104</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_ad_highlights'>set_show_ad_highlights</span><span class='lparen'>(</span><span class='label'>show:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowAdHighlights</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>show:</span> <span class='id identifier rubyid_show'>show</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_debug_borders-instance_method">
+  
+    #<strong>set_show_debug_borders</strong>(show:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+114
+115
+116
+117</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 114</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_debug_borders'>set_show_debug_borders</span><span class='lparen'>(</span><span class='label'>show:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowDebugBorders</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>show:</span> <span class='id identifier rubyid_show'>show</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_fpscounter-instance_method">
+  
+    #<strong>set_show_fpscounter</strong>(show:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+119
+120
+121
+122</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 119</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_fpscounter'>set_show_fpscounter</span><span class='lparen'>(</span><span class='label'>show:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowFPSCounter</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>show:</span> <span class='id identifier rubyid_show'>show</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_hinge-instance_method">
+  
+    #<strong>set_show_hinge</strong>(hinge_config: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+149
+150
+151
+152</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 149</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_hinge'>set_show_hinge</span><span class='lparen'>(</span><span class='label'>hinge_config:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowHinge</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>hingeConfig:</span> <span class='id identifier rubyid_hinge_config'>hinge_config</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_hit_test_borders-instance_method">
+  
+    #<strong>set_show_hit_test_borders</strong>(show:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+139
+140
+141
+142</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 139</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_hit_test_borders'>set_show_hit_test_borders</span><span class='lparen'>(</span><span class='label'>show:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowHitTestBorders</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>show:</span> <span class='id identifier rubyid_show'>show</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_layout_shift_regions-instance_method">
+  
+    #<strong>set_show_layout_shift_regions</strong>(result:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+129
+130
+131
+132</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 129</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_layout_shift_regions'>set_show_layout_shift_regions</span><span class='lparen'>(</span><span class='label'>result:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowLayoutShiftRegions</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>result:</span> <span class='id identifier rubyid_result'>result</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_paint_rects-instance_method">
+  
+    #<strong>set_show_paint_rects</strong>(result:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+124
+125
+126
+127</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 124</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_paint_rects'>set_show_paint_rects</span><span class='lparen'>(</span><span class='label'>result:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowPaintRects</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>result:</span> <span class='id identifier rubyid_result'>result</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_scroll_bottleneck_rects-instance_method">
+  
+    #<strong>set_show_scroll_bottleneck_rects</strong>(show:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+134
+135
+136
+137</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 134</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_scroll_bottleneck_rects'>set_show_scroll_bottleneck_rects</span><span class='lparen'>(</span><span class='label'>show:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowScrollBottleneckRects</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>show:</span> <span class='id identifier rubyid_show'>show</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_show_viewport_size_on_resize-instance_method">
+  
+    #<strong>set_show_viewport_size_on_resize</strong>(show:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+144
+145
+146
+147</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/overlay.rb', line 144</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_show_viewport_size_on_resize'>set_show_viewport_size_on_resize</span><span class='lparen'>(</span><span class='label'>show:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Overlay.setShowViewportSizeOnResize</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>show:</span> <span class='id identifier rubyid_show'>show</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Fri May 29 06:55:44 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.25 (ruby-2.7.0).
+</div>
+
+    </div>
+  </body>
+</html>

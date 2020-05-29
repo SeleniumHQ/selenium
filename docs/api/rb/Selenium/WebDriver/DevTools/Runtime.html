@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: Selenium::WebDriver::DevTools::Runtime
+  
+    &mdash; Documentation by YARD 0.9.25
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "Selenium::WebDriver::DevTools::Runtime";
+  relpath = '../../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../../_index.html">Index (R)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../DevTools.html" title="Selenium::WebDriver::DevTools (class)">DevTools</a></span></span>
+     &raquo; 
+    <span class="title">Runtime</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: Selenium::WebDriver::DevTools::Runtime
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::DevTools::Runtime</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>build/rb/lib/selenium/webdriver/devtools/runtime.rb</dd>
+  </dl>
+  
+</div>
+
+
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="EVENTS-constant" class="">EVENTS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='label'>binding_called:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>bindingCalled</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>console_apicalled:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>consoleAPICalled</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>exception_revoked:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>exceptionRevoked</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>exception_thrown:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>exceptionThrown</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>execution_context_created:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>executionContextCreated</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>execution_context_destroyed:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>executionContextDestroyed</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>execution_contexts_cleared:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>executionContextsCleared</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>inspect_requested:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>inspectRequested</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+<span class='rbrace'>}</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_binding-instance_method" title="#add_binding (instance method)">#<strong>add_binding</strong>(name:, execution_context_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#await_promise-instance_method" title="#await_promise (instance method)">#<strong>await_promise</strong>(promise_object_id:, return_by_value: nil, generate_preview: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#call_function_on-instance_method" title="#call_function_on (instance method)">#<strong>call_function_on</strong>(function_declaration:, object_id: nil, arguments: nil, silent: nil, return_by_value: nil, generate_preview: nil, user_gesture: nil, await_promise: nil, execution_context_id: nil, object_group: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#compile_script-instance_method" title="#compile_script (instance method)">#<strong>compile_script</strong>(expression:, source_url:, persist_script:, execution_context_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#disable-instance_method" title="#disable (instance method)">#<strong>disable</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#discard_console_entries-instance_method" title="#discard_console_entries (instance method)">#<strong>discard_console_entries</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#enable-instance_method" title="#enable (instance method)">#<strong>enable</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#evaluate-instance_method" title="#evaluate (instance method)">#<strong>evaluate</strong>(expression:, object_group: nil, include_command_line_api: nil, silent: nil, context_id: nil, return_by_value: nil, generate_preview: nil, user_gesture: nil, await_promise: nil, throw_on_side_effect: nil, timeout: nil, disable_breaks: nil, repl_mode: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_heap_usage-instance_method" title="#get_heap_usage (instance method)">#<strong>get_heap_usage</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_isolate_id-instance_method" title="#get_isolate_id (instance method)">#<strong>get_isolate_id</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_properties-instance_method" title="#get_properties (instance method)">#<strong>get_properties</strong>(object_id:, own_properties: nil, accessor_properties_only: nil, generate_preview: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#global_lexical_scope_names-instance_method" title="#global_lexical_scope_names (instance method)">#<strong>global_lexical_scope_names</strong>(execution_context_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(devtools)  &#x21d2; Runtime </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of Runtime.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#on-instance_method" title="#on (instance method)">#<strong>on</strong>(event, &amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#query_objects-instance_method" title="#query_objects (instance method)">#<strong>query_objects</strong>(prototype_object_id:, object_group: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#release_object-instance_method" title="#release_object (instance method)">#<strong>release_object</strong>(object_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#release_object_group-instance_method" title="#release_object_group (instance method)">#<strong>release_object_group</strong>(object_group:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_binding-instance_method" title="#remove_binding (instance method)">#<strong>remove_binding</strong>(name:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#run_if_waiting_for_debugger-instance_method" title="#run_if_waiting_for_debugger (instance method)">#<strong>run_if_waiting_for_debugger</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#run_script-instance_method" title="#run_script (instance method)">#<strong>run_script</strong>(script_id:, execution_context_id: nil, object_group: nil, silent: nil, include_command_line_api: nil, return_by_value: nil, generate_preview: nil, await_promise: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_async_call_stack_depth-instance_method" title="#set_async_call_stack_depth (instance method)">#<strong>set_async_call_stack_depth</strong>(max_depth:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_custom_object_formatter_enabled-instance_method" title="#set_custom_object_formatter_enabled (instance method)">#<strong>set_custom_object_formatter_enabled</strong>(enabled:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_max_call_stack_size_to_capture-instance_method" title="#set_max_call_stack_size_to_capture (instance method)">#<strong>set_max_call_stack_size_to_capture</strong>(size:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#terminate_execution-instance_method" title="#terminate_execution (instance method)">#<strong>terminate_execution</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(devtools)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DevTools::Runtime (class)">Runtime</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of Runtime.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+40
+41
+42</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 40</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_devtools'>devtools</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span> <span class='op'>=</span> <span class='id identifier rubyid_devtools'>devtools</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="add_binding-instance_method">
+  
+    #<strong>add_binding</strong>(name:, execution_context_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+179
+180
+181
+182
+183</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 179</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_binding'>add_binding</span><span class='lparen'>(</span><span class='label'>name:</span><span class='comma'>,</span> <span class='label'>execution_context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.addBinding</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span>
+                     <span class='label'>executionContextId:</span> <span class='id identifier rubyid_execution_context_id'>execution_context_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="await_promise-instance_method">
+  
+    #<strong>await_promise</strong>(promise_object_id:, return_by_value: nil, generate_preview: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+49
+50
+51
+52
+53
+54</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_await_promise'>await_promise</span><span class='lparen'>(</span><span class='label'>promise_object_id:</span><span class='comma'>,</span> <span class='label'>return_by_value:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>generate_preview:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.awaitPromise</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>promiseObjectId:</span> <span class='id identifier rubyid_promise_object_id'>promise_object_id</span><span class='comma'>,</span>
+                     <span class='label'>returnByValue:</span> <span class='id identifier rubyid_return_by_value'>return_by_value</span><span class='comma'>,</span>
+                     <span class='label'>generatePreview:</span> <span class='id identifier rubyid_generate_preview'>generate_preview</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="call_function_on-instance_method">
+  
+    #<strong>call_function_on</strong>(function_declaration:, object_id: nil, arguments: nil, silent: nil, return_by_value: nil, generate_preview: nil, user_gesture: nil, await_promise: nil, execution_context_id: nil, object_group: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 56</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_call_function_on'>call_function_on</span><span class='lparen'>(</span><span class='label'>function_declaration:</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>arguments:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>silent:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>return_by_value:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>generate_preview:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>user_gesture:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>await_promise:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>execution_context_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_group:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.callFunctionOn</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>functionDeclaration:</span> <span class='id identifier rubyid_function_declaration'>function_declaration</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='comma'>,</span>
+                     <span class='label'>arguments:</span> <span class='id identifier rubyid_arguments'>arguments</span><span class='comma'>,</span>
+                     <span class='label'>silent:</span> <span class='id identifier rubyid_silent'>silent</span><span class='comma'>,</span>
+                     <span class='label'>returnByValue:</span> <span class='id identifier rubyid_return_by_value'>return_by_value</span><span class='comma'>,</span>
+                     <span class='label'>generatePreview:</span> <span class='id identifier rubyid_generate_preview'>generate_preview</span><span class='comma'>,</span>
+                     <span class='label'>userGesture:</span> <span class='id identifier rubyid_user_gesture'>user_gesture</span><span class='comma'>,</span>
+                     <span class='label'>awaitPromise:</span> <span class='id identifier rubyid_await_promise'>await_promise</span><span class='comma'>,</span>
+                     <span class='label'>executionContextId:</span> <span class='id identifier rubyid_execution_context_id'>execution_context_id</span><span class='comma'>,</span>
+                     <span class='label'>objectGroup:</span> <span class='id identifier rubyid_object_group'>object_group</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="compile_script-instance_method">
+  
+    #<strong>compile_script</strong>(expression:, source_url:, persist_script:, execution_context_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+70
+71
+72
+73
+74
+75
+76</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 70</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_compile_script'>compile_script</span><span class='lparen'>(</span><span class='label'>expression:</span><span class='comma'>,</span> <span class='label'>source_url:</span><span class='comma'>,</span> <span class='label'>persist_script:</span><span class='comma'>,</span> <span class='label'>execution_context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.compileScript</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>expression:</span> <span class='id identifier rubyid_expression'>expression</span><span class='comma'>,</span>
+                     <span class='label'>sourceURL:</span> <span class='id identifier rubyid_source_url'>source_url</span><span class='comma'>,</span>
+                     <span class='label'>persistScript:</span> <span class='id identifier rubyid_persist_script'>persist_script</span><span class='comma'>,</span>
+                     <span class='label'>executionContextId:</span> <span class='id identifier rubyid_execution_context_id'>execution_context_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="disable-instance_method">
+  
+    #<strong>disable</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+78
+79
+80</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 78</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_disable'>disable</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.disable</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="discard_console_entries-instance_method">
+  
+    #<strong>discard_console_entries</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+82
+83
+84</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 82</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_discard_console_entries'>discard_console_entries</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.discardConsoleEntries</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="enable-instance_method">
+  
+    #<strong>enable</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+86
+87
+88</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 86</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_enable'>enable</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.enable</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="evaluate-instance_method">
+  
+    #<strong>evaluate</strong>(expression:, object_group: nil, include_command_line_api: nil, silent: nil, context_id: nil, return_by_value: nil, generate_preview: nil, user_gesture: nil, await_promise: nil, throw_on_side_effect: nil, timeout: nil, disable_breaks: nil, repl_mode: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 90</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_evaluate'>evaluate</span><span class='lparen'>(</span><span class='label'>expression:</span><span class='comma'>,</span> <span class='label'>object_group:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>include_command_line_api:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>silent:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>context_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>return_by_value:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>generate_preview:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>user_gesture:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>await_promise:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>throw_on_side_effect:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>timeout:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>disable_breaks:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>repl_mode:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.evaluate</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>expression:</span> <span class='id identifier rubyid_expression'>expression</span><span class='comma'>,</span>
+                     <span class='label'>objectGroup:</span> <span class='id identifier rubyid_object_group'>object_group</span><span class='comma'>,</span>
+                     <span class='label'>includeCommandLineAPI:</span> <span class='id identifier rubyid_include_command_line_api'>include_command_line_api</span><span class='comma'>,</span>
+                     <span class='label'>silent:</span> <span class='id identifier rubyid_silent'>silent</span><span class='comma'>,</span>
+                     <span class='label'>contextId:</span> <span class='id identifier rubyid_context_id'>context_id</span><span class='comma'>,</span>
+                     <span class='label'>returnByValue:</span> <span class='id identifier rubyid_return_by_value'>return_by_value</span><span class='comma'>,</span>
+                     <span class='label'>generatePreview:</span> <span class='id identifier rubyid_generate_preview'>generate_preview</span><span class='comma'>,</span>
+                     <span class='label'>userGesture:</span> <span class='id identifier rubyid_user_gesture'>user_gesture</span><span class='comma'>,</span>
+                     <span class='label'>awaitPromise:</span> <span class='id identifier rubyid_await_promise'>await_promise</span><span class='comma'>,</span>
+                     <span class='label'>throwOnSideEffect:</span> <span class='id identifier rubyid_throw_on_side_effect'>throw_on_side_effect</span><span class='comma'>,</span>
+                     <span class='label'>timeout:</span> <span class='id identifier rubyid_timeout'>timeout</span><span class='comma'>,</span>
+                     <span class='label'>disableBreaks:</span> <span class='id identifier rubyid_disable_breaks'>disable_breaks</span><span class='comma'>,</span>
+                     <span class='label'>replMode:</span> <span class='id identifier rubyid_repl_mode'>repl_mode</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_heap_usage-instance_method">
+  
+    #<strong>get_heap_usage</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+111
+112
+113</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 111</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_heap_usage'>get_heap_usage</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.getHeapUsage</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_isolate_id-instance_method">
+  
+    #<strong>get_isolate_id</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+107
+108
+109</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 107</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_isolate_id'>get_isolate_id</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.getIsolateId</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_properties-instance_method">
+  
+    #<strong>get_properties</strong>(object_id:, own_properties: nil, accessor_properties_only: nil, generate_preview: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+115
+116
+117
+118
+119
+120
+121</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 115</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_properties'>get_properties</span><span class='lparen'>(</span><span class='label'>object_id:</span><span class='comma'>,</span> <span class='label'>own_properties:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>accessor_properties_only:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>generate_preview:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.getProperties</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='comma'>,</span>
+                     <span class='label'>ownProperties:</span> <span class='id identifier rubyid_own_properties'>own_properties</span><span class='comma'>,</span>
+                     <span class='label'>accessorPropertiesOnly:</span> <span class='id identifier rubyid_accessor_properties_only'>accessor_properties_only</span><span class='comma'>,</span>
+                     <span class='label'>generatePreview:</span> <span class='id identifier rubyid_generate_preview'>generate_preview</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="global_lexical_scope_names-instance_method">
+  
+    #<strong>global_lexical_scope_names</strong>(execution_context_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+123
+124
+125
+126</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 123</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_global_lexical_scope_names'>global_lexical_scope_names</span><span class='lparen'>(</span><span class='label'>execution_context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.globalLexicalScopeNames</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>executionContextId:</span> <span class='id identifier rubyid_execution_context_id'>execution_context_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="on-instance_method">
+  
+    #<strong>on</strong>(event, &amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+44
+45
+46
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 44</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_on'>on</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_event'>event</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#EVENTS-constant" title="Selenium::WebDriver::DevTools::Runtime::EVENTS (constant)">EVENTS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_event'>event</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_callbacks'>callbacks</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Runtime.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_event'>event</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_block'>block</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="query_objects-instance_method">
+  
+    #<strong>query_objects</strong>(prototype_object_id:, object_group: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+128
+129
+130
+131
+132</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 128</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_query_objects'>query_objects</span><span class='lparen'>(</span><span class='label'>prototype_object_id:</span><span class='comma'>,</span> <span class='label'>object_group:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.queryObjects</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>prototypeObjectId:</span> <span class='id identifier rubyid_prototype_object_id'>prototype_object_id</span><span class='comma'>,</span>
+                     <span class='label'>objectGroup:</span> <span class='id identifier rubyid_object_group'>object_group</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="release_object-instance_method">
+  
+    #<strong>release_object</strong>(object_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+134
+135
+136
+137</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 134</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_release_object'>release_object</span><span class='lparen'>(</span><span class='label'>object_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.releaseObject</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="release_object_group-instance_method">
+  
+    #<strong>release_object_group</strong>(object_group:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+139
+140
+141
+142</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 139</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_release_object_group'>release_object_group</span><span class='lparen'>(</span><span class='label'>object_group:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.releaseObjectGroup</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>objectGroup:</span> <span class='id identifier rubyid_object_group'>object_group</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_binding-instance_method">
+  
+    #<strong>remove_binding</strong>(name:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+185
+186
+187
+188</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 185</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_binding'>remove_binding</span><span class='lparen'>(</span><span class='label'>name:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.removeBinding</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="run_if_waiting_for_debugger-instance_method">
+  
+    #<strong>run_if_waiting_for_debugger</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+144
+145
+146</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 144</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_run_if_waiting_for_debugger'>run_if_waiting_for_debugger</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.runIfWaitingForDebugger</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="run_script-instance_method">
+  
+    #<strong>run_script</strong>(script_id:, execution_context_id: nil, object_group: nil, silent: nil, include_command_line_api: nil, return_by_value: nil, generate_preview: nil, await_promise: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 148</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_run_script'>run_script</span><span class='lparen'>(</span><span class='label'>script_id:</span><span class='comma'>,</span> <span class='label'>execution_context_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_group:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>silent:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>include_command_line_api:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>return_by_value:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>generate_preview:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>await_promise:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.runScript</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>scriptId:</span> <span class='id identifier rubyid_script_id'>script_id</span><span class='comma'>,</span>
+                     <span class='label'>executionContextId:</span> <span class='id identifier rubyid_execution_context_id'>execution_context_id</span><span class='comma'>,</span>
+                     <span class='label'>objectGroup:</span> <span class='id identifier rubyid_object_group'>object_group</span><span class='comma'>,</span>
+                     <span class='label'>silent:</span> <span class='id identifier rubyid_silent'>silent</span><span class='comma'>,</span>
+                     <span class='label'>includeCommandLineAPI:</span> <span class='id identifier rubyid_include_command_line_api'>include_command_line_api</span><span class='comma'>,</span>
+                     <span class='label'>returnByValue:</span> <span class='id identifier rubyid_return_by_value'>return_by_value</span><span class='comma'>,</span>
+                     <span class='label'>generatePreview:</span> <span class='id identifier rubyid_generate_preview'>generate_preview</span><span class='comma'>,</span>
+                     <span class='label'>awaitPromise:</span> <span class='id identifier rubyid_await_promise'>await_promise</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_async_call_stack_depth-instance_method">
+  
+    #<strong>set_async_call_stack_depth</strong>(max_depth:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+160
+161
+162
+163</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 160</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_async_call_stack_depth'>set_async_call_stack_depth</span><span class='lparen'>(</span><span class='label'>max_depth:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.setAsyncCallStackDepth</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>maxDepth:</span> <span class='id identifier rubyid_max_depth'>max_depth</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_custom_object_formatter_enabled-instance_method">
+  
+    #<strong>set_custom_object_formatter_enabled</strong>(enabled:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+165
+166
+167
+168</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 165</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_custom_object_formatter_enabled'>set_custom_object_formatter_enabled</span><span class='lparen'>(</span><span class='label'>enabled:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.setCustomObjectFormatterEnabled</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>enabled:</span> <span class='id identifier rubyid_enabled'>enabled</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_max_call_stack_size_to_capture-instance_method">
+  
+    #<strong>set_max_call_stack_size_to_capture</strong>(size:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+170
+171
+172
+173</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 170</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_max_call_stack_size_to_capture'>set_max_call_stack_size_to_capture</span><span class='lparen'>(</span><span class='label'>size:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.setMaxCallStackSizeToCapture</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>size:</span> <span class='id identifier rubyid_size'>size</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="terminate_execution-instance_method">
+  
+    #<strong>terminate_execution</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+175
+176
+177</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/runtime.rb', line 175</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_terminate_execution'>terminate_execution</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Runtime.terminateExecution</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Fri May 29 06:55:44 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.25 (ruby-2.7.0).
+</div>
+
+    </div>
+  </body>
+</html>

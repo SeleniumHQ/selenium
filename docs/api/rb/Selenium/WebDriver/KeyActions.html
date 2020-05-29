@@ -6,15 +6,15 @@
 <title>
   Module: Selenium::WebDriver::KeyActions
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::KeyActions";
   relpath = '../../';
 </script>
@@ -200,10 +200,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Performs a key press. Does not release the key - subsequent interactions
-may assume it&#39;s kept pressed. Note that the key is never released
-implicitly - either ActionBuilder#key_up(key) or
-ActionBuilder#release_actions must be called to release the key.</p>
+<p>Performs a key press. Does not release the key - subsequent interactions may assume it&#39;s kept pressed. Note that the key is never released implicitly - either ActionBuilder#key_up(key) or ActionBuilder#release_actions must be called to release the key.</p>
 
 
   </div>
@@ -272,6 +269,8 @@ ActionBuilder#release_actions must be called to release the key.</p>
         <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
@@ -338,6 +337,8 @@ ActionBuilder#release_actions must be called to release the key.</p>
       
         <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -411,8 +412,7 @@ ActionBuilder#release_actions must be called to release the key.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Performs a key release. Releasing a non-depressed key will yield undefined
-behaviour.</p>
+<p>Performs a key release. Releasing a non-depressed key will yield undefined behaviour.</p>
 
 
   </div>
@@ -481,6 +481,8 @@ behaviour.</p>
         <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
@@ -547,6 +549,8 @@ behaviour.</p>
       
         <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -620,13 +624,11 @@ behaviour.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Sends keys to the active element. This differs from calling
-Element#send_keys(keys) on the active element in two ways:</p>
+<p>Sends keys to the active element. This differs from calling Element#send_keys(keys) on the active element in two ways:</p>
 <ul><li>
 <p>The modifier keys included in this call are not released.</p>
 </li><li>
-<p>There is no attempt to re-focus the element - so send_keys(:tab) for
-switching elements should work.</p>
+<p>There is no attempt to re-focus the element - so send_keys(:tab) for switching elements should work.</p>
 </li></ul>
 
 
@@ -696,6 +698,8 @@ switching elements should work.</p>
         <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
@@ -762,6 +766,8 @@ switching elements should work.</p>
       
         <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -834,9 +840,9 @@ switching elements should work.</p>
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:37 2019 by
+  Generated on Fri May 29 06:55:40 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>

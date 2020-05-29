@@ -1,0 +1,2798 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: Selenium::WebDriver::DevTools::DOM
+  
+    &mdash; Documentation by YARD 0.9.25
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "Selenium::WebDriver::DevTools::DOM";
+  relpath = '../../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../../_index.html">Index (D)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../DevTools.html" title="Selenium::WebDriver::DevTools (class)">DevTools</a></span></span>
+     &raquo; 
+    <span class="title">DOM</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: Selenium::WebDriver::DevTools::DOM
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::DevTools::DOM</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>build/rb/lib/selenium/webdriver/devtools/dom.rb</dd>
+  </dl>
+  
+</div>
+
+
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="EVENTS-constant" class="">EVENTS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='label'>attribute_modified:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>attributeModified</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>attribute_removed:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>attributeRemoved</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>character_data_modified:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>characterDataModified</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>child_node_count_updated:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>childNodeCountUpdated</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>child_node_inserted:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>childNodeInserted</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>child_node_removed:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>childNodeRemoved</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>distributed_nodes_updated:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>distributedNodesUpdated</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>document_updated:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>documentUpdated</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>inline_style_invalidated:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>inlineStyleInvalidated</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>pseudo_element_added:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>pseudoElementAdded</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>pseudo_element_removed:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>pseudoElementRemoved</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>set_child_nodes:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>setChildNodes</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>shadow_root_popped:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>shadowRootPopped</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>shadow_root_pushed:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>shadowRootPushed</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+<span class='rbrace'>}</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#collect_class_names_from_subtree-instance_method" title="#collect_class_names_from_subtree (instance method)">#<strong>collect_class_names_from_subtree</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#copy_to-instance_method" title="#copy_to (instance method)">#<strong>copy_to</strong>(node_id:, target_node_id:, insert_before_node_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#describe_node-instance_method" title="#describe_node (instance method)">#<strong>describe_node</strong>(node_id: nil, backend_node_id: nil, object_id: nil, depth: nil, pierce: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#disable-instance_method" title="#disable (instance method)">#<strong>disable</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#discard_search_results-instance_method" title="#discard_search_results (instance method)">#<strong>discard_search_results</strong>(search_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#enable-instance_method" title="#enable (instance method)">#<strong>enable</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#focus-instance_method" title="#focus (instance method)">#<strong>focus</strong>(node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_attributes-instance_method" title="#get_attributes (instance method)">#<strong>get_attributes</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_box_model-instance_method" title="#get_box_model (instance method)">#<strong>get_box_model</strong>(node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_content_quads-instance_method" title="#get_content_quads (instance method)">#<strong>get_content_quads</strong>(node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_document-instance_method" title="#get_document (instance method)">#<strong>get_document</strong>(depth: nil, pierce: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_file_info-instance_method" title="#get_file_info (instance method)">#<strong>get_file_info</strong>(object_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_flattened_document-instance_method" title="#get_flattened_document (instance method)">#<strong>get_flattened_document</strong>(depth: nil, pierce: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_frame_owner-instance_method" title="#get_frame_owner (instance method)">#<strong>get_frame_owner</strong>(frame_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_node_for_location-instance_method" title="#get_node_for_location (instance method)">#<strong>get_node_for_location</strong>(x:, y:, include_user_agent_shadow_dom: nil, ignore_pointer_events_none: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_node_stack_traces-instance_method" title="#get_node_stack_traces (instance method)">#<strong>get_node_stack_traces</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_outer_html-instance_method" title="#get_outer_html (instance method)">#<strong>get_outer_html</strong>(node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_relayout_boundary-instance_method" title="#get_relayout_boundary (instance method)">#<strong>get_relayout_boundary</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_search_results-instance_method" title="#get_search_results (instance method)">#<strong>get_search_results</strong>(search_id:, from_index:, to_index:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#hide_highlight-instance_method" title="#hide_highlight (instance method)">#<strong>hide_highlight</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#highlight_node-instance_method" title="#highlight_node (instance method)">#<strong>highlight_node</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#highlight_rect-instance_method" title="#highlight_rect (instance method)">#<strong>highlight_rect</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(devtools)  &#x21d2; DOM </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>A new instance of DOM.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#mark_undoable_state-instance_method" title="#mark_undoable_state (instance method)">#<strong>mark_undoable_state</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#move_to-instance_method" title="#move_to (instance method)">#<strong>move_to</strong>(node_id:, target_node_id:, insert_before_node_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#on-instance_method" title="#on (instance method)">#<strong>on</strong>(event, &amp;block)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#perform_search-instance_method" title="#perform_search (instance method)">#<strong>perform_search</strong>(query:, include_user_agent_shadow_dom: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#push_node_by_path_to_frontend-instance_method" title="#push_node_by_path_to_frontend (instance method)">#<strong>push_node_by_path_to_frontend</strong>(path:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#push_nodes_by_backend_ids_to_frontend-instance_method" title="#push_nodes_by_backend_ids_to_frontend (instance method)">#<strong>push_nodes_by_backend_ids_to_frontend</strong>(backend_node_ids:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#query_selector-instance_method" title="#query_selector (instance method)">#<strong>query_selector</strong>(node_id:, selector:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#query_selector_all-instance_method" title="#query_selector_all (instance method)">#<strong>query_selector_all</strong>(node_id:, selector:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#redo-instance_method" title="#redo (instance method)">#<strong>redo</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_attribute-instance_method" title="#remove_attribute (instance method)">#<strong>remove_attribute</strong>(node_id:, name:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_node-instance_method" title="#remove_node (instance method)">#<strong>remove_node</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#request_child_nodes-instance_method" title="#request_child_nodes (instance method)">#<strong>request_child_nodes</strong>(node_id:, depth: nil, pierce: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#request_node-instance_method" title="#request_node (instance method)">#<strong>request_node</strong>(object_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#resolve_node-instance_method" title="#resolve_node (instance method)">#<strong>resolve_node</strong>(node_id: nil, backend_node_id: nil, object_group: nil, execution_context_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#scroll_into_view_if_needed-instance_method" title="#scroll_into_view_if_needed (instance method)">#<strong>scroll_into_view_if_needed</strong>(node_id: nil, backend_node_id: nil, object_id: nil, rect: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_attribute_value-instance_method" title="#set_attribute_value (instance method)">#<strong>set_attribute_value</strong>(node_id:, name:, value:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_attributes_as_text-instance_method" title="#set_attributes_as_text (instance method)">#<strong>set_attributes_as_text</strong>(node_id:, text:, name: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_file_input_files-instance_method" title="#set_file_input_files (instance method)">#<strong>set_file_input_files</strong>(files:, node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_inspected_node-instance_method" title="#set_inspected_node (instance method)">#<strong>set_inspected_node</strong>(node_id:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_node_name-instance_method" title="#set_node_name (instance method)">#<strong>set_node_name</strong>(node_id:, name:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_node_stack_traces_enabled-instance_method" title="#set_node_stack_traces_enabled (instance method)">#<strong>set_node_stack_traces_enabled</strong>(enable:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_node_value-instance_method" title="#set_node_value (instance method)">#<strong>set_node_value</strong>(node_id:, value:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_outer_html-instance_method" title="#set_outer_html (instance method)">#<strong>set_outer_html</strong>(node_id:, outer_html:)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#undo-instance_method" title="#undo (instance method)">#<strong>undo</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(devtools)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::DevTools::DOM (class)">DOM</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns a new instance of DOM.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_devtools'>devtools</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span> <span class='op'>=</span> <span class='id identifier rubyid_devtools'>devtools</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="collect_class_names_from_subtree-instance_method">
+  
+    #<strong>collect_class_names_from_subtree</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+55
+56
+57
+58</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 55</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_collect_class_names_from_subtree'>collect_class_names_from_subtree</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.collectClassNamesFromSubtree</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="copy_to-instance_method">
+  
+    #<strong>copy_to</strong>(node_id:, target_node_id:, insert_before_node_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+60
+61
+62
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 60</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_copy_to'>copy_to</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>target_node_id:</span><span class='comma'>,</span> <span class='label'>insert_before_node_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.copyTo</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>targetNodeId:</span> <span class='id identifier rubyid_target_node_id'>target_node_id</span><span class='comma'>,</span>
+                     <span class='label'>insertBeforeNodeId:</span> <span class='id identifier rubyid_insert_before_node_id'>insert_before_node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="describe_node-instance_method">
+  
+    #<strong>describe_node</strong>(node_id: nil, backend_node_id: nil, object_id: nil, depth: nil, pierce: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69
+70
+71
+72
+73
+74</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 67</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_describe_node'>describe_node</span><span class='lparen'>(</span><span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>depth:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>pierce:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.describeNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='comma'>,</span>
+                     <span class='label'>depth:</span> <span class='id identifier rubyid_depth'>depth</span><span class='comma'>,</span>
+                     <span class='label'>pierce:</span> <span class='id identifier rubyid_pierce'>pierce</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="disable-instance_method">
+  
+    #<strong>disable</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+84
+85
+86</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 84</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_disable'>disable</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.disable</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="discard_search_results-instance_method">
+  
+    #<strong>discard_search_results</strong>(search_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+88
+89
+90
+91</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 88</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_discard_search_results'>discard_search_results</span><span class='lparen'>(</span><span class='label'>search_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.discardSearchResults</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>searchId:</span> <span class='id identifier rubyid_search_id'>search_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="enable-instance_method">
+  
+    #<strong>enable</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+93
+94
+95</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 93</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_enable'>enable</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.enable</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="focus-instance_method">
+  
+    #<strong>focus</strong>(node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99
+100
+101
+102</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 97</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_focus'>focus</span><span class='lparen'>(</span><span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.focus</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_attributes-instance_method">
+  
+    #<strong>get_attributes</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+104
+105
+106
+107</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 104</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_attributes'>get_attributes</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getAttributes</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_box_model-instance_method">
+  
+    #<strong>get_box_model</strong>(node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+109
+110
+111
+112
+113
+114</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 109</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_box_model'>get_box_model</span><span class='lparen'>(</span><span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getBoxModel</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_content_quads-instance_method">
+  
+    #<strong>get_content_quads</strong>(node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+116
+117
+118
+119
+120
+121</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 116</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_content_quads'>get_content_quads</span><span class='lparen'>(</span><span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getContentQuads</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_document-instance_method">
+  
+    #<strong>get_document</strong>(depth: nil, pierce: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+123
+124
+125
+126
+127</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 123</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_document'>get_document</span><span class='lparen'>(</span><span class='label'>depth:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>pierce:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getDocument</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>depth:</span> <span class='id identifier rubyid_depth'>depth</span><span class='comma'>,</span>
+                     <span class='label'>pierce:</span> <span class='id identifier rubyid_pierce'>pierce</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_file_info-instance_method">
+  
+    #<strong>get_file_info</strong>(object_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+280
+281
+282
+283</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 280</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_file_info'>get_file_info</span><span class='lparen'>(</span><span class='label'>object_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getFileInfo</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_flattened_document-instance_method">
+  
+    #<strong>get_flattened_document</strong>(depth: nil, pierce: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+129
+130
+131
+132
+133</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 129</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_flattened_document'>get_flattened_document</span><span class='lparen'>(</span><span class='label'>depth:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>pierce:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getFlattenedDocument</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>depth:</span> <span class='id identifier rubyid_depth'>depth</span><span class='comma'>,</span>
+                     <span class='label'>pierce:</span> <span class='id identifier rubyid_pierce'>pierce</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_frame_owner-instance_method">
+  
+    #<strong>get_frame_owner</strong>(frame_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+312
+313
+314
+315</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 312</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_frame_owner'>get_frame_owner</span><span class='lparen'>(</span><span class='label'>frame_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getFrameOwner</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>frameId:</span> <span class='id identifier rubyid_frame_id'>frame_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_node_for_location-instance_method">
+  
+    #<strong>get_node_for_location</strong>(x:, y:, include_user_agent_shadow_dom: nil, ignore_pointer_events_none: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+135
+136
+137
+138
+139
+140
+141</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 135</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_node_for_location'>get_node_for_location</span><span class='lparen'>(</span><span class='label'>x:</span><span class='comma'>,</span> <span class='label'>y:</span><span class='comma'>,</span> <span class='label'>include_user_agent_shadow_dom:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>ignore_pointer_events_none:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getNodeForLocation</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span>
+                     <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span>
+                     <span class='label'>includeUserAgentShadowDOM:</span> <span class='id identifier rubyid_include_user_agent_shadow_dom'>include_user_agent_shadow_dom</span><span class='comma'>,</span>
+                     <span class='label'>ignorePointerEventsNone:</span> <span class='id identifier rubyid_ignore_pointer_events_none'>ignore_pointer_events_none</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_node_stack_traces-instance_method">
+  
+    #<strong>get_node_stack_traces</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+275
+276
+277
+278</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 275</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_node_stack_traces'>get_node_stack_traces</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getNodeStackTraces</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_outer_html-instance_method">
+  
+    #<strong>get_outer_html</strong>(node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+143
+144
+145
+146
+147
+148</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 143</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_outer_html'>get_outer_html</span><span class='lparen'>(</span><span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getOuterHTML</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_relayout_boundary-instance_method">
+  
+    #<strong>get_relayout_boundary</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+150
+151
+152
+153</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 150</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_relayout_boundary'>get_relayout_boundary</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getRelayoutBoundary</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="get_search_results-instance_method">
+  
+    #<strong>get_search_results</strong>(search_id:, from_index:, to_index:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+155
+156
+157
+158
+159
+160</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 155</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_get_search_results'>get_search_results</span><span class='lparen'>(</span><span class='label'>search_id:</span><span class='comma'>,</span> <span class='label'>from_index:</span><span class='comma'>,</span> <span class='label'>to_index:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.getSearchResults</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>searchId:</span> <span class='id identifier rubyid_search_id'>search_id</span><span class='comma'>,</span>
+                     <span class='label'>fromIndex:</span> <span class='id identifier rubyid_from_index'>from_index</span><span class='comma'>,</span>
+                     <span class='label'>toIndex:</span> <span class='id identifier rubyid_to_index'>to_index</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="hide_highlight-instance_method">
+  
+    #<strong>hide_highlight</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+162
+163
+164</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 162</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_hide_highlight'>hide_highlight</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.hideHighlight</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="highlight_node-instance_method">
+  
+    #<strong>highlight_node</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+166
+167
+168</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 166</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_highlight_node'>highlight_node</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.highlightNode</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="highlight_rect-instance_method">
+  
+    #<strong>highlight_rect</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+170
+171
+172</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 170</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_highlight_rect'>highlight_rect</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.highlightRect</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="mark_undoable_state-instance_method">
+  
+    #<strong>mark_undoable_state</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+174
+175
+176</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 174</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_mark_undoable_state'>mark_undoable_state</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.markUndoableState</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="move_to-instance_method">
+  
+    #<strong>move_to</strong>(node_id:, target_node_id:, insert_before_node_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+178
+179
+180
+181
+182
+183</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 178</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>target_node_id:</span><span class='comma'>,</span> <span class='label'>insert_before_node_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.moveTo</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>targetNodeId:</span> <span class='id identifier rubyid_target_node_id'>target_node_id</span><span class='comma'>,</span>
+                     <span class='label'>insertBeforeNodeId:</span> <span class='id identifier rubyid_insert_before_node_id'>insert_before_node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="on-instance_method">
+  
+    #<strong>on</strong>(event, &amp;block)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+50
+51
+52
+53</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 50</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_on'>on</span><span class='lparen'>(</span><span class='id identifier rubyid_event'>event</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_event'>event</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#EVENTS-constant" title="Selenium::WebDriver::DevTools::DOM::EVENTS (constant)">EVENTS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_event'>event</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_event'>event</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_callbacks'>callbacks</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>DOM.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_event'>event</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_block'>block</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="perform_search-instance_method">
+  
+    #<strong>perform_search</strong>(query:, include_user_agent_shadow_dom: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+185
+186
+187
+188
+189</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 185</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_perform_search'>perform_search</span><span class='lparen'>(</span><span class='label'>query:</span><span class='comma'>,</span> <span class='label'>include_user_agent_shadow_dom:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.performSearch</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>query:</span> <span class='id identifier rubyid_query'>query</span><span class='comma'>,</span>
+                     <span class='label'>includeUserAgentShadowDOM:</span> <span class='id identifier rubyid_include_user_agent_shadow_dom'>include_user_agent_shadow_dom</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="push_node_by_path_to_frontend-instance_method">
+  
+    #<strong>push_node_by_path_to_frontend</strong>(path:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+191
+192
+193
+194</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 191</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_push_node_by_path_to_frontend'>push_node_by_path_to_frontend</span><span class='lparen'>(</span><span class='label'>path:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.pushNodeByPathToFrontend</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>path:</span> <span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="push_nodes_by_backend_ids_to_frontend-instance_method">
+  
+    #<strong>push_nodes_by_backend_ids_to_frontend</strong>(backend_node_ids:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+196
+197
+198
+199</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 196</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_push_nodes_by_backend_ids_to_frontend'>push_nodes_by_backend_ids_to_frontend</span><span class='lparen'>(</span><span class='label'>backend_node_ids:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.pushNodesByBackendIdsToFrontend</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>backendNodeIds:</span> <span class='id identifier rubyid_backend_node_ids'>backend_node_ids</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="query_selector-instance_method">
+  
+    #<strong>query_selector</strong>(node_id:, selector:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+201
+202
+203
+204
+205</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 201</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_query_selector'>query_selector</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>selector:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.querySelector</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>selector:</span> <span class='id identifier rubyid_selector'>selector</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="query_selector_all-instance_method">
+  
+    #<strong>query_selector_all</strong>(node_id:, selector:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+207
+208
+209
+210
+211</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 207</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_query_selector_all'>query_selector_all</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>selector:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.querySelectorAll</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>selector:</span> <span class='id identifier rubyid_selector'>selector</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="redo-instance_method">
+  
+    #<strong>redo</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+213
+214
+215</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 213</span>
+
+<span class='kw'>def</span> <span class='kw'>redo</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.redo</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_attribute-instance_method">
+  
+    #<strong>remove_attribute</strong>(node_id:, name:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+217
+218
+219
+220
+221</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 217</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_attribute'>remove_attribute</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>name:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.removeAttribute</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_node-instance_method">
+  
+    #<strong>remove_node</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+223
+224
+225
+226</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 223</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_node'>remove_node</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.removeNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="request_child_nodes-instance_method">
+  
+    #<strong>request_child_nodes</strong>(node_id:, depth: nil, pierce: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+228
+229
+230
+231
+232
+233</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 228</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_request_child_nodes'>request_child_nodes</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>depth:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>pierce:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.requestChildNodes</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>depth:</span> <span class='id identifier rubyid_depth'>depth</span><span class='comma'>,</span>
+                     <span class='label'>pierce:</span> <span class='id identifier rubyid_pierce'>pierce</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="request_node-instance_method">
+  
+    #<strong>request_node</strong>(object_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+235
+236
+237
+238</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 235</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_request_node'>request_node</span><span class='lparen'>(</span><span class='label'>object_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.requestNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="resolve_node-instance_method">
+  
+    #<strong>resolve_node</strong>(node_id: nil, backend_node_id: nil, object_group: nil, execution_context_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+240
+241
+242
+243
+244
+245
+246</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 240</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_resolve_node'>resolve_node</span><span class='lparen'>(</span><span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_group:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>execution_context_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.resolveNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectGroup:</span> <span class='id identifier rubyid_object_group'>object_group</span><span class='comma'>,</span>
+                     <span class='label'>executionContextId:</span> <span class='id identifier rubyid_execution_context_id'>execution_context_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="scroll_into_view_if_needed-instance_method">
+  
+    #<strong>scroll_into_view_if_needed</strong>(node_id: nil, backend_node_id: nil, object_id: nil, rect: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+76
+77
+78
+79
+80
+81
+82</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 76</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_scroll_into_view_if_needed'>scroll_into_view_if_needed</span><span class='lparen'>(</span><span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>rect:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.scrollIntoViewIfNeeded</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='comma'>,</span>
+                     <span class='label'>rect:</span> <span class='id identifier rubyid_rect'>rect</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_attribute_value-instance_method">
+  
+    #<strong>set_attribute_value</strong>(node_id:, name:, value:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+248
+249
+250
+251
+252
+253</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 248</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_attribute_value'>set_attribute_value</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>name:</span><span class='comma'>,</span> <span class='label'>value:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.setAttributeValue</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span>
+                     <span class='label'>value:</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_attributes_as_text-instance_method">
+  
+    #<strong>set_attributes_as_text</strong>(node_id:, text:, name: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+255
+256
+257
+258
+259
+260</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 255</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_attributes_as_text'>set_attributes_as_text</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>text:</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.setAttributesAsText</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>text:</span> <span class='id identifier rubyid_text'>text</span><span class='comma'>,</span>
+                     <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_file_input_files-instance_method">
+  
+    #<strong>set_file_input_files</strong>(files:, node_id: nil, backend_node_id: nil, object_id: nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+262
+263
+264
+265
+266
+267
+268</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 262</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_file_input_files'>set_file_input_files</span><span class='lparen'>(</span><span class='label'>files:</span><span class='comma'>,</span> <span class='label'>node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>backend_node_id:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>object_id:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.setFileInputFiles</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>files:</span> <span class='id identifier rubyid_files'>files</span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>backendNodeId:</span> <span class='id identifier rubyid_backend_node_id'>backend_node_id</span><span class='comma'>,</span>
+                     <span class='label'>objectId:</span> <span class='id identifier rubyid_object_id'>object_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_inspected_node-instance_method">
+  
+    #<strong>set_inspected_node</strong>(node_id:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+285
+286
+287
+288</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 285</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_inspected_node'>set_inspected_node</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.setInspectedNode</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_node_name-instance_method">
+  
+    #<strong>set_node_name</strong>(node_id:, name:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+290
+291
+292
+293
+294</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 290</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_node_name'>set_node_name</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>name:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.setNodeName</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_node_stack_traces_enabled-instance_method">
+  
+    #<strong>set_node_stack_traces_enabled</strong>(enable:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+270
+271
+272
+273</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 270</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_node_stack_traces_enabled'>set_node_stack_traces_enabled</span><span class='lparen'>(</span><span class='label'>enable:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.setNodeStackTracesEnabled</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>enable:</span> <span class='id identifier rubyid_enable'>enable</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_node_value-instance_method">
+  
+    #<strong>set_node_value</strong>(node_id:, value:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+296
+297
+298
+299
+300</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 296</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_node_value'>set_node_value</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>value:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.setNodeValue</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>value:</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_outer_html-instance_method">
+  
+    #<strong>set_outer_html</strong>(node_id:, outer_html:)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+302
+303
+304
+305
+306</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 302</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_outer_html'>set_outer_html</span><span class='lparen'>(</span><span class='label'>node_id:</span><span class='comma'>,</span> <span class='label'>outer_html:</span><span class='rparen'>)</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.setOuterHTML</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+                     <span class='label'>nodeId:</span> <span class='id identifier rubyid_node_id'>node_id</span><span class='comma'>,</span>
+                     <span class='label'>outerHTML:</span> <span class='id identifier rubyid_outer_html'>outer_html</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="undo-instance_method">
+  
+    #<strong>undo</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+308
+309
+310</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/devtools/dom.rb', line 308</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_undo'>undo</span>
+  <span class='ivar'>@devtools</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DOM.undo</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Fri May 29 06:55:42 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.25 (ruby-2.7.0).
+</div>
+
+    </div>
+  </body>
+</html>

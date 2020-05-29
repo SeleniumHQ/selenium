@@ -4,17 +4,17 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Module: Selenium::WebDriver::Safari::Bridge
+  Class: Selenium::WebDriver::Safari::Bridge
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.25
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "Selenium::WebDriver::Safari::Bridge";
   relpath = '../../../';
 </script>
@@ -59,12 +59,30 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Module: Selenium::WebDriver::Safari::Bridge
+      <div id="content"><h1>Class: Selenium::WebDriver::Safari::Bridge
   
   
   
 </h1>
 <div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName"><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next"><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></li>
+          
+            <li class="next">Selenium::WebDriver::Safari::Bridge</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
   
 
   
@@ -96,8 +114,7 @@
           <div class="docstring">
   <div class="discussion">
     
-<p><a
-href="https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html">developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html</a></p>
+<p><a href="https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html">developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html</a></p>
 
 
   </div>
@@ -108,9 +125,9 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
 </div>
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='label'>get_permissions:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/permissions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>set_permissions:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/permissions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>attach_debugger:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/attach_debugger</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='label'>get_permissions:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/apple/permissions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>set_permissions:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/apple/permissions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>attach_debugger:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/apple/attach_debugger</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
@@ -118,8 +135,19 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
 
 
 
+  
+  
+  <h3 class="inherited">Constants inherited
+     from <span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Remote/Bridge.html#PORT-constant" title="Selenium::WebDriver::Remote::Bridge::PORT (constant)">Remote::Bridge::PORT</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#QUIT_ERRORS-constant" title="Selenium::WebDriver::Remote::Bridge::QUIT_ERRORS (constant)">Remote::Bridge::QUIT_ERRORS</a></span></p>
 
 
+
+
+  <h2>Instance Attribute Summary</h2>
+  
+  <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Remote/Bridge.html#capabilities-instance_method" title="Selenium::WebDriver::Remote::Bridge#capabilities (method)">#capabilities</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#context-instance_method" title="Selenium::WebDriver::Remote::Bridge#context (method)">#context</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#file_detector-instance_method" title="Selenium::WebDriver::Remote::Bridge#file_detector (method)">#file_detector</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#http-instance_method" title="Selenium::WebDriver::Remote::Bridge#http (method)">#http</a></span></p>
 
 
   
@@ -221,6 +249,29 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
     </ul>
   
 
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Remote::Bridge</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Remote/Bridge.html#accept_alert-instance_method" title="Selenium::WebDriver::Remote::Bridge#accept_alert (method)">#accept_alert</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#action-instance_method" title="Selenium::WebDriver::Remote::Bridge#action (method)">#action</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#active_element-instance_method" title="Selenium::WebDriver::Remote::Bridge#active_element (method)">#active_element</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#add_cookie-instance_method" title="Selenium::WebDriver::Remote::Bridge#add_cookie (method)">#add_cookie</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#alert=-instance_method" title="Selenium::WebDriver::Remote::Bridge#alert= (method)">#alert=</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#alert_text-instance_method" title="Selenium::WebDriver::Remote::Bridge#alert_text (method)">#alert_text</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#browser-instance_method" title="Selenium::WebDriver::Remote::Bridge#browser (method)">#browser</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#clear_element-instance_method" title="Selenium::WebDriver::Remote::Bridge#clear_element (method)">#clear_element</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#clear_local_storage-instance_method" title="Selenium::WebDriver::Remote::Bridge#clear_local_storage (method)">#clear_local_storage</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#clear_session_storage-instance_method" title="Selenium::WebDriver::Remote::Bridge#clear_session_storage (method)">#clear_session_storage</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#click_element-instance_method" title="Selenium::WebDriver::Remote::Bridge#click_element (method)">#click_element</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#close-instance_method" title="Selenium::WebDriver::Remote::Bridge#close (method)">#close</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#cookie-instance_method" title="Selenium::WebDriver::Remote::Bridge#cookie (method)">#cookie</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#cookies-instance_method" title="Selenium::WebDriver::Remote::Bridge#cookies (method)">#cookies</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#create_session-instance_method" title="Selenium::WebDriver::Remote::Bridge#create_session (method)">#create_session</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#delete_all_cookies-instance_method" title="Selenium::WebDriver::Remote::Bridge#delete_all_cookies (method)">#delete_all_cookies</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#delete_cookie-instance_method" title="Selenium::WebDriver::Remote::Bridge#delete_cookie (method)">#delete_cookie</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#dismiss_alert-instance_method" title="Selenium::WebDriver::Remote::Bridge#dismiss_alert (method)">#dismiss_alert</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_attribute-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_attribute (method)">#element_attribute</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_displayed%3F-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_displayed? (method)">#element_displayed?</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_enabled%3F-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_enabled? (method)">#element_enabled?</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_location-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_location (method)">#element_location</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_location_once_scrolled_into_view-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_location_once_scrolled_into_view (method)">#element_location_once_scrolled_into_view</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_property-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_property (method)">#element_property</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_rect-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_rect (method)">#element_rect</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_selected%3F-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_selected? (method)">#element_selected?</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_size-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_size (method)">#element_size</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_tag_name-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_tag_name (method)">#element_tag_name</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_text-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_text (method)">#element_text</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_value-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_value (method)">#element_value</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#element_value_of_css_property-instance_method" title="Selenium::WebDriver::Remote::Bridge#element_value_of_css_property (method)">#element_value_of_css_property</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#execute_async_script-instance_method" title="Selenium::WebDriver::Remote::Bridge#execute_async_script (method)">#execute_async_script</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#execute_script-instance_method" title="Selenium::WebDriver::Remote::Bridge#execute_script (method)">#execute_script</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#find_element_by-instance_method" title="Selenium::WebDriver::Remote::Bridge#find_element_by (method)">#find_element_by</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#find_elements_by-instance_method" title="Selenium::WebDriver::Remote::Bridge#find_elements_by (method)">#find_elements_by</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#full_screen_window-instance_method" title="Selenium::WebDriver::Remote::Bridge#full_screen_window (method)">#full_screen_window</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#get-instance_method" title="Selenium::WebDriver::Remote::Bridge#get (method)">#get</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#go_back-instance_method" title="Selenium::WebDriver::Remote::Bridge#go_back (method)">#go_back</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#go_forward-instance_method" title="Selenium::WebDriver::Remote::Bridge#go_forward (method)">#go_forward</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#implicit_wait_timeout=-instance_method" title="Selenium::WebDriver::Remote::Bridge#implicit_wait_timeout= (method)">#implicit_wait_timeout=</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Bridge#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#keyboard-instance_method" title="Selenium::WebDriver::Remote::Bridge#keyboard (method)">#keyboard</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#local_storage_item-instance_method" title="Selenium::WebDriver::Remote::Bridge#local_storage_item (method)">#local_storage_item</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#local_storage_keys-instance_method" title="Selenium::WebDriver::Remote::Bridge#local_storage_keys (method)">#local_storage_keys</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#local_storage_size-instance_method" title="Selenium::WebDriver::Remote::Bridge#local_storage_size (method)">#local_storage_size</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#location-instance_method" title="Selenium::WebDriver::Remote::Bridge#location (method)">#location</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#manage-instance_method" title="Selenium::WebDriver::Remote::Bridge#manage (method)">#manage</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#maximize_window-instance_method" title="Selenium::WebDriver::Remote::Bridge#maximize_window (method)">#maximize_window</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#minimize_window-instance_method" title="Selenium::WebDriver::Remote::Bridge#minimize_window (method)">#minimize_window</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#mouse-instance_method" title="Selenium::WebDriver::Remote::Bridge#mouse (method)">#mouse</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#network_connection-instance_method" title="Selenium::WebDriver::Remote::Bridge#network_connection (method)">#network_connection</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#network_connection=-instance_method" title="Selenium::WebDriver::Remote::Bridge#network_connection= (method)">#network_connection=</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#new_window-instance_method" title="Selenium::WebDriver::Remote::Bridge#new_window (method)">#new_window</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#page_source-instance_method" title="Selenium::WebDriver::Remote::Bridge#page_source (method)">#page_source</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#quit-instance_method" title="Selenium::WebDriver::Remote::Bridge#quit (method)">#quit</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#refresh-instance_method" title="Selenium::WebDriver::Remote::Bridge#refresh (method)">#refresh</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#release_actions-instance_method" title="Selenium::WebDriver::Remote::Bridge#release_actions (method)">#release_actions</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#remove_local_storage_item-instance_method" title="Selenium::WebDriver::Remote::Bridge#remove_local_storage_item (method)">#remove_local_storage_item</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#remove_session_storage_item-instance_method" title="Selenium::WebDriver::Remote::Bridge#remove_session_storage_item (method)">#remove_session_storage_item</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#reposition_window-instance_method" title="Selenium::WebDriver::Remote::Bridge#reposition_window (method)">#reposition_window</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#resize_window-instance_method" title="Selenium::WebDriver::Remote::Bridge#resize_window (method)">#resize_window</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#screen_orientation-instance_method" title="Selenium::WebDriver::Remote::Bridge#screen_orientation (method)">#screen_orientation</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#screen_orientation=-instance_method" title="Selenium::WebDriver::Remote::Bridge#screen_orientation= (method)">#screen_orientation=</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#screenshot-instance_method" title="Selenium::WebDriver::Remote::Bridge#screenshot (method)">#screenshot</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#script_timeout=-instance_method" title="Selenium::WebDriver::Remote::Bridge#script_timeout= (method)">#script_timeout=</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#send_actions-instance_method" title="Selenium::WebDriver::Remote::Bridge#send_actions (method)">#send_actions</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#send_keys_to_element-instance_method" title="Selenium::WebDriver::Remote::Bridge#send_keys_to_element (method)">#send_keys_to_element</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#session_id-instance_method" title="Selenium::WebDriver::Remote::Bridge#session_id (method)">#session_id</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#session_storage_item-instance_method" title="Selenium::WebDriver::Remote::Bridge#session_storage_item (method)">#session_storage_item</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#session_storage_keys-instance_method" title="Selenium::WebDriver::Remote::Bridge#session_storage_keys (method)">#session_storage_keys</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#session_storage_size-instance_method" title="Selenium::WebDriver::Remote::Bridge#session_storage_size (method)">#session_storage_size</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#set_location-instance_method" title="Selenium::WebDriver::Remote::Bridge#set_location (method)">#set_location</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#set_window_rect-instance_method" title="Selenium::WebDriver::Remote::Bridge#set_window_rect (method)">#set_window_rect</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#status-instance_method" title="Selenium::WebDriver::Remote::Bridge#status (method)">#status</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#submit_element-instance_method" title="Selenium::WebDriver::Remote::Bridge#submit_element (method)">#submit_element</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#switch_to_default_content-instance_method" title="Selenium::WebDriver::Remote::Bridge#switch_to_default_content (method)">#switch_to_default_content</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#switch_to_frame-instance_method" title="Selenium::WebDriver::Remote::Bridge#switch_to_frame (method)">#switch_to_frame</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#switch_to_parent_frame-instance_method" title="Selenium::WebDriver::Remote::Bridge#switch_to_parent_frame (method)">#switch_to_parent_frame</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#switch_to_window-instance_method" title="Selenium::WebDriver::Remote::Bridge#switch_to_window (method)">#switch_to_window</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#timeout-instance_method" title="Selenium::WebDriver::Remote::Bridge#timeout (method)">#timeout</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#title-instance_method" title="Selenium::WebDriver::Remote::Bridge#title (method)">#title</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#upload-instance_method" title="Selenium::WebDriver::Remote::Bridge#upload (method)">#upload</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#url-instance_method" title="Selenium::WebDriver::Remote::Bridge#url (method)">#url</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#window_handle-instance_method" title="Selenium::WebDriver::Remote::Bridge#window_handle (method)">#window_handle</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#window_handles-instance_method" title="Selenium::WebDriver::Remote::Bridge#window_handles (method)">#window_handles</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#window_position-instance_method" title="Selenium::WebDriver::Remote::Bridge#window_position (method)">#window_position</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#window_rect-instance_method" title="Selenium::WebDriver::Remote::Bridge#window_rect (method)">#window_rect</a></span>, <span class='object_link'><a href="../Remote/Bridge.html#window_size-instance_method" title="Selenium::WebDriver::Remote::Bridge#window_size (method)">#window_size</a></span></p>
+
+  
+  
+  
+  
+  
+  <div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <p class="notice">This class inherits a constructor from <span class='object_link'><a href="../Remote/Bridge.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Bridge#initialize (method)">Selenium::WebDriver::Remote::Bridge</a></span></p>
+  
+</div>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -352,9 +403,9 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
 </div>
 
       <div id="footer">
-  Generated on Thu May  2 09:58:36 2019 by
+  Generated on Fri May 29 06:55:43 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.6).
+  0.9.25 (ruby-2.7.0).
 </div>
 
     </div>
