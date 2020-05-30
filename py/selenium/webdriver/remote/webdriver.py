@@ -41,6 +41,8 @@ from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
 
+from six import add_metaclass
+
 try:
     str = basestring
 except NameError:
@@ -114,14 +116,14 @@ def get_remote_connection(capabilities, command_executor, keep_alive):
     return handler(command_executor, keep_alive=keep_alive)
 
 
+@add_metaclass(ABCMeta)
 class BaseWebDriver(object):
     """
     Abstract Base Class for all Webdriver subtypes.
     ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
     will succeed.
     """
-    __metaclass__ = ABCMeta
-    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove all Python 2 metaclass declarations.
+    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove metaclass decorator.
 
 
 class WebDriver(BaseWebDriver):
