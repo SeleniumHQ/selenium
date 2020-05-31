@@ -53,7 +53,7 @@ function requireAtom(module, bazelTarget) {
   } catch (ex) {
     try {
       const file = bazelTarget.slice(2).replace(':', '/');
-      return require(`../../../../bazel-genfiles/${file}`);
+      return require(`../../../../bazel-bin/${file}`);
     } catch (ex2) {
       console.log(ex2);
       throw Error(
