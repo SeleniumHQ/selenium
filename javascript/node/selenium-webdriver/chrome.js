@@ -130,6 +130,7 @@
 const http = require('./http');
 const io = require('./io');
 const {Browser, Capabilities} = require('./lib/capabilities');
+const error = require('./lib/error');
 const remote = require('./remote');
 const chromium = require('./chromium');
 
