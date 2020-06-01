@@ -88,7 +88,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public URI getUri(SessionId id) throws NoSuchSessionException {
-    // TODO: getUrl implementation. Required?
+    // TODO: getUri implementation.
     return null;
   }
 
