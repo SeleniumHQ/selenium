@@ -10,15 +10,14 @@ java_export(
     visibility = [
         "//visibility:public",
     ],
-    exports = [
-        # SessionMap is in the public api
-        "//java/server/src/org/openqa/selenium/grid",
-    ],
     deps = [
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
-        "//java/server/src/org/openqa/selenium/grid",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
+        "//java/server/src/org/openqa/selenium/grid/data",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],
