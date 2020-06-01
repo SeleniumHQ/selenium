@@ -44,6 +44,8 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.grid.web.StatusBasedReadinessCheck;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -61,12 +63,14 @@ import java.util.logging.Logger;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
 public class Standalone extends TemplateGridCommand {
 
   private static final Logger LOG = Logger.getLogger("selenium");
+  private static final Json JSON = new Json();
 
   @Override
   public String getName() {
@@ -136,13 +140,15 @@ public class Standalone extends TemplateGridCommand {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     combinedHandler.addHandler(distributor);
     Router router = new Router(tracer, clientFactory, sessions, distributor);
+    StatusBasedReadinessCheck readinessCheck = new StatusBasedReadinessCheck(router, GET, "/status");
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri().toString());
     HttpHandler httpHandler = combine(
       router,
       Route.prefix("/wd/hub").to(combine(router)),
-      Route.post("/graphql").to(() -> graphqlHandler));
+      Route.post("/graphql").to(() -> graphqlHandler),
+      Route.get("/readyz").to(() -> readinessCheck));
 
     LocalNode.Builder nodeBuilder = LocalNode.builder(
       tracer,

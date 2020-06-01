@@ -20,12 +20,14 @@ package org.openqa.selenium.grid.distributor.httpd;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.net.MediaType;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
+import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -38,6 +40,7 @@ import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -46,10 +49,13 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class DistributorServer extends TemplateGridCommand {
@@ -107,6 +113,16 @@ public class DistributorServer extends TemplateGridCommand {
       clientFactory,
       sessions,
       serverOptions.getRegistrationSecret());
+    HttpHandler readinessCheck = req -> {
+      DistributorStatus status = distributor.getStatus();
+      if (status.hasCapacity()) {
+        return new HttpResponse().setStatus(HTTP_NO_CONTENT);
+      }
+      return new HttpResponse()
+        .setStatus(HTTP_INTERNAL_ERROR)
+        .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
+        .setContent(Contents.utf8String("No capacity available"));
+    };
 
     Route handler = Route.combine(
       distributor,
@@ -115,7 +131,8 @@ public class DistributorServer extends TemplateGridCommand {
           .setContent(Contents.asJson(
             ImmutableMap.of("value", ImmutableMap.of(
               "ready", true,
-              "message", "Distributor is ready"))))));
+              "message", "Distributor is ready"))))),
+      get("/readyz").to(() -> readinessCheck));
 
     Server<?> server = new NettyServer(serverOptions, handler);
     server.start();

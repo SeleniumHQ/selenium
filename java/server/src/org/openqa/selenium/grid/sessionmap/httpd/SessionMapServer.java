@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -91,9 +92,10 @@ public class SessionMapServer extends TemplateGridCommand {
         new HttpResponse()
           .addHeader("Content-Type", JSON_UTF_8)
           .setContent(asJson(
-              ImmutableMap.of("value", ImmutableMap.of(
-                "ready", true,
-                "message", "Session map is ready.")))))));
+            ImmutableMap.of("value", ImmutableMap.of(
+              "ready", true,
+              "message", "Session map is ready."))))),
+      get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))));
     server.start();
 
     BuildInfo info = new BuildInfo();
