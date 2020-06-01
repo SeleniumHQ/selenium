@@ -25,6 +25,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -38,6 +41,15 @@ public class SessionMapOptions {
 
   public SessionMapOptions(Config config) {
     this.config = config;
+  }
+
+  public Connection getJdbcConnection() throws SQLException {
+    // TODO get url, username and password if needed
+    return DriverManager.getConnection("someurl");
+  }
+
+  public String getJdbcTableName() {
+    return String.valueOf(config.get(SESSIONS_SECTION, "table"));
   }
 
   public URI getSessionMapUri() {

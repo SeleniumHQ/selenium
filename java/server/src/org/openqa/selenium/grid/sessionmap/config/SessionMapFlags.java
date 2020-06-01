@@ -48,6 +48,12 @@ public class SessionMapFlags implements HasRoles {
   @ConfigValue(section = "sessions", name = "hostname", example = "\"localhost\"")
   private String sessionServerHost;
 
+  @Parameter(
+      names = "--database-table",
+      description = "Table to use for storing session ids.")
+  @ConfigValue(section = "sessions", name = "table", example = "sessions_map")
+  private String table;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(SESSION_MAP_ROLE);
