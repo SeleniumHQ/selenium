@@ -43,7 +43,7 @@ public class SessionSlot implements
     Function<CreateSessionRequest, Optional<ActiveSession>>,
     Predicate<Capabilities>  {
 
-  public static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
+  private static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
   private final EventBus bus;
   private final Capabilities stereotype;
   private final SessionFactory factory;
