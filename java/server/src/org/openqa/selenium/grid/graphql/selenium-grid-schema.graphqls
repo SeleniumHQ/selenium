@@ -1,0 +1,29 @@
+schema {
+  query: GridQuery
+}
+
+scalar Uri
+scalar Url
+
+enum Status {
+  UP
+  DRAINING
+  UNAVAILABLE
+}
+
+type Node {
+  id: ID!
+  uri: Uri!
+  status: Status!
+}
+
+type GridQuery {
+  grid: Grid!
+}
+
+type Grid {
+  url: Url!
+  nodes: [Node!]!
+  totalSlots: Int
+  usedSlots: Int
+}

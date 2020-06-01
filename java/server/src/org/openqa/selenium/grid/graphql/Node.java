@@ -15,41 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.graphql;
+package org.openqa.selenium.grid.graphql;
 
-import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.internal.Require;
 
-import java.util.Objects;
+import java.net.URI;
+import java.util.UUID;
 
-public class Grid {
+public class Node {
 
-  private final String url;
+  private final UUID id;
+  private final URI uri;
+  private final boolean isUp;
 
-  public Grid(String url) {
-    this.url = Objects.requireNonNull(url);
+  public Node(UUID id, URI uri, boolean isUp) {
+    this.id = Require.nonNull("Node id", id);
+    this.uri = Require.nonNull("Node uri", uri);
+    this.isUp = isUp;
   }
 
-  public String getUrl() {
-    return url;
+  public UUID getId() {
+    return id;
   }
 
-  private static Grid fromJson(JsonInput input) {
-    String url = null;
+  public URI getUri() {
+    return uri;
+  }
 
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "url":
-          url = input.nextString();
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-
-    return new Grid(url);
+  public String getStatus() {
+    return isUp ? "UP" : "UNAVAILABLE";
   }
 }
