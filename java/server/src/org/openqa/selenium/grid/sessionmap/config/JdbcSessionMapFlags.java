@@ -17,36 +17,44 @@
 
 package org.openqa.selenium.grid.sessionmap.config;
 
-import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
+import com.beust.jcommander.Parameter;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
 
+
 @AutoService(HasRoles.class)
-public class SessionMapFlags implements HasRoles {
-
-  @Parameter(names = {"-s", "--sessions"}, description = "Address of the session map server.")
-  @ConfigValue(section = "sessions", name = "host", example = "\"http://localhost:1234\"")
-  private URI sessionServer;
+public class JdbcSessionMapFlags implements HasRoles {
 
   @Parameter(
-      names = "--sessions-port",
-      description = "Port on which the session map server is listening.")
-  @ConfigValue(section = "sessions", name = "port", example = "1234")
-  private int sessionServerPort;
+      names = "--jdbc-url",
+      description = "Database URL for making a connection.")
+  @ConfigValue(section = "sessions", name = "jdbc-url", example = "\"jdbc:mysql://localhost:3306/TestDatabase\"")
+  private String jdbcUrl;
 
   @Parameter(
-      names = "--sessions-host",
-      description = "Host on which the session map server is listening.")
-  @ConfigValue(section = "sessions", name = "hostname", example = "\"localhost\"")
-  private String sessionServerHost;
+      names = "--jdbc-user",
+      description = "Username for the user to make a JDBC connection")
+  @ConfigValue(section = "sessions", name = "jdbc-user", example = "mytestUser")
+  private String username;
+
+  @Parameter(
+      names = "--jdbc-password",
+      description = "Password for the user to make a JDBC connection")
+  @ConfigValue(section = "sessions", name = "jdbc-password", example = "myP@ssw%d")
+  private String password;
+
+  @Parameter(
+      names = "--jdbc-table",
+      description = "Name of the table in database to store sessions in.")
+  @ConfigValue(section = "sessions", name = "jdbc-table", example = "myP@ssw%d")
+  private String table;
 
   @Override
   public Set<Role> getRoles() {

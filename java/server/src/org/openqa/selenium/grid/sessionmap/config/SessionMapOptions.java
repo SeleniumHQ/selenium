@@ -44,12 +44,15 @@ public class SessionMapOptions {
   }
 
   public Connection getJdbcConnection() throws SQLException {
-    // TODO get url, username and password if needed
-    return DriverManager.getConnection("someurl");
+    String jdbcUrl = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-url"));
+    String jdbcUser = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-user"));
+    String jdbcPassword = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-password"));
+
+    return DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
   }
 
   public String getJdbcTableName() {
-    return String.valueOf(config.get(SESSIONS_SECTION, "table"));
+    return String.valueOf(config.get(SESSIONS_SECTION, "jdbc-table"));
   }
 
   public URI getSessionMapUri() {
