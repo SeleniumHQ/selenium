@@ -33,7 +33,7 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE
 @AutoService(HasRoles.class)
 public class DistributorFlags implements HasRoles {
 
-  @Parameter(names = {"-d", "--distributor", "--distributor-host"}, description = "Address of the distributor.")
+  @Parameter(names = {"-d", "--distributor"}, description = "Address of the distributor.")
   @ConfigValue(section = "distributor", name = "host", example = "\"http://localhost:1235\"")
   private URI distributorServer;
 
