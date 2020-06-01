@@ -91,7 +91,9 @@ public class SessionMapServer extends TemplateGridCommand {
         new HttpResponse()
           .addHeader("Content-Type", JSON_UTF_8)
           .setContent(asJson(
-              ImmutableMap.of("ready", true, "message", "Session map is ready."))))));
+              ImmutableMap.of("value", ImmutableMap.of(
+                "ready", true,
+                "message", "Session map is ready.")))))));
     server.start();
 
     BuildInfo info = new BuildInfo();
