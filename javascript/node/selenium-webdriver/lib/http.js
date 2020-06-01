@@ -39,7 +39,7 @@ const isDisplayed = requireAtom(
     'is-displayed.js',
     '//javascript/node/selenium-webdriver/lib/atoms:is-displayed.js');
 const findElements = requireAtom(
-    'find-Elements.js',
+    'find-elements.js',
     '//javascript/node/selenium-webdriver/lib/atoms:find-elements.js');
 
 /**
