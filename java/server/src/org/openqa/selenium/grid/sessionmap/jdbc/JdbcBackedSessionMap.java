@@ -19,10 +19,10 @@ package org.openqa.selenium.grid.sessionmap.jdbc;
 
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -33,16 +33,21 @@ import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Logger;
 
 
 public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private static final Json JSON = new Json();
-  private String tableName;
+  private static final Logger LOG = Logger.getLogger(JdbcBackedSessionMap.class.getName());
+  private final String  tableName;
   private final Connection connection;
 
   public JdbcBackedSessionMap(Tracer tracer, Connection jdbcConnection, String sessionTableName)  {
     super(tracer);
+
+    Require.nonNull("JDBC Connection Object", jdbcConnection);
+    Require.nonNull("Table name", sessionTableName);
 
     this.connection = jdbcConnection;
     this.tableName = sessionTableName;
@@ -50,14 +55,14 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   public static SessionMap create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
-    SessionMapOptions sessionMapOptions = new SessionMapOptions(config);
+    JdbcSessionMapOptions sessionMapOptions = new JdbcSessionMapOptions(config);
     String tableName = sessionMapOptions.getJdbcTableName();
     Connection connection = null;
 
     try {
       connection = sessionMapOptions.getJdbcConnection();
     } catch (SQLException e) {
-      // TODO: Handle SQLException
+      throw new ConfigException(e.toString());
     }
 
     return new JdbcBackedSessionMap(tracer, connection, tableName);
@@ -70,7 +75,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
       Statement insertStatement = connection.createStatement();
       // TODO: Insert Call
     } catch (SQLException e) {
-      // TODO: Handle SQLException
+      throw new JdbcException(e.getMessage());
     }
     return true;
   }
@@ -104,7 +109,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     try {
       connection.close();
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOG.warning("SQL exception while closing JDBC Connection:" + e.getMessage());
     }
   }
 }

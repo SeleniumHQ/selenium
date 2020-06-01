@@ -43,18 +43,6 @@ public class SessionMapOptions {
     this.config = config;
   }
 
-  public Connection getJdbcConnection() throws SQLException {
-    String jdbcUrl = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-url"));
-    String jdbcUser = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-user"));
-    String jdbcPassword = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-password"));
-
-    return DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
-  }
-
-  public String getJdbcTableName() {
-    return String.valueOf(config.get(SESSIONS_SECTION, "jdbc-table"));
-  }
-
   public URI getSessionMapUri() {
     Optional<URI> host = config.get(SESSIONS_SECTION, "host").map(str -> {
       try {

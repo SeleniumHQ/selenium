@@ -15,9 +15,11 @@ java_export(
         "//java/server/src/org/openqa/selenium/grid",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid",
+        artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],
 )

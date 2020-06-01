@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionmap.config;
+package org.openqa.selenium.grid.sessionmap.jdbc;
 
 import com.google.auto.service.AutoService;
 import com.beust.jcommander.Parameter;
