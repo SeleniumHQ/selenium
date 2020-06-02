@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.remote.server;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Callable;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -28,7 +31,6 @@ import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
-import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
@@ -36,10 +38,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Callable;
 
 /**
  * The default session implementation.
@@ -218,9 +216,6 @@ public class DefaultSession implements Session {
       }
       if (instance instanceof WebStorage) {
         caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);
-      }
-      if (instance instanceof FindsByCssSelector) {
-        caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
       }
       if (instance instanceof Rotatable) {
         caps.setCapability(CapabilityType.ROTATABLE, true);
