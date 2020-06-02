@@ -44,6 +44,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(JdbcBackedSessionMap.class.getName());
+  private static final String separator = "@";
   private final String  tableName;
   private final Connection connection;
   private final String sessionIdCol;
@@ -106,7 +107,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
       while(sessions.next()) {
         String sessionIdAndURI = sessions.getString(sessionIdCol);
-        String rawUri = sessionIdAndURI.split("/")[1];
+        String rawUri = sessionIdAndURI.split(separator)[1];
         String rawCapabilities = sessions.getString(sessionCapsCol);
 
         caps = rawCapabilities == null ?
@@ -155,7 +156,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private String getInsertSqlForSession(Session session) {
     //"insert into sessions(session_id,session_caps) values('sessionURIStr/SessionURI','caps')"
-    return "insert into " + tableName + "(" + sessionIdCol + ", " + sessionCapsCol + ") values (" + sessionUri(session.getId()) + "/" + session.getUri().toString() + "\",\"" + JSON.toJson(session.getCapabilities()) + "\")";
+    return "insert into " + tableName + "(" + sessionIdCol + ", " + sessionCapsCol + ") values (" + sessionUri(session.getId()) + separator + session.getUri().toString() + "\",\"" + JSON.toJson(session.getCapabilities()) + "\")";
   }
 
   private String getReadSqlForSession(SessionId sessionId) {
