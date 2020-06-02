@@ -38,9 +38,6 @@ public class TestUtilities {
   }
 
   public static String getUserAgent(WebDriver driver) {
-    if (driver instanceof HtmlUnitDriver) {
-      return ((HtmlUnitDriver) driver).getBrowserVersion().getUserAgent();
-    }
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");

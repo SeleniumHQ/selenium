@@ -15,7 +15,7 @@ java_library(
 )
 
 java_test_suite(
-    name = "SmallTests",
+    name = "small-tests",
     size = "small",
     srcs = glob(
         ["*Test.java"],
