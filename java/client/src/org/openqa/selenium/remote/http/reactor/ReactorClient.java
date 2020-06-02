@@ -17,10 +17,14 @@
 
 package org.openqa.selenium.remote.http.reactor;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.auto.service.AutoService;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpClientName;
@@ -41,8 +45,13 @@ import reactor.util.function.Tuple2;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,17 +73,40 @@ public class ReactorClient implements HttpClient {
   private ReactorClient(ClientConfig config) {
     this.config = config;
     httpClient = reactor.netty.http.client.HttpClient.create()
-        .baseUrl(config.baseUrl().toString())
-        .keepAlive(true);
+        .baseUrl(config.baseUrl().toString());
   }
 
   @Override
   public HttpResponse execute(HttpRequest request) {
+    StringBuilder uri = new StringBuilder(request.getUri());
+    List<String> queryPairs = new ArrayList<>();
+    request.getQueryParameterNames().forEach(
+        name -> request.getQueryParameters(name).forEach(
+            value -> {
+              try {
+                queryPairs.add(
+                    URLEncoder.encode(name, UTF_8.toString()) + "=" + URLEncoder.encode(value, UTF_8.toString()));
+              } catch (UnsupportedEncodingException e) {
+                Thread.currentThread().interrupt();
+                throw new UncheckedIOException(e);
+              }
+            }));
+    if (!queryPairs.isEmpty()) {
+      uri.append("?");
+      Joiner.on('&').appendTo(uri, queryPairs);
+    }
+
     Tuple2<InputStream, HttpResponse> result = httpClient
-        .headers(h -> request.getHeaderNames().forEach(
-            name -> request.getHeaders(name).forEach(value -> h.set(name, value))))
+        .headers(h -> {
+                   request.getHeaderNames().forEach(
+                       name -> request.getHeaders(name).forEach(value -> h.set(name, value)));
+                   if (request.getHeader("User-Agent") == null) {
+                     h.set("User-Agent", AddSeleniumUserAgent.USER_AGENT);
+                   }
+                 }
+          )
         .request(methodMap.get(request.getMethod()))
-        .uri(request.getUri())
+        .uri(uri.toString())
         .send((r, out) -> out.send(fromInputStream(request.getContent().get())))
         .responseSingle((res, buf) -> {
           HttpResponse toReturn = new HttpResponse();
