@@ -1,20 +1,19 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
 
-java_library(
-    name = "reactor",
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
     srcs = glob(["*.java"]),
-    visibility = [
-        "//java/client/src/org/openqa/selenium/remote:__pkg__",
-        "//java/client/test/org/openqa/selenium/remote/http:__pkg__",
-        "//java/client/test/org/openqa/selenium/remote/http/reactor:__pkg__",
-    ],
     deps = [
-        "//java:auto-service",
-        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/http/reactor",
+        "//java/client/test/org/openqa/selenium/remote/internal:test-lib",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
-        artifact("com.typesafe.netty:netty-reactive-streams"),
         artifact("org.asynchttpclient:async-http-client"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
         artifact("io.netty:netty-buffer"),
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-transport"),
@@ -23,7 +22,6 @@ java_library(
         artifact("io.netty:netty-transport-native-kqueue"),
         artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
         artifact("io.netty:netty-transport-native-unix-common"),
-        artifact("io.projectreactor:reactor-core"),
-        artifact("io.projectreactor.netty:reactor-netty"),
+        artifact("com.typesafe.netty:netty-reactive-streams"),
     ],
 )
