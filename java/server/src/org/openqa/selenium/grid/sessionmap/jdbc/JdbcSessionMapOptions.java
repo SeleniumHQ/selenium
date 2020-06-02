@@ -46,4 +46,12 @@ public class JdbcSessionMapOptions {
   public String getJdbcTableName() {
     return String.valueOf(config.get(SESSIONS_SECTION, "jdbc-table"));
   }
+
+  public String getJdbcSessionIdColName() {
+    return String.valueOf(config.get(SESSIONS_SECTION, "jdbc-sessionid-column"));
+  }
+
+  public String getJdbcSessionCapColName() {
+    return String.valueOf(config.get(SESSIONS_SECTION, "jdbc-capabilities-column"));
+  }
 }
