@@ -57,7 +57,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Tracer tracer = new LoggingOptions(config).getTracer();
     JdbcSessionMapOptions sessionMapOptions = new JdbcSessionMapOptions(config);
     String tableName = sessionMapOptions.getJdbcTableName();
-    Connection connection = null;
+    Connection connection;
 
     try {
       connection = sessionMapOptions.getJdbcConnection();
