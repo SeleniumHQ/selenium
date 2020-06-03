@@ -34,6 +34,7 @@ import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -86,8 +87,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session to add", session);
 
     try {
-      Statement insertStatement = connection.createStatement();
-      int rows = insertStatement.executeUpdate(getInsertSqlForSession(session));
+      int rows = insertSession(session).executeUpdate();
 
       return rows >= 1;
     } catch (SQLException e) {
@@ -154,17 +154,21 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     }
   }
 
-  private String getInsertSqlForSession(Session session) {
-    //"insert into sessions(session_id,session_caps) values('sessionURIStr/SessionURI','caps')"
-    return "insert into " + tableName + "(" + sessionIdCol + ", " + sessionCapsCol + ") values (" + sessionUri(session.getId()) + separator + session.getUri().toString() + "\",\"" + JSON.toJson(session.getCapabilities()) + "\")";
+  private PreparedStatement insertSession(Session session) throws SQLException {
+    PreparedStatement insertStatement = connection.prepareStatement("insert into " + tableName + " values(?,?)");
+
+    insertStatement.setString(1, sessionUri(session.getId()) + separator + session.getUri().toString());
+    insertStatement.setString(2, JSON.toJson(session.getCapabilities()));
+
+    return insertStatement;
   }
 
   private String getReadSqlForSession(SessionId sessionId) {
-    return "select * from " + tableName + "where " + sessionIdCol + " like " + sessionUri(sessionId) + "%";
+    return "select * from " + tableName + " where " + sessionIdCol + " like '" + sessionUri(sessionId) + "%'";
   }
 
   private String getDeleteSqlForSession(SessionId sessionId) {
-    return "delete from " + tableName + "where " + sessionIdCol + " like " + sessionUri(sessionId) + "%";
+    return "delete from " + tableName + " where " + sessionIdCol + " like '" + sessionUri(sessionId) + "%'";
   }
 
   private String sessionUri(SessionId sessionId) {

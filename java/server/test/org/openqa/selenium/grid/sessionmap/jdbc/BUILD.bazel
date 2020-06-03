@@ -13,5 +13,6 @@ java_test_suite(
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.hsqldb:hsqldb"),
     ],
 )
