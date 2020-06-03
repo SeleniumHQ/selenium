@@ -15,18 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.grid.graphql;
 
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Require;
 
-import java.util.List;
+import java.net.URI;
+import java.util.UUID;
 
-/**
- * @deprecated An implementation detail of {@link org.openqa.selenium.By}. Will be removed in 4.0
- */
-@Deprecated
-public interface FindsByName {
-  WebElement findElementByName(String using);
+public class Node {
 
-  List<WebElement> findElementsByName(String using);
+  private final UUID id;
+  private final URI uri;
+  private final boolean isUp;
+
+  public Node(UUID id, URI uri, boolean isUp) {
+    this.id = Require.nonNull("Node id", id);
+    this.uri = Require.nonNull("Node uri", uri);
+    this.isUp = isUp;
+  }
+
+  public UUID getId() {
+    return id;
+  }
+
+  public URI getUri() {
+    return uri;
+  }
+
+  public String getStatus() {
+    return isUp ? "UP" : "UNAVAILABLE";
+  }
 }

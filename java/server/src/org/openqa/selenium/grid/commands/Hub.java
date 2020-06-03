@@ -39,6 +39,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.grid.web.StatusBasedReadinessCheck;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -52,6 +53,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
@@ -127,11 +129,13 @@ public class Hub extends TemplateGridCommand {
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri().toString());
+    StatusBasedReadinessCheck readinessCheck = new StatusBasedReadinessCheck(router, GET, "/status");
 
     HttpHandler httpHandler = combine(
       router,
       Route.prefix("/wd/hub").to(combine(router)),
-      Route.post("/graphql").to(() -> graphqlHandler));
+      Route.post("/graphql").to(() -> graphqlHandler),
+      Route.get("/readyz").to(() -> readinessCheck));
 
     Server<?> server = new NettyServer(serverOptions, httpHandler, new ProxyCdpIntoGrid(clientFactory, sessions));
     server.start();

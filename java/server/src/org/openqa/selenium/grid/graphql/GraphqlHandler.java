@@ -47,7 +47,7 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class GraphqlHandler implements HttpHandler {
 
-  public static final String GRID_SCHEMA = "/org/openqa/selenium/graphql/selenium-grid-schema.graphqls";
+  public static final String GRID_SCHEMA = "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
   public static final Json JSON = new Json();
   private final Distributor distributor;
   private final String publicUrl;
@@ -100,8 +100,10 @@ public class GraphqlHandler implements HttpHandler {
 
   private RuntimeWiring buildRuntimeWiring() {
     return RuntimeWiring.newRuntimeWiring()
+      .scalar(Types.Uri)
+      .scalar(Types.Url)
       .type("GridQuery", typeWiring -> typeWiring
-        .dataFetcher("grid", new GridData(publicUrl)))
+        .dataFetcher("grid", new GridData(distributor, publicUrl)))
       .build();
   }
 

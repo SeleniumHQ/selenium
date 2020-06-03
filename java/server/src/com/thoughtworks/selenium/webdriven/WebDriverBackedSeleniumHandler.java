@@ -65,7 +65,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
 
   // Prepare the shared set of thingies
   private static final Map<SessionId, CommandProcessor> PROCESSORS = new ConcurrentHashMap<>();
-  public static final Logger LOG = Logger.getLogger(WebDriverBackedSelenium.class.getName());
+  private static final Logger LOG = Logger.getLogger(WebDriverBackedSelenium.class.getName());
 
   private NewSessionPipeline pipeline;
   private ActiveSessions sessions;

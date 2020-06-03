@@ -29,6 +29,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
 
+from six import add_metaclass
+
 # Python 3 imports
 try:
     str = basestring
@@ -48,12 +50,13 @@ getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
+@add_metaclass(ABCMeta)
 class BaseWebElement(object):
     """
     Abstract Base Class for WebElement.
     ABC's will allow custom types to be registered as a WebElement to pass type checks.
     """
-    __metaclass__ = ABCMeta
+    pass
 
 
 class WebElement(BaseWebElement):

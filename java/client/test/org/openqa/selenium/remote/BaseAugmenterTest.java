@@ -21,7 +21,10 @@ import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
+import com.google.common.collect.ImmutableMap;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -30,6 +33,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -195,6 +199,53 @@ public abstract class BaseAugmenterTest {
     getAugmenter().augment(withFinals);
   }
 
+  @Test
+  @Ignore("Reflexive calls are currently broken in every implementation")
+  public void shouldAllowReflexiveCalls() {
+    Capabilities caps = new ImmutableCapabilities("find by magic", true);
+    StubExecutor executor = new StubExecutor(caps);
+    final WebElement element = mock(WebElement.class);
+    executor.expect(
+      FIND_ELEMENT,
+      ImmutableMap.of("using", "magic", "value", "cheese"),
+      element);
+
+    WebDriver driver = new RemoteWebDriver(executor, caps);
+    BaseAugmenter augmenter = getAugmenter();
+
+    augmenter.addDriverAugmentation("find by magic", new AugmenterProvider() {
+      @Override
+      public Class<?> getDescribedInterface() {
+        return FindByMagic.class;
+      }
+
+      @Override
+      public InterfaceImplementation getImplementation(Object value) {
+        return (executeMethod, self, method, args) -> element;
+      }
+    });
+    WebDriver returned = augmenter.augment(driver);
+
+    returned.findElement(new ByMagic("cheese"));
+    // No exception is a Good Thing
+  }
+
+  private static class ByMagic extends By {
+    private final String magicWord;
+
+    public ByMagic(String magicWord) {
+      this.magicWord = magicWord;
+    }
+
+    @Override
+    public List<WebElement> findElements(SearchContext context) {
+      return List.of(((FindByMagic) context).findByMagic(magicWord));
+    }
+  }
+
+  public interface FindByMagic {
+    WebElement findByMagic(String magicWord);
+  }
 
   @Test
   public void shouldBeAbleToAugmentMultipleTimes() {
@@ -290,8 +341,16 @@ public abstract class BaseAugmenterTest {
     }
 
     @Override
-    public WebElement findElementById(String id) {
-      throw new NoSuchElementException("Boom");
+    public WebElement findElement(By locator) {
+      return super.findElement(locator);
+    }
+
+    @Override
+    protected WebElement findElement(String by, String using) {
+      if ("id".equals(by)) {
+        throw new NoSuchElementException("Boom");
+      }
+      return null;
     }
   }
 

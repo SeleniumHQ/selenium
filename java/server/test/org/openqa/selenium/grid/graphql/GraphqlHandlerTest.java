@@ -17,22 +17,35 @@
 
 package org.openqa.selenium.grid.graphql;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.node.ActiveSession;
+import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -40,35 +53,73 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class GraphqlHandlerTest {
 
-  @Test
-  public void bootstrap() {
-    Tracer tracer = DefaultTestTracer.createTracer();
-    EventBus events = new GuavaEventBus();
+  private final String publicUrl = "http://example.com/grid-o-matic";
+  private Distributor distributor;
+  private Tracer tracer;
+  private EventBus events;
+
+  @Before
+  public void setupGrid() {
+    tracer = DefaultTestTracer.createTracer();
+    events = new GuavaEventBus();
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, null);
-    String publicUrl = "http://example.com/grid-o-matic";
-
-    GraphqlHandler handler = new GraphqlHandler(distributor, publicUrl);
-
-    HttpResponse res = handler.execute(
-      new HttpRequest(GET, "/graphql")
-        .setContent(Contents.utf8String("query { grid { url } }")));
-
-    Object url = get(res, "grid", "url");
-
-    assertThat(url).isEqualTo(publicUrl);
+    distributor = new LocalDistributor(tracer, events, clientFactory, sessions, null);
   }
 
-  private Object get(HttpResponse input, String... path) {
-    Map<String, Object> value = new Json().toType(Contents.string(input), MAP_TYPE);
-    Map<?, ?> current = (Map<?, ?>) value.get("data");
+  @Test
+  public void shouldBeAbleToGetGridUrl() {
+    GraphqlHandler handler = new GraphqlHandler(distributor, publicUrl);
 
-    for (int i = 0; i < path.length -1; i++) {
-      current = (Map<?, ?>) current.get(path[i]);
-    }
+    Map<String, Object> topLevel = executeQuery(handler, "query { grid { url } }");
 
-    return current.get(path[path.length - 1]);
+    assertThat(topLevel).isEqualTo(Map.of("data", Map.of("grid", Map.of("url", publicUrl))));
+  }
+
+  @Test
+  public void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
+    GraphqlHandler handler = new GraphqlHandler(distributor, publicUrl);
+
+    Map<String, Object> topLevel = executeQuery(handler, "query { grid { nodes { uri } } }");
+
+    assertThat(topLevel)
+      .describedAs(topLevel.toString())
+      .isEqualTo(Map.of("data", Map.of("grid", Map.of("nodes", List.of()))));
+  }
+
+  @Test
+  public void shouldBeAbleToGetUrlsOfAllNodes() throws URISyntaxException {
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "stilton");
+    String nodeUri = "http://localhost:5556";
+    Node node = LocalNode.builder(tracer, events, new URI(nodeUri), new URI(publicUrl), null)
+      .add(stereotype, new SessionFactory() {
+        @Override
+        public Optional<ActiveSession> apply(CreateSessionRequest createSessionRequest) {
+          return Optional.empty();
+        }
+
+        @Override
+        public boolean test(Capabilities capabilities) {
+          return false;
+        }
+      })
+      .build();
+    distributor.add(node);
+
+    GraphqlHandler handler = new GraphqlHandler(distributor, publicUrl);
+    Map<String, Object> topLevel = executeQuery(handler, "query { grid { nodes { uri } } }");
+
+    assertThat(topLevel)
+      .describedAs(topLevel.toString())
+      .isEqualTo(Map.of("data", Map.of("grid", Map.of("nodes", List.of(Map.of("uri", nodeUri))))));
+  }
+
+  private Map<String, Object> executeQuery(HttpHandler handler, String query) {
+    HttpResponse res = handler.execute(
+      new HttpRequest(GET, "/graphql")
+        .setContent(Contents.utf8String(query)));
+
+    return new Json().toType(Contents.string(res), MAP_TYPE);
   }
 }

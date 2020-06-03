@@ -81,7 +81,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public class LocalNode extends Node {
 
-  public static final Json JSON = new Json();
+  private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
   private final URI externalUri;
   private final URI gridUri;

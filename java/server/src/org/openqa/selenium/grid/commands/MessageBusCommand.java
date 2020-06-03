@@ -42,6 +42,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -101,24 +102,26 @@ public class MessageBusCommand extends TemplateGridCommand {
 
     Server<?> server = new NettyServer(
       serverOptions,
-      Route.get("/status").to(() -> req -> {
-        CountDownLatch latch = new CountDownLatch(1);
+      Route.combine(
+        Route.get("/status").to(() -> req -> {
+          CountDownLatch latch = new CountDownLatch(1);
 
-        Type healthCheck = new Type("healthcheck");
-        bus.addListener(healthCheck, event -> latch.countDown());
-        bus.fire(new Event(healthCheck, "ping"));
+          Type healthCheck = new Type("healthcheck");
+          bus.addListener(healthCheck, event -> latch.countDown());
+          bus.fire(new Event(healthCheck, "ping"));
 
-        try {
-          if (latch.await(5, TimeUnit.SECONDS)) {
-            return httpResponse(true, "Event bus running");
-          } else {
-            return httpResponse(false, "Event bus could not deliver a test message in 5 seconds");
+          try {
+            if (latch.await(5, TimeUnit.SECONDS)) {
+              return httpResponse(true, "Event bus running");
+            } else {
+              return httpResponse(false, "Event bus could not deliver a test message in 5 seconds");
+            }
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return httpResponse(false, "Status checking was interrupted");
           }
-        } catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-          return httpResponse(false, "Status checking was interrupted");
-        }
-      })
+        }),
+        Route.get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)))
     );
     server.start();
 
@@ -134,7 +137,8 @@ public class MessageBusCommand extends TemplateGridCommand {
     return new HttpResponse()
         .addHeader("Content-Type", JSON_UTF_8)
         .setContent(asJson(ImmutableMap.of(
+          "value", ImmutableMap.of(
             "ready", ready,
-            "message", message)));
+            "message", message))));
   }
 }

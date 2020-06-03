@@ -19,19 +19,20 @@ package org.openqa.selenium.grid.graphql;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import org.openqa.selenium.graphql.Grid;
-
-import java.util.Objects;
+import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.internal.Require;
 
 public class GridData implements DataFetcher {
+  private final Distributor distributor;
   private final String publicUrl;
 
-  public GridData(String publicUrl) {
-    this.publicUrl = Objects.requireNonNull(publicUrl);
+  public GridData(Distributor distributor, String publicUrl) {
+    this.distributor = Require.nonNull("Distributor", distributor);
+    this.publicUrl = Require.nonNull("Grid's public URL", publicUrl);
   }
 
   @Override
   public Object get(DataFetchingEnvironment environment) {
-    return new Grid(publicUrl);
+    return new Grid(distributor, publicUrl);
   }
 }

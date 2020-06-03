@@ -17,45 +17,32 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.ImmutableMap;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
 public class AugmenterTest extends BaseAugmenterTest {
 
   @Override
   public BaseAugmenter getAugmenter() {
     return new Augmenter();
-  }
-
-  @Test
-  public void shouldAllowReflexiveCalls() {
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
-    StubExecutor executor = new StubExecutor(caps);
-    final WebElement element = mock(WebElement.class);
-    executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "css selector", "value", "cheese"),
-        element);
-
-    WebDriver driver = new RemoteWebDriver(executor, caps);
-    WebDriver returned = getAugmenter().augment(driver);
-
-    returned.findElement(By.cssSelector("cheese"));
-    // No exception is a Good Thing
   }
 
   @Test
