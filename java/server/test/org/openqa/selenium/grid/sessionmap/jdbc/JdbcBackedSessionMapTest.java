@@ -18,10 +18,9 @@
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -51,22 +50,17 @@ public class JdbcBackedSessionMapTest {
     createStatement.executeUpdate("create table sessions (session_id varchar(300), session_caps varchar(300));");
   }
 
-//  @Before
-//  public void makeDbConnection() throws SQLException {
-//    connection = DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "SA", "");
-//  }
-
   @AfterClass
   public static void killDBConnection() throws SQLException {
     connection.close();
   }
 
-//  @Test(expected = NoSuchSessionException.class)
-//  public void shouldThrowNoSuchSessionExceptionIfSessionDoesNotExists() {
-//    SessionMap sessions = getSessionMap();
-//
-//    sessions.get(new SessionId(UUID.randomUUID()));
-//  }
+  @Test(expected = NoSuchSessionException.class)
+  public void shouldThrowNoSuchSessionExceptionIfSessionDoesNotExists() {
+    SessionMap sessions = getSessionMap();
+
+    sessions.get(new SessionId(UUID.randomUUID()));
+  }
 
   @Test(expected = IllegalArgumentException.class)
   public void shouldThrowIllegalArgumentExceptionIfConnectionObjectIsNull() {
@@ -74,7 +68,7 @@ public class JdbcBackedSessionMapTest {
   }
 
   @Test
-  public void canCreateAJdbcBackedSessionMap() throws URISyntaxException, SQLException {
+  public void canCreateAJdbcBackedSessionMap() throws URISyntaxException {
     SessionMap sessions = getSessionMap();
 
     Session expected = new Session(
@@ -90,10 +84,30 @@ public class JdbcBackedSessionMapTest {
     assertThat(seen).isEqualTo(expected);
   }
 
-  private JdbcBackedSessionMap getSessionMap() throws SQLException {
-    Connection connection2 = DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "SA", "");
+  @Test
+  public void shouldBeAbleToRemoveSessions() throws URISyntaxException {
+    SessionMap sessions = getSessionMap();
 
-    return new JdbcBackedSessionMap(tracer, connection2, "sessions", "session_id", "session_caps");
+    Session expected = new Session(
+        new SessionId(UUID.randomUUID()),
+        new URI("http://example.com/foo"),
+        new ImmutableCapabilities("key", "value"));
+    sessions.add(expected);
+
+    SessionMap reader = getSessionMap();
+
+    reader.remove(expected.getId());
+
+    try {
+      reader.get(expected.getId());
+      fail("Oh noes!");
+    } catch (NoSuchSessionException ignored) {
+      // This is expected
+    }
+  }
+
+  private JdbcBackedSessionMap getSessionMap() {
+    return new JdbcBackedSessionMap(tracer, connection, "sessions", "session_id", "session_caps");
   }
 
 }

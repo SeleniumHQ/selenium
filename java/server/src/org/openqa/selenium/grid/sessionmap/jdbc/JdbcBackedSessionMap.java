@@ -87,9 +87,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session to add", session);
 
     try {
-      int rows = insertSession(session).executeUpdate();
+      return insertSessionStatement(session).executeUpdate() >= 1;
 
-      return rows >= 1;
     } catch (SQLException e) {
       throw new JdbcException(e.getMessage());
     }
@@ -103,7 +102,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Capabilities caps = null;
 
     try {
-      ResultSet sessions = connection.createStatement().executeQuery(getReadSqlForSession(id));
+      ResultSet sessions = readSessionStatement(id).executeQuery();
 
       while(sessions.next()) {
         String sessionIdAndURI = sessions.getString(sessionIdCol);
@@ -120,9 +119,9 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         catch (URISyntaxException e) {
           throw new NoSuchSessionException(String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
         }
-
-        sessions.close();
       }
+
+      sessions.close();
 
       if (uri == null) {
         throw new NoSuchSessionException("Unable to find URI for session " + id);
@@ -139,7 +138,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session ID", id);
 
     try {
-      connection.createStatement().executeUpdate(getDeleteSqlForSession(id));
+      getDeleteSqlForSession(id).executeUpdate();
     } catch (SQLException e) {
       throw new JdbcException(e.getMessage());
     }
@@ -154,21 +153,27 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     }
   }
 
-  private PreparedStatement insertSession(Session session) throws SQLException {
+  private PreparedStatement insertSessionStatement(Session session) throws SQLException {
     PreparedStatement insertStatement = connection.prepareStatement("insert into " + tableName + " values(?,?)");
-
     insertStatement.setString(1, sessionUri(session.getId()) + separator + session.getUri().toString());
     insertStatement.setString(2, JSON.toJson(session.getCapabilities()));
 
     return insertStatement;
   }
 
-  private String getReadSqlForSession(SessionId sessionId) {
-    return "select * from " + tableName + " where " + sessionIdCol + " like '" + sessionUri(sessionId) + "%'";
+  private PreparedStatement readSessionStatement(SessionId sessionId) throws SQLException {
+    PreparedStatement getSessionsStatement = connection.prepareStatement("select * from " + tableName + " where " + sessionIdCol + " like ?");
+    getSessionsStatement.setString(1, sessionUri(sessionId).concat("%"));
+
+    return getSessionsStatement;
   }
 
-  private String getDeleteSqlForSession(SessionId sessionId) {
-    return "delete from " + tableName + " where " + sessionIdCol + " like '" + sessionUri(sessionId) + "%'";
+  private PreparedStatement getDeleteSqlForSession(SessionId sessionId) throws SQLException{
+    PreparedStatement deleteSessionStatement = connection.prepareStatement("delete from " + tableName + " where " + sessionIdCol + " like ?");
+    deleteSessionStatement.setString(1, sessionUri(sessionId).concat("%"));
+
+    return deleteSessionStatement;
+
   }
 
   private String sessionUri(SessionId sessionId) {
