@@ -67,6 +67,12 @@ public class JdbcBackedSessionMapTest {
     SessionMap sessions = new JdbcBackedSessionMap(tracer, null, "", "", "");
   }
 
+  @Test(expected = JdbcException.class)
+  public void shouldThrowJdbcExceptionIfTableDoesNotExist() {
+    SessionMap sessions = new JdbcBackedSessionMap(tracer, connection, "doesnotExist", "session_id", "session_caps");
+
+    sessions.get(new SessionId(UUID.randomUUID()));
+  }
   @Test
   public void canCreateAJdbcBackedSessionMap() throws URISyntaxException {
     SessionMap sessions = getSessionMap();
