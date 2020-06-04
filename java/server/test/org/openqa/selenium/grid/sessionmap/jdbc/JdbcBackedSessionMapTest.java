@@ -47,7 +47,7 @@ public class JdbcBackedSessionMapTest {
   public static void createDB() throws SQLException {
     connection = DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "SA", "");
     Statement createStatement = connection.createStatement();
-    createStatement.executeUpdate("create table sessions (session_id varchar(300), session_caps varchar(300));");
+    createStatement.executeUpdate("create table sessions_map (session_ids varchar(300), session_caps varchar(300));");
   }
 
   @AfterClass
@@ -113,7 +113,7 @@ public class JdbcBackedSessionMapTest {
   }
 
   private JdbcBackedSessionMap getSessionMap() {
-    return new JdbcBackedSessionMap(tracer, connection, "sessions", "session_id", "session_caps");
+    return new JdbcBackedSessionMap(tracer, connection, "sessions_map", "session_ids", "session_caps");
   }
 
 }

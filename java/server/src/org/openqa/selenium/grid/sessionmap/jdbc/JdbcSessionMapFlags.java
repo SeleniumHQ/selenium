@@ -50,24 +50,6 @@ public class JdbcSessionMapFlags implements HasRoles {
   @ConfigValue(section = "sessions", name = "jdbc-password", example = "myP@ssw%d")
   private String password;
 
-  @Parameter(
-      names = "--jdbc-table",
-      description = "Name of the table in database to store sessions in.")
-  @ConfigValue(section = "sessions", name = "jdbc-table", example = "myP@ssw%d")
-  private String table;
-
-  @Parameter(
-      names = "--jdbc-sessionid-column",
-      description = "Column name where session id will be stored")
-  @ConfigValue(section = "sessions", name = "jdbc-sessionid-column", example = "session_id")
-  private String sessionIdColumn;
-
-  @Parameter(
-      names = "--jdbc-capabilities-column",
-      description = "Column name where session id will be stored")
-  @ConfigValue(section = "sessions", name = "jdbc-capabilities-column", example = "capabilities")
-  private String sessionCapsColumn;
-
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(SESSION_MAP_ROLE);

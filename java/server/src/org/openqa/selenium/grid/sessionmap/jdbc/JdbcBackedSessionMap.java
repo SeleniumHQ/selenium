@@ -37,7 +37,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Logger;
 
 
@@ -46,8 +45,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(JdbcBackedSessionMap.class.getName());
   private static final String separator = "@";
-  private final String  tableName;
   private final Connection connection;
+  private final String  tableName;
   private final String sessionIdCol;
   private final String sessionCapsCol;
 
@@ -101,9 +100,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     URI uri = null;
     Capabilities caps = null;
 
-    try {
-      ResultSet sessions = readSessionStatement(id).executeQuery();
-
+    try (ResultSet sessions = readSessionStatement(id).executeQuery()){
       while(sessions.next()) {
         String sessionIdAndURI = sessions.getString(sessionIdCol);
         String rawUri = sessionIdAndURI.split(separator)[1];
@@ -115,18 +112,14 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
         try {
           uri = new URI(rawUri);
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
           throw new NoSuchSessionException(String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
         }
       }
 
-      sessions.close();
-
       if (uri == null) {
         throw new NoSuchSessionException("Unable to find URI for session " + id);
       }
-
       return new Session(id, uri, caps);
     } catch (SQLException e) {
       throw new JdbcException(e.getMessage());
@@ -163,6 +156,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private PreparedStatement readSessionStatement(SessionId sessionId) throws SQLException {
     PreparedStatement getSessionsStatement = connection.prepareStatement("select * from " + tableName + " where " + sessionIdCol + " like ?");
+    getSessionsStatement.setMaxRows(1);
     getSessionsStatement.setString(1, sessionUri(sessionId).concat("%"));
 
     return getSessionsStatement;

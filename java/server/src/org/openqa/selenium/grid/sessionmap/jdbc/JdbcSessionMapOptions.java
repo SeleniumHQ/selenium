@@ -28,6 +28,9 @@ public class JdbcSessionMapOptions {
 
   private static final String SESSIONS_SECTION = "sessions";
   private static final Logger LOG = Logger.getLogger(JdbcSessionMapOptions.class.getName());
+  private static final String  tableName = "sessions_map";
+  private static final String sessionIdCol = "session_ids";
+  private final String sessionCapsCol = "session_caps";
 
   private final Config config;
 
@@ -44,14 +47,14 @@ public class JdbcSessionMapOptions {
   }
 
   public String getJdbcTableName() {
-    return String.valueOf(config.get(SESSIONS_SECTION, "jdbc-table"));
+    return tableName;
   }
 
   public String getJdbcSessionIdColName() {
-    return String.valueOf(config.get(SESSIONS_SECTION, "jdbc-sessionid-column"));
+    return sessionIdCol;
   }
 
   public String getJdbcSessionCapColName() {
-    return String.valueOf(config.get(SESSIONS_SECTION, "jdbc-capabilities-column"));
+    return sessionCapsCol;
   }
 }
