@@ -31,6 +31,7 @@ public class JdbcSessionMapOptions {
   private static final String  tableName = "sessions_map";
   private static final String sessionIdCol = "session_ids";
   private final String sessionCapsCol = "session_caps";
+  private final String sessionUriCol = "session_uri";
 
   private final Config config;
 
@@ -56,5 +57,9 @@ public class JdbcSessionMapOptions {
 
   public String getJdbcSessionCapColName() {
     return sessionCapsCol;
+  }
+
+  public String getJdbcSessionUriColName() {
+    return sessionUriCol;
   }
 }
