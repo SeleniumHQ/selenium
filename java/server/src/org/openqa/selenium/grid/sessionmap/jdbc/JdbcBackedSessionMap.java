@@ -97,29 +97,29 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   public Session get(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
 
-    URI uri = null;
+    URI uri;
     Capabilities caps = null;
+    String rawUri = null;
 
     try (ResultSet sessions = readSessionStatement(id).executeQuery()){
       while(sessions.next()) {
         String sessionIdAndURI = sessions.getString(sessionIdCol);
-        String rawUri = sessionIdAndURI.split(separator)[1];
+        rawUri = sessionIdAndURI.split(separator)[1];
         String rawCapabilities = sessions.getString(sessionCapsCol);
 
         caps = rawCapabilities == null ?
                             new ImmutableCapabilities() :
                             JSON.toType(rawCapabilities, Capabilities.class);
-
-        try {
-          uri = new URI(rawUri);
-        } catch (URISyntaxException e) {
-          throw new NoSuchSessionException(String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
-        }
       }
 
-      if (uri == null) {
+      try {
+        uri = new URI(rawUri);
+      } catch (URISyntaxException e) {
+        throw new NoSuchSessionException(String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
+      } catch (NullPointerException e) {
         throw new NoSuchSessionException("Unable to find URI for session " + id);
       }
+
       return new Session(id, uri, caps);
     } catch (SQLException e) {
       throw new JdbcException(e.getMessage());
