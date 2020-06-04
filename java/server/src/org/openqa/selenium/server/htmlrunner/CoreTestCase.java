@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -31,6 +29,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Require;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-
 
 public class CoreTestCase {
 
@@ -52,7 +50,7 @@ public class CoreTestCase {
   private String url;
 
   public CoreTestCase(String url) {
-    this.url = Preconditions.checkNotNull(url);
+    this.url = Require.nonNull("Test case URL", url);
   }
 
   public void run(Results results, WebDriver driver, Selenium selenium, URL baseUrl) {
@@ -84,7 +82,7 @@ public class CoreTestCase {
     for (LoggableStep step : steps) {
       LOG.info(step.toString());
       try {
-        decorator = Preconditions.checkNotNull(decorator.evaluate(step, selenium, state), step);
+        decorator = Require.state(step.toString(), decorator.evaluate(step, selenium, state)).nonNull();
         stepResults.add(new StepResult(step, decorator.getCause()));
       } catch (CoreRunnerError e) {
         stepResults.add(new StepResult(step, e));
@@ -194,7 +192,7 @@ public class CoreTestCase {
     private final String renderableClass;
 
     public StepResult(LoggableStep step, Throwable cause) {
-      this.step = Preconditions.checkNotNull(step);
+      this.step = Require.nonNull("Step", step);
       this.cause = cause;
 
       if (cause == null) {

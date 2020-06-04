@@ -23,10 +23,10 @@ import com.google.common.eventbus.Subscribe;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.internal.Require;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
@@ -47,8 +47,7 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
 
   @Override
   public void fire(Event event) {
-    Objects.requireNonNull(event);
-    guavaBus.post(event);
+    guavaBus.post(Require.nonNull("Event", event));
   }
 
   @Override
@@ -67,8 +66,8 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
     private final Consumer<Event> onType;
 
     public Listener(Type type, Consumer<Event> onType) {
-      this.type = Objects.requireNonNull(type);
-      this.onType = Objects.requireNonNull(onType);
+      this.type = Require.nonNull("Event type", type);
+      this.onType = Require.nonNull("Event listener", onType);
     }
 
     @Subscribe

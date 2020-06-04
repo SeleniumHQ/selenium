@@ -19,9 +19,9 @@ package org.openqa.selenium.events.zeromq;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.Type;
+import org.openqa.selenium.internal.Require;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
@@ -31,12 +31,11 @@ class Topic {
   private final Type type;
 
   Topic(Type forType) {
-    this.type = Objects.requireNonNull(forType);
+    this.type = Require.nonNull("Type", forType);
   }
 
   void addListener(Consumer<Event> listener) {
-    Objects.requireNonNull(listener, "Event listener must be set.");
-    listeners.add(listener);
+    listeners.add(Require.nonNull("Event listener", listener));
   }
 
   public void fire(Event event) {

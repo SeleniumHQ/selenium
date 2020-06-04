@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server.commandhandler;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -26,7 +27,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -39,7 +39,7 @@ public class Status implements HttpHandler {
   private final Json json;
 
   public Status(Json json) {
-    this.json = Objects.requireNonNull(json);
+    this.json = Require.nonNull("Json converter", json);
   }
 
   @Override

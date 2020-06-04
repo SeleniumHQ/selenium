@@ -19,19 +19,25 @@ package org.openqa.selenium.grid.data;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 public class NodeStatus {
 
@@ -49,13 +55,12 @@ public class NodeStatus {
       Map<Capabilities, Integer> stereotypes,
       Collection<Active> snapshot,
       String registrationSecret) {
-    this.nodeId = Objects.requireNonNull(nodeId);
-    this.externalUri = Objects.requireNonNull(externalUri);
-    Preconditions.checkArgument(maxSessionCount > 0, "Max session count must be greater than 0.");
-    this.maxSessionCount = maxSessionCount;
+    this.nodeId = Require.nonNull("Node id", nodeId);
+    this.externalUri = Require.nonNull("URI", externalUri);
+    this.maxSessionCount = Require.positive("Max session count", maxSessionCount);
 
-    this.stereotypes = ImmutableMap.copyOf(Objects.requireNonNull(stereotypes));
-    this.snapshot = ImmutableSet.copyOf(Objects.requireNonNull(snapshot));
+    this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereotypes", stereotypes));
+    this.snapshot = ImmutableSet.copyOf(Require.nonNull("Snapshot", snapshot));
     this.registrationSecret = registrationSecret;
   }
 
@@ -174,10 +179,10 @@ public class NodeStatus {
     private final Capabilities currentCapabilities;
 
     public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities) {
-      this.stereotype = ImmutableCapabilities.copyOf(Objects.requireNonNull(stereotype));
-      this.id = Objects.requireNonNull(id);
+      this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
+      this.id = Require.nonNull("Session id", id);
       this.currentCapabilities =
-          ImmutableCapabilities.copyOf(Objects.requireNonNull(currentCapabilities));
+          ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", currentCapabilities));
     }
 
     public Capabilities getStereotype() {

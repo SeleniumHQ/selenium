@@ -17,11 +17,23 @@
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.Capabilities;
+
+import java.util.function.Predicate;
+
 /**
  * Describes and provides an implementation for a particular interface for use with the
  * {@link org.openqa.selenium.remote.Augmenter}. Think of this as a simulacrum of mixins.
  */
 public interface AugmenterProvider {
+
+  /**
+   * @return Whether this provider should be applied given these {@code caps}.
+   */
+  default Predicate<Capabilities> isApplicable() {
+    return caps -> false;
+  }
+
   /**
    * @return The interface that this augmentor describes.
    */

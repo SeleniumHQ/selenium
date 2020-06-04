@@ -20,9 +20,10 @@ package org.openqa.selenium.netty.server;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.AttributeKey;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Message;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 class WebSocketMessageHandler extends SimpleChannelInboundHandler<Message> {
@@ -30,7 +31,7 @@ class WebSocketMessageHandler extends SimpleChannelInboundHandler<Message> {
   private final AttributeKey<Consumer<Message>> key;
 
   public WebSocketMessageHandler(AttributeKey<Consumer<Message>> key) {
-    this.key = Objects.requireNonNull(key);
+    this.key = Require.nonNull("Attribute key", key);
   }
 
   @Override

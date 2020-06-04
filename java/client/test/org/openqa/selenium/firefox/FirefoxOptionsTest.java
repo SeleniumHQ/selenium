@@ -36,7 +36,6 @@ import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -47,6 +46,7 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -346,7 +346,7 @@ public class FirefoxOptionsTest {
     private final String originalValue;
 
     public JreSystemProperty(String name) {
-      this.name = Preconditions.checkNotNull(name);
+      this.name = Require.nonNull("Name", name);
       this.originalValue = System.getProperty(name);
     }
 

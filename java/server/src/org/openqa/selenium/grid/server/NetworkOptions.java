@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.grid.server;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
-
-import java.util.Objects;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 public class NetworkOptions {
 
   private final Config config;
 
   public NetworkOptions(Config config) {
-    this.config = Objects.requireNonNull(config, "Config to use must be set.");
+    this.config = Require.nonNull("Config", config);
   }
 
   public HttpClient.Factory getHttpClientFactory(Tracer tracer) {

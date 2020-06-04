@@ -10,6 +10,7 @@ java_test_suite(
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
         artifact("io.ous:jtoml"),
+        artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],
 )

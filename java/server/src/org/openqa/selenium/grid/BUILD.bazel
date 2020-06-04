@@ -3,6 +3,20 @@ load("//:copy_file.bzl", "copy_file")
 load("//java:defs.bzl", "java_dist_zip", "java_export", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
 
+genrule(
+    name = "executable-grid",
+    srcs = [
+        "zip-preamble.sh",
+        ":selenium_server_deploy.jar",
+    ],
+    outs = ["selenium"],
+    cmd = "cat $(location :zip-preamble.sh) $(location :selenium_server_deploy.jar) > $@",
+    executable = True,
+    visibility = [
+        "//:__pkg__",
+    ],
+)
+
 BASE_COMMAND_SRCS = [
     "TemplateGridCommand.java",
 ]
@@ -25,7 +39,10 @@ java_library(
 
 java_export(
     name = "grid",
-    srcs = glob(["*.java"], exclude = BASE_COMMAND_SRCS),
+    srcs = glob(
+        ["*.java"],
+        exclude = BASE_COMMAND_SRCS,
+    ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     uses = [
@@ -69,7 +86,7 @@ java_binary(
     ],
     runtime_deps = [
         ":grid",
-        artifact("org.slf4j:slf4j-jdk14")
+        artifact("org.slf4j:slf4j-jdk14"),
     ],
 )
 
@@ -97,12 +114,12 @@ java_dist_zip(
 
 javadoc(
     name = "all-javadocs",
-    deps = [
-        ":grid",
-    ],
-    transitive = True,
     third_party_prefixes = [
         "@maven//",
         "//third_party",
+    ],
+    transitive = True,
+    deps = [
+        ":grid",
     ],
 )

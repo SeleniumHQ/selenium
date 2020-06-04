@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -37,6 +35,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -63,13 +63,13 @@ public class LocalDistributorTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    tracer = OpenTelemetry.getTracerProvider().get("default");
+    tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
     uri = new URI("http://localhost:1234");
-    local = LocalNode.builder(tracer, bus, clientFactory, uri, null)
+    local = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .maximumConcurrentSessions(2)
         .build();
@@ -206,7 +206,7 @@ public class LocalDistributorTest {
   //Create a single host with the given browserName
   private Host createHost(String...browsers) {
     URI uri = createUri();
-    LocalNode.Builder nodeBuilder = LocalNode.builder(tracer, bus, clientFactory, uri, null);
+    LocalNode.Builder nodeBuilder = LocalNode.builder(tracer, bus, uri, uri, null);
     nodeBuilder.maximumConcurrentSessions(browsers.length);
 
     Arrays.stream(browsers).forEach(browser -> {
@@ -236,18 +236,4 @@ public class LocalDistributorTest {
       return new HttpResponse();
     }
   }
-
-  private class HandledSession extends Session implements HttpHandler {
-
-    HandledSession(URI uri, Capabilities caps) {
-      super(new SessionId(UUID.randomUUID()), uri, caps);
-    }
-
-    @Override
-    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-      // no-op
-      return new HttpResponse();
-    }
-  }
-
 }

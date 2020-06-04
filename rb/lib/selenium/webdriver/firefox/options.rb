@@ -58,7 +58,7 @@ module Selenium
         #
 
         def initialize(log_level: nil, **opts)
-          super(opts)
+          super(**opts)
 
           @options[:log] ||= {level: log_level} if log_level
           process_profile(@options[:profile]) if @options.key?(:profile)

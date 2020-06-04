@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -31,9 +31,9 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -79,8 +79,8 @@ public abstract class Distributor implements Predicate<HttpRequest>, Routable, H
   protected final Tracer tracer;
 
   protected Distributor(Tracer tracer, HttpClient.Factory httpClientFactory) {
-    this.tracer = Objects.requireNonNull(tracer, "Tracer to use must be set.");
-    Objects.requireNonNull(httpClientFactory);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    Require.nonNull("HTTP client factory", httpClientFactory);
 
     Json json = new Json();
     routes = Route.combine(

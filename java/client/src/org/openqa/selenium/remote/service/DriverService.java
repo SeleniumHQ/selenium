@@ -17,17 +17,15 @@
 
 package org.openqa.selenium.remote.service;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
@@ -141,7 +139,7 @@ public class DriverService {
       String exeDownload) {
     String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
-    checkState(exePath != null,
+    Require.state("The path to the driver executable", exePath).nonNull(
         "The path to the driver executable must be set by the %s system property;"
             + " for more information, see %s. "
             + "The latest version can be downloaded from %s",
@@ -153,12 +151,8 @@ public class DriverService {
   }
 
   protected static void checkExecutable(File exe) {
-    checkState(exe.exists(),
-        "The driver executable does not exist: %s", exe.getAbsolutePath());
-    checkState(!exe.isDirectory(),
-        "The driver executable is a directory: %s", exe.getAbsolutePath());
-    checkState(exe.canExecute(),
-        "The driver is not executable: %s", exe.getAbsolutePath());
+    Require.state("The driver executable", exe).isFile();
+    Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
   }
 
   /**
@@ -287,7 +281,7 @@ public class DriverService {
   }
 
   public void sendOutputTo(OutputStream outputStream) {
-    this.outputStream = Preconditions.checkNotNull(outputStream);
+    this.outputStream = Require.nonNull("Output stream", outputStream);
   }
 
   protected OutputStream getOutputStream() {
@@ -298,7 +292,7 @@ public class DriverService {
 
     private int port = 0;
     private File exe = null;
-    private Map<String, String> environment = ImmutableMap.of();
+    private Map<String, String> environment = emptyMap();
     private File logFile;
     private Duration timeout;
 
@@ -320,7 +314,7 @@ public class DriverService {
      */
     @SuppressWarnings("unchecked")
     public B usingDriverExecutable(File file) {
-      checkNotNull(file);
+      Require.nonNull("Driver executable file", file);
       checkExecutable(file);
       this.exe = file;
       return (B) this;
@@ -334,8 +328,7 @@ public class DriverService {
      * @return A self reference.
      */
     public B usingPort(int port) {
-      checkArgument(port >= 0, "Invalid port number: %s", port);
-      this.port = port;
+      this.port = Require.nonNegative("Port number", port);
       return (B) this;
     }
 

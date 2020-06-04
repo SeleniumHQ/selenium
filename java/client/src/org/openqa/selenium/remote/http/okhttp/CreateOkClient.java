@@ -22,9 +22,10 @@ import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 
-import java.util.Objects;
 import java.util.function.Function;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -33,7 +34,7 @@ class CreateOkClient implements Function<ClientConfig, OkHttpClient> {
 
   @Override
   public OkHttpClient apply(ClientConfig config) {
-    Objects.requireNonNull(config, "Client config to use must be set.");
+    Require.nonNull("Client config", config);
 
     okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
       .followRedirects(true)

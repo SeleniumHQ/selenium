@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import io.opentelemetry.trace.Span;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.tracing.Span;
 
 import java.util.function.BiConsumer;
 

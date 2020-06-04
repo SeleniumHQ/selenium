@@ -28,6 +28,8 @@ import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.InvocationHandlerAdapter;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.Field;
@@ -39,6 +41,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 
@@ -56,7 +59,7 @@ public class Augmenter extends BaseAugmenter {
   @Override
   protected <X> X create(
       RemoteWebDriver driver,
-      Map<String, AugmenterProvider> augmentors,
+      Map<Predicate<Capabilities>, AugmenterProvider> augmentors,
       X objectToAugment) {
     CompoundHandler handler = determineAugmentation(driver, augmentors, objectToAugment);
 
@@ -107,25 +110,19 @@ public class Augmenter extends BaseAugmenter {
 
   private CompoundHandler determineAugmentation(
       RemoteWebDriver driver,
-      Map<String, AugmenterProvider> augmentors,
+      Map<Predicate<Capabilities>, AugmenterProvider> augmentors,
       Object objectToAugment) {
-    Map<String, Object> capabilities = driver.getCapabilities().asMap();
-
     CompoundHandler handler = new CompoundHandler(driver, objectToAugment);
 
-    for (Map.Entry<String, Object> capabilityName : capabilities.entrySet()) {
-      AugmenterProvider augmenter = augmentors.get(capabilityName.getKey());
-      if (augmenter == null) {
+    Capabilities capabilities = ImmutableCapabilities.copyOf(driver.getCapabilities());
+
+    for (Map.Entry<Predicate<Capabilities>, AugmenterProvider> entry : augmentors.entrySet()) {
+      if (!entry.getKey().test(capabilities)) {
         continue;
       }
 
-      Object value = capabilityName.getValue();
-      if (value instanceof Boolean && !((Boolean) value)) {
-        continue;
-      }
-
-      handler.addCapabilityHander(augmenter.getDescribedInterface(),
-          augmenter.getImplementation(value));
+      AugmenterProvider augmenter = entry.getValue();
+      handler.addCapabilityHander(augmenter.getDescribedInterface(), augmenter.getImplementation(capabilities));
     }
     return handler;
   }

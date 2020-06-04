@@ -24,10 +24,10 @@ import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.DockerProtocol;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.internal.Reference;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -43,7 +43,7 @@ public class V140Docker implements DockerProtocol {
   private final ContainerExists containerExists;
 
   public V140Docker(HttpHandler client) {
-    Objects.requireNonNull(client);
+    Require.nonNull("HTTP client", client);
     listImages = new ListImages(client);
     pullImage = new PullImage(client);
 
@@ -61,7 +61,7 @@ public class V140Docker implements DockerProtocol {
 
   @Override
   public Image getImage(String imageName) throws DockerException {
-    Objects.requireNonNull(imageName);
+    Require.nonNull("Image name", imageName);
 
     Reference ref = Reference.parse(imageName);
 
@@ -85,7 +85,7 @@ public class V140Docker implements DockerProtocol {
 
   @Override
   public Container create(ContainerInfo info) {
-    Objects.requireNonNull(info);
+    Require.nonNull("Container info", info);
 
     LOG.info("Creating container: " + info);
 
@@ -94,7 +94,7 @@ public class V140Docker implements DockerProtocol {
 
   @Override
   public void startContainer(ContainerId id) throws DockerException {
-    Objects.requireNonNull(id);
+    Require.nonNull("Container id", id);
 
     LOG.info("Starting container: " + id);
 
@@ -103,7 +103,7 @@ public class V140Docker implements DockerProtocol {
 
   @Override
   public boolean exists(ContainerId id) {
-    Objects.requireNonNull(id);
+    Require.nonNull("Container id", id);
 
     LOG.fine(String.format("Checking whether %s is running", id));
 
@@ -112,8 +112,8 @@ public class V140Docker implements DockerProtocol {
 
   @Override
   public void stopContainer(ContainerId id, Duration timeout) throws DockerException {
-    Objects.requireNonNull(id);
-    Objects.requireNonNull(timeout);
+    Require.nonNull("Container id", id);
+    Require.nonNull("Timeout", timeout);
 
     LOG.info("Stopping container: " + id);
 
@@ -122,7 +122,7 @@ public class V140Docker implements DockerProtocol {
 
   @Override
   public void deleteContainer(ContainerId id) throws DockerException {
-    Objects.requireNonNull(id);
+    Require.nonNull("Container id", id);
 
     LOG.info("Deleting container: " + id);
 

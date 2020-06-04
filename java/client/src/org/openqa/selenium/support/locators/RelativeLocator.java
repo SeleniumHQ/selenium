@@ -26,6 +26,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 
@@ -35,9 +36,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class RelativeLocator {
@@ -60,8 +59,7 @@ public class RelativeLocator {
     }
   }
   public static RelativeBy withTagName(String tagName) {
-    Objects.requireNonNull(tagName, "Tag name to look for must be set");
-
+    Require.nonNull("Tag name to look for", tagName);
     return new RelativeBy(By.tagName(tagName));
   }
 
@@ -74,6 +72,8 @@ public class RelativeLocator {
     }
 
     private RelativeBy(Object rootLocator, List<Map<String, Object>> filters) {
+      this.root = Require.nonNull("Root locator", rootLocator);
+
       if (rootLocator instanceof By) {
         assertLocatorCanBeSerialized(rootLocator);
         rootLocator = asAtomLocatorParameter(rootLocator);
@@ -86,81 +86,80 @@ public class RelativeLocator {
         throw new IllegalArgumentException("Root locator must be an element or a locator: " + rootLocator);
       }
 
-      this.root = Objects.requireNonNull(rootLocator);
-      this.filters = ImmutableList.copyOf(Objects.requireNonNull(filters));
+      this.filters = ImmutableList.copyOf(Require.nonNull("Filters", filters));
     }
 
     public RelativeBy above(WebElement element) {
-      Objects.requireNonNull(element, "Element to search for must be set.");
+      Require.nonNull("Element to search above of", element);
       return simpleDirection("above", element);
     }
 
     public RelativeBy above(By locator) {
-      Objects.requireNonNull(locator, "Locator to use must be set.");
+      Require.nonNull("Locator", locator);
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("above", locator);
     }
 
     public RelativeBy below(WebElement element) {
-      Objects.requireNonNull(element, "Element to search for must be set.");
+      Require.nonNull("Element to search below of", element);
       return simpleDirection("below", element);
     }
 
     public RelativeBy below(By locator) {
-      Objects.requireNonNull(locator, "Locator to use must be set.");
+      Require.nonNull("Locator", locator);
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("below", locator);
     }
 
     public RelativeBy toLeftOf(WebElement element) {
-      Objects.requireNonNull(element, "Element to search for must be set.");
+      Require.nonNull("Element to search to left of", element);
       return simpleDirection("left", element);
     }
 
     public RelativeBy toLeftOf(By locator) {
-      Objects.requireNonNull(locator, "Locator to use must be set.");
+      Require.nonNull("Locator", locator);
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("left", locator);
     }
 
     public RelativeBy toRightOf(WebElement element) {
-      Objects.requireNonNull(element, "Element to search for must be set.");
+      Require.nonNull("Element to search to right of", element);
       return simpleDirection("right", element);
     }
 
     public RelativeBy toRightOf(By locator) {
-      Objects.requireNonNull(locator, "Locator to use must be set.");
+      Require.nonNull("Locator", locator);
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("right", locator);
     }
 
     public RelativeBy near(WebElement element) {
-      Objects.requireNonNull(element, "Element to search for must be set.");
+      Require.nonNull("Element to search near", element);
       return near(element, 50);
     }
 
     public RelativeBy near(WebElement element, int atMostDistanceInPixels) {
-      Objects.requireNonNull(element, "Element to search for must be set.");
-      checkArgument(atMostDistanceInPixels > 0, "Distance must be greater than 0.");
+      Require.nonNull("Element to search near", element);
+      Require.positive("Distance", atMostDistanceInPixels);
 
       return near((Object) element, atMostDistanceInPixels);
     }
 
     public RelativeBy near(By locator) {
-      Objects.requireNonNull(locator, "Locator to use for must be set.");
+      Require.nonNull("Locator", locator);
       return near((Object) locator, 50);
     }
 
     public RelativeBy near(By locator, int atMostDistanceInPixels) {
-      Objects.requireNonNull(locator, "Locator to use for must be set.");
-      checkArgument(atMostDistanceInPixels > 0, "Distance must be greater than 0.");
+      Require.nonNull("Locator", locator);
+      Require.positive("Distance", atMostDistanceInPixels);
 
       return near((Object) locator, atMostDistanceInPixels);
     }
 
     private RelativeBy near(Object locator, int atMostDistanceInPixels) {
-      Objects.requireNonNull(locator, "Locator to use must be set.");
-      checkArgument(atMostDistanceInPixels > 0, "Distance must be greater than 0.");
+      Require.nonNull("Locator", locator);
+      Require.positive("Distance", atMostDistanceInPixels);
 
       return new RelativeBy(
         root,
@@ -179,8 +178,8 @@ public class RelativeLocator {
     }
 
     private RelativeBy simpleDirection(String direction, Object locator) {
-      Objects.requireNonNull(direction, "Direction to search in must be set.");
-      Objects.requireNonNull(locator, "Locator to use must be set.");
+      Require.nonNull("Direction to search in", direction);
+      Require.nonNull("Locator", locator);
 
       return new RelativeBy(
         root,
@@ -246,7 +245,7 @@ public class RelativeLocator {
   }
 
   private static void assertLocatorCanBeSerialized(Object locator) {
-    Objects.requireNonNull(locator, "Locator must be set.");
+    Require.nonNull("Locator", locator);
 
     Class<?> clazz = locator.getClass();
 

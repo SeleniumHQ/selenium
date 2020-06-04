@@ -37,6 +37,7 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
@@ -67,7 +68,7 @@ class Host {
   private int maxSessionCount;
 
   public Host(EventBus bus, Node node) {
-    this.node = Objects.requireNonNull(node);
+    this.node = Require.nonNull("Node", node);
 
     this.nodeId = node.getId();
     this.uri = node.getUri();
@@ -106,7 +107,7 @@ class Host {
   }
 
   void update(NodeStatus status) {
-    Objects.requireNonNull(status);
+    Require.nonNull("Node status", status);
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -174,7 +175,7 @@ class Host {
    */
   private Status setHostStatus(Status status) {
     Status toReturn = this.status;
-    this.status = Objects.requireNonNull(status, "Status must be set.");
+    this.status = Require.nonNull("Status", status);
     return toReturn;
   }
 
@@ -221,7 +222,7 @@ class Host {
   }
 
   public Supplier<CreateSessionResponse> reserve(CreateSessionRequest sessionRequest) {
-    Objects.requireNonNull(sessionRequest);
+    Require.nonNull("Session creation request", sessionRequest);
 
     Lock write = lock.writeLock();
     write.lock();

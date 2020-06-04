@@ -4,7 +4,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 def selenium_java_deps():
     jetty_version = "9.4.28.v20200408"
     netty_version = "4.1.49.Final"
-    opentelemetry_version = "0.2.4"
+    opentelemetry_version = "0.4.0"
 
     maven_install(
         artifacts = [
@@ -15,9 +15,11 @@ def selenium_java_deps():
             "com.google.auto:auto-common:0.10",
             "com.google.auto.service:auto-service:1.0-rc6",
             "com.google.auto.service:auto-service-annotations:1.0-rc6",
+            "com.graphql-java:graphql-java:14.0",
             "com.squareup.okhttp3:okhttp:4.5.0",
             "com.squareup.okio:okio:2.6.0",
             "com.typesafe.netty:netty-reactive-streams:2.0.4",
+            "io.grpc:grpc-context:1.28.0",
             "io.lettuce:lettuce-core:5.2.2.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
@@ -77,9 +79,9 @@ def selenium_java_deps():
             "org.seleniumhq.selenium:htmlunit-driver:2.39.0",
         ],
         excluded_artifacts = [
-            "org.hamcrest:hamcrest-all", # Replaced by hamcrest 2
+            "org.hamcrest:hamcrest-all",  # Replaced by hamcrest 2
             "org.hamcrest:hamcrest-core",
-            "io.netty:netty-all", # Depend on the actual things you need
+            "io.netty:netty-all",  # Depend on the actual things you need
         ],
         override_targets = {
             "org.seleniumhq.selenium:selenium-api": "@//java/client/src/org/openqa/selenium:core",

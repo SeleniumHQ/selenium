@@ -33,6 +33,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -43,7 +44,6 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -159,7 +159,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
    */
   @Deprecated
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(new FirefoxOptions(Objects.requireNonNull(desiredCapabilities, "No capabilities seen")));
+    this(new FirefoxOptions(Require.nonNull("Capabilities", desiredCapabilities)));
   }
 
   /**
@@ -168,7 +168,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   @Deprecated
   public FirefoxDriver(FirefoxDriverService service, Capabilities desiredCapabilities) {
     this(
-        Objects.requireNonNull(service, "No driver service provided"),
+        Require.nonNull("Driver service", service),
         new FirefoxOptions(desiredCapabilities));
   }
 
@@ -190,7 +190,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   }
 
   private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
-    Objects.requireNonNull(options, "No options to construct executor from");
+    Require.nonNull("Options to construct executor from", options);
 
     String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
     boolean isLegacy = (sysProperty != null && ! Boolean.parseBoolean(sysProperty))

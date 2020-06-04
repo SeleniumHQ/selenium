@@ -2,7 +2,8 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_selenium_test_suite")
 
 java_selenium_test_suite(
-    name = "LargeTests",
+    name = "large-tests",
+    size = "large",
     srcs = glob(["*Test.java"]),
     browsers = [
         "chrome",
@@ -14,7 +15,6 @@ java_selenium_test_suite(
         "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/test/org/openqa/selenium/testing:annotations",
-        "//java/client/test/org/openqa/selenium/testing/drivers:browser",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),

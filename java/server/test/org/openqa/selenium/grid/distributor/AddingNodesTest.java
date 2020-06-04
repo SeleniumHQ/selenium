@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -45,11 +43,12 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -76,22 +75,21 @@ public class AddingNodesTest {
   private Distributor distributor;
   private Tracer tracer;
   private EventBus bus;
-  private HttpClient.Factory clientFactory;
   private Wait<Object> wait;
   private URL externalUrl;
   private CombinedHandler handler;
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
-    tracer = OpenTelemetry.getTracerProvider().get("default");
+    tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
     externalUrl = new URL("http://example.com");
-    clientFactory = new RoutableHttpClientFactory(
-        externalUrl,
-        handler,
-        HttpClient.Factory.createDefault());
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+      externalUrl,
+      handler,
+      HttpClient.Factory.createDefault());
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
@@ -104,7 +102,7 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -138,7 +136,7 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -152,10 +150,32 @@ public class AddingNodesTest {
   }
 
   @Test
+  public void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents() throws URISyntaxException {
+    URI sessionUri = new URI("http://example:1234");
+    Node firstNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+      .build();
+    Node secondNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+      .build();
+    handler.addHandler(firstNode);
+    handler.addHandler(secondNode);
+
+    bus.fire(new NodeStatusEvent(firstNode.getStatus()));
+    bus.fire(new NodeStatusEvent(secondNode.getStatus()));
+
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
+    Set<DistributorStatus.NodeSummary> nodes = distributor.getStatus().getNodes();
+
+    assertEquals(1, nodes.size());
+  }
+
+  @Test
   public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -195,7 +215,7 @@ public class AddingNodesTest {
         UUID nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(OpenTelemetry.getTracerProvider().get("default"), nodeId, uri);
+      super(DefaultTestTracer.createTracer(), nodeId, uri);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);
@@ -244,7 +264,7 @@ public class AddingNodesTest {
     }
 
     @Override
-    protected boolean isSessionOwner(SessionId id) {
+    public boolean isSessionOwner(SessionId id) {
       return running != null && running.getId().equals(id);
     }
 

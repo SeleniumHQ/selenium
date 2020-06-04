@@ -76,7 +76,7 @@ public class ConfigTest {
       @Parameter(
           names = {"-D"},
           variableArity = true)
-      @ConfigValue(section = "food", name = "kinds")
+      @ConfigValue(section = "food", name = "kinds", example = "[]")
       public List<String> field;
     }
 

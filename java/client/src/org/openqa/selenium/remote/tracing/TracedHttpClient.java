@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.KIND;
 
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -31,7 +30,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.net.URL;
-import java.util.Objects;
 
 public class TracedHttpClient implements HttpClient {
 
@@ -39,8 +37,8 @@ public class TracedHttpClient implements HttpClient {
   private final HttpClient delegate;
 
   private TracedHttpClient(Tracer tracer, HttpClient delegate) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.delegate = Objects.requireNonNull(delegate);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.delegate = Require.nonNull("Actual handler", delegate);
   }
 
   @Override
@@ -50,15 +48,13 @@ public class TracedHttpClient implements HttpClient {
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    Span span = newSpanAsChildOf(tracer, req, "httpclient.execute").setSpanKind(Span.Kind.CLIENT).startSpan();
-    try (Scope scope = tracer.withSpan(span)) {
+    try (Span span = newSpanAsChildOf(tracer, req, "httpclient.execute")) {
+      KIND.accept(span, Span.Kind.CLIENT);
       HTTP_REQUEST.accept(span, req);
-      tracer.getHttpTextFormat().inject(span.getContext(), req, (r, key, value) -> r.setHeader(key, value));
+      tracer.getPropagator().inject(span, req, (r, key, value) -> r.setHeader(key, value));
       HttpResponse response = delegate.execute(req);
       HTTP_RESPONSE.accept(span, response);
       return response;
-    } finally {
-      span.end();
     }
   }
 
@@ -68,8 +64,8 @@ public class TracedHttpClient implements HttpClient {
     private final HttpClient.Factory delegate;
 
     public Factory(Tracer tracer, HttpClient.Factory delegate) {
-      this.tracer = Objects.requireNonNull(tracer);
-      this.delegate = Objects.requireNonNull(delegate);
+      this.tracer = Require.nonNull("Tracer", tracer);
+      this.delegate = Require.nonNull("Actual handler", delegate);
     }
 
     public HttpClient createClient(ClientConfig config) {
@@ -83,5 +79,4 @@ public class TracedHttpClient implements HttpClient {
       return new TracedHttpClient(tracer, client);
     }
   }
-
 }

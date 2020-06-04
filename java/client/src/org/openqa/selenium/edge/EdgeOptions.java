@@ -43,52 +43,17 @@ import org.openqa.selenium.remote.CapabilityType;
 public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   /**
+   * Key used to indicate whether to use an Edge Chromium or Edge Legacy driver.
+   */
+  public static final String USE_CHROMIUM = "ms:edgeChromium";
+
+  /**
    * Key used to store a set of ChromeOptions in a {@link Capabilities}
    * object.
    */
   public static final String CAPABILITY = "ms:edgeOptions";
 
-  /**
-   * Key used to indicate whether to use an Edge Chromium or Edge Legacy driver.
-   */
-  public static final String USE_CHROMIUM = "ms:edgeChromium";
-
-  private boolean useChromium;
-
   public EdgeOptions() {
     super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);
-
-    String forceEdgeHtml = System.getProperty(EdgeDriver.DRIVER_USE_EDGE_EDGEHTML);
-    if (forceEdgeHtml != null) {
-      setChromium(!Boolean.getBoolean(EdgeDriver.DRIVER_USE_EDGE_EDGEHTML));
-    } else {
-      // If no system property is provided, default to legacy for now.
-      setChromium(false);
-    }
-  }
-
-  /**
-   * Sets whether to launch Edge Chromium. If false, Edge Legacy (EdgeHTML) will be used.
-   *
-   * @param useChromium boolean Whether to launch Edge Chromium.
-   */
-  public EdgeOptions setChromium(boolean useChromium) {
-    setCapability(USE_CHROMIUM, useChromium);
-    return this;
-  }
-
-  /**
-   * Whether this instance is configured to launch Edge Chromium.
-   *
-   * @return Boolean indicating if Edge Chromium will be used.
-   */
-  public boolean isUsingChromium() { return useChromium; }
-
-  @Override
-  public void setCapability(String key, Object value) {
-    if (USE_CHROMIUM.equals(key) && value instanceof Boolean) {
-      useChromium = (Boolean) value;
-    }
-    super.setCapability(key, value);
   }
 }

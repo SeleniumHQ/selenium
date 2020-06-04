@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +55,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
@@ -121,7 +121,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
-    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -141,7 +141,7 @@ public class EndToEndTest {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
@@ -156,7 +156,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createRemotes() throws URISyntaxException {
-    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
@@ -189,7 +189,7 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
+    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
 

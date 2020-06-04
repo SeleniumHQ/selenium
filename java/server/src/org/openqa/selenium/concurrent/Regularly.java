@@ -19,11 +19,12 @@ package org.openqa.selenium.concurrent;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import org.openqa.selenium.internal.Require;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,7 +35,7 @@ public class Regularly {
   private final List<RetryingRunnable> scheduledRunnables = new ArrayList<>();
 
   public Regularly(String name) {
-    Objects.requireNonNull(name, "Name must be set");
+    Require.nonNull("Name", name);
 
     this.executor = Executors.newScheduledThreadPool(1, r -> {
       Thread thread = new Thread(r, name);
@@ -44,9 +45,9 @@ public class Regularly {
   }
 
   public void submit(Runnable task, Duration successPeriod, Duration retryPeriod) {
-    Objects.requireNonNull(task, "Task to schedule must be set.");
-    Objects.requireNonNull(successPeriod, "Success period must be set.");
-    Objects.requireNonNull(retryPeriod, "Retry period must be set.");
+    Require.nonNull("Task to schedule", task);
+    Require.nonNull("Success period", successPeriod);
+    Require.nonNull("Retry period", retryPeriod);
 
     RetryingRunnable runnable = new RetryingRunnable(
         task,

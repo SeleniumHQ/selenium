@@ -17,12 +17,11 @@
 
 package com.thoughtworks.selenium.webdriven.commands;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.Require;
 
 public class AlertOverride {
 
@@ -98,8 +97,8 @@ public class AlertOverride {
   }
 
   private void checkOverridesEnabled() {
-    checkState(enableOverrides,
-          "Selenium alert overrides have been disabled; please use the underlying WebDriver API");
+    Require.stateCondition(enableOverrides,
+                           "Selenium alert overrides have been disabled; please use the underlying WebDriver API");
   }
 
   public String getNextAlert(WebDriver driver) {

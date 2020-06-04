@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.testing;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import org.junit.runner.Description;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Arrays;
@@ -38,7 +37,7 @@ public class TestIgnorance {
   private Set<String> ignoreClasses = new HashSet<>();
 
   public TestIgnorance(Browser driver) {
-    ignoreComparator.addDriver(checkNotNull(driver,
+    ignoreComparator.addDriver(Require.argument("Driver", driver).nonNull(
         "Browser to use must be set. Do this by setting the 'selenium.browser' system property"));
 
     String onlyRun = System.getProperty("only_run");

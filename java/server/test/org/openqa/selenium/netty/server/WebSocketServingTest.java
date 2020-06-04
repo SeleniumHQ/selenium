@@ -66,7 +66,7 @@ public class WebSocketServingTest {
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
-    client.openSocket(new HttpRequest(GET, "/does-not-exist"), new WebSocket.Listener());
+    client.openSocket(new HttpRequest(GET, "/does-not-exist"), new WebSocket.Listener() {});
   }
 
   @Test
@@ -138,7 +138,7 @@ public class WebSocketServingTest {
       (uri, sink) -> Optional.of(socket -> latch.countDown())).start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
-    WebSocket socket = client.openSocket(new HttpRequest(GET, "/cheese"), new WebSocket.Listener());
+    WebSocket socket = client.openSocket(new HttpRequest(GET, "/cheese"), new WebSocket.Listener() {});
 
     socket.close();
 

@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server.commandhandler;
 
 import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
@@ -31,7 +32,6 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -43,8 +43,8 @@ public class GetLogsOfType implements HttpHandler {
   private final ActiveSession session;
 
   public GetLogsOfType(Json json, ActiveSession session) {
-    this.json = Objects.requireNonNull(json);
-    this.session = Objects.requireNonNull(session);
+    this.json = Require.nonNull("Json converter", json);
+    this.session = Require.nonNull("Current session", session);
   }
 
   @Override

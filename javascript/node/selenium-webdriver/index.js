@@ -26,7 +26,6 @@ const _http = require('./http');
 const by = require('./lib/by');
 const capabilities = require('./lib/capabilities');
 const chrome = require('./chrome');
-const command = require('./lib/command');
 const edge = require('./edge');
 const error = require('./lib/error');
 const firefox = require('./firefox');

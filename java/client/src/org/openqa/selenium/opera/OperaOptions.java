@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.opera;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -89,7 +88,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
    * @param path Path to Opera executable.
    */
   public OperaOptions setBinary(File path) {
-    binary = checkNotNull(path).getPath();
+    binary = Require.nonNull("Path to the opera executable", path).getPath();
     return this;
   }
 
@@ -101,7 +100,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
    * @param path Path to Opera executable.
    */
   public OperaOptions setBinary(String path) {
-    binary = checkNotNull(path);
+    binary = Require.nonNull("Path to the opera executable", path);
     return this;
   }
 
@@ -150,12 +149,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
    * @param paths Paths to the extensions to install.
    */
   public OperaOptions addExtensions(List<File> paths) {
-    for (File path : paths) {
-      checkNotNull(path);
-      checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
-      checkArgument(!path.isDirectory(), "%s is a directory",
-          path.getAbsolutePath());
-    }
+    paths.forEach(path -> Require.argument("Extension", path).isFile());
     extensionFiles.addAll(paths);
     return this;
   }
@@ -177,7 +171,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
    */
   public OperaOptions addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
-      checkNotNull(extension);
+      Require.nonNull("Encoded exception", extension);
     }
     extensions.addAll(encoded);
     return this;
@@ -192,7 +186,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
    *     to JSON.
    */
   public OperaOptions setExperimentalOption(String name, Object value) {
-    experimentalOptions.put(checkNotNull(name), value);
+    experimentalOptions.put(Require.nonNull("Option name", name), value);
     return this;
   }
 
@@ -203,7 +197,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
    * @return The option value, or {@code null} if not set.
    */
   public Object getExperimentalOption(String name) {
-    return experimentalOptions.get(checkNotNull(name));
+    return experimentalOptions.get(Require.nonNull("Option name", name));
   }
 
   @Override

@@ -307,6 +307,7 @@ ruby_class_call(name = "cdp",
 )
 
 ruby_lint(name = "lint",
+  args = ["--config=rb/.rubocop.yml"],
   srcs = [
     "lib/**/*.rb",
     "spec/**/*.rb",

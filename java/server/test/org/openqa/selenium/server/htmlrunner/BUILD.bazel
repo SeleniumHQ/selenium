@@ -12,9 +12,10 @@ java_test_suite(
         "no-sandbox",
     ],
     deps = [
-      "//java/client/src/org/openqa/selenium/remote",
-      "//java/client/test/org/openqa/selenium/environment",
-      "//java/server/src/org/openqa/selenium/server/htmlrunner",
-      artifact("com.google.guava:guava"),
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/server/src/org/openqa/selenium/server/htmlrunner",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
     ],
 )

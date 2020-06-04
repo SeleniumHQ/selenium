@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 class BoundZmqEventBus implements EventBus {
 
-  public static final Logger LOG = Logger.getLogger(EventBus.class.getName());
+  private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private final UnboundZmqEventBus delegate;
   private final ZMQ.Socket xpub;
   private final ZMQ.Socket xsub;

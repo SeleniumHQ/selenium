@@ -21,6 +21,7 @@ import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.HttpServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -31,7 +32,6 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
 import java.net.URL;
-import java.util.Objects;
 
 public class JreServer implements Server<JreServer> {
 
@@ -40,8 +40,8 @@ public class JreServer implements Server<JreServer> {
   private boolean started = false;
 
   public JreServer(BaseServerOptions options, HttpHandler handler) {
-    Objects.requireNonNull(options);
-    Objects.requireNonNull(handler);
+    Require.nonNull("Server options", options);
+    Require.nonNull("Handler", handler);
 
     try {
       url = options.getExternalUri().toURL();

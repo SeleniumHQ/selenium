@@ -19,13 +19,13 @@ package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
@@ -35,8 +35,8 @@ class GetNodeSession implements HttpHandler {
   private final SessionId id;
 
   GetNodeSession(Node node, SessionId id) {
-    this.node = Objects.requireNonNull(node);
-    this.id = Objects.requireNonNull(id);
+    this.node = Require.nonNull("Node", node);
+    this.id = Require.nonNull("Session id", id);
   }
 
   @Override

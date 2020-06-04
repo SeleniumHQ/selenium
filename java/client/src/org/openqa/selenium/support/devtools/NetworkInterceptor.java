@@ -25,6 +25,7 @@ import org.openqa.selenium.devtools.fetch.Fetch;
 import org.openqa.selenium.devtools.fetch.model.HeaderEntry;
 import org.openqa.selenium.devtools.fetch.model.RequestPaused;
 import org.openqa.selenium.devtools.network.model.Request;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -33,13 +34,11 @@ import org.openqa.selenium.remote.http.Route;
 
 import java.io.Closeable;
 import java.util.Base64;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 
 /**
  * Provides a mechanism for stubbing out responses to requests in drivers which
@@ -73,7 +72,7 @@ public class NetworkInterceptor implements Closeable {
     if (!(driver instanceof HasDevTools)) {
       throw new IllegalArgumentException("WebDriver instance must implement HasDevTools");
     }
-    this.route = Objects.requireNonNull(route, "Route to use must be set.");
+    this.route = Require.nonNull("Route", route);
 
     devTools = ((HasDevTools) driver).getDevTools();
     devTools.createSession();
@@ -130,9 +129,11 @@ public class NetworkInterceptor implements Closeable {
       devTools.send(Fetch.fulfillRequest(
         incoming.getRequestId(),
         res.getStatus(),
-        headers.build(),
+        Optional.of(headers.build()),
         Optional.ofNullable(body),
+        Optional.empty(),
         Optional.empty()));
+
     } catch (Exception e) {
       LOG.log(
         Level.WARNING,

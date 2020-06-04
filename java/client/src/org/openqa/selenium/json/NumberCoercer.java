@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -45,8 +46,8 @@ class NumberCoercer<T extends Number> extends TypeCoercer<T> {
   private final Function<Number, T> mapper;
 
   NumberCoercer(Class<T> stereotype, Function<Number, T> mapper) {
-    this.stereotype = Objects.requireNonNull(stereotype);
-    this.mapper = Objects.requireNonNull(mapper);
+    this.stereotype = Require.nonNull("Stereotype", stereotype);
+    this.mapper = Require.nonNull("Mapper", mapper);
   }
 
   @Override

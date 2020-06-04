@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -27,13 +27,12 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.post;
 
@@ -86,7 +85,7 @@ public abstract class SessionMap implements Routable, HttpHandler {
   }
 
   public SessionMap(Tracer tracer) {
-    this.tracer = Objects.requireNonNull(tracer);
+    this.tracer = Require.nonNull("Tracer", tracer);
 
     Json json = new Json();
     routes = combine(

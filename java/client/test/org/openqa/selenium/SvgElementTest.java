@@ -18,7 +18,6 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;

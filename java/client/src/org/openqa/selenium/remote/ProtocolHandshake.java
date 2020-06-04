@@ -24,7 +24,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.base.Preconditions;
 import com.google.common.io.CountingOutputStream;
 import com.google.common.io.FileBackedOutputStream;
 
@@ -33,6 +32,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -157,7 +157,7 @@ public class ProtocolHandshake {
 
     Result(Dialect dialect, String sessionId, Map<String, ?> capabilities) {
       this.dialect = dialect;
-      this.sessionId = new SessionId(Preconditions.checkNotNull(sessionId));
+      this.sessionId = new SessionId(Require.nonNull("Session id", sessionId));
       this.capabilities = capabilities;
 
       if (capabilities.containsKey(PROXY)) {

@@ -17,17 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,14 +35,24 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 public class NodeOptionsTest {
 
@@ -64,11 +63,11 @@ public class NodeOptionsTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    tracer = OpenTelemetry.getTracerProvider().get("default");
+    tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     URI uri = new URI("http://localhost:1234");
-    builder = LocalNode.builder(tracer, bus, clientFactory, uri, null);
+    builder = LocalNode.builder(tracer, bus, uri, uri, null);
     builderSpy = spy(builder);
   }
 

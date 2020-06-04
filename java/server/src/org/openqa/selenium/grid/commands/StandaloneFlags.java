@@ -21,6 +21,6 @@ import org.openqa.selenium.grid.config.ConfigValue;
 
 public class StandaloneFlags {
 
-  @ConfigValue(section = "server", name = "port")
+  @ConfigValue(section = "server", name = "port", example = "4444")
   public int port = 4444;
 }

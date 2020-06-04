@@ -16,6 +16,10 @@ java_library(
     ],
     visibility = [
         "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+    exports = [
+        "//java/client/test/org/openqa/selenium/testing/drivers:browser",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

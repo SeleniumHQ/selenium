@@ -34,28 +34,31 @@ public class EventBusFlags implements HasRoles {
   @Parameter(
       names = {"--publish-events"},
       description =  "Connection string for publishing events to the event bus")
-  @ConfigValue(section = "events", name = "publish")
+  @ConfigValue(section = "events", name = "publish", example = "\"tcp://*:1233\"")
   private String publishString;
 
   @Parameter(
       names = {"--subscribe-events"},
       description =  "Connection string for subscribing to events from the event bus")
-  @ConfigValue(section = "events", name = "subscribe")
+  @ConfigValue(section = "events", name = "subscribe", example = "\"tcp://*1232\"")
   private String subscribeString;
-
 
   @Parameter(
       names = {"--bind-bus"},
-      description = "Whether the connection string should be bound or connected")
-  @ConfigValue(section = "events", name = "bind")
+      description = "Whether the connection string should be bound or connected",
+      arity = 1)
+  @ConfigValue(section = "events", name = "bind", example = "false")
   // We use the Boolean here so we can differentiate between there being no option, and a default
   // false value.
-  private boolean bind;
+  private Boolean bind;
 
   @Parameter(
       names = {"--events-implementation"},
       description = "Full classname of non-default event bus implementation")
-  @ConfigValue(section = "events", name = "implementation")
+  @ConfigValue(
+    section = "events",
+    name = "implementation",
+    example = "org.openqa.selenium.events.zeromq.ZeroMqEventBus")
   private String implmentation;
 
   @Override

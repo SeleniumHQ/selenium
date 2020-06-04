@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.devtools;
 
-import static org.openqa.selenium.devtools.performance.Performance.disable;
-import static org.openqa.selenium.devtools.performance.Performance.enable;
-import static org.openqa.selenium.devtools.performance.Performance.getMetrics;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.performance.Performance;
@@ -30,6 +25,12 @@ import org.openqa.selenium.testing.Ignore;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
+import static org.openqa.selenium.devtools.performance.Performance.disable;
+import static org.openqa.selenium.devtools.performance.Performance.enable;
+import static org.openqa.selenium.devtools.performance.Performance.getMetrics;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 @Ignore(FIREFOX)
 public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
@@ -37,15 +38,13 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
 
   @Test
   public void enableAndDisablePerformance() {
-
-    devTools.send(enable());
+    devTools.send(enable(Optional.empty()));
     driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
 
   @Test
   public void disablePerformance() {
-
     devTools.send(disable());
     driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
@@ -56,7 +55,7 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
     devTools.send(disable());
 
     devTools.send(Performance.setTimeDomain(Performance.SetTimeDomainTimeDomain.TIMETICKS));
-    devTools.send(enable());
+    devTools.send(enable(Optional.empty()));
     driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
@@ -65,7 +64,7 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
   public void setTimeDomainsThreadTicksPerformance() {
     devTools.send(disable());
     devTools.send(Performance.setTimeDomain(Performance.SetTimeDomainTimeDomain.THREADTICKS));
-    devTools.send(enable());
+    devTools.send(enable(Optional.empty()));
     driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
@@ -73,7 +72,7 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
   @Test
   public void getMetricsByTimeTicks() {
     devTools.send(Performance.setTimeDomain(Performance.SetTimeDomainTimeDomain.TIMETICKS));
-    devTools.send(enable());
+    devTools.send(enable(Optional.empty()));
     driver.get(appServer.whereIs("simpleTest.html"));
     List<Metric> metrics = devTools.send(getMetrics());
     Objects.requireNonNull(metrics);
@@ -84,7 +83,7 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
   @Test
   public void getMetricsByThreadTicks() {
     devTools.send(Performance.setTimeDomain(Performance.SetTimeDomainTimeDomain.THREADTICKS));
-    devTools.send(enable());
+    devTools.send(enable(Optional.empty()));
     driver.get(appServer.whereIs("simpleTest.html"));
     List<Metric> metrics = devTools.send(getMetrics());
     Objects.requireNonNull(metrics);

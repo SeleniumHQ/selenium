@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.remote.http.reactor;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpClientName;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -36,12 +38,12 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.websocket.WebsocketOutbound;
 import reactor.util.function.Tuple2;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,7 +81,9 @@ public class ReactorClient implements HttpClient {
           toReturn.setStatus(res.status().code());
           res.responseHeaders().entries().forEach(
               entry -> toReturn.addHeader(entry.getKey(), entry.getValue()));
-          return buf.asInputStream().zipWith(Mono.just(toReturn));
+          return buf.asInputStream()
+              .switchIfEmpty(Mono.just(new ByteArrayInputStream("".getBytes())))
+              .zipWith(Mono.just(toReturn));
         }).block();
     result.getT2().setContent(result::getT1);
     return result.getT2();
@@ -117,8 +121,8 @@ public class ReactorClient implements HttpClient {
 
   @Override
   public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
-    Objects.requireNonNull(request, "Request to send must be set.");
-    Objects.requireNonNull(listener, "WebSocket listener must be set.");
+    Require.nonNull("Request to send", request);
+    Require.nonNull("WebSocket listener", listener);
 
     try {
       URI origUri = new URI(request.getUri());
@@ -129,25 +133,18 @@ public class ReactorClient implements HttpClient {
               name -> request.getHeaders(name).forEach(value -> h.set(name, value))))
           .websocket().uri(wsUri.toString()), listener);
     } catch (URISyntaxException e) {
-      e.printStackTrace();
+      log.log(Level.INFO, e.getMessage(), e);
       return null;
     }
   }
 
-  @Override
-  public HttpClient with(Filter filter) {
-    Objects.requireNonNull(filter, "Filter to use must be set.");
-
-    // TODO: Implement filtering
-    return this;
-  }
-
+  @AutoService(HttpClient.Factory.class)
+  @HttpClientName("reactor")
   public static class Factory implements HttpClient.Factory {
 
     @Override
     public HttpClient createClient(ClientConfig config) {
-      Objects.requireNonNull(config, "Client config to use must be set.");
-      return new ReactorClient(config);
+      return new ReactorClient(Require.nonNull("Client config", config));
     }
   }
 

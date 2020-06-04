@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.javascript;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.System.getProperty;
 import static java.util.Collections.emptySet;
 
 import com.google.common.base.Splitter;
 
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.internal.Require;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,9 +67,9 @@ class TestFileLocator {
   }
 
   private static Path getTestDirectory() {
-    String testDirName = checkNotNull(getProperty(TEST_DIRECTORY_PROPERTY),
-        "You must specify the test directory with the %s system property",
-        TEST_DIRECTORY_PROPERTY);
+    String testDirName = Require.state("Test directory", getProperty(TEST_DIRECTORY_PROPERTY)).nonNull(
+                                 "You must specify the test directory with the %s system property",
+                                 TEST_DIRECTORY_PROPERTY);
     
     Path runfiles = InProject.findRunfilesRoot();
     Path testDir;
@@ -82,9 +81,7 @@ class TestFileLocator {
       testDir = InProject.locate(testDirName);
     }
 
-    checkArgument(Files.exists(testDir), "Test directory does not exist: %s",
-        testDirName);
-    checkArgument(Files.isDirectory(testDir));
+    Require.state("Test directory", testDir.toFile()).isDirectory();
 
     return testDir;
   }

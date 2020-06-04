@@ -18,6 +18,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/docker",
         "//java/server/src/org/openqa/selenium/grid/log",
+        "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/config",
         "//java/server/src/org/openqa/selenium/grid/node/local",
         "//java/server/src/org/openqa/selenium/grid/server",

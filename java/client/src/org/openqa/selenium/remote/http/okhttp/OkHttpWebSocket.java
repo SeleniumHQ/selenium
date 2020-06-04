@@ -22,6 +22,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.CloseMessage;
@@ -32,7 +34,6 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -42,9 +43,9 @@ class OkHttpWebSocket implements WebSocket {
   private final okhttp3.WebSocket socket;
 
   private OkHttpWebSocket(okhttp3.OkHttpClient client, okhttp3.Request request, Listener listener) {
-    Objects.requireNonNull(client, "HTTP client to use must be set.");
-    Objects.requireNonNull(request, "Request to send must be set.");
-    Objects.requireNonNull(listener, "WebSocket listener must be set.");
+    Require.nonNull("HTTP client", client);
+    Require.nonNull("Request to send", request);
+    Require.nonNull("WebSocket listener", listener);
 
     socket = client.newWebSocket(request, new WebSocketListener() {
       @Override

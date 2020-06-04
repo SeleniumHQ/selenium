@@ -9,6 +9,8 @@ java_library(
         "//java/server/test/org/openqa/selenium/netty/server:__pkg__",
     ],
     deps = [
+        "//java:auto-service",
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
         artifact("com.squareup.okhttp3:okhttp"),

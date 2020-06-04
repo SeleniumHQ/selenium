@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.events;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
 import java.util.Objects;
@@ -35,8 +36,8 @@ public class Event {
   }
 
   public Event(UUID id, Type type, Object data) {
-    this.id = Objects.requireNonNull(id, "Message id must be set.");
-    this.type = Objects.requireNonNull(type, "Event type must be set.");
+    this.id = Require.nonNull("Message id", id);
+    this.type = Require.nonNull("Event type", type);
 
     this.data = JSON.toJson(data);
   }

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -28,7 +30,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
   private final JsonTypeCoercer coercer;
 
   InstanceCoercer(JsonTypeCoercer coercer) {
-    this.coercer = Objects.requireNonNull(coercer);
+    this.coercer = Require.nonNull("Coercer", coercer);
   }
 
   @Override

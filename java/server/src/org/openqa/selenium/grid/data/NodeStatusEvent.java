@@ -19,14 +19,13 @@ package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.Type;
-
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 public class NodeStatusEvent extends Event {
 
   public static final Type NODE_STATUS = new Type("node-status");
 
   public NodeStatusEvent(NodeStatus status) {
-    super(NODE_STATUS, Objects.requireNonNull(status, "Node status must be set."));
+    super(NODE_STATUS, Require.nonNull("Node status", status));
   }
 }

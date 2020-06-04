@@ -4,25 +4,25 @@ load("//dotnet:nuget.bzl", "nuget_package")
 load("//dotnet:assembly-info.bzl", "generated_assembly_info")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
-    "ASSEMBLY_VERSION",
-    "SE_VERSION",
-    "SUPPORTED_NET_FRAMEWORKS",
-    "SUPPORTED_NET_STANDARD_VERSIONS",
     "ASSEMBLY_COMPANY",
     "ASSEMBLY_COPYRIGHT",
     "ASSEMBLY_INFORMATIONAL_VERSION",
     "ASSEMBLY_PRODUCT",
+    "ASSEMBLY_VERSION",
+    "SE_VERSION",
+    "SUPPORTED_NET_FRAMEWORKS",
+    "SUPPORTED_NET_STANDARD_VERSIONS",
 )
 
 generated_assembly_info(
     name = "assembly-info",
-    version = ASSEMBLY_VERSION,
     company = ASSEMBLY_COMPANY,
     copyright = ASSEMBLY_COPYRIGHT,
     description = "Selenium WebDriver .NET Bindings support classes",
+    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
     product = ASSEMBLY_PRODUCT,
     title = "Selenium WebDriver Support",
-    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
+    version = ASSEMBLY_VERSION,
 )
 
 [csharp_library(

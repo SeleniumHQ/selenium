@@ -20,11 +20,11 @@ package org.openqa.selenium.netty.server;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.openqa.selenium.grid.web.ErrorHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -35,7 +35,7 @@ class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
   public SeleniumHandler(HttpHandler seleniumHandler) {
     super(HttpRequest.class);
-    this.seleniumHandler = Objects.requireNonNull(seleniumHandler);
+    this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler);
   }
 
   @Override

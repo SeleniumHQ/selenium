@@ -24,9 +24,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Objects;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import org.openqa.selenium.internal.Require;
 
 public class ClientConfig {
 
@@ -44,15 +43,10 @@ public class ClientConfig {
       Filter filters,
       Proxy proxy) {
     this.baseUri = baseUri;
-    this.connectionTimeout = Objects.requireNonNull(
-        connectionTimeout,
-        "Connection timeout must be set.");
-    this.readTimeout = Objects.requireNonNull(readTimeout, "Connection timeout must be set.");
-    this.filters = Objects.requireNonNull(filters, "Filters must be set.");
+    this.connectionTimeout = Require.nonNegative("Connection timeout", connectionTimeout);
+    this.readTimeout = Require.nonNegative("Read timeout", readTimeout);
+    this.filters = Require.nonNull("Filters", filters);
     this.proxy = proxy;
-
-    checkArgument(!readTimeout.isNegative(), "Read time out cannot be negative");
-    checkArgument(!connectionTimeout.isNegative(), "Connection time out cannot be negative");
   }
 
   public static ClientConfig defaultConfig() {
@@ -65,14 +59,12 @@ public class ClientConfig {
   }
 
   public ClientConfig baseUri(URI baseUri) {
-    Objects.requireNonNull(baseUri, "Base URI to use must be set.");
-    return new ClientConfig(baseUri, connectionTimeout, readTimeout, filters, proxy);
+    return new ClientConfig(Require.nonNull("Base URI", baseUri), connectionTimeout, readTimeout, filters, proxy);
   }
 
   public ClientConfig baseUrl(URL baseUrl) {
-    Objects.requireNonNull(baseUrl, "Base URL to use must be set.");
     try {
-      return baseUri(baseUrl.toURI());
+      return baseUri(Require.nonNull("Base URL", baseUrl).toURI());
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -91,8 +83,7 @@ public class ClientConfig {
   }
 
   public ClientConfig connectionTimeout(Duration timeout) {
-    Objects.requireNonNull(timeout, "Connection timeout must be set.");
-    return new ClientConfig(baseUri, timeout, readTimeout, filters, proxy);
+    return new ClientConfig(baseUri, Require.nonNull("Connection timeout", timeout), readTimeout, filters, proxy);
   }
 
   public Duration connectionTimeout() {
@@ -100,8 +91,7 @@ public class ClientConfig {
   }
 
   public ClientConfig readTimeout(Duration timeout) {
-    Objects.requireNonNull(timeout, "Read timeout must be set.");
-    return new ClientConfig(baseUri, connectionTimeout, timeout, filters, proxy);
+    return new ClientConfig(baseUri, connectionTimeout, Require.nonNull("Read timeout", timeout), filters, proxy);
   }
 
   public Duration readTimeout() {

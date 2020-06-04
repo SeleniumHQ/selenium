@@ -17,10 +17,11 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * An action for aggregating actions and triggering all of them at the same time.
@@ -37,8 +38,7 @@ public class CompositeAction implements Action, IsInteraction {
   }
 
   public CompositeAction addAction(Action action) {
-    Objects.requireNonNull(action, "Null actions are not supported.");
-    actionsList.add(action);
+    actionsList.add(Require.nonNull("Action", action));
     return this;
   }
 

@@ -26,10 +26,14 @@ from .abstract_event_listener import AbstractEventListener
 
 
 def _wrap_elements(result, ef_driver):
-    if isinstance(result, WebElement):
+    # handle the case if another wrapper wraps EventFiringWebElement
+    if isinstance(result, EventFiringWebElement):
+        return result
+    elif isinstance(result, WebElement):
         return EventFiringWebElement(result, ef_driver)
     elif isinstance(result, list):
         return [_wrap_elements(item, ef_driver) for item in result]
+    # result is a built in type.
     else:
         return result
 
@@ -353,3 +357,6 @@ class EventFiringWebElement(object):
         except Exception as e:
             self._listener.on_exception(e, self._driver)
             raise
+
+
+WebElement.register(EventFiringWebElement)

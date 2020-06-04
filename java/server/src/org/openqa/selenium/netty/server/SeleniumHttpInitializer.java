@@ -25,10 +25,11 @@ import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketSe
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.AttributeKey;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.Message;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -45,8 +46,8 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
     HttpHandler seleniumHandler,
     BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler) {
     this.sslCtx = sslCtx;
-    this.seleniumHandler = Objects.requireNonNull(seleniumHandler);
-    this.webSocketHandler = Objects.requireNonNull(webSocketHandler);
+    this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler);
+    this.webSocketHandler = Require.nonNull("WebSocket handler", webSocketHandler);
   }
 
   @Override

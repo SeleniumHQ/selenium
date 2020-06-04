@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap.remote;
 
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
@@ -27,17 +25,18 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
@@ -50,8 +49,7 @@ public class RemoteSessionMap extends SessionMap {
 
   public RemoteSessionMap(Tracer tracer, HttpClient client) {
     super(tracer);
-
-    this.client = Objects.requireNonNull(client);
+    this.client = Require.nonNull("HTTP client", client);
   }
 
   public static SessionMap create(Config config) {
@@ -68,7 +66,7 @@ public class RemoteSessionMap extends SessionMap {
 
   @Override
   public boolean add(Session session) {
-    Objects.requireNonNull(session, "Session must be set");
+    Require.nonNull("Session", session);
 
     HttpRequest request = new HttpRequest(POST, "/se/grid/session");
     request.setContent(asJson(session));
@@ -78,7 +76,7 @@ public class RemoteSessionMap extends SessionMap {
 
   @Override
   public Session get(SessionId id) {
-    Objects.requireNonNull(id, "Session ID must be set");
+    Require.nonNull("Session ID", id);
 
     Session session = makeRequest(new HttpRequest(GET, "/se/grid/session/" + id), Session.class);
     if (session == null) {
@@ -89,7 +87,7 @@ public class RemoteSessionMap extends SessionMap {
 
   @Override
   public URI getUri(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID must be set");
+    Require.nonNull("Session ID", id);
 
     URI value = makeRequest(new HttpRequest(GET, "/se/grid/session/" + id + "/uri"), URI.class);
     if (value == null) {
@@ -100,14 +98,13 @@ public class RemoteSessionMap extends SessionMap {
 
   @Override
   public void remove(SessionId id) {
-    Objects.requireNonNull(id, "Session ID must be set");
+    Require.nonNull("Session ID", id);
 
     makeRequest(new HttpRequest(DELETE, "/se/grid/session/" + id), Void.class);
   }
 
   private <T> T makeRequest(HttpRequest request, Type typeOfT) {
-    Span activeSpan = tracer.getCurrentSpan();
-    HttpTracing.inject(tracer, activeSpan, request);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
 
     HttpResponse response = client.execute(request);
     return Values.get(response, typeOfT);

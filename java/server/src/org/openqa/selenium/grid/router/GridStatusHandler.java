@@ -18,23 +18,21 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
-import org.openqa.selenium.remote.tracing.TracedCallable;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -50,8 +48,8 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 class GridStatusHandler implements HttpHandler {
 
@@ -80,22 +78,20 @@ class GridStatusHandler implements HttpHandler {
   private final Distributor distributor;
 
   GridStatusHandler(Json json, Tracer tracer, HttpClient.Factory clientFactory, Distributor distributor) {
-    this.json = Objects.requireNonNull(json, "JSON encoder must be set.");
-    this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
-    this.clientFactory = Objects.requireNonNull(clientFactory, "HTTP client factory must be set.");
-    this.distributor = Objects.requireNonNull(distributor, "Distributor must be set.");
+    this.json = Require.nonNull("JSON encoder", json);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.distributor = Require.nonNull("Distributor", distributor);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
     long start = System.currentTimeMillis();
 
-    Span span = newSpanAsChildOf(tracer, req, "router.status").startSpan();
-
-    try (Scope scope = tracer.withSpan(span)) {
+    try (Span span = newSpanAsChildOf(tracer, req, "router.status")) {
       DistributorStatus status;
       try {
-        status = EXECUTOR_SERVICE.submit(new TracedCallable<>(tracer, span, distributor::getStatus)).get(2, SECONDS);
+        status = EXECUTOR_SERVICE.submit(span.wrap(distributor::getStatus)).get(2, SECONDS);
       } catch (ExecutionException | TimeoutException e) {
         return new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
@@ -173,8 +169,6 @@ class GridStatusHandler implements HttpHandler {
       HttpResponse res = new HttpResponse().setContent(asJson(ImmutableMap.of("value", value.build())));
       HTTP_RESPONSE.accept(span, res);
       return res;
-    } finally {
-      span.end();
     }
   }
 

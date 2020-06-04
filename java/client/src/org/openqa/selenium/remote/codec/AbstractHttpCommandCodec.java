@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.codec;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
@@ -109,6 +107,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.Command;
@@ -329,8 +328,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   }
 
   protected void defineCommand(String name, CommandSpec spec) {
-    checkNotNull(name, "null name");
-    nameToSpec.put(name, spec);
+    nameToSpec.put(Require.nonNull("Name", name), spec);
   }
 
   protected static CommandSpec delete(String path) {
@@ -372,13 +370,13 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     SessionId sessionId,
     Map<String, ?> parameters) {
     if ("sessionId".equals(parameterName)) {
-      checkArgument(sessionId != null, "Session ID may not be null for command %s", commandName);
+      Require.argument("Session id", sessionId).nonNull("Session ID may not be null for command %s", commandName);
       return sessionId.toString();
     }
 
     Object value = parameters.get(parameterName);
-    checkArgument(value != null,
-                  "Missing required parameter \"%s\" for command %s", parameterName, commandName);
+    Require.argument("Parameter", value).nonNull(
+        "Missing required parameter \"%s\" for command %s", parameterName, commandName);
     return Urls.urlEncode(String.valueOf(value));
   }
 
@@ -388,7 +386,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     private final ImmutableList<String> pathSegments;
 
     private CommandSpec(HttpMethod method, String path) {
-      this.method = checkNotNull(method, "null method");
+      this.method = Require.nonNull("HTTP method", method);
       this.path = path;
       this.pathSegments = ImmutableList.copyOf(PATH_SPLITTER.split(path));
     }

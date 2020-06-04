@@ -86,10 +86,10 @@ module Selenium
         # @option opts [Boolean] validate_cookie_document_type
         #
 
-        def initialize(args: nil, **opts)
-          super(opts)
+        def initialize(**opts)
+          @args = (opts.delete(:args) || []).to_set
+          super(**opts)
 
-          @args = (args || []).to_set
           @options[:native_events] = true if @options[:native_events].nil?
         end
 

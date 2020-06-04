@@ -25,7 +25,7 @@ import warnings
 from contextlib import contextmanager
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver, WebElement
 
 from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
@@ -36,7 +36,7 @@ from .webelement import FirefoxWebElement
 
 
 # Default for log_path variable. To be deleted when deprecations for arguments are removed.
-DEFAULT_LOG_PATH= None
+DEFAULT_LOG_PATH = None
 DEFAULT_EXECUTABLE_PATH = "geckodriver"
 DEFAULT_SERVICE_LOG_PATH = "geckodriver.log"
 
@@ -52,7 +52,7 @@ class WebDriver(RemoteWebDriver):
                  capabilities=None, proxy=None,
                  executable_path=DEFAULT_EXECUTABLE_PATH, options=None,
                  service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 service_args=None, service=None, desired_capabilities=None, 
+                 service_args=None, service=None, desired_capabilities=None,
                  log_path=DEFAULT_LOG_PATH, keep_alive=True):
         """Starts a new local session of Firefox.
 
@@ -103,7 +103,7 @@ class WebDriver(RemoteWebDriver):
              HTTP keep-alive.
         """
 
-        if executable_path != 'geckodriver':
+        if executable_path != DEFAULT_EXECUTABLE_PATH:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if capabilities is not None or desired_capabilities is not None:
@@ -126,7 +126,7 @@ class WebDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if service_args != None:
+        if service_args is not None:
             warnings.warn('service_args has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 
@@ -166,6 +166,12 @@ class WebDriver(RemoteWebDriver):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
             options.profile = firefox_profile
+
+        # TODO: Remove when we remove capabilities code. Firefox
+        # is being strict here, like it should. When we can remove capabilities
+        # for options this will be good to be deleted.
+        if capabilities.get("acceptInsecureCerts"):
+            options.accept_insecure_certs = capabilities.get("acceptInsecureCerts")
 
         if self.service is None:
             self.service = Service(
@@ -335,3 +341,17 @@ class WebDriver(RemoteWebDriver):
                 driver.get_full_page_screenshot_as_base64()
         """
         return self.execute("FULL_PAGE_SCREENSHOT")['value']
+
+    def _wrap_value(self, value):
+        """Overload the _wrap_value so that custom WebElement types can be checked against"""
+        if isinstance(value, dict):
+            converted = {}
+            for key, val in value.items():
+                converted[key] = self._wrap_value(val)
+            return converted
+        elif isinstance(value, (self._web_element_cls, WebElement)):
+            return {'ELEMENT': value.id, 'element-6066-11e4-a52e-4f735466cecf': value.id}
+        elif isinstance(value, list):
+            return list(self._wrap_value(item) for item in value)
+        else:
+            return value

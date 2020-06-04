@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 
@@ -25,7 +26,6 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,10 +37,8 @@ public class JsonConfig implements Config {
   private final Config delegate;
 
   JsonConfig(Reader reader) {
-    Objects.requireNonNull(reader, "JSON source must be set.");
-
     try {
-      delegate = new MapConfig(JSON.toType(reader, MAP_TYPE));
+      delegate = new MapConfig(JSON.toType(Require.nonNull("JSON source", reader), MAP_TYPE));
     } catch (JsonException e) {
       throw new ConfigException("Unable to parse input", e);
     }
@@ -66,8 +64,6 @@ public class JsonConfig implements Config {
 
   @Override
   public Set<String> getOptions(String section) {
-    Objects.requireNonNull(section, "Section name to get options for must be set.");
-
-    return delegate.getOptions(section);
+    return delegate.getOptions(Require.nonNull("Section name to get options for", section));
   }
 }

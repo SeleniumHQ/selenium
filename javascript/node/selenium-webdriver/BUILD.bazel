@@ -21,9 +21,9 @@ pkg_npm(
     srcs = SRC_FILES,
     deps = [
         ":license",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
     ],
 )
 
@@ -57,7 +57,6 @@ nodejs_binary(
 jasmine_node_test(
     name = "tests",
     srcs = TEST_FILES,
-    templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
     data = TEST_DATA + [
         "tools/init_jasmine.js",
         "//common/src/web",
@@ -70,10 +69,11 @@ jasmine_node_test(
         "@npm//sinon",
     ],
     local = True,
+    templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
     deps = [
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "@npm//jasmine",
     ],
 )

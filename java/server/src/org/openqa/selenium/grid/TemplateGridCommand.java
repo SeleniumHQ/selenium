@@ -20,16 +20,15 @@ package org.openqa.selenium.grid;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
-
 import com.google.common.collect.Sets;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
+import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 
@@ -84,7 +83,11 @@ public abstract class TemplateGridCommand implements CliCommand {
 
       Config config = new CompoundConfig(allConfigs.toArray(new Config[0]));
 
-      if (helpFlags.dumpConfig(config, out)) {
+      if (configFlags.dumpConfig(config, out)) {
+        return;
+      }
+
+      if (configFlags.dumpConfigHelp(config, getConfigurableRoles(), out)) {
         return;
       }
 

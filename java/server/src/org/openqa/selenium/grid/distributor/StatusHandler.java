@@ -19,11 +19,10 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
@@ -32,7 +31,7 @@ class StatusHandler implements HttpHandler {
   private final Distributor distributor;
 
   StatusHandler(Distributor distributor) {
-    this.distributor = Objects.requireNonNull(distributor);
+    this.distributor = Require.nonNull("Distributor", distributor);
   }
 
   @Override

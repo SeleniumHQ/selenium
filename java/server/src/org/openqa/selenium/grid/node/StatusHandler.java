@@ -19,12 +19,12 @@ package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
@@ -33,7 +33,7 @@ class StatusHandler implements HttpHandler {
   private final Node node;
 
   StatusHandler(Node node) {
-    this.node = Objects.requireNonNull(node);
+    this.node = Require.nonNull("Node", node);
   }
 
   @Override

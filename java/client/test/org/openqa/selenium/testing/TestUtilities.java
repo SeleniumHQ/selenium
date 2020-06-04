@@ -38,9 +38,6 @@ public class TestUtilities {
   }
 
   public static String getUserAgent(WebDriver driver) {
-    if (driver instanceof HtmlUnitDriver) {
-      return ((HtmlUnitDriver) driver).getBrowserVersion().getUserAgent();
-    }
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");
@@ -60,7 +57,7 @@ public class TestUtilities {
 
   public static boolean isInternetExplorer(WebDriver driver) {
     String userAgent = getUserAgent(driver);
-    return userAgent.contains("MSIE") || userAgent.contains("Trident");
+    return userAgent != null && userAgent.contains("MSIE") || userAgent.contains("Trident");
   }
 
   public static boolean isChrome(WebDriver driver) {

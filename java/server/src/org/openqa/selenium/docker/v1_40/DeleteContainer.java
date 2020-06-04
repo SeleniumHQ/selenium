@@ -18,11 +18,11 @@
 package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.ContainerId;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -33,11 +33,11 @@ class DeleteContainer {
   private final HttpHandler client;
 
   public DeleteContainer(HttpHandler client) {
-    this.client = Objects.requireNonNull(client);
+    this.client = Require.nonNull("HTTP client", client);
   }
 
   public void apply(ContainerId id) {
-    Objects.requireNonNull(id);
+    Require.nonNull("Container id", id);
 
     HttpResponse res = client.execute(
       new HttpRequest(DELETE, "/v1.40/containers/" + id)
