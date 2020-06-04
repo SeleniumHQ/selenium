@@ -122,6 +122,7 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
+    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
     when(elem1.findElements(By.name("photo"))).thenReturn(elems34);
     when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
 
