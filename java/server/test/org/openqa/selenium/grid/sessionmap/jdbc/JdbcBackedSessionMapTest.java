@@ -64,12 +64,14 @@ public class JdbcBackedSessionMapTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void shouldThrowIllegalArgumentExceptionIfConnectionObjectIsNull() {
-    SessionMap sessions = new JdbcBackedSessionMap(tracer, null, "", "", "", "");
+    SessionMap sessions = new JdbcBackedSessionMap(tracer, null);
   }
 
   @Test(expected = JdbcException.class)
-  public void shouldThrowJdbcExceptionIfTableDoesNotExist() {
-    SessionMap sessions = new JdbcBackedSessionMap(tracer, connection, "doesnotExist", "session_id", "session_caps", "session_uri");
+  public void shouldThrowNoSuchSessionExceptionIfTableDoesNotExist() throws SQLException {
+    Connection connection2 = DriverManager.getConnection("jdbc:hsqldb:mem:testdb2", "SA", "");
+
+    SessionMap sessions = new JdbcBackedSessionMap(tracer, connection2);
 
     sessions.get(new SessionId(UUID.randomUUID()));
   }
@@ -113,7 +115,7 @@ public class JdbcBackedSessionMapTest {
   }
 
   private JdbcBackedSessionMap getSessionMap() {
-    return new JdbcBackedSessionMap(tracer, connection, "sessions_map", "session_ids", "session_caps", "session_uri");
+    return new JdbcBackedSessionMap(tracer, connection);
   }
 
 }

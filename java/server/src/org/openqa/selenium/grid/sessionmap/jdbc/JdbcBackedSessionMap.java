@@ -45,35 +45,23 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(JdbcBackedSessionMap.class.getName());
   private final Connection connection;
-  private final String  tableName;
-  private final String sessionIdCol;
-  private final String sessionCapsCol;
-  private final String sessionUriCol;
+  private static final String TABLE_NAME = "sessions_map";
+  private static final String SESSION_ID_COL = "session_ids";
+  private static final String SESSION_CAPS_COL = "session_caps";
+  private static final String SESSION_URI_COL = "session_uri";
 
 
-  public JdbcBackedSessionMap(Tracer tracer, Connection jdbcConnection, String sessionTableName, String sessionIdCol, String sessionCapsCol, String sessionUriCol)  {
+  public JdbcBackedSessionMap(Tracer tracer, Connection jdbcConnection)  {
     super(tracer);
 
     Require.nonNull("JDBC Connection Object", jdbcConnection);
-    Require.nonNull("Table name", sessionTableName);
-    Require.nonNull("Session id column name", sessionIdCol);
-    Require.nonNull("Session caps column name", sessionCapsCol);
-    Require.nonNull("Session URI column name", sessionUriCol);
 
     this.connection = jdbcConnection;
-    this.tableName = sessionTableName;
-    this.sessionIdCol = sessionIdCol;
-    this.sessionCapsCol = sessionCapsCol;
-    this.sessionUriCol = sessionUriCol;
   }
 
   public static SessionMap create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     JdbcSessionMapOptions sessionMapOptions = new JdbcSessionMapOptions(config);
-    String tableName = sessionMapOptions.getJdbcTableName();
-    String sessionIdColName = sessionMapOptions.getJdbcSessionIdColName();
-    String sessionCapsColName = sessionMapOptions.getJdbcSessionCapColName();
-    String sessionUriColName = sessionMapOptions.getJdbcSessionUriColName();
     Connection connection;
 
     try {
@@ -82,7 +70,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
       throw new ConfigException(e.toString());
     }
 
-    return new JdbcBackedSessionMap(tracer, connection, tableName, sessionIdColName, sessionCapsColName, sessionUriColName);
+    return new JdbcBackedSessionMap(tracer, connection);
   }
   @Override
   public boolean add(Session session) {
@@ -100,25 +88,24 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   public Session get(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
 
-    URI uri;
+    URI uri = null;
     Capabilities caps = null;
     String rawUri = null;
 
     try (ResultSet sessions = readSessionStatement(id).executeQuery()){
-      while(sessions.next()) {
-        rawUri = sessions.getString(sessionUriCol);
-        String rawCapabilities = sessions.getString(sessionCapsCol);
+      if (sessions.next()) {
+        rawUri = sessions.getString(SESSION_URI_COL);
+        String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
 
         caps = rawCapabilities == null ?
                             new ImmutableCapabilities() :
                             JSON.toType(rawCapabilities, Capabilities.class);
-      }
-
-      try {
-        uri = new URI(rawUri);
-      } catch (URISyntaxException e) {
-        throw new NoSuchSessionException(String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
-      } catch (NullPointerException e) {
+        try {
+          uri = new URI(rawUri);
+        } catch (URISyntaxException e) {
+          throw new NoSuchSessionException(String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
+        }
+      } else {
         throw new NoSuchSessionException("Unable to find URI for session " + id);
       }
 
@@ -149,7 +136,11 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   }
 
   private PreparedStatement insertSessionStatement(Session session) throws SQLException {
-    PreparedStatement insertStatement = connection.prepareStatement("insert into " + tableName + " (" +  String.join(", ", sessionIdCol, sessionUriCol, sessionCapsCol)+ ") values(?, ?, ?)");
+    PreparedStatement insertStatement = connection.prepareStatement("insert into " + TABLE_NAME
+                                                                    + " (" + String.join(", ",
+                                                                                         SESSION_ID_COL,
+                                                                                         SESSION_URI_COL,
+                                                                                         SESSION_CAPS_COL) + ") values(?, ?, ?)");
     insertStatement.setString(1, session.getId().toString());
     insertStatement.setString(2, session.getUri().toString());
     insertStatement.setString(3, JSON.toJson(session.getCapabilities()));
@@ -158,7 +149,9 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   }
 
   private PreparedStatement readSessionStatement(SessionId sessionId) throws SQLException {
-    PreparedStatement getSessionsStatement = connection.prepareStatement("select * from " + tableName + " where " + sessionIdCol + " = ?");
+    PreparedStatement getSessionsStatement = connection.prepareStatement("select * from " + TABLE_NAME
+                                                                         + " where " + SESSION_ID_COL
+                                                                         + " = ?");
     getSessionsStatement.setMaxRows(1);
     getSessionsStatement.setString(1, sessionId.toString());
 
@@ -166,7 +159,9 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   }
 
   private PreparedStatement getDeleteSqlForSession(SessionId sessionId) throws SQLException{
-    PreparedStatement deleteSessionStatement = connection.prepareStatement("delete from " + tableName + " where " + sessionIdCol + " = ?");
+    PreparedStatement deleteSessionStatement = connection.prepareStatement("delete from " + TABLE_NAME
+                                                                           + " where " + SESSION_ID_COL
+                                                                           + " = ?");
     deleteSessionStatement.setString(1, sessionId.toString());
 
     return deleteSessionStatement;

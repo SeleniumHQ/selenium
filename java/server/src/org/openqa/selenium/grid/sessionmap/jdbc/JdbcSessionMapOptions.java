@@ -28,10 +28,6 @@ public class JdbcSessionMapOptions {
 
   private static final String SESSIONS_SECTION = "sessions";
   private static final Logger LOG = Logger.getLogger(JdbcSessionMapOptions.class.getName());
-  private static final String  tableName = "sessions_map";
-  private static final String sessionIdCol = "session_ids";
-  private final String sessionCapsCol = "session_caps";
-  private final String sessionUriCol = "session_uri";
 
   private final Config config;
 
@@ -45,21 +41,5 @@ public class JdbcSessionMapOptions {
     String jdbcPassword = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-password"));
 
     return DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
-  }
-
-  public String getJdbcTableName() {
-    return tableName;
-  }
-
-  public String getJdbcSessionIdColName() {
-    return sessionIdCol;
-  }
-
-  public String getJdbcSessionCapColName() {
-    return sessionCapsCol;
-  }
-
-  public String getJdbcSessionUriColName() {
-    return sessionUriCol;
   }
 }
