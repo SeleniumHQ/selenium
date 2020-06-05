@@ -47,7 +47,7 @@ public class JdbcSessionMapFlags implements HasRoles {
   @Parameter(
       names = "--jdbc-password",
       description = "Password for the user to make a JDBC connection")
-  @ConfigValue(section = "sessions", name = "jdbc-password", example = "myP@ssw%d")
+  @ConfigValue(section = "sessions", name = "jdbc-password", example = "hunter2")
   private String password;
 
   @Override
