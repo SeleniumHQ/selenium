@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.internal.Require;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,6 +33,8 @@ public class JdbcSessionMapOptions {
   private final Config config;
 
   public JdbcSessionMapOptions(Config config) {
+    Require.nonNull("Config", config);
+
     this.config = config;
   }
 
