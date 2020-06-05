@@ -73,7 +73,8 @@ public class ReactorClient implements HttpClient {
   private ReactorClient(ClientConfig config) {
     this.config = config;
     httpClient = reactor.netty.http.client.HttpClient.create()
-        .baseUrl(config.baseUrl().toString());
+        .baseUrl(config.baseUrl().toString())
+        .keepAlive(true);
   }
 
   @Override
