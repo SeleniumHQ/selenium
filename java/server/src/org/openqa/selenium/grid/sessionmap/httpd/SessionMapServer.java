@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -61,7 +62,7 @@ public class SessionMapServer extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE);
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_MAP_ROLE);
   }
 
   @Override

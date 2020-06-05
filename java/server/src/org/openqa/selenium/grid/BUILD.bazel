@@ -73,6 +73,7 @@ java_export(
         ":base-command",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/jdbc",
     ],
 )
 
