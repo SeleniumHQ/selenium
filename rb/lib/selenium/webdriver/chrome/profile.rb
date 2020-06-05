@@ -48,7 +48,7 @@ module Selenium
         #
         # Set a preference in the profile.
         #
-        # See https://src.chromium.org/svn/trunk/src/chrome/common/pref_names.cc
+        # See https://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/pref_names.cc
         #
 
         def []=(key, value)
