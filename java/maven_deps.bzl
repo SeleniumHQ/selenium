@@ -42,7 +42,7 @@ def selenium_java_deps():
             "io.ous:jtoml:2.0.0",
             "it.ozimov:embedded-redis:0.7.2",
             "io.projectreactor:reactor-core:3.3.5.RELEASE",
-            "io.projectreactor.netty:reactor-netty:0.9.6.RELEASE",
+            "io.projectreactor.netty:reactor-netty:0.9.7.RELEASE",
             "javax.servlet:javax.servlet-api:4.0.1",
             maven.artifact(
                 group = "junit",
