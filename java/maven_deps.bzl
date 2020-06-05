@@ -71,6 +71,7 @@ def selenium_java_deps():
             "org.eclipse.jetty:jetty-xml:%s" % jetty_version,
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
+            "org.hsqldb:hsqldb:2.5.0",
             "org.mockito:mockito-core:3.3.3",
             "org.slf4j:slf4j-jdk14:1.7.30",
             "org.testng:testng:7.1.0",

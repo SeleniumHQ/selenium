@@ -411,7 +411,7 @@ suite(function(env) {
       });
     });
 
-    describe('RelativeBy to find element', async function() {
+    describe('RelativeBy to find element', function() {
       it('finds an element above', async function() {
         await driver.get(Pages.relativeLocators);
         let below = await driver.findElement(By.id("below"));

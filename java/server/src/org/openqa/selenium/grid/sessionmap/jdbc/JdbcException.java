@@ -15,15 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.config;
+package org.openqa.selenium.grid.sessionmap.jdbc;
 
-public class ConfigException extends RuntimeException {
 
-  public ConfigException(String message, Object... args) {
-    super(String.format(message, args));
+import org.openqa.selenium.WebDriverException;
+
+public class JdbcException extends WebDriverException {
+  public JdbcException() {
+    super();
   }
 
-  public ConfigException(Throwable cause) {
+  public JdbcException(String message) {
+    super(message);
+  }
+
+  public JdbcException(Throwable cause) {
     super(cause);
+  }
+
+  public JdbcException(String message, Throwable cause) {
+    super(message, cause);
   }
 }
