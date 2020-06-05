@@ -17,13 +17,17 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -44,6 +48,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(JdbcBackedSessionMap.class.getName());
+  private final EventBus bus;
   private final Connection connection;
   private static final String TABLE_NAME = "sessions_map";
   private static final String SESSION_ID_COL = "session_ids";
@@ -51,17 +56,25 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   private static final String SESSION_URI_COL = "session_uri";
 
 
-  public JdbcBackedSessionMap(Tracer tracer, Connection jdbcConnection)  {
+  public JdbcBackedSessionMap(Tracer tracer, Connection jdbcConnection, EventBus bus)  {
     super(tracer);
 
     Require.nonNull("JDBC Connection Object", jdbcConnection);
+    this.bus = Require.nonNull("Event bus", bus);
 
     this.connection = jdbcConnection;
+    this.bus.addListener(SESSION_CLOSED, event -> {
+      SessionId id = event.getData(SessionId.class);
+      remove(id);
+    });
   }
 
   public static SessionMap create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
+    EventBus bus = new EventBusOptions(config).getEventBus();
+
     JdbcSessionMapOptions sessionMapOptions = new JdbcSessionMapOptions(config);
+
     Connection connection;
 
     try {
@@ -70,7 +83,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
       throw new ConfigException(e.toString());
     }
 
-    return new JdbcBackedSessionMap(tracer, connection);
+    return new JdbcBackedSessionMap(tracer, connection, bus);
   }
   @Override
   public boolean add(Session session) {

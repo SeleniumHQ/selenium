@@ -25,6 +25,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
@@ -41,10 +43,12 @@ import java.util.UUID;
 
 public class JdbcBackedSessionMapTest {
   private static Connection connection;
+  private static EventBus bus;
   private static final Tracer tracer = DefaultTestTracer.createTracer();
 
   @BeforeClass
   public static void createDB() throws SQLException {
+    bus = new GuavaEventBus();
     connection = DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "SA", "");
     Statement createStatement = connection.createStatement();
     createStatement.executeUpdate("create table sessions_map (session_ids varchar(50), session_uri varchar(30), session_caps varchar(300));");
@@ -64,14 +68,14 @@ public class JdbcBackedSessionMapTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void shouldThrowIllegalArgumentExceptionIfConnectionObjectIsNull() {
-    SessionMap sessions = new JdbcBackedSessionMap(tracer, null);
+    SessionMap sessions = new JdbcBackedSessionMap(tracer, null, bus);
   }
 
   @Test(expected = JdbcException.class)
   public void shouldThrowNoSuchSessionExceptionIfTableDoesNotExist() throws SQLException {
     Connection connection2 = DriverManager.getConnection("jdbc:hsqldb:mem:testdb2", "SA", "");
 
-    SessionMap sessions = new JdbcBackedSessionMap(tracer, connection2);
+    SessionMap sessions = new JdbcBackedSessionMap(tracer, connection2, bus);
 
     sessions.get(new SessionId(UUID.randomUUID()));
   }
@@ -115,7 +119,7 @@ public class JdbcBackedSessionMapTest {
   }
 
   private JdbcBackedSessionMap getSessionMap() {
-    return new JdbcBackedSessionMap(tracer, connection);
+    return new JdbcBackedSessionMap(tracer, connection, bus);
   }
 
 }

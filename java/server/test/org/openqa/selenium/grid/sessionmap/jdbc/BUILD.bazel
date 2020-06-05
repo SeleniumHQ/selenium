@@ -10,6 +10,7 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/jdbc",
+        "//java/server/src/org/openqa/selenium/events/local",
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
