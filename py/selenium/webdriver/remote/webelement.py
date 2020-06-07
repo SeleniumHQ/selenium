@@ -23,12 +23,12 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
-
+import warnings
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
-
+from selenium.webdriver.support.event_firing_webdriver import EventFiringWebElement
 from six import add_metaclass
 
 # Python 3 imports
@@ -75,6 +75,21 @@ class WebElement(BaseWebElement):
         self._parent = parent
         self._id = id_
         self._w3c = w3c
+        
+    def cast(cls, wrapped_driver: EventFiringWebElement):
+        """
+        The cast will take the EventFiringWebELement wrapper and register it with the WebElement Class 
+        for further use of WebElements"""
+        
+        assert isinstance(wrapped_driver, EventFiringWebElement)
+        wrapped_driver.__class__ = cls  
+        assert isinstance(wrapped_driver, WebElement)
+        return wrapped_driver
+    
+    def register(cls, wrapped_driver: EventFiringWebElement):
+        warning.warn("register() is currently deprecated , please use Abstarct Base class or monkeypathcing")
+        temp_driver = WebElement
+        return temp_driver.cast(wrapped_driver)
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
