@@ -51,6 +51,17 @@ public class ByTest {
   }
 
   @Test
+  public void ensureAiSerialisesProperly() {
+    ByAi by = new ByAi("foo");
+
+    Json aiToJson = new Json();
+    Map<String, Object> blob = aiToJson.toType(aiToJson.toJson(by), MAP_TYPE);
+
+    assertThat(blob.get("using")).isEqualTo("css selector");
+    assertThat(blob.get("value")).isEqualTo("foo");
+  }
+
+  @Test
   public void shouldUseXpathLocateElementsByXpath() {
     AllDriver driver = mock(AllDriver.class);
 
@@ -61,30 +72,6 @@ public class ByTest {
     verify(driver).findElements(By.xpath(".//*[@name = 'peas']"));
     verifyNoMoreInteractions(driver);
   }
-//
-//  @Test
-//  public void shouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
-//    final OnlyXPath driver = mock(OnlyXPath.class);
-//
-//    By.name("cheese").findElement(driver);
-//    By.name("peas").findElements(driver);
-//
-//    verify(driver).findElementByXPath(".//*[@name = 'cheese']");
-//    verify(driver).findElementsByXPath(".//*[@name = 'peas']");
-//    verifyNoMoreInteractions(driver);
-//  }
-
-//  @Test
-//  public void fallsBackOnXPathIfContextDoesNotImplementFallsById() {
-//    OnlyXPath driver = mock(OnlyXPath.class);
-//
-//    By.id("foo").findElement(driver);
-//    By.id("bar").findElements(driver);
-//
-//    verify(driver).findElementByXPath(".//*[@id = 'foo']");
-//    verify(driver).findElementsByXPath(".//*[@id = 'bar']");
-//    verifyNoMoreInteractions(driver);
-//  }
 
   @Test
   public void doesNotUseXPathIfContextFindsById() {
@@ -110,18 +97,6 @@ public class ByTest {
     verifyNoMoreInteractions(context);
   }
 
-//  @Test
-//  public void searchesByXPathIfCannotFindByTagName() {
-//    OnlyXPath context = mock(OnlyXPath.class);
-//
-//    By.tagName("foo").findElement(context);
-//    By.tagName("bar").findElements(context);
-//
-//    verify(context).findElementByXPath(".//foo");
-//    verify(context).findElementsByXPath(".//bar");
-//    verifyNoMoreInteractions(context);
-//  }
-
   @Test
   public void searchesByClassNameIfSupported() {
     AllDriver context = mock(AllDriver.class);
@@ -133,20 +108,6 @@ public class ByTest {
     verify(context).findElements(By.className("bar"));
     verifyNoMoreInteractions(context);
   }
-
-//  @Test
-//  public void searchesByXPathIfFindingByClassNameNotSupported() {
-//    OnlyXPath context = mock(OnlyXPath.class);
-//
-//    By.className("foo").findElement(context);
-//    By.className("bar").findElements(context);
-//
-//    verify(context).findElementByXPath(
-//        ".//*[contains(concat(' ',normalize-space(@class),' '),' foo ')]");
-//    verify(context).findElementsByXPath(
-//        ".//*[contains(concat(' ',normalize-space(@class),' '),' bar ')]");
-//    verifyNoMoreInteractions(context);
-//  }
 
   @Test
   public void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {
@@ -200,5 +161,4 @@ public class ByTest {
   private interface AllDriver extends SearchContext {
     // Place holder
   }
-
 }

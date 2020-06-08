@@ -29,6 +29,7 @@ java_export(
     deps = [
         # Nothing from third party
         ":manifest",
+        "//java:auto-service"
     ],
 )
 
