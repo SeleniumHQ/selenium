@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -42,6 +40,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 
 
 public class JdbcBackedSessionMap extends SessionMap implements Closeable {
@@ -114,8 +114,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
       String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
 
       caps = rawCapabilities == null ?
-                          new ImmutableCapabilities() :
-                          JSON.toType(rawCapabilities, Capabilities.class);
+        new ImmutableCapabilities() :
+        JSON.toType(rawCapabilities, Capabilities.class);
       try {
         uri = new URI(rawUri);
       } catch (URISyntaxException e) {
@@ -149,11 +149,12 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   }
 
   private PreparedStatement insertSessionStatement(Session session) throws SQLException {
-    PreparedStatement insertStatement = connection.prepareStatement(String.format("insert into %1$s (%2$s, %3$s, %4$s) values (?, ?, ?)",
-                                                                                  TABLE_NAME,
-                                                                                  SESSION_ID_COL,
-                                                                                  SESSION_URI_COL,
-                                                                                  SESSION_CAPS_COL));
+    PreparedStatement insertStatement = connection.prepareStatement(
+      String.format("insert into %1$s (%2$s, %3$s, %4$s) values (?, ?, ?)",
+        TABLE_NAME,
+        SESSION_ID_COL,
+        SESSION_URI_COL,
+        SESSION_CAPS_COL));
 
     insertStatement.setString(1, session.getId().toString());
     insertStatement.setString(2, session.getUri().toString());
@@ -163,9 +164,10 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   }
 
   private PreparedStatement readSessionStatement(SessionId sessionId) throws SQLException {
-    PreparedStatement getSessionsStatement = connection.prepareStatement(String.format("select * from %1$s where %2$s = ?",
-                                                                      TABLE_NAME,
-                                                                      SESSION_ID_COL));
+    PreparedStatement getSessionsStatement = connection.prepareStatement(
+      String.format("select * from %1$s where %2$s = ?",
+        TABLE_NAME,
+        SESSION_ID_COL));
 
     getSessionsStatement.setMaxRows(1);
     getSessionsStatement.setString(1, sessionId.toString());
@@ -174,13 +176,13 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   }
 
   private PreparedStatement getDeleteSqlForSession(SessionId sessionId) throws SQLException{
-    PreparedStatement deleteSessionStatement = connection.prepareStatement(String.format("delete from %1$s where %2$s = ?",
-                                                                         TABLE_NAME,
-                                                                         SESSION_ID_COL));
+    PreparedStatement deleteSessionStatement = connection.prepareStatement(
+      String.format("delete from %1$s where %2$s = ?",
+        TABLE_NAME,
+        SESSION_ID_COL));
 
     deleteSessionStatement.setString(1, sessionId.toString());
 
     return deleteSessionStatement;
-
   }
 }

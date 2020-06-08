@@ -10,16 +10,14 @@ java_export(
     visibility = [
         "//visibility:public",
     ],
+    exports = [
+        "//java/server/src/org/openqa/selenium/grid",
+    ],
     deps = [
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/server/src/org/openqa/selenium/events",
         "//java/client/src/org/openqa/selenium/remote",
-        "//java/server/src/org/openqa/selenium/grid/server",
-        "//java/server/src/org/openqa/selenium/grid/sessionmap",
-        "//java/server/src/org/openqa/selenium/grid/config",
-        "//java/server/src/org/openqa/selenium/grid/log",
-        "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],
