@@ -232,7 +232,7 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
     return allElements;
   }
 
-  Response execute(CommandPayload payload) {
+  protected Response execute(CommandPayload payload) {
     return parent.execute(payload);
   }
 
