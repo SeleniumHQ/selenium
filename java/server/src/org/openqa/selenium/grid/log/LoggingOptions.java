@@ -31,6 +31,9 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -141,17 +144,32 @@ public class LoggingOptions {
 
     // Now configure the root logger, since everything should flow up to that
     Logger logger = logManager.getLogger("");
+    OutputStream out = System.out;
+    try {
+      out = getOutputStream();
+    } catch (FileNotFoundException e) {
 
-    if (isUsingPlainLogs()) {
-      Handler handler = new FlushingHandler(System.out);
-      handler.setFormatter(new TerseFormatter());
-      logger.addHandler(handler);
     }
 
+    if (isUsingPlainLogs()) {
+      Handler handler = new FlushingHandler(out);
+      handler.setFormatter(new TerseFormatter());
+      logger.addHandler(handler);
+  }
+
     if (isUsingStructuredLogging()) {
-      Handler handler = new FlushingHandler(System.out);
+      Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
       logger.addHandler(handler);
     }
+  }
+
+  private OutputStream getOutputStream() throws FileNotFoundException {
+    String fileName = config.get(LOGGING_SECTION, "log-file").get();
+    FileOutputStream fileOut = null;
+    if (fileName != "null") {
+      fileOut = new FileOutputStream(fileName);
+    }
+    return fileOut;
   }
 }

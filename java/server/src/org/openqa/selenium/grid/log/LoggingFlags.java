@@ -46,6 +46,10 @@ public class LoggingFlags implements HasRoles {
   @ConfigValue(section = "logging", name = "tracing", example = "true")
   private Boolean enableTracing = true;
 
+  @Parameter(description = "File to write out logs", hidden = true, names = "--log", arity = 1)
+  @ConfigValue(section = "logging", name = "log-file", example = "true")
+  private String logFile;
+
   @Override
   public Set<Role> getRoles() {
     return ALL_ROLES;
