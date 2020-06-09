@@ -19,12 +19,16 @@ package org.openqa.selenium.grid.distributor.redis;
 
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
@@ -38,7 +42,9 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
 
+import java.io.Closeable;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
@@ -46,7 +52,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-public class RedisDistributor extends Distributor {
+public class RedisDistributor extends Distributor implements Closeable {
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Redis)");
   private final Tracer tracer;
@@ -88,12 +94,27 @@ public class RedisDistributor extends Distributor {
 
   @Override
   public Distributor add(Node node) {
+    Require.nonNull("Node to add", node);
+
+    RedisCommands<String, String> commands = connection.sync();
+    commands.mset(
+        ImmutableMap.of(
+            nodeIdKey(node.getId()), node.getId().toString(),
+            nodeUriKey(node.getId()), node.getUri().toString()));
+
+    bus.fire(new NodeAddedEvent(node.getId()));
     return this;
   }
 
   @Override
   public void remove(UUID nodeId) {
+    Require.nonNull("NodeId to remove", nodeId);
 
+    RedisCommands<String, String> commands = connection.sync();
+
+    commands.del(nodeIdKey(nodeId), nodeUriKey(nodeId));
+
+    bus.fire(new NodeRemovedEvent(nodeId));
   }
 
   @Override
@@ -108,5 +129,22 @@ public class RedisDistributor extends Distributor {
 
   private void refresh(NodeStatus status) {
 
+  }
+
+  private String nodeIdKey(UUID id) {
+    Require.nonNull("Node UUID", id);
+
+    return "node:" + id.toString() + ":id";
+  }
+
+  private String nodeUriKey(UUID id) {
+    Require.nonNull("Node UUID", id);
+
+    return "node:" + id.toString() + ":uri";
+  }
+
+  @Override
+  public void close() {
+    client.shutdown();
   }
 }
