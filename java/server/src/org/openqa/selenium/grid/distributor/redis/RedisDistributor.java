@@ -19,9 +19,9 @@ package org.openqa.selenium.grid.distributor.redis;
 
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -122,11 +122,6 @@ public class RedisDistributor extends Distributor implements Closeable {
     return null;
   }
 
-  @Beta
-  public void refresh() {
-
-  }
-
   private void refresh(NodeStatus status) {
 
   }
@@ -146,5 +141,12 @@ public class RedisDistributor extends Distributor implements Closeable {
   @Override
   public void close() {
     client.shutdown();
+  }
+
+  @VisibleForTesting
+  String getNodeUri(UUID id) {
+    RedisCommands<String, String> commands = connection.sync();
+
+    return commands.get(nodeUriKey(id));
   }
 }
