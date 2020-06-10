@@ -21,119 +21,302 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
-public class AugmenterTest extends BaseAugmenterTest {
+public class AugmenterTest {
 
-  @Override
-  public BaseAugmenter getAugmenter() {
+  protected Augmenter getAugmenter() {
     return new Augmenter();
   }
 
   @Test
-  public void canUseTheAugmenterToInterceptConcreteMethodCalls() throws Exception {
-    Capabilities caps = new ImmutableCapabilities(SUPPORTS_JAVASCRIPT, true);
-    StubExecutor stubExecutor = new StubExecutor(caps);
-    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<>(), "StubTitle");
+  public void shouldAddInterfaceFromCapabilityIfNecessary() {
+    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
+    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    final WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+    WebDriver returned = getAugmenter()
+      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+      .augment(driver);
 
-    // Our AugmenterProvider needs to target the class that declares quit(),
-    // otherwise the Augmenter won't apply the method interceptor.
-    final Method quitMethod = driver.getClass().getMethod("quit");
-
-    AugmenterProvider augmentation = new AugmenterProvider() {
-      @Override
-      public Class<?> getDescribedInterface() {
-        return quitMethod.getDeclaringClass();
-      }
-
-      @Override
-      public InterfaceImplementation getImplementation(Object value) {
-        return (executeMethod, self, method, args) -> {
-          if (quitMethod.equals(method)) {
-            return null;
-          }
-
-          try {
-            return method.invoke(driver, args);
-          } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-          } catch (InvocationTargetException e) {
-            throw new RuntimeException(e.getTargetException());
-          }
-        };
-      }
-    };
-
-    BaseAugmenter augmenter = getAugmenter();
-
-    // Set the capability that triggers the augmentation.
-    augmenter.addDriverAugmentation(CapabilityType.SUPPORTS_JAVASCRIPT, augmentation);
-
-    WebDriver returned = augmenter.augment(driver);
     assertThat(returned).isNotSameAs(driver);
-    assertThat(returned.getTitle()).isEqualTo("StubTitle");
-
-    returned.quit();   // Should not fail because it's intercepted.
-
-    // Verify original is unmodified.
-    assertThatExceptionOfType(AssertionError.class)
-        .isThrownBy(driver::quit)
-        .withMessageStartingWith("Unexpected method invocation");
+    assertThat(returned).isInstanceOf(HasMagicNumbers.class);
   }
 
   @Test
-  public void shouldNotAugmentRemoteWebDriverWithoutExtraCapabilities() {
-    Capabilities caps = new ImmutableCapabilities();
-    StubExecutor stubExecutor = new StubExecutor(caps);
-    WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+  public void shouldNotAddInterfaceWhenBooleanValueForItIsFalse() {
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", false);
+    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver augmentedDriver = getAugmenter().augment(driver);
+    WebDriver returned = getAugmenter()
+      .addDriverAugmentation("magic.numbers", HasMagicNumbers.class, (c, exe) -> () -> 42)
+      .augment(driver);
 
-    assertThat(augmentedDriver).isSameAs(driver);
+    assertThat(returned).isSameAs(driver);
+    assertThat(returned).isNotInstanceOf(HasMagicNumbers.class);
   }
 
   @Test
-  public void shouldAugmentRemoteWebDriverWithExtraCapabilities() {
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_WEB_STORAGE, true);
-    StubExecutor stubExecutor = new StubExecutor(caps);
-    WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+  public void shouldDelegateToHandlerIfAdded() {
+    Capabilities caps = new ImmutableCapabilities("foo", true);
+    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver augmentedDriver = getAugmenter().augment(driver);
+    WebDriver returned = getAugmenter()
+      .addDriverAugmentation(
+        "foo",
+        MyInterface.class,
+        (c, exe) -> () -> "Hello World")
+      .augment(driver);
 
-    assertThat(augmentedDriver).isNotSameAs(driver);
+    String text = ((MyInterface) returned).getHelloWorld();
+    assertThat(text).isEqualTo("Hello World");
   }
 
-  public static class RemoteWebDriverSubclass extends RemoteWebDriver {
-    public RemoteWebDriverSubclass(CommandExecutor stubExecutor, Capabilities caps) {
-      super(stubExecutor, caps);
+  @Test
+  public void shouldDelegateUnmatchedMethodCallsToDriverImplementation() {
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
+    StubExecutor stubExecutor = new StubExecutor(caps);
+    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<>(), "Title");
+    WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
+
+    WebDriver returned = getAugmenter()
+      .addDriverAugmentation(
+        "magic.numbers",
+        HasMagicNumbers.class,
+        (c, exe) -> () -> 42)
+      .augment(driver);
+
+    assertThat(returned.getTitle()).isEqualTo("Title");
+  }
+
+  @Test
+  public void proxyShouldNotAppearInStackTraces() {
+    // This will force the class to be enhanced
+    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
+
+    DetonatingDriver driver = new DetonatingDriver();
+    driver.setCapabilities(caps);
+
+    WebDriver returned = getAugmenter()
+      .addDriverAugmentation(
+        "magic.numbers",
+        HasMagicNumbers.class,
+        (c, exe) -> () -> 42)
+      .augment(driver);
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(() -> returned.findElement(By.id("ignored")));
+  }
+
+  @Test
+  public void shouldCopyFieldsFromTemplateInstanceIntoChildInstance() {
+    ChildRemoteDriver driver = new ChildRemoteDriver();
+    HasMagicNumbers holder = (HasMagicNumbers) getAugmenter().augment(driver);
+
+    assertThat(holder.getMagicNumber()).isEqualTo(3);
+  }
+
+  @Test
+  public void shouldNotChokeOnFinalFields() {
+    WithFinals withFinals = new WithFinals();
+    getAugmenter().augment(withFinals);
+  }
+
+  @Test
+  public void shouldAllowReflexiveCalls() {
+    Capabilities caps = new ImmutableCapabilities("find by magic", true);
+    StubExecutor executor = new StubExecutor(caps);
+    final WebElement element = mock(WebElement.class);
+    executor.expect(
+      FIND_ELEMENT,
+      ImmutableMap.of("using", "magic", "value", "cheese"),
+      element);
+
+    WebDriver driver = new RemoteWebDriver(executor, caps);
+    WebDriver returned = getAugmenter()
+      .addDriverAugmentation(
+        "find by magic",
+        FindByMagic.class,
+        (c, exe) -> magicWord -> element)
+      .augment(driver);
+
+    // No exception is a Good Thing
+    WebElement seen = returned.findElement(new ByMagic("cheese"));
+    assertThat(seen).isSameAs(element);
+  }
+
+  private static class ByMagic extends By {
+    private final String magicWord;
+
+    public ByMagic(String magicWord) {
+      this.magicWord = magicWord;
+    }
+
+    @Override
+    public List<WebElement> findElements(SearchContext context) {
+      return List.of(((FindByMagic) context).findByMagic(magicWord));
     }
   }
 
+  public interface FindByMagic {
+    WebElement findByMagic(String magicWord);
+  }
+
   @Test
-  public void shouldNotAugmentSubclassesOfRemoteWebDriver() {
-    Capabilities caps = new ImmutableCapabilities();
+  public void shouldBeAbleToAugmentMultipleTimes() {
+    Capabilities caps = new ImmutableCapabilities("canRotate", true, "magic.numbers", true);
+
     StubExecutor stubExecutor = new StubExecutor(caps);
-    WebDriver driver = new RemoteWebDriverSubclass(stubExecutor, caps);
+    stubExecutor.expect(DriverCommand.GET_SCREEN_ORIENTATION,
+      Collections.emptyMap(),
+      ScreenOrientation.PORTRAIT.name());
+    RemoteWebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
-    WebDriver augmentedDriver = getAugmenter().augment(driver);
+    WebDriver augmented = getAugmenter()
+      .addDriverAugmentation(
+        "canRotate",
+        Rotatable.class,
+        (c, exe) -> new RemoteRotatable(exe))
+      .augment(driver);
 
-    assertThat(augmentedDriver).isSameAs(driver);
+    assertThat(driver).isNotSameAs(augmented);
+    assertThat(augmented).isInstanceOf(Rotatable.class);
+    assertThat(augmented).isNotInstanceOf(HasMagicNumbers.class);
+
+    WebDriver augmentedAgain = getAugmenter()
+      .addDriverAugmentation(
+        "magic.numbers",
+        HasMagicNumbers.class,
+        (c, exe) -> () -> 42)
+      .augment(augmented);
+
+    assertThat(augmented).isNotSameAs(augmentedAgain);
+    assertThat(augmentedAgain).isInstanceOf(Rotatable.class);
+    assertThat(augmentedAgain).isInstanceOf(HasMagicNumbers.class);
+
+    ((Rotatable) augmentedAgain).getOrientation();  // Should not throw.
+
+    assertThat(((HasCapabilities) augmentedAgain).getCapabilities())
+      .isSameAs(driver.getCapabilities());
+  }
+
+  protected static class StubExecutor implements CommandExecutor {
+    private final Capabilities capabilities;
+    private final List<Data> expected = new ArrayList<>();
+
+    protected StubExecutor(Capabilities capabilities) {
+      this.capabilities = capabilities;
+    }
+
+    @Override
+    public Response execute(Command command) {
+      if (DriverCommand.NEW_SESSION.equals(command.getName())) {
+        Response response = new Response(new SessionId("foo"));
+        response.setValue(capabilities.asMap());
+        return response;
+      }
+
+      for (Data possibleMatch : expected) {
+        if (possibleMatch.commandName.equals(command.getName()) &&
+          possibleMatch.args.equals(command.getParameters())) {
+          Response response = new Response(new SessionId("foo"));
+          response.setValue(possibleMatch.returnValue);
+          return response;
+        }
+      }
+
+      throw new AssertionError("Unexpected method invocation: " + command);
+    }
+
+    public void expect(String commandName, Map<String, ?> args, Object returnValue) {
+      expected.add(new Data(commandName, args, returnValue));
+    }
+
+    private static class Data {
+      public String commandName;
+      public Map<String, ?> args;
+      public Object returnValue;
+
+      public Data(String commandName, Map<String, ?> args, Object returnValue) {
+        this.commandName = commandName;
+        this.args = args;
+        this.returnValue = returnValue;
+      }
+    }
+  }
+
+  public interface MyInterface {
+    String getHelloWorld();
+  }
+
+  public static class DetonatingDriver extends RemoteWebDriver {
+    private Capabilities caps;
+
+    public void setCapabilities(Capabilities caps) {
+      this.caps = caps;
+    }
+
+    @Override
+    public Capabilities getCapabilities() {
+      return caps;
+    }
+
+    @Override
+    public WebElement findElement(By locator) {
+      return super.findElement(locator);
+    }
+
+    @Override
+    protected WebElement findElement(String by, String using) {
+      if ("id".equals(by)) {
+        throw new NoSuchElementException("Boom");
+      }
+      return null;
+    }
+  }
+
+  public interface HasMagicNumbers {
+    int getMagicNumber();
+  }
+
+  public static class ChildRemoteDriver extends RemoteWebDriver implements HasMagicNumbers {
+    private int magicNumber = 3;
+
+    @Override
+    public Capabilities getCapabilities() {
+      return new FirefoxOptions();
+    }
+
+    @Override
+    public int getMagicNumber() {
+      return magicNumber;
+    }
+  }
+
+  public static class WithFinals extends RemoteWebDriver {
+    public final String finalField = "FINAL";
+
+    @Override
+    public Capabilities getCapabilities() {
+      return new ImmutableCapabilities();
+    }
   }
 }

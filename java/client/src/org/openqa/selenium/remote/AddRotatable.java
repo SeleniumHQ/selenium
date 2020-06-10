@@ -17,45 +17,56 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.DeviceRotation;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Rotatable;
-import org.openqa.selenium.ScreenOrientation;
 
-public class AddRotatable implements AugmenterProvider {
+import java.util.function.Predicate;
+
+import static org.openqa.selenium.remote.CapabilityType.ROTATABLE;
+
+public class AddRotatable implements AugmenterProvider<Rotatable> {
 
   @Override
-  public Class<?> getDescribedInterface() {
+  public Predicate<Capabilities> isApplicable() {
+    return caps -> caps.is(ROTATABLE);
+  }
+
+  @Override
+  public Class<Rotatable> getDescribedInterface() {
     return Rotatable.class;
   }
 
   @Override
-  public InterfaceImplementation getImplementation(Object value) {
-    return (executeMethod, self, method, args) -> {
-      String m = method.getName();
-      Object response;
-      switch(m) {
-        case "rotate":
-          if (args[0] instanceof ScreenOrientation) {
-            response = executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION, ImmutableMap.of("orientation", args[0]));
-          } else if (args[0] instanceof DeviceRotation) {
-            response = executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION, ((DeviceRotation)args[0]).parameters());
-          } else {
-            throw new IllegalArgumentException("rotate parameter must be either of type 'ScreenOrientation' or 'DeviceRotation'");
-          }
-          break;
-        case "getOrientation":
-          response = ScreenOrientation.valueOf((String) executeMethod.execute(DriverCommand.GET_SCREEN_ORIENTATION, null));
-          break;
-        case "rotation":
-          response = executeMethod.execute(DriverCommand.GET_SCREEN_ROTATION, null);
-          break;
-        default:
-          throw new IllegalArgumentException(method.getName() + ", Not defined in rotatable interface");
-      }
-      return response;
-    };
+  public Rotatable getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new RemoteRotatable(executeMethod);
   }
+
+//  @Override
+//  public InterfaceImplementation getImplementation(Object value) {
+//    return (executeMethod, self, method, args) -> {
+//      String m = method.getName();
+//      Object response;
+//      switch(m) {
+//        case "rotate":
+//          if (args[0] instanceof ScreenOrientation) {
+//            response = executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION, ImmutableMap.of("orientation", args[0]));
+//          } else if (args[0] instanceof DeviceRotation) {
+//            response = executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION, ((DeviceRotation)args[0]).parameters());
+//          } else {
+//            throw new IllegalArgumentException("rotate parameter must be either of type 'ScreenOrientation' or 'DeviceRotation'");
+//          }
+//          break;
+//        case "getOrientation":
+//          response = ScreenOrientation.valueOf((String) executeMethod.execute(DriverCommand.GET_SCREEN_ORIENTATION, null));
+//          break;
+//        case "rotation":
+//          response = executeMethod.execute(DriverCommand.GET_SCREEN_ROTATION, null);
+//          break;
+//        default:
+//          throw new IllegalArgumentException(method.getName() + ", Not defined in rotatable interface");
+//      }
+//      return response;
+//    };
+//  }
 
 }
