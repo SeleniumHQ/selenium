@@ -74,7 +74,7 @@ module Selenium
 
         begin
           File.open(download_file_name, 'wb') do |destination|
-            net_http.start('selenium-release.storage.googleapis.com') do |http|
+            net_http_start('selenium-release.storage.googleapis.com') do |http|
               resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
                 total = response.content_length
                 progress = 0
@@ -111,7 +111,7 @@ module Selenium
 
       def latest
         require 'rexml/document'
-        net_http.start('selenium-release.storage.googleapis.com') do |http|
+        net_http_start('selenium-release.storage.googleapis.com') do |http|
           versions = REXML::Document.new(http.get('/').body).root.get_elements('//Contents/Key').map do |e|
             e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
           end
@@ -120,16 +120,16 @@ module Selenium
         end
       end
 
-      def net_http
+      def net_http_start(address, &block)
         http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
 
         if http_proxy
           http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
           uri = URI.parse(http_proxy)
 
-          Net::HTTP::Proxy(uri.host, uri.port)
+          Net::HTTP.start(address, nil, uri.host, uri.port, &block)
         else
-          Net::HTTP
+          Net::HTTP.start(address, &block)
         end
       end
     end
