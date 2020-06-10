@@ -34,3 +34,36 @@ index 9cd6534..7802d42 100644
      ),
      "version": attr.string(
          mandatory = True,
+diff --git experimental/rules_python/wheelmaker.py experimental/rules_python/wheelmaker.py
+index 6be5d38..34b5cb0 100644
+--- experimental/rules_python/wheelmaker.py
++++ experimental/rules_python/wheelmaker.py
+@@ -61,14 +61,14 @@ class WheelMaker(object):
+         components = [self._name, self._version]
+         if self._build_tag:
+             components.append(self._build_tag)
+-        components += [self._python_tag, self._abi, self._platform]
++        components += [".".join(self._python_tag), self._abi, self._platform]
+         return '-'.join(components) + '.whl'
+
+     def distname(self):
+         return self._name + '-' + self._version
+
+     def disttags(self):
+-        return ['-'.join([self._python_tag, self._abi, self._platform])]
++        return ['-'.join([tag, self._abi, self._platform]) for tag in self._python_tag]
+
+     def distinfo_path(self, basename):
+         return self.distname() + '.dist-info/' + basename
+@@ -206,7 +206,10 @@ def main():
+                                 help="Version of the distribution")
+     metadata_group.add_argument('--build_tag', type=str, default='',
+                                 help="Optional build tag for the distribution")
+-    metadata_group.add_argument('--python_tag', type=str, default='py3',
++    metadata_group.add_argument('--python_tag',
++                                type=str,
++                                default=[],
++                                action="append",
+                                 help="Python version, e.g. 'py2' or 'py3'")
+     metadata_group.add_argument('--abi', type=str, default='none')
+     metadata_group.add_argument('--platform', type=str, default='any',
