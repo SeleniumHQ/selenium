@@ -89,7 +89,6 @@ public class DistributorServer extends TemplateGridCommand {
     BaseServerOptions serverOptions = new BaseServerOptions(config);
     DistributorOptions distributorOptions = new DistributorOptions(config);
 
-
     Distributor distributor = distributorOptions.getDistributor();
 
     HttpHandler readinessCheck = req -> {

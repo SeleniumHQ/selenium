@@ -102,7 +102,7 @@ public class RouterServer extends TemplateGridCommand {
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
     DistributorOptions distributorOptions = new DistributorOptions(config);
-    Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
+    Distributor distributor = distributorOptions.getDistributor();
 
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri().toString());
 
