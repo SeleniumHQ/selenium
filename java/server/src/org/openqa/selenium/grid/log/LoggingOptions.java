@@ -165,10 +165,13 @@ public class LoggingOptions {
   }
 
   private OutputStream getOutputStream() throws FileNotFoundException {
-    String fileName = config.get(LOGGING_SECTION, "log-file").get();
-    FileOutputStream fileOut = null;
+    String fileName = config.get(LOGGING_SECTION, "log-file").orElse("null");
+    OutputStream fileOut = null;
     if (fileName != "null") {
       fileOut = new FileOutputStream(fileName);
+    }
+    if (fileOut == null) {
+      fileOut = System.out;
     }
     return fileOut;
   }
