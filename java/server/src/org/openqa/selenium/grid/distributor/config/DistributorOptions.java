@@ -24,16 +24,21 @@ import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import static org.openqa.selenium.net.Urls.fromUri;
 
 public class DistributorOptions {
 
   private static final String DISTRIBUTOR_SECTION = "distributor";
+  private static final String DEFAULT_DISTRIBUTOR_SERVER = "org.openqa.selenium.grid.distributor.RemoteDistributor";
+  private static final Logger LOG = Logger.getLogger(DistributorOptions.class.getName());
 
   private final Config config;
 
@@ -84,5 +89,31 @@ public class DistributorOptions {
         tracer,
         clientFactory,
         distributorUrl);
+  }
+
+  public Distributor getDistributor() {
+    String clazz = config.get(DISTRIBUTOR_SECTION, "implementation").orElse(DEFAULT_DISTRIBUTOR_SERVER);
+    LOG.info("Creating distributor server: " + clazz);
+    try {
+      Class<?> busClazz = Class.forName(clazz);
+      Method create = busClazz.getMethod("create", Config.class);
+
+      if (!Modifier.isStatic(create.getModifiers())) {
+        throw new IllegalArgumentException(String.format(
+            "Distributor class %s's `create(Config)` method must be static", clazz));
+      }
+
+      if (!Distributor.class.isAssignableFrom(create.getReturnType())) {
+        throw new IllegalArgumentException(String.format(
+            "Distributor class %s's `create(Config)` method must return a Distributor", clazz));
+      }
+
+      return (Distributor) create.invoke(null, config);
+    } catch (NoSuchMethodException e) {
+      throw new IllegalArgumentException(String.format(
+        "Distributor class %s must have a static `create(Config)` method", clazz));
+    } catch (ReflectiveOperationException e) {
+      throw new IllegalArgumentException("Unable to find event bus class: " + clazz, e);
+    }
   }
 }
