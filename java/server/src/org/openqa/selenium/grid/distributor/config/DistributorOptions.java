@@ -20,19 +20,13 @@ package org.openqa.selenium.grid.distributor.config;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Optional;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.net.Urls.fromUri;
 
 public class DistributorOptions {
 
@@ -81,14 +75,6 @@ public class DistributorOptions {
           hostname.get(),
           port.get());
     }
-  }
-
-  public Distributor getDistributor(Tracer tracer, HttpClient.Factory clientFactory) {
-    URL distributorUrl = fromUri(getDistributorUri());
-    return new RemoteDistributor(
-        tracer,
-        clientFactory,
-        distributorUrl);
   }
 
   public Distributor getDistributor() {
