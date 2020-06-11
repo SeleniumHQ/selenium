@@ -81,8 +81,8 @@ public class DistributorOptions {
     String clazz = config.get(DISTRIBUTOR_SECTION, "implementation").orElse(DEFAULT_DISTRIBUTOR_SERVER);
     LOG.info("Creating distributor server: " + clazz);
     try {
-      Class<?> busClazz = Class.forName(clazz);
-      Method create = busClazz.getMethod("create", Config.class);
+      Class<?> distributorClazz = Class.forName(clazz);
+      Method create = distributorClazz.getMethod("create", Config.class);
 
       if (!Modifier.isStatic(create.getModifiers())) {
         throw new IllegalArgumentException(String.format(
@@ -99,7 +99,7 @@ public class DistributorOptions {
       throw new IllegalArgumentException(String.format(
         "Distributor class %s must have a static `create(Config)` method", clazz));
     } catch (ReflectiveOperationException e) {
-      throw new IllegalArgumentException("Unable to find event bus class: " + clazz, e);
+      throw new IllegalArgumentException("Unable to find distributor class: " + clazz, e);
     }
   }
 }
