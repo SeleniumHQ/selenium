@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import sys
 import warnings
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
@@ -69,11 +70,16 @@ class ChromiumDriver(RemoteWebDriver):
             else:
                 desired_capabilities.update(options.to_capabilities())
 
+        self.vendor_prefix = vendor_prefix
+
         if service is None:
             raise AttributeError('service cannot be None')
 
         self.service = service
         self.service.start()
+        global nursery
+        nursery = None
+
 
         try:
             RemoteWebDriver.__init__(
@@ -198,3 +204,23 @@ class ChromiumDriver(RemoteWebDriver):
 
     def create_options(self):
         pass
+
+    async def get_devtools_connection(self):
+        assert sys.version_info >= (3, 6)
+
+        import contextvars
+        from selenium.webdriver.support import cdp
+
+        MAX_WS_MESSAGE_SIZE = 2**24
+
+        ws_url = self.capabilities.get(self.vendor_prefix["debuggerAddress"])
+
+        async with trio.open_nursery() as nursery:
+            conn = await connect_cdp(nursery, ws_url)
+            cdp.set_global_connection(conn)
+            try:
+                with cdp.connection_context(conn):
+                    yield conn
+            finally:
+                await conn.aclose()
+

@@ -60,7 +60,7 @@ dist/
 py/selenium/webdriver/common/devtools/*.py
 py/selenium/webdriver/common/devtools/py.typed
 !py/selenium/webdriver/common/devtools/util.py
-y/selenium/webdriver/firefox/amd64/
+py/selenium/webdriver/firefox/amd64/
 py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/webdriver_prefs.json
 py/selenium/webdriver/firefox/x86/
