@@ -24,7 +24,7 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.network.Network;
 import org.openqa.selenium.devtools.page.Page;
-import org.openqa.selenium.grid.commands.MessageBusCommand;
+import org.openqa.selenium.grid.commands.EventBusCommand;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.distributor.httpd.DistributorServer;
 import org.openqa.selenium.grid.node.httpd.NodeServer;
@@ -67,16 +67,16 @@ public class DistributedCdpTest {
 
     assumeThat(browser.supportsCdp()).isTrue();
 
-    int messagePublishPort = PortProber.findFreePort();
-    int messageSubscribePort = PortProber.findFreePort();
-    String[] eventBusFlags = new String[]{"--publish-events", "tcp://*:" + messagePublishPort, "--subscribe-events", "tcp://*:" + messageSubscribePort};
+    int eventPublishPort = PortProber.findFreePort();
+    int eventSubscribePort = PortProber.findFreePort();
+    String[] eventBusFlags = new String[]{"--publish-events", "tcp://*:" + eventPublishPort, "--subscribe-events", "tcp://*:" + eventSubscribePort};
 
-    int messageBusPort = PortProber.findFreePort();
-    new MessageBusCommand().configure(
+    int eventBusPort = PortProber.findFreePort();
+    new EventBusCommand().configure(
       System.out,
       System.err,
-      mergeArgs(eventBusFlags, "--port", "" + messageBusPort)).run();
-    waitUntilUp(messageBusPort);
+      mergeArgs(eventBusFlags, "--port", "" + eventBusPort)).run();
+    waitUntilUp(eventBusPort);
 
     int sessionsPort = PortProber.findFreePort();
     new SessionMapServer().configure(
