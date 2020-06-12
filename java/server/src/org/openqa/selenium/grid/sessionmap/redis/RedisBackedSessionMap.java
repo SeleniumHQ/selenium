@@ -119,6 +119,11 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
   }
 
   @Override
+  public boolean isReady() {
+    return connection.isOpen();
+  }
+
+  @Override
   public void close() {
     client.shutdown();
   }

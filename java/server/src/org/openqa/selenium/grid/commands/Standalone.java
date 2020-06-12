@@ -42,11 +42,12 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.grid.web.StatusBasedReadinessCheck;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -58,9 +59,10 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
@@ -136,7 +138,12 @@ public class Standalone extends TemplateGridCommand {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     combinedHandler.addHandler(distributor);
     Router router = new Router(tracer, clientFactory, sessions, distributor);
-    StatusBasedReadinessCheck readinessCheck = new StatusBasedReadinessCheck(router, GET, "/status");
+    HttpHandler readinessCheck = req -> {
+      boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
+      return new HttpResponse()
+        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+        .setContent(Contents.utf8String("Standalone is " + ready));
+    };
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri().toString());

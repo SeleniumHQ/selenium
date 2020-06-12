@@ -9,5 +9,6 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
+        "//java/server/src/org/openqa/selenium/status",
     ],
 )

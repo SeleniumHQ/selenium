@@ -85,6 +85,16 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
     return new JdbcBackedSessionMap(tracer, connection, bus);
   }
+
+  @Override
+  public boolean isReady() {
+    try {
+      return !connection.isClosed();
+    } catch (SQLException throwables) {
+      return false;
+    }
+  }
+
   @Override
   public boolean add(Session session) {
     Require.nonNull("Session to add", session);

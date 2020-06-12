@@ -71,7 +71,10 @@ class BoundZmqEventBus implements EventBus {
     LOG.info("Event bus ready");
   }
 
-
+  @Override
+  public boolean isReady() {
+    return !executor.isShutdown();
+  }
 
   @Override
   public void addListener(Type type, Consumer<Event> onType) {

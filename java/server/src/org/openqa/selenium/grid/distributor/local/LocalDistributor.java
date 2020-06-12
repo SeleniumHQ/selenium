@@ -51,6 +51,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -123,6 +124,17 @@ public class LocalDistributor extends Distributor {
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
     return new LocalDistributor(tracer, bus, clientFactory, sessions, serverOptions.getRegistrationSecret());
+  }
+
+  @Override
+  public boolean isReady() {
+    try {
+      return ImmutableSet.of(bus, sessions).parallelStream()
+        .map(HasReadyState::isReady)
+        .reduce(true, Boolean::logicalAnd);
+    } catch (RuntimeException e) {
+      return false;
+    }
   }
 
   @Override
