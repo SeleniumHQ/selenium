@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class DistributorOptions {
 
   private static final String DISTRIBUTOR_SECTION = "distributor";
-  private static final String DEFAULT_DISTRIBUTOR_SERVER = "org.openqa.selenium.grid.distributor.RemoteDistributor";
+  private static final String DEFAULT_DISTRIBUTOR_SERVER = "org.openqa.selenium.grid.distributor.remote.RemoteDistributor";
   private static final Logger LOG = Logger.getLogger(DistributorOptions.class.getName());
 
   private final Config config;
