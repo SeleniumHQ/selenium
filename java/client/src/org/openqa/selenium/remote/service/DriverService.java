@@ -21,16 +21,6 @@ import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,18 +35,27 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 /**
  * Manages the life and death of a native executable driver server.
- *
+ * <p>
  * It is expected that the driver server implements the
  * <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">WebDriver Wire Protocol</a>.
- * In particular, it should implement /status command that is used to check if the server is alive.
- * In addition to this, it is supposed that the driver server implements /shutdown hook that is
- * used to stop the server.
+ * In particular, it should implement /status command that is used to check if the server is alive. In addition to this,
+ * it is supposed that the driver server implements /shutdown hook that is used to stop the server.
  */
 public class DriverService {
+
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+  private static Boolean pluginsLoaded = false;
 
   /**
    * The base URL for the managed server.
@@ -69,8 +68,8 @@ public class DriverService {
   private final ReentrantLock lock = new ReentrantLock();
 
   /**
-   * A reference to the current child process. Will be {@code null} whenever this service is not
-   * running. Protected by {@link #lock}.
+   * A reference to the current child process. Will be {@code null} whenever this service is not running. Protected by
+   * {@link #lock}.
    */
   protected CommandLine process = null;
 
@@ -81,39 +80,38 @@ public class DriverService {
   private OutputStream outputStream = System.err;
 
   /**
-  *
-  * @param executable The driver executable.
-  * @param port Which port to start the driver server on.
-  * @param timeout Timeout waiting for driver server to start.
-  * @param args The arguments to the launched server.
-  * @param environment The environment for the launched server.
-  * @throws IOException If an I/O error occurs.
-  */
- protected DriverService(
-     File executable,
-     int port,
-     Duration timeout,
-     List<String> args,
-     Map<String, String> environment) throws IOException {
-   this.executable = executable.getCanonicalPath();
-   this.timeout = timeout;
-   this.args = args;
-   this.environment = environment;
+   * @param executable  The driver executable.
+   * @param port        Which port to start the driver server on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args        The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  protected DriverService(
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
+    this.executable = executable.getCanonicalPath();
+    this.timeout = timeout;
+    this.args = args;
+    this.environment = environment;
 
-   this.url = getUrl(port);
- }
+    this.url = getUrl(port);
+  }
 
   protected List<String> getArgs() {
     return args;
   }
 
   protected Map<String, String> getEnvironment() {
-   return environment;
- }
+    return environment;
+  }
 
   protected URL getUrl(int port) throws IOException {
-   return new URL(String.format("http://localhost:%d", port));
- }
+    return new URL(String.format("http://localhost:%d", port));
+  }
 
   /**
    * @return The base URL for the managed driver server.
@@ -123,27 +121,26 @@ public class DriverService {
   }
 
   /**
-   *
-   * @param exeName Name of the executable file to look for in PATH
+   * @param exeName     Name of the executable file to look for in PATH
    * @param exeProperty Name of a system property that specifies the path to the executable file
-   * @param exeDocs The link to the driver documentation page
+   * @param exeDocs     The link to the driver documentation page
    * @param exeDownload The link to the driver download page
-   *
    * @return The driver executable as a {@link File} object
    * @throws IllegalStateException If the executable not found or cannot be executed
    */
   protected static File findExecutable(
-      String exeName,
-      String exeProperty,
-      String exeDocs,
-      String exeDownload) {
+    String exeName,
+    String exeProperty,
+    String exeDocs,
+    String exeDownload) {
     String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
-    Require.state("The path to the driver executable", exePath).nonNull(
-        "The path to the driver executable must be set by the %s system property;"
-            + " for more information, see %s. "
-            + "The latest version can be downloaded from %s",
-            exeProperty, exeDocs, exeDownload);
+    Require.state("The path to the driver executable", exePath)
+           .nonNull(
+             "The path to the driver executable must be set by the %s system property;"
+               + " for more information, see %s. "
+               + "The latest version can be downloaded from %s",
+             exeProperty, exeDocs, exeDownload);
 
     File exe = new File(exePath);
     checkExecutable(exe);
@@ -151,7 +148,8 @@ public class DriverService {
   }
 
   protected static void checkExecutable(File exe) {
-    Require.state("The driver executable", exe).isFile();
+    Require.state("The driver executable", exe)
+           .isFile();
     Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
   }
 
@@ -172,8 +170,8 @@ public class DriverService {
   }
 
   /**
-   * Starts this service if it is not already running. This method will block until the server has
-   * been fully started and is ready to handle commands.
+   * Starts this service if it is not already running. This method will block until the server has been fully started
+   * and is ready to handle commands.
    *
    * @throws IOException If an error occurs while spawning the child process.
    * @see #stop()
@@ -184,7 +182,7 @@ public class DriverService {
       if (process != null) {
         return;
       }
-      process = new CommandLine(this.executable, args.toArray(new String[] {}));
+      process = new CommandLine(this.executable, args.toArray(new String[]{}));
       process.setEnvironmentVariables(environment);
       process.copyOutputTo(getOutputStream());
       process.executeAsync();
@@ -201,7 +199,7 @@ public class DriverService {
 
       try {
         boolean started = (Boolean) CompletableFuture.anyOf(serverStarted, processFinished)
-            .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
+                                                     .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
         if (!started) {
           process = null;
           throw new WebDriverException("Driver server process died prematurely.");
@@ -209,7 +207,8 @@ public class DriverService {
       } catch (ExecutionException | TimeoutException e) {
         throw new WebDriverException("Timed out waiting for driver server to start.", e);
       } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
+        Thread.currentThread()
+              .interrupt();
         throw new WebDriverException("Timed out waiting for driver server to start.", e);
       }
     } finally {
@@ -233,8 +232,8 @@ public class DriverService {
   }
 
   /**
-   * Stops this service if it is currently running. This method will attempt to block until the
-   * server has been fully shutdown.
+   * Stops this service if it is currently running. This method will attempt to block until the server has been fully
+   * shutdown.
    *
    * @see #start()
    */
@@ -297,12 +296,11 @@ public class DriverService {
     private Duration timeout;
 
     /**
-     * Provides a measure of how strongly this {@link DriverService} supports the given
-     * {@code capabilities}. A score of 0 or less indicates that this {@link DriverService} does not
-     * support instances of {@link org.openqa.selenium.WebDriver} that require {@code capabilities}.
-     * Typically, the score is generated by summing the number of capabilities that the driver
-     * service directly supports that are unique to the driver service (that is, things like
-     * "{@code proxy}" don't tend to count to the score).
+     * Provides a measure of how strongly this {@link DriverService} supports the given {@code capabilities}. A score of
+     * 0 or less indicates that this {@link DriverService} does not support instances of {@link
+     * org.openqa.selenium.WebDriver} that require {@code capabilities}. Typically, the score is generated by summing
+     * the number of capabilities that the driver service directly supports that are unique to the driver service (that
+     * is, things like "{@code proxy}" don't tend to count to the score).
      */
     public abstract int score(Capabilities capabilities);
 
@@ -321,8 +319,7 @@ public class DriverService {
     }
 
     /**
-     * Sets which port the driver server should be started on. A value of 0 indicates that any
-     * free port may be used.
+     * Sets which port the driver server should be started on. A value of 0 indicates that any free port may be used.
      *
      * @param port The port to use; must be non-negative.
      * @return A self reference.
@@ -347,12 +344,10 @@ public class DriverService {
     }
 
     /**
-     * Defines the environment for the launched driver server. These
-     * settings will be inherited by every browser session launched by the
-     * server.
+     * Defines the environment for the launched driver server. These settings will be inherited by every browser session
+     * launched by the server.
      *
-     * @param environment A map of the environment variables to launch the
-     *     server with.
+     * @param environment A map of the environment variables to launch the server with.
      * @return A self reference.
      */
     @Beta
@@ -391,8 +386,8 @@ public class DriverService {
     }
 
     /**
-     * Creates a new service to manage the driver server. Before creating a new service, the
-     * builder will find a port for the server to listen to.
+     * Creates a new service to manage the driver server. Before creating a new service, the builder will find a port
+     * for the server to listen to.
      *
      * @return The new service object.
      */
@@ -422,6 +417,6 @@ public class DriverService {
     protected abstract List<String> createArgs();
 
     protected abstract DS createDriverService(File exe, int port, Duration timeout, List<String> args,
-        Map<String, String> environment);
+      Map<String, String> environment);
   }
 }

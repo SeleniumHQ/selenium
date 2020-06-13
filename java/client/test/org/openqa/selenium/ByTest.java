@@ -51,17 +51,6 @@ public class ByTest {
   }
 
   @Test
-  public void ensureAiSerialisesProperly() {
-    ByAi by = new ByAi("foo");
-
-    Json aiToJson = new Json();
-    Map<String, Object> blob = aiToJson.toType(aiToJson.toJson(by), MAP_TYPE);
-
-    assertThat(blob.get("using")).isEqualTo("css selector");
-    assertThat(blob.get("value")).isEqualTo("foo");
-  }
-
-  @Test
   public void shouldUseXpathLocateElementsByXpath() {
     AllDriver driver = mock(AllDriver.class);
 
