@@ -52,6 +52,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.Route.combine;
@@ -73,7 +74,7 @@ public class Hub extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(HTTPD_ROLE);
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE);
   }
 
   @Override
