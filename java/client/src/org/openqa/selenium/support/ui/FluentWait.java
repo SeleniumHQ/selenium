@@ -27,6 +27,7 @@ import org.openqa.selenium.internal.Require;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -185,6 +186,11 @@ public class FluentWait<T> implements Wait<T> {
     return this.ignoreAll(ImmutableList.of(firstType, secondType));
   }
 
+  @Override
+  public <V> V until(Function<? super T, V> isTrue) {
+    return until(isTrue, Duration.ofMillis(deriveSafeTimeoutMillis()));
+  }
+
   /**
    * Repeatedly applies this instance's input value to the given function until one of the following
    * occurs:
@@ -197,15 +203,15 @@ public class FluentWait<T> implements Wait<T> {
    *
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
    * @param <V>    The function's expected return type.
+   * @param timeout The timeout duration.
    * @return The function's return value if the function returned something different
    * from null or false before the timeout expired.
    * @throws TimeoutException If the timeout expires.
    */
-  @Override
-  public <V> V until(Function<? super T, V> isTrue) {
+  public <V> V until(Function<? super T, V> isTrue, Duration timeout) {
     try {
       return CompletableFuture.supplyAsync(checkConditionInLoop(isTrue))
-          .get(deriveSafeTimeout(), TimeUnit.MILLISECONDS);
+          .get(timeout.get(ChronoUnit.MILLIS), TimeUnit.MILLISECONDS);
     } catch (ExecutionException cause) {
       if (cause.getCause() instanceof RuntimeException) {
         throw (RuntimeException) cause.getCause();
@@ -266,7 +272,7 @@ public class FluentWait<T> implements Wait<T> {
   }
 
   /** This timeout is somewhat arbitrary.  */
-  private long deriveSafeTimeout() {
+  private long deriveSafeTimeoutMillis() {
     return this.timeout.toMillis() + this.interval.toMillis();
   }
 
