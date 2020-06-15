@@ -211,7 +211,7 @@ public class FluentWait<T> implements Wait<T> {
   public <V> V until(Function<? super T, V> isTrue, Duration timeout) {
     try {
       return CompletableFuture.supplyAsync(checkConditionInLoop(isTrue))
-          .get(timeout.get(ChronoUnit.MILLIS), TimeUnit.MILLISECONDS);
+          .get(timeout.get(ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
     } catch (ExecutionException cause) {
       if (cause.getCause() instanceof RuntimeException) {
         throw (RuntimeException) cause.getCause();
