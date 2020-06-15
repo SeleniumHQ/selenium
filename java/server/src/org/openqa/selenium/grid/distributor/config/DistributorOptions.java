@@ -78,28 +78,8 @@ public class DistributorOptions {
   }
 
   public Distributor getDistributor() {
-    String clazz = config.get(DISTRIBUTOR_SECTION, "implementation").orElse(DEFAULT_DISTRIBUTOR_SERVER);
-    LOG.info("Creating distributor server: " + clazz);
-    try {
-      Class<?> distributorClazz = Class.forName(clazz);
-      Method create = distributorClazz.getMethod("create", Config.class);
-
-      if (!Modifier.isStatic(create.getModifiers())) {
-        throw new IllegalArgumentException(String.format(
-            "Distributor class %s's `create(Config)` method must be static", clazz));
-      }
-
-      if (!Distributor.class.isAssignableFrom(create.getReturnType())) {
-        throw new IllegalArgumentException(String.format(
-            "Distributor class %s's `create(Config)` method must return a Distributor", clazz));
-      }
-
-      return (Distributor) create.invoke(null, config);
-    } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(String.format(
-        "Distributor class %s must have a static `create(Config)` method", clazz));
-    } catch (ReflectiveOperationException e) {
-      throw new IllegalArgumentException("Unable to find distributor class: " + clazz, e);
-    }
+    return config.getClass(DISTRIBUTOR_SECTION, "implementation", Distributor.class, DEFAULT_DISTRIBUTOR_SERVER)
+        .get()
+        .cast(Distributor.class);
   }
 }
