@@ -72,8 +72,6 @@ public class RelativeLocator {
     }
 
     private RelativeBy(Object rootLocator, List<Map<String, Object>> filters) {
-      this.root = Require.nonNull("Root locator", rootLocator);
-
       if (rootLocator instanceof By) {
         assertLocatorCanBeSerialized(rootLocator);
         rootLocator = asAtomLocatorParameter(rootLocator);
@@ -86,6 +84,7 @@ public class RelativeLocator {
         throw new IllegalArgumentException("Root locator must be an element or a locator: " + rootLocator);
       }
 
+      this.root = Require.nonNull("Root locator", rootLocator);
       this.filters = ImmutableList.copyOf(Require.nonNull("Filters", filters));
     }
 
