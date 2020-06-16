@@ -18,14 +18,10 @@
 package org.openqa.selenium.grid.distributor.remote;
 
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.config.DistributorOptions;
-import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -53,14 +49,6 @@ public class RemoteDistributor extends Distributor {
   public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url) {
     super(tracer, factory);
     this.client = factory.createClient(url);
-  }
-
-  public static Distributor create(Config config) {
-    Tracer tracer = new LoggingOptions(config).getTracer();
-    HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
-    URL distributorUrl = fromUri(new DistributorOptions(config).getDistributorUri());
-
-    return new RemoteDistributor(tracer, clientFactory, distributorUrl);
   }
 
   @Override
