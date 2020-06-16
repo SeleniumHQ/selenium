@@ -45,7 +45,6 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.StatusBasedReadinessCheck;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -70,7 +69,6 @@ import static org.openqa.selenium.remote.http.Route.combine;
 public class Standalone extends TemplateGridCommand {
 
   private static final Logger LOG = Logger.getLogger("selenium");
-  private static final Json JSON = new Json();
 
   @Override
   public String getName() {

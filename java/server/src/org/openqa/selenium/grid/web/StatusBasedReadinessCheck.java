@@ -28,7 +28,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
