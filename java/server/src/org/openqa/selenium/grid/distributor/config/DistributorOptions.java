@@ -76,8 +76,6 @@ public class DistributorOptions {
   }
 
   public Distributor getDistributor() {
-    return config.getClass(DISTRIBUTOR_SECTION, "implementation", Distributor.class, DEFAULT_DISTRIBUTOR_SERVER)
-        .get()
-        .cast(Distributor.class);
+    return (Distributor) config.getClass(DISTRIBUTOR_SECTION, "implementation", Distributor.class, DEFAULT_DISTRIBUTOR_SERVER);
   }
 }

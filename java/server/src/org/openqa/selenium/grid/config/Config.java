@@ -43,7 +43,7 @@ public interface Config {
     return get(section, option).map(Boolean::parseBoolean);
   }
 
-  default <X> Optional<Class<X>> getClass(String section, String option, Class<X> typeOfClass, String defaultClazz) {
+  default <X> Object getClass(String section, String option, Class<X> typeOfClass, String defaultClazz) {
     String clazz = get(section, option).orElse(defaultClazz);
 
     try {
@@ -60,7 +60,7 @@ public interface Config {
             "Class %s's `create(Config)` method must be static", clazz));
       }
 
-      return (Optional<Class<X>>) create.invoke(null, this);
+      return create.invoke(null, this);
     } catch (NoSuchMethodException e) {
       throw new IllegalArgumentException(String.format(
           "Class %s must have a static `create(Config)` method", clazz));

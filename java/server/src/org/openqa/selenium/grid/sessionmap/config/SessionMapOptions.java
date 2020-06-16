@@ -76,8 +76,6 @@ public class SessionMapOptions {
   }
 
   public SessionMap getSessionMap() {
-    return  config.getClass(SESSIONS_SECTION, "implementation", SessionMap.class, DEFAULT_SESSION_MAP)
-        .get()
-        .cast(SessionMap.class);
+    return  (SessionMap) config.getClass(SESSIONS_SECTION, "implementation", SessionMap.class, DEFAULT_SESSION_MAP);
   }
 }
