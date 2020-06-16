@@ -131,8 +131,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   public void remove(SessionId id) {
     Require.nonNull("Session ID", id);
 
-    try {
-      getDeleteSqlForSession(id).executeUpdate();
+    try (PreparedStatement statement = getDeleteSqlForSession(id)) {
+      statement.executeUpdate();
     } catch (SQLException e) {
       throw new JdbcException(e.getMessage());
     }
