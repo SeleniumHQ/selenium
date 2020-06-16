@@ -28,12 +28,9 @@
 'use strict';
 
 const fs = require('fs');
-const util = require('util');
-
 const http = require('./http');
 const io = require('./io');
 const portprober = require('./net/portprober');
-const promise = require('./lib/promise');
 const remote = require('./remote');
 const webdriver = require('./lib/webdriver');
 const {Browser, Capabilities, Capability} = require('./lib/capabilities');
@@ -138,7 +135,7 @@ class Options extends Capabilities {
 
   /**
    * Sets the initial URL loaded when IE starts. This is intended to be used with
-   * {@link #ignoreProtectedModeSettings} to allow the user to initialize IE in
+   * {@link #introduceFlakinessByIgnoringProtectedModeSettings} to allow the user to initialize IE in
    * the proper Protected Mode zone. Setting this option may cause browser
    * instability or flaky and unresponsive code. Only "best effort" support is
    * provided when using this option.
@@ -219,18 +216,38 @@ class Options extends Capabilities {
     return this;
   }
 
-  /**
-   * Specifies command-line switches to use when launching Internet Explorer.
-   * This is only valid when used with {@link #forceCreateProcessApi}.
-   *
-   * @param {...(string|!Array.<string>)} args The arguments to add.
-   * @return {!Options} A self reference.
-   */
-  addArguments(...args) {
-    let current = this.get(Key.BROWSER_COMMAND_LINE_SWITCHES) || [];
-    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat.apply(current, args);
-    return this;
-  }
+   /**
+    * Specifies command-line switches to use when launching Internet Explorer.
+    * This is only valid when used with {@link #forceCreateProcessApi}.
+    *
+    * @param {...(string|!Array.<string>)} args The arguments to add.
+    * @return {!Options} A self reference.
+    */
+
+   addBrowserCommandSwitches(...args) {
+     let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || [];
+     if(typeof current == 'string')
+       current = current.split(" ");
+     this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat(args).join(" ");
+     return this;
+   }
+
+ /**
+  * Specifies command-line switches to use when launching Internet Explorer.
+  * This is only valid when used with {@link #forceCreateProcessApi}.
+  *
+  * @param {...(string|!Array.<string>)} args The arguments to add.
+  * @deprecated Use {@link #addBrowserCommandSwitches} instead.
+  * @return {!Options} A self reference.
+  */
+
+ addArguments(...args) {
+   let current = this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] || [];
+   if(typeof current == 'string')
+     current = current.split(" ");
+   this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat(args).join(" ");
+   return this;
+ }
 
   /**
    * Configures whether proxies should be configured on a per-process basis. If
@@ -388,22 +405,22 @@ function createServiceFromCapabilities(capabilities) {
         'ensure it can be found on your system PATH.');
   }
 
-  var args = [];
-  if (capabilities.has(Key.HOST)) {
-    args.push('--host=' + capabilities.get(Key.HOST));
-  }
-  if (capabilities.has(Key.LOG_FILE)) {
-    args.push('--log-file=' + capabilities.get(Key.LOG_FILE));
-  }
-  if (capabilities.has(Key.LOG_LEVEL)) {
-    args.push('--log-level=' + capabilities.get(Key.LOG_LEVEL));
-  }
-  if (capabilities.has(Key.EXTRACT_PATH)) {
-    args.push('--extract-path=' + capabilities.get(Key.EXTRACT_PATH));
-  }
-  if (capabilities.get(Key.SILENT)) {
-    args.push('--silent');
-  }
+ var args = [];
+ if (capabilities.has(Key.HOST)) {
+   args.push('--host=' + capabilities.get(Key.HOST));
+ }
+ if (capabilities.has(Key.LOG_FILE)) {
+   args.push('--log-file=' + capabilities.get(Key.LOG_FILE));
+ }
+ if (capabilities.has(Key.LOG_LEVEL)) {
+   args.push('--log-level=' + capabilities.get(Key.LOG_LEVEL));
+ }
+ if (capabilities.has(Key.EXTRACT_PATH)) {
+   args.push('--extract-path=' + capabilities.get(Key.EXTRACT_PATH));
+ }
+ if (capabilities.get(Key.SILENT)) {
+   args.push('--silent');
+ }
 
   var port = portprober.findFreePort();
   return new remote.DriverService(exe, {

@@ -23,7 +23,6 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -35,6 +34,7 @@ import java.util.Optional;
 
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
 class OkMessages {
 
@@ -103,7 +103,7 @@ class OkMessages {
 
     toReturn.setStatus(response.code());
 
-    toReturn.setContent(response.body() == null ? empty() : Contents.memoize(() -> {
+    toReturn.setContent(response.body() == null ? empty() : memoize(() -> {
       InputStream stream = response.body().byteStream();
       return new InputStream() {
         @Override

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.ie;
 
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.ie.InternetExplorerDriver.BROWSER_ATTACH_TIMEOUT;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
@@ -31,11 +32,7 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Streams;
-
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -47,7 +44,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -69,24 +65,23 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private static final String FORCE_WINDOW_SHELL_API = "ie.forceShellWindowsApi";
   private static final String VALIDATE_COOKIE_DOCUMENT_TYPE = "ie.validateCookieDocumentType";
 
-  private final static Set<String> CAPABILITY_NAMES = ImmutableSortedSet.<String>naturalOrder()
-      .add(BROWSER_ATTACH_TIMEOUT)
-      .add(ELEMENT_SCROLL_BEHAVIOR)
-      .add(ENABLE_PERSISTENT_HOVERING)
-      .add(FULL_PAGE_SCREENSHOT)
-      .add(FORCE_CREATE_PROCESS)
-      .add(FORCE_WINDOW_SHELL_API)
-      .add(IE_ENSURE_CLEAN_SESSION)
-      .add(IE_SWITCHES)
-      .add(IE_USE_PER_PROCESS_PROXY)
-      .add(IGNORE_ZOOM_SETTING)
-      .add(INITIAL_BROWSER_URL)
-      .add(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS)
-      .add(REQUIRE_WINDOW_FOCUS)
-      .add(UPLOAD_DIALOG_TIMEOUT)
-      .add(VALIDATE_COOKIE_DOCUMENT_TYPE)
-      .add(NATIVE_EVENTS)
-      .build();
+  private static final List<String> CAPABILITY_NAMES = Arrays.asList(
+      BROWSER_ATTACH_TIMEOUT,
+      ELEMENT_SCROLL_BEHAVIOR,
+      ENABLE_PERSISTENT_HOVERING,
+      FULL_PAGE_SCREENSHOT,
+      FORCE_CREATE_PROCESS,
+      FORCE_WINDOW_SHELL_API,
+      IE_ENSURE_CLEAN_SESSION,
+      IE_SWITCHES,
+      IE_USE_PER_PROCESS_PROXY,
+      IGNORE_ZOOM_SETTING,
+      INITIAL_BROWSER_URL,
+      INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
+      REQUIRE_WINDOW_FOCUS,
+      UPLOAD_DIALOG_TIMEOUT,
+      VALIDATE_COOKIE_DOCUMENT_TYPE,
+      NATIVE_EVENTS);
 
   private Map<String, Object> ieOptions = new HashMap<>();
 
@@ -160,10 +155,10 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
     return amend(
         IE_SWITCHES,
-        Streams.concat((Stream<?>) List.class.cast(raw).stream(), Stream.of(switches))
+        Stream.concat((Stream<?>) ((List) raw).stream(), Stream.of(switches))
             .filter(i -> i instanceof String)
             .map(String.class::cast)
-            .collect(ImmutableList.toImmutableList()));
+            .collect(toList()));
   }
 
   /**
@@ -182,7 +177,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   }
 
   public InternetExplorerOptions withInitialBrowserUrl(String url) {
-    return amend(INITIAL_BROWSER_URL, Preconditions.checkNotNull(url));
+    return amend(INITIAL_BROWSER_URL, Require.nonNull("Initial browser URL", url));
   }
 
   public InternetExplorerOptions requireWindowFocus() {

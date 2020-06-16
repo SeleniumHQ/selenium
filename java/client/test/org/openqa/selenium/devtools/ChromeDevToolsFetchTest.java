@@ -16,22 +16,13 @@
 // under the License.
 package org.openqa.selenium.devtools;
 
-import static org.openqa.selenium.devtools.fetch.Fetch.continueRequest;
-import static org.openqa.selenium.devtools.fetch.Fetch.disable;
-import static org.openqa.selenium.devtools.fetch.Fetch.enable;
-import static org.openqa.selenium.devtools.fetch.Fetch.failRequest;
-import static org.openqa.selenium.devtools.fetch.Fetch.fulfillRequest;
-import static org.openqa.selenium.devtools.fetch.Fetch.getResponseBody;
-import static org.openqa.selenium.devtools.fetch.Fetch.requestPaused;
-import static org.openqa.selenium.devtools.fetch.Fetch.takeResponseBodyAsStream;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.fetch.Fetch;
 import org.openqa.selenium.devtools.fetch.model.HeaderEntry;
-import org.openqa.selenium.devtools.io.model.StreamHandle;
 import org.openqa.selenium.devtools.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.fetch.model.RequestStage;
+import org.openqa.selenium.devtools.io.model.StreamHandle;
 import org.openqa.selenium.devtools.network.model.ErrorReason;
 import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.testing.Ignore;
@@ -40,6 +31,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.openqa.selenium.devtools.fetch.Fetch.continueRequest;
+import static org.openqa.selenium.devtools.fetch.Fetch.enable;
+import static org.openqa.selenium.devtools.fetch.Fetch.failRequest;
+import static org.openqa.selenium.devtools.fetch.Fetch.fulfillRequest;
+import static org.openqa.selenium.devtools.fetch.Fetch.getResponseBody;
+import static org.openqa.selenium.devtools.fetch.Fetch.requestPaused;
+import static org.openqa.selenium.devtools.fetch.Fetch.takeResponseBodyAsStream;
 
 // TODO: Add some checks, the tests does not ensure a listener is actually invoked
 @Ignore
@@ -52,15 +51,19 @@ public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
         p -> {
           Assert.assertNotNull(p);
           devTools.send(
-              fulfillRequest(
-                  p.getRequestId(),
-                  204,
-                  p.getResponseHeaders(),
-                  Optional.empty(),
-                  Optional.empty()));
+            fulfillRequest(
+              p.getRequestId(),
+              204,
+              Optional.of(p.getResponseHeaders().get()),
+              Optional.empty(),
+              Optional.empty(),
+              Optional.empty()));
         });
     List<RequestPattern> patterns = new ArrayList<>();
-    patterns.add(new RequestPattern("*://*.*", ResourceType.DOCUMENT, RequestStage.REQUEST));
+    patterns.add(new RequestPattern(
+      Optional.of("*://*.*"),
+      Optional.of(ResourceType.DOCUMENT),
+      Optional.of(RequestStage.REQUEST)));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
   }
@@ -86,7 +89,10 @@ public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
 
         });
     List<RequestPattern> patterns = new ArrayList<>();
-    patterns.add(new RequestPattern("*://*.*", ResourceType.DOCUMENT, RequestStage.REQUEST));
+    patterns.add(new RequestPattern(
+      Optional.of("*://*.*"),
+      Optional.of(ResourceType.DOCUMENT),
+      Optional.of(RequestStage.REQUEST)));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
@@ -102,7 +108,10 @@ public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
           devTools.send(failRequest(p.getRequestId(), ErrorReason.BLOCKEDBYCLIENT));
         });
     List<RequestPattern> patterns = new ArrayList<>();
-    patterns.add(new RequestPattern("*://*.*", ResourceType.DOCUMENT, RequestStage.REQUEST));
+    patterns.add(new RequestPattern(
+      Optional.of("*://*.*"),
+      Optional.of(ResourceType.DOCUMENT),
+      Optional.of(RequestStage.REQUEST)));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
   }

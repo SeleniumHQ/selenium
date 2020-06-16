@@ -17,18 +17,17 @@
 
 package org.openqa.selenium.remote;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.emptyMap;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
@@ -45,7 +44,7 @@ import java.util.Map;
 
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
-  private final static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
+  private static final HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
 
   private final URL remoteServer;
   private final HttpClient client;
@@ -57,7 +56,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   private LocalLogs logs = LocalLogs.getNullLogger();
 
   public HttpCommandExecutor(URL addressOfRemoteServer) {
-    this(ImmutableMap.of(), addressOfRemoteServer);
+    this(emptyMap(), addressOfRemoteServer);
   }
 
   /**
@@ -79,7 +78,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       HttpClient.Factory httpClientFactory) {
     try {
       remoteServer = addressOfRemoteServer == null
-          ? new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/wd/hub"))
+          ? new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"))
           : addressOfRemoteServer;
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
@@ -99,8 +98,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    * @param info CommandInfo for the command name provided
    */
   protected void defineCommand(String commandName, CommandInfo info) {
-    checkNotNull(commandName);
-    checkNotNull(info);
+    Require.nonNull("Command name", commandName);
+    Require.nonNull("Command info", info);
     commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 

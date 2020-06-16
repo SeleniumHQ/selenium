@@ -11,5 +11,5 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/docker",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ]
+    ],
 )

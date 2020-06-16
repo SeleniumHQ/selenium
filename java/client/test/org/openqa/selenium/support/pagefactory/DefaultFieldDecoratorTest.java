@@ -23,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -32,16 +33,10 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
-
-import java.util.List;
 
 public class DefaultFieldDecoratorTest {
 
@@ -172,8 +167,7 @@ public class DefaultFieldDecoratorTest {
     public WebElement foo;
   }
 
-  private interface AllDriver extends WebDriver, FindsById, FindsByLinkText, FindsByName,
-                                      FindsByXPath, HasInputDevices {
+  private interface AllDriver extends WebDriver, HasInputDevices {
     // Place holder
   }
 

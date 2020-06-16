@@ -20,8 +20,9 @@ package org.openqa.selenium.json;
 import static java.util.Spliterator.IMMUTABLE;
 import static java.util.Spliterator.ORDERED;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
@@ -32,7 +33,7 @@ class JsonInputIterator implements Iterator<JsonInput> {
   private final JsonInput jsonInput;
 
   JsonInputIterator(JsonInput jsonInput) {
-    this.jsonInput = Objects.requireNonNull(jsonInput);
+    this.jsonInput = Require.nonNull("Json input", jsonInput);
   }
 
   @Override

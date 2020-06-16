@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.docker;
 
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.docker.v1_40.V140Docker;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.Contents;
@@ -28,12 +33,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class VersionCommand {
 
@@ -45,7 +46,7 @@ class VersionCommand {
   private final HttpHandler handler;
 
   public VersionCommand(HttpHandler handler) {
-    this.handler = Objects.requireNonNull(handler, "HTTP client to use must be set.");
+    this.handler = Require.nonNull("HTTP client", handler);
   }
 
   public Optional<DockerProtocol> getDockerProtocol() {

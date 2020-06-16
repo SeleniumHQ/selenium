@@ -124,11 +124,11 @@ module Selenium
 
     it 'automatically repairs http_proxy settings that do not start with http://' do
       with_env('http_proxy' => 'proxy.com') do
-        expect(Selenium::Server.net_http.proxy_address).to eq('proxy.com')
+        expect(Selenium::Server.net_http_start('example.com', &:proxy_address)).to eq('proxy.com')
       end
 
       with_env('HTTP_PROXY' => 'proxy.com') do
-        expect(Selenium::Server.net_http.proxy_address).to eq('proxy.com')
+        expect(Selenium::Server.net_http_start('example.com', &:proxy_address)).to eq('proxy.com')
       end
     end
 

@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.grid.config;
 
+import org.openqa.selenium.internal.Require;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 
 public class Configs {
 
@@ -28,7 +29,7 @@ public class Configs {
   }
 
   public static Config from(Path path) {
-    Objects.requireNonNull(path, "Path to read must be set.");
+    Require.nonNull("Path to read from", path);
 
     if (!Files.exists(path)) {
       throw new ConfigException("Path to read from does not exist: " + path);

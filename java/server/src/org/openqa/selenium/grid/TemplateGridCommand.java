@@ -19,6 +19,8 @@ package org.openqa.selenium.grid;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.internal.DefaultConsole;
+import com.google.common.collect.Sets;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -26,38 +28,49 @@ import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
+import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 
+import java.io.PrintStream;
 import java.util.LinkedHashSet;
+import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 public abstract class TemplateGridCommand implements CliCommand {
 
   @Override
-  public final Executable configure(String... args) {
-    Set<Object> allFlags = getFlagObjects();
-
+  public final Executable configure(PrintStream out, PrintStream err, String... args) {
     HelpFlags helpFlags = new HelpFlags();
     ConfigFlags configFlags = new ConfigFlags();
 
-    JCommander.Builder builder = JCommander.newBuilder()
-      .programName(getName())
-      .addObject(configFlags)
-      .addObject(helpFlags);
+    Set<Object> allFlags = new LinkedHashSet<>();
+
+    allFlags.add(helpFlags);
+    allFlags.add(configFlags);
+
+    StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), true)
+      .filter(flags -> !Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty())
+      .forEach(allFlags::add);
+
+    allFlags.addAll(getFlagObjects());
+
+    JCommander.Builder builder = JCommander.newBuilder().programName(getName());
     allFlags.forEach(builder::addObject);
     JCommander commander = builder.build();
+    commander.setConsole(new DefaultConsole(out));
 
     return () -> {
       try {
         commander.parse(args);
       } catch (ParameterException e) {
-        System.err.println(e.getMessage());
+        err.println(e.getMessage());
         commander.usage();
         return;
       }
 
-      if (helpFlags.displayHelp(commander, System.out)) {
+      if (helpFlags.displayHelp(commander, out)) {
         return;
       }
 
@@ -70,7 +83,11 @@ public abstract class TemplateGridCommand implements CliCommand {
 
       Config config = new CompoundConfig(allConfigs.toArray(new Config[0]));
 
-      if (helpFlags.dumpConfig(config, System.out)) {
+      if (configFlags.dumpConfig(config, out)) {
+        return;
+      }
+
+      if (configFlags.dumpConfigHelp(config, getConfigurableRoles(), out)) {
         return;
       }
 
@@ -81,11 +98,9 @@ public abstract class TemplateGridCommand implements CliCommand {
     };
   }
 
-  protected abstract Set<Object> getFlagObjects();
-
   protected abstract String getSystemPropertiesConfigPrefix();
 
   protected abstract Config getDefaultConfig();
 
-  protected abstract void execute(Config config) throws Exception;
+  protected abstract void execute(Config config);
 }

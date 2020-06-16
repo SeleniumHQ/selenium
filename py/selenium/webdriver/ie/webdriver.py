@@ -20,6 +20,7 @@ import warnings
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 from .options import Options
+from selenium.webdriver.common import utils
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
@@ -62,7 +63,6 @@ class WebDriver(RemoteWebDriver):
         if port != DEFAULT_PORT:
             warnings.warn('port has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        self.port = port
         if timeout != DEFAULT_TIMEOUT:
             warnings.warn('timeout has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
@@ -76,6 +76,9 @@ class WebDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
+        self.port = port
+        if self.port == 0:
+            self.port = utils.free_port()
 
         # If both capabilities and desired capabilities are set, ignore desired capabilities.
         if capabilities is None and desired_capabilities:
@@ -104,7 +107,7 @@ class WebDriver(RemoteWebDriver):
 
         RemoteWebDriver.__init__(
             self,
-            command_executor='http://localhost:%d' % self.port,
+            command_executor=self.iedriver.service_url,
             desired_capabilities=capabilities,
             keep_alive=keep_alive)
         self._is_remote = False

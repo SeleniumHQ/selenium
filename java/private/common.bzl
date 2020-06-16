@@ -59,7 +59,7 @@ def _has_maven_deps_impl(target, ctx):
             artifact_jars = depset(target[JavaInfo].runtime_output_jars),
             source_jars = depset(target[JavaInfo].source_jars),
             transitive_maven_deps = transitive_maven_deps,
-            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos])
+            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos]),
         )
     else:
         info = MavenInfo(
@@ -68,7 +68,7 @@ def _has_maven_deps_impl(target, ctx):
             artifact_jars = artifact_jars,
             source_jars = source_jars,
             transitive_maven_deps = transitive_maven_deps,
-            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos])
+            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos]),
         )
     infos.append(info)
 

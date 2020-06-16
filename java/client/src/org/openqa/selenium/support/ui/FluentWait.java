@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.support.ui;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -71,7 +70,7 @@ import java.util.function.Supplier;
  */
 public class FluentWait<T> implements Wait<T> {
 
-  protected final static long DEFAULT_SLEEP_TIMEOUT = 500;
+  protected static final long DEFAULT_SLEEP_TIMEOUT = 500;
 
   private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
@@ -98,9 +97,9 @@ public class FluentWait<T> implements Wait<T> {
    * @param sleeper Used to put the thread to sleep between evaluation loops.
    */
   public FluentWait(T input, java.time.Clock clock, Sleeper sleeper) {
-    this.input = requireNonNull(input);
-    this.clock = requireNonNull(clock);
-    this.sleeper = requireNonNull(sleeper);
+    this.input = Require.nonNull("Input", input);
+    this.clock = Require.nonNull("Clock", clock);
+    this.sleeper = Require.nonNull("Sleeper", sleeper);
   }
 
   /**

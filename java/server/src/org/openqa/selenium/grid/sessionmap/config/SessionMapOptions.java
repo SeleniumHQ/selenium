@@ -21,8 +21,6 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
@@ -78,28 +76,6 @@ public class SessionMapOptions {
   }
 
   public SessionMap getSessionMap() {
-    String clazz = config.get(SESSIONS_SECTION, "implementation").orElse(DEFAULT_SESSION_MAP);
-    LOG.info("Creating event bus: " + clazz);
-    try {
-      Class<?> busClazz = Class.forName(clazz);
-      Method create = busClazz.getMethod("create", Config.class);
-
-      if (!Modifier.isStatic(create.getModifiers())) {
-        throw new IllegalArgumentException(String.format(
-          "Session map class %s's `create(Config)` method must be static", clazz));
-      }
-
-      if (!SessionMap.class.isAssignableFrom(create.getReturnType())) {
-        throw new IllegalArgumentException(String.format(
-          "Session map class %s's `create(Config)` method must return a SessionMap", clazz));
-      }
-
-      return (SessionMap) create.invoke(null, config);
-    } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(String.format(
-        "Session map class %s must have a static `create(Config)` method", clazz));
-    } catch (ReflectiveOperationException e) {
-      throw new IllegalArgumentException("Unable to find event bus class: " + clazz, e);
-    }
+    return  (SessionMap) config.getClass(SESSIONS_SECTION, "implementation", SessionMap.class, DEFAULT_SESSION_MAP);
   }
 }

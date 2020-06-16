@@ -17,17 +17,17 @@
 
 package org.openqa.selenium.grid.docker;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
 import java.time.Duration;
-import java.util.Objects;
 
 class DockerSession extends ProtocolConvertingSession {
 
@@ -43,7 +43,7 @@ class DockerSession extends ProtocolConvertingSession {
       Dialect downstream,
       Dialect upstream) {
     super(tracer, client, id, url, downstream, upstream, capabilities);
-    this.container = Objects.requireNonNull(container);
+    this.container = Require.nonNull("Container", container);
   }
 
   @Override

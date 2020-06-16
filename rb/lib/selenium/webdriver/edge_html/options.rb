@@ -53,7 +53,7 @@ module Selenium
         #
 
         def initialize(**opts)
-          super
+          super(**opts)
           @options[:extensions]&.each(&method(:validate_extension))
         end
 

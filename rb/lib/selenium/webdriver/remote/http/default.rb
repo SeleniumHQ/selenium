@@ -132,8 +132,7 @@ module Selenium
 
               proxy = URI.parse(url)
 
-              clazz = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password)
-              clazz.new(server_url.host, server_url.port)
+              Net::HTTP.new(server_url.host, server_url.port, proxy.host, proxy.port, proxy.user, proxy.password)
             else
               Net::HTTP.new server_url.host, server_url.port
             end

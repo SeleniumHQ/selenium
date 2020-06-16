@@ -95,6 +95,7 @@ def testSelectByVisibleTextSingle(driver, pages):
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
 @pytest.mark.xfail_chromiumedge(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
+@pytest.mark.xfail_safari
 def testSelectByVisibleTextShouldNormalizeSpaces(driver, pages):
     pages.load("formPage.html")
 

@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -28,8 +27,6 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isIe6;
-import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -470,8 +467,6 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
-    assumeFalse("Ignoring xpath error test in IE6", isIe6(driver));
-
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.xpath("this][isnot][valid")));
@@ -487,8 +482,6 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
-    assumeFalse("Ignoring xpath error test in IE6", isIe6(driver));
-
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -504,8 +497,6 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
-    assumeFalse("Ignoring xpath error test in IE6", isIe6(driver));
-
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.xpath("count(//input)")));
@@ -522,8 +513,6 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
-    assumeFalse("Ignoring xpath error test in IE6", isIe6(driver));
-
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     assertThatExceptionOfType(InvalidSelectorException.class)
@@ -626,7 +615,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
-    assumeFalse("Ignoring test for lack of error in CSS in IE6", isIe6(driver));
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> driver.findElements(By.cssSelector("//a/b/c[@id='1']")));
@@ -665,9 +653,6 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @Test
   public void findsByLinkTextOnXhtmlPage() {
-    assumeFalse("Old IE doesn't render XHTML pages, don't try loading XHTML pages in it",
-                isOldIe(driver));
-
     driver.get(appServer.whereIs("actualXhtmlPage.xhtml"));
     String linkText = "Foo";
     WebElement element = driver.findElement(By.linkText(linkText));

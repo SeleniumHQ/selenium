@@ -18,32 +18,29 @@
 package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.json.Json;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
 class IsSessionOwner implements HttpHandler {
 
   private final Node node;
-  private final Json json;
   private final SessionId id;
 
-  public IsSessionOwner(Node node, Json json, SessionId id) {
-    this.node = Objects.requireNonNull(node);
-    this.json = Objects.requireNonNull(json);
-    this.id = Objects.requireNonNull(id);
+  IsSessionOwner(Node node, SessionId id) {
+    this.node = Require.nonNull("Node", node);
+    this.id = Require.nonNull("Session id", id);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return new HttpResponse().setContent(utf8String(json.toJson(
-        ImmutableMap.of("value", node.isSessionOwner(id)))));
+    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", node.isSessionOwner(id))));
   }
 }

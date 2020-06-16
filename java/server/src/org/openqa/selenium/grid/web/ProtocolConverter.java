@@ -18,13 +18,11 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -42,6 +40,8 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
@@ -58,8 +58,8 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 public class ProtocolConverter implements HttpHandler {
 
-  private final static Json JSON = new Json();
-  private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
+  private static final Json JSON = new Json();
+  private static final ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
     .add("connection")
     .add("content-length")
     .add("content-type")
@@ -87,15 +87,13 @@ public class ProtocolConverter implements HttpHandler {
     HttpClient client,
     Dialect downstream,
     Dialect upstream) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.client = Objects.requireNonNull(client);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.client = Require.nonNull("HTTP client", client);
 
-    Objects.requireNonNull(downstream);
-    this.downstream = getCommandCodec(downstream);
+    this.downstream = getCommandCodec(Require.nonNull("Downstream dialect", downstream));
     this.downstreamResponse = getResponseCodec(downstream);
 
-    Objects.requireNonNull(upstream);
-    this.upstream = getCommandCodec(upstream);
+    this.upstream = getCommandCodec(Require.nonNull("Upstream dialect", upstream));
     this.upstreamResponse = getResponseCodec(upstream);
 
     converter = new JsonToWebElementConverter(null);
@@ -105,8 +103,7 @@ public class ProtocolConverter implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Span span = newSpanAsChildOf(tracer, req, "protocol_converter").startSpan();
-    try (Scope scope = tracer.withSpan(span)) {
+    try (Span span = newSpanAsChildOf(tracer, req, "protocol_converter")) {
       Command command = downstream.decode(req);
       span.setAttribute("session.id", String.valueOf(command.getSessionId()));
       span.setAttribute("command.name", command.getName());
@@ -141,8 +138,6 @@ public class ProtocolConverter implements HttpHandler {
       });
 
       return toReturn;
-    } finally {
-      span.end();
     }
   }
 
@@ -180,8 +175,8 @@ public class ProtocolConverter implements HttpHandler {
   private HttpResponse createW3CNewSessionResponse(HttpResponse response) {
     Map<String, Object> value = JSON.toType(string(response), MAP_TYPE);
 
-    Preconditions.checkState(value.get("sessionId") != null);
-    Preconditions.checkState(value.get("value") instanceof Map);
+    Require.state("Session id", value.get("sessionId")).nonNull();
+    Require.state("Response payload", value.get("value")).instanceOf(Map.class);
 
     return createResponse(ImmutableMap.of(
       "value", ImmutableMap.of(
@@ -193,8 +188,8 @@ public class ProtocolConverter implements HttpHandler {
     Map<String, Object> value = Objects.requireNonNull(Values.get(response, MAP_TYPE));
 
     // Check to see if the values we need are set
-    Preconditions.checkState(value.get("sessionId") != null);
-    Preconditions.checkState(value.get("capabilities") instanceof Map);
+    Require.state("Session id", value.get("sessionId")).nonNull();
+    Require.state("Response payload", value.get("capabilities")).instanceOf(Map.class);
 
     return createResponse(ImmutableMap.of(
       "status", 0,

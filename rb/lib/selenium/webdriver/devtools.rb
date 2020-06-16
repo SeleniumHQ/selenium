@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-Dir["#{__dir__}/devtools/*"].each { |f| require f }
+Dir["#{__dir__}/devtools/*"].sort.each { |f| require f }
 
 module Selenium
   module WebDriver

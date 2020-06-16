@@ -21,11 +21,15 @@ import os
 import pkgutil
 import warnings
 import zipfile
+from abc import ABCMeta
+from io import BytesIO
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
+
+from six import add_metaclass
 
 # Python 3 imports
 try:
@@ -35,21 +39,27 @@ except NameError:
 
 try:
     from base64 import encodebytes
-except ImportError:  # 3+
+except ImportError:  # Python 2
     from base64 import encodestring as encodebytes
 
-try:
-    from StringIO import StringIO as IOStream
-except ImportError:  # 3+
-    from io import BytesIO as IOStream
 
+# TODO: when dropping Python 2.7, use built in importlib_resources.files
 # not relying on __package__ here as it can be `None` in some situations (see #4558)
 _pkg = '.'.join(__name__.split('.')[:-1])
 getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
-class WebElement(object):
+@add_metaclass(ABCMeta)
+class BaseWebElement(object):
+    """
+    Abstract Base Class for WebElement.
+    ABC's will allow custom types to be registered as a WebElement to pass type checks.
+    """
+    pass
+
+
+class WebElement(BaseWebElement):
     """Represents a DOM element.
 
     Generally, all interesting operations that interact with a document will be
@@ -140,18 +150,18 @@ class WebElement(object):
 
         """
 
-        attributeValue = ''
+        attribute_value = ''
         if self._w3c:
-            attributeValue = self.parent.execute_script(
+            attribute_value = self.parent.execute_script(
                 "return (%s).apply(null, arguments);" % getAttribute_js,
                 self, name)
         else:
             resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
-            attributeValue = resp.get('value')
-            if attributeValue is not None:
-                if name != 'value' and attributeValue.lower() in ('true', 'false'):
-                    attributeValue = attributeValue.lower()
-        return attributeValue
+            attribute_value = resp.get('value')
+            if attribute_value is not None:
+                if name != 'value' and attribute_value.lower() in ('true', 'false'):
+                    attribute_value = attribute_value.lower()
+        return attribute_value
 
     def is_selected(self):
         """Returns whether the element is selected.
@@ -752,7 +762,7 @@ class WebElement(object):
         return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
-        fp = IOStream()
+        fp = BytesIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         zipped.write(filename, os.path.split(filename)[1])
         zipped.close()

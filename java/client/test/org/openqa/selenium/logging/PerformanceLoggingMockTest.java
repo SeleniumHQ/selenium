@@ -17,19 +17,19 @@
 
 package org.openqa.selenium.logging;
 
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteLogs;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -41,12 +41,12 @@ public class PerformanceLoggingMockTest {
 
     when(executeMethod.execute(
         DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
-        .thenReturn(ImmutableList.of(ImmutableMap.of(
+        .thenReturn(Arrays.asList(ImmutableMap.of(
           "level", Level.INFO.getName(),
           "timestamp", 1L,
           "message", "second")));
 
-    LocalLogs localLogs = LocalLogs.getStoringLoggerInstance(ImmutableSet.of(LogType.PROFILER));
+    LocalLogs localLogs = LocalLogs.getStoringLoggerInstance(singleton(LogType.PROFILER));
     RemoteLogs logs = new RemoteLogs(executeMethod, localLogs);
     localLogs.addEntry(LogType.PROFILER, new LogEntry(Level.INFO, 0, "first"));
     localLogs.addEntry(LogType.PROFILER, new LogEntry(Level.INFO, 2, "third"));

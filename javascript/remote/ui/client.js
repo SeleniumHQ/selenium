@@ -109,6 +109,7 @@ remote.ui.Client.SUPPORTED_BROWSERS = [
   'android',
   'chrome',
   'firefox',
+  'MicrosoftEdge',
   'internet explorer',
   'iphone',
   'opera'

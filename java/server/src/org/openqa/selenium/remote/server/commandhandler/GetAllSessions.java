@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -35,7 +36,6 @@ import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class GetAllSessions implements HttpHandler {
 
@@ -43,8 +43,8 @@ public class GetAllSessions implements HttpHandler {
   private final Json json;
 
   public GetAllSessions(ActiveSessions allSessions, Json json) {
-    this.allSessions = Objects.requireNonNull(allSessions);
-    this.json = Objects.requireNonNull(json);
+    this.allSessions = Require.nonNull("Active sessions", allSessions);
+    this.json = Require.nonNull("Json converter", json);
   }
 
   @Override

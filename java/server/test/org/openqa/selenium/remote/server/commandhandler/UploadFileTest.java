@@ -22,8 +22,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
@@ -75,11 +75,10 @@ public class UploadFileTest {
     File tempFile = touch(null, "foo");
     String encoded = Zip.zip(tempFile);
 
-    Json json = new Json();
     UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
-    request.setContent(utf8String(json.toJson(args)));
+    request.setContent(asJson(args));
     HttpResponse response = uploadFile.execute(request);
 
     Response res = new Json().toType(string(response), Response.class);
@@ -100,11 +99,10 @@ public class UploadFileTest {
     touch(baseDir, "unwanted");
     String encoded = Zip.zip(baseDir);
 
-    Json json = new Json();
     UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
-    request.setContent(utf8String(json.toJson(args)));
+    request.setContent(asJson(args));
     HttpResponse response = uploadFile.execute(request);
 
     try {

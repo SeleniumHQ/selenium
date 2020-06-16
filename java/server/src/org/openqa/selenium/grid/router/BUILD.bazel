@@ -9,6 +9,7 @@ java_library(
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/data",

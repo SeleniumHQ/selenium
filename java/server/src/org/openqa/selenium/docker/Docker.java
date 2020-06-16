@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.docker;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -30,7 +30,7 @@ public class Docker {
   private volatile Optional<DockerProtocol> dockerClient;
 
   public Docker(HttpHandler client) {
-    this.client = Objects.requireNonNull(client, "HTTP client to use must be set.");
+    this.client = Require.nonNull("HTTP client", client);
     this.dockerClient = Optional.empty();
   }
 
@@ -43,7 +43,7 @@ public class Docker {
   }
 
   public Image getImage(String name) {
-    Objects.requireNonNull(name, "Image name to get must be set.");
+    Require.nonNull("Image name to get", name);
 
     LOG.info("Obtaining image: " + name);
 
@@ -53,7 +53,7 @@ public class Docker {
   }
 
   public Container create(ContainerInfo info) {
-    Objects.requireNonNull(info, "Container info must be set.");
+    Require.nonNull("Container info", info);
 
     LOG.info("Creating image from " + info);
 

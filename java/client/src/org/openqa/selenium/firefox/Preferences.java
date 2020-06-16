@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -26,6 +24,7 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
 import java.io.BufferedReader;
@@ -75,7 +74,6 @@ class Preferences {
     }
   }
 
-  @VisibleForTesting
   public Preferences(Reader defaults, Reader reader) {
     readDefaultPreferences(defaults);
     try {
@@ -195,8 +193,9 @@ class Preferences {
   }
 
   private void checkPreference(String key, Object value) {
-    checkNotNull(value);
-    checkState(!immutablePrefs.containsKey(key) ||
+    Require.nonNull("Key", key);
+    Require.nonNull("Value", value);
+    Require.stateCondition(!immutablePrefs.containsKey(key) ||
                   (immutablePrefs.containsKey(key) && value.equals(immutablePrefs.get(key))),
                   "Preference %s may not be overridden: frozen value=%s, requested value=%s",
                   key, immutablePrefs.get(key), value);
@@ -210,7 +209,7 @@ class Preferences {
         throw new IllegalStateException(String.format(
             "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
       }
-      checkState(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
+      Require.stateCondition(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
                     "%s must be == 0 || >= %s",
                     MAX_SCRIPT_RUN_TIME_KEY,
                     DEFAULT_MAX_SCRIPT_RUN_TIME);

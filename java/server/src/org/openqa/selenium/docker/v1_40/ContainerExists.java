@@ -20,6 +20,7 @@ package org.openqa.selenium.docker.v1_40;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.docker.ContainerId;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -28,7 +29,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.openqa.selenium.docker.v1_40.DockerMessages.throwIfNecessary;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -39,11 +39,11 @@ class ContainerExists {
   private final HttpHandler client;
 
   public ContainerExists(HttpHandler client) {
-    this.client = Objects.requireNonNull(client);
+    this.client = Require.nonNull("HTTP client", client);
   }
 
   boolean apply(ContainerId id) {
-    Objects.requireNonNull(id);
+    Require.nonNull("Container id", id);
 
     Map<String, Object> filters = ImmutableMap.of("id", ImmutableSet.of(id));
 

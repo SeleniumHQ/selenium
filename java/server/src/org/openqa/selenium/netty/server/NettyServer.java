@@ -33,6 +33,7 @@ import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.WrapExceptions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.Message;
 
@@ -42,7 +43,6 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.CertificateException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -69,11 +69,9 @@ public class NettyServer implements Server<NettyServer> {
     BaseServerOptions options,
     HttpHandler handler,
     BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler) {
-    Objects.requireNonNull(options, "Server options must be set.");
-    Objects.requireNonNull(handler, "Handler to use must be set.");
-    this.websocketHandler = Objects.requireNonNull(
-      websocketHandler,
-      "Factory for websocket connections must be set.");
+    Require.nonNull("Server options", options);
+    Require.nonNull("Handler", handler);
+    this.websocketHandler = Require.nonNull("Factory for websocket connections", websocketHandler);
 
     InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.getDefaultFactory());
 

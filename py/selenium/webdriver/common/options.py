@@ -17,14 +17,17 @@
 
 from abc import ABCMeta, abstractmethod
 
+from six import add_metaclass
 
+
+@add_metaclass(ABCMeta)
 class BaseOptions(object):
     """
     Base class for individual browser options
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self):
+        super(BaseOptions, self).__init__()
         self._caps = self.default_capabilities
         self.set_capability("pageLoadStrategy", "normal")
 
@@ -38,12 +41,13 @@ class BaseOptions(object):
 
     @abstractmethod
     def to_capabilities(self):
-        return
+        """Convert options into capabilities dictionary."""
 
     @property
     @abstractmethod
     def default_capabilities(self):
-        return {}
+        """Return minimal capabilities necessary as a dictionary."""
+
 
 
 class ArgOptions(BaseOptions):
@@ -73,3 +77,7 @@ class ArgOptions(BaseOptions):
 
     def to_capabilities(self):
         return self._caps
+
+    @property
+    def default_capabilities(self):
+        return {}

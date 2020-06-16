@@ -18,14 +18,14 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.net.MediaType;
-import org.openqa.selenium.remote.http.Contents;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.UrlPath;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,6 +45,8 @@ import static com.google.common.net.MediaType.XML_UTF_8;
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class ResourceHandler implements Routable {
@@ -52,7 +54,7 @@ public class ResourceHandler implements Routable {
   private final Resource resource;
 
   public ResourceHandler(Resource resource) {
-    this.resource = Objects.requireNonNull(resource);
+    this.resource = Require.nonNull("Resource", resource);
   }
 
   @Override
@@ -67,7 +69,7 @@ public class ResourceHandler implements Routable {
     if (!result.isPresent()) {
       return new HttpResponse()
         .setStatus(HTTP_NOT_FOUND)
-        .setContent(Contents.string("Unable to find " + req.getUri(), UTF_8));
+        .setContent(utf8String("Unable to find " + req.getUri()));
     }
 
     Resource resource = result.get();
@@ -99,7 +101,7 @@ public class ResourceHandler implements Routable {
 
     return new HttpResponse()
       .addHeader("Content-Type", HTML_UTF_8.toString())
-      .setContent(Contents.string(html, UTF_8));
+      .setContent(utf8String(html));
   }
 
   private HttpResponse readFile(HttpRequest req, Resource resource) {
@@ -107,7 +109,7 @@ public class ResourceHandler implements Routable {
     if (bytes.isPresent()) {
       return new HttpResponse()
         .addHeader("Content-Type", mediaType(req.getUri()))
-        .setContent(Contents.bytes(bytes.get()));
+        .setContent(bytes(bytes.get()));
     }
     return get404(req);
   }
@@ -115,7 +117,7 @@ public class ResourceHandler implements Routable {
   private HttpResponse get404(HttpRequest req) {
     return new HttpResponse()
       .setStatus(HTTP_NOT_FOUND)
-      .setContent(Contents.string("Unable to read " + req.getUri(), UTF_8));
+      .setContent(utf8String("Unable to read " + req.getUri()));
   }
 
   private String mediaType(String uri) {

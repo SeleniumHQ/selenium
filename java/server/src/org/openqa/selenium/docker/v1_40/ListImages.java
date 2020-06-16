@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.internal.ImageSummary;
 import org.openqa.selenium.docker.internal.Reference;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -29,7 +30,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -45,11 +45,11 @@ class ListImages {
   private final HttpHandler client;
 
   public ListImages(HttpHandler client) {
-    this.client = Objects.requireNonNull(client);
+    this.client = Require.nonNull("HTTP client", client);
   }
 
   public Set<Image> apply(Reference reference) {
-    Objects.requireNonNull(reference, "Reference to search for must be set");
+    Require.nonNull("Reference to search for", reference);
 
     String familiarName = reference.getFamiliarName();
     Map<String, Object> filters = ImmutableMap.of("reference", ImmutableMap.of(familiarName, true));

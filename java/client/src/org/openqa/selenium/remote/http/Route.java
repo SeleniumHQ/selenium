@@ -17,41 +17,38 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.json.Json;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
+import org.openqa.selenium.internal.Require;
+
 public abstract class Route implements HttpHandler, Routable {
 
-  private static final Json JSON = new Json();
-
   public HttpHandler fallbackTo(Supplier<HttpHandler> handler) {
-    Objects.requireNonNull(handler, "Handler to use must be set.");
+    Require.nonNull("Handler", handler);
     return req -> {
       if (matches(req)) {
         return Route.this.execute(req);
       }
-      return Objects.requireNonNull(handler.get(), "Handler to use must be set.").execute(req);
+      return Require.state("Handler", handler.get()).nonNull().execute(req);
     };
   }
 
@@ -60,11 +57,11 @@ public abstract class Route implements HttpHandler, Routable {
     if (!matches(req)) {
       return new HttpResponse()
         .setStatus(HTTP_NOT_FOUND)
-        .setContent(utf8String(JSON.toJson(ImmutableMap.of(
+        .setContent(asJson(ImmutableMap.of(
           "value", ImmutableMap.of(
             "error", "unknown command",
             "message", "Unable to find handler for " + req,
-            "stacktrace", "")))));
+            "stacktrace", ""))));
     }
 
     HttpResponse res = handle(req);
@@ -77,23 +74,21 @@ public abstract class Route implements HttpHandler, Routable {
       .setStatus(HTTP_INTERNAL_ERROR)
       .addHeader("WebDriver-Error", "unsupported operation")
       .addHeader("Selenium-Route", "NULL_RES")
-      .setContent(utf8String(JSON.toJson(ImmutableMap.of(
+      .setContent(asJson(ImmutableMap.of(
         "value", ImmutableMap.of(
           "error", "unsupported operation",
           "message", String.format("Found handler for %s, but nothing was returned", req),
-          "stacktrace", "")))));
+          "stacktrace", ""))));
   }
 
   protected abstract HttpResponse handle(HttpRequest req);
 
   public static PredicatedConfig matching(Predicate<HttpRequest> predicate) {
-    Objects.requireNonNull(predicate, "Predicate to use must be set.");
-    return new PredicatedConfig(predicate);
+    return new PredicatedConfig(Require.nonNull("Predicate", predicate));
   }
 
   public static TemplatizedRouteConfig delete(String template) {
-    Objects.requireNonNull(template, "URL template to use must be set.");
-    UrlTemplate urlTemplate = new UrlTemplate(template);
+    UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
         new MatchesHttpMethod(DELETE).and(new MatchesTemplate(urlTemplate)),
@@ -101,8 +96,7 @@ public abstract class Route implements HttpHandler, Routable {
   }
 
   public static TemplatizedRouteConfig get(String template) {
-    Objects.requireNonNull(template, "URL template to use must be set.");
-    UrlTemplate urlTemplate = new UrlTemplate(template);
+    UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
         new MatchesHttpMethod(GET).and(new MatchesTemplate(urlTemplate)),
@@ -110,8 +104,7 @@ public abstract class Route implements HttpHandler, Routable {
   }
 
   public static TemplatizedRouteConfig post(String template) {
-    Objects.requireNonNull(template, "URL template to use must be set.");
-    UrlTemplate urlTemplate = new UrlTemplate(template);
+    UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
         new MatchesHttpMethod(POST).and(new MatchesTemplate(urlTemplate)),
@@ -119,19 +112,18 @@ public abstract class Route implements HttpHandler, Routable {
   }
 
   public static NestedRouteConfig prefix(String prefix) {
-    Objects.requireNonNull(prefix, "Prefix to use must be set.");
-    checkArgument(!prefix.isEmpty(), "Prefix to use must not be of 0 length");
+    Require.nonNull("Prefix", prefix);
+    Require.stateCondition(!prefix.isEmpty(), "Prefix to use must not be of 0 length");
     return new NestedRouteConfig(prefix);
   }
 
   public static Route combine(Routable first, Routable... others) {
-    Objects.requireNonNull(first, "At least one route must be set.");
+    Require.nonNull("At least one route", first);
     return new CombinedRoute(Stream.concat(Stream.of(first), Stream.of(others)));
   }
 
   public static Route combine(Iterable<Routable> routes) {
-    Objects.requireNonNull(routes, "At least one route must be set.");
-
+    Require.nonNull("At least one route", routes);
     return new CombinedRoute(StreamSupport.stream(routes.spliterator(), false));
   }
 
@@ -141,17 +133,17 @@ public abstract class Route implements HttpHandler, Routable {
     private final UrlTemplate template;
 
     private TemplatizedRouteConfig(Predicate<HttpRequest> predicate, UrlTemplate template) {
-      this.predicate = Objects.requireNonNull(predicate);
-      this.template = Objects.requireNonNull(template);
+      this.predicate = Require.nonNull("Predicate", predicate);
+      this.template = Require.nonNull("URL template", template);
     }
 
     public Route to(Supplier<HttpHandler> handler) {
-      Objects.requireNonNull(handler, "Handler supplier must be set.");
+      Require.nonNull("Handler supplier", handler);
       return to(params -> handler.get());
     }
 
     public Route to(Function<Map<String, String>, HttpHandler> handlerFunc) {
-      Objects.requireNonNull(handlerFunc, "Handler creator must be set.");
+      Require.nonNull("Handler creator", handlerFunc);
       return new TemplatizedRoute(template, predicate, handlerFunc);
     }
   }
@@ -166,9 +158,9 @@ public abstract class Route implements HttpHandler, Routable {
         UrlTemplate template,
         Predicate<HttpRequest> predicate,
         Function<Map<String, String>, HttpHandler> handlerFunction) {
-      this.template = Objects.requireNonNull(template);
-      this.predicate = Objects.requireNonNull(predicate);
-      this.handlerFunction = Objects.requireNonNull(handlerFunction);
+      this.template = Require.nonNull("URL template", template);
+      this.predicate = Require.nonNull("Predicate", predicate);
+      this.handlerFunction = Require.nonNull("Handler function", handlerFunction);
     }
 
     @Override
@@ -197,7 +189,7 @@ public abstract class Route implements HttpHandler, Routable {
     private final HttpMethod method;
 
     private MatchesHttpMethod(HttpMethod method) {
-      this.method = Objects.requireNonNull(method, "HTTP method to test must be set.");
+      this.method = Require.nonNull("HTTP method to test", method);
     }
 
     @Override
@@ -211,7 +203,7 @@ public abstract class Route implements HttpHandler, Routable {
     private final UrlTemplate template;
 
     private MatchesTemplate(UrlTemplate template) {
-      this.template = Objects.requireNonNull(template, "URL template to test must be set.");
+      this.template = Require.nonNull("URL template to test", template);
     }
 
     @Override
@@ -225,11 +217,11 @@ public abstract class Route implements HttpHandler, Routable {
     private final String prefix;
 
     private NestedRouteConfig(String prefix) {
-      this.prefix = Objects.requireNonNull(prefix, "Prefix must be set.");
+      this.prefix = Require.nonNull("Prefix", prefix);
     }
 
     public Route to(Route route) {
-      Objects.requireNonNull(route, "Target for requests must be set.");
+      Require.nonNull("Target for requests", route);
       return new NestedRoute(prefix, route);
     }
   }
@@ -241,9 +233,9 @@ public abstract class Route implements HttpHandler, Routable {
     private final Route route;
 
     private NestedRoute(String prefix, Route route) {
-      this.prefixPaths = Objects.requireNonNull(prefix, "Prefix must be set.").split("/");
+      this.prefixPaths = Require.nonNull("Prefix", prefix).split("/");
       this.prefix = prefix;
-      this.route = Objects.requireNonNull(route, "Target for requests must be set.");
+      this.route = Require.nonNull("Target for requests", route);
     }
 
     @Override
@@ -297,9 +289,9 @@ public abstract class Route implements HttpHandler, Routable {
         .collect(toImmutableList());
       toForward.setAttribute(ROUTE_PREFIX_KEY, prefixes);
 
-      request.getQueryParameterNames().forEach(name -> {
-        request.getQueryParameters(name).forEach(value -> toForward.addQueryParameter(name, value));
-      });
+      request.getQueryParameterNames().forEach(name ->
+        request.getQueryParameters(name).forEach(value -> toForward.addQueryParameter(name, value))
+      );
 
       toForward.setContent(request.getContent());
 
@@ -315,7 +307,7 @@ public abstract class Route implements HttpHandler, Routable {
       // We want later routes to have a greater chance of being called so that we can override
       // routes as necessary.
       allRoutes = routes.collect(toImmutableList()).reverse();
-      Preconditions.checkArgument(!allRoutes.isEmpty(), "At least one route must be specified.");
+      Require.stateCondition(!allRoutes.isEmpty(), "At least one route must be specified.");
     }
 
     @Override
@@ -340,12 +332,11 @@ public abstract class Route implements HttpHandler, Routable {
     private final Predicate<HttpRequest> predicate;
 
     private PredicatedConfig(Predicate<HttpRequest> predicate) {
-        this.predicate = Objects.requireNonNull(predicate);
+        this.predicate = Require.nonNull("Predicate", predicate);
     }
 
     public Route to(Supplier<HttpHandler> handler) {
-      Objects.requireNonNull(handler, "Handler supplier must be set.");
-      return new PredicatedRoute(predicate, handler);
+      return new PredicatedRoute(predicate, Require.nonNull("Handler supplier", handler));
     }
   }
 
@@ -355,8 +346,8 @@ public abstract class Route implements HttpHandler, Routable {
     private final Supplier<HttpHandler> supplier;
 
     private PredicatedRoute(Predicate<HttpRequest> predicate, Supplier<HttpHandler> supplier) {
-      this.predicate = Objects.requireNonNull(predicate);
-      this.supplier = Objects.requireNonNull(supplier);
+      this.predicate = Require.nonNull("Predicate", predicate);
+      this.supplier = Require.nonNull("Supplier", supplier);
     }
 
     @Override

@@ -19,7 +19,9 @@ namespace OpenQA.Selenium.Firefox
 
         public static FirefoxOptions DefaultOptions
         {
-            get { return new FirefoxOptions() { BrowserExecutableLocation = @"C:\Program Files\Mozilla Firefox\firefox.exe", AcceptInsecureCertificates = true }; }
+            // If you are running with Firefox installed to a custom location, you will need
+            // to add a property to the below options: BrowserExecutableLocation = <path to Firefox.exe>
+            get { return new FirefoxOptions() { AcceptInsecureCertificates = true }; }
         }
     }
 }

@@ -19,24 +19,21 @@ package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
-public class StatusHandler implements HttpHandler {
+class StatusHandler implements HttpHandler {
 
   private final Node node;
-  private final Json json;
 
-  public StatusHandler(Node node, Json json) {
-    this.node = Objects.requireNonNull(node);
-    this.json = Objects.requireNonNull(json);
+  StatusHandler(Node node) {
+    this.node = Require.nonNull("Node", node);
   }
 
   @Override
@@ -49,6 +46,6 @@ public class StatusHandler implements HttpHandler {
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
             "node", status));
 
-    return new HttpResponse().setContent(utf8String(json.toJson(report)));
+    return new HttpResponse().setContent(asJson(report));
   }
 }

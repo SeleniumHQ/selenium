@@ -50,7 +50,7 @@ public interface WebDriver extends SearchContext {
   // Navigation
 
   /**
-   * Load a new web page in the current browser window. This is done using an HTTP GET operation,
+   * Load a new web page in the current browser window. This is done using an HTTP POST operation,
    * and the method will block until the load is complete (with the default 'page load strategy'.
    * This will follow redirects issued either by the server or as a meta-redirect from within the
    * returned HTML. Should a meta-redirect "rest" for any duration of time, it is best to wait until
@@ -480,7 +480,7 @@ public interface WebDriver extends SearchContext {
 
 
     /**
-     * Load a new web page in the current browser window. This is done using an HTTP GET operation,
+     * Load a new web page in the current browser window. This is done using an HTTP POST operation,
      * and the method will block until the load is complete. This will follow redirects issued
      * either by the server or as a meta-redirect from within the returned HTML. Should a
      * meta-redirect "rest" for any duration of time, it is best to wait until this timeout is over,

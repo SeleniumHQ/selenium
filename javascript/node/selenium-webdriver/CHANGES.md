@@ -6,6 +6,8 @@
     - setEdgePath
     - setEdgeChromium
     - setScrollBehavior
+    - For consistent naming, deprecating `addArguments(...args)` in favor of `addBrowserCommandSwitches(...args)`
+* Add relative locators
 
 ### API Changes
 

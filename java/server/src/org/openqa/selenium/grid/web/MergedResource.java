@@ -19,7 +19,8 @@ package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
+
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,13 +34,12 @@ public class MergedResource implements Resource {
   }
 
   private MergedResource(Resource base, Resource next) {
-    this.base = Objects.requireNonNull(base);
+    this.base = Require.nonNull("Base resource", base);
     this.next = Optional.ofNullable(next);
   }
 
   public MergedResource alsoCheck(Resource resource) {
-    Objects.requireNonNull(resource);
-    return new MergedResource(this, resource);
+    return new MergedResource(this, Require.nonNull("Resource", resource));
   }
 
   @Override

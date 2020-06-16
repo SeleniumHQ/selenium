@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.grid.router;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -27,8 +27,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
-
-import java.util.Objects;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -46,7 +45,7 @@ public class Router implements Routable, HttpHandler {
     HttpClient.Factory clientFactory,
     SessionMap sessions,
     Distributor distributor) {
-    Objects.requireNonNull(tracer, "Tracer to use must be set.");
+    Require.nonNull("Tracer to use", tracer);
 
     routes =
       combine(

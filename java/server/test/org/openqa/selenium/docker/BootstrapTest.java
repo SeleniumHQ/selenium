@@ -18,7 +18,6 @@
 package org.openqa.selenium.docker;
 
 import org.junit.Test;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -29,6 +28,7 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class BootstrapTest {
 
@@ -64,7 +64,7 @@ public class BootstrapTest {
     HttpHandler client = req -> new HttpResponse()
         .setStatus(HTTP_BAD_REQUEST)
         .setHeader("Content-Type", "application/json")
-        .setContent(Contents.utf8String(
+        .setContent(utf8String(
           "{\"message\":\"client version 1.50 is too new. Maximum supported API version is 1.40\"}"));
 
     boolean isSupported = new Docker(client).isSupported();

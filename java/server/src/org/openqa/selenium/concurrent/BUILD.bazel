@@ -4,4 +4,7 @@ java_library(
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
     ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+    ],
 )

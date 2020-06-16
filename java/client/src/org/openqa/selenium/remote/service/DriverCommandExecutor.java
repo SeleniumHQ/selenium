@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.service;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.DriverCommand;
@@ -29,7 +30,6 @@ import org.openqa.selenium.remote.Response;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * A specialized {@link HttpCommandExecutor} that will use a {@link DriverService} that lives
@@ -47,7 +47,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
    * @param service The DriverService to send commands to.
    */
   public DriverCommandExecutor(DriverService service) {
-    super(Objects.requireNonNull(service.getUrl(), "DriverService is required"));
+    super(Require.nonNull("DriverService", service.getUrl()));
     this.service = service;
   }
 

@@ -19,6 +19,9 @@ package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
+
+import org.openqa.selenium.internal.Require;
+
 import io.ous.jtoml.JToml;
 import io.ous.jtoml.Toml;
 import io.ous.jtoml.TomlTable;
@@ -29,7 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -46,7 +48,7 @@ public class TomlConfig implements Config {
   }
 
   public static Config from(Path path) {
-    Objects.requireNonNull(path, "Path to read must be set.");
+    Require.nonNull("Path to read", path);
 
     try (Reader reader = Files.newBufferedReader(path)) {
       return new TomlConfig(reader);
@@ -57,8 +59,8 @@ public class TomlConfig implements Config {
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    Objects.requireNonNull(section, "Section to read must be set.");
-    Objects.requireNonNull(option, "Option to read must be set.");
+    Require.nonNull("Section to read", section);
+    Require.nonNull("Option to read", option);
 
     if (!toml.containsKey(section)) {
       return Optional.empty();
@@ -95,7 +97,7 @@ public class TomlConfig implements Config {
 
   @Override
   public Set<String> getOptions(String section) {
-    Objects.requireNonNull(section, "Section name to get options for must be set.");
+    Require.nonNull("Section name to get options for", section);
 
     Object raw = toml.get(section);
     if (!(raw instanceof TomlTable)) {

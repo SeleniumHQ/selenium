@@ -116,7 +116,7 @@ module Selenium
           expect_request(body: {capabilities: {firstMatch: ["browserName": "chrome", "goog:chromeOptions": opts]}})
 
           expect {
-            expect { Driver.new(options: Options.new(opts)) }.to have_deprecated(:browser_options)
+            expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
           }.not_to raise_exception
         end
 
@@ -129,7 +129,7 @@ module Selenium
 
           expect {
             expect {
-              Driver.new(options: Options.new(browser_opts), desired_capabilities: caps)
+              Driver.new(options: Options.new(**browser_opts), desired_capabilities: caps)
             }.to have_deprecated(%i[browser_options desired_capabilities])
           }.not_to raise_exception
         end
@@ -204,6 +204,14 @@ module Selenium
               options = Options.new(args: ['-f'])
               expect_request(body: {capabilities: {firstMatch: [browserName: "chrome",
                                                                 'goog:chromeOptions': {'args': ['-f']}]}})
+
+              expect { Driver.new(capabilities: [options]) }.not_to raise_exception
+            end
+
+            it 'with Options instance with profile' do
+              profile = Profile.new.tap(&:layout_on_disk)
+              options = Options.new(profile: profile)
+              expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", 'goog:chromeOptions': {}]}})
 
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end

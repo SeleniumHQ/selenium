@@ -25,11 +25,11 @@ import com.google.common.reflect.TypeToken;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.Dialect;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class CreateSessionRequest {
@@ -42,9 +42,10 @@ public class CreateSessionRequest {
       Set<Dialect> downstreamDialects,
       Capabilities capabilities,
       Map<String, Object> metadata) {
-    this.downstreamDialects = ImmutableSet.copyOf(Objects.requireNonNull(downstreamDialects));
-    this.capabilities = ImmutableCapabilities.copyOf(Objects.requireNonNull(capabilities));
-    this.metadata = ImmutableMap.copyOf(Objects.requireNonNull(metadata));
+    this.downstreamDialects = ImmutableSet.copyOf(
+        Require.nonNull("Downstream dialects", downstreamDialects));
+    this.capabilities = ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities));
+    this.metadata = ImmutableMap.copyOf(Require.nonNull("Metadata", metadata));
   }
 
   public Set<Dialect> getDownstreamDialects() {

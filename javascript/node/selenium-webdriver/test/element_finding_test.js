@@ -21,7 +21,7 @@ const assert = require('assert');
 const {fail} = require('assert');
 
 const promise = require('../lib/promise');
-const {Browser, By, error, until} = require('..');
+const {Browser, By, RelativeBy, error, withTagName, until} = require('..');
 const {Pages, ignore, suite, whereIs} = require('../lib/test');
 
 
@@ -408,6 +408,32 @@ suite(function(env) {
         return link.then(
             () => fail('Should have failed'),
             (e) => assert.ok(e instanceof TypeError));
+      });
+    });
+
+    describe('RelativeBy to find element', function() {
+      it('finds an element above', async function() {
+        await driver.get(Pages.relativeLocators);
+        let below = await driver.findElement(By.id("below"));
+        let elements = await driver.findElements(withTagName("p").above(below));
+        let ids = [];
+        elements.forEach(element => {
+          ids.push(element.getAttribute("id"));
+        });
+        assert.deepEqual(ids, ["above", "mid"]);
+      });
+
+      it('should combine filters', async function() {
+        await driver.get(Pages.relativeLocators);
+
+        let elements = await driver.findElements(withTagName("td").
+                                                 above(await driver.findElement(By.id("center")).
+                                                 toRightOf(await driver.findElement(By.id('second')))));
+        let ids = [];
+        elements.forEach(element => {
+          ids.push(element.getAttribute("id"));
+        });
+        assert.notEqual(elements.indexOf('third'), -1);
       });
     });
 

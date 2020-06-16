@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.http.netty;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
 import io.netty.bootstrap.Bootstrap;
@@ -47,9 +46,10 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpVersion;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -65,7 +65,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -73,6 +72,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 class NettyDomainSocketClient extends RemoteCall implements HttpClient {
 
@@ -83,7 +84,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
   public NettyDomainSocketClient(ClientConfig config) {
     super(config);
     URI uri = config.baseUri();
-    Preconditions.checkArgument("unix".equals(uri.getScheme()), "URI scheme must be `unix`");
+    Require.argument("URI scheme", uri.getScheme()).equalTo("unix");
 
     if (Epoll.isAvailable()) {
       this.eventLoopGroup = new EpollEventLoopGroup();
@@ -100,7 +101,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Objects.requireNonNull(req, "Request to send must be set.");
+    Require.nonNull("Request to send", req);
 
     AtomicReference<HttpResponse> outRef = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
@@ -115,7 +116,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
             queryPairs.add(URLEncoder.encode(name, UTF_8.toString()) + "=" + URLEncoder.encode(value, UTF_8.toString()));
           } catch (UnsupportedEncodingException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
           }
         }));
     if (!queryPairs.isEmpty()) {
@@ -123,7 +124,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
       Joiner.on('&').appendTo(uri, queryPairs);
     }
 
-    byte[] bytes = Contents.bytes(req.getContent());
+    byte[] bytes = bytes(req.getContent());
 
     DefaultFullHttpRequest fullRequest = new DefaultFullHttpRequest(
       HttpVersion.HTTP_1_1,
@@ -149,7 +150,9 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
     }
 
     try {
-      latch.await(getConfig().readTimeout().toMillis(), MILLISECONDS);
+      if (!latch.await(getConfig().readTimeout().toMillis(), MILLISECONDS)) {
+        throw new UncheckedIOException(new IOException("Timed out waiting for response"));
+      }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);
@@ -184,13 +187,13 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
                 try (InputStream is = new ByteBufInputStream(msg.content());
                      ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
                   ByteStreams.copy(is, bos);
-                  res.setContent(Contents.bytes(bos.toByteArray()));
+                  res.setContent(bytes(bos.toByteArray()));
                   outRef.set(res);
                   latch.countDown();
                 } catch (IOException e) {
                   outRef.set(new HttpResponse()
                     .setStatus(HTTP_INTERNAL_ERROR)
-                    .setContent(Contents.string(Throwables.getStackTraceAsString(e), UTF_8)));
+                    .setContent(utf8String(Throwables.getStackTraceAsString(e))));
                   latch.countDown();
                 }
               }
@@ -199,7 +202,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
               public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
                 outRef.set(new HttpResponse()
                   .setStatus(HTTP_INTERNAL_ERROR)
-                  .setContent(Contents.string(Throwables.getStackTraceAsString(cause), UTF_8)));
+                  .setContent(utf8String(Throwables.getStackTraceAsString(cause))));
                 latch.countDown();
               }
             });

@@ -17,19 +17,21 @@
 
 package org.openqa.selenium.grid.node;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
-import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
@@ -48,7 +50,7 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
       Capabilities capabilities) {
     super(id, url, downstream, upstream, capabilities);
 
-    Objects.requireNonNull(client);
+    Require.nonNull("HTTP client", client);
 
     if (downstream.equals(upstream)) {
       this.handler = new ReverseProxyHandler(tracer, client);
@@ -61,6 +63,12 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
 
   @Override
   public HttpResponse execute(HttpRequest req) {
+    String host = "host";
+    StreamSupport.stream(req.getHeaderNames().spliterator(), true)
+      .filter(host::equalsIgnoreCase)
+      .collect(Collectors.toList())
+      .forEach(req::removeHeader);
+    req.addHeader(host, String.format("%s:%s", getUri().getHost(), getUri().getPort()));
     HttpResponse res = handler.execute(req);
     if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
       stop();

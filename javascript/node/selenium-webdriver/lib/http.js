@@ -38,6 +38,9 @@ const getAttribute = requireAtom(
 const isDisplayed = requireAtom(
     'is-displayed.js',
     '//javascript/node/selenium-webdriver/lib/atoms:is-displayed.js');
+const findElements = requireAtom(
+    'find-elements.js',
+    '//javascript/node/selenium-webdriver/lib/atoms:find-elements.js');
 
 /**
  * @param {string} module
@@ -144,7 +147,8 @@ const DEV_ROOT = '../../../../buck-out/gen/javascript/';
 /** @enum {!Function} */
 const Atom = {
   GET_ATTRIBUTE: getAttribute,
-  IS_DISPLAYED: isDisplayed
+  IS_DISPLAYED: isDisplayed,
+  FIND_ELEMENTS: findElements,
 };
 
 
@@ -306,6 +310,9 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
   [cmd.Name.FIND_ELEMENT, post('/session/:sessionId/element')],
   [cmd.Name.FIND_ELEMENTS, post('/session/:sessionId/elements')],
+  [cmd.Name.FIND_ELEMENTS_RELATIVE, (cmd) => {
+    return toExecuteAtomCommand(cmd, Atom.FIND_ELEMENTS, 'args');
+  }],
   [cmd.Name.FIND_CHILD_ELEMENT, post('/session/:sessionId/element/:id/element')],
   [cmd.Name.FIND_CHILD_ELEMENTS, post('/session/:sessionId/element/:id/elements')],
   // Element interaction.

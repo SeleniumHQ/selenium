@@ -41,6 +41,7 @@ java_export(
     deps = [
         ":cdp",
         ":devtools-prototypes",
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",

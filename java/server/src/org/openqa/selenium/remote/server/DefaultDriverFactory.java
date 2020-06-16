@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.server;
 
-import static com.google.common.base.Preconditions.checkState;
 import static org.openqa.selenium.Platform.ANY;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.WINDOWS;
@@ -43,6 +42,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 
 import java.util.List;
 import java.util.Map;
@@ -93,8 +93,8 @@ public class DefaultDriverFactory implements DriverFactory {
   @VisibleForTesting
   DriverProvider getProviderMatching(Capabilities desired) {
     // We won't be able to make a match if no drivers have been registered.
-    checkState(!capabilitiesToDriverProvider.isEmpty(),
-               "No drivers have been registered, will be unable to match %s", desired);
+    Require.stateCondition(!capabilitiesToDriverProvider.isEmpty(),
+                           "No drivers have been registered, will be unable to match %s", desired);
     Capabilities bestMatchingCapabilities =
         CapabilitiesComparator.getBestMatch(desired, capabilitiesToDriverProvider.keySet());
     return capabilitiesToDriverProvider.get(bestMatchingCapabilities);

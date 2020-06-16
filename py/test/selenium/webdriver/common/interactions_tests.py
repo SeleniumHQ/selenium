@@ -46,6 +46,7 @@ def performDragAndDropWithMouse(driver, pages):
     drop.perform()
 
 
+@pytest.mark.xfail_safari
 def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     performDragAndDropWithMouse(driver, pages)
@@ -53,6 +54,7 @@ def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
     assert 6 == len(dragInto.find_elements(By.TAG_NAME, "li"))
 
 
+@pytest.mark.xfail_safari
 def testDraggingElementWithMouseFiresEvents(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     performDragAndDropWithMouse(driver, pages)
@@ -69,6 +71,7 @@ def _isElementAvailable(driver, id):
         return False
 
 
+@pytest.mark.xfail_safari
 def testDragAndDrop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
@@ -97,6 +100,7 @@ def testDragAndDrop(driver, pages):
     assert "Dropped!" == text
 
 
+@pytest.mark.xfail_safari
 def testDoubleClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -144,6 +148,7 @@ def testCannotMoveToANullLocator(driver, pages):
         move.perform()
 
 
+@pytest.mark.xfail_safari
 def testClickingOnFormElements(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("formSelectionPage.html")
@@ -163,6 +168,7 @@ def testClickingOnFormElements(driver, pages):
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def testSelectingMultipleItems(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("selectableItems.html")
@@ -186,6 +192,7 @@ def testSelectingMultipleItems(driver, pages):
     assert "#item7" == reportingElement.text
 
 
+@pytest.mark.xfail_safari
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element(By.ID, "working")

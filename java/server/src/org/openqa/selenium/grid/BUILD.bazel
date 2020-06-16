@@ -3,6 +3,20 @@ load("//:copy_file.bzl", "copy_file")
 load("//java:defs.bzl", "java_dist_zip", "java_export", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
 
+genrule(
+    name = "executable-grid",
+    srcs = [
+        "zip-preamble.sh",
+        ":selenium_server_deploy.jar",
+    ],
+    outs = ["selenium"],
+    cmd = "cat $(location :zip-preamble.sh) $(location :selenium_server_deploy.jar) > $@",
+    executable = True,
+    visibility = [
+        "//:__pkg__",
+    ],
+)
+
 BASE_COMMAND_SRCS = [
     "TemplateGridCommand.java",
 ]
@@ -19,14 +33,24 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/server",
         artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
     ],
 )
 
 java_export(
     name = "grid",
-    srcs = glob(["*.java"], exclude = BASE_COMMAND_SRCS),
+    srcs = glob(
+        ["*.java"],
+        exclude = BASE_COMMAND_SRCS,
+    ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    uses = [
+        "org.openqa.selenium.WebDriverInfo",
+        "org.openqa.selenium.cli.CliCommand",
+        "org.openqa.selenium.grid.config.HasRoles",
+        "org.openqa.selenium.remote.service.DriverService$Builder",
+    ],
     visibility = [
         "//visibility:public",
     ],
@@ -46,7 +70,9 @@ java_export(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
     ],
     deps = [
+        ":base-command",
         "//java/server/src/org/openqa/selenium/cli",
+        "//java/server/src/org/openqa/selenium/grid/config",
     ],
 )
 
@@ -60,7 +86,7 @@ java_binary(
     ],
     runtime_deps = [
         ":grid",
-        artifact("org.slf4j:slf4j-jdk14")
+        artifact("org.slf4j:slf4j-jdk14"),
     ],
 )
 
@@ -88,12 +114,12 @@ java_dist_zip(
 
 javadoc(
     name = "all-javadocs",
-    deps = [
-        ":grid",
-    ],
-    transitive = True,
     third_party_prefixes = [
         "@maven//",
         "//third_party",
+    ],
+    transitive = True,
+    deps = [
+        ":grid",
     ],
 )

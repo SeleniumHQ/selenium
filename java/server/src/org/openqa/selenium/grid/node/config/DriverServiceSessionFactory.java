@@ -17,13 +17,16 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import io.opentelemetry.trace.Tracer;
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.chromium.ChromiumDevToolsLocator;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.DriverCommand;
@@ -32,12 +35,18 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
@@ -51,10 +60,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
       HttpClient.Factory clientFactory,
       Predicate<Capabilities> predicate,
       DriverService.Builder builder) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.clientFactory = Objects.requireNonNull(clientFactory);
-    this.predicate = Objects.requireNonNull(predicate);
-    this.builder = Objects.requireNonNull(builder);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
+    this.builder = Require.nonNull("Driver service bulder", builder);
   }
 
   @Override
@@ -72,7 +81,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
       return Optional.empty();
     }
 
-    try {
+    try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
+      CAPABILITIES.accept(span, sessionRequest.getCapabilities());
       DriverService service = builder.build();
       try {
         service.start();
@@ -93,26 +103,53 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         Response response = result.createResponse();
 
+        // TODO: This is a nasty hack. Try and make it elegant.
+
+        Capabilities caps = new ImmutableCapabilities((Map<?, ?>) response.getValue());
+        Optional<URI> reportedUri = ChromiumDevToolsLocator.getReportedUri("goog:chromeOptions", caps);
+        if (reportedUri.isPresent()) {
+          caps = addCdpCapability(caps, reportedUri.get());
+        } else {
+          reportedUri = ChromiumDevToolsLocator.getReportedUri("ms:edgeOptions", caps);
+          if (reportedUri.isPresent()) {
+            caps = addCdpCapability(caps, reportedUri.get());
+          }
+        }
+
         return Optional.of(
-            new ProtocolConvertingSession(
-                tracer,
-                client,
-                new SessionId(response.getSessionId()),
-                service.getUrl(),
-                downstream,
-                upstream,
-                new ImmutableCapabilities((Map<?, ?>)response.getValue())) {
-              @Override
-              public void stop() {
-                service.stop();
-              }
-            });
+          new ProtocolConvertingSession(
+            tracer,
+            client,
+            new SessionId(response.getSessionId()),
+            service.getUrl(),
+            downstream,
+            upstream,
+            caps) {
+            @Override
+            public void stop() {
+              service.stop();
+            }
+          });
       } catch (Exception e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.UNKNOWN.withDescription(e.getMessage()));
         service.stop();
         return Optional.empty();
       }
     } catch (Exception e) {
       return Optional.empty();
     }
+  }
+
+  private Capabilities addCdpCapability(Capabilities caps, URI uri) {
+    Object raw = caps.getCapability("se:options");
+    if (!(raw instanceof Map)) {
+      return new PersistentCapabilities(caps).setCapability("se:options", ImmutableMap.of("cdp", uri));
+    }
+
+    //noinspection unchecked
+    Map<String, Object> current = new HashMap<>((Map<String, Object>) raw);
+    current.put("cdp", uri);
+    return new PersistentCapabilities(caps).setCapability("se:options", ImmutableMap.copyOf(current));
   }
 }

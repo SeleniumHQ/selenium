@@ -33,6 +33,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -43,7 +44,6 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -102,9 +102,29 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
-  public static final String BINARY = "firefox_binary";
-  public static final String PROFILE = "firefox_profile";
-  public static final String MARIONETTE = "marionette";
+  /**
+   * @deprecated Use {@link Capability#BINARY}
+   */
+  @Deprecated
+  public static final String BINARY = Capability.BINARY;
+
+  /**
+   * @deprecated Use {@link Capability#PROFILE}
+   */
+  @Deprecated
+  public static final String PROFILE = Capability.PROFILE;
+
+  /**
+   * @deprecated Use {@link Capability#MARIONETTE}
+   */
+  @Deprecated
+  public static final String MARIONETTE = Capability.MARIONETTE;
+
+  public static final class Capability {
+    public static final String BINARY = "firefox_binary";
+    public static final String PROFILE = "firefox_profile";
+    public static final String MARIONETTE = "marionette";
+  }
 
   private static class ExtraCommands {
     static String INSTALL_EXTENSION = "installExtension";
@@ -139,7 +159,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
    */
   @Deprecated
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(new FirefoxOptions(Objects.requireNonNull(desiredCapabilities, "No capabilities seen")));
+    this(new FirefoxOptions(Require.nonNull("Capabilities", desiredCapabilities)));
   }
 
   /**
@@ -148,7 +168,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   @Deprecated
   public FirefoxDriver(FirefoxDriverService service, Capabilities desiredCapabilities) {
     this(
-        Objects.requireNonNull(service, "No driver service provided"),
+        Require.nonNull("Driver service", service),
         new FirefoxOptions(desiredCapabilities));
   }
 
@@ -170,7 +190,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   }
 
   private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
-    Objects.requireNonNull(options, "No options to construct executor from");
+    Require.nonNull("Options to construct executor from", options);
 
     String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
     boolean isLegacy = (sysProperty != null && ! Boolean.parseBoolean(sysProperty))
@@ -208,7 +228,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     if (forceMarionette != null) {
       return !forceMarionette;
     }
-    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
+    Object marionette = desiredCapabilities.getCapability(Capability.MARIONETTE);
     return marionette instanceof Boolean && ! (Boolean) marionette;
   }
 
@@ -270,7 +290,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
     MutableCapabilities caps;
 
     if (isLegacy(capabilities)) {
-      final Set<String> toRemove = Sets.newHashSet(BINARY, PROFILE);
+      final Set<String> toRemove = Sets.newHashSet(Capability.BINARY, Capability.PROFILE);
       caps = new MutableCapabilities(
           Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
     } else {

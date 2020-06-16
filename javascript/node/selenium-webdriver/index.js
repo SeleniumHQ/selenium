@@ -26,7 +26,6 @@ const _http = require('./http');
 const by = require('./lib/by');
 const capabilities = require('./lib/capabilities');
 const chrome = require('./chrome');
-const command = require('./lib/command');
 const edge = require('./edge');
 const error = require('./lib/error');
 const firefox = require('./firefox');
@@ -224,7 +223,7 @@ class Builder {
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
-  
+
     /** @private {ie.ServiceBuilder} */
     this.ieService_ = null;
 
@@ -807,6 +806,7 @@ exports.Browser = capabilities.Browser;
 exports.Builder = Builder;
 exports.Button = input.Button;
 exports.By = by.By;
+exports.withTagName = by.withTagName;
 exports.Capabilities = capabilities.Capabilities;
 exports.Capability = capabilities.Capability;
 exports.Condition = webdriver.Condition;

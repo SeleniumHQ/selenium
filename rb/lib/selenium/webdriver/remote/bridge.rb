@@ -37,7 +37,7 @@ module Selenium
 
         def initialize(http_client: nil, url:)
           uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless %r{\/$}.match?(uri.path)
+          uri.path += '/' unless uri.path.end_with?('/')
 
           @http = http_client || Http::Default.new
           @http.server_url = uri

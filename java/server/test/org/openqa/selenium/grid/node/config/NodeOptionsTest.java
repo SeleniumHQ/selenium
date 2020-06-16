@@ -17,17 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-
-import com.google.common.collect.ImmutableMap;
-
+import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -45,14 +35,24 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 public class NodeOptionsTest {
 
@@ -63,11 +63,11 @@ public class NodeOptionsTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    tracer = OpenTelemetry.getTracerProvider().get("default");
+    tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     URI uri = new URI("http://localhost:1234");
-    builder = LocalNode.builder(tracer, bus, clientFactory, uri, null);
+    builder = LocalNode.builder(tracer, bus, uri, uri, null);
     builderSpy = spy(builder);
   }
 
@@ -76,19 +76,19 @@ public class NodeOptionsTest {
     assumeFalse("We don't have driver servers in PATH when we run unit tests",
                 Boolean.parseBoolean(System.getenv("TRAVIS")));
 
-    Config config = new MapConfig(ImmutableMap.of(
-        "node", ImmutableMap.of("detect-drivers", "true")));
+    Config config = new MapConfig(singletonMap(
+        "node", singletonMap("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
-    Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
+    Capabilities chrome = toPayload("chrome");
 
     verify(builderSpy, atLeastOnce()).add(
         argThat(caps -> caps.getBrowserName().equals(chrome.getBrowserName())),
         argThat(factory -> factory instanceof DriverServiceSessionFactory && factory.test(chrome)));
 
     LocalNode node = builder.build();
-    assertThat(node.isSupporting(chrome)).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "cheese"))).isFalse();
+    assertThat(node).is(supporting(chrome));
+    assertThat(node).isNot(supporting("cheese"));
   }
 
   @Test
@@ -97,16 +97,16 @@ public class NodeOptionsTest {
     assumeFalse("We don't have driver servers in PATH when we run unit tests",
                 Boolean.getBoolean("TRAVIS"));
 
-    Config config = new MapConfig(ImmutableMap.of(
-        "node", ImmutableMap.of("detect-drivers", "true")));
+    Config config = new MapConfig(singletonMap(
+        "node", singletonMap("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builder);
 
     LocalNode node = builder.build();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "firefox"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "internet explorer"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "MicrosoftEdge"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "safari"))).isFalse();
+    assertThat(node).is(supporting("chrome"));
+    assertThat(node).is(supporting("firefox"));
+    assertThat(node).is(supporting("internet explorer"));
+    assertThat(node).is(supporting("MicrosoftEdge"));
+    assertThat(node).isNot(supporting("safari"));
   }
 
   @Test
@@ -115,25 +115,25 @@ public class NodeOptionsTest {
     assumeFalse("We don't have driver servers in PATH when we run unit tests",
                 Boolean.getBoolean("TRAVIS"));
 
-    Config config = new MapConfig(ImmutableMap.of(
-        "node", ImmutableMap.of("detect-drivers", "true")));
+    Config config = new MapConfig(singletonMap(
+        "node", singletonMap("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builder);
 
     LocalNode node = builder.build();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "firefox"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "internet explorer"))).isFalse();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "MicrosoftEdge"))).isFalse();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "safari"))).isTrue();
+    assertThat(node).is(supporting("chrome"));
+    assertThat(node).is(supporting("firefox"));
+    assertThat(node).isNot(supporting("internet explorer"));
+    assertThat(node).is(supporting("MicrosoftEdge"));
+    assertThat(node).is(supporting("safari"));
   }
 
   @Test
   public void canAddMoreSessionFactoriesAfterDriverDetection() throws URISyntaxException {
-    Config config = new MapConfig(ImmutableMap.of(
-        "node", ImmutableMap.of("detect-drivers", "true")));
+    Config config = new MapConfig(singletonMap(
+        "node", singletonMap("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builder);
 
-    Capabilities cheese = new ImmutableCapabilities("browserName", "cheese");
+    Capabilities cheese = toPayload("cheese");
 
     URI uri = new URI("http://localhost:1234");
     class Handler extends Session implements HttpHandler {
@@ -151,14 +151,14 @@ public class NodeOptionsTest {
     builder.add(cheese, new TestSessionFactory((id, c) -> new Handler(c)));
 
     LocalNode node = builder.build();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
-    assertThat(node.isSupporting(cheese)).isTrue();
+    assertThat(node).is(supporting("chrome"));
+    assertThat(node).is(supporting(cheese));
   }
 
   @Test
   public void canConfigureNodeWithoutDriverDetection() {
-    Config config = new MapConfig(ImmutableMap.of(
-        "node", ImmutableMap.of("detect-drivers", "false")));
+    Config config = new MapConfig(singletonMap(
+        "node", singletonMap("detect-drivers", "false")));
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
     verifyNoInteractions(builderSpy);
@@ -166,9 +166,21 @@ public class NodeOptionsTest {
 
   @Test
   public void doNotDetectDriversByDefault() {
-    Config config = new MapConfig(ImmutableMap.of());
+    Config config = new MapConfig(emptyMap());
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
     verifyNoInteractions(builderSpy);
+  }
+
+  private Capabilities toPayload(String browserName) {
+    return new ImmutableCapabilities("browserName", browserName);
+  }
+
+  private Condition<LocalNode> supporting(Capabilities caps) {
+    return new Condition<>(node -> node.isSupporting(caps), "supporting " + caps);
+  }
+
+  private Condition<LocalNode> supporting(String browserName) {
+    return new Condition<>(node -> node.isSupporting(toPayload(browserName)), "supporting " + browserName);
   }
 }

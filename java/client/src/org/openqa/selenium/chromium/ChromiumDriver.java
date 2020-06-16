@@ -32,6 +32,7 @@ import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
@@ -43,7 +44,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -144,8 +144,8 @@ public class ChromiumDriver extends RemoteWebDriver
    * devtools protocol domains/commands</a>.
    */
   public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
-    Objects.requireNonNull(commandName, "Command name must be set.");
-    Objects.requireNonNull(parameters, "Parameters for command must be set.");
+    Require.nonNull("Command name", commandName);
+    Require.nonNull("Parameters", parameters);
 
     @SuppressWarnings("unchecked")
     Map<String, Object> toReturn = (Map<String, Object>) getExecuteMethod().execute(

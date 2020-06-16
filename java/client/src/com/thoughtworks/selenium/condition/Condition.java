@@ -24,7 +24,7 @@ package com.thoughtworks.selenium.condition;
  * <ul>
  * <li>a message (purely used for displaying purposes)
  * <li>an implementation of
- * {@link Condition isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)}
+ * {@link Condition#isTrue(ConditionRunner.Context)}
  * </ul>
  */
 public abstract class Condition {

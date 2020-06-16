@@ -1,4 +1,3 @@
-
 _GatheredModuleInfo = provider(
     fields = {
         "name": "Name of the module, may be `None`.",
@@ -13,7 +12,7 @@ JavaModuleInfo = provider(
     fields = {
         "name": "Name of the module.",
         "module_path": "depset of jars to include on the module path",
-    }
+    },
 )
 
 # In order to construct the module path, we do this:
@@ -27,7 +26,6 @@ _ATTR_ASPECTS = [
     "runtime_deps",
 ]
 
-
 def _infer_name(tags):
     names = [tag[len("maven_coordinates="):] for tag in tags if tag.startswith("maven_coordinates=")]
     if len(names) == 0:
@@ -36,14 +34,14 @@ def _infer_name(tags):
         fail("Only one set of maven coordinates may be specified")
 
     exploded = names[0].split(":")
+
     # We want the group id and artifact id. If the artifact id begins
     # with the last segment of the group id, then remove it.
     groups = exploded[0].split(".")
     final = groups[-1] + "-"
     if exploded[1].startswith(final):
-      return (exploded[0] + "." + exploded[1][len(final):]).replace("-", "_")
+        return (exploded[0] + "." + exploded[1][len(final):]).replace("-", "_")
     return (exploded[0] + "." + exploded[1]).replace("-", "_")
-
 
 def _java_module_aspect_impl(target, ctx):
     name = _infer_name(ctx.rule.attr.tags)
@@ -80,7 +78,7 @@ def _java_module_aspect_impl(target, ctx):
             jars = jars,
             source_jars = source_jars,
             java_info = java_info,
-        )
+        ),
     ]
 
 _java_module_aspect = aspect(
@@ -90,13 +88,12 @@ _java_module_aspect = aspect(
         [JavaInfo],
     ],
     provides = [
-        _GatheredModuleInfo
+        _GatheredModuleInfo,
     ],
     host_fragments = [
         "java",
-    ]
+    ],
 )
-
 
 def _java_module_impl(ctx):
     name = _infer_name(ctx.attr.tags)
@@ -113,7 +110,7 @@ def _java_module_impl(ctx):
         executable = ctx.executable._singlejar,
         outputs = [raw_merged_jar],
         inputs = included_jars,
-        arguments = [args]
+        arguments = [args],
     )
 
     # Now that we have a single jar, derive the module info.
@@ -176,14 +173,14 @@ def _java_module_impl(ctx):
         compile_jar = compile_jar,
         deps = [info.java_info for info in all_infos],
         exports = [ex[JavaInfo] for ex in ctx.attr.exports],
-        runtime_deps = [dep[JavaInfo] for dep in ctx.attr.deps]
+        runtime_deps = [dep[JavaInfo] for dep in ctx.attr.deps],
     )
 
     return [
         DefaultInfo(files = depset([module_jar, src_jar])),
         JavaModuleInfo(
             name = name,
-            module_path = depset(direct = [module_jar], transitive = [info.module_path for info in all_infos])
+            module_path = depset(direct = [module_jar], transitive = [info.module_path for info in all_infos]),
         ),
         java_info,
     ]
@@ -211,7 +208,7 @@ java_module = rule(
         ),
         "uses": attr.string_list(
             doc = "List of classnames that the module uses",
-            default = []
+            default = [],
         ),
         "_javabase": attr.label(
             cfg = "host",
@@ -236,6 +233,6 @@ java_module = rule(
             allow_files = True,
             executable = True,
             cfg = "host",
-        )
+        ),
     },
 )

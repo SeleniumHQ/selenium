@@ -17,18 +17,19 @@
 
 package org.openqa.selenium.chrome;
 
-import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import static java.util.Collections.unmodifiableList;
 
+import com.google.auto.service.AutoService;
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Duration;
 
 /**
  * Manages the life and death of a ChromeDriver server.
@@ -45,7 +46,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines the location of the log that will be written by
    * the {@link #createDefaultService() default service}.
    */
-  public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
+  public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
    * Boolean system property that defines whether chromedriver should append to existing log file.
@@ -71,7 +72,7 @@ public class ChromeDriverService extends DriverService {
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
-  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
+  public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
       "webdriver.chrome.whitelistedIps";
 
   /**
@@ -84,8 +85,8 @@ public class ChromeDriverService extends DriverService {
   public ChromeDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
@@ -101,8 +102,8 @@ public class ChromeDriverService extends DriverService {
       File executable,
       int port,
       Duration timeout,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -119,6 +120,20 @@ public class ChromeDriverService extends DriverService {
   }
 
   /**
+   * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
+   * this configuration, the service will use the chromedriver executable identified by the
+   * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * be configured to use a free port on the current system.
+   *
+   * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
+   */
+  public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
+    return new Builder()
+      .withLogLevel(options.getLogLevel())
+      .build();
+  }
+
+  /**
    * Builder used to configure new {@link ChromeDriverService} instances.
    */
   @AutoService(DriverService.Builder.class)
@@ -129,6 +144,7 @@ public class ChromeDriverService extends DriverService {
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
+    private ChromeDriverLogLevel logLevel = null;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -168,6 +184,17 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
+     * Configures the driver server verbosity.
+     *
+     * @param logLevel {@link ChromeDriverLogLevel} for desired log level output.
+     * @return A self reference.
+     */
+    public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
+      this.logLevel = logLevel;
+      return this;
+    }
+
+    /**
      * Configures the driver server for silent output.
      *
      * @param silent True for silent output, false otherwise.
@@ -199,7 +226,7 @@ public class ChromeDriverService extends DriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
+    protected List<String> createArgs() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
         if (logFilePath != null) {
@@ -207,25 +234,34 @@ public class ChromeDriverService extends DriverService {
         }
       }
 
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
-      if (getLogFile() != null) {
-        argsBuilder.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
-      }
-      if (appendLog) {
-        argsBuilder.add("--append-log");
+      if (logLevel != null) {
+        withLogLevel(logLevel);
+        withVerbose(false);
       }
       if (verbose) {
-        argsBuilder.add("--verbose");
-      }
-      if (silent) {
-        argsBuilder.add("--silent");
-      }
-      if (whitelistedIps != null) {
-        argsBuilder.add(String.format("--whitelisted-ips=%s", whitelistedIps));
+        withLogLevel(ChromeDriverLogLevel.ALL);
       }
 
-      return argsBuilder.build();
+      List<String> args = new ArrayList<>();
+
+      args.add(String.format("--port=%d", getPort()));
+      if (getLogFile() != null) {
+        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+      }
+      if (appendLog) {
+        args.add("--append-log");
+      }
+      if (logLevel != null) {
+        args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
+      }
+      if (silent) {
+        args.add("--silent");
+      }
+      if (whitelistedIps != null) {
+        args.add(String.format("--whitelisted-ips=%s", whitelistedIps));
+      }
+
+      return unmodifiableList(args);
     }
 
     @Override
@@ -233,8 +269,8 @@ public class ChromeDriverService extends DriverService {
         File exe,
         int port,
         Duration timeout,
-        ImmutableList<String> args,
-        ImmutableMap<String, String> environment) {
+        List<String> args,
+        Map<String, String> environment) {
       try {
         return new ChromeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

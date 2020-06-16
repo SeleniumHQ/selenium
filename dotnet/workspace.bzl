@@ -37,18 +37,6 @@ def selenium_register_dotnet():
 
     import_nuget_package(
         name = "nunit",
-        file = "third_party/dotnet/nuget/packages/nunit.3.12.0.nupkg"
+        file = "third_party/dotnet/nuget/packages/nunit.3.12.0.nupkg",
         #sha256 = "056eec5d3d8b2a93f7ca5b026d34d9d5fe8c835b11e322faf1a2551da25c4e70",
     )
-
-    #import_nuget_package(
-    #    name = "system.threading.tasks.extensions",
-    #    package = "system.threading.tasks.extensions",
-    #    version = "4.5.1",
-    #)
-
-    #import_nuget_package(
-    #    name = "nunit",
-    #    package = "nunit",
-    #    version = "3.12.0",
-    #)

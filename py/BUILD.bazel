@@ -31,10 +31,10 @@ py_library(
     name = "selenium",
     srcs = glob(["selenium/**/*.py"]),
     data = [
+        ":find-elements",
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
-        ":find-elements",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -50,8 +50,8 @@ py_package(
         "py.selenium",
         "py.selenium.common",
         "py.selenium.webdriver",
-        "py.selenium.webdriver.chromium",
         "py.selenium.webdriver.chrome",
+        "py.selenium.webdriver.chromium",
         "py.selenium.webdriver.edge",
         "py.selenium.webdriver.firefox",
         "py.selenium.webdriver.remote",
@@ -61,16 +61,19 @@ py_package(
 )
 
 py_wheel(
-    name = 'selenium-wheel',
-    distribution = 'selenium',
-    python_tag = ["py2", "py3"],
-    version = "4.0.0.a5",
-    strip_path_prefixes = [
-        "py",
+    name = "selenium-wheel",
+    distribution = "selenium",
+    python_tag = [
+        "py2",
+        "py3",
     ],
     requires = [
         "urllib3[secure]",
     ],
+    strip_path_prefixes = [
+        "py",
+    ],
+    version = "4.0.0.a6",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium-pkg",
@@ -240,11 +243,11 @@ py_test_suite(
         "--instafail",
         "--driver=Remote",
     ],
-    tags = [
-        "no-sandbox",
-    ],
     data = [
         "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    ],
+    tags = [
+        "no-sandbox",
     ],
     deps = [
         ":init-tree",
@@ -281,15 +284,16 @@ py_test_suite(
     name = "test-safari",
     size = "large",
     srcs = glob([
-        #        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/safari/**/*.py",
-        #        "test/selenium/webdriver/support/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
         "--instafail",
         "--driver=Safari",
     ],
     tags = [
+        "exclusive",
         "no-sandbox",
     ],
     deps = [

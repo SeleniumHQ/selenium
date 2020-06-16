@@ -20,24 +20,37 @@ package org.openqa.selenium.grid.distributor.local;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.*;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeRejectedEvent;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -93,22 +106,31 @@ public class LocalDistributor extends Distributor {
       SessionMap sessions,
       String registrationSecret) {
     super(tracer, clientFactory);
-    this.tracer = Objects.requireNonNull(tracer);
-    this.bus = Objects.requireNonNull(bus);
-    this.clientFactory = Objects.requireNonNull(clientFactory);
-    this.sessions = Objects.requireNonNull(sessions);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.bus = Require.nonNull("Event bus", bus);
+    this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.sessions = Require.nonNull("Session map", sessions);
     this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
   }
 
+  public static Distributor create(Config config) {
+    Tracer tracer = new LoggingOptions(config).getTracer();
+    EventBus bus = new EventBusOptions(config).getEventBus();
+    HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
+    SessionMap sessions = new SessionMapOptions(config).getSessionMap();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+
+    return new LocalDistributor(tracer, bus, clientFactory, sessions, serverOptions.getRegistrationSecret());
+  }
+
   @Override
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
-    Span span = newSpanAsChildOf(tracer, request, "distributor.new_session").startSpan();
 
+    Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
     try (
-      Scope scope = tracer.withSpan(span);
       Reader reader = reader(request);
       NewSessionPayload payload = NewSessionPayload.create(reader)) {
       Objects.requireNonNull(payload, "Requests to process must be set.");
@@ -123,7 +145,7 @@ public class LocalDistributor extends Distributor {
       CreateSessionRequest firstRequest = new CreateSessionRequest(
           payload.getDownstreamDialects(),
           iterator.next(),
-          ImmutableMap.of());
+          ImmutableMap.of("span", span));
 
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
@@ -169,11 +191,16 @@ public class LocalDistributor extends Distributor {
       span.setAttribute("session.url", sessionResponse.getSession().getUri().toString());
 
       return sessionResponse;
+    } catch (SessionNotCreatedException e) {
+      span.setAttribute("error", true);
+      span.setStatus(Status.ABORTED.withDescription(e.getMessage()));
+      throw e;
     } catch (IOException e) {
       span.setAttribute("error", true);
+      span.setStatus(Status.UNKNOWN.withDescription(e.getMessage()));
       throw new SessionNotCreatedException(e.getMessage(), e);
     } finally {
-      span.end();
+      span.close();
     }
   }
 
@@ -272,7 +299,7 @@ public class LocalDistributor extends Distributor {
   }
 
   private void refresh(NodeStatus status) {
-    Objects.requireNonNull(status);
+    Require.nonNull("Node status", status);
 
     LOG.fine("Refreshing: " + status.getUri());
 
@@ -287,16 +314,26 @@ public class LocalDistributor extends Distributor {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<Host> existing = hosts.stream()
+      Optional<Host> existingByNodeId = hosts.stream()
           .filter(host -> host.getId().equals(status.getNodeId()))
           .findFirst();
 
-      if (existing.isPresent()) {
+      if (existingByNodeId.isPresent()) {
         // Modify the state
         LOG.fine("Modifying existing state");
-        existing.get().update(status);
+        existingByNodeId.get().update(status);
       } else {
-        // No match made. Add a new host.
+        Optional<Host> existingByUri = hosts.stream()
+          .filter(host -> host.asSummary().getUri().equals(status.getUri()))
+          .findFirst();
+        // There is a URI match, probably means a node was restarted. We need to remove
+        // the previous one so we add the new request.
+        existingByUri.ifPresent(host -> {
+          LOG.fine("Removing old node, a new one is registering with the same URI");
+          remove(host.getId());
+        });
+
+        // Add a new host.
         LOG.info("Creating a new remote node for " + status.getUri());
         Node node = new RemoteNode(
             tracer,
@@ -376,7 +413,6 @@ public class LocalDistributor extends Distributor {
     }
   }
 
-  @VisibleForTesting
   @Beta
   public void refresh() {
     Lock writeLock = lock.writeLock();

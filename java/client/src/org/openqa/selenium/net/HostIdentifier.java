@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.net;
 
+import org.openqa.selenium.Platform;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -25,21 +27,18 @@ import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 public class HostIdentifier {
-  private final static String HOST_NAME;
-  private final static String HOST_ADDRESS;
+  private static final String HOST_NAME;
+  private static final String HOST_ADDRESS;
 
   static {
     // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows
     // and Linux this is apparently pretty fast, so we don't get random hangs. On OS X it's
-    // amazingly slow. That's less than ideal. Figure things out and cache. We can't rely on
-    // Platform since that depends on this class, but fortunately there's only one place we have to
-    // worry about slow lookups.
-    String current = System.getProperty("os.name");
+    // amazingly slow. That's less than ideal. Figure things out and cache.
     String host = System.getenv("HOSTNAME");  // Most OSs
     if (host == null) {
       host = System.getenv("COMPUTERNAME");  // Windows
     }
-    if (host == null && "Mac OS X".equals(current)) {
+    if (host == null && Platform.getCurrent().is(Platform.MAC)) {
       try {
         Process process = Runtime.getRuntime().exec("hostname");
 
@@ -74,7 +73,7 @@ public class HostIdentifier {
 
     String address = null;
     // Now for the IP address. We're going to do silly shenanigans on OS X only.
-    if ("Mac OS X".equals(current)) {
+    if (Platform.getCurrent().is(Platform.MAC)) {
       try {
         NetworkInterface en0 = NetworkInterface.getByName("en0");
         Enumeration<InetAddress> addresses = en0.getInetAddresses();
