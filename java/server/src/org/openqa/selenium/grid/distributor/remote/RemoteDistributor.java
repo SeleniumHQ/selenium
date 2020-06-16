@@ -35,6 +35,7 @@ import java.net.URL;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
