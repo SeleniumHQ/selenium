@@ -87,6 +87,19 @@ describe('by', function() {
     });
   });
 
+  describe('RelativeBy', function() {
+    it('marshalls the RelativeBy object', function() {
+      let relative = by.withTagName("p").above(by.By.name("foobar"));
+      let expected = {
+        'relative': {
+          'root': "p",
+          'filters': [{ "kind": "near", "args": [{"name":"foobar"}] }],
+        }
+      }
+      assert.deepEqual(relative.marshall(), expected);
+    });
+  });
+
   describe('checkedLocator', function() {
     it('accepts a By instance', function() {
       let original = by.By.name('foo');

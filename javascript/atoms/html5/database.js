@@ -40,9 +40,9 @@ goog.require('bot.ErrorCode');
  *     defaults to the databaseName.
  * @param {number=} opt_size The estimated initial quota size of the database;
  *     default value is 5MB.
- * @param {Window=} opt_window The window associated with the database;
+ * @param {!Window=} opt_window The window associated with the database;
  *     defaults to the main window.
- * @return {Database} The object to access the web database.
+ * @return {!Database} The object to access the web database.
  *
  */
 bot.storage.database.openOrCreate = function(databaseName, opt_version,
@@ -51,7 +51,6 @@ bot.storage.database.openOrCreate = function(databaseName, opt_version,
   var displayName = opt_displayName || (databaseName + 'name');
   var size = opt_size || 5 * 1024 * 1024;
   var win = opt_window || bot.getWindow();
-  var db;
 
   return win.openDatabase(databaseName, version, displayName, size);
 };
@@ -62,11 +61,11 @@ bot.storage.database.openOrCreate = function(databaseName, opt_version,
  *
  * @param {string} databaseName The name of the database.
  * @param {string} query The SQL statement.
- * @param {Array.<*>} args Arguments needed for the SQL statement.
+ * @param {!Array.<*>} args Arguments needed for the SQL statement.
  * @param {!function(!SQLTransaction, !bot.storage.database.ResultSet)}
  *     queryResultCallback Callback function to be invoked on successful query
  *     statement execution.
- * @param {!function(SQLError)} txErrorCallback
+ * @param {!function(!SQLError)} txErrorCallback
  *     Callback function to be invoked on transaction (commit) failure.
  * @param {!function()=} opt_txSuccessCallback
  *     Callback function to be invoked on successful transaction execution.

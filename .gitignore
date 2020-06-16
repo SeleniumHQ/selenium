@@ -2,12 +2,8 @@ projectFilesBackup/
 *.iws
 .DS_Store
 .svn
-.buckd
-.buckconfig.local
-.nobuckcheck
 .credentials.dat
 .ijwb
-buck-out
 mockpiframe.log
 mockpiframe.log.lck
 junitvmwatcher*.properties
@@ -21,6 +17,7 @@ java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
 javascript/deps.js
 javascript/node/selenium-webdriver/node_modules/
+javascript/node/selenium-webdriver/lib/atoms/find-elements.js
 javascript/node/selenium-webdriver/lib/atoms/get-attribute.js
 javascript/node/selenium-webdriver/lib/atoms/is-displayed.js
 javascript/safari-driver/node_modules/
@@ -51,6 +48,7 @@ maven-metadata-.xml
 maven-metadata-.xml.sha1
 node_modules/
 resolver-status.properties
+java/build/
 java/client/build/
 java/client/log.txt
 java/client/iedriver.log
@@ -63,6 +61,7 @@ py/selenium/webdriver/firefox/amd64/
 py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/webdriver_prefs.json
 py/selenium/webdriver/firefox/x86/
+py/selenium/webdriver/remote/findElements.js
 py/selenium/webdriver/remote/getAttribute.js
 py/selenium/webdriver/remote/isDisplayed.js
 py/docs/build/
@@ -114,3 +113,4 @@ bazel-selenium
 bazel-testlogs
 
 /.vscode/
+/.scannerwork/

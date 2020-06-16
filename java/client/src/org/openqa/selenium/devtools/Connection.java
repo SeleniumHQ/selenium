@@ -17,15 +17,11 @@
 
 package org.openqa.selenium.devtools;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-
-import org.openqa.selenium.devtools.target.model.SessionId;
+import org.openqa.selenium.devtools.target.model.SessionID;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -37,36 +33,81 @@ import java.io.StringReader;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class Connection implements Closeable {
 
+  private static final Logger LOG = Logger.getLogger(Connection.class.getName());
   private static final Json JSON = new Json();
+  private static final Executor EXECUTOR = Executors.newCachedThreadPool(r -> {
+    Thread thread = new Thread(r, "CDP Connection");
+    thread.setDaemon(true);
+    return thread;
+  });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
   private final Map<Long, Consumer<JsonInput>> methodCallbacks = new LinkedHashMap<>();
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
 
   public Connection(HttpClient client, String url) {
-    Objects.requireNonNull(client, "HTTP client must be set.");
-    Objects.requireNonNull(url, "URL to connect to must be set.");
+    Require.nonNull("HTTP client", client);
+    Require.nonNull("URL to connect to", url);
 
     socket = client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
-  public <X> CompletableFuture<X> send(SessionId sessionId, Command<X> command) {
+  private static class NamedConsumer<X> implements Consumer<X> {
+
+    private final String name;
+    private final Consumer<X> delegate;
+
+    private NamedConsumer(String name, Consumer<X> delegate) {
+      this.name = name;
+      this.delegate = delegate;
+    }
+
+    public static <X> Consumer<X> of(String name, Consumer<X> delegate) {
+      return new NamedConsumer<>(name, delegate);
+    }
+
+    @Override
+    public void accept(X x) {
+      delegate.accept(x);
+    }
+
+    @Override
+    public String toString() {
+      return "Consumer for " + name;
+    }
+  }
+
+  public <X> CompletableFuture<X> send(SessionID sessionId, Command<X> command) {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
-    methodCallbacks.put(id, input -> {
-      X value = command.getMapper().apply(input);
-      result.complete(value);
-    });
+    if (command.getSendsResponse()) {
+      methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), input -> {
+        try {
+          X value = command.getMapper().apply(input);
+          result.complete(value);
+        } catch (Throwable e) {
+          LOG.log(Level.WARNING, String.format("Unable to map result for %s", command.getMethod()), e);
+          result.completeExceptionally(e);
+        }
+      }));
+    }
 
     ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
     serialized.put("id", id);
@@ -76,14 +117,20 @@ public class Connection implements Closeable {
       serialized.put("sessionId", sessionId);
     }
 
+    LOG.fine(() -> String.format("-> %s", JSON.toJson(serialized.build())));
     socket.sendText(JSON.toJson(serialized.build()));
+
+    if (!command.getSendsResponse() ) {
+      result.complete(null);
+    }
 
     return result;
   }
 
-  public <X> X sendAndWait(SessionId sessionId, Command<X> command, Duration timeout) {
+  public <X> X sendAndWait(SessionID sessionId, Command<X> command, Duration timeout) {
     try {
-      return send(sessionId, command).get(timeout.toMillis(), MILLISECONDS);
+      CompletableFuture<X> future = send(sessionId, command);
+      return future.get(timeout.toMillis(), MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Thread has been interrupted", e);
@@ -99,10 +146,18 @@ public class Connection implements Closeable {
   }
 
   public <X> void addListener(Event<X> event, Consumer<X> handler) {
-    Objects.requireNonNull(event);
-    Objects.requireNonNull(handler);
+    Require.nonNull("Event to listen for", event);
+    Require.nonNull("Handler to call", handler);
 
-    eventCallbacks.put(event, handler);
+    synchronized (eventCallbacks) {
+      eventCallbacks.put(event, handler);
+    }
+  }
+
+  public void clearListeners() {
+    synchronized (eventCallbacks) {
+      eventCallbacks.clear();
+    }
   }
 
   @Override
@@ -110,79 +165,90 @@ public class Connection implements Closeable {
     socket.close();
   }
 
-  private class Listener extends WebSocket.Listener {
+  private class Listener implements WebSocket.Listener {
 
     @Override
     public void onText(CharSequence data) {
-      // It's kind of gross to decode the data twice, but this lets us get started on something
-      // that feels nice to users.
-      // TODO: decode once, and once only
-
-      String asString = String.valueOf(data);
-
-      Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
-      if (raw.get("id") instanceof Number && raw.get("result") != null) {
-        Consumer<JsonInput> consumer = methodCallbacks.remove(((Number) raw.get("id")).longValue());
-        if (consumer == null) {
-          return;
+      EXECUTOR.execute(() -> {
+        try {
+          handle(data);
+        } catch (Throwable t) {
+          LOG.log(Level.WARNING, "Unable to process: " + data, t);
         }
+      });
+    }
+  }
 
-        try (StringReader reader = new StringReader(asString);
-            JsonInput input = JSON.newInput(reader)) {
-          input.beginObject();
-          while (input.hasNext()) {
-            switch (input.nextName()) {
-              case "result":
-                consumer.accept(input);
-                break;
+  private void handle(CharSequence data) {
+    // It's kind of gross to decode the data twice, but this lets us get started on something
+    // that feels nice to users.
+    // TODO: decode once, and once only
 
-              default:
-                input.skipValue();
-            }
+    String asString = String.valueOf(data);
+    LOG.fine(() -> String.format("<- %s", asString));
+
+    Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
+    if (raw.get("id") instanceof Number && raw.get("result") != null) {
+      Consumer<JsonInput> consumer = methodCallbacks.remove(((Number) raw.get("id")).longValue());
+      if (consumer == null) {
+        return;
+      }
+
+      try (StringReader reader = new StringReader(asString);
+           JsonInput input = JSON.newInput(reader)) {
+        input.beginObject();
+        while (input.hasNext()) {
+          switch (input.nextName()) {
+            case "result":
+              consumer.accept(input);
+              break;
+
+            default:
+              input.skipValue();
           }
-          input.endObject();
         }
-      } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
-        System.out.println("Seen: " + raw);
-
+        input.endObject();
+      }
+    } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
+      synchronized (eventCallbacks) {
         // TODO: Also only decode once.
         eventCallbacks.keySet().stream()
-            .filter(event -> raw.get("method").equals(event.getMethod()))
-            .forEach(event -> {
-              // TODO: This is grossly inefficient. I apologise, and we should fix this.
-              try (StringReader reader = new StringReader(asString);
-                   JsonInput input = JSON.newInput(reader)) {
-                Object value = null;
-                input.beginObject();
-                while (input.hasNext()) {
-                  switch (input.nextName()) {
-                    case "params":
-                      value = event.getMapper().apply(input);
-                      break;
+          .filter(event -> raw.get("method").equals(event.getMethod()))
+          .forEach(event -> {
+            // TODO: This is grossly inefficient. I apologise, and we should fix this.
+            try (StringReader reader = new StringReader(asString);
+                 JsonInput input = JSON.newInput(reader)) {
+              Object value = null;
+              input.beginObject();
+              while (input.hasNext()) {
+                switch (input.nextName()) {
+                  case "params":
+                    value = event.getMapper().apply(input);
+                    break;
 
-                    default:
-                      input.skipValue();
-                      break;
-                  }
-                }
-                input.endObject();
-
-                if (value == null) {
-                  // Do nothing.
-                  return;
-                }
-
-                final Object finalValue = value;
-
-                for (Consumer<?> action : eventCallbacks.get(event)) {
-                  @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
-                  obj.accept(finalValue);
+                  default:
+                    input.skipValue();
+                    break;
                 }
               }
-            });
-      } else {
-        System.out.println("Unhandled type: " + data);
+              input.endObject();
+
+              if (value == null) {
+                // Do nothing.
+                return;
+              }
+
+              final Object finalValue = value;
+
+              for (Consumer<?> action : eventCallbacks.get(event)) {
+                @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
+                obj.accept(finalValue);
+              }
+            }
+          });
       }
+    } else {
+      LOG.warning("Unhandled type: " + data);
     }
   }
 }

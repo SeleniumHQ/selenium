@@ -27,6 +27,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
 import org.openqa.selenium.interactions.internal.MouseAction.Button;
+import org.openqa.selenium.internal.Require;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -34,7 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
 import java.util.logging.Logger;
@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  */
 public class Actions {
 
-  private final static Logger LOG = Logger.getLogger(Actions.class.getName());
+  private static final Logger LOG = Logger.getLogger(Actions.class.getName());
   private final WebDriver driver;
 
   // W3C
@@ -62,7 +62,7 @@ public class Actions {
   protected CompositeAction action = new CompositeAction();
 
   public Actions(WebDriver driver) {
-    this.driver = Objects.requireNonNull(driver);
+    this.driver = Require.nonNull("Driver", driver);
 
     if (driver instanceof HasInputDevices) {
       HasInputDevices deviceOwner = (HasInputDevices) driver;
@@ -351,7 +351,7 @@ public class Actions {
 
   /**
    * Moves the mouse to the middle of the element. The element is scrolled into view and its
-   * location is calculated using getBoundingClientRect.
+   * location is calculated using getClientRects.
    * @param target element to move to.
    * @return A self reference.
    */
@@ -364,12 +364,12 @@ public class Actions {
   }
 
   /**
-   * Moves the mouse to an offset from the top-left corner of the element.
-   * The element is scrolled into view and its location is calculated using getBoundingClientRect.
+   * Moves the mouse to an offset from the center of the element.
+   * The element is scrolled into view and its location is calculated using getClientRects.
    * @param target element to move to.
-   * @param xOffset Offset from the top-left corner. A negative value means coordinates left from
+   * @param xOffset Offset from the center. A negative value means coordinates left from
    * the element.
-   * @param yOffset Offset from the top-left corner. A negative value means coordinates above
+   * @param yOffset Offset from the center. A negative value means coordinates above
    * the element.
    * @return A self reference.
    */
@@ -495,7 +495,7 @@ public class Actions {
   }
 
   public Actions pause(Duration duration) {
-    Objects.requireNonNull(duration, "Duration of pause not set");
+    Require.nonNegative("Duration of pause", duration);
     if (isBuildingActions()) {
       action.addAction(new PauseAction(duration.toMillis()));
     }
@@ -550,7 +550,7 @@ public class Actions {
 
   /**
    * Generates a composite action containing all actions so far, ready to be performed (and
-   * resets the internal builder state, so subsequent calls to {@link #build()} will contain fresh
+   * resets the internal builder state, so subsequent calls to this method will contain fresh
    * sequences).
    *
    * @return the composite action

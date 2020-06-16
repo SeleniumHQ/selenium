@@ -113,7 +113,7 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldBeAbleToClearUrlInput()
         {
-            ShouldBeAbleToClearInput(By.Name("url_input"), "http://seleniumhq.org/");
+            ShouldBeAbleToClearInput(By.Name("url_input"), "https://selenium.dev/");
         }
 
         [Test]

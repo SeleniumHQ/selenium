@@ -17,28 +17,37 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import java.io.Closeable;
-import java.util.function.BiConsumer;
+public interface Span extends AutoCloseable, TraceContext {
 
-public interface Span extends Closeable {
+  Span setName(String name);
 
-  /**
-   * Allows subclasses to indicate that this is the currently active span
-   */
-  Span activate();
+  Span setAttribute(String key, boolean value);
+  Span setAttribute(String key, Number value);
+  Span setAttribute(String key, String value);
 
-  /**
-   * Add a piece of metadata to the span, which allows high cardinality data to
-   * be added to the span. This data will not be propagated to other spans.
-   */
-  Span addTag(String key, Object value);
-
-  Span addTag(String key, boolean value);
-
-  Span addTag(String key, Number value);
-
-  void inject(BiConsumer<String, String> forEachField);
+  Span setStatus(Status status);
 
   @Override
   void close();
+
+  enum Kind {
+    CLIENT("client"),
+    SERVER("server"),
+
+    PRODUCER("producer"),
+    CONSUMER("consumer"),
+    ;
+
+    // The nice name is the name expected in an OT trace.
+    private final String niceName;
+
+    private Kind(String niceName) {
+      this.niceName = niceName;
+    }
+
+    @Override
+    public String toString() {
+      return niceName;
+    }
+  }
 }

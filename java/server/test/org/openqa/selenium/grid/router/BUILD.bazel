@@ -1,16 +1,45 @@
-load("//java:rules.bzl", "java_test_suite")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
+
+LARGE_TESTS = [
+    "DistributedCdpTest.java",
+]
+
+java_selenium_test_suite(
+    name = "large-tests",
+    size = "large",
+    srcs = LARGE_TESTS,
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/server/src/org/openqa/selenium/grid",
+        "//java/server/src/org/openqa/selenium/grid/commands",
+        "//java/server/src/org/openqa/selenium/grid/distributor/httpd",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)
 
 java_test_suite(
-    name = "MediumTests",
+    name = "medium-tests",
     size = "medium",
-    srcs = glob(["*Test.java"]),
+    srcs = glob(
+        ["*Test.java"],
+        exclude = LARGE_TESTS,
+    ),
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
-        "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/events/local",
         "//java/server/src/org/openqa/selenium/events/zeromq",
@@ -28,10 +57,13 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
         "//java/server/src/org/openqa/selenium/grid/web",
+        "//java/server/src/org/openqa/selenium/jetty/server",
+        "//java/server/src/org/openqa/selenium/netty/server",
         "//java/server/test/org/openqa/selenium/grid/testing",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/zeromq:jeromq",
+        artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.zeromq:jeromq"),
     ],
 )

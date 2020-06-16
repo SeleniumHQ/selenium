@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.devtools;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.openqa.selenium.devtools.profiler.Profiler;
+import org.openqa.selenium.devtools.profiler.model.Profile;
+import org.openqa.selenium.devtools.profiler.model.ProfileNode;
+import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
+import org.openqa.selenium.testing.Ignore;
+
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.openqa.selenium.devtools.profiler.Profiler.consoleProfileFinished;
@@ -31,30 +42,10 @@ import static org.openqa.selenium.devtools.profiler.Profiler.startTypeProfile;
 import static org.openqa.selenium.devtools.profiler.Profiler.stop;
 import static org.openqa.selenium.devtools.profiler.Profiler.stopTypeProfile;
 import static org.openqa.selenium.devtools.profiler.Profiler.takePreciseCoverage;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.selenium.devtools.profiler.model.Profile;
-import org.openqa.selenium.devtools.profiler.model.ProfileNode;
-import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
-
-import java.util.List;
-import java.util.Optional;
-
-
+@Ignore(FIREFOX)
 public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
-
-
-
-  @Test
-  public void aSimpleStartStopAndGetProfilerTest() {
-    devTools.send(enable());
-    devTools.send(start());
-    Profile profiler = devTools.send(stop());
-    validateProfile(profiler);
-    devTools.send(disable());
-
-  }
 
   private void validateProfile(Profile profiler) {
     assertNotNull(profiler);
@@ -62,7 +53,7 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
     assertNotNull(profiler.getStartTime());
     assertNotNull(profiler.getEndTime());
     assertNotNull(profiler.getTimeDeltas());
-    for (Integer integer : profiler.getTimeDeltas()) {
+    for (Integer integer : profiler.getTimeDeltas().get()) {
       assertNotNull(integer);
     }
     for (ProfileNode n : profiler.getNodes()) {
@@ -74,7 +65,7 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
   @Test
   public void sampleGetBestEffortProfilerTest() {
     devTools.send(enable());
-    driver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.send(setSamplingInterval(30));
     List<ScriptCoverage> bestEffort = devTools.send(getBestEffortCoverage());
     assertNotNull(bestEffort);
@@ -85,30 +76,30 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
   @Test
   public void sampleSetStartPreciseCoverageTest() {
     devTools.send(enable());
-    driver.get(appServer.whereIs("simpleTest.html"));
-    devTools.send(startPreciseCoverage(Optional.of(true), Optional.of(true)));
+    driver.get(appServer.whereIs("devToolsProfilerTest.html"));
+    devTools.send(startPreciseCoverage(Optional.of(true), Optional.of(true), Optional.empty()));
     devTools.send(start());
-    List<ScriptCoverage> pc = devTools.send(takePreciseCoverage());
+    Profiler.TakePreciseCoverageResponse pc = devTools.send(takePreciseCoverage());
     assertNotNull(pc);
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
     devTools.send(disable());
   }
 
-
   @Test
   public void sampleProfileEvents() {
+    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
+    devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(enable());
-    driver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(startTypeProfile());
     devTools.send(start());
     driver.navigate().refresh();
-    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
+
     devTools.send(stopTypeProfile());
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
     devTools.send(disable());
   }
-
 }

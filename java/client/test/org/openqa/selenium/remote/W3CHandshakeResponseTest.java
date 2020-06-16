@@ -27,12 +27,14 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 
+import java.util.Map;
+
 public class W3CHandshakeResponseTest {
 
   @Test
   public void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
-    ImmutableMap<String, ImmutableMap<String, Object>> payload =
+    Map<String, Map<String, Object>> payload =
         ImmutableMap.of(
             "value", ImmutableMap.of(
             "capabilities", caps.asMap(),
@@ -58,7 +60,7 @@ public class W3CHandshakeResponseTest {
   @Test
   public void shouldIgnoreAJsonWireProtocolReply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
-    ImmutableMap<String, ?> payload =
+    Map<String, ?> payload =
         ImmutableMap.of(
             "status", 0,
             "value", caps.asMap(),
@@ -77,7 +79,7 @@ public class W3CHandshakeResponseTest {
   @Test
   public void shouldIgnoreAGeckodriver013Reply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
-    ImmutableMap<String, ?> payload =
+    Map<String, ?> payload =
         ImmutableMap.of(
             "value", caps.asMap(),
             "sessionId", "cheese is opaque");
@@ -94,7 +96,7 @@ public class W3CHandshakeResponseTest {
 
   @Test
   public void shouldProperlyPopulateAnError() {
-    ImmutableMap<String, ?> payload = ImmutableMap.of(
+    Map<String, ?> payload = ImmutableMap.of(
         "value", ImmutableMap.of(
             "error", "session not created",
             "message", "me no likey",

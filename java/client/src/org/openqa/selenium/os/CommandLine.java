@@ -21,8 +21,6 @@ package org.openqa.selenium.os;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
@@ -32,12 +30,16 @@ import java.util.Map;
 
 public class CommandLine {
 
-  private OsProcess process;
+  private final OsProcess process;
 
   public CommandLine(String executable, String... args) {
     process = new OsProcess(executable, args);
   }
 
+  /**
+   * @deprecated Use {@link #CommandLine(String, String...)}
+   */
+  @Deprecated
   public CommandLine(String[] cmdarray) {
     String executable = cmdarray[0];
     int length = cmdarray.length - 1;
@@ -45,11 +47,6 @@ public class CommandLine {
     System.arraycopy(cmdarray, 1, args, 0, length);
 
     process = new OsProcess(executable, args);
-  }
-
-  @VisibleForTesting
-  Map<String, String> getEnvironment() {
-    return process.getEnvironment();
   }
 
   /**
@@ -120,6 +117,7 @@ public class CommandLine {
     try {
       process.waitFor();
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new WebDriverException(e);
     }
   }
@@ -128,6 +126,7 @@ public class CommandLine {
     try {
       process.waitFor(timeout);
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new WebDriverException(e);
     }
   }

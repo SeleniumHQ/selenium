@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.session.remote;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -26,6 +25,7 @@ import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.Command;
@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,14 +75,14 @@ public abstract class RemoteSession implements ActiveSession {
       HttpHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
-    this.downstream = downstream;
-    this.upstream = upstream;
-    this.codec = codec;
-    this.id = id;
-    this.capabilities = capabilities;
+    this.downstream = Require.nonNull("Downstream dialect", downstream);
+    this.upstream = Require.nonNull("Upstream dialect", upstream);
+    this.codec = Require.nonNull("Codec", codec);
+    this.id = Require.nonNull("Session id", id);
+    this.capabilities = Require.nonNull("Capabilities", capabilities);
 
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
-    Preconditions.checkState(tempRoot.mkdirs());
+    Require.stateCondition(tempRoot.mkdirs(), "Could not create directory %s", tempRoot);
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
 
     CommandExecutor executor = new ActiveSessionCommandExecutor(this);
@@ -128,6 +129,7 @@ public abstract class RemoteSession implements ActiveSession {
   public abstract static class Factory<X> implements SessionFactory {
 
     protected Optional<ActiveSession> performHandshake(
+        Tracer tracer,
         X additionalData,
         URL url,
         Set<Dialect> downstreamDialects,
@@ -145,11 +147,11 @@ public abstract class RemoteSession implements ActiveSession {
         Dialect upstream = result.getDialect();
         Dialect downstream;
         if (downstreamDialects.contains(result.getDialect())) {
-          codec = new ReverseProxyHandler(client);
+          codec = new ReverseProxyHandler(tracer, client);
           downstream = upstream;
         } else {
           downstream = downstreamDialects.isEmpty() ? OSS : downstreamDialects.iterator().next();
-          codec = new ProtocolConverter(client, downstream, upstream);
+          codec = new ProtocolConverter(tracer, client, downstream, upstream);
         }
 
         Response response = result.createResponse();

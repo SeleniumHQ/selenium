@@ -1,18 +1,16 @@
-load("//java:rules.bzl", "java_test_suite")
+load("@rules_jvm_external//:defs.bzl", "artifact")
 
-java_test_suite(
-    name = "SmallTests",
-    size = "small",
+java_library(
+    name = "tracing-support",
+    testonly = True,
     srcs = glob(["*.java"]),
-    tags = [
-        "no-sandbox",
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing",
-        "//java/client/test/org/openqa/selenium/environment",
-        "//java/client/test/org/openqa/selenium/remote/tracing/simple",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
+        "//java/client/src/org/openqa/selenium/remote/tracing/opentelemetry",
+        artifact("io.opentelemetry:opentelemetry-api"),
     ],
 )

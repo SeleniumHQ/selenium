@@ -1,16 +1,16 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "local",
     srcs = glob(["*.java"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
         "//java/server/src/org/openqa/selenium/grid/distributor/httpd:__pkg__",
-        "//java/server/test/org/openqa/selenium/grid/distributor:__pkg__",
-        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
-        "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/server/src/org/openqa/selenium/concurrent",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/component",
@@ -19,6 +19,11 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/remote",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
-        "//third_party/java/guava",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/config",
+
+        artifact("com.google.guava:guava"),
     ],
 )

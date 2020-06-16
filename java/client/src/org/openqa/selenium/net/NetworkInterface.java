@@ -16,18 +16,19 @@
 // under the License.
 package org.openqa.selenium.net;
 
-import static java.util.Collections.list;
-
-import com.google.common.collect.Iterables;
-
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static java.util.Collections.list;
 
 public class NetworkInterface {
 
@@ -43,7 +44,8 @@ public class NetworkInterface {
 
   NetworkInterface(String name, Iterable<InetAddress> inetAddresses) {
     this.name = name;
-    this.inetAddresses = Iterables.unmodifiableIterable(inetAddresses);
+    this.inetAddresses = StreamSupport.stream(inetAddresses.spliterator(), false)
+      .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   NetworkInterface(String name, InetAddress... inetAddresses) {
@@ -56,23 +58,20 @@ public class NetworkInterface {
   }
 
   public boolean isLoopBack() {
-    if (isLoopback == null) {
-      if (networkInterface != null) {
-        try {
-          // Issue 1181 : determine whether this NetworkInterface instance is loopback
-          // from java.net.NetworkInterface API
-          isLoopback = networkInterface.isLoopback();
-        } catch (SocketException ex) {
-          Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
-        }
-      }
-      // If a SocketException is caught, determine whether this NetworkInterface
-      // instance is loopback from computation from its inetAddresses
-      if (isLoopback == null) {
+    if (isLoopback == null && networkInterface != null) {
+      try {
+        // Issue 1181 : determine whether this NetworkInterface instance is loopback
+        // from java.net.NetworkInterface API
+        isLoopback = networkInterface.isLoopback();
+      } catch (SocketException ex) {
+        Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
+        // If a SocketException is caught, determine whether this NetworkInterface
+        // instance is loopback from computation from its inetAddresses
         isLoopback = isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));
       }
     }
-    return isLoopback;
+    // 'isLoopback != null' to avoid an unboxing NPE
+    return isLoopback != null && isLoopback;
   }
 
   private boolean isLoopBackFromINetAddresses(Iterable<InetAddress> inetAddresses) {

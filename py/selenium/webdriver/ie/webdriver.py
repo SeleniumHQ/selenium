@@ -14,11 +14,13 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import warnings
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 from .options import Options
+from selenium.webdriver.common import utils
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0
@@ -36,9 +38,9 @@ class WebDriver(RemoteWebDriver):
                  options=None, service=None,
                  desired_capabilities=None, keep_alive=False):
         """
-        Creates a new instance of the chrome driver.
+        Creates a new instance of the Ie driver.
 
-        Starts the service and then creates new instance of chrome driver.
+        Starts the service and then creates new instance of Ie driver.
 
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
@@ -61,7 +63,6 @@ class WebDriver(RemoteWebDriver):
         if port != DEFAULT_PORT:
             warnings.warn('port has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        self.port = port
         if timeout != DEFAULT_TIMEOUT:
             warnings.warn('timeout has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
@@ -75,6 +76,9 @@ class WebDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
+        self.port = port
+        if self.port == 0:
+            self.port = utils.free_port()
 
         # If both capabilities and desired capabilities are set, ignore desired capabilities.
         if capabilities is None and desired_capabilities:
@@ -89,20 +93,21 @@ class WebDriver(RemoteWebDriver):
             else:
                 # desired_capabilities stays as passed in
                 capabilities.update(options.to_capabilities())
-        if service is None:
-            service = Service()
-        self.iedriver = Service(
-            executable_path,
-            port=self.port,
-            host=self.host,
-            log_level=log_level,
-            log_file=service_log_path)
+        if service is not None:
+            self.iedriver = service
+        else:
+            self.iedriver = Service(
+                executable_path,
+                port=self.port,
+                host=self.host,
+                log_level=log_level,
+                log_file=service_log_path)
 
         self.iedriver.start()
 
         RemoteWebDriver.__init__(
             self,
-            command_executor='http://localhost:%d' % self.port,
+            command_executor=self.iedriver.service_url,
             desired_capabilities=capabilities,
             keep_alive=keep_alive)
         self._is_remote = False

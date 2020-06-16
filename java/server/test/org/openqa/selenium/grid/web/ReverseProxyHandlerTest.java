@@ -29,6 +29,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +49,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 public class ReverseProxyHandlerTest {
 
   private Server server;
+  private Tracer tracer = DefaultTestTracer.createTracer();
   private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
   @Before
@@ -60,8 +63,8 @@ public class ReverseProxyHandlerTest {
   }
 
   @Test
-  public void shouldForwardRequestsToEndPoint() throws IOException {
-    HttpHandler handler = new ReverseProxyHandler(factory.createClient(server.url));
+  public void shouldForwardRequestsToEndPoint() {
+    HttpHandler handler = new ReverseProxyHandler(tracer, factory.createClient(server.url));
     HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
     req.addHeader("X-Cheese", "Cake");
     handler.execute(req);

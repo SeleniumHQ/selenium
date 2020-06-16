@@ -31,8 +31,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.base.Throwables;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -175,6 +173,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testClickingLabelShouldSetCheckbox() {
     driver.get(pages.formPage);
 
@@ -208,6 +207,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/653")
+  @NotYetImplemented(SAFARI)
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     driver.findElement(By.id("embeddedBlock")).click();
     wait.until(titleIs("XHTML Test Page"));
@@ -259,6 +259,7 @@ public class ClickTest extends JUnit4TestBase {
   @Test
   @Ignore(FIREFOX)
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big.html");
     driver.get(url);
@@ -366,13 +367,6 @@ public class ClickTest extends JUnit4TestBase {
   public void clickingOnADisabledElementIsANoOp() {
     driver.get(appServer.whereIs("click_tests/disabled_element.html"));
 
-    WebElement element = driver.findElement(By.name("disabled"));
-
-    try {
-      element.click();
-      // A failing implementation will throw an exception
-    } catch (WebDriverException e) {
-      fail("The click should have been a no-op.\n" + Throwables.getStackTraceAsString(e));
-    }
+    driver.findElement(By.name("disabled")).click(); // Should not throw
   }
 }

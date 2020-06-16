@@ -18,20 +18,26 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 
 public class ReverseProxyHandler implements HttpHandler {
 
-  private final static Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
+  private static final Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
 
-  private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
+  private static final ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
       .add("connection")
       .add("keep-alive")
       .add("proxy-authorization")
@@ -43,43 +49,51 @@ public class ReverseProxyHandler implements HttpHandler {
       .add("upgrade")
       .build();
 
+  private final Tracer tracer;
   private final HttpClient upstream;
 
-  public ReverseProxyHandler(HttpClient httpClient) {
-    this.upstream = Objects.requireNonNull(httpClient, "HTTP client to use must be set.");
+  public ReverseProxyHandler(Tracer tracer, HttpClient httpClient) {
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.upstream = Require.nonNull("HTTP client", httpClient);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
+    try (Span span = newSpanAsChildOf(tracer, req, "reverse_proxy")) {
+      HTTP_REQUEST.accept(span, req);
 
-    for (String name : req.getQueryParameterNames()) {
-      for (String value : req.getQueryParameters(name)) {
-        toUpstream.addQueryParameter(name, value);
+      HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
+
+      for (String name : req.getQueryParameterNames()) {
+        for (String value : req.getQueryParameters(name)) {
+          toUpstream.addQueryParameter(name, value);
+        }
       }
+
+      for (String name : req.getHeaderNames()) {
+        if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
+          continue;
+        }
+
+        for (String value : req.getHeaders(name)) {
+          toUpstream.addHeader(name, value);
+        }
+      }
+      // None of this "keep alive" nonsense.
+      toUpstream.setHeader("Connection", "keep-alive");
+
+      toUpstream.setContent(req.getContent());
+      HttpResponse resp = upstream.execute(toUpstream);
+
+      span.setAttribute("http.status", resp.getStatus());
+
+      // clear response defaults.
+      resp.removeHeader("Date");
+      resp.removeHeader("Server");
+
+      IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
+
+      return resp;
     }
-
-    for (String name : req.getHeaderNames()) {
-      if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
-        continue;
-      }
-
-      for (String value : req.getHeaders(name)) {
-        toUpstream.addHeader(name, value);
-      }
-    }
-    // None of this "keep alive" nonsense.
-    toUpstream.setHeader("Connection", "keep-alive");
-
-    toUpstream.setContent(req.getContent());
-    HttpResponse resp = upstream.execute(toUpstream);
-
-    // clear response defaults.
-    resp.setHeader("Date",null);
-    resp.setHeader("Server",null);
-
-    IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
-
-    return resp;
   }
 }

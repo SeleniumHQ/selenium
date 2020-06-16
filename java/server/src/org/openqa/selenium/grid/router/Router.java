@@ -19,14 +19,15 @@ package org.openqa.selenium.grid.router;
 
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
-import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -37,20 +38,23 @@ import static org.openqa.selenium.remote.http.Route.matching;
  */
 public class Router implements Routable, HttpHandler {
 
-  private final Route routes;
+  private final Routable routes;
 
   public Router(
-      DistributedTracer tracer,
-      HttpClient.Factory clientFactory,
-      SessionMap sessions,
-      Distributor distributor) {
-    routes = combine(
+    Tracer tracer,
+    HttpClient.Factory clientFactory,
+    SessionMap sessions,
+    Distributor distributor) {
+    Require.nonNull("Tracer to use", tracer);
+
+    routes =
+      combine(
         get("/status")
-            .to(() -> new GridStatusHandler(new Json(), clientFactory, distributor)),
-        sessions,
-        distributor,
+          .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
+        sessions.with(new SpanDecorator(tracer, req -> "session_map")),
+        distributor.with(new SpanDecorator(tracer, req -> "distributor")),
         matching(req -> req.getUri().startsWith("/session/"))
-            .to(() -> new HandleSession(tracer, clientFactory, sessions)));
+          .to(() -> new HandleSession(tracer, clientFactory, sessions)));
   }
 
   @Override

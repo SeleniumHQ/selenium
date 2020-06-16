@@ -32,111 +32,111 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   /**
    * Capability that defines whether to ignore the browser zoom level or not.
    */
-  public final static String IGNORE_ZOOM_SETTING = "ignoreZoomSetting";
+  public static final String IGNORE_ZOOM_SETTING = "ignoreZoomSetting";
 
   /**
    * Capability that defines to use whether to use native or javascript events during operations.
    */
-  public final static String NATIVE_EVENTS = CapabilityType.HAS_NATIVE_EVENTS;
+  public static final String NATIVE_EVENTS = CapabilityType.HAS_NATIVE_EVENTS;
 
   /**
    * Capability that defines the initial URL to be used when IE is launched.
    */
-  public final static String INITIAL_BROWSER_URL = "initialBrowserUrl";
+  public static final String INITIAL_BROWSER_URL = "initialBrowserUrl";
 
   /**
    * Capability that defines how elements are scrolled into view in the InternetExplorerDriver.
    */
-  public final static String ELEMENT_SCROLL_BEHAVIOR = CapabilityType.ELEMENT_SCROLL_BEHAVIOR;
+  public static final String ELEMENT_SCROLL_BEHAVIOR = CapabilityType.ELEMENT_SCROLL_BEHAVIOR;
 
   /**
    * Capability that defines which behaviour will be used if an unexpected Alert is found.
    */
-  public final static String UNEXPECTED_ALERT_BEHAVIOR = CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+  public static final String UNEXPECTED_ALERT_BEHAVIOR = CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
   /**
    * Capability that defines to use or not cleanup of element cache on document loading.
    */
-  public final static String ENABLE_ELEMENT_CACHE_CLEANUP = "enableElementCacheCleanup";
+  public static final String ENABLE_ELEMENT_CACHE_CLEANUP = "enableElementCacheCleanup";
 
   /**
    * Capability that defines timeout in milliseconds for attaching to new browser window.
    */
-  public final static String BROWSER_ATTACH_TIMEOUT = "browserAttachTimeout";
+  public static final String BROWSER_ATTACH_TIMEOUT = "browserAttachTimeout";
 
   /**
-   * Capability that defines to ignore ot not browser
+   * Capability that defines to ignore browser
    * protected mode settings during starting by IEDriverServer.
    *
    * Setting this capability will make your tests unstable and hard to debug.
    */
-  public final static String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS =
+  public static final String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS =
       "ignoreProtectedModeSettings";
 
   /**
    * Capability that defines to use persistent hovering or not.
    */
-  public final static String ENABLE_PERSISTENT_HOVERING = "enablePersistentHover";
+  public static final String ENABLE_PERSISTENT_HOVERING = "enablePersistentHover";
 
   /**
    * Capability that defines to focus to browser window or not before operation.
    */
-  public final static String REQUIRE_WINDOW_FOCUS = "requireWindowFocus";
+  public static final String REQUIRE_WINDOW_FOCUS = "requireWindowFocus";
 
   /**
    * Capability that defines the location of the file where IEDriverServer
    * should write log messages to.
    */
-  public final static String LOG_FILE = "logFile";
+  public static final String LOG_FILE = "logFile";
 
   /**
    * Capability that defines the detalization level the IEDriverServer logs.
    */
-  public final static String LOG_LEVEL = "logLevel";
+  public static final String LOG_LEVEL = "logLevel";
 
   /**
    * Capability that defines the address of the host adapter on which
    * the IEDriverServer will listen for commands.
    */
-  public final static String HOST = "host";
+  public static final String HOST = "host";
 
   /**
    * Capability that defines full path to directory to which will be
    * extracted supporting files of the IEDriverServer.
    */
-  public final static String EXTRACT_PATH = "extractPath";
+  public static final String EXTRACT_PATH = "extractPath";
 
   /**
    * Capability that defines suppress or not diagnostic output of the IEDriverServer.
    */
-  public final static String SILENT = "silent";
+  public static final String SILENT = "silent";
 
   /**
    * Capability that defines launch API of IE used by IEDriverServer.
    */
-  public final static String FORCE_CREATE_PROCESS = "ie.forceCreateProcessApi";
+  public static final String FORCE_CREATE_PROCESS = "ie.forceCreateProcessApi";
 
   /**
    * Capability that defines to clean or not browser cache before launching IE by IEDriverServer.
    */
-  public final static String IE_ENSURE_CLEAN_SESSION = "ie.ensureCleanSession";
+  public static final String IE_ENSURE_CLEAN_SESSION = "ie.ensureCleanSession";
 
   /**
    * Capability that defines setting the proxy information for a single IE process
    * without affecting the proxy settings of other instances of IE.
    */
-  public final static String IE_USE_PER_PROCESS_PROXY = "ie.usePerProcessProxy";
+  public static final String IE_USE_PER_PROCESS_PROXY = "ie.usePerProcessProxy";
 
   /**
    * @deprecated Use {@link #IE_USE_PER_PROCESS_PROXY} (the one without the typo);
    */
   @Deprecated
-  public final static String IE_USE_PRE_PROCESS_PROXY = IE_USE_PER_PROCESS_PROXY;
+  public static final String IE_USE_PRE_PROCESS_PROXY = IE_USE_PER_PROCESS_PROXY;
 
   /**
    * Capability that defines used IE CLI switches when {@link #FORCE_CREATE_PROCESS} is enabled.
    */
-  public final static String IE_SWITCHES = "ie.browserCommandLineSwitches";
+  public static final String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
   public InternetExplorerDriver() {
     this(null, null);

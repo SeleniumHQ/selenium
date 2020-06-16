@@ -22,13 +22,13 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Service do
-      let(:service_path) { "/path/to/#{Edge::Service::EXECUTABLE}" }
-
-      before do
-        allow(Platform).to receive(:assert_executable).and_return(true)
-      end
-
       describe '#new' do
+        let(:service_path) { "/path/to/#{Edge::Service::EXECUTABLE}" }
+
+        before do
+          allow(Platform).to receive(:assert_executable).and_return(true)
+        end
+
         it 'uses default path and port' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
@@ -36,7 +36,8 @@ module Selenium
 
           expect(service.executable_path).to include Edge::Service::EXECUTABLE
           expected_port = Edge::Service::DEFAULT_PORT
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{expected_port}"
+          expect(service.port).to eq expected_port
+          expect(service.host).to eq Platform.localhost
         end
 
         it 'uses provided path and port' do
@@ -46,7 +47,8 @@ module Selenium
           service = Service.edge(path: path, port: port)
 
           expect(service.executable_path).to eq path
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
+          expect(service.port).to eq port
+          expect(service.host).to eq Platform.localhost
         end
 
         it 'allows #driver_path= with String value' do
@@ -72,11 +74,11 @@ module Selenium
           path = '/path/to/driver'
           expect {
             Selenium::WebDriver::Edge.driver_path = path
-          }.to output(/WARN Selenium \[DEPRECATION\] Selenium::WebDriver::Edge#driver_path=/).to_stdout_from_any_process
+          }.to have_deprecated(:driver_path)
 
           expect {
             expect(Selenium::WebDriver::Edge.driver_path).to eq path
-          }.to output(/WARN Selenium \[DEPRECATION\] Selenium::WebDriver::Edge#driver_path/).to_stdout_from_any_process
+          }.to have_deprecated(:driver_path)
 
           service = Service.edge
 
@@ -88,7 +90,7 @@ module Selenium
 
           service = Service.edge
 
-          expect(service.instance_variable_get('@extra_args')).to be_empty
+          expect(service.extra_args).to be_empty
         end
 
         it 'uses provided args' do
@@ -96,7 +98,7 @@ module Selenium
 
           service = Service.edge(args: ['--foo', '--bar'])
 
-          expect(service.instance_variable_get('@extra_args')).to eq ['--foo', '--bar']
+          expect(service.extra_args).to eq ['--foo', '--bar']
         end
 
         # This is deprecated behavior
@@ -106,73 +108,75 @@ module Selenium
           service = Service.edge(args: {host: 'myhost',
                                         silent: true})
 
-          expect(service.instance_variable_get('@extra_args')).to eq ['--host=myhost', '--silent']
+          expect(service.extra_args).to eq ['--host=myhost', '--silent']
         end
       end
-    end
 
-    module EdgeHtml
-      describe Driver do
-        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+      context 'when initializing driver' do
+        let(:driver) { Edge::Driver }
+        let(:service) { instance_double(Service, launch: service_manager) }
+        let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
         let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
 
         before do
           allow(Remote::Bridge).to receive(:new).and_return(bridge)
+          allow(ServiceManager).to receive(:new).and_return(service_manager)
         end
 
         it 'is not created when :url is provided' do
+          expect(ServiceManager).not_to receive(:new)
           expect(Service).not_to receive(:new)
 
-          described_class.new(url: 'http://example.com:4321')
+          driver.new(url: 'http://example.com:4321')
         end
 
         it 'is created when :url is not provided' do
           expect(Service).to receive(:new).and_return(service)
 
-          described_class.new
+          driver.new
         end
 
         it 'accepts :driver_path but throws deprecation notice' do
           driver_path = '/path/to/driver'
 
-          expect(Service).to receive(:new).with(path: driver_path,
-                                                port: nil,
-                                                args: nil).and_return(service)
+          allow(Service).to receive(:new).with(path: driver_path,
+                                               port: nil,
+                                               args: nil).and_return(service)
 
           expect {
-            described_class.new(driver_path: driver_path)
-          }.to output(/WARN Selenium \[DEPRECATION\] :driver_path/).to_stdout_from_any_process
+            driver.new(driver_path: driver_path)
+          }.to have_deprecated(:service_driver_path)
         end
 
         it 'accepts :port but throws deprecation notice' do
           driver_port = 1234
 
-          expect(Service).to receive(:new).with(path: nil,
-                                                port: driver_port,
-                                                args: nil).and_return(service)
+          allow(Service).to receive(:new).with(path: nil,
+                                               port: driver_port,
+                                               args: nil).and_return(service)
 
           expect {
-            described_class.new(port: driver_port)
-          }.to output(/WARN Selenium \[DEPRECATION\] :port/).to_stdout_from_any_process
+            driver.new(port: driver_port)
+          }.to have_deprecated(:service_port)
         end
 
         it 'accepts :driver_opts but throws deprecation notice' do
           driver_opts = {foo: 'bar',
                          bar: ['--foo', '--bar']}
 
-          expect(Service).to receive(:new).with(path: nil,
-                                                port: nil,
-                                                args: driver_opts).and_return(service)
+          allow(Service).to receive(:new).with(path: nil,
+                                               port: nil,
+                                               args: driver_opts).and_return(service)
 
           expect {
-            described_class.new(driver_opts: driver_opts)
-          }.to output(/WARN Selenium \[DEPRECATION\] :driver_opts/).to_stdout_from_any_process
+            driver.new(driver_opts: driver_opts)
+          }.to have_deprecated(:service_driver_opts)
         end
 
         it 'accepts :service without creating a new instance' do
           expect(Service).not_to receive(:new)
 
-          described_class.new(service: service)
+          driver.new(service: service)
         end
       end
     end

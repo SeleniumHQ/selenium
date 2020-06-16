@@ -25,7 +25,6 @@ module Selenium
   module WebDriver
     module Firefox
       autoload :Extension, 'selenium/webdriver/firefox/extension'
-      autoload :Binary, 'selenium/webdriver/firefox/binary'
       autoload :ProfilesIni, 'selenium/webdriver/firefox/profiles_ini'
       autoload :Profile, 'selenium/webdriver/firefox/profile'
       autoload :Bridge, 'selenium/webdriver/firefox/bridge'
@@ -41,18 +40,25 @@ module Selenium
 
       def self.driver_path=(path)
         WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path=',
-                                   'Selenium::WebDriver::Firefox::Service#driver_path='
+                                   'Selenium::WebDriver::Firefox::Service#driver_path=',
+                                   id: :driver_path
         Selenium::WebDriver::Firefox::Service.driver_path = path
       end
 
       def self.driver_path
         WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path',
-                                   'Selenium::WebDriver::Firefox::Service#driver_path'
+                                   'Selenium::WebDriver::Firefox::Service#driver_path',
+                                   id: :driver_path
         Selenium::WebDriver::Firefox::Service.driver_path
       end
 
       def self.path=(path)
-        Binary.path = path
+        Platform.assert_executable path
+        @path = path
+      end
+
+      def self.path
+        @path ||= nil
       end
     end # Firefox
   end # WebDriver

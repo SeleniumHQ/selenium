@@ -64,6 +64,19 @@ module Selenium
           expect(cookies.first[:value]).to eq('bar')
         end
 
+        it 'should add sameSite cookie with attribute Strict', only: {browser: :chrome} do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Strict'
+
+          expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Strict')
+        end
+
+        it 'should add sameSite cookie with attribute Lax', only: {browser: :chrome} do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Lax'
+          expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Lax')
+        end
+
         it 'should get named cookie' do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
@@ -108,7 +121,7 @@ module Selenium
 
         types = %i[tab window]
         types.each do |type|
-          it "should be able to open a new #{type}", only: {browser: %i[safari_preview firefox ie]} do
+          it "should be able to open a new #{type}", only: {browser: %i[safari_preview firefox ie chrome edge_chrome]} do
             before_window_handles = driver.window_handles.length
             driver.manage.new_window(type)
             expect(driver.window_handles.length).to eq(before_window_handles + 1)

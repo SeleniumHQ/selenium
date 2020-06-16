@@ -32,7 +32,11 @@ module Selenium
         def browser
           :edge_chrome
         end
+
+        def bridge_class
+          Bridge
+        end
       end # Driver
-    end # Chrome
+    end # EdgeChrome
   end # WebDriver
 end # Selenium

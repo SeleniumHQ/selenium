@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,7 +79,7 @@ public class UploadHandler implements HttpHandler {
             if (matcher.find()) {
               values.put(matcher.group(1), matcher.group(2));
             }
-          };
+          }
         } else if (!inHeaders) {
           String c = (String) values.getOrDefault("content", "");
           c += splits[i];

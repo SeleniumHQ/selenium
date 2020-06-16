@@ -18,12 +18,10 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -39,8 +37,6 @@ public class SvgElementTest extends JUnit4TestBase {
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415068")
   @NotYetImplemented(SAFARI)
   public void testShouldClickOnGraphVisualElements() {
-    assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
-
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
 
@@ -73,8 +69,6 @@ public class SvgElementTest extends JUnit4TestBase {
   @Test
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void testShouldClickOnGraphTextElements() {
-    assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
-
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
     List<WebElement> textElements = svg.findElements(By.cssSelector("text"));

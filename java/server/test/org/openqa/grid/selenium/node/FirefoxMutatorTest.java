@@ -17,8 +17,8 @@
 
 package org.openqa.grid.selenium.node;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;

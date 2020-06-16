@@ -1,27 +1,28 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "server",
     srcs = glob(["*.java"]),
     visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/src/org/openqa/selenium/netty/server:__pkg__",
-        "//java/server/src/org/openqa/selenium/remote/server:__pkg__",
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//java/server/src/org/openqa/selenium:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     runtime_deps = [
         "//java/server/src/org/openqa/selenium/events/zeromq",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
-        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//third_party/java/beust:jcommander",
-        "//third_party/java/guava",
-        "//third_party/java/jetty",
-        "//third_party/java/servlet:javax.servlet-api",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+        artifact("javax.servlet:javax.servlet-api"),
     ],
 )

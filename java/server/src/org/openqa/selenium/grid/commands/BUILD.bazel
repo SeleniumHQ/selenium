@@ -1,23 +1,29 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "commands",
     srcs = glob(["*.java"]),
+    resources = glob(["*.txt"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     runtime_deps = [
         "//java/server/src/org/openqa/selenium/events/local",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/net",
-        "//java/client/src/org/openqa/selenium/remote/http",
-        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid:base-command",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/local",
         "//java/server/src/org/openqa/selenium/grid/docker",
+        "//java/server/src/org/openqa/selenium/grid/graphql",
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/config",
@@ -27,8 +33,8 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//third_party/java/beust:jcommander",
-        "//third_party/java/guava",
-        "//third_party/java/service",
+        "//java/server/src/org/openqa/selenium/netty/server",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
     ],
 )

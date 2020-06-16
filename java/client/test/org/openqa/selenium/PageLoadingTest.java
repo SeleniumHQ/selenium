@@ -50,6 +50,7 @@ import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
+import java.time.Duration;
 import java.util.Set;
 
 public class PageLoadingTest extends JUnit4TestBase {
@@ -103,8 +104,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -127,8 +126,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -154,8 +151,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
@@ -271,6 +266,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
 
@@ -311,7 +307,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(value = SAFARI, reason = "does not support insecure SSL")
   @NotYetImplemented(EDGE)
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
-    // TODO(user): Set the SSL capability to true.
+    createNewDriver(new ImmutableCapabilities(
+        CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.TRUE));
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
     shortWait.until(titleIs("Hello WebDriver"));
@@ -449,8 +446,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(value = SAFARI)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
@@ -461,7 +458,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
-    new WebDriverWait(driver, 30)
+    new WebDriverWait(driver, Duration.ofSeconds(30))
         .ignoring(StaleElementReferenceException.class)
         .until(elementTextToEqual(By.tagName("body"), "Slept for 11s"));
   }

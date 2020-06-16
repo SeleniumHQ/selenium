@@ -1,4 +1,4 @@
-load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary", "npm_package")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "pkg_npm")
 load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
 
 SRC_FILES = [
@@ -16,11 +16,12 @@ SRC_FILES = [
     "testing/*.js",
 ])
 
-npm_package(
+pkg_npm(
     name = "selenium-webdriver",
     srcs = SRC_FILES,
     deps = [
         ":license",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
     ],
@@ -48,6 +49,7 @@ nodejs_binary(
         "@npm//rimraf",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
     ],
     entry_point = "lib/test/fileserver.ts",
 )
@@ -55,7 +57,6 @@ nodejs_binary(
 jasmine_node_test(
     name = "tests",
     srcs = TEST_FILES,
-    bootstrap = ["selenium/javascript/node/selenium-webdriver/tools/init_jasmine.js"],
     data = TEST_DATA + [
         "tools/init_jasmine.js",
         "//common/src/web",
@@ -66,10 +67,11 @@ jasmine_node_test(
         "@npm//rimraf",
         "@npm//tmp",
         "@npm//sinon",
-        "@npm//xml2js",
     ],
     local = True,
+    templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
     deps = [
+        "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
         "@npm//jasmine",

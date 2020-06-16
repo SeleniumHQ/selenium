@@ -18,28 +18,54 @@
 package org.openqa.selenium.remote.http;
 
 import java.io.Closeable;
-import java.io.UncheckedIOException;
+import java.util.function.Consumer;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.WARNING;
 
 public interface WebSocket extends Closeable {
 
-  WebSocket sendText(CharSequence data);
+  Logger LOG = Logger.getLogger(WebSocket.class.getName());
+
+  WebSocket send(Message message);
+
+  default WebSocket sendText(CharSequence data) {
+    return send(new TextMessage(data));
+  }
+
+  default WebSocket sendBinary(byte[] data) {
+    return send(new BinaryMessage(data));
+  }
 
   @Override
-  void close() throws UncheckedIOException;
+  void close();
 
-  void abort();
+  interface Listener extends Consumer<Message> {
 
-  class Listener {
-    public void onText(CharSequence data) {
+    default void accept(Message message) {
+      if (message instanceof BinaryMessage) {
+        onBinary(((BinaryMessage) message).data());
+      } else if (message instanceof CloseMessage) {
+        onClose(((CloseMessage) message).code(), ((CloseMessage) message).reason());
+      } else if (message instanceof TextMessage) {
+        onText(((TextMessage) message).text());
+      }
+    }
+
+    default void onBinary(byte[] data) {
       // Does nothing
     }
 
-    public void onError(Throwable cause) {
+    default void onClose(int code, String reason) {
       // Does nothing
     }
 
-    public void onClose(int code, String reason) {
+    default void onText(CharSequence data) {
       // Does nothing
+    }
+
+    default void onError(Throwable cause) {
+      LOG.log(WARNING, cause.getMessage(), cause);
     }
   }
 

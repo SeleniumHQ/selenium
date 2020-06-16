@@ -17,19 +17,20 @@
 
 package org.openqa.selenium.firefox;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 public abstract class FirefoxDriverService extends DriverService {
 
   /**
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.
+   * @param timeout Timeout waiting for driver server to start.
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
@@ -37,9 +38,10 @@ public abstract class FirefoxDriverService extends DriverService {
   public FirefoxDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   public static abstract class Builder<DS extends FirefoxDriverService, B extends FirefoxDriverService.Builder<?, ?>>

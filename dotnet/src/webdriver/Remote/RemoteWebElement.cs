@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     /// <seealso cref="IWebElement"/>
     /// <seealso cref="ILocatable"/>
-    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable, ITakesScreenshot, IWebElementReference
+    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IFindsElement, IWrapsDriver, ILocatable, ITakesScreenshot, IWebElementReference
     {
         /// <summary>
         /// The property name that represents a web element in the wire protocol.
@@ -189,7 +189,7 @@ namespace OpenQA.Selenium.Remote
             {
                 Response commandResponse = null;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                string atom = GetAtom("isDisplayed.js");
+                string atom = GetAtom("is-displayed.js");
                 parameters.Add("script", atom);
                 parameters.Add("args", new object[] { this.ToElementReference().ToDictionary() });
                 commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
@@ -383,7 +383,7 @@ namespace OpenQA.Selenium.Remote
             Response commandResponse = null;
             string attributeValue = string.Empty;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string atom = GetAtom("getAttribute.js");
+            string atom = GetAtom("get-attribute.js");
             parameters.Add("script", atom);
             parameters.Add("args", new object[] { this.ToElementReference().ToDictionary(), attributeName });
             commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
@@ -532,7 +532,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public virtual IWebElement FindElementById(string id)
         {
-            return this.FindElement("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
+            return this.FindElement("css selector", "#" + By.EscapeCssSelector(id));
         }
 
         /// <summary>
@@ -548,7 +548,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public virtual ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
-            return this.FindElements("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
+            return this.FindElements("css selector", "#" + By.EscapeCssSelector(id));
         }
 
         /// <summary>
@@ -628,7 +628,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public virtual IWebElement FindElementByClassName(string className)
         {
-            return this.FindElement("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
+            return this.FindElement("css selector", "." + By.EscapeCssSelector(className));
         }
 
         /// <summary>
@@ -644,7 +644,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public virtual ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
         {
-            return this.FindElements("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
+            return this.FindElements("css selector", "." + By.EscapeCssSelector(className));
         }
 
         /// <summary>
@@ -733,6 +733,38 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Finds a child element matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the element.</param>
+        /// <param name="value">The value to use to search for the element.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
+        public virtual IWebElement FindElement(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.elementId);
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindChildElement, parameters);
+            return this.driver.GetElementFromResponse(commandResponse);
+        }
+
+        /// <summary>
+        /// Finds all child elements matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the elements.</param>
+        /// <param name="value">The value to use to search for the elements.</param>
+        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
+        public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.elementId);
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindChildElements, parameters);
+            return this.driver.GetElementsFromResponse(commandResponse);
+        }
+
+        /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of this element on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
@@ -812,37 +844,6 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
             elementDictionary.Add(ElementReferencePropertyName, this.elementId);
             return elementDictionary;
-        }
-
-        /// <summary>
-        /// Finds a child element matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the element.</param>
-        /// <param name="value">The value to use to search for the element.</param>
-        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
-        protected virtual IWebElement FindElement(string mechanism, string value)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindChildElement, parameters);
-            return this.driver.GetElementFromResponse(commandResponse);
-        }
-
-        /// <summary>
-        /// Finds all child elements matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the elements.</param>
-        /// <param name="value">The value to use to search for the elements.</param>
-        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
-        protected virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value) {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindChildElements, parameters);
-            return this.driver.GetElementsFromResponse(commandResponse);
         }
 
         /// <summary>

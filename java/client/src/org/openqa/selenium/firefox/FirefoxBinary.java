@@ -18,13 +18,10 @@
 package org.openqa.selenium.firefox;
 
 import static java.util.Arrays.stream;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
-
-import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -80,7 +77,6 @@ public class FirefoxBinary {
 
   private final List<String> extraOptions = new ArrayList<>();
   private final Executable executable;
-  private long timeout = SECONDS.toMillis(45);
 
   public FirefoxBinary() {
     Executable systemBinary = locateFirefoxBinaryFromSystemProperty();
@@ -142,14 +138,6 @@ public class FirefoxBinary {
     return extraOptions;
   }
 
-  public long getTimeout() {
-    return timeout;
-  }
-
-  public void setTimeout(long timeout) {
-    this.timeout = timeout;
-  }
-
   @Override
   public String toString() {
     return "FirefoxBinary(" + executable.getPath() + ")";
@@ -163,7 +151,7 @@ public class FirefoxBinary {
    * Locates the firefox binary from a system property. Will throw an exception if the binary cannot
    * be found.
    */
-  private static Executable locateFirefoxBinaryFromSystemProperty() {
+   static Executable locateFirefoxBinaryFromSystemProperty() {
     String binaryName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
     if (binaryName == null)
       return null;
@@ -198,7 +186,7 @@ public class FirefoxBinary {
    * Locates the firefox binary by platform.
    */
   private static Stream<Executable> locateFirefoxBinariesFromPlatform() {
-    ImmutableList.Builder<Executable> executables = new ImmutableList.Builder<>();
+    List<Executable> executables = new ArrayList<>();
 
     Platform current = Platform.getCurrent();
     if (current.is(WINDOWS)) {
@@ -254,7 +242,7 @@ public class FirefoxBinary {
       }
     }
 
-    return executables.build().stream();
+    return executables.stream();
   }
 
   private static List<String> getPathsInProgramFiles(final String childPath) {

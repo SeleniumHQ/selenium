@@ -19,78 +19,76 @@
 The Keys implementation.
 """
 
-from __future__ import unicode_literals
-
 
 class Keys(object):
     """
     Set of special keys codes.
     """
 
-    NULL = '\ue000'
-    CANCEL = '\ue001'  # ^break
-    HELP = '\ue002'
-    BACKSPACE = '\ue003'
+    NULL = u'\ue000'
+    CANCEL = u'\ue001'  # ^break
+    HELP = u'\ue002'
+    BACKSPACE = u'\ue003'
     BACK_SPACE = BACKSPACE
-    TAB = '\ue004'
-    CLEAR = '\ue005'
-    RETURN = '\ue006'
-    ENTER = '\ue007'
-    SHIFT = '\ue008'
+    TAB = u'\ue004'
+    CLEAR = u'\ue005'
+    RETURN = u'\ue006'
+    ENTER = u'\ue007'
+    SHIFT = u'\ue008'
     LEFT_SHIFT = SHIFT
-    CONTROL = '\ue009'
+    CONTROL = u'\ue009'
     LEFT_CONTROL = CONTROL
-    ALT = '\ue00a'
+    ALT = u'\ue00a'
     LEFT_ALT = ALT
-    PAUSE = '\ue00b'
-    ESCAPE = '\ue00c'
-    SPACE = '\ue00d'
-    PAGE_UP = '\ue00e'
-    PAGE_DOWN = '\ue00f'
-    END = '\ue010'
-    HOME = '\ue011'
-    LEFT = '\ue012'
+    PAUSE = u'\ue00b'
+    ESCAPE = u'\ue00c'
+    SPACE = u'\ue00d'
+    PAGE_UP = u'\ue00e'
+    PAGE_DOWN = u'\ue00f'
+    END = u'\ue010'
+    HOME = u'\ue011'
+    LEFT = u'\ue012'
     ARROW_LEFT = LEFT
-    UP = '\ue013'
+    UP = u'\ue013'
     ARROW_UP = UP
-    RIGHT = '\ue014'
+    RIGHT = u'\ue014'
     ARROW_RIGHT = RIGHT
-    DOWN = '\ue015'
+    DOWN = u'\ue015'
     ARROW_DOWN = DOWN
-    INSERT = '\ue016'
-    DELETE = '\ue017'
-    SEMICOLON = '\ue018'
-    EQUALS = '\ue019'
+    INSERT = u'\ue016'
+    DELETE = u'\ue017'
+    SEMICOLON = u'\ue018'
+    EQUALS = u'\ue019'
 
-    NUMPAD0 = '\ue01a'  # number pad keys
-    NUMPAD1 = '\ue01b'
-    NUMPAD2 = '\ue01c'
-    NUMPAD3 = '\ue01d'
-    NUMPAD4 = '\ue01e'
-    NUMPAD5 = '\ue01f'
-    NUMPAD6 = '\ue020'
-    NUMPAD7 = '\ue021'
-    NUMPAD8 = '\ue022'
-    NUMPAD9 = '\ue023'
-    MULTIPLY = '\ue024'
-    ADD = '\ue025'
-    SEPARATOR = '\ue026'
-    SUBTRACT = '\ue027'
-    DECIMAL = '\ue028'
-    DIVIDE = '\ue029'
+    NUMPAD0 = u'\ue01a'  # number pad keys
+    NUMPAD1 = u'\ue01b'
+    NUMPAD2 = u'\ue01c'
+    NUMPAD3 = u'\ue01d'
+    NUMPAD4 = u'\ue01e'
+    NUMPAD5 = u'\ue01f'
+    NUMPAD6 = u'\ue020'
+    NUMPAD7 = u'\ue021'
+    NUMPAD8 = u'\ue022'
+    NUMPAD9 = u'\ue023'
+    MULTIPLY = u'\ue024'
+    ADD = u'\ue025'
+    SEPARATOR = u'\ue026'
+    SUBTRACT = u'\ue027'
+    DECIMAL = u'\ue028'
+    DIVIDE = u'\ue029'
 
-    F1 = '\ue031'  # function  keys
-    F2 = '\ue032'
-    F3 = '\ue033'
-    F4 = '\ue034'
-    F5 = '\ue035'
-    F6 = '\ue036'
-    F7 = '\ue037'
-    F8 = '\ue038'
-    F9 = '\ue039'
-    F10 = '\ue03a'
-    F11 = '\ue03b'
-    F12 = '\ue03c'
+    F1 = u'\ue031'  # function  keys
+    F2 = u'\ue032'
+    F3 = u'\ue033'
+    F4 = u'\ue034'
+    F5 = u'\ue035'
+    F6 = u'\ue036'
+    F7 = u'\ue037'
+    F8 = u'\ue038'
+    F9 = u'\ue039'
+    F10 = u'\ue03a'
+    F11 = u'\ue03b'
+    F12 = u'\ue03c'
 
-    META = '\ue03d'
-    COMMAND = '\ue03d'
+    META = u'\ue03d'
+    COMMAND = u'\ue03d'

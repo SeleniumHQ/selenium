@@ -30,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 public class TestType extends InternalSelenseTestBase {
   @Test
   public void testType() throws Exception {
-    selenium.open("../tests/html/test_type_page1.html");
+    selenium.open("test_type_page1.html");
     verifyEquals(selenium.getValue("username"), "");
     selenium.shiftKeyDown();
     selenium.type("username", "x");

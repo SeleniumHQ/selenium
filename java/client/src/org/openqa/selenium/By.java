@@ -17,16 +17,15 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.FindsByClassName;
-import org.openqa.selenium.internal.FindsByCssSelector;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
-
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
@@ -160,7 +159,22 @@ public abstract class By {
     return "[unknown locator]";
   }
 
-  public static class ById extends By implements Serializable {
+  public abstract static class StandardLocator extends By {
+    @Override
+    public WebElement findElement(SearchContext context) {
+      return context.findElement(this);
+    }
+
+    @Override
+    public List<WebElement> findElements(SearchContext context) {
+      return context.findElements(this);
+    }
+
+    public abstract <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder);
+    public abstract <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder);
+  }
+
+  public static class ById extends StandardLocator implements Serializable {
 
     private static final long serialVersionUID = 5341968046120372169L;
 
@@ -175,28 +189,29 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsById) {
-        return ((FindsById) context).findElementsById(id);
-      }
-      return ((FindsByXPath) context).findElementsByXPath(".//*[@id = '" + id + "']");
+    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
+      return finder.apply("id", id);
     }
 
     @Override
-    public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsById) {
-        return ((FindsById) context).findElementById(id);
-      }
-      return ((FindsByXPath) context).findElementByXPath(".//*[@id = '" + id + "']");
+    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
+      return finder.apply("id", id);
     }
 
     @Override
     public String toString() {
       return "By.id: " + id;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "css selector");
+      asJson.put("value", Stream.of(id.split("\\s+")).map(str -> "#" + str).collect(joining(" ")));
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
-  public static class ByLinkText extends By implements Serializable {
+  public static class ByLinkText extends StandardLocator implements Serializable {
 
     private static final long serialVersionUID = 1967414585359739708L;
 
@@ -211,22 +226,29 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
-      return ((FindsByLinkText) context).findElementsByLinkText(linkText);
+    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
+      return finder.apply("link text", linkText);
     }
 
     @Override
-    public WebElement findElement(SearchContext context) {
-      return ((FindsByLinkText) context).findElementByLinkText(linkText);
+    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
+      return finder.apply("link text", linkText);
     }
 
     @Override
     public String toString() {
       return "By.linkText: " + linkText;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "link text");
+      asJson.put("value", linkText);
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
-  public static class ByPartialLinkText extends By implements Serializable {
+  public static class ByPartialLinkText extends StandardLocator implements Serializable {
 
     private static final long serialVersionUID = 1163955344140679054L;
 
@@ -241,22 +263,29 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
-      return ((FindsByLinkText) context).findElementsByPartialLinkText(partialLinkText);
+    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
+      return finder.apply("partial link text", partialLinkText);
     }
 
     @Override
-    public WebElement findElement(SearchContext context) {
-      return ((FindsByLinkText) context).findElementByPartialLinkText(partialLinkText);
+    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
+      return finder.apply("partial link text", partialLinkText);
     }
 
     @Override
     public String toString() {
       return "By.partialLinkText: " + partialLinkText;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "partial link text");
+      asJson.put("value", partialLinkText);
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
-  public static class ByName extends By implements Serializable {
+  public static class ByName extends StandardLocator implements Serializable {
 
     private static final long serialVersionUID = 376317282960469555L;
 
@@ -271,28 +300,29 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsByName) {
-        return ((FindsByName) context).findElementsByName(name);
-      }
-      return ((FindsByXPath) context).findElementsByXPath(".//*[@name = '" + name + "']");
+    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
+      return finder.apply("name", name);
     }
 
     @Override
-    public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsByName) {
-        return ((FindsByName) context).findElementByName(name);
-      }
-      return ((FindsByXPath) context).findElementByXPath(".//*[@name = '" + name + "']");
+    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
+      return finder.apply("name", name);
     }
 
     @Override
     public String toString() {
       return "By.name: " + name;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "css selector");
+      asJson.put("value", String.format("*[name='%s']", name.replace("'", "\\'")));
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
-  public static class ByTagName extends By implements Serializable {
+  public static class ByTagName extends StandardLocator implements Serializable {
 
     private static final long serialVersionUID = 4699295846984948351L;
 
@@ -307,28 +337,29 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsByTagName) {
-        return ((FindsByTagName) context).findElementsByTagName(tagName);
-      }
-      return ((FindsByXPath) context).findElementsByXPath(".//" + tagName);
+    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
+      return finder.apply("tag name", tagName);
     }
 
     @Override
-    public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsByTagName) {
-        return ((FindsByTagName) context).findElementByTagName(tagName);
-      }
-      return ((FindsByXPath) context).findElementByXPath(".//" + tagName);
+    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
+      return finder.apply("tag name", tagName);
     }
 
     @Override
     public String toString() {
       return "By.tagName: " + tagName;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "tag name");
+      asJson.put("value", tagName);
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
-  public static class ByXPath extends By implements Serializable {
+  public static class ByXPath extends StandardLocator implements Serializable {
 
     private static final long serialVersionUID = -6727228887685051584L;
 
@@ -344,22 +375,29 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
-      return ((FindsByXPath) context).findElementsByXPath(xpathExpression);
+    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
+      return finder.apply("xpath", xpathExpression);
     }
 
     @Override
-    public WebElement findElement(SearchContext context) {
-      return ((FindsByXPath) context).findElementByXPath(xpathExpression);
+    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
+      return finder.apply("xpath", xpathExpression);
     }
 
     @Override
     public String toString() {
       return "By.xpath: " + xpathExpression;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "xpath");
+      asJson.put("value", xpathExpression);
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
-  public static class ByClassName extends By implements Serializable {
+  public static class ByClassName extends StandardLocator implements Serializable {
 
     private static final long serialVersionUID = -8737882849130394673L;
 
@@ -375,28 +413,28 @@ public abstract class By {
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsByClassName) {
-        return ((FindsByClassName) context).findElementsByClassName(className);
-      }
-      return ((FindsByXPath) context).findElementsByXPath(
-          ".//*[" + containingWord("class", className) + "]");
+    public <T extends SearchContext> WebElement findElement(T driver,
+      BiFunction<String, String, WebElement> finder) {
+      return finder.apply("class name", className);
     }
 
     @Override
-    public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsByClassName) {
-        return ((FindsByClassName) context).findElementByClassName(className);
-      }
-      return ((FindsByXPath) context).findElementByXPath(
-          ".//*[" + containingWord("class", className) + "]");
+    public <T extends SearchContext> List<WebElement> findElements(T driver,
+      BiFunction<String, String, List<WebElement>> finder) {
+      return finder.apply("class name", className);
     }
 
     /**
      * Generate a partial XPath expression that matches an element whose specified attribute
      * contains the given CSS word. So to match &lt;div class='foo bar'&gt; you would say "//div[" +
      * containingWord("class", "foo") + "]".
-     *
+     *    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "link text");
+      asJson.put("value", linkText);
+      return Collections.unmodifiableMap(asJson);
+    }
+
      * @param attribute name
      * @param word name
      * @return XPath fragment
@@ -409,9 +447,18 @@ public abstract class By {
     public String toString() {
       return "By.className: " + className;
     }
+
+    private Map<String, Object> toJson() {
+
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "css selector");
+      asJson.put("value", Stream.of(className.split("\\s+")).map(str -> "." + str).collect(joining(" ")));
+      return Collections.unmodifiableMap(asJson);
+    }
+
   }
 
-  public static class ByCssSelector extends By implements Serializable {
+  public static class ByCssSelector extends StandardLocator implements Serializable {
 
     private static final long serialVersionUID = -3910258723099459239L;
 
@@ -421,33 +468,30 @@ public abstract class By {
       if (cssSelector == null) {
         throw new IllegalArgumentException("Cannot find elements when the selector is null");
       }
-      
+
       this.cssSelector = cssSelector;
     }
 
     @Override
-    public WebElement findElement(SearchContext context) {
-      if (context instanceof FindsByCssSelector) {
-        return ((FindsByCssSelector) context).findElementByCssSelector(cssSelector);
-      }
-
-      throw new WebDriverException(
-          "Driver does not support finding an element by selector: " + cssSelector);
+    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
+      return finder.apply("css selector", cssSelector);
     }
 
     @Override
-    public List<WebElement> findElements(SearchContext context) {
-      if (context instanceof FindsByCssSelector) {
-        return ((FindsByCssSelector) context).findElementsByCssSelector(cssSelector);
-      }
-
-      throw new WebDriverException(
-          "Driver does not support finding elements by selector: " + cssSelector);
+    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
+      return finder.apply("css selector", cssSelector);
     }
 
     @Override
     public String toString() {
       return "By.cssSelector: " + cssSelector;
+    }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "css selector");
+      asJson.put("value", cssSelector);
+      return Collections.unmodifiableMap(asJson);
     }
   }
 }

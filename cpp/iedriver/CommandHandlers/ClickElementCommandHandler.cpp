@@ -215,7 +215,7 @@ bool ClickElementCommandHandler::IsOptionElement(ElementHandle element_wrapper) 
 
 std::wstring ClickElementCommandHandler::GetSyntheticClickAtom() {
   std::wstring script_source = L"(function() { return function(){" + 
-  atoms::asString(atoms::INPUTS) + 
+  atoms::asString(atoms::INPUTS_BIN) + 
   L"; return webdriver.atoms.inputs.click(arguments[0]);" + 
   L"};})();";
   return script_source;

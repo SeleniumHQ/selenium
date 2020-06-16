@@ -23,6 +23,7 @@ require 'fileutils'
 require 'date'
 require 'json'
 require 'set'
+require 'websocket'
 
 require 'selenium/webdriver/common'
 require 'selenium/webdriver/atoms'
@@ -36,6 +37,7 @@ module Selenium
     Location  = Struct.new(:latitude, :longitude, :altitude)
 
     autoload :Chrome,     'selenium/webdriver/chrome'
+    autoload :DevTools,   'selenium/webdriver/devtools'
     autoload :Edge,       'selenium/webdriver/edge'
     autoload :EdgeHtml,   'selenium/webdriver/edge'
     autoload :EdgeChrome, 'selenium/webdriver/edge'

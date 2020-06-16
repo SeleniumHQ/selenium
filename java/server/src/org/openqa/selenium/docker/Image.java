@@ -17,15 +17,18 @@
 
 package org.openqa.selenium.docker;
 
-import java.util.Objects;
+import org.openqa.selenium.docker.internal.ImageSummary;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+
 import java.util.Set;
 
 public class Image {
 
   private final ImageSummary summary;
 
-  Image(ImageSummary summary) {
-    this.summary = Objects.requireNonNull(summary);
+  public Image(ImageSummary summary) {
+    this.summary = Require.nonNull("Container image summary", summary);
   }
 
   public String getName() {
@@ -40,5 +43,13 @@ public class Image {
 
   public Set<String> getTags() {
     return summary.getRepoTags();
+  }
+
+  @Override
+  public String toString() {
+    new Json().toJson(summary);
+    return "Image{" +
+      "summary=" + summary +
+      '}';
   }
 }

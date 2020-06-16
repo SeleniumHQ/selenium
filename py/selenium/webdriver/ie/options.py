@@ -76,7 +76,7 @@ class Options(ArgOptions):
 
     @property
     def element_scroll_behavior(self):
-        """:Returns: The options Element Scroll Behavior in milliseconds """
+        """:Returns: The options Element Scroll Behavior value """
         return self._options.get(self.ELEMENT_SCROLL_BEHAVIOR)
 
     @element_scroll_behavior.setter

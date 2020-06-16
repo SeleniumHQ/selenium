@@ -19,15 +19,16 @@ package org.openqa.selenium.devtools;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import org.openqa.selenium.devtools.log.Log;
 import org.openqa.selenium.devtools.target.Target;
-import org.openqa.selenium.devtools.target.model.SessionId;
-import org.openqa.selenium.devtools.target.model.TargetId;
+import org.openqa.selenium.devtools.target.model.SessionID;
+import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.internal.Require;
 
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -38,7 +39,7 @@ public class DevTools implements Closeable {
 
   private final Duration timeout = Duration.ofSeconds(10);
   private final Connection connection;
-  private SessionId cdpSession = null;
+  private SessionID cdpSession = null;
 
   public DevTools(Connection connection) {
     this.connection = connection;
@@ -46,19 +47,34 @@ public class DevTools implements Closeable {
 
   @Override
   public void close() {
-    connection.close();
+    if (cdpSession != null) {
+      SessionID id = cdpSession;
+      cdpSession = null;
+      connection.sendAndWait(
+        cdpSession, Target.detachFromTarget(Optional.of(id), Optional.empty()), timeout);
+    }
   }
 
   public <X> X send(Command<X> command) {
-    Objects.requireNonNull(command, "Command to send must be set.");
+    Require.nonNull("Command to send", command);
     return connection.sendAndWait(cdpSession, command, timeout);
   }
 
   public <X> void addListener(Event<X> event, Consumer<X> handler) {
-    Objects.requireNonNull(event, "Event to listen for must be set.");
-    Objects.requireNonNull(handler, "Handler to call must be set.");
+    Require.nonNull("Event to listen for", event);
+    Require.nonNull("Handler to call", handler);
 
     connection.addListener(event, handler);
+  }
+
+  public void clearListeners() {
+    connection.clearListeners();
+  }
+
+  public void createSessionIfThereIsNotOne() {
+    if (cdpSession == null) {
+      createSession();
+    }
   }
 
   public void createSession() {
@@ -67,7 +83,7 @@ public class DevTools implements Closeable {
 
     // Grab the first "page" type, and glom on to that.
     // TODO: Find out which one might be the current one
-    TargetId targetId = infos.stream()
+    TargetID targetId = infos.stream()
         .filter(info -> "page".equals(info.getType()))
         .map(TargetInfo::getTargetId)
         .findAny()
@@ -76,7 +92,7 @@ public class DevTools implements Closeable {
     // Start the session.
     cdpSession =
         connection
-            .sendAndWait(cdpSession, Target.attachToTarget(targetId, Optional.empty()), timeout);
+            .sendAndWait(cdpSession, Target.attachToTarget(targetId, Optional.of(true)), timeout);
 
     try {
       // We can do all of these in parallel, and we don't care about the result.
@@ -98,5 +114,9 @@ public class DevTools implements Closeable {
     } catch (TimeoutException e) {
       throw new org.openqa.selenium.TimeoutException(e);
     }
+  }
+
+  public SessionID getCdpSession() {
+    return cdpSession;
   }
 }

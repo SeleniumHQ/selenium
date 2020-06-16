@@ -17,50 +17,47 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import com.google.common.base.Strings;
-
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import io.opentracing.tag.Tags;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
-import java.util.function.Function;
+import java.util.logging.Logger;
 
 public class HttpTracing {
+
+  private static final Logger LOG = Logger.getLogger(HttpTracing.class.getName());
 
   private HttpTracing() {
     // Utility classes
   }
 
-  public static final Function<HttpRequest, Map<String, String>> AS_MAP = req -> {
-    Map<String, String> builder = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    for (String name : req.getHeaderNames()) {
-      if (Strings.isNullOrEmpty(name)) {
-        continue;
-      }
+  private static TraceContext extract(Tracer tracer, HttpRequest request) {
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
 
-      String value = req.getHeader(name);
-      if (Strings.isNullOrEmpty(value)) {
-        continue;
-      }
+    return tracer.getPropagator().extractContext(tracer.getCurrentContext(), request, (req, key) -> req.getHeader(key));
+  }
 
-      builder.put(name, value);
-    }
-    return Collections.unmodifiableMap(builder);
-  };
+  public static Span newSpanAsChildOf(Tracer tracer, HttpRequest request, String name) {
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
+    Require.nonNull("Name", name);
 
-  public static void inject(Span span, HttpRequest request) {
-    Objects.requireNonNull(request, "Request must be set.");
-    if (span == null) {
+    TraceContext parent = extract(tracer, request);
+    return parent.createSpan(name);
+  }
+
+  public static void inject(Tracer tracer, TraceContext context, HttpRequest request) {
+    if (context == null) {
+      // Do nothing.
       return;
     }
 
-    span.addTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
-    span.addTag(Tags.HTTP_URL.getKey(), request.getUri());
+    Require.nonNull("Tracer", tracer);
+    Require.nonNull("Request", request);
 
-    span.inject(request::setHeader);
+    StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
+    LOG.fine(String.format("Injecting %s into %s at %s:%d", request, context, caller.getClassName(), caller.getLineNumber()));
+
+    tracer.getPropagator().inject(context, request, (req, key, value) -> req.setHeader(key, value));
   }
 }

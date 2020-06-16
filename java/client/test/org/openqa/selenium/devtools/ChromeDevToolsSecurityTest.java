@@ -23,7 +23,9 @@ import static org.openqa.selenium.devtools.security.Security.setIgnoreCertificat
 
 import org.junit.Test;
 import org.openqa.selenium.devtools.security.Security;
+import org.openqa.selenium.testing.Ignore;
 
+@Ignore
 public class ChromeDevToolsSecurityTest extends DevToolsTestBase {
 
   @Test
@@ -35,7 +37,7 @@ public class ChromeDevToolsSecurityTest extends DevToolsTestBase {
 
     devTools.addListener(Security.securityStateChanged(),
                          securityStateChanged -> assertTrue(securityStateChanged
-                           .getSummary().contains("This page has a non-HTTPS secure origin")));
+                           .getSummary().get().contains("This page has a non-HTTPS secure origin")));
 
     driver.get(appServer.whereIs("devToolsSecurityTest"));
 

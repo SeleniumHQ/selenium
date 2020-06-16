@@ -1,20 +1,24 @@
 load(
-    "@io_bazel_rules_dotnet//dotnet/private:context.bzl",
-    "dotnet_context"
+    "@d2l_rules_csharp//csharp/private:common.bzl",
+    "collect_transitive_info",
+    "fill_in_missing_frameworks",
 )
 load(
-    "@io_bazel_rules_dotnet//dotnet/private:providers.bzl",
-    "DotnetLibrary",
+    "@d2l_rules_csharp//csharp/private:providers.bzl",
+    "CSharpAssemblyInfo",
 )
 
 def _merged_assembly_impl(ctx):
-    dotnet = dotnet_context(ctx)
+    providers = {}
     name = ctx.label.name
 
     deps = ctx.attr.deps
     result = ctx.outputs.out
 
+    target_framework = ctx.attr.target_framework
+
     args = [
+        "-ndebug",
         "-v4",
         "-xmldocs",
         "-internalize",
@@ -26,37 +30,44 @@ def _merged_assembly_impl(ctx):
 
     args.append("-out={}".format(ctx.outputs.out.path))
     args.append(ctx.attr.src_assembly.files.to_list()[0].path)
-    for dep in ctx.files.deps:
-        args.append(ctx.expand_location(dep.path))
+    (refs, runfiles, native_dlls) = collect_transitive_info(deps, target_framework)
+    for ref in refs.to_list():
+        args.append(ref.path)
 
     ctx.actions.run(
         executable = ctx.executable.merge_tool,
         arguments = args,
         inputs = ctx.attr.src_assembly.files,
-        outputs = [ctx.outputs.out]
+        outputs = [ctx.outputs.out],
     )
 
-    data = depset()
+    runfiles = ctx.runfiles(
+        files = [ctx.outputs.out],
+    )
 
-    runfiles = depset(direct = [result], transitive = [d[DotnetLibrary].runfiles for d in deps] + [data])
-    transitive = depset(direct = deps, transitive = [a[DotnetLibrary].transitive for a in deps])
+    for dep in ctx.files.deps:
+        runfiles = runfiles.merge(dep[DefaultInfo].default_runfiles)
 
-    merged_lib = dotnet.new_library(
-        dotnet = dotnet,
-        name = name,
+    providers[target_framework] = CSharpAssemblyInfo[target_framework](
+        out = ctx.outputs.out,
+        refout = None,
+        pdb = None,
+        native_dlls = native_dlls,
         deps = deps,
-        transitive = transitive,
-        runfiles = runfiles,
-        result = result,
+        transitive_refs = refs,
+        transitive_runfiles = depset([]),
+        actual_tfm = target_framework,
+        runtimeconfig = None,
     )
 
-    return [
-        merged_lib,
+    fill_in_missing_frameworks(providers)
+    returned_info = providers.values()
+    returned_info.append(
         DefaultInfo(
-            files = depset([merged_lib.result]),
-            runfiles = ctx.runfiles(files = [], transitive_files = merged_lib.runfiles),
+            runfiles = runfiles,
         ),
-    ]
+    )
+    return returned_info
 
 merged_assembly = rule(
     implementation = _merged_assembly_impl,
@@ -65,13 +76,13 @@ merged_assembly = rule(
         "deps": attr.label_list(),
         "out": attr.output(mandatory = True),
         "keyfile": attr.label(allow_single_file = True),
-        "dotnet_context_data": attr.label(default = Label("@io_bazel_rules_dotnet//:dotnet_context_data")),
+        "target_framework": attr.string(mandatory = True),
         "merge_tool": attr.label(
             executable = True,
             cfg = "host",
             default = Label("//third_party/dotnet/ilmerge:ilmerge.exe"),
-            allow_single_file = True
+            allow_single_file = True,
         ),
     },
-    toolchains = ["@io_bazel_rules_dotnet//dotnet:toolchain_net"],
+    toolchains = ["//third_party/dotnet/ilmerge:toolchain_type"],
 )

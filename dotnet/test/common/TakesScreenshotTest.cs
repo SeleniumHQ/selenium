@@ -301,7 +301,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         public void ShouldCaptureScreenshotAtIFramePage()
         {
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
@@ -312,7 +311,12 @@ namespace OpenQA.Selenium
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_iframes.html");
 
+            // Resize the window to avoid scrollbars in screenshot
+            Size originalSize = driver.Manage().Window.Size;
+            driver.Manage().Window.Size = new Size(1040, 700);
+
             Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
+            driver.Manage().Window.Size = originalSize;
 
             HashSet<string> actualColors = ScanActualColors(screenshot,
                                                        /* stepX in pixels */ 5,
@@ -366,7 +370,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
         {
@@ -378,9 +381,14 @@ namespace OpenQA.Selenium
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("screen/screen_iframes.html");
 
+            // Resize the window to avoid scrollbars in screenshot
+            Size originalSize = driver.Manage().Window.Size;
+            driver.Manage().Window.Size = new Size(1040, 700);
+
             driver.SwitchTo().Frame(driver.FindElement(By.Id("iframe2")));
 
             Screenshot screenshot = screenshotCapableDriver.GetScreenshot();
+            driver.Manage().Window.Size = originalSize;
 
             HashSet<string> actualColors = ScanActualColors(screenshot,
                                                        /* stepX in pixels */ 5,
@@ -437,7 +445,7 @@ namespace OpenQA.Selenium
         {
             HashSet<string> colors = new HashSet<string>();
 
-#if !NETCOREAPP2_0 && !NETSTANDARD2_0
+#if !NETCOREAPP2_1 && !NETSTANDARD2_1
             try
             {
                 Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
@@ -471,7 +479,7 @@ namespace OpenQA.Selenium
         {
             Color pixelColor = Color.Black;
 
-#if !NETCOREAPP2_0 && !NETSTANDARD2_0
+#if !NETCOREAPP2_1 && !NETSTANDARD2_1
             Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
             Bitmap bitmap = new Bitmap(image);
             pixelColor = bitmap.GetPixel(1, 1);

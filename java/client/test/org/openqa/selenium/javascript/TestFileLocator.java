@@ -17,20 +17,20 @@
 
 package org.openqa.selenium.javascript;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.System.getProperty;
+import static java.util.Collections.emptySet;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.internal.Require;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -45,11 +45,11 @@ class TestFileLocator {
 
   public static List<Path> findTestFiles() throws IOException {
     Path directory = getTestDirectory();
-    ImmutableSet<Path> excludedFiles = getExcludedFiles(directory);
+    Set<Path> excludedFiles = getExcludedFiles(directory);
     return findTestFiles(directory, excludedFiles);
   }
 
-  private static List<Path> findTestFiles(Path directory, ImmutableSet<Path> excludedFiles)
+  private static List<Path> findTestFiles(Path directory, Set<Path> excludedFiles)
     throws IOException {
     return Files.find(
       directory,
@@ -67,9 +67,9 @@ class TestFileLocator {
   }
 
   private static Path getTestDirectory() {
-    String testDirName = checkNotNull(getProperty(TEST_DIRECTORY_PROPERTY),
-        "You must specify the test directory with the %s system property",
-        TEST_DIRECTORY_PROPERTY);
+    String testDirName = Require.state("Test directory", getProperty(TEST_DIRECTORY_PROPERTY)).nonNull(
+                                 "You must specify the test directory with the %s system property",
+                                 TEST_DIRECTORY_PROPERTY);
     
     Path runfiles = InProject.findRunfilesRoot();
     Path testDir;
@@ -81,24 +81,21 @@ class TestFileLocator {
       testDir = InProject.locate(testDirName);
     }
 
-    checkArgument(Files.exists(testDir), "Test directory does not exist: %s",
-        testDirName);
-    checkArgument(Files.isDirectory(testDir));
+    Require.state("Test directory", testDir.toFile()).isDirectory();
 
     return testDir;
   }
 
-  private static ImmutableSet<Path> getExcludedFiles(final Path testDirectory) {
+  private static Set<Path> getExcludedFiles(final Path testDirectory) {
     String excludedFiles = getProperty(TEST_EXCLUDES_PROPERTY);
     if (excludedFiles == null) {
-      return ImmutableSet.of();
+      return emptySet();
     }
 
     Iterable<String> splitExcludes = Splitter.on(',').omitEmptyStrings().split(excludedFiles);
 
-    return ImmutableSet.copyOf(
-        StreamSupport.stream(splitExcludes.spliterator(), false)
-            .map(testDirectory::resolve).collect(Collectors.toList()));
+    return StreamSupport.stream(splitExcludes.spliterator(), false)
+        .map(testDirectory::resolve).collect(Collectors.toSet());
   }
 
   public static String getTestFilePath(Path baseDir, Path testFile) {

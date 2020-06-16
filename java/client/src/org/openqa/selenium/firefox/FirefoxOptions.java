@@ -17,15 +17,16 @@
 
 package org.openqa.selenium.firefox;
 
-import static java.util.Objects.requireNonNull;
-import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
+import static java.util.Collections.singletonMap;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -36,12 +37,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeMap;
-import java.util.logging.Level;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand.
@@ -56,12 +57,10 @@ import java.util.logging.Level;
  */
 public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
-  public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
+  public static final String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
   private List<String> args = new ArrayList<>();
-  private Map<String, Boolean> booleanPrefs = new TreeMap<>();
-  private Map<String, Integer> intPrefs = new TreeMap<>();
-  private Map<String, String> stringPrefs = new TreeMap<>();
+  private Map<String, Object> preferences = new HashMap<>();
   private FirefoxDriverLogLevel logLevel;
   private Binary binary;
   private boolean legacy;
@@ -116,9 +115,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       FirefoxOptions that = (FirefoxOptions) raw;
 
       addArguments(that.args);
-      that.booleanPrefs.forEach(this::addPreference);
-      that.intPrefs.forEach(this::addPreference);
-      that.stringPrefs.forEach(this::addPreference);
+      that.preferences.forEach(this::addPreference);
       setLegacy(that.legacy);
 
       if (that.logLevel != null) { setLogLevel(that.logLevel); }
@@ -140,15 +137,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       }
       if (that.containsKey("prefs")) {
         Map<String, Object> prefs = (Map<String, Object>) that.get("prefs");
-        prefs.forEach((k, v) -> {
-          if (v instanceof String) {
-            stringPrefs.put(k, (String) v);
-          } else if (v instanceof Number) {
-            intPrefs.put(k, ((Number) v).intValue());
-          } else if (v instanceof Boolean) {
-            booleanPrefs.put(k, (Boolean) v);
-          }
-        });
+        preferences.putAll(prefs);
       }
       if (that.containsKey("binary")) { setBinary((String) that.get("binary")); }
       if (that.containsKey("log")) {
@@ -215,7 +204,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   public FirefoxOptions setProfile(FirefoxProfile profile) {
-    setCapability(FirefoxDriver.PROFILE, profile);
+    setCapability(FirefoxDriver.Capability.PROFILE, profile);
     return this;
   }
 
@@ -224,7 +213,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   public FirefoxOptions addArguments(String... arguments) {
-    addArguments(ImmutableList.copyOf(arguments));
+    addArguments(Arrays.asList(arguments));
     return this;
   }
 
@@ -233,23 +222,13 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return this;
   }
 
-  public FirefoxOptions addPreference(String key, boolean value) {
-    booleanPrefs.put(requireNonNull(key), value);
-    return this;
-  }
-
-  public FirefoxOptions addPreference(String key, int value) {
-    intPrefs.put(requireNonNull(key), value);
-    return this;
-  }
-
-  public FirefoxOptions addPreference(String key, String value) {
-    stringPrefs.put(requireNonNull(key), value);
+  public FirefoxOptions addPreference(String key, Object value) {
+    preferences.put(Require.nonNull("Key", key), value);
     return this;
   }
 
   public FirefoxOptions setLogLevel(FirefoxDriverLogLevel logLevel) {
-    this.logLevel = Objects.requireNonNull(logLevel, "Log level must be set");
+    this.logLevel = Require.nonNull("Log level", logLevel);
     return this;
   }
 
@@ -265,7 +244,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public void setCapability(String key, Object value) {
     switch (key) {
       case BINARY:
-        binary = new Binary(requireNonNull(value, "Binary value cannot be null"));
+        binary = new Binary(Require.nonNull("Binary value", value));
         value = binary.asCapability();
         break;
 
@@ -298,45 +277,33 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   @Override
   public Map<String, Object> asMap() {
-    TreeMap<String, Object> toReturn = new TreeMap<>(super.asMap());
+    Map<String, Object> toReturn = new HashMap<>(super.asMap());
 
     ImmutableSortedMap.Builder<String, Object> w3cOptions = ImmutableSortedMap.naturalOrder();
-    w3cOptions.put("args", args);
+    w3cOptions.put("args", unmodifiableList(new ArrayList<>(args)));
 
     if (binary != null) {
       w3cOptions.put("binary", binary.asPath());
     }
 
     if (logLevel != null) {
-      w3cOptions.put("log", ImmutableMap.of("level", logLevel));
+      w3cOptions.put("log", singletonMap("level", logLevel));
     }
 
     if (profile != null) {
-      for (Map.Entry<String, Boolean> pref : booleanPrefs.entrySet()) {
-        profile.setPreference(pref.getKey(), pref.getValue());
-      }
-      for (Map.Entry<String, Integer> pref : intPrefs.entrySet()) {
-        profile.setPreference(pref.getKey(), pref.getValue());
-      }
-      for (Map.Entry<String, String> pref : stringPrefs.entrySet()) {
-        profile.setPreference(pref.getKey(), pref.getValue());
-      }
+      preferences.forEach(profile::setPreference);
       try {
         w3cOptions.put("profile", profile.toJson());
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
     } else {
-      ImmutableMap.Builder<String, Object> allPrefs = ImmutableMap.builder();
-      allPrefs.putAll(booleanPrefs);
-      allPrefs.putAll(intPrefs);
-      allPrefs.putAll(stringPrefs);
-      w3cOptions.put("prefs", allPrefs.build());
+      w3cOptions.put("prefs", unmodifiableMap(new HashMap<>(preferences)));
     }
 
     toReturn.put(FIREFOX_OPTIONS, w3cOptions.build());
 
-    return toReturn;
+    return unmodifiableMap(toReturn);
   }
 
   @Override
@@ -349,9 +316,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   protected int amendHashCode() {
     return Objects.hash(
         args,
-        booleanPrefs,
-        intPrefs,
-        stringPrefs,
+        preferences,
         logLevel,
         binary,
         legacy,

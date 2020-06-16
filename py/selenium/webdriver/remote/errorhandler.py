@@ -213,22 +213,23 @@ class ErrorHandler(object):
         st_value = value.get('stackTrace') or value.get('stacktrace')
         if st_value:
             if isinstance(st_value, basestring):
-                st_value = st_value.split('\n')
-            stacktrace = []
-            try:
-                for frame in st_value:
-                    line = self._value_or_default(frame, 'lineNumber', '')
-                    file = self._value_or_default(frame, 'fileName', '<anonymous>')
-                    if line:
-                        file = "%s:%s" % (file, line)
-                    meth = self._value_or_default(frame, 'methodName', '<anonymous>')
-                    if 'className' in frame:
-                        meth = "%s.%s" % (frame['className'], meth)
-                    msg = "    at %s (%s)"
-                    msg = msg % (meth, file)
-                    stacktrace.append(msg)
-            except TypeError:
-                pass
+                stacktrace = st_value.split('\n')
+            else:
+                stacktrace = []
+                try:
+                    for frame in st_value:
+                        line = self._value_or_default(frame, 'lineNumber', '')
+                        file = self._value_or_default(frame, 'fileName', '<anonymous>')
+                        if line:
+                            file = "%s:%s" % (file, line)
+                        meth = self._value_or_default(frame, 'methodName', '<anonymous>')
+                        if 'className' in frame:
+                            meth = "%s.%s" % (frame['className'], meth)
+                        msg = "    at %s (%s)"
+                        msg = msg % (meth, file)
+                        stacktrace.append(msg)
+                except TypeError:
+                    pass
         if exception_class == UnexpectedAlertPresentException:
             alert_text = None
             if 'data' in value:

@@ -1,3 +1,70 @@
+4.0.0.alpha6 (2020-05-28)
+=========================
+
+Chrome:
+  * Added DevTools classes and methods generated from the CDP specification.
+    It currently supports commands and events and provides Rubyish API:
+      driver.devtools.page.navigate(url: 'http://google.com')
+      driver.devtools.console.clear_messages
+      driver.devtools.page.enable
+      driver.devtools.page.on(:load_event_fired) do |params|
+        puts("Page loaded in #{params['timestamp']}")
+      end
+    Check https://chromedevtools.github.io/devtools-protocol/ for more information
+    about possible commands and events. Please note that this API is considered
+    to be experimental and may change any time before stable 4.0 release.
+  * Fixed an issue when passing :prompt_for_download (or similar snake_cased
+    symbols) in Options#prefs would be ignored by Chrome because Selenium
+    would internally convert it to camelCased format (:promptForDownload).
+    Now :prefs are left intact.
+
+Edge:
+  * Fixed an issue when Driver#execute_cdp would not work for Chromium-based
+    Edge browser.
+
+Ruby:
+  * Deprecated passing :desired_capabilities and :options to driver initialization
+    in favor of :capabilities. They now can be combined in an array to make
+    custom capabilities requirements:
+      caps = Selenium::WebDriver::Remote::Capabilities.chrome
+      opts = Selenium::WebDriver::Chrome::Options.new
+      Selenium::WebDriver.for(:remote, capabilities: :chrome)
+      Selenium::WebDriver.for(:remote, capabilities: caps)
+      Selenium::WebDriver.for(:remote, capabilities: opts)
+      Selenium::WebDriver.for(:remote, capabilities: [caps, opts])
+  * Deprecated passing Hash to :capabilities in favor of Remote::Capabilities object.
+  * Updated minimum require Ruby version to 2.5.
+  * Improved keyword arguments handling to avoid warnings in Ruby 2.7.
+
+4.0.0.alpha5 (2020-03-18)
+=========================
+
+The release is just to synchronize version with other bindings and does not
+include any changes.
+
+4.0.0.alpha4 (2020-01-09)
+=========================
+
+Ruby:
+  * Added initial support for relative locators, which allow to find elements
+    above/below/left/right/near another element. For example, you can find all
+    the cells in a table to the right of your starting cell:
+      start_cell = driver.find_element(css: 'td')
+      right_cells = driver.find_elements(relative: {tag_name: 'td', right: start_cell})
+    The documentation is still lacking so refer to examples in df6be2e962.
+  * Added ability to silence certain logger messages by using it's identifiers:
+      Selenium::WebDriver.logger.ignore(:driver_path)
+  * Added new dependency: websocket. It's used for communicating with Chrome DevTools.
+  * Loosened childprocess dependency to allow using version 2.0+.
+  * Loosened rubyzip dependency to allow using version 2.0+.
+  * Fixed Errno::EACCES error on Linux DeX and similar distributes
+
+Chrome:
+  * Added initial support for communicating with Chrome DevTools. The implementation
+    is very basic and lacks CDP domains, events and types - those will be added
+    in future releases. Still, it allows to execute simple commands to DevTools:
+      driver.devtools.send('Page.navigate', {url: 'https://google.com'})
+
 4.0.0.alpha3 (2019-07-08)
 =========================
 
@@ -47,6 +114,31 @@ Firefox:
   * Fixed an issue when passing :profile string to Firefox::Options.new would
     result in NoMethodError. Now it will find a profile with such name on your
     system and use it accordingly (issue #7119)
+
+3.142.7 (2019-12-27)
+====================
+
+Ruby:
+  * Fix keyword argument deprecations in Ruby 2.7 (thanks @connorshea)
+
+3.142.6 (2019-10-04)
+====================
+
+Ruby:
+  * Loosen ChildProcess dependency so that 3.0+ can be used (thanks @jaredbeck)
+
+3.142.5 (2019-10-01)
+====================
+
+Ruby:
+  * Loosen RubyZip dependency so that 1.3+ can be used (thanks @vtamara)
+
+3.142.4 (2019-09-02)
+====================
+
+Chrome:
+  * Added support for new command for getting logs in ChromeDriver 76+
+    with W3C mode on
 
 3.142.3 (2019-05-21)
 ====================

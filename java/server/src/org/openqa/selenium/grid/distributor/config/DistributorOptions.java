@@ -17,21 +17,19 @@
 
 package org.openqa.selenium.grid.distributor.config;
 
-import static org.openqa.selenium.net.Urls.fromUri;
-
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class DistributorOptions {
+
+  private static final String DISTRIBUTOR_SECTION = "distributor";
+  private static final Logger LOG = Logger.getLogger(DistributorOptions.class.getName());
 
   private final Config config;
 
@@ -40,7 +38,7 @@ public class DistributorOptions {
   }
 
   public URI getDistributorUri() {
-    Optional<URI> host = config.get("distributor", "host").map(str -> {
+    Optional<URI> host = config.get(DISTRIBUTOR_SECTION, "host").map(str -> {
       try {
         return new URI(str);
       } catch (URISyntaxException e) {
@@ -52,8 +50,8 @@ public class DistributorOptions {
       return host.get();
     }
 
-    Optional<Integer> port = config.getInt("distributor", "port");
-    Optional<String> hostname = config.get("distributor", "hostname");
+    Optional<Integer> port = config.getInt(DISTRIBUTOR_SECTION, "port");
+    Optional<String> hostname = config.get(DISTRIBUTOR_SECTION, "hostname");
 
     if (!(port.isPresent() && hostname.isPresent())) {
       throw new ConfigException("Unable to determine host and port for the distributor");
@@ -76,11 +74,7 @@ public class DistributorOptions {
     }
   }
 
-  public Distributor getDistributor(DistributedTracer tracer, HttpClient.Factory clientFactory) {
-    URL distributorUrl = fromUri(getDistributorUri());
-    return new RemoteDistributor(
-        tracer,
-        clientFactory,
-        distributorUrl);
+  public Distributor getDistributor(String defaultClass) {
+    return (Distributor) config.getClass(DISTRIBUTOR_SECTION, "implementation", Distributor.class, defaultClass);
   }
 }

@@ -1,21 +1,32 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "tracing",
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote/tracing:__subpackages__",
+        "//java/client/test/org/openqa/selenium/remote/tracing:__subpackages__",
+    ],
+    exports = [
+        ":tracing-lib",
+        "//java/client/src/org/openqa/selenium/remote/tracing/empty",
+    ],
+)
+
+java_library(
+    name = "tracing-lib",
     srcs = glob(["*.java"]),
     visibility = [
-        "//java/client/test/org/openqa/selenium/remote/tracing:__subpackages__",
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+        "//java/client/src/org/openqa/selenium/remote/tracing/empty:__pkg__",
     ],
     exports = [
         # Exposed by tracing APIs
         "//java/client/src/org/openqa/selenium/remote/http",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/http",
-        "//third_party/java/contrib:opentracing-tracerresolver",
-        "//third_party/java/guava",
-        "//third_party/java/opentracing:opentracing-api",
-        "//third_party/java/opentracing:opentracing-noop",
-        "//third_party/java/opentracing:opentracing-util",
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-context-prop"),
     ],
 )

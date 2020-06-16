@@ -3,40 +3,93 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 130
+  IgnoredPatterns:
+      - '\s+# rubocop'
+      - '^\s*#'
+      - '^\s*it .*, except: \{.*\} do$'
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Style/BracesAroundHashParameters:
-  EnforcedStyle: context_dependent
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
 
-Style/BlockDelimiters:
-  EnforcedStyle: braces_for_chaining
+Lint/RaiseException:
+  Enabled: true
 
-Style/Alias:
-  EnforcedStyle: prefer_alias_method
+Lint/StructNewOverride:
+  Enabled: true
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Enabled: false
 
-Style/RegexpLiteral:
-  EnforcedStyle: mixed
+Metrics/AbcSize:
+  Max: 27
+  Exclude:
+    - 'lib/selenium/webdriver/remote/http/curb.rb'
+    - 'lib/selenium/webdriver/support/color.rb'
 
-# Consider documenting all top-level classes and modules
-Style/Documentation:
-  Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
+    - 'selenium-webdriver.gemspec'
 
-# Port Integers do not need underscores
-Style/NumericLiterals:
-  Enabled: false
+Metrics/ClassLength:
+  CountComments: false
+  Max: 160
+  Exclude:
+    - 'lib/selenium/webdriver/remote/bridge.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
 
-# Bug
+Metrics/CyclomaticComplexity:
+  Max: 9
+  Exclude:
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
+
+Metrics/MethodLength:
+  CountComments: false
+  Max: 22
+  Exclude:
+    - 'lib/selenium/server.rb'
+    - 'lib/selenium/webdriver/common/driver.rb'
+    - 'lib/selenium/webdriver/remote/http/default.rb'
+
+Metrics/ModuleLength:
+  CountComments: false
+  Exclude:
+    - 'lib/selenium/webdriver/common/platform.rb'
+    - 'spec/**/*'
+
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
+# TODO: Refactor Chrome::Bridge#create_capabilities
+Metrics/PerceivedComplexity:
+  Max: 8
+  Exclude:
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
+
 Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   AllowedNames:
     - x
     - y
@@ -45,104 +98,76 @@ Naming/UncommunicativeMethodParamName:
     - id
     - io
 
-Style/CommentedKeyword:
-  Enabled: false
-
-# TODO: Refactor Chrome::Bridge#create_capabilities
-Metrics/PerceivedComplexity:
-  Max: 11
-  Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
-
-Metrics/CyclomaticComplexity:
-  Max: 9
-  Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
-
-Metrics/ClassLength:
-  CountComments: false
-  Max: 150
-  Exclude:
-    - 'lib/selenium/webdriver/firefox/profile.rb'
-    - 'lib/selenium/webdriver/remote/bridge.rb'
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
-
-Metrics/AbcSize:
-  Max: 33
-  Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'lib/selenium/webdriver/support/color.rb'
-
-Metrics/LineLength:
-  Max: 130
-  IgnoredPatterns:
-      - '\s+# rubocop'
-      - '^\s*#'
-      - '^\s*it .*, except: \{.*\} do$'
-
-Metrics/ModuleLength:
-  CountComments: false
-  Exclude:
-    - 'lib/selenium/webdriver/common/platform.rb'
-    - 'spec/**/*'
-
-Metrics/MethodLength:
-  CountComments: false
-  Max: 33
-  Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
-
-Metrics/BlockLength:
-  Exclude:
-    - "**/*_spec.rb"
-    - 'selenium-webdriver.gemspec'
-
-Metrics/ParameterLists:
-  CountKeywordArgs: false
-
-Layout/EmptyLinesAroundClassBody:
-  Enabled: false
-
-Layout/EmptyLinesAroundModuleBody:
-  Enabled: false
-
-Style/StringLiterals:
-  Enabled: false
-
-Style/Dir:
-  Exclude:
-    - 'selenium-webdriver.gemspec'
-
-RSpec/ExampleWording:
-  Enabled: false
-
-RSpec/MultipleExpectations:
-  Enabled: false
-
-RSpec/ExampleLength:
-  Enabled: false
-
-RSpec/DescribeClass:
-  Enabled: false
-
-RSpec/ContextWording:
-  Enabled: false
-
 RSpec/AnyInstance:
-  Enabled: false
-
-RSpec/MessageSpies:
   Enabled: false
 
 RSpec/BeforeAfterAll:
   Exclude:
     - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
 
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/DescribedClass:
+  EnforcedStyle: explicit
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/ExampleWording:
+  Enabled: false
+
 RSpec/InstanceVariable:
   Exclude:
     - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/BlockDelimiters:
+  EnforcedStyle: braces_for_chaining
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Style/Dir:
+  Exclude:
+    - 'selenium-webdriver.gemspec'
+
+# Consider documenting all top-level classes and modules
+Style/Documentation:
+  Enabled: false
+
+Style/ExponentialNotation:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+# Port Integers do not need underscores
+Style/NumericLiterals:
+  Enabled: false
+
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+
+Style/SlicingWithRange:
+  Enabled: true
+
+Style/StringLiterals:
+  Enabled: false

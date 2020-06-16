@@ -17,12 +17,10 @@
 
 package org.openqa.selenium.safari;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Platform.MAC;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
@@ -33,6 +31,10 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class SafariDriverService extends DriverService {
 
@@ -49,9 +51,18 @@ public class SafariDriverService extends DriverService {
   public SafariDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  public SafariDriverService(
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   public static SafariDriverService createDefaultService() {
@@ -69,7 +80,7 @@ public class SafariDriverService extends DriverService {
   @Override
   protected void waitUntilAvailable() {
     try {
-      PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
+      PortProber.waitForPortUp(getUrl().getPort(), (int) getTimeout().toMillis(), MILLISECONDS);
     } catch (RuntimeException e) {
       throw new WebDriverException(e);
     }
@@ -147,18 +158,19 @@ public class SafariDriverService extends DriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
-      return ImmutableList.of("--port", String.valueOf(getPort()));
+    protected List<String> createArgs() {
+      return Arrays.asList("--port", String.valueOf(getPort()));
     }
 
     @Override
     protected SafariDriverService createDriverService(
         File exe,
         int port,
-        ImmutableList<String> args,
-        ImmutableMap<String, String> environment) {
+        Duration timeout,
+        List<String> args,
+        Map<String, String> environment) {
       try {
-        return new SafariDriverService(exe, port, args, environment);
+        return new SafariDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

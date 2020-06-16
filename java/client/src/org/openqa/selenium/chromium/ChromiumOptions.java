@@ -17,21 +17,21 @@
 
 package org.openqa.selenium.chromium;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +53,7 @@ import java.util.stream.Stream;
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"),
+ *     new URL("http://localhost:4444/"),
  *     new ChromeOptions());
  * </code></pre>
  *
@@ -88,7 +88,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @param path Path to Chrome executable.
    */
   public T setBinary(File path) {
-    binary = checkNotNull(path).getPath();
+    binary = Require.nonNull("Path to the chrome executable", path).getPath();
     return (T) this;
   }
 
@@ -100,7 +100,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @param path Path to Chrome executable.
    */
   public T setBinary(String path) {
-    binary = checkNotNull(path);
+    binary = Require.nonNull("Path to the chrome executable", path);
     return (T) this;
   }
 
@@ -109,7 +109,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @see #addArguments(List)
    */
   public T addArguments(String... arguments) {
-    addArguments(ImmutableList.copyOf(arguments));
+    addArguments(Arrays.asList(arguments));
     return (T) this;
   }
 
@@ -138,7 +138,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @see #addExtensions(List)
    */
   public T addExtensions(File... paths) {
-    addExtensions(ImmutableList.copyOf(paths));
+    addExtensions(Arrays.asList(paths));
     return (T) this;
   }
 
@@ -149,12 +149,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @param paths Paths to the extensions to install.
    */
   public T addExtensions(List<File> paths) {
-    for (File path : paths) {
-      checkNotNull(path);
-      checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
-      checkArgument(!path.isDirectory(), "%s is a directory",
-          path.getAbsolutePath());
-    }
+    paths.forEach(path -> Require.argument("Extension", path).isFile());
     extensionFiles.addAll(paths);
     return (T) this;
   }
@@ -164,7 +159,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @see #addEncodedExtensions(List)
    */
   public T addEncodedExtensions(String... encoded) {
-    addEncodedExtensions(ImmutableList.copyOf(encoded));
+    addEncodedExtensions(Arrays.asList(encoded));
     return (T) this;
   }
 
@@ -176,7 +171,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    */
   public T addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
-      checkNotNull(extension);
+      Require.nonNull("Encoded extension", extension);
     }
     extensions.addAll(encoded);
     return (T) this;
@@ -191,7 +186,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    *     to JSON.
    */
   public T setExperimentalOption(String name, Object value) {
-    experimentalOptions.put(checkNotNull(name), value);
+    experimentalOptions.put(Require.nonNull("Option name", name), value);
     return (T) this;
   }
 
@@ -224,24 +219,24 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
       options.put("binary", binary);
     }
 
-    options.put("args", ImmutableList.copyOf(args));
+    options.put("args", unmodifiableList(new ArrayList<>(args)));
 
     options.put(
         "extensions",
-        Stream.concat(
+        unmodifiableList(Stream.concat(
             extensionFiles.stream()
                 .map(file -> {
                   try {
-                    return Base64.getEncoder().encodeToString(Files.toByteArray(file));
+                    return Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
                   } catch (IOException e) {
                     throw new SessionNotCreatedException(e.getMessage(), e);
                   }
                 }),
             extensions.stream()
-        ).collect(ImmutableList.toImmutableList()));
+        ).collect(toList())));
 
-    toReturn.put(CAPABILITY, options);
+    toReturn.put(CAPABILITY, unmodifiableMap(options));
 
-    return Collections.unmodifiableMap(toReturn);
+    return unmodifiableMap(toReturn);
   }
 }

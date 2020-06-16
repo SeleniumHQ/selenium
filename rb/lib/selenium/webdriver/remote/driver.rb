@@ -34,24 +34,18 @@ module Selenium
         include DriverExtensions::HasRemoteStatus
         include DriverExtensions::HasWebStorage
 
-        def initialize(opts = {})
-          listener = opts.delete(:listener)
-          desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.new }
-
+        def initialize(bridge: nil, listener: nil, **opts)
+          desired_capabilities = opts[:desired_capabilities]
           if desired_capabilities.is_a?(Symbol)
-            unless Capabilities.respond_to?(desired_capabilities)
+            unless Remote::Capabilities.respond_to?(desired_capabilities)
               raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
             end
 
-            desired_capabilities = Capabilities.__send__(desired_capabilities)
+            opts[:desired_capabilities] = Remote::Capabilities.__send__(desired_capabilities)
           end
-
-          @bridge = Bridge.new(opts)
-          @bridge.create_session(desired_capabilities, opts.delete(:options))
-
-          super(@bridge, listener: listener)
+          opts[:url] ||= "http://#{Platform.localhost}:4444/wd/hub"
+          super
         end
-
       end # Driver
     end # Remote
   end # WebDriver

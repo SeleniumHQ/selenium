@@ -152,7 +152,7 @@ Key.chord = function(...keys) {
  * elements. Of particular note is the
  * {@link selenium-webdriver/remote.FileDetector}, which should be used when
  * running against a remote
- * [Selenium Server](http://docs.seleniumhq.org/download/).
+ * [Selenium Server](https://selenium.dev/downloads/).
  */
 class FileDetector {
 
@@ -478,7 +478,7 @@ Pointer.Type = {
  *
  * The length of each action tick is however long it takes the remote end to
  * execute the actions for every device in that tick. Most actions are
- * "instaneous", however, {@linkplain #pause pause} and
+ * "instantaneous", however, {@linkplain #pause pause} and
  * {@linkplain #move pointer move} actions allow you to specify a duration for
  * how long that action should take. The remote end will always wait for all
  * actions within a tick to finish before starting the next tick, so a device
@@ -495,7 +495,7 @@ Pointer.Type = {
  *
  * This implicit waiting also applies to pauses. In the table below, even though
  * the keyboard only defines a pause of 100 ms, the remote end will wait an
- * additional 200 ms for the mouse mmove to finish before moving to Tick 2.
+ * additional 200 ms for the mouse move to finish before moving to Tick 2.
  *
  * | Device   | Tick 1                | Tick 2         |
  * | -------- | --------------------- | -------------- |
@@ -554,13 +554,13 @@ Pointer.Type = {
  *     when translating actions to the legacy protocol.
  *
  * 6.  For W3C actions, move offsets relative to a
- *     {@linkplain ./webdriver.WebElement WebElement} are interpretted relative
+ *     {@linkplain ./webdriver.WebElement WebElement} are interpreted relative
  *     to the center of an element's _first_ [client rect] in the viewport. For
  *     legacy actions, element offsets are relative to the top-left corner of
  *     the element's [bounding client rect]. When translating actions to the
  *     legacy protocol in bridge mode, an extra command must be inserted to
  *     translate move offsets from one frame of reference to the other. This
- *     extra command conributes to the overall latency issue outlined in
+ *     extra command contributes to the overall latency issue outlined in
  *     point 1.
  *
  * [client rect]: https://developer.mozilla.org/en-US/docs/Web/API/Element/getClientRects
@@ -692,7 +692,7 @@ class Actions {
    * If no devices are specified, a pause action will be created (using the same
    * duration) for every device.
    *
-   * When device synchroniation is enabled (the default for new {@link Actions}
+   * When device synchronization is enabled (the default for new {@link Actions}
    * objects), there is no need to specify devices as pausing one automatically
    * pauses the others for the same duration. In other words, the following are
    * all equivalent:

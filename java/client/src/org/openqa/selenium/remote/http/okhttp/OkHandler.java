@@ -17,24 +17,19 @@
 
 package org.openqa.selenium.remote.http.okhttp;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import com.google.common.base.Strings;
-
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.RemoteCall;
 
-import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Objects;
 
 public class OkHandler extends RemoteCall {
 
@@ -53,7 +48,7 @@ public class OkHandler extends RemoteCall {
   }
 
   private HttpResponse makeCall(HttpRequest request) {
-    Objects.requireNonNull(request, "Request must be set.");
+    Require.nonNull("Request", request);
 
     try {
       Request okReq = OkMessages.toOkHttpRequest(getConfig().baseUri(), request);

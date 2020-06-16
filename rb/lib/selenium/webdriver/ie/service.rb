@@ -20,10 +20,6 @@
 module Selenium
   module WebDriver
     module IE
-      #
-      # @api private
-      #
-
       class Service < WebDriver::Service
         DEFAULT_PORT = 5555
         EXECUTABLE = 'IEDriverServer'

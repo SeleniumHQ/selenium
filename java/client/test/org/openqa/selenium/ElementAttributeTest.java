@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -36,7 +35,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
 
@@ -218,7 +216,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnInnerHtml() {
-    assumeFalse("IE before 10 returns innerHTML with uppercase tag names", TestUtilities.getIEVersion(driver) < 10);
     driver.get(pages.simpleTestPage);
 
     String html = driver.findElement(By.id("wrappingtext")).getAttribute("innerHTML");
@@ -242,8 +239,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnHiddenTextForTextContentAttribute() {
-    assumeFalse("IE before 9 doesn't handle textContent attribute; IE9 loads page in quirks mode, so no textContent attribute", TestUtilities.getIEVersion(driver) < 10);
-
     driver.get(pages.simpleTestPage);
 
     WebElement element = driver.findElement(By.id("hiddenline"));
@@ -308,8 +303,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @Test
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
-    assumeFalse("IE before 9 doesn't support SVG", TestUtilities.isOldIe(driver));
-
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
     assertThat(svgElement.getAttribute("transform")).isEqualTo("rotate(30)");
@@ -427,7 +420,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   private void checkEnumeratedAttribute(String name, String... values) {
-    asList(values).forEach((value) -> {
+    asList(values).forEach(value -> {
       driver.get(appServer.create(new Page().withBody(
           String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
       assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo(value);

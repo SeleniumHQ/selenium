@@ -17,31 +17,30 @@
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.internal.Require;
 
-import java.io.Serializable;
 import java.util.Map;
-import java.util.Objects;
 
-public class ImmutableCapabilities extends AbstractCapabilities implements Serializable {
+public class ImmutableCapabilities implements Capabilities {
 
-  private static final long serialVersionUID = 665766108972704060L;
+  private MutableCapabilities delegate = new MutableCapabilities();
 
   public ImmutableCapabilities() {
   }
 
   public ImmutableCapabilities(String k, Object v) {
-    setCapability(k, v);
+    delegate.setCapability(k, v);
   }
 
   public ImmutableCapabilities(String k1, Object v1, String k2, Object v2) {
-    setCapability(k1, v1);
-    setCapability(k2, v2);
+    delegate.setCapability(k1, v1);
+    delegate.setCapability(k2, v2);
   }
 
   public ImmutableCapabilities(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
-    setCapability(k1, v1);
-    setCapability(k2, v2);
-    setCapability(k3, v3);
+    delegate.setCapability(k1, v1);
+    delegate.setCapability(k2, v2);
+    delegate.setCapability(k3, v3);
   }
 
   public ImmutableCapabilities(
@@ -49,10 +48,10 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
       String k2, Object v2,
       String k3, Object v3,
       String k4, Object v4) {
-    setCapability(k1, v1);
-    setCapability(k2, v2);
-    setCapability(k3, v3);
-    setCapability(k4, v4);
+    delegate.setCapability(k1, v1);
+    delegate.setCapability(k2, v2);
+    delegate.setCapability(k3, v3);
+    delegate.setCapability(k4, v4);
   }
 
   public ImmutableCapabilities(
@@ -61,11 +60,11 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
       String k3, Object v3,
       String k4, Object v4,
       String k5, Object v5) {
-    setCapability(k1, v1);
-    setCapability(k2, v2);
-    setCapability(k3, v3);
-    setCapability(k4, v4);
-    setCapability(k5, v5);
+    delegate.setCapability(k1, v1);
+    delegate.setCapability(k2, v2);
+    delegate.setCapability(k3, v3);
+    delegate.setCapability(k4, v4);
+    delegate.setCapability(k5, v5);
   }
 
   public ImmutableCapabilities(Capabilities other) {
@@ -74,15 +73,44 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
 
   public ImmutableCapabilities(Map<?, ?> capabilities) {
     capabilities.forEach((key, value) -> {
-      if (!(key instanceof String)) {
-        throw new IllegalArgumentException("Key values must be strings");
-      }
-      setCapability(String.valueOf(key), value);
+      Require.argument("Key", key).instanceOf(String.class);
+      delegate.setCapability(String.valueOf(key), value);
     });
   }
 
+  @Override
+  public Object getCapability(String capabilityName) {
+    return delegate.getCapability(capabilityName);
+  }
+
+  @Override
+  public Map<String, Object> asMap() {
+    return delegate.asMap();
+  }
+
+  @Override
+  public int hashCode() {
+    return delegate.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Capabilities)) {
+      return false;
+    }
+    return delegate.equals(o);
+  }
+
+  @Override
+  public String toString() {
+    return delegate.toString();
+  }
+
   public static ImmutableCapabilities copyOf(Capabilities capabilities) {
-    Objects.requireNonNull(capabilities, "Capabilities must be set");
+    Require.nonNull("Capabilities", capabilities);
 
     if (capabilities instanceof ImmutableCapabilities) {
       return (ImmutableCapabilities) capabilities;

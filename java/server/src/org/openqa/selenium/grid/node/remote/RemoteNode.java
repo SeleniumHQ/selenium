@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
@@ -35,8 +36,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -50,9 +51,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -66,16 +67,17 @@ public class RemoteNode extends Node {
   private final HealthCheck healthCheck;
 
   public RemoteNode(
-      DistributedTracer tracer,
+      Tracer tracer,
       HttpClient.Factory clientFactory,
       UUID id,
       URI externalUri,
       Collection<Capabilities> capabilities) {
     super(tracer, id, externalUri);
-    this.externalUri = Objects.requireNonNull(externalUri);
+    this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    this.client = Objects.requireNonNull(clientFactory).createClient(fromUri(externalUri));
+    this.client = Require
+        .nonNull("HTTP client factory", clientFactory).createClient(fromUri(externalUri));
 
     this.healthCheck = new RemoteCheck();
   }
@@ -92,10 +94,11 @@ public class RemoteNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Objects.requireNonNull(sessionRequest, "Capabilities for session are not set");
+    Require.nonNull("Capabilities for session", sessionRequest);
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
-    req.setContent(utf8String(JSON.toJson(sessionRequest)));
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
+    req.setContent(asJson(sessionRequest));
 
     HttpResponse res = client.execute(req);
 
@@ -103,10 +106,11 @@ public class RemoteNode extends Node {
   }
 
   @Override
-  protected boolean isSessionOwner(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
+  public boolean isSessionOwner(SessionId id) {
+    Require.nonNull("Session ID", id);
 
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/owner/" + id);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -115,8 +119,10 @@ public class RemoteNode extends Node {
 
   @Override
   public Session getSession(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
+
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/session/" + id);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -129,9 +135,15 @@ public class RemoteNode extends Node {
   }
 
   @Override
+  public HttpResponse uploadFile(HttpRequest req, SessionId id) {
+    return client.execute(req);
+  }
+
+  @Override
   public void stop(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
     HttpRequest req = new HttpRequest(DELETE, "/se/grid/node/session/" + id);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -141,6 +153,7 @@ public class RemoteNode extends Node {
   @Override
   public NodeStatus getStatus() {
     HttpRequest req = new HttpRequest(GET, "/status");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -190,19 +203,12 @@ public class RemoteNode extends Node {
     public Result check() {
       HttpRequest req = new HttpRequest(GET, "/status");
 
-      try (Span span = tracer.createSpan("node.health-check", null)) {
-        span.addTag("http.url", req.getUri());
-        span.addTag("http.method", req.getMethod());
-        span.addTag("node.id", getId());
-
+      try {
         HttpResponse res = client.execute(req);
-        span.addTag("http.code", res.getStatus());
 
         if (res.getStatus() == 200) {
-          span.addTag("health-check", true);
           return new Result(true, externalUri + " is ok");
         }
-        span.addTag("health-check", false);
         return new Result(
             false,
             String.format(

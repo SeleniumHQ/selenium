@@ -35,7 +35,7 @@ import org.openqa.selenium.remote.CapabilityType;
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"),
+ *     new URL("http://localhost:4444/"),
  *     new EdgeOptions());
  * </code></pre>
  *
@@ -43,10 +43,15 @@ import org.openqa.selenium.remote.CapabilityType;
 public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   /**
+   * Key used to indicate whether to use an Edge Chromium or Edge Legacy driver.
+   */
+  public static final String USE_CHROMIUM = "ms:edgeChromium";
+
+  /**
    * Key used to store a set of ChromeOptions in a {@link Capabilities}
    * object.
    */
-  public static final String CAPABILITY = "goog:chromeOptions";
+  public static final String CAPABILITY = "ms:edgeOptions";
 
   public EdgeOptions() {
     super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);

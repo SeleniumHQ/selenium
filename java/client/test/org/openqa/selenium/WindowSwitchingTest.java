@@ -20,13 +20,11 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -35,7 +33,6 @@ import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.OPERA;
 import static org.openqa.selenium.testing.drivers.Browser.OPERABLINK;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 
 import org.junit.Rule;
@@ -49,7 +46,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Set;
@@ -87,7 +83,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+                getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -193,11 +189,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
-      throws Exception {
+  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+                getEffectivePlatform(driver).is(Platform.WINDOWS));
+    boolean isIE = isInternetExplorer(driver);
 
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -208,14 +203,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     driver.switchTo().window("result");
 
-    // TODO Remove sleep when https://bugs.chromium.org/p/chromedriver/issues/detail?id=1044 is fixed.
-    if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
-      Thread.sleep(1000);
-    }
-
     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
-    if (isInternetExplorer(driver) && !isIe6(driver)) {
+    if (isIE) {
       Alert alert = wait.until(alertIsPresent());
       alert.accept();
     }
@@ -224,12 +214,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
+  @Ignore(SAFARI)
   @Ignore(EDGE)
-  public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
+  public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
-    boolean isNewIE = isInternetExplorer(driver) && !isIe6(driver);
+                getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
 
@@ -243,14 +232,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     int allWindowHandles = driver.getWindowHandles().size();
     assertThat(allWindowHandles).isEqualTo(currentWindowHandles.size() + 1);
 
-    // TODO Remove sleep when https://bugs.chromium.org/p/chromedriver/issues/detail?id=1044 is fixed.
-    if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
-      Thread.sleep(1000);
-    }
-
     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
-    if (isNewIE) {
+    if (isInternetExplorer(driver)) {
       Alert alert = wait.until(alertIsPresent());
       alert.accept();
     }
@@ -363,10 +347,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI) // actually not tested in this browser
   @NotYetImplemented(OPERABLINK)
   @NotYetImplemented(EDGE)
   @Ignore(FIREFOX)

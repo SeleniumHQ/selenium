@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.server;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-
 import org.openqa.selenium.BuildInfo;
 
 import java.io.PrintStream;
@@ -29,7 +28,7 @@ public class HelpFlags {
   @Parameter(names = {"-h", "-help", "--help", "/?"}, help = true, hidden = true)
   private boolean help;
 
-  @Parameter(names = {"--version"}, description = "Displays the version and exits.")
+  @Parameter(names = "--version", description = "Displays the version and exits.")
   private boolean version;
 
   public boolean displayHelp(JCommander commander, PrintStream outputTo) {
@@ -46,9 +45,7 @@ public class HelpFlags {
     }
 
     if (help) {
-      StringBuilder text = new StringBuilder();
-      commander.usage(text);
-      outputTo.println(text.toString());
+      commander.usage();
       return true;
     }
 

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -49,7 +48,7 @@ public class RemoteLogs implements Logs {
 
   protected ExecuteMethod executeMethod;
 
-  @VisibleForTesting public static final String TYPE_KEY = "type";
+  public static final String TYPE_KEY = "type";
   private final LocalLogs localLogs;
 
   public RemoteLogs(ExecuteMethod executeMethod, LocalLogs localLogs) {

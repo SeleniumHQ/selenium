@@ -22,8 +22,15 @@ require 'selenium/webdriver/chrome/bridge'
 module Selenium
   module WebDriver
     module EdgeChrome
-      module Bridge
-        include Selenium::WebDriver::Chrome::Bridge
+      class Bridge < WebDriver::Chrome::Bridge
+
+        COMMANDS = WebDriver::Chrome::Bridge::COMMANDS.merge(
+          send_command: [:post, 'session/:session_id/ms/cdp/execute']
+        ).freeze
+
+        def commands(command)
+          COMMANDS[command] || super
+        end
       end # Bridge
     end # EdgeChrome
   end # WebDriver

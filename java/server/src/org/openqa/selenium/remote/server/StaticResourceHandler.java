@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.remote.server;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.common.net.MediaType;
+
+import org.openqa.selenium.internal.Require;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,7 +56,7 @@ class StaticResourceHandler {
 
   public void service(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    checkArgument(isStaticResourceRequest(request));
+    Require.precondition(isStaticResourceRequest(request), "Expected a static resource request");
 
     String path = String.format(
         "/%s/%s",

@@ -41,21 +41,14 @@ Selenium is a big software project and documentation is key to
 understanding how things work and learning effective ways to exploit
 its potential.
 
-The official documentation of Selenium is still served from our
-[**www.seleniumhq.org** repository](https://github.com/SeleniumHQ/www.seleniumhq.org).
-We are however phasing out this documentation which focuses too much
-on Selenium RC and other antiquated pieces, in favour of a rewrite.
+The [seleniumhq.github.io](https://github.com/SeleniumHQ/seleniumhq.github.io/)
+repository contains both Selenium’s site and documentation. This is an ongoing
+effort (not targeted at any specific release) to provide updated information on
+how to use Selenium effectively, how to get involved and how to contribute to Selenium.
 
-The new documentation is a project started to rewrite Selenium's
-documentation from scratch. This is an ongoing effort (not targetted
-at any specific release) to provide an updated handbook on how to use
-Selenium effectively. We hope to bring over the pieces of the old
-documentation that makes sense.
-
-Contributions toward the new docs follow the same process described in
-the next section about code contributions. You should spend some time
-familiarising yourself with the documentation by reading
-[more about it](https://seleniumhq.github.io/docs/intro.html#about_this_documentation).
+The official documentation of Selenium is at https://selenium.dev/documentation/.
+More details on how to get involved and contribute, please check the site's
+and documentation [contributing guidelines](https://selenium.dev/documentation/en/contributing/).
 
 ## Code Contributions
 
@@ -189,33 +182,21 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 Bug fixes and features **should have tests**. Look at other tests to
 see how they should be structured.
 
-### Step 6: Sign the CLA
-
-Before we can accept, we first ask people to sign a
-[Contributor License Agreement](https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dFFjXzBzM1VwekFlOWFWMjFFRjJMRFE6MQ#gid=0)
-(or CLA). We ask this so that we know that contributors have the right
-to donate the code.
-
-When you open your pull request we ask that you indicate that you've
-signed the CLA. This will reduce the time it takes for us to integrate
-it.
-
-### Step 7: Push
+### Step 6: Push
 
 ```shell
 % git push origin my-feature-branch
 ```
 
 Go to https://github.com/yourusername/selenium.git and press the _Pull
-Request_ and fill out the form. **Please indicate that you've signed
-the CLA** (see Step 6).
+Request_ and fill out the form. 
 
 Pull requests are usually reviewed within a few days. If there are
 comments to address, apply your changes in new commits (preferably
 [fixups](http://git-scm.com/docs/git-commit)) and push to the same
 branch.
 
-### Step 8: Integration
+### Step 7: Integration
 
 When code review is complete, a committer will take your PR and
 integrate it on Selenium's master branch. Because we like to keep a
@@ -257,3 +238,4 @@ Issues are labelled to make them easier to categorise and find by:
 Selenium contributors frequent the `#selenium` channel on
 [`irc.freenode.org`](https://webchat.freenode.net/). You can also join
 the [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
+Check https://selenium.dev/support/ for a complete list of options to communicate.

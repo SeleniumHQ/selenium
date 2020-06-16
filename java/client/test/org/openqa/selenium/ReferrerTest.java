@@ -32,8 +32,6 @@ import static org.openqa.selenium.build.InProject.locate;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.net.HostAndPort;
 import com.google.common.net.HttpHeaders;
 
@@ -42,6 +40,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.openqa.selenium.environment.webserver.JettyAppServer;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -50,17 +49,18 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import org.seleniumhq.jetty9.server.Handler;
-import org.seleniumhq.jetty9.server.Request;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -129,10 +129,10 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+    assertThat(testServer1.getRequests()).containsExactly(
         new HttpRequest(page1Url, null),
         new HttpRequest(page2Url, page1Url),
-        new HttpRequest(page3Url, page2Url)));
+        new HttpRequest(page3Url, page2Url));
   }
 
   /**
@@ -152,13 +152,12 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+    assertThat(testServer1.getRequests()).containsExactly(
         new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url)));
+        new HttpRequest(page3Url, page2Url));
 
-    assertThat(testServer2.getRequests()).isEqualTo(ImmutableList.of(new HttpRequest(
-        page2Url,
-        page1Url)));
+    assertThat(testServer2.getRequests()).containsExactly(
+        new HttpRequest(page2Url, page1Url));
   }
 
   /**
@@ -182,10 +181,10 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+    assertThat(testServer1.getRequests()).containsExactly(
         new HttpRequest(page1Url, null),
         new HttpRequest(page2Url, page1Url),
-        new HttpRequest(page3Url, page2Url)));
+        new HttpRequest(page3Url, page2Url));
   }
 
   /**
@@ -210,13 +209,12 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+    assertThat(testServer1.getRequests()).containsExactly(
         new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url)));
+        new HttpRequest(page3Url, page2Url));
 
-    assertThat(testServer2.getRequests()).isEqualTo(ImmutableList.of(new HttpRequest(
-        page2Url,
-        page1Url)));
+    assertThat(testServer2.getRequests()).containsExactly(
+        new HttpRequest(page2Url, page1Url));
   }
 
   /**
@@ -246,12 +244,12 @@ public class ReferrerTest extends JUnit4TestBase {
 
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+    assertThat(testServer1.getRequests()).containsExactly(
         new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url)));
+        new HttpRequest(page3Url, page2Url));
 
-    assertThat(testServer2.getRequests()).isEqualTo(ImmutableList.of(
-        new HttpRequest(page2Url, page1Url)));
+    assertThat(testServer2.getRequests()).containsExactly(
+        new HttpRequest(page2Url, page1Url));
   }
 
   /**
@@ -280,12 +278,12 @@ public class ReferrerTest extends JUnit4TestBase {
     WebDriver driver = customDriverFactory.createDriver(proxyServer.getPacUrl());
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+    assertThat(testServer1.getRequests()).containsExactly(
         new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url)));
+        new HttpRequest(page3Url, page2Url));
 
-    assertThat(proxyServer.getRequests()).isEqualTo(ImmutableList.of(
-        new HttpRequest(page2Url, page1Url)));
+    assertThat(proxyServer.getRequests()).containsExactly(
+        new HttpRequest(page2Url, page1Url));
   }
 
   /**
@@ -320,17 +318,16 @@ public class ReferrerTest extends JUnit4TestBase {
     WebDriver driver = customDriverFactory.createDriver(proxyServer.getPacUrl());
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).isEqualTo(ImmutableList.of(
+    assertThat(testServer1.getRequests()).containsExactly(
         new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url)));
+        new HttpRequest(page3Url, page2Url));
 
-    assertThat(proxyServer.getRequests()).isEqualTo(ImmutableList.of(new HttpRequest(
-        page2Url,
-        page1Url)));
+    assertThat(proxyServer.getRequests()).containsExactly(
+        new HttpRequest(page2Url, page1Url));
   }
 
   private void performNavigation(WebDriver driver, String firstUrl) {
-    WebDriverWait wait = new WebDriverWait(driver, 5);
+    WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(5));
 
     driver.get(firstUrl);
     wait.until(titleIs("Page 1"));
@@ -430,7 +427,7 @@ public class ReferrerTest extends JUnit4TestBase {
     }
 
     HostAndPort getHostAndPort() {
-      return Preconditions.checkNotNull(hostAndPort);
+      return Require.state("Host and port", hostAndPort).nonNull();
     }
 
     String getBaseUrl() {

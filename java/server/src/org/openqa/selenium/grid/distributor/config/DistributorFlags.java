@@ -19,27 +19,38 @@ package org.openqa.selenium.grid.distributor.config;
 
 
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.Role;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.Set;
 
-public class DistributorFlags {
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 
-  @Parameter(names = {"--distributor", "-d"}, description = "Address of the distributor.")
-  @ConfigValue(section = "distributor", name = "host")
+@AutoService(HasRoles.class)
+public class DistributorFlags implements HasRoles {
+
+  @Parameter(names = {"-d", "--distributor"}, description = "Address of the distributor.")
+  @ConfigValue(section = "distributor", name = "host", example = "\"http://localhost:1235\"")
   private URI distributorServer;
 
   @Parameter(
       names = "--distributor-port",
       description = "Port on which the distributor is listening.")
-  @ConfigValue(section = "distributor", name = "port")
+  @ConfigValue(section = "distributor", name = "port", example = "1235")
   private int distributorServerPort;
 
   @Parameter(
       names = "--distributor-host",
-      description = "Port on which the distributor is listening.")
-  @ConfigValue(section = "distributor", name = "hostname")
+      description = "Host on which the distributor is listening.")
+  @ConfigValue(section = "distributor", name = "hostname", example = "\"localhost\"")
   private String distributorServerHost;
 
+  @Override
+  public Set<Role> getRoles() {
+    return Collections.singleton(DISTRIBUTOR_ROLE);
+  }
 }

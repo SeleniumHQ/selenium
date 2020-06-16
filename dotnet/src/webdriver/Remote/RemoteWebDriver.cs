@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IFindsElement, ITakesScreenshot, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -172,7 +172,7 @@ namespace OpenQA.Selenium.Remote
                 // Only add the legacy log commands if the driver supports
                 // retrieving the logs via the extension end points.
                 this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetAvailableLogTypes, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/se/log/types"));
-                this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetLog, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/se/logs"));
+                this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetLog, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/se/log"));
             }
 
         }
@@ -538,7 +538,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementById(string id)
         {
-            return this.FindElement("css selector", "#" + EscapeCssSelector(id));
+            return this.FindElement("css selector", "#" + By.EscapeCssSelector(id));
         }
 
         /// <summary>
@@ -554,7 +554,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
-            string selector = EscapeCssSelector(id);
+            string selector = By.EscapeCssSelector(id);
             if (string.IsNullOrEmpty(selector))
             {
                 // Finding multiple elements with an empty ID will return
@@ -580,7 +580,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public IWebElement FindElementByClassName(string className)
         {
-            string selector = EscapeCssSelector(className);
+            string selector = By.EscapeCssSelector(className);
             if (selector.Contains(" "))
             {
                 // Finding elements by class name with whitespace is not allowed.
@@ -606,7 +606,7 @@ namespace OpenQA.Selenium.Remote
         /// </example>
         public ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
         {
-            string selector = EscapeCssSelector(className);
+            string selector = By.EscapeCssSelector(className);
             if (selector.Contains(" "))
             {
                 // Finding elements by class name with whitespace is not allowed.
@@ -801,6 +801,36 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Finds an element matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the element.</param>
+        /// <param name="value">The value to use to search for the element.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
+        public virtual IWebElement FindElement(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
+            return this.GetElementFromResponse(commandResponse);
+        }
+
+        /// <summary>
+        /// Finds all elements matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the elements.</param>
+        /// <param name="value">The value to use to search for the elements.</param>
+        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
+        public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
+            return this.GetElementsFromResponse(commandResponse);
+        }
+
+        /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
@@ -851,22 +881,6 @@ namespace OpenQA.Selenium.Remote
         public void ResetInputState()
         {
             this.Execute(DriverCommand.CancelActions, null);
-        }
-
-        /// <summary>
-        /// Escapes invalid characters in a CSS selector.
-        /// </summary>
-        /// <param name="selector">The selector to escape.</param>
-        /// <returns>The selector with invalid characters escaped.</returns>
-        internal static string EscapeCssSelector(string selector)
-        {
-            string escaped = Regex.Replace(selector, @"([ '""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
-            if (selector.Length > 0 && char.IsDigit(selector[0]))
-            {
-                escaped = @"\" + (30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture) + " " + selector.Substring(1);
-            }
-
-            return escaped;
         }
 
         /// <summary>
@@ -986,7 +1000,13 @@ namespace OpenQA.Selenium.Remote
 
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
-            Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
+            Dictionary<string, object> rawCapabilities = response.Value as Dictionary<string, object>;
+            if (rawCapabilities == null)
+            {
+                string errorMessage = string.Format(CultureInfo.InvariantCulture, "The new session command returned a value ('{0}') that is not a valid JSON object.", response.Value);
+                throw new WebDriverException(errorMessage);
+            }
+
             ReturnedCapabilities returnedCapabilities = new ReturnedCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
@@ -1024,7 +1044,7 @@ namespace OpenQA.Selenium.Remote
         {
             Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
 
-            Response commandResponse = new Response();
+            Response commandResponse;
 
             try
             {
@@ -1032,8 +1052,11 @@ namespace OpenQA.Selenium.Remote
             }
             catch (System.Net.WebException e)
             {
-                commandResponse.Status = WebDriverResult.UnhandledError;
-                commandResponse.Value = e;
+                commandResponse = new Response
+                {
+                    Status = WebDriverResult.UnhandledError,
+                    Value = e
+                };
             }
 
             if (commandResponse.Status != WebDriverResult.Success)
@@ -1056,36 +1079,6 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         protected virtual void StopClient()
         {
-        }
-
-        /// <summary>
-        /// Finds an element matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the element.</param>
-        /// <param name="value">The value to use to search for the element.</param>
-        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
-        protected IWebElement FindElement(string mechanism, string value)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
-            return this.GetElementFromResponse(commandResponse);
-        }
-
-        /// <summary>
-        /// Finds all elements matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the elements.</param>
-        /// <param name="value">The value to use to search for the elements.</param>
-        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
-        protected ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
-            return this.GetElementsFromResponse(commandResponse);
         }
 
         /// <summary>

@@ -18,52 +18,56 @@
 package com.thoughtworks.selenium.webdriven;
 
 
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.environment.webserver.JreAppServer;
-import org.openqa.selenium.testing.Pages;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.jre.server.JreServer;
 import org.openqa.selenium.remote.server.ActiveSessions;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.testing.Pages;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class WebDriverBackedSeleniumHandlerTest {
 
-  private JreAppServer server;
+  private Server<?> server;
   private int port;
   private AppServer appServer;
   private Pages pages;
 
   @Before
-  public void setUpServer() throws MalformedURLException {
-    server = new JreAppServer();
+  public void setUpServer() {
+    Tracer tracer = DefaultTestTracer.createTracer();
 
     // Register the emulator
     ActiveSessions sessions = new ActiveSessions(3, MINUTES);
-    server.setHandler(combine(new WebDriverBackedSeleniumHandler(sessions)));
+
+    server = new JreServer(
+      new BaseServerOptions(new MapConfig(emptyMap())),
+      new WebDriverBackedSeleniumHandler(tracer, sessions));
 
     // Wait until the server is actually started.
     server.start();
 
-    port = new URL(server.whereIs("/")).getPort();
+    port = server.getUrl().getPort();
   }
 
   @Before
   public void prepTheEnvironment() {
-    TestEnvironment environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    TestEnvironment environment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     appServer = environment.getAppServer();
 
     pages = new Pages(appServer);

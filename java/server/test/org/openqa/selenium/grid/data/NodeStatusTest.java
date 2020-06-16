@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 
@@ -42,7 +41,8 @@ public class NodeStatusTest {
         new URI("http://localhost:23456"),
         100,
         ImmutableMap.of(stereotype, 1),
-        ImmutableSet.of(new NodeStatus.Active(stereotype, new SessionId(UUID.randomUUID()), new ImmutableCapabilities("peas", "sausages"))));
+        ImmutableSet.of(new NodeStatus.Active(stereotype, new SessionId(UUID.randomUUID()), new ImmutableCapabilities("peas", "sausages"))),
+        "cheese");
 
     Json json = new Json();
     String source = json.toJson(status);

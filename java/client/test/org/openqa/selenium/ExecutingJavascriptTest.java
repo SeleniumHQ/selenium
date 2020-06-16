@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static com.google.common.base.Throwables.getRootCause;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.fail;
@@ -32,7 +33,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
@@ -227,6 +227,14 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testReturningOverflownLongShouldReturnADouble() {
+    driver.get(pages.javascriptPage);
+    Double expectedResult = 6.02214129e+23;
+    Object result = executeScript("return arguments[0];", expectedResult);
+    assertThat(result).isInstanceOf(Double.class).isEqualTo(expectedResult);
+  }
+
+  @Test
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
     driver.get(pages.javascriptPage);
     Double expectedResult = 1.2;
@@ -403,7 +411,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
 
-    Path jqueryFile = InProject.locate("common/src/web/jquery-1.3.2.js");
+    Path jqueryFile = InProject.locate("common/src/web/js/jquery-3.5.1.min.js");
     String jquery = new String(Files.readAllBytes(jqueryFile), US_ASCII);
     assertThat(jquery.length())
         .describedAs("The javascript code should be at least 50 KB.")
@@ -427,6 +435,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
+  @Ignore(SAFARI)
   public void testShouldBeAbleToExecuteScriptOnNoPage() {
     String text = (String) executeScript("return 'test';");
     assertThat(text).isEqualTo("test");
@@ -460,7 +469,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
 
-    List<Integer> nums = ImmutableList.of(1, 2);
+    List<Integer> nums = Arrays.asList(1, 2);
     Map<String, Object> args = ImmutableMap.of("bar", "test", "foo", nums);
 
     Object res = ((JavascriptExecutor) driver).executeScript("return arguments[0]['foo'][1]", args);
@@ -485,8 +494,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
@@ -501,8 +508,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 10000)
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502656")
@@ -534,5 +541,21 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
     assertThatExceptionOfType(JavascriptException.class).isThrownBy(() -> executeScript(
         "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1"));
+  }
+
+  @Test
+  public void shouldUnwrapDeeplyNestedWebElementsAsArguments() {
+    driver.get(pages.simpleTestPage);
+
+    WebElement expected = driver.findElement(id("oneline"));
+
+    Object args = ImmutableMap.of(
+        "top", ImmutableMap.of(
+            "key", singletonList(ImmutableMap.of(
+                "subkey", expected))));
+    WebElement seen = (WebElement) executeScript(
+        "return arguments[0].top.key[0].subkey", args);
+
+    assertThat(seen).isEqualTo(expected);
   }
 }

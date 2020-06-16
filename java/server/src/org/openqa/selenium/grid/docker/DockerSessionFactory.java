@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.grid.docker;
 
-import static org.openqa.selenium.docker.ContainerInfo.image;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -33,6 +28,7 @@ import org.openqa.selenium.docker.Port;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Dialect;
@@ -43,6 +39,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -57,24 +54,33 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.docker.ContainerInfo.image;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 public class DockerSessionFactory implements SessionFactory {
 
-  public static final Logger LOG = Logger.getLogger(DockerSessionFactory.class.getName());
+  private static final Logger LOG = Logger.getLogger(DockerSessionFactory.class.getName());
+
+  private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Docker docker;
   private final Image image;
   private final Capabilities stereotype;
 
   public DockerSessionFactory(
+      Tracer tracer,
       HttpClient.Factory clientFactory,
       Docker docker,
       Image image,
       Capabilities stereotype) {
-    this.clientFactory = Objects.requireNonNull(clientFactory, "HTTP client must be set.");
-    this.docker = Objects.requireNonNull(docker, "Docker command must be set.");
-    this.image = Objects.requireNonNull(image, "Docker image to use must be set.");
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.clientFactory = Require.nonNull("HTTP client", clientFactory);
+    this.docker = Require.nonNull("Docker command", docker);
+    this.image = Require.nonNull("Docker image", image);
     this.stereotype = ImmutableCapabilities.copyOf(
-        Objects.requireNonNull(stereotype, "Stereotype must be set."));
+        Require.nonNull("Stereotype", stereotype));
   }
 
   @Override
@@ -137,6 +143,7 @@ public class DockerSessionFactory implements SessionFactory {
         container.getId()));
     return Optional.of(new DockerSession(
         container,
+        tracer,
         client,
         id,
         remoteAddress,

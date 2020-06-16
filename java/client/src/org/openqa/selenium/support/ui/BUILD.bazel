@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "clock",
     srcs = [
@@ -5,7 +7,7 @@ java_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -50,6 +52,6 @@ java_library(
         ":clock",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )

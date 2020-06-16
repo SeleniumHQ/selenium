@@ -20,16 +20,19 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -42,9 +45,11 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 class GridStatusHandler implements HttpHandler {
 
@@ -68,90 +73,103 @@ class GridStatusHandler implements HttpHandler {
 
 
   private final Json json;
+  private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Distributor distributor;
 
-  public GridStatusHandler(Json json, HttpClient.Factory clientFactory, Distributor distributor) {
-    this.json = Objects.requireNonNull(json, "JSON encoder must be set.");
-    this.clientFactory = Objects.requireNonNull(clientFactory, "HTTP client factory must be set.");
-    this.distributor = Objects.requireNonNull(distributor, "Distributor must be set.");
+  GridStatusHandler(Json json, Tracer tracer, HttpClient.Factory clientFactory, Distributor distributor) {
+    this.json = Require.nonNull("JSON encoder", json);
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.distributor = Require.nonNull("Distributor", distributor);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
     long start = System.currentTimeMillis();
 
-    DistributorStatus status;
-    try {
-      status = EXECUTOR_SERVICE.submit(distributor::getStatus).get(2, SECONDS);
-    } catch (ExecutionException | InterruptedException | TimeoutException e) {
-      return new HttpResponse().setContent(utf8String(json.toJson(
+    try (Span span = newSpanAsChildOf(tracer, req, "router.status")) {
+      DistributorStatus status;
+      try {
+        status = EXECUTOR_SERVICE.submit(span.wrap(distributor::getStatus)).get(2, SECONDS);
+      } catch (ExecutionException | TimeoutException e) {
+        return new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
-              "ready", false,
-              "message", "Unable to read distributor status.")))));
-    }
+            "ready", false,
+            "message", "Unable to read distributor status."))));
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        return new HttpResponse().setContent(asJson(
+          ImmutableMap.of("value", ImmutableMap.of(
+            "ready", false,
+            "message", "Reading distributor status was interrupted."))));
+      }
 
-    boolean ready = status.hasCapacity();
-    String message = ready ? "Selenium Grid ready." : "Selenium Grid not ready.";
+      boolean ready = status.hasCapacity();
 
-    long remaining = System.currentTimeMillis() + 2000 - start;
-    List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
+      long remaining = System.currentTimeMillis() + 2000 - start;
+      List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
         .map(summary -> {
           ImmutableMap<String, Object> defaultResponse = ImmutableMap.of(
-              "id", summary.getNodeId(),
-              "uri", summary.getUri(),
-              "maxSessions", summary.getMaxSessionCount(),
-              "stereotypes", summary.getStereotypes(),
-              "warning", "Unable to read data from node.");
+            "id", summary.getNodeId(),
+            "uri", summary.getUri(),
+            "maxSessions", summary.getMaxSessionCount(),
+            "stereotypes", summary.getStereotypes(),
+            "warning", "Unable to read data from node.");
 
           CompletableFuture<Map<String, Object>> toReturn = new CompletableFuture<>();
 
           Future<?> future = EXECUTOR_SERVICE.submit(
-              () -> {
-                try {
-                  HttpClient client = clientFactory.createClient(summary.getUri().toURL());
-                  HttpResponse res = client.execute(new HttpRequest(GET, "/se/grid/node/status"));
+            () -> {
+              try {
+                HttpClient client = clientFactory.createClient(summary.getUri().toURL());
+                HttpRequest nodeStatusReq = new HttpRequest(GET, "/se/grid/node/status");
+                HttpTracing.inject(tracer, span, nodeStatusReq);
+                HttpResponse res = client.execute(nodeStatusReq);
 
-                  if (res.getStatus() == 200) {
-                    toReturn.complete(json.toType(string(res), MAP_TYPE));
-                  } else {
-                    toReturn.complete(defaultResponse);
-                  }
-                } catch (IOException e) {
-                  e.printStackTrace();
-                  toReturn.complete(defaultResponse);
-                }
-              });
+                toReturn.complete(res.getStatus() == 200
+                                  ? json.toType(string(res), MAP_TYPE)
+                                  : defaultResponse);
+              } catch (IOException e) {
+                toReturn.complete(defaultResponse);
+              }
+            });
 
           SCHEDULED_SERVICE.schedule(
-              () -> {
-                if (!toReturn.isDone()) {
-                  toReturn.complete(defaultResponse);
-                  future.cancel(true);
-                }
-              },
-              remaining,
-              MILLISECONDS);
+            () -> {
+              if (!toReturn.isDone()) {
+                toReturn.complete(defaultResponse);
+                future.cancel(true);
+              }
+            },
+            remaining,
+            MILLISECONDS);
 
           return toReturn;
         })
         .collect(toList());
 
-    ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
-    value.put("ready", ready);
-    value.put("message", message);
+      ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
+      value.put("ready", ready);
+      value.put("message", ready ? "Selenium Grid ready." : "Selenium Grid not ready.");
 
-    value.put("nodes", nodeResults.stream()
+      value.put("nodes", nodeResults.stream()
         .map(summary -> {
           try {
             return summary.get();
-          } catch (ExecutionException | InterruptedException e) {
+          } catch (ExecutionException e) {
+            throw wrap(e);
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw wrap(e);
           }
         })
         .collect(toList()));
 
-    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", value.build()))));
+      HttpResponse res = new HttpResponse().setContent(asJson(ImmutableMap.of("value", value.build())));
+      HTTP_RESPONSE.accept(span, res);
+      return res;
+    }
   }
 
   private RuntimeException wrap(Exception e) {

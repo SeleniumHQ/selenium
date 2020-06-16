@@ -1,21 +1,23 @@
-load("//java:rules.bzl", "java_test_suite")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
     name = "SmallTests",
     size = "small",
+    srcs = glob(["*Test.java"]),
     tags = [
         "no-sandbox",
     ],
-    srcs = glob(["*Test.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/mockito:mockito-core",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+        artifact("io.opentelemetry:opentelemetry-api"),
     ],
 )

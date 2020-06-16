@@ -253,7 +253,8 @@ void HtmlDialog::SetHeight(long height) {
   LOG(TRACE) << "Entering HtmlDialog::SetHeight";
 }
 
-int HtmlDialog::NavigateToUrl(const std::string& url) {
+int HtmlDialog::NavigateToUrl(const std::string& url,
+                              std::string* error_message) {
   LOG(TRACE) << "Entering HtmlDialog::NavigateToUrl";
   // Cannot force navigation on windows opened with showModalDialog();
   return ENOTIMPLEMENTED;

@@ -109,6 +109,7 @@ const Name = {
   GET_ACTIVE_ELEMENT: 'getActiveElement',
   FIND_ELEMENT: 'findElement',
   FIND_ELEMENTS: 'findElements',
+  FIND_ELEMENTS_RELATIVE: "findElementsRelative",
   FIND_CHILD_ELEMENT: 'findChildElement',
   FIND_CHILD_ELEMENTS: 'findChildElements',
 
@@ -150,6 +151,7 @@ const Name = {
   GET_ELEMENT_SIZE: 'getElementSize',
   GET_ELEMENT_ATTRIBUTE: 'getElementAttribute',
   GET_ELEMENT_VALUE_OF_CSS_PROPERTY: 'getElementValueOfCssProperty',
+  GET_ELEMENT_PROPERTY: 'getElementProperty',
 
   SCREENSHOT: 'screenshot',
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',

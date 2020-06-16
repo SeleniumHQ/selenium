@@ -18,12 +18,14 @@
 package org.openqa.selenium.firefox;
 
 import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
-import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
@@ -34,10 +36,9 @@ import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -45,6 +46,7 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -55,6 +57,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class FirefoxOptionsTest {
@@ -143,14 +146,18 @@ public class FirefoxOptionsTest {
   public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, Object> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
-    assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
+    assertThat(json.get(FIREFOX_OPTIONS))
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("binary", "/i/like/cheese");
   }
 
   @Test
   public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, Object> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
 
-    assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
+    assertThat(json.get(FIREFOX_OPTIONS))
+      .asInstanceOf(InstanceOfAssertFactories.MAP)
+      .containsEntry("binary", "/i/like/cheese");
   }
 
   @Test
@@ -161,7 +168,7 @@ public class FirefoxOptionsTest {
     try (OutputStream ignored = Files.newOutputStream(binary, DELETE_ON_CLOSE)) {
       Files.write(binary, "".getBytes());
       if (! TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
-        Files.setPosixFilePermissions(binary, ImmutableSet.of(PosixFilePermission.OWNER_EXECUTE));
+        Files.setPosixFilePermissions(binary, singleton(PosixFilePermission.OWNER_EXECUTE));
       }
       property.set(binary.toString());
       FirefoxOptions options = new FirefoxOptions();
@@ -269,8 +276,9 @@ public class FirefoxOptionsTest {
     FirefoxOptions options = new FirefoxOptions(
         new MutableCapabilities(new FirefoxOptions().addArguments("-a", "-b")));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) options2).get("args")).isEqualTo(Arrays.asList("-a", "-b"));
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("args", Arrays.asList("-a", "-b"));
   }
 
   @Test
@@ -281,12 +289,13 @@ public class FirefoxOptionsTest {
                                     .addPreference("int.pref", 42)
                                     .addPreference("boolean.pref", true)));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    Object prefs = ((Map<String, Object>) options2).get("prefs");
-    assertThat(prefs).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) prefs).get("string.pref")).isEqualTo("some value");
-    assertThat(((Map<String, Object>) prefs).get("int.pref")).isEqualTo(42);
-    assertThat(((Map<String, Object>) prefs).get("boolean.pref")).isEqualTo(true);
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .extractingByKey("prefs")
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("string.pref", "some value")
+        .containsEntry("int.pref", 42)
+        .containsEntry("boolean.pref", true);
   }
 
   @Test
@@ -294,9 +303,9 @@ public class FirefoxOptionsTest {
     FirefoxOptions options = new FirefoxOptions(
         new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) options2).get("binary"))
-        .isEqualTo(new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("binary", new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
   }
 
   @Test
@@ -312,13 +321,32 @@ public class FirefoxOptionsTest {
     assertThat(seen).isEqualTo(expected);
   }
 
+  @Test
+  public void optionsAsMapShouldBeImmutable() {
+    Map<String, Object> options = new FirefoxOptions().asMap();
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> options.put("browserName", "chrome"));
+
+    Map<String, Object> mozOptions = (Map<String, Object>) options.get(FIREFOX_OPTIONS);
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> mozOptions.put("prefs", emptyMap()));
+
+    Map<String, Object> prefs = (Map<String, Object>) mozOptions.get("prefs");
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> prefs.put("x", true));
+
+    List<String> args = (List<String>) mozOptions.get("args");
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> args.add("-help"));
+  }
+
   private static class JreSystemProperty {
 
     private final String name;
     private final String originalValue;
 
     public JreSystemProperty(String name) {
-      this.name = Preconditions.checkNotNull(name);
+      this.name = Require.nonNull("Name", name);
       this.originalValue = System.getProperty(name);
     }
 

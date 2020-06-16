@@ -25,13 +25,13 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -43,16 +43,16 @@ public class SessionSlot implements
     Function<CreateSessionRequest, Optional<ActiveSession>>,
     Predicate<Capabilities>  {
 
-  public static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
+  private static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
   private final EventBus bus;
   private final Capabilities stereotype;
   private final SessionFactory factory;
   private ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
-    this.bus = Objects.requireNonNull(bus);
-    this.stereotype = ImmutableCapabilities.copyOf(Objects.requireNonNull(stereotype));
-    this.factory = Objects.requireNonNull(factory);
+    this.bus = Require.nonNull("Event bus", bus);
+    this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
+    this.factory = Require.nonNull("Session factory", factory);
   }
 
   public Capabilities getStereotype() {
@@ -99,6 +99,10 @@ public class SessionSlot implements
   @Override
   public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
     if (!isAvailable()) {
+      return Optional.empty();
+    }
+
+    if (!test(sessionRequest.getCapabilities())) {
       return Optional.empty();
     }
 

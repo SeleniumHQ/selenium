@@ -17,25 +17,12 @@
 
 package org.openqa.selenium.json;
 
-import static java.lang.Integer.valueOf;
-import static java.util.Arrays.asList;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -55,34 +42,49 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
-import java.awt.Point;
+import java.awt.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Stream;
+
+import static java.lang.Integer.valueOf;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
 
 public class JsonOutputTest {
 
   @Test
   public void emptyObjectsLookNice() {
-    String json = convert(ImmutableMap.of());
+    String json = convert(emptyMap());
 
     assertThat(json).isEqualTo("{\n}");
   }
 
   @Test
   public void emptyCollectionsLookNice() {
-    String json = convert(ImmutableList.of());
+    String json = convert(emptyList());
 
     assertThat(json).isEqualTo("[\n]");
   }
@@ -541,7 +543,7 @@ public class JsonOutputTest {
   @Test
   public void shouldConvertAUrlToAString() throws MalformedURLException {
     URL url = new URL("http://example.com/cheese?type=edam");
-    ImmutableMap<String, URL> toConvert = ImmutableMap.of("url", url);
+    Map<String, URL> toConvert = ImmutableMap.of("url", url);
 
     String seen = new Json().toJson(toConvert);
     JsonObject converted = new JsonParser().parse(seen).getAsJsonObject();
@@ -573,7 +575,7 @@ public class JsonOutputTest {
     }
 
     assertThat((Object) new Json().toType(builder.toString(), Object.class))
-        .isEqualTo(ImmutableList.of("brie", "peas"));
+        .isEqualTo(Arrays.asList("brie", "peas"));
   }
 
   @Test
@@ -605,7 +607,7 @@ public class JsonOutputTest {
   @Test
   public void canDisablePrettyPrintingToGetSingleLineOutput() {
     Map<String, Object> toEncode = ImmutableMap.of(
-        "ary", ImmutableList.of("one", "two"),
+        "ary", Arrays.asList("one", "two"),
         "map", ImmutableMap.of("cheese", "cheddar"),
         "string", "This has a \nnewline in it");
 
@@ -624,6 +626,26 @@ public class JsonOutputTest {
     String converted = convert(Level.INFO);
 
     assertThat(converted).isEqualTo("\"INFO\"");
+  }
+
+  @Test
+  public void shouldNotWriteOptionalFieldsThatAreEmptyInAMap() {
+    String json = convert(ImmutableMap.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
+
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertThat(converted.has("notThere")).isFalse();
+    assertThat(converted.get("there").getAsString()).isEqualTo("cheese");
+  }
+
+  @Test
+  public void shouldNotWriteOptionalsThatAreNotPresentToAList() {
+    String json = convert(Arrays.asList(Optional.of("cheese"), Optional.empty()));
+
+    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+
+    assertThat(converted.size()).isEqualTo(1);
+    assertThat(converted.get(0).getAsString()).isEqualTo("cheese");
   }
 
   private String convert(Object toConvert) {

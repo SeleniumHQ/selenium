@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.component;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 @FunctionalInterface
 public interface HealthCheck {
@@ -27,10 +27,18 @@ public interface HealthCheck {
   class Result {
     private final boolean isAlive;
     private final String message;
+    private final String registrationSecret;
 
     public Result(boolean isAlive, String message) {
       this.isAlive = isAlive;
-      this.message = Objects.requireNonNull(message, "Message must be set");
+      this.message = Require.nonNull("Message", message);
+      this.registrationSecret = null;
+    }
+
+    public Result(boolean isAlive, String message, String registrationSecret) {
+      this.isAlive = isAlive;
+      this.message = Require.nonNull("Message", message);
+      this.registrationSecret = registrationSecret;
     }
 
     public boolean isAlive() {

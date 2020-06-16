@@ -19,11 +19,11 @@ package org.openqa.selenium.grid.data;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Base64;
 import java.util.Map;
-import java.util.Objects;
 
 public class CreateSessionResponse {
 
@@ -33,8 +33,9 @@ public class CreateSessionResponse {
   public CreateSessionResponse(
       Session session,
       byte[] downstreamEncodedResponse) {
-    this.session = Objects.requireNonNull(session);
-    this.downstreamEncodedResponse = Objects.requireNonNull(downstreamEncodedResponse);
+    this.session = Require.nonNull("Session", session);
+    this.downstreamEncodedResponse = Require
+        .nonNull("Downstream encoded response", downstreamEncodedResponse);
   }
 
   public Session getSession() {

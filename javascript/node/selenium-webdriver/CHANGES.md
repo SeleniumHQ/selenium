@@ -1,3 +1,18 @@
+## v.next
+
+* Rolling back native support for Opera Browser
+* Added new ieOptions capabilities:
+    - fileUploadDialogTimeout
+    - setEdgePath
+    - setEdgeChromium
+    - setScrollBehavior
+    - For consistent naming, deprecating `addArguments(...args)` in favor of `addBrowserCommandSwitches(...args)`
+* Add relative locators
+
+### API Changes
+
+* Added the 'opera' module
+
 ## v4.0.0-alpha.4
 
 ### Changes
@@ -725,7 +740,7 @@ continue to be supported, but will require setting the `--harmony` flag.
     due to a previously uncaught error within the frame.
 * FIXED: 8496: Extended the `chrome.Options` API to cover all configuration
     options (e.g. mobile emulation and performance logging) documented on the
-    ChromeDriver [project site](https://sites.google.com/a/chromium.org/chromedriver/capabilities).
+    ChromeDriver [project site](https://chromedriver.chromium.org/capabilities).
 
 ## v2.45.0
 

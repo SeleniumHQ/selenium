@@ -1,4 +1,5 @@
-load("//java:rules.bzl", "java_test_suite")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
     name = "SmallTests",
@@ -6,8 +7,8 @@ java_test_suite(
     srcs = glob(["*Test.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote",
-        "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/events/local",
         "//java/server/src/org/openqa/selenium/grid/data",
@@ -15,7 +16,8 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
         "//java/server/test/org/openqa/selenium/grid/testing",
-        "//third_party/java/assertj",
-        "//third_party/java/junit",
+        artifact("junit:junit"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("org.assertj:assertj-core"),
     ],
 )

@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "api",
     srcs = [
@@ -29,6 +31,7 @@ java_library(
         "//java/client/src/com/thoughtworks/selenium:__subpackages__",
         "//java/client/test/com/thoughtworks/selenium:__subpackages__",
         "//java/server/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
         "//java/server/test/com/thoughtworks/selenium:__subpackages__",
     ],
     exports = [
@@ -38,10 +41,9 @@ java_library(
         ":api",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/edge",
-        "//java/client/src/org/openqa/selenium/net",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/testng",
+        "//java/client/src/org/openqa/selenium/remote",
+        artifact("junit:junit"),
+        artifact("org.testng:testng"),
     ],
 )
 

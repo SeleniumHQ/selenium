@@ -16,8 +16,8 @@
 // under the License.
 
 /**
- * @fileoverview The file contains an abstraction of a keyboad
- * for simulating the presing and releasing of keys.
+ * @fileoverview The file contains an abstraction of a keyboard
+ * for simulating the pressing and releasing of keys.
  */
 
 goog.provide('bot.Keyboard');

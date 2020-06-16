@@ -37,7 +37,6 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -49,17 +48,18 @@ import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -76,8 +76,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -120,14 +120,14 @@ public class EndToEndTest {
     this.clientFactory = (HttpClient.Factory) raw[1];
   }
 
-  private static Object[] createInMemory() throws URISyntaxException, MalformedURLException {
+  private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
         "inproc://end-to-end-sub",
         true);
 
-    DistributedTracer tracer = DistributedTracer.builder().build();
     URI nodeUri = new URI("http://localhost:4444");
     CombinedHandler handler = new CombinedHandler();
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
@@ -138,10 +138,10 @@ public class EndToEndTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode node = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
@@ -149,39 +149,37 @@ public class EndToEndTest {
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
 
-    Server<?> server = createServer();
-    server.setHandler(router);
+    Server<?> server = createServer(router);
     server.start();
 
     return new Object[] { server, clientFactory };
   }
 
   private static Object[] createRemotes() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
         "tcp://localhost:" + PortProber.findFreePort(),
         true);
 
-    DistributedTracer tracer = DistributedTracer.builder().build();
     LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    Server<?> sessionServer = createServer();
-    sessionServer.setHandler(localSessions);
+    Server<?> sessionServer = createServer(localSessions);
     sessionServer.start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
-    SessionMap sessions = new RemoteSessionMap(client);
+    SessionMap sessions = new RemoteSessionMap(tracer, client);
 
     LocalDistributor localDistributor = new LocalDistributor(
         tracer,
         bus,
         clientFactory,
-        sessions);
-    Server<?> distributorServer = createServer();
-    distributorServer.setHandler(localDistributor);
+        sessions,
+        null);
+    Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
@@ -191,29 +189,31 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
-    Server<?> nodeServer = new BaseServer<>(
+
+    Server<?> nodeServer = new NettyServer(
         new BaseServerOptions(
-            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
-    nodeServer.setHandler(localNode);
+            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
+        localNode);
     nodeServer.start();
 
     distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
-    Server<?> routerServer = createServer();
-    routerServer.setHandler(router);
+    Server<?> routerServer = createServer(router);
     routerServer.start();
 
     return new Object[] { routerServer, clientFactory };
   }
 
-  private static Server<?> createServer() {
+  private static Server<?> createServer(HttpHandler handler) {
     int port = PortProber.findFreePort();
-    return new BaseServer<>(new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
+    return new NettyServer(
+        new BaseServerOptions(
+            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
+        handler);
   }
 
   private static SessionFactory createFactory(URI serverUri) {
@@ -230,6 +230,17 @@ public class EndToEndTest {
    }
 
     return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
+  }
+
+  @Test
+  public void success() {
+    // The node added only has a single node. Make sure we can start and stop sessions.
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    driver.get("http://www.google.com");
+
+    // Kill the session, and wait until the grid says it's ready
+    driver.quit();
   }
 
   @Test
@@ -270,12 +281,12 @@ public class EndToEndTest {
   }
 
   @Test
-  public void shouldAllowPassthroughForW3CMode() throws IOException {
+  public void shouldAllowPassthroughForW3CMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(utf8String(json.toJson(
+    request.setContent(asJson(
         ImmutableMap.of(
             "capabilities", ImmutableMap.of(
-                "alwaysMatch", ImmutableMap.of("browserName", "cheese"))))));
+                "alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);
@@ -296,12 +307,12 @@ public class EndToEndTest {
   }
 
   @Test
-  public void shouldAllowPassthroughForJWPMode() throws IOException {
+  public void shouldAllowPassthroughForJWPMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(utf8String(json.toJson(
+    request.setContent(asJson(
         ImmutableMap.of(
             "desiredCapabilities", ImmutableMap.of(
-                "browserName", "cheese")))));
+                "browserName", "cheese"))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);

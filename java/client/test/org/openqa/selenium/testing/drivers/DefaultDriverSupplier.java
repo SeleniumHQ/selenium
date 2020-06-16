@@ -20,14 +20,20 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaOptions;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -37,16 +43,15 @@ import java.util.function.Supplier;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
 
-  private static Map<String, Function<Capabilities, WebDriver>> driverConstructors =
-      new ImmutableMap.Builder<String, Function<Capabilities, WebDriver>>()
-          .put(BrowserType.CHROME, TestChromeDriver::new)
-          .put(BrowserType.OPERA_BLINK, TestOperaBlinkDriver::new)
-          .put(BrowserType.FIREFOX, FirefoxDriver::new)
-          .put(BrowserType.HTMLUNIT, HtmlUnitDriver::new)
-          .put(BrowserType.IE, InternetExplorerDriver::new)
-          .put(BrowserType.EDGE, TestEdgeDriver::new)
-          .put(BrowserType.SAFARI, SafariDriver::new)
-          .put("Safari Technology Preview", SafariDriver::new)
+  private static Map<Class<? extends AbstractDriverOptions>, Function<Capabilities, WebDriver>> driverConstructors =
+      new ImmutableMap.Builder<Class<? extends AbstractDriverOptions>, Function<Capabilities, WebDriver>>()
+          .put(ChromeOptions.class, TestChromeDriver::new)
+          .put(OperaOptions.class, TestOperaBlinkDriver::new)
+          .put(FirefoxOptions.class, FirefoxDriver::new)
+          .put(InternetExplorerOptions.class, InternetExplorerDriver::new)
+          .put(EdgeHtmlOptions.class, TestEdgeHtmlDriver::new)
+          .put(EdgeOptions.class, TestEdgeDriver::new)
+          .put(SafariOptions.class, SafariDriver::new)
           .build();
 
   private Capabilities capabilities;
@@ -60,8 +65,10 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     Function<Capabilities, WebDriver> driverConstructor;
 
     if (capabilities != null) {
-      String browserName = capabilities.getBrowserName();
-      driverConstructor = driverConstructors.getOrDefault(browserName, caps -> {
+      driverConstructor = driverConstructors.getOrDefault(capabilities.getClass(), caps -> {
+        if (capabilities.getBrowserName().equals(BrowserType.HTMLUNIT)) {
+          return new HtmlUnitDriver();
+        }
         throw new RuntimeException("No driver can be provided for capabilities " + caps);
       });
     } else {
@@ -69,7 +76,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
       try {
         Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
         Constructor<? extends WebDriver> constructor = driverClass.getConstructor(Capabilities.class);
-        driverConstructor = (caps) -> {
+        driverConstructor = caps -> {
           try {
             return constructor.newInstance(caps);
           } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

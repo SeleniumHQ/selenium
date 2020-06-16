@@ -85,6 +85,7 @@ const Pages = (function() {
   addPage('nestedPage', 'nestedElements.html');
   addPage('readOnlyPage', 'readOnlyPage.html');
   addPage('rectanglesPage', 'rectangles.html');
+  addPage('relativeLocators', 'relative_locators.html');
   addPage('redirectPage', 'redirect');
   addPage('resultPage', 'resultPage.html');
   addPage('richTextPage', 'rich_text.html');
@@ -102,6 +103,7 @@ const Pages = (function() {
   addPage('uploadPage', 'upload.html');
   addPage('veryLargeCanvas', 'veryLargeCanvas.html');
   addPage('xhtmlTestPage', 'xhtmlTest.html');
+  addPage('uploadInvisibleTestPage', 'upload_invisible.html');
 
   return pages;
 })();

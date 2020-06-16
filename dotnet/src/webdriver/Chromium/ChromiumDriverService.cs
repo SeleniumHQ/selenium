@@ -1,4 +1,4 @@
-// <copyright file="ChromeDriverService.cs" company="WebDriver Committers">
+// <copyright file="ChromiumDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -172,7 +172,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Returns the Chromium driver filename for the currently running platform
         /// </summary>
-        /// <param name="fileName">The name of the Chromium executable. Defaulit is "chromedriver".</param>
+        /// <param name="fileName">The name of the Chromium executable. Default is "chromedriver".</param>
         /// <returns>The file name of the Chromium driver service executable.</returns>
         protected static string ChromiumDriverServiceFileName(string fileName = DefaultChromeDriverServiceExecutableName)
         {

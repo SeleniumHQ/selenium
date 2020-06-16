@@ -24,6 +24,7 @@ module Selenium
         attr_accessor :profile
 
         KEY = 'goog:chromeOptions'
+        BROWSER = 'chrome'
 
         # see: http://chromedriver.chromium.org/capabilities
         CAPABILITIES = {args: 'args',
@@ -74,7 +75,7 @@ module Selenium
         #
 
         def initialize(profile: nil, encoded_extensions: nil, **opts)
-          super(opts)
+          super(**opts)
 
           @profile = profile
           @options[:encoded_extensions] = encoded_extensions if encoded_extensions
@@ -169,7 +170,7 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new
         #   options.add_emulation(device_metrics: {width: 400, height: 800, pixelRatio: 1, touch: true})
         #
-        # @param [Hash] opts the pre-defined options for adding mobilie emulation values
+        # @param [Hash] opts the pre-defined options for adding mobile emulation values
         # @option opts [String] :device_name A valid device name from the Chrome DevTools Emulation panel
         # @option opts [Hash] :device_metrics Hash containing width, height, pixelRatio, touch
         # @option opts [String] :user_agent Full user agent
@@ -179,29 +180,22 @@ module Selenium
           @options[:emulation] = opts
         end
 
-        #
-        # @api private
-        #
+        private
 
-        def as_json(*)
-          options = super
-
-          if @profile
-            options['args'] ||= []
-            options['args'] << "--user-data-dir=#{@profile[:directory]}"
-          end
-
+        def process_browser_options(browser_options)
+          options = browser_options[KEY]
           options['binary'] ||= binary_path if binary_path
-          extensions = options['extensions'] || []
-          encoded_extensions = options.delete(:encoded_extensions) || []
-
-          options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
-          options.delete('extensions') if options['extensions'].empty?
-
-          {KEY => generate_as_json(options)}
+          (options['args'] || []) << "--user-data-dir=#{@profile.directory}" if @profile
+          merge_extensions(options)
         end
 
-        private
+        def merge_extensions(browser_options)
+          extensions = browser_options['extensions'] || []
+          encoded_extensions = browser_options.delete(:encoded_extensions) || []
+
+          browser_options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
+          browser_options.delete('extensions') if browser_options['extensions'].empty?
+        end
 
         def binary_path
           Chrome.path
@@ -214,6 +208,17 @@ module Selenium
         def validate_extension(path)
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
           raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
+        end
+
+        def generate_as_json(value, camelize_keys: true)
+          if value.is_a?(Hash)
+            value.each_with_object({}) do |(key, val), hash|
+              key = convert_json_key(key, camelize: camelize_keys)
+              hash[key] = generate_as_json(val, camelize_keys: key != 'prefs')
+            end
+          else
+            super
+          end
         end
       end # Options
     end # Chrome

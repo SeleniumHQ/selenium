@@ -39,6 +39,7 @@ import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.safari.SafariOptions;
 
 import java.io.UncheckedIOException;
@@ -64,13 +65,13 @@ public class WebDriverBackedSeleniumHandler implements Routable {
 
   // Prepare the shared set of thingies
   private static final Map<SessionId, CommandProcessor> PROCESSORS = new ConcurrentHashMap<>();
-  public static final Logger LOG = Logger.getLogger(WebDriverBackedSelenium.class.getName());
+  private static final Logger LOG = Logger.getLogger(WebDriverBackedSelenium.class.getName());
 
   private NewSessionPipeline pipeline;
   private ActiveSessions sessions;
   private ActiveSessionListener listener;
 
-  public WebDriverBackedSeleniumHandler(ActiveSessions sessions) {
+  public WebDriverBackedSeleniumHandler(Tracer tracer, ActiveSessions sessions) {
     this.sessions = sessions == null ? new ActiveSessions(5, MINUTES) : sessions;
     listener = new ActiveSessionListener() {
       @Override
@@ -78,9 +79,9 @@ public class WebDriverBackedSeleniumHandler implements Routable {
         PROCESSORS.remove(session.getId());
       }
     };
-    sessions.addListener(listener);
+    this.sessions.addListener(listener);
 
-    this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory()).create();
+    this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory(tracer)).create();
   }
 
   @Override

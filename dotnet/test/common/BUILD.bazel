@@ -12,6 +12,16 @@ SUPPORTED_BROWSERS = [
     ("safaritechpreview", "SafariTechPreview"),
 ]
 
+config_setting(
+    name = "netframework",
+    values = {"define": "framework=netfx"},
+)
+
+config_setting(
+    name = "netcore",
+    values = {"define": "framework=netcore"},
+)
+
 [nunit_test(
     name = "{}".format(target_name),
     size = "enormous",
@@ -26,30 +36,51 @@ SUPPORTED_BROWSERS = [
     ]),
     out = "WebDriver.Common.Tests.dll",
     args = [
-        "--agents=1",
-        "--testparam=ConfigFile=$(location appconfig.json)",
-        "--testparam=ActiveDriverConfig={}".format(config_setting),
+        "--workers=1",
+        "--params=ConfigFile=$(location appconfig.json)",
+        "--params=ActiveDriverConfig={}".format(config_setting),
     ],
     data = [
         "appconfig.json",
         "//common/src/web",
         "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
-        "//java/client/test/org/openqa/selenium/environment/keystore:keystore"
+        "//java/client/test/org/openqa/selenium/environment:keystore",
+        "//javascript/atoms",
+        "//third_party/closure/goog",
+        "//third_party/js/selenium:webdriver_json",
     ],
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_net47",
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    target_frameworks = select({
+        ":netframework": ["net471"],
+        ":netcore": ["netcoreapp2.1"],
+        "//conditions:default": ["netcoreapp2.1"],
+    }),
     visibility = ["//visibility:public"],
-    deps = [
-        "//dotnet/src/webdriver:net47assembly",
-        "@benderproxy//:net47",
-        "@castle.core//:net45",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
-        "@json.net//:net45",
-        "@moq//:net45",
-        "@nunit//:net45",
-        "@system.threading.tasks.extensions//:net45",
-    ],
+    deps = select({
+        ":netframework": [
+            "//dotnet/src/webdriver:net47assembly",
+            "@json.net//:Newtonsoft.Json",
+            "@benderproxy//:BenderProxy",
+            "@moq//:Moq",
+        ],
+        ":netcore": [
+            "//dotnet/src/webdriver:netstandard2.0assembly",
+            "@json.net//:Newtonsoft.Json",
+            "@benderproxy//:BenderProxy",
+            "@moq//:Moq",
+        ],
+        "//conditions:default": [
+            "//dotnet/src/webdriver:netstandard2.0assembly",
+            "@json.net//:Newtonsoft.Json",
+            "@benderproxy//:BenderProxy",
+            "@moq//:Moq",
+        ],
+    }),
 ) for (target_name, config_setting) in SUPPORTED_BROWSERS]

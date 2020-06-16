@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
 
 import java.io.Closeable;
@@ -33,6 +34,7 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -102,7 +104,7 @@ public class JsonOutput implements Closeable {
   private String indentBy = "  ";
 
   JsonOutput(Appendable appendable) {
-    this.appendable = Objects.requireNonNull(appendable);
+    this.appendable = Require.nonNull("Underlying appendable", appendable);
 
     this.appender =
         str -> {
@@ -156,7 +158,9 @@ public class JsonOutput implements Closeable {
         Collection.class::isAssignableFrom,
         (obj, depth) -> {
           beginArray();
-          ((Collection<?>) obj).forEach(o -> write(o, depth - 1));
+          ((Collection<?>) obj).stream()
+            .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
+            .forEach(o -> write(o, depth - 1));
           endArray();
         });
 
@@ -165,16 +169,33 @@ public class JsonOutput implements Closeable {
         (obj, depth) -> {
           beginObject();
           ((Map<?, ?>) obj).forEach(
-              (key, value) -> name(String.valueOf(key)).write(value, depth - 1));
+              (key, value) -> {
+                if (value instanceof Optional && !((Optional) value).isPresent()) {
+                  return;
+                }
+                name(String.valueOf(key)).write(value, depth - 1);
+              });
           endObject();
         });
     builder.put(
         Class::isArray,
         (obj, depth) -> {
           beginArray();
-          Stream.of((Object[]) obj).forEach(o -> write(o, depth - 1));
+          Stream.of((Object[]) obj)
+            .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
+            .forEach(o -> write(o, depth - 1));
           endArray();
         });
+
+    builder.put(Optional.class::isAssignableFrom, (obj, depth) -> {
+      Optional<?> optional = (Optional<?>) obj;
+      if (!optional.isPresent()) {
+        append("null");
+        return;
+      }
+
+      write(optional.get(), depth);
+    });
 
     // Finally, attempt to convert as an object
     builder.put(cls -> true, (obj, depth) -> mapObject(obj, depth - 1));

@@ -24,7 +24,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.base.Preconditions;
 import com.google.common.io.CountingOutputStream;
 import com.google.common.io.FileBackedOutputStream;
 
@@ -33,6 +32,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -54,7 +54,7 @@ import java.util.stream.Stream;
 
 public class ProtocolHandshake {
 
-  private final static Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
+  private static final Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
 
   public Result createSession(HttpClient client, Command command)
       throws IOException {
@@ -91,8 +91,7 @@ public class ProtocolHandshake {
             desired));
   }
 
-  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size)
-      throws IOException {
+  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
@@ -158,7 +157,7 @@ public class ProtocolHandshake {
 
     Result(Dialect dialect, String sessionId, Map<String, ?> capabilities) {
       this.dialect = dialect;
-      this.sessionId = new SessionId(Preconditions.checkNotNull(sessionId));
+      this.sessionId = new SessionId(Require.nonNull("Session id", sessionId));
       this.capabilities = capabilities;
 
       if (capabilities.containsKey(PROXY)) {

@@ -17,6 +17,29 @@
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.grid.session.SessionFactory;
+import org.openqa.selenium.grid.session.remote.ServicedSession;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.tracing.Tracer;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
+
 import static org.openqa.selenium.remote.BrowserType.CHROME;
 import static org.openqa.selenium.remote.BrowserType.EDGE;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
@@ -28,37 +51,14 @@ import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.session.SessionFactory;
-import org.openqa.selenium.grid.session.remote.ServicedSession;
-import org.openqa.selenium.json.Json;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
-
 /**
  * Used to create new {@link ActiveSession} instances as required.
  */
 public class ActiveSessionFactory implements SessionFactory {
 
-  private final static Logger LOG = Logger.getLogger(ActiveSessionFactory.class.getName());
+  private static final Logger LOG = Logger.getLogger(ActiveSessionFactory.class.getName());
 
-  private final static Function<String, Class<?>> CLASS_EXISTS = name -> {
+  private static final Function<String, Class<?>> CLASS_EXISTS = name -> {
     try {
       return Class.forName(name);
     } catch (ClassNotFoundException | NoClassDefFoundError e) {
@@ -68,7 +68,7 @@ public class ActiveSessionFactory implements SessionFactory {
 
   private volatile List<SessionFactory> factories;
 
-  public ActiveSessionFactory() {
+  public ActiveSessionFactory(Tracer tracer) {
     // Insertion order matters. The first matching predicate is always used for matching.
     ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
 
@@ -99,7 +99,7 @@ public class ActiveSessionFactory implements SessionFactory {
         .build()
         .entrySet().stream()
         .filter(e -> CLASS_EXISTS.apply(e.getValue()) != null)
-        .forEach(e -> builder.add(new ServicedSession.Factory(e.getKey(), e.getValue())));
+        .forEach(e -> builder.add(new ServicedSession.Factory(tracer, e.getKey(), e.getValue())));
 
     // Attempt to bind the htmlunitdriver if it's present.
     bind(builder, "org.openqa.selenium.htmlunit.HtmlUnitDriver", browserName(HTMLUNIT),
@@ -111,8 +111,8 @@ public class ActiveSessionFactory implements SessionFactory {
   public synchronized ActiveSessionFactory bind(
       Predicate<Capabilities> onThis,
       SessionFactory useThis) {
-    Objects.requireNonNull(onThis, "Predicated needed.");
-    Objects.requireNonNull(useThis, "SessionFactory is required");
+    Require.nonNull("Predicate", onThis);
+    Require.nonNull("SessionFactory", useThis);
 
     LOG.info(String.format("Binding %s to respond to %s", useThis, onThis));
 
@@ -149,12 +149,12 @@ public class ActiveSessionFactory implements SessionFactory {
   }
 
   private static Predicate<Capabilities> browserName(String browserName) {
-    Objects.requireNonNull(browserName, "Browser name must be set");
+    Require.nonNull("Browser name", browserName);
     return toCompare -> browserName.equals(toCompare.getBrowserName());
   }
 
   private static Predicate<Capabilities> containsKey(String keyName) {
-    Objects.requireNonNull(keyName, "Key name must be set");
+    Require.nonNull("Key name", keyName);
     return toCompare -> toCompare.getCapability(keyName) != null;
   }
 
@@ -172,10 +172,10 @@ public class ActiveSessionFactory implements SessionFactory {
 
   @Override
   public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
-    LOG.info("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
+    LOG.finest("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
     return factories.stream()
         .filter(factory -> factory.test(sessionRequest.getCapabilities()))
-        .peek(factory -> LOG.info(String.format("Matched factory %s", factory)))
+        .peek(factory -> LOG.finest(String.format("Matched factory %s", factory)))
         .map(factory -> factory.apply(sessionRequest))
         .filter(Optional::isPresent)
         .map(Optional::get)

@@ -17,33 +17,35 @@
 
 package org.openqa.selenium.grid.sessionmap.local;
 
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+
 public class LocalSessionMap extends SessionMap {
 
-  private final DistributedTracer tracer;
   private final EventBus bus;
-  private final Map<SessionId, Session> knownSessions = new HashMap<>();
+  private final Map<SessionId, Session> knownSessions = new ConcurrentHashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* be fair */ true);
 
-  public LocalSessionMap(DistributedTracer tracer, EventBus bus) {
-    this.tracer = Objects.requireNonNull(tracer);
-    this.bus = Objects.requireNonNull(bus);
+  public LocalSessionMap(Tracer tracer, EventBus bus) {
+    super(tracer);
+
+    this.bus = Require.nonNull("Event bus", bus);
 
     bus.addListener(SESSION_CLOSED, event -> {
       SessionId id = event.getData(SessionId.class);
@@ -51,66 +53,56 @@ public class LocalSessionMap extends SessionMap {
     });
   }
 
+  public static SessionMap create(Config config) {
+    Tracer tracer = new LoggingOptions(config).getTracer();
+    EventBus bus = new EventBusOptions(config).getEventBus();
+
+    return new LocalSessionMap(tracer, bus);
+  }
+
   @Override
   public boolean add(Session session) {
-    Objects.requireNonNull(session, "Session has not been set");
+    Require.nonNull("Session", session);
 
-    try (Span span = tracer.createSpan("sessionmap.add", tracer.getActiveSpan())) {
-      span.addTag("session.id", session.getId());
-      span.addTag("session.capabilities", session.getCapabilities());
-      span.addTag("session.uri", session.getUri());
-
-      Lock writeLock = lock.writeLock();
-      writeLock.lock();
-      try {
-        knownSessions.put(session.getId(), session);
-      } finally {
-        writeLock.unlock();
-      }
-
-      return true;
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      knownSessions.put(session.getId(), session);
+    } finally {
+      writeLock.unlock();
     }
+
+    return true;
   }
 
   @Override
   public Session get(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
-    try (Span span = tracer.createSpan("sessionmap.get", tracer.getActiveSpan())) {
-      span.addTag("session.id", id);
-
-      Lock readLock = lock.readLock();
-      readLock.lock();
-      try {
-        Session session = knownSessions.get(id);
-        if (session == null) {
-          throw new NoSuchSessionException("Unable to find session with ID: " + id);
-        }
-
-        span.addTag("session.capabilities", session.getCapabilities());
-        span.addTag("session.uri", session.getUri());
-
-        return session;
-      } finally {
-        readLock.unlock();
+    Lock readLock = lock.readLock();
+    readLock.lock();
+    try {
+      Session session = knownSessions.get(id);
+      if (session == null) {
+        throw new NoSuchSessionException("Unable to find session with ID: " + id);
       }
+
+      return session;
+    } finally {
+      readLock.unlock();
     }
   }
 
   @Override
   public void remove(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
-    try (Span span = tracer.createSpan("sessionmap.remove", tracer.getActiveSpan())) {
-      span.addTag("session.id", id);
-
-      Lock writeLock = lock.writeLock();
-      writeLock.lock();
-      try {
-        knownSessions.remove(id);
-      } finally {
-        writeLock.unlock();
-      }
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      knownSessions.remove(id);
+    } finally {
+      writeLock.unlock();
     }
   }
 }

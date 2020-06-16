@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -29,12 +27,15 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Require;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class CoreTestCase {
@@ -49,10 +50,22 @@ public class CoreTestCase {
   private String url;
 
   public CoreTestCase(String url) {
-    this.url = Preconditions.checkNotNull(url);
+    this.url = Require.nonNull("Test case URL", url);
   }
 
   public void run(Results results, WebDriver driver, Selenium selenium, URL baseUrl) {
+    // Find the correct window to use. *sigh*
+    try {
+      driver.switchTo().defaultContent();
+    } catch (WebDriverException e) {
+      Set<String> allHandles = driver.getWindowHandles();
+      if (allHandles.isEmpty()) {
+        throw new AssertionError("Unable to find window to use");
+      }
+      driver.switchTo().window(allHandles.iterator().next());
+    }
+
+
     String currentUrl = driver.getCurrentUrl();
     if (!url.equals(currentUrl)) {
       driver.get(url);
@@ -68,8 +81,13 @@ public class CoreTestCase {
     NextStepDecorator decorator = NextStepDecorator.IDENTITY;
     for (LoggableStep step : steps) {
       LOG.info(step.toString());
-      decorator = Preconditions.checkNotNull(decorator.evaluate(step, selenium, state), step);
-      stepResults.add(new StepResult(step, decorator.getCause()));
+      try {
+        decorator = Require.state(step.toString(), decorator.evaluate(step, selenium, state)).nonNull();
+        stepResults.add(new StepResult(step, decorator.getCause()));
+      } catch (CoreRunnerError e) {
+        stepResults.add(new StepResult(step, e));
+      }
+
       if (!decorator.isOkayToContinueTest()) {
         break;
       }
@@ -174,7 +192,7 @@ public class CoreTestCase {
     private final String renderableClass;
 
     public StepResult(LoggableStep step, Throwable cause) {
-      this.step = Preconditions.checkNotNull(step);
+      this.step = Require.nonNull("Step", step);
       this.cause = cause;
 
       if (cause == null) {

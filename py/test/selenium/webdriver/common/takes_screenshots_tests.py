@@ -20,6 +20,8 @@ import imghdr
 
 import pytest
 
+from selenium.webdriver.common.by import By
+
 
 def test_get_screenshot_as_base64(driver, pages):
     pages.load("simpleTest.html")
@@ -36,6 +38,6 @@ def test_get_screenshot_as_png(driver, pages):
 @pytest.mark.xfail_firefox
 def test_get_element_screenshot(driver, pages):
     pages.load("simpleTest.html")
-    element = driver.find_element_by_id("multiline")
+    element = driver.find_element(By.ID, "multiline")
     result = base64.b64decode(element.screenshot_as_base64)
     assert imghdr.what('', result) == 'png'

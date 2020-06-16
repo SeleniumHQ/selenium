@@ -45,9 +45,12 @@ import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
@@ -60,7 +63,7 @@ public class UploadTest extends JUnit4TestBase {
   private File testFile;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     testFile = createTmpFile(FILE_HTML);
   }
 
@@ -84,6 +87,34 @@ public class UploadTest extends JUnit4TestBase {
 
     WebElement body = driver.findElement(By.xpath("//body"));
     wait.until(elementTextToEqual(body, LOREM_IPSUM_TEXT));
+  }
+
+  @SwitchToTopAfterTest
+  @Test
+  @NotYetImplemented(value = SAFARI, reason = "Returns wrong text of the frame body")
+  public void testMultipleFileUploading() {
+    List<String> multiContent = Arrays.asList(LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT);
+    String fileNames = multiContent.stream()
+        .map(text -> "<div>" + text + "</div>")
+        .map(this::createTmpFile)
+        .map(File::getAbsolutePath)
+        .collect(Collectors.joining("\n"));
+    assumeFalse(
+        "This test as written assumes a file on local disk is accessible to the browser. "
+        + "That is not true for browsers on mobile platforms.",
+        TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+    driver.get(pages.uploadPage);
+    driver.findElement(By.id("upload")).sendKeys(fileNames);
+    driver.findElement(By.id("go")).click();
+
+    // Uploading files across a network may take a while, even if they're really small
+    WebElement label = driver.findElement(By.id("upload_label"));
+    wait.until(not(visibilityOf(label)));
+
+    driver.switchTo().frame("upload_target");
+
+    WebElement body = driver.findElement(By.xpath("//body"));
+    wait.until(elementTextToEqual(body, String.join("\n", multiContent)));
   }
 
   @Test
@@ -159,10 +190,14 @@ public class UploadTest extends JUnit4TestBase {
         () -> input.sendKeys(testFile.getAbsolutePath()));
   }
 
-  private File createTmpFile(String content) throws IOException {
-    File f = File.createTempFile("webdriver", "tmp");
-    f.deleteOnExit();
-    Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
-    return f;
+  private File createTmpFile(String content) {
+    try {
+      File f = File.createTempFile("webdriver", "tmp");
+      f.deleteOnExit();
+      Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
+      return f;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 }

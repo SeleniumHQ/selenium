@@ -1,26 +1,22 @@
-java_library(
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
     name = "edge",
-    exports = [
-        ":edgeium",
-        "//java/client/src/org/openqa/selenium/devtools",
-        "//java/client/src/org/openqa/selenium/edge/edgehtml",
-    ],
+    srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-edge-driver:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = [
         "//visibility:public",
-    ]
-)
-
-java_library(
-    name = "edgeium",
-    srcs = glob(["*.java"]),
-    visibility = [
-        "//java/client/src/org/openqa/selenium/edge:__subpackages__",
+    ],
+    exports = [
+        "//java/client/src/org/openqa/selenium/chromium",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/chromium",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
-        "//third_party/java/service",
     ],
 )

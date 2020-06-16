@@ -43,8 +43,8 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
  */
 public class ExceptionHandler implements HttpHandler {
 
-  private final static ErrorCodes ERRORS = new ErrorCodes();
-  private final static Json toJson = new Json();
+  private static final ErrorCodes ERRORS = new ErrorCodes();
+  private static final Json toJson = new Json();
 
   private final Throwable exception;
 

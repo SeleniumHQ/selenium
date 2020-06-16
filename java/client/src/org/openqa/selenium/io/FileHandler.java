@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.io;
 
-import org.openqa.selenium.Platform;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,7 +46,7 @@ public class FileHandler {
     String arch = Objects.requireNonNull(System.getProperty("os.arch")).toLowerCase() + "/";
     List<String> alternatives =
         Arrays.asList(name, "/" + name, arch + name, "/" + arch + name);
-    if (Platform.getCurrent().is(Platform.MAC)) {
+    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
       alternatives.add("mac/" + name);
       alternatives.add("/mac/" + name);
     }
@@ -69,7 +67,7 @@ public class FileHandler {
   }
 
 
-  public static boolean createDir(File dir) throws IOException {
+  public static boolean createDir(File dir) {
     if ((dir.exists() || dir.mkdirs()) && dir.canWrite())
       return true;
 
@@ -83,7 +81,7 @@ public class FileHandler {
     return createDir(dir.getParentFile());
   }
 
-  public static boolean makeWritable(File file) throws IOException {
+  public static boolean makeWritable(File file) {
     return file.canWrite() || file.setWritable(true);
   }
 

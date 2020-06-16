@@ -20,9 +20,10 @@ package org.openqa.selenium;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
+import java.util.stream.Stream;
 
 /**
  * Describes a series of key/value pairs that encapsulate aspects of a browser.
@@ -34,23 +35,23 @@ public interface Capabilities {
   }
 
   default Platform getPlatform() {
-    Object rawPlatform = getCapability("platformName");
+    return Stream.of("platform", "platformName")
+        .map(this::getCapability)
+        .filter(Objects::nonNull)
+        .map(cap -> {
+          if (cap instanceof Platform) {
+            return (Platform) cap;
+          }
 
-    if (rawPlatform == null) {
-      rawPlatform = getCapability("platform");
-    }
-
-    if (rawPlatform == null) {
-      return null;
-    }
-
-    if (rawPlatform instanceof String) {
-      return Platform.fromString((String) rawPlatform);
-    } else if (rawPlatform instanceof Platform) {
-      return (Platform) rawPlatform;
-    }
-
-    throw new IllegalStateException("Platform was neither a string nor a Platform: " + rawPlatform);
+          try {
+            return Platform.fromString((String.valueOf(cap)));
+          } catch (WebDriverException e) {
+            return null;
+          }
+        })
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
   }
 
   default String getVersion() {

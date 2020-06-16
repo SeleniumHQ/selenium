@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "sessionmap",
     srcs = glob(["*.java"]),
@@ -12,6 +14,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )

@@ -25,8 +25,6 @@ import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -37,23 +35,23 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.seleniumhq.jetty9.http.HttpVersion;
-import org.seleniumhq.jetty9.http.MimeTypes;
-import org.seleniumhq.jetty9.server.Connector;
-import org.seleniumhq.jetty9.server.HttpConfiguration;
-import org.seleniumhq.jetty9.server.HttpConnectionFactory;
-import org.seleniumhq.jetty9.server.SecureRequestCustomizer;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.SslConnectionFactory;
-import org.seleniumhq.jetty9.server.handler.AllowSymLinkAliasChecker;
-import org.seleniumhq.jetty9.server.handler.ContextHandler.ApproveAliases;
-import org.seleniumhq.jetty9.server.handler.ContextHandlerCollection;
-import org.seleniumhq.jetty9.server.handler.HandlerList;
-import org.seleniumhq.jetty9.server.handler.ResourceHandler;
-import org.seleniumhq.jetty9.servlet.ServletContextHandler;
-import org.seleniumhq.jetty9.servlet.ServletHolder;
-import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
+import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.http.MimeTypes;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
+import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker;
+import org.eclipse.jetty.server.handler.ContextHandler.ApproveAliases;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -61,6 +59,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.servlet.Servlet;
@@ -312,7 +311,7 @@ public class JettyAppServer implements AppServer {
       throw new RuntimeException(e);
     }
   }
-  
+
   protected ServletContextHandler addResourceHandler(String contextPath, Path resourceBase) {
     ServletContextHandler context = new ServletContextHandler();
 
@@ -325,7 +324,7 @@ public class JettyAppServer implements AppServer {
     staticResource.setMimeTypes(mimeTypes);
 
     context.setContextPath(contextPath);
-    context.setAliasChecks(ImmutableList.of(new ApproveAliases(), new AllowSymLinkAliasChecker()));
+    context.setAliasChecks(Arrays.asList(new ApproveAliases(), new AllowSymLinkAliasChecker()));
 
     HandlerList allHandlers = new HandlerList();
     allHandlers.addHandler(staticResource);

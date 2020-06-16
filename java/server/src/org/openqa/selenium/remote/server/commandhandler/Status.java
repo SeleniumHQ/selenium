@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server.commandhandler;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -26,7 +27,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -39,7 +39,7 @@ public class Status implements HttpHandler {
   private final Json json;
 
   public Status(Json json) {
-    this.json = Objects.requireNonNull(json);
+    this.json = Require.nonNull("Json converter", json);
   }
 
   @Override
@@ -53,21 +53,20 @@ public class Status implements HttpHandler {
     // And now more information
     BuildInfo buildInfo = new BuildInfo();
     value.put("build", ImmutableMap.of(
-        // We need to fix the BuildInfo to properly fill out these values.
-          "revision", buildInfo.getBuildRevision(),
-          "time", buildInfo.getBuildTime(),
-        "version", buildInfo.getReleaseLabel()));
+      // We need to fix the BuildInfo to properly fill out these values.
+      "revision", buildInfo.getBuildRevision(),
+      "version", buildInfo.getReleaseLabel()));
 
     value.put("os", ImmutableMap.of(
-        "arch", System.getProperty("os.arch"),
-        "name", System.getProperty("os.name"),
-        "version", System.getProperty("os.version")));
+      "arch", System.getProperty("os.arch"),
+      "name", System.getProperty("os.name"),
+      "version", System.getProperty("os.version")));
 
     value.put("java", ImmutableMap.of("version", System.getProperty("java.version")));
 
     Map<String, Object> payloadObj = ImmutableMap.of(
-        "status", SUCCESS,
-        "value", value.build());
+      "status", SUCCESS,
+      "value", value.build());
 
     // Write out a minimal W3C status response.
     byte[] payload = json.toJson(payloadObj).getBytes(UTF_8);
