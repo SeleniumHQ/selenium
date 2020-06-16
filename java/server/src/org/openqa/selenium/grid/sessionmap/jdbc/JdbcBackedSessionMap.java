@@ -89,9 +89,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   public boolean add(Session session) {
     Require.nonNull("Session to add", session);
 
-    try {
-      return insertSessionStatement(session).executeUpdate() >= 1;
-
+    try (PreparedStatement statement = insertSessionStatement(session)) {
+      return statement.executeUpdate() >= 1;
     } catch (SQLException e) {
       throw new JdbcException(e);
     }
@@ -105,7 +104,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Capabilities caps = null;
     String rawUri = null;
 
-    try (ResultSet sessions = readSessionStatement(id).executeQuery()){
+    try (PreparedStatement statement = readSessionStatement(id); ResultSet sessions = statement.executeQuery()) {
       if (!sessions.next()) {
         throw new NoSuchSessionException("Unable to find...");
       }
