@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.docker;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
@@ -26,7 +28,7 @@ import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
-import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -36,7 +38,9 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -102,9 +106,12 @@ public class DockerOptions {
     return new Docker(client).isSupported();
   }
 
-  public void configure(Tracer tracer, HttpClient.Factory clientFactory, LocalNode.Builder node) {
+  public Map<Capabilities, Collection<SessionFactory>> getDockerSessionFactories(
+    Tracer tracer,
+    HttpClient.Factory clientFactory) {
+
     if (!isEnabled(clientFactory)) {
-      return;
+      return ImmutableMap.of();
     }
 
     List<String> allConfigs = config.getAll(DOCKER_SECTION, "configs")
@@ -128,10 +135,11 @@ public class DockerOptions {
     loadImages(docker, kinds.keySet().toArray(new String[0]));
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
     kinds.forEach((name, caps) -> {
       Image image = docker.getImage(name);
       for (int i = 0; i < maxContainerCount; i++) {
-        node.add(caps, new DockerSessionFactory(tracer, clientFactory, docker, image, caps));
+        factories.put(caps, new DockerSessionFactory(tracer, clientFactory, docker, image, caps));
       }
       LOG.info(String.format(
           "Mapping %s to docker image %s %d times",
@@ -139,6 +147,7 @@ public class DockerOptions {
           name,
           maxContainerCount));
     });
+    return factories.build().asMap();
   }
 
   private void loadImages(Docker docker, String... imageNames) {

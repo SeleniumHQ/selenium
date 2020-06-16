@@ -28,13 +28,11 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
-import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
-import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
@@ -148,18 +146,7 @@ public class Standalone extends TemplateGridCommand {
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 
-    LocalNode.Builder nodeBuilder = LocalNode.builder(
-      tracer,
-      bus,
-      localhost,
-      localhost,
-      null)
-      .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
-
-    new NodeOptions(config).configure(tracer, clientFactory, nodeBuilder);
-    new DockerOptions(config).configure(tracer, clientFactory, nodeBuilder);
-
-    Node node = nodeBuilder.build();
+    Node node = new NodeOptions(config).getNode();
     combinedHandler.addHandler(node);
     distributor.add(node);
 
