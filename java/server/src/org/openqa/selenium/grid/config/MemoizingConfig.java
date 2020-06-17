@@ -36,7 +36,7 @@ public class MemoizingConfig implements Config {
 
   @Override
   public Set<String> getSectionNames() {
-    if (memoizedConfig.contains("sectionNames")) {
+    if (memoizedConfig.containsKey("sectionNames")) {
       return (Set<String>) memoizedConfig.get("sectionNames");
     }
 
@@ -50,7 +50,7 @@ public class MemoizingConfig implements Config {
   public Set<String> getOptions(String section) {
     Require.nonNull("Section name to get options for", section);
 
-    if(memoizedConfig.contains(section)) {
+    if(memoizedConfig.containsKey(section)) {
       return (Set<String>) memoizedConfig.get(section);
     }
 
@@ -62,7 +62,7 @@ public class MemoizingConfig implements Config {
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    if (memoizedConfig.contains("allLists")) {
+    if (memoizedConfig.containsKey("allLists")) {
       return (Optional<List<String>>) memoizedConfig.get("allLists");
     }
 
