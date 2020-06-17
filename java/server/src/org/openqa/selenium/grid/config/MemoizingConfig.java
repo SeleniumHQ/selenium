@@ -62,13 +62,19 @@ public class MemoizingConfig implements Config {
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    if (memoizedConfig.containsKey("allLists")) {
-      return (Optional<List<String>>) memoizedConfig.get("allLists");
+    String getAllKey = getAllKey(section, option);
+
+    if (memoizedConfig.containsKey(getAllKey)) {
+      return (Optional<List<String>>) memoizedConfig.get(getAllKey);
     }
 
     Optional<List<String>> allLists = delegate.getAll(section, option);
-    memoizedConfig.put("allLists", allLists);
+    memoizedConfig.put(getAllKey, allLists);
 
     return allLists;
+  }
+
+  private String getAllKey(String section, String option) {
+    return String.format("%1$s:%2$s", section, option);
   }
 }
