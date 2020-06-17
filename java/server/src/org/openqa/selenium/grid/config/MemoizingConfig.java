@@ -36,16 +36,39 @@ public class MemoizingConfig implements Config {
 
   @Override
   public Set<String> getSectionNames() {
-    return delegate.getSectionNames();
+    if (memoizedConfig.contains("sectionNames")) {
+      return (Set<String>) memoizedConfig.get("sectionNames");
+    }
+
+    Set<String> sectionNames = delegate.getSectionNames();
+    memoizedConfig.put("sectionNames", sectionNames);
+
+    return sectionNames;
   }
 
   @Override
   public Set<String> getOptions(String section) {
-    return delegate.getOptions(Require.nonNull("Section name to get options for", section));
+    Require.nonNull("Section name to get options for", section);
+
+    if(memoizedConfig.contains(section)) {
+      return (Set<String>) memoizedConfig.get(section);
+    }
+
+    Set<String> options = delegate.getOptions(section);
+    memoizedConfig.put(section, options);
+
+    return options;
   }
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    return delegate.getAll(section, option);
+    if (memoizedConfig.contains("allLists")) {
+      return (Optional<List<String>>) memoizedConfig.get("allLists");
+    }
+
+    Optional<List<String>> allLists = delegate.getAll(section, option);
+    memoizedConfig.put("allLists", allLists);
+
+    return allLists;
   }
 }
