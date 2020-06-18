@@ -19,17 +19,12 @@ package org.openqa.selenium.grid.config;
 
 import static org.junit.Assert.assertEquals;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class MemoizingConfigTest {

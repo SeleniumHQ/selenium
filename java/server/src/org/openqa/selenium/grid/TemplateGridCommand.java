@@ -82,22 +82,20 @@ public abstract class TemplateGridCommand implements CliCommand {
       allConfigs.add(configFlags.readConfigFiles());
       allConfigs.add(getDefaultConfig());
 
-      Config config = new CompoundConfig(allConfigs.toArray(new Config[0]));
+      Config config = new MemoizingConfig(new CompoundConfig(allConfigs.toArray(new Config[0])));
 
-      MemoizingConfig memoizingConfig = new MemoizingConfig(config);
-
-      if (configFlags.dumpConfig(memoizingConfig, out)) {
+      if (configFlags.dumpConfig(config, out)) {
         return;
       }
 
-      if (configFlags.dumpConfigHelp(memoizingConfig, getConfigurableRoles(), out)) {
+      if (configFlags.dumpConfigHelp(config, getConfigurableRoles(), out)) {
         return;
       }
 
-      LoggingOptions loggingOptions = new LoggingOptions(memoizingConfig);
+      LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      execute(memoizingConfig);
+      execute(config);
     };
   }
 
