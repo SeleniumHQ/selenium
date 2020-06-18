@@ -22,6 +22,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public interface Config {
 
@@ -46,8 +47,13 @@ public interface Config {
   default <X> X getClass(String section, String option, Class<X> typeOfClass, String defaultClazz) {
     String clazz = get(section, option).orElse(defaultClazz);
 
+    // We don't declare a constant on the interface, natch.
+    Logger.getLogger(Config.class.getName()).fine(String.format("Creating %s as instance of %s", clazz, typeOfClass));
+
     try {
-      Class<?> ClassClazz = Class.forName(clazz);
+      // Use the context class loader since this is what the `--ext`
+      // flag modifies.
+      Class<?> ClassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
       Method create = ClassClazz.getMethod("create", Config.class);
 
       if (!Modifier.isStatic(create.getModifiers())) {
