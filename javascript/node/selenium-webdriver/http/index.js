@@ -213,6 +213,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
       if (!location.hostname) {
         location.hostname = hostname;
         location.port = port;
+        location.auth = options.auth;
       }
 
       request.abort();
@@ -222,6 +223,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
         hostname: location.hostname,
         port: location.port,
         path: location.path,
+        auth: location.auth,
         pathname: location.pathname,
         search: location.search,
         hash: location.hash,
