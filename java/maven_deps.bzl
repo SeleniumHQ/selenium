@@ -38,9 +38,9 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-exporters-logging:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk:%s" % opentelemetry_version,
             "io.ous:jtoml:2.0.0",
-            "it.ozimov:embedded-redis:0.7.2",
-            "io.projectreactor:reactor-core:3.3.5.RELEASE",
-            "io.projectreactor.netty:reactor-netty:0.9.7.RELEASE",
+            "it.ozimov:embedded-redis:0.7.3",
+            "io.projectreactor:reactor-core:3.4.0-M1",
+            "io.projectreactor.netty:reactor-netty:1.0.0-M1",
             "javax.servlet:javax.servlet-api:4.0.1",
             maven.artifact(
                 group = "junit",
@@ -91,9 +91,12 @@ def selenium_java_deps():
         fetch_sources = True,
         strict_visibility = True,
         repositories = [
-            "https://repo1.maven.org/maven2",
             "https://jcenter.bintray.com/",
+            "https://repo1.maven.org/maven2",
             "https://maven.google.com",
+
+            # Remove these once reactor m1 is released
+            "https://repo.spring.io/libs-snapshot",
         ],
         maven_install_json = "@selenium//java:maven_install.json",
     )
