@@ -424,6 +424,17 @@ public class NodeTest {
     return baseDir;
   }
 
+  //Test that the draining command sets Host status to DRAINING
+  @Test
+  public void drainingNodeStatusDraining() {
+
+  }
+
+  //Test that a draining node doesn't accept new sessions by any means
+  //Test that a draining node continues to run its sessions and accept new WebDriver commands
+  //Test that a node will shut down once all sessions are finished
+  //Test that RemoteNode will post the correct command oto the LocalNode
+
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
     return new CreateSessionRequest(
             ImmutableSet.copyOf(Dialect.values()),

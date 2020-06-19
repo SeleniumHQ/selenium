@@ -30,7 +30,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
-import org.openqa.selenium.grid.data.NodeRejectedEvent;
+import org.openqa.selenium.grid.data.NodeDrainingStartedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -79,6 +79,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.NodeDrainingStartedEvent.NODE_DRAINING_STARTED;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -114,6 +115,7 @@ public class LocalDistributor extends Distributor {
     this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
+    bus.addListener(NODE_DRAINING_STARTED, event -> drain(event.getData(UUID.class)));
   }
 
   public static Distributor create(Config config) {
@@ -318,7 +320,7 @@ public class LocalDistributor extends Distributor {
     // check registrationSecret and stop processing if it doesn't match
     if (!Objects.equals(status.getRegistrationSecret(), registrationSecret)) {
       LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT registered.", status.getUri()));
-      bus.fire(new NodeRejectedEvent(status.getUri()));
+      bus.fire(new NodeDrainingStartedEvent(status.getNodeId()));
       return;
     }
 
@@ -395,6 +397,18 @@ public class LocalDistributor extends Distributor {
     }
 
     return this;
+  }
+
+  @Override
+  public void drain(UUID nodeId) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      hosts.stream().filter(node -> nodeId.equals(node.getId())).findFirst()
+          .orElseThrow().setHostStatus(Host.Status.DRAINING);
+    } finally {
+      writeLock.unlock();
+    }
   }
 
   @Override

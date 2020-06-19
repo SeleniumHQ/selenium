@@ -37,6 +37,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -93,6 +94,21 @@ public class LocalNodeTest {
   public void isNotOwnerOfAStoppedSession() {
     node.stop(session.getId());
     assertThat(node.isSessionOwner(session.getId())).isFalse();
+  }
+
+  @Test
+  public void cannotAcceptNewSessionsWhileDraining() {
+    node.drain();
+    assertThat(node.isDraining()).isTrue();
+    node.stop(session.getId()); //stop the default session
+
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    Optional<CreateSessionResponse> sessionResponse = node.newSession(
+        new CreateSessionRequest(
+            ImmutableSet.of(W3C),
+            stereotype,
+            ImmutableMap.of()));
+    assertThat(sessionResponse).isEmpty();
   }
 
   @Test

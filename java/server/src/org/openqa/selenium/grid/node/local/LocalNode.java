@@ -29,12 +29,14 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeDrainingStartedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -178,6 +180,10 @@ public class LocalNode extends Node {
       if (getCurrentSessionCount() >= maxSessionCount) {
         span.setAttribute("error", true);
         span.setStatus(Status.RESOURCE_EXHAUSTED.withDescription("Max session count reached"));
+        return Optional.empty();
+      }
+      if (isDraining()) {
+        span.setStatus(Status.UNAVAILABLE.withDescription("The node is draining. Cannot accept new sessions."));
         return Optional.empty();
       }
 
@@ -358,18 +364,19 @@ public class LocalNode extends Node {
 
     ImmutableSet<NodeStatus.Active> activeSessions = currentSessions.asMap().values().stream()
       .map(slot -> new NodeStatus.Active(
-        slot.getStereotype(),
-        slot.getSession().getId(),
-        slot.getSession().getCapabilities()))
+          slot.getStereotype(),
+          slot.getSession().getId(),
+          slot.getSession().getCapabilities()))
       .collect(toImmutableSet());
 
     return new NodeStatus(
-      getId(),
-      externalUri,
-      maxSessionCount,
-      stereotypes,
-      activeSessions,
-      registrationSecret);
+        getId(),
+        externalUri,
+        maxSessionCount,
+        stereotypes,
+        activeSessions,
+        isDraining(),
+        registrationSecret);
   }
 
   @Override
@@ -377,11 +384,18 @@ public class LocalNode extends Node {
     return healthCheck;
   }
 
+  @Override
+  public void drain() {
+    draining = true;
+    bus.fire(new NodeDrainingStartedEvent(this.getId()));
+  }
+
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
       "id", getId(),
       "uri", externalUri,
       "maxSessions", maxSessionCount,
+      "draining", isDraining(),
       "capabilities", factories.stream()
         .map(SessionSlot::getStereotype)
         .collect(Collectors.toSet()));

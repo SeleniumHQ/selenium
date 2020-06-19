@@ -29,6 +29,7 @@ public class Status {
   public static final Status CANCELLED = new Status(Kind.CANCELLED, "");
   public static final Status NOT_FOUND = new Status(Kind.NOT_FOUND, "");
   public static final Status RESOURCE_EXHAUSTED = new Status(Kind.RESOURCE_EXHAUSTED, "");
+  public static final Status UNAVAILABLE = new Status(Kind.UNAVAILABLE, "");
   public static final Status UNKNOWN = new Status(Kind.UNKNOWN, "");
 
   private Status(Kind kind, String description) {
@@ -54,7 +55,9 @@ public class Status {
     CANCELLED,
     NOT_FOUND,
     RESOURCE_EXHAUSTED,
+    UNAVAILABLE,
     UNKNOWN,
+    ;
   }
 
 }

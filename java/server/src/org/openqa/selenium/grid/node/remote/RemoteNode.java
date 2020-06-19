@@ -65,6 +65,7 @@ public class RemoteNode extends Node {
   private final URI externalUri;
   private final Set<Capabilities> capabilities;
   private final HealthCheck healthCheck;
+  private boolean draining = false;
 
   public RemoteNode(
       Tracer tracer,
@@ -198,6 +199,11 @@ public class RemoteNode extends Node {
   @Override
   public HealthCheck getHealthCheck() {
     return healthCheck;
+  }
+
+  @Override
+  public void drain() {
+    draining = true;
   }
 
   private Map<String, Object> toJson() {
