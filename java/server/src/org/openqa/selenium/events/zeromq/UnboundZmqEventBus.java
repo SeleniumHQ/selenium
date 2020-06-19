@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.events.zeromq;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.collect.EvictingQueue;
-
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
@@ -47,6 +44,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 class UnboundZmqEventBus implements EventBus {
 
@@ -135,6 +134,11 @@ class UnboundZmqEventBus implements EventBus {
         throw new RuntimeException(e);
       }
     }
+  }
+
+  @Override
+  public boolean isReady() {
+    return !executor.isShutdown();
   }
 
   private boolean isSubAddressIPv6(String connection) {

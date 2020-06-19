@@ -51,6 +51,15 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
+  public boolean isReady() {
+    try {
+      return client.execute(new HttpRequest(GET, "/readyz")).isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  @Override
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/distributor/session");

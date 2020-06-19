@@ -65,6 +65,15 @@ public class RemoteSessionMap extends SessionMap {
   }
 
   @Override
+  public boolean isReady() {
+    try {
+      return client.execute(new HttpRequest(GET, "/readyz")).isSuccessful();
+    } catch (RuntimeException e) {
+      return false;
+    }
+  }
+
+  @Override
   public boolean add(Session session) {
     Require.nonNull("Session", session);
 

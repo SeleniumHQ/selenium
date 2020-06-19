@@ -20,39 +20,30 @@ package org.openqa.selenium.grid.node.config;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 public class NodeOptionsTest {
 
@@ -75,20 +66,23 @@ public class NodeOptionsTest {
   public void canConfigureNodeWithDriverDetection() {
     assumeFalse("We don't have driver servers in PATH when we run unit tests",
                 Boolean.parseBoolean(System.getenv("TRAVIS")));
+    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
 
     Config config = new MapConfig(singletonMap(
         "node", singletonMap("detect-drivers", "true")));
-    new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
-    Capabilities chrome = toPayload("chrome");
+    List<WebDriverInfo> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(info -> {
+      reported.add(info);
+      return Collections.emptySet();
+    });
 
-    verify(builderSpy, atLeastOnce()).add(
-        argThat(caps -> caps.getBrowserName().equals(chrome.getBrowserName())),
-        argThat(factory -> factory instanceof DriverServiceSessionFactory && factory.test(chrome)));
+    String expected = new ChromeDriverInfo().getDisplayName();
 
-    LocalNode node = builder.build();
-    assertThat(node).is(supporting(chrome));
-    assertThat(node).isNot(supporting("cheese"));
+    reported.stream()
+      .filter(info -> expected.equals(info.getDisplayName()))
+      .findFirst()
+      .orElseThrow(() -> new AssertionError("Unable to find Chrome info"));
   }
 
   @Test
@@ -99,15 +93,19 @@ public class NodeOptionsTest {
 
     Config config = new MapConfig(singletonMap(
         "node", singletonMap("detect-drivers", "true")));
-    new NodeOptions(config).configure(tracer, clientFactory, builder);
+    List<WebDriverInfo> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(info -> {
+      reported.add(info);
+      return Collections.emptySet();
+    });
 
-    LocalNode node = builder.build();
-    assertThat(node).is(supporting("chrome"));
-    assertThat(node).is(supporting("firefox"));
-    assertThat(node).is(supporting("internet explorer"));
-    assertThat(node).is(supporting("MicrosoftEdge"));
-    assertThat(node).isNot(supporting("safari"));
+    assertThat(reported).is(supporting("chrome"));
+    assertThat(reported).is(supporting("firefox"));
+    assertThat(reported).is(supporting("internet explorer"));
+    assertThat(reported).is(supporting("MicrosoftEdge"));
+    assertThat(reported).isNot(supporting("safari"));
   }
+
 
   @Test
   public void shouldDetectCorrectDriversOnMac() {
@@ -117,70 +115,50 @@ public class NodeOptionsTest {
 
     Config config = new MapConfig(singletonMap(
         "node", singletonMap("detect-drivers", "true")));
-    new NodeOptions(config).configure(tracer, clientFactory, builder);
+    List<WebDriverInfo> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(info -> {
+      reported.add(info);
+      return Collections.emptySet();
+    });
 
     LocalNode node = builder.build();
-    assertThat(node).is(supporting("chrome"));
-    assertThat(node).is(supporting("firefox"));
-    assertThat(node).isNot(supporting("internet explorer"));
-    assertThat(node).is(supporting("MicrosoftEdge"));
-    assertThat(node).is(supporting("safari"));
-  }
-
-  @Test
-  public void canAddMoreSessionFactoriesAfterDriverDetection() throws URISyntaxException {
-    Config config = new MapConfig(singletonMap(
-        "node", singletonMap("detect-drivers", "true")));
-    new NodeOptions(config).configure(tracer, clientFactory, builder);
-
-    Capabilities cheese = toPayload("cheese");
-
-    URI uri = new URI("http://localhost:1234");
-    class Handler extends Session implements HttpHandler {
-
-      private Handler(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), uri, capabilities);
-      }
-
-      @Override
-      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-        return new HttpResponse();
-      }
-    }
-
-    builder.add(cheese, new TestSessionFactory((id, c) -> new Handler(c)));
-
-    LocalNode node = builder.build();
-    assertThat(node).is(supporting("chrome"));
-    assertThat(node).is(supporting(cheese));
+    assertThat(reported).is(supporting("chrome"));
+    assertThat(reported).is(supporting("firefox"));
+    assertThat(reported).isNot(supporting("internet explorer"));
+    assertThat(reported).is(supporting("MicrosoftEdge"));
+    assertThat(reported).is(supporting("safari"));
   }
 
   @Test
   public void canConfigureNodeWithoutDriverDetection() {
     Config config = new MapConfig(singletonMap(
         "node", singletonMap("detect-drivers", "false")));
-    new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
+    List<WebDriverInfo> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(info -> {
+      reported.add(info);
+      return Collections.emptySet();
+    });
 
-    verifyNoInteractions(builderSpy);
+    assertThat(reported).isEmpty();
   }
 
   @Test
   public void doNotDetectDriversByDefault() {
     Config config = new MapConfig(emptyMap());
-    new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
-    verifyNoInteractions(builderSpy);
+    List<WebDriverInfo> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(info -> {
+      reported.add(info);
+      return Collections.emptySet();
+    });
+
+    assertThat(reported).isEmpty();
   }
 
-  private Capabilities toPayload(String browserName) {
-    return new ImmutableCapabilities("browserName", browserName);
-  }
-
-  private Condition<LocalNode> supporting(Capabilities caps) {
-    return new Condition<>(node -> node.isSupporting(caps), "supporting " + caps);
-  }
-
-  private Condition<LocalNode> supporting(String browserName) {
-    return new Condition<>(node -> node.isSupporting(toPayload(browserName)), "supporting " + browserName);
+  private Condition<? super List<? extends WebDriverInfo>> supporting(String name) {
+    return new Condition<>(
+      infos -> infos.stream().anyMatch(info -> name.equals(info.getCanonicalCapabilities().getBrowserName())),
+      "supporting %s",
+      name);
   }
 }

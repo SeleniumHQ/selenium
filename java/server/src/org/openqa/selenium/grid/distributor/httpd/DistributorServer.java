@@ -26,7 +26,6 @@ import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
-import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -42,7 +41,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
@@ -93,14 +92,11 @@ public class DistributorServer extends TemplateGridCommand {
     Distributor distributor = distributorOptions.getDistributor(LOCAL_DISTRIBUTOR_SERVER);
 
     HttpHandler readinessCheck = req -> {
-      DistributorStatus status = distributor.getStatus();
-      if (status.hasCapacity()) {
-        return new HttpResponse().setStatus(HTTP_NO_CONTENT);
-      }
+      boolean ready = distributor.isReady();
       return new HttpResponse()
-        .setStatus(HTTP_INTERNAL_ERROR)
+        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
         .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
-        .setContent(Contents.utf8String("No capacity available"));
+        .setContent(Contents.utf8String("Distributor is " + ready));
     };
 
     Route handler = Route.combine(

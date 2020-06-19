@@ -30,11 +30,10 @@ import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
-import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
-import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
@@ -115,17 +114,7 @@ public class NodeServer extends TemplateGridCommand {
 
     NodeOptions nodeOptions = new NodeOptions(config);
 
-    LocalNode.Builder builder = LocalNode.builder(
-      tracer,
-      bus,
-      serverOptions.getExternalUri(),
-      nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
-      serverOptions.getRegistrationSecret());
-
-    nodeOptions.configure(tracer, clientFactory, builder);
-    new DockerOptions(config).configure(tracer, clientFactory, builder);
-
-    LocalNode node = builder.build();
+    Node node = nodeOptions.getNode();
 
     HttpHandler readinessCheck = req -> {
       if (node.getStatus().hasCapacity()) {

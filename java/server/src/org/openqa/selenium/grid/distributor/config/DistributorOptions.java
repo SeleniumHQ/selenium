@@ -75,6 +75,6 @@ public class DistributorOptions {
   }
 
   public Distributor getDistributor(String defaultClass) {
-    return (Distributor) config.getClass(DISTRIBUTOR_SECTION, "implementation", Distributor.class, defaultClass);
+    return config.getClass(DISTRIBUTOR_SECTION, "implementation", Distributor.class, defaultClass);
   }
 }
