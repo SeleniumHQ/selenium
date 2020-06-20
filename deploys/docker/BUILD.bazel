@@ -91,17 +91,17 @@ container_image(
 )
 
 container_push(
-    name = "push-message-bus",
+    name = "push-event-bus",
     format = "Docker",
-    image = ":message-bus-image",
+    image = ":event-bus-image",
     registry = REGISTRY,
-    repository = "selenium/message-bus",
+    repository = "selenium/event-bus",
 )
 
 container_image(
-    name = "message-bus-image",
+    name = "event-bus-image",
     base = ":grid-base",
-    entrypoint = ENTRY_POINT + ["message-bus"],
+    entrypoint = ENTRY_POINT + ["event-bus"],
     ports = [
         "5557/tcp",  # Web
         "4442/tcp",  # ZeroMQ

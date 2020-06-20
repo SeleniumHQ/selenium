@@ -25,6 +25,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -33,9 +34,14 @@ import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -45,6 +51,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -107,6 +114,27 @@ public class LocalDistributor extends Distributor {
     this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
+  }
+
+  public static Distributor create(Config config) {
+    Tracer tracer = new LoggingOptions(config).getTracer();
+    EventBus bus = new EventBusOptions(config).getEventBus();
+    HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
+    SessionMap sessions = new SessionMapOptions(config).getSessionMap();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+
+    return new LocalDistributor(tracer, bus, clientFactory, sessions, serverOptions.getRegistrationSecret());
+  }
+
+  @Override
+  public boolean isReady() {
+    try {
+      return ImmutableSet.of(bus, sessions).parallelStream()
+        .map(HasReadyState::isReady)
+        .reduce(true, Boolean::logicalAnd);
+    } catch (RuntimeException e) {
+      return false;
+    }
   }
 
   @Override

@@ -203,7 +203,8 @@ public class ExpectedConditions {
       public WebElement apply(WebDriver driver) {
         try {
           return elementIfVisible(driver.findElement(locator));
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
+          // Returns null because the element is no longer or not present in DOM.
           return null;
         }
       }

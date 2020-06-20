@@ -35,6 +35,7 @@ import java.net.URL;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -48,6 +49,15 @@ public class RemoteDistributor extends Distributor {
   public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url) {
     super(tracer, factory);
     this.client = factory.createClient(url);
+  }
+
+  @Override
+  public boolean isReady() {
+    try {
+      return client.execute(new HttpRequest(GET, "/readyz")).isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   @Override

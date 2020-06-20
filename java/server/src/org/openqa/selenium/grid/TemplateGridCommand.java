@@ -29,6 +29,7 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 
@@ -81,7 +82,7 @@ public abstract class TemplateGridCommand implements CliCommand {
       allConfigs.add(configFlags.readConfigFiles());
       allConfigs.add(getDefaultConfig());
 
-      Config config = new CompoundConfig(allConfigs.toArray(new Config[0]));
+      Config config = new MemoizedConfig(new CompoundConfig(allConfigs.toArray(new Config[0])));
 
       if (configFlags.dumpConfig(config, out)) {
         return;

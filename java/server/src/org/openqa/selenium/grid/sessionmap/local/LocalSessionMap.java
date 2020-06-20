@@ -61,6 +61,11 @@ public class LocalSessionMap extends SessionMap {
   }
 
   @Override
+  public boolean isReady() {
+    return bus.isReady();
+  }
+
+  @Override
   public boolean add(Session session) {
     Require.nonNull("Session", session);
 

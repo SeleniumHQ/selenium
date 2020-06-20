@@ -83,6 +83,7 @@ public class LocalNode extends Node {
 
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
+  private final EventBus bus;
   private final URI externalUri;
   private final URI gridUri;
   private final HealthCheck healthCheck;
@@ -105,6 +106,8 @@ public class LocalNode extends Node {
     List<SessionSlot> factories,
     String registrationSecret) {
     super(tracer, UUID.randomUUID(), uri);
+
+    this.bus = Require.nonNull("Event bus", bus);
 
     this.externalUri = Require.nonNull("Remote node URI", uri);
     this.gridUri = Require.nonNull("Grid URI", gridUri);
@@ -146,6 +149,11 @@ public class LocalNode extends Node {
       } catch (NoSuchSessionException ignore) {
       }
     });
+  }
+
+  @Override
+  public boolean isReady() {
+    return bus.isReady();
   }
 
   @VisibleForTesting

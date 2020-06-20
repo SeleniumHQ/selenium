@@ -57,6 +57,11 @@ class StaticResources {
     copy("javascript/webdriver/atoms/get-attribute.js",
          "org/openqa/selenium/remote/getAttribute.js");
 
+    // Relative locators
+    bazel.build("//javascript/atoms/fragments:find-elements");
+    copy("javascript/atoms/fragments/find-elements.js",
+         "org/openqa/selenium/support/locators/findElements.js");
+
     // Firefox XPI
     copy("third_party/js/selenium/webdriver_prefs.json",
          "org/openqa/selenium/firefox/webdriver_prefs.json");

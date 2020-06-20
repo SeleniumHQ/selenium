@@ -83,6 +83,15 @@ public class RemoteNode extends Node {
   }
 
   @Override
+  public boolean isReady() {
+    try {
+      return client.execute(new HttpRequest(GET, "/readyz")).isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  @Override
   public boolean isSupporting(Capabilities capabilities) {
     return this.capabilities.stream()
         .anyMatch(caps -> caps.getCapabilityNames().stream()
