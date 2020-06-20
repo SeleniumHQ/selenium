@@ -15,6 +15,7 @@ type Node {
   id: ID!
   uri: Uri!
   status: Status!
+  maxSession: Int!
 }
 
 type GridQuery {

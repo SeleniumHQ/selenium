@@ -44,7 +44,7 @@ public class Grid {
 
   public List<Node> getNodes() {
     return distributorStatus.get().getNodes().stream()
-      .map(summary -> new Node(summary.getNodeId(), summary.getUri(), summary.isUp()))
+      .map(summary -> new Node(summary.getNodeId(), summary.getUri(), summary.isUp(), summary.getMaxSessionCount()))
       .collect(ImmutableList.toImmutableList());
   }
 
