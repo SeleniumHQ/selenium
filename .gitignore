@@ -21,6 +21,7 @@ javascript/node/selenium-webdriver/lib/atoms/find-elements.js
 javascript/node/selenium-webdriver/lib/atoms/get-attribute.js
 javascript/node/selenium-webdriver/lib/atoms/is-displayed.js
 javascript/safari-driver/node_modules/
+javascript/webdriver/devtools/types/
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/dictionaries/
