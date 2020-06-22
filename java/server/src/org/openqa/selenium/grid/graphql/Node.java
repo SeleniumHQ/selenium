@@ -26,14 +26,18 @@ public class Node {
 
   private final UUID id;
   private final URI uri;
+  private final String host;
   private final boolean isUp;
   private final int maxSession;
+  private final int port;
 
   public Node(UUID id, URI uri, boolean isUp , int maxSession) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
     this.maxSession = Require.nonNull("Node maxSession", maxSession);
+    this.host = uri.getHost();
+    this.port = uri.getPort();
   }
 
   public UUID getId() {
