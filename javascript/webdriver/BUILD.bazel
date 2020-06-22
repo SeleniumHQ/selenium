@@ -69,9 +69,13 @@ closure_test_suite(
 
 genrule(
     name="create-cdp-srcs",
+    srcs=[
+    "devtools/generator/protocol-dts-generator.js",
+    "devtools/browser_protocol.json",
+    "devtools/js_protocol.json",
+    ],
     outs=["devtools/types"],
-    cmd = "node $(location protocol-dts-generator.js) $@",
+    cmd = "node $(location devtools/generator/protocol-dts-generator.js) $@",
     tools=[
-        "/javascript/webdriver/devtools/generator/protocol-dts-generator.js",
     ],
 )
