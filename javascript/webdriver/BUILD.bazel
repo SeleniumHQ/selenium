@@ -66,3 +66,12 @@ closure_test_suite(
         "//javascript/webdriver/atoms/inject:deps",
     ],
 )
+
+genrule(
+    name="create-cdp-srcs",
+    outs=["devtools/types"],
+    cmd = "node $(location protocol-dts-generator.js) $@",
+    tools=[
+        "/javascript/webdriver/devtools/generator/protocol-dts-generator.js",
+    ],
+)
