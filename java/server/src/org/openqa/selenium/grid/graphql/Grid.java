@@ -43,14 +43,6 @@ public class Grid {
     return uri;
   }
 
-  public String getHost() {
-    return uri.getHost();
-  }
-
-  public int getPort() {
-    return uri.getPort();
-  }
-
   public List<Node> getNodes() {
     return distributorStatus.get().getNodes().stream()
       .map(summary -> new Node(summary.getNodeId(), summary.getUri(), summary.isUp(), summary.getMaxSessionCount()))

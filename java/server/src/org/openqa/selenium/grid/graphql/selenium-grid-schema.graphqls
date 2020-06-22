@@ -13,8 +13,6 @@ enum Status {
 type Node {
   id: ID!
   uri: Uri!
-  host: String!
-  port: Int!
   status: Status!
   maxSession: Int!
 }
@@ -25,8 +23,6 @@ type GridQuery {
 
 type Grid {
   uri: Uri!
-  host: String!
-  port: Int!
   nodes: [Node!]!
   totalSlots: Int
   usedSlots: Int
