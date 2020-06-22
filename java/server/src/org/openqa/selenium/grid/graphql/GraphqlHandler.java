@@ -38,6 +38,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -50,12 +51,12 @@ public class GraphqlHandler implements HttpHandler {
   public static final String GRID_SCHEMA = "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
   public static final Json JSON = new Json();
   private final Distributor distributor;
-  private final String publicUrl;
+  private final URI publicUri;
   private final GraphQL graphQl;
 
-  public GraphqlHandler(Distributor distributor, String publicUrl) {
+  public GraphqlHandler(Distributor distributor, URI publicUri) {
     this.distributor = Objects.requireNonNull(distributor);
-    this.publicUrl = Objects.requireNonNull(publicUrl);
+    this.publicUri = Objects.requireNonNull(publicUri);
 
     GraphQLSchema schema = new SchemaGenerator()
       .makeExecutableSchema(buildTypeDefinitionRegistry(), buildRuntimeWiring());
@@ -103,7 +104,7 @@ public class GraphqlHandler implements HttpHandler {
       .scalar(Types.Uri)
       .scalar(Types.Url)
       .type("GridQuery", typeWiring -> typeWiring
-        .dataFetcher("grid", new GridData(distributor, publicUrl)))
+        .dataFetcher("grid", new GridData(distributor, publicUri)))
       .build();
   }
 
