@@ -74,7 +74,9 @@ genrule(
     "devtools/browser_protocol.json",
     "devtools/js_protocol.json",
     ],
-    outs=["devtools/types"],
+    outs=[
+    "devtools/types/out.txt",
+    ],
     cmd = "node $(location devtools/generator/protocol-dts-generator.js) $@",
     tools=[
     ],
