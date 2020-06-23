@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -41,7 +43,7 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
+    return new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.CHROME, PLATFORM_NAME, System.getProperty("os.name"));
   }
 
   @Override
