@@ -49,17 +49,17 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
 @AutoService(CliCommand.class)
-public class MessageBusCommand extends TemplateGridCommand {
-  private static final Logger LOG = Logger.getLogger(MessageBusCommand.class.getName());
+public class EventBusCommand extends TemplateGridCommand {
+  private static final Logger LOG = Logger.getLogger(EventBusCommand.class.getName());
 
   @Override
   public String getName() {
-    return "message-bus";
+    return "event-bus";
   }
 
   @Override
   public String getDescription() {
-    return "Standalone instance of the message bus.";
+    return "Standalone instance of the event bus.";
   }
 
   @Override
@@ -127,7 +127,7 @@ public class MessageBusCommand extends TemplateGridCommand {
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(
-      "Started Selenium message bus %s (revision %s): %s",
+      "Started Selenium event bus %s (revision %s): %s",
       info.getReleaseLabel(),
       info.getBuildRevision(),
       server.getUrl()));

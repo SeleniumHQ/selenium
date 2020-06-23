@@ -39,6 +39,11 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
   }
 
   @Override
+  public boolean isReady() {
+    return true;
+  }
+
+  @Override
   public void addListener(Type type, Consumer<Event> onType) {
     Listener listener = new Listener(type, onType);
     allListeners.add(listener);

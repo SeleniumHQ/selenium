@@ -21,8 +21,6 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.logging.Logger;
 
 public class EventBusOptions {
@@ -50,6 +48,6 @@ public class EventBusOptions {
   }
 
   private EventBus createBus() {
-    return (EventBus) config.getClass("events", "implementation", EventBus.class, DEFAULT_CLASS);
+    return config.getClass("events", "implementation", EventBus.class, DEFAULT_CLASS);
   }
 }

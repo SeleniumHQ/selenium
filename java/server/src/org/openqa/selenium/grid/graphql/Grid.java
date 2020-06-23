@@ -23,28 +23,29 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
 
+import java.net.URI;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class Grid {
 
-  private final String url;
+  private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
 
-  public Grid(Distributor distributor, String url) {
+  public Grid(Distributor distributor, URI uri) {
     Require.nonNull("Distributor", distributor);
-    this.url = Require.nonNull("Grid's public URL", url);
+    this.uri = Require.nonNull("Grid's public URI", uri);
 
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
   }
 
-  public String getUrl() {
-    return url;
+  public URI getUri() {
+    return uri;
   }
 
   public List<Node> getNodes() {
     return distributorStatus.get().getNodes().stream()
-      .map(summary -> new Node(summary.getNodeId(), summary.getUri(), summary.isUp()))
+      .map(summary -> new Node(summary.getNodeId(), summary.getUri(), summary.isUp(), summary.getMaxSessionCount()))
       .collect(ImmutableList.toImmutableList());
   }
 

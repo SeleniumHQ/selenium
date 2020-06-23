@@ -15,15 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.okhttp;
+package org.openqa.selenium.status;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.HttpClientTestBase;
-
-public class OkHttpClientTest extends HttpClientTestBase {
-
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new OkHttpClient.Factory();
-  }
+@FunctionalInterface
+public interface HasReadyState {
+    boolean isReady();
 }

@@ -90,7 +90,7 @@ public class NetworkInterceptor implements Closeable {
 
   private void handleRequest(RequestPaused incoming) {
     // Only handle incoming requests. Diligently ignore responses.
-    if (incoming.getResponseStatusCode() != null || incoming.getResponseErrorReason() != null) {
+    if (incoming.getResponseStatusCode().isPresent() || incoming.getResponseErrorReason().isPresent()) {
       return;
     }
 
@@ -100,9 +100,10 @@ public class NetworkInterceptor implements Closeable {
     HttpRequest req;
     try {
       Request cdpReq = incoming.getRequest();
+      LOG.info(cdpReq.toString());
       req = new HttpRequest(
         HttpMethod.valueOf(cdpReq.getMethod()),
-        cdpReq.getUrl() + (cdpReq.getUrlFragment() != null ? cdpReq.getUrlFragment() : ""));
+        cdpReq.getUrl() + (cdpReq.getUrlFragment().isPresent() ? cdpReq.getUrlFragment() : ""));
 
       cdpReq.getHeaders().forEach((key, value) -> req.addHeader(key, String.valueOf(value)));
 
@@ -130,8 +131,8 @@ public class NetworkInterceptor implements Closeable {
         incoming.getRequestId(),
         res.getStatus(),
         Optional.of(headers.build()),
-        Optional.ofNullable(body),
         Optional.empty(),
+        Optional.ofNullable(body),
         Optional.empty()));
 
     } catch (Exception e) {

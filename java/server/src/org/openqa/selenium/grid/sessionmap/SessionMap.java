@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
 import java.net.URI;
 import java.util.Map;
@@ -68,7 +69,7 @@ import static org.openqa.selenium.remote.http.Route.post;
  * </tr>
  * </table>
  */
-public abstract class SessionMap implements Routable, HttpHandler {
+public abstract class SessionMap implements HasReadyState, Routable {
 
   protected final Tracer tracer;
 
