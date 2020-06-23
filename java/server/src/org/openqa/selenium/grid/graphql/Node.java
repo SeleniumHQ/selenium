@@ -53,10 +53,6 @@ public class Node {
     return maxSession;
   }
 
-  public String getCapabilities() {
-    return capabilities;
-  }
-
   public String getStatus() {
     return isUp ? "UP" : "UNAVAILABLE";
   }

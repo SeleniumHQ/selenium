@@ -17,7 +17,6 @@
 package org.openqa.selenium.edgehtml;
 
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.auto.service.AutoService;
 
@@ -42,7 +41,7 @@ public class EdgeHtmlDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.EDGE, EdgeHtmlOptions.USE_CHROMIUM, false, PLATFORM_NAME, System.getProperty("os.name"));
+    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.EDGE, EdgeHtmlOptions.USE_CHROMIUM, false);
   }
 
   @Override

@@ -18,7 +18,6 @@
 package org.openqa.selenium.ie;
 
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.auto.service.AutoService;
 
@@ -42,7 +41,7 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.IE, PLATFORM_NAME, System.getProperty("os.name"));
+    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.IE);
   }
 
   @Override

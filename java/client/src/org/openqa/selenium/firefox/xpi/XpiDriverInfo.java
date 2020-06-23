@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox.xpi;
 
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 import com.google.auto.service.AutoService;
 
@@ -46,7 +45,7 @@ public class XpiDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.FIREFOX, MARIONETTE, true, PLATFORM_NAME, System.getProperty("os.name"));
+    return new ImmutableCapabilities(BROWSER_NAME, BrowserType.FIREFOX, MARIONETTE, true);
   }
 
   @Override
