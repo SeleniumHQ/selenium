@@ -116,11 +116,8 @@ public class LocalDistributor extends Distributor {
     this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
-<<<<<<< HEAD
     bus.addListener(NODE_DRAINING_STARTED, event -> drain(event.getData(UUID.class)));
-=======
     bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
->>>>>>> master
   }
 
   public static Distributor create(Config config) {
