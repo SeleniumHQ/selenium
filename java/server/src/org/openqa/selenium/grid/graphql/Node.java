@@ -32,6 +32,8 @@ public class Node {
   private final boolean isUp;
   private final int maxSession;
   private final String capabilities;
+  private static final Json JSON = new Json();
+
 
   public Node(UUID id,
               URI uri,
@@ -42,7 +44,7 @@ public class Node {
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
     this.maxSession = Require.nonNull("Node maxSession", maxSession);
-    this.capabilities = Require.nonNull("Node capabilities", new Json().toJson(capabilities));
+    this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
   }
 
   public UUID getId() {
