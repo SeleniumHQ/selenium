@@ -15,15 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.okhttp;
+package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.HttpClientTestBase;
+import org.openqa.selenium.events.Event;
+import org.openqa.selenium.events.Type;
 
-public class OkHttpClientTest extends HttpClientTestBase {
+import java.util.UUID;
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new OkHttpClient.Factory();
+public class NodeDrainComplete extends Event {
+  public static final Type NODE_DRAIN_COMPLETE = new Type("node-drain-complete");
+
+  public NodeDrainComplete(UUID id) {
+    super(NODE_DRAIN_COMPLETE, id);
   }
 }

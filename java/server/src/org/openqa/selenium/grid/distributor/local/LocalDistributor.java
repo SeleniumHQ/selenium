@@ -79,6 +79,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -114,6 +115,7 @@ public class LocalDistributor extends Distributor {
     this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
+    bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
   }
 
   public static Distributor create(Config config) {

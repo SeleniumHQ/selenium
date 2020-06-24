@@ -27,11 +27,13 @@ public class Node {
   private final UUID id;
   private final URI uri;
   private final boolean isUp;
+  private final int maxSession;
 
-  public Node(UUID id, URI uri, boolean isUp) {
+  public Node(UUID id, URI uri, boolean isUp , int maxSession) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
+    this.maxSession = Require.nonNull("Node maxSession", maxSession);
   }
 
   public UUID getId() {
@@ -40,6 +42,10 @@ public class Node {
 
   public URI getUri() {
     return uri;
+  }
+
+  public int getMaxSession() {
+    return maxSession;
   }
 
   public String getStatus() {
