@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor.redis;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.internal.Require;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,7 +32,7 @@ public class RedisDistributorOptions {
   private final Config config;
 
   public RedisDistributorOptions(Config config) {
-    this.config = config;
+    this.config = Require.nonNull("config", config);
   }
 
   public URI getRedisServerUri() {

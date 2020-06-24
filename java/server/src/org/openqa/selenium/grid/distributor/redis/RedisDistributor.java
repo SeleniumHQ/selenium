@@ -21,6 +21,7 @@ import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
@@ -38,6 +39,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -135,7 +137,7 @@ public class RedisDistributor extends Distributor implements Closeable {
   private String nodeUriKey(UUID id) {
     Require.nonNull("Node UUID", id);
 
-    return "node:" + id.toString() + ":uri";
+    return "node:" + id + ":uri";
   }
 
   @Override
@@ -148,5 +150,16 @@ public class RedisDistributor extends Distributor implements Closeable {
     RedisCommands<String, String> commands = connection.sync();
 
     return commands.get(nodeUriKey(id));
+  }
+
+  @Override
+  public boolean isReady() {
+    try {
+      return ImmutableSet.of(bus, sessions).parallelStream()
+          .map(HasReadyState::isReady)
+          .reduce(true, Boolean::logicalAnd);
+    } catch (RuntimeException e) {
+      return false;
+    }
   }
 }
