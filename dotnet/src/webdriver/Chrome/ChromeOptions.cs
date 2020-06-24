@@ -52,7 +52,6 @@ namespace OpenQA.Selenium.Chrome
     /// </example>
     public class ChromeOptions : ChromiumOptions
     {
-
         private const string ChromeOptionsCapabilityName = "chromeOptions";
         private const string BrowserNameValue = "chrome";
 
