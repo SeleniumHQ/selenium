@@ -32,6 +32,7 @@ public class Node {
   private final boolean isUp;
   private final int maxSession;
   private final String capabilities;
+  private final boolean isDraining;
   private static final Json JSON = new Json();
 
 
@@ -39,12 +40,14 @@ public class Node {
               URI uri,
               boolean isUp,
               int maxSession,
-              Map<Capabilities, Integer> capabilities) {
+              Map<Capabilities, Integer> capabilities,
+              boolean isDraining) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
     this.maxSession = Require.nonNull("Node maxSession", maxSession);
     this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
+    this.isDraining = Require.nonNull("Node isDraining", isDraining);
   }
 
   public UUID getId() {
@@ -59,7 +62,11 @@ public class Node {
     return maxSession;
   }
 
+  public String getCapabilities() {
+    return capabilities;
+  }
+
   public String getStatus() {
-    return isUp ? "UP" : "UNAVAILABLE";
+    return isDraining ? "DRAINING" : (isUp ? "UP" : "UNAVAILABLE");
   }
 }

@@ -49,7 +49,8 @@ public class Grid {
                                summary.getUri(),
                                summary.isUp(),
                                summary.getMaxSessionCount(),
-                               summary.getStereotypes()))
+                               summary.getStereotypes(),
+                               summary.isDraining()))
       .collect(ImmutableList.toImmutableList());
   }
 
