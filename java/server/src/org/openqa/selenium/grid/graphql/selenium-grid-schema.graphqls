@@ -15,6 +15,7 @@ type Node {
   uri: Uri!
   status: Status!
   maxSession: Int!
+  capabilities: String!
 }
 
 type GridQuery {
