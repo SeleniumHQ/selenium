@@ -17,9 +17,12 @@
 
 package org.openqa.selenium.grid.graphql;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.UUID;
 
 public class Node {
@@ -27,11 +30,21 @@ public class Node {
   private final UUID id;
   private final URI uri;
   private final boolean isUp;
+  private final int maxSession;
+  private final String capabilities;
+  private static final Json JSON = new Json();
 
-  public Node(UUID id, URI uri, boolean isUp) {
+
+  public Node(UUID id,
+              URI uri,
+              boolean isUp,
+              int maxSession,
+              Map<Capabilities, Integer> capabilities) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
+    this.maxSession = Require.nonNull("Node maxSession", maxSession);
+    this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
   }
 
   public UUID getId() {
@@ -40,6 +53,10 @@ public class Node {
 
   public URI getUri() {
     return uri;
+  }
+
+  public int getMaxSession() {
+    return maxSession;
   }
 
   public String getStatus() {

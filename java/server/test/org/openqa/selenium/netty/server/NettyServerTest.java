@@ -26,7 +26,6 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.okhttp.OkHttpClient;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -60,8 +59,8 @@ public class NettyServerTest {
       }
     ).start();
 
-    // Very deliberately uses OkHttp.
-    HttpClient client = new OkHttpClient.Factory().createClient(server.getUrl());
+      // TODO: avoid using netty for this
+      HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
     HttpResponse res = client.execute(new HttpRequest(GET, "/does-not-matter"));
     outputHeaders(res);

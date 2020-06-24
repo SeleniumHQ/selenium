@@ -146,17 +146,48 @@ container_pull(
 )
 
 container_pull(
-    name = "java_debug_image_base",
-    # Java 11 debug
-    digest = "sha256:6c5cee837b874e700995690e65fd8c16ea2c4b028a6bba16a34b0b06de35d2f8",
-    registry = "gcr.io",
-    repository = "distroless/java",
+    name = "firefox_standalone",
+    # selenium/standalone-firefox-debug:3.141.59
+    digest = "sha256:a77683572022f8139b07eb29dee66f7b34b5df4d9902b7f1e081e112411f683d",
+    registry = "index.docker.io",
+    repository = "selenium/standalone-firefox-debug",
 )
 
 container_pull(
-    name = "firefox-standalone",
-    # selenium/standalone-firefox:3.141.59
-    digest = "sha256:98d0cf6284a1560117811a7a47f95b38d81bd1fbd78551bcc58fa986abf2cb55",
+    name = "chrome_standalone",
+    # selenium/standalone-chrome-debug:3.141.59
+    digest = "sha256:53812c3d01622148e9ccd79e598c3740804dbfd51594ae592bac5a14380b595e",
     registry = "index.docker.io",
-    repository = "selenium/standalone-firefox",
+    repository = "selenium/standalone-chrome-debug",
+)
+
+http_archive(
+    name = "io_bazel_rules_k8s",
+    sha256 = "d91aeb17bbc619e649f8d32b65d9a8327e5404f451be196990e13f5b7e2d17bb",
+    strip_prefix = "rules_k8s-0.4",
+    urls = ["https://github.com/bazelbuild/rules_k8s/releases/download/v0.4/rules_k8s-v0.4.tar.gz"],
+)
+
+load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
+
+k8s_repositories()
+
+load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
+
+k8s_go_deps()
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_rules_dependencies", "go_register_toolchains")
+
+go_rules_dependencies()
+
+go_register_toolchains()
+
+load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_defaults")
+
+k8s_defaults(
+    name = "k8s_dev",
+    namespace = "selenium",
+    kind = "deployment",
+    cluster = "docker-desktop",
+    image_chroot = "localhost:5000",
 )
