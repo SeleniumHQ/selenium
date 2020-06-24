@@ -330,15 +330,15 @@ var flushEmitToFile = function (path) {
     emitStr = '';
 };
 // Main
-var destProtocolFilePath = __dirname + "/protocol.d.js";
+var destProtocolFilePath = process.argv[2];
 var protocolModuleName = path.basename(destProtocolFilePath, '.d.js');
 emitModule(protocolModuleName, protocolDomains);
 flushEmitToFile(destProtocolFilePath);
-var destMappingFilePath = __dirname + "/protocol-mapping.d.js";
+var destMappingFilePath = process.argv[3];
 var mappingModuleName = 'ProtocolMapping';
 emitMapping(mappingModuleName, protocolModuleName, protocolDomains);
 flushEmitToFile(destMappingFilePath);
-var destApiFilePath = __dirname + "/protocol-proxy-api.d.js";
+var destApiFilePath = process.argv[4];
 var apiModuleName = 'ProtocolProxyApi';
 emitApi(apiModuleName, protocolModuleName, protocolDomains);
 flushEmitToFile(destApiFilePath);

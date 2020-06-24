@@ -82,7 +82,7 @@ genrule(
     outs=[
       "devtools/generator/protocol.d.js",
       "devtools/generator/protocol-mapping.d.js",
-      "devtools/generator/protocol-proxy-api.d.js"
+      "devtools/generator/protocol-proxy-api.d.js",
     ],
     cmd = "$(location :cdp-srcs-generator) $(OUTS)",
     tools=[
