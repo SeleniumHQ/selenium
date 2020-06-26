@@ -1,0 +1,10 @@
+exports_files(
+    srcs=[
+        "browser_protocol.json",
+        "js_protocol.json",
+    ],
+    visibility=[
+        "//java/client/src/org/openqa/selenium/devtools:__pkg__",
+        "//py:__pkg__"
+    ],
+)

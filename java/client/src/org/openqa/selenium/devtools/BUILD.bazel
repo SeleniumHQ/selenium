@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//:copy_file.bzl", "copy_file")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -65,11 +66,11 @@ java_binary(
 genrule(
     name = "create-cdp-srcs",
     srcs = [
-        "browser_protocol.json",
-        "js_protocol.json",
+        "//java/client/src/org/openqa/selenium/devtools:browser_protocol",
+        "//java/client/src/org/openqa/selenium/devtools:js_protocol",
     ],
     outs = ["cdp.srcjar"],
-    cmd = "$(location :cdp-client-generator) $@",
+    cmd="$(location :cdp-client-generator) $(location //java/client/src/org/openqa/selenium/devtools:js_protocol) $(location //java/client/src/org/openqa/selenium/devtools:browser_protocol) $@",
     tools = [
         ":cdp-client-generator",
     ],
@@ -86,4 +87,16 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         artifact("com.google.guava:guava"),
     ],
+)
+
+copy_file(
+    name="browser_protocol",
+    src="//common/devtools:browser_protocol.json",
+    out="browser_protocol.json",
+)
+
+copy_file(
+    name="js_protocol",
+    src="//common/devtools:js_protocol.json",
+    out="js_protocol.json",
 )

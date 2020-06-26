@@ -301,8 +301,8 @@ ruby_class_call(name = "cdp",
     "lib/selenium/webdriver/support/cdp_client_generator.rb"
   ],
   resources = [
-    { "../java/client/src/org/openqa/selenium/devtools/browser_protocol.json": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
-    { "../java/client/src/org/openqa/selenium/devtools/js_protocol.json": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
+    { "../common/devtools/browser_protocol.json": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
+    { "../common/devtools/js_protocol.json": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
   ]
 )
 
