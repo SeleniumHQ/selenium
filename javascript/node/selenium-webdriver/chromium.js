@@ -512,11 +512,11 @@ class Options extends Capabilities {
    *
    * __Example 2: Using Custom Screen Configuration__
    *
-   *     let options = new chrome.Options().setMobileEmulation({
+   *     let options = new chrome.Options().setMobileEmulation({deviceMetrics: {
    *         width: 360,
    *         height: 640,
    *         pixelRatio: 3.0
-   *     });
+   *     }});
    *
    *     let driver = chrome.Driver.createSession(options);
    *
