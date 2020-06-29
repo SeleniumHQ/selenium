@@ -83,6 +83,7 @@ const error = require('./lib/error');
 const promise = require('./lib/promise');
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
+const WebSocket = require('ws');
 const remote = require('./remote');
 
 
@@ -670,6 +671,20 @@ class Driver extends webdriver.WebDriver {
             .setParameter('params', params));
   }
 
+  createCDPConnection(wsUrl) {
+      return new Promise((fulfill, reject) => {
+        try {
+          this._ws = new WebSocket(wsUrl);
+        } catch (err) {
+          reject(err);
+          return;
+        }
+
+        this._ws.on('open', () => {
+          fulfill();
+        });
+      });
+  }
   /**
    * Set a permission state to the given value.
    *
