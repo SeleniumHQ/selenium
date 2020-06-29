@@ -1,5 +1,4 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
-load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 load("//javascript:defs.bzl", "closure_test_suite")
 
 closure_js_library(
@@ -65,27 +64,5 @@ closure_test_suite(
         ":deps",
         "//javascript/atoms:deps",
         "//javascript/webdriver/atoms/inject:deps",
-    ],
-)
-
-nodejs_binary(
-    name = "cdp-srcs-generator",
-    entry_point = "devtools/generator/protocol-dts-generator.js",
-    data = [
-      "devtools/browser_protocol.json",
-      "devtools/js_protocol.json",
-    ]
-)
-
-genrule(
-    name="create-cdp-srcs",
-    outs=[
-      "devtools/generator/protocol.d.js",
-      "devtools/generator/protocol-mapping.d.js",
-      "devtools/generator/protocol-proxy-api.d.js",
-    ],
-    cmd = "$(location :cdp-srcs-generator) $(OUTS)",
-    tools=[
-      ":cdp-srcs-generator"
     ],
 )
