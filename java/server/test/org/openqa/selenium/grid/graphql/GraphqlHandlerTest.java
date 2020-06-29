@@ -108,7 +108,7 @@ public class GraphqlHandlerTest {
         }
       })
       .build();
-    distributor.add(node);String
+    distributor.add(node);
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> topLevel = executeQuery(handler, "query { grid { nodes { uri } } }");
