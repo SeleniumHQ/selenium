@@ -681,7 +681,7 @@ class Driver extends webdriver.WebDriver {
         }
 
         this._ws.on('open', () => {
-          fulfill();
+          fulfill(this._ws);
         });
       });
   }
