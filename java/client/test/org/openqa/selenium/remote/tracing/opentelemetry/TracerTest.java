@@ -58,9 +58,12 @@ public class TracerTest {
   public void shouldBeAbleToCreateATracer() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
+    long timeStamp = 1593493828L;
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       span.setAttribute("cheese", "gouda");
+      span.addEvent("Grating cheese");
+      span.addEvent("Melting cheese", timeStamp);
       span.setStatus(Status.NOT_FOUND);
     }
 
@@ -73,6 +76,14 @@ public class TracerTest {
         .extracting(SpanData::getStatus).isEqualTo(io.opentelemetry.trace.Status.NOT_FOUND);
     assertThat(values).element(0)
         .extracting(el -> el.getAttributes().get("cheese").getStringValue()).isEqualTo("gouda");
+
+    assertThat(values).element(0)
+        .extracting(SpanData::getTotalRecordedEvents).isEqualTo(2);
+    assertThat(values).element(0)
+        .extracting(el -> el.getTimedEvents().get(0).getName()).isEqualTo("Grating cheese");
+    assertThat(values).element(0)
+        .extracting(el -> el.getTimedEvents().get(1).getEpochNanos()).isEqualTo(timeStamp);
+
   }
 
   @Test

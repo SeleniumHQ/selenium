@@ -77,6 +77,22 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     return this;
   }
 
+  @Override
+  public Span addEvent(String name){
+    Require.nonNull("Name", name);
+    span.addEvent(name);
+    return this;
+  }
+
+  @Override
+  public Span addEvent(String name, long timestamp){
+    Require.nonNull("Name", name);
+    Require.nonNull("Timestamp", timestamp);
+    Require.precondition(timestamp>0, "Timestamp must be a positive value",timestamp);
+    span.addEvent(name, timestamp);
+    return this;
+  }
+
   private static final Map<Status.Kind, io.opentelemetry.trace.Status> statuses
       = new ImmutableMap.Builder<Status.Kind, io.opentelemetry.trace.Status>()
       .put(Status.Kind.ABORTED, io.opentelemetry.trace.Status.ABORTED)

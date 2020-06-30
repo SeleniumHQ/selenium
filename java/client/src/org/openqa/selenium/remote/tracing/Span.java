@@ -25,6 +25,9 @@ public interface Span extends AutoCloseable, TraceContext {
   Span setAttribute(String key, Number value);
   Span setAttribute(String key, String value);
 
+  Span addEvent(String name);
+  Span addEvent(String name, long timestamp);
+
   Span setStatus(Status status);
 
   @Override

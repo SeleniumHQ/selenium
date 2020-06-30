@@ -50,6 +50,20 @@ public class NullSpan extends NullContext implements Span {
   }
 
   @Override
+  public Span addEvent(String name){
+    Require.nonNull("Name", name);
+    return this;
+  }
+
+  @Override
+  public Span addEvent(String name, long timestamp){
+    Require.nonNull("Name", name);
+    Require.nonNull("Timestamp", timestamp);
+    Require.precondition(timestamp>0, "Timestamp must be a positive value",timestamp);
+    return this;
+  }
+
+  @Override
   public Span setStatus(Status status) {
     Require.nonNull("Status", status);
     return this;
