@@ -174,7 +174,7 @@ public class RemoteWebDriverBuilder {
    * {@link #withDriverService(DriverService)}.
    */
   public RemoteWebDriverBuilder url(URL url) {
-    this.remoteHost = Require.nonNull("Remote seerver URL", url);
+    this.remoteHost = Require.nonNull("Remote server URL", url);
     validateDriverServiceAndUrlConstraint();
     return this;
   }
