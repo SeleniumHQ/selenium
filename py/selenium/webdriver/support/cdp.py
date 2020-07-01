@@ -138,7 +138,7 @@ class CDPBase:
 
     def __init__(self, ws, session_id, target_id):
         self.ws = ws
-        self .session_id = session_id
+        self.session_id = session_id
         self.target_id = target_id
         self.channels = defaultdict(set)
         self.id_iter = itertools.count()
