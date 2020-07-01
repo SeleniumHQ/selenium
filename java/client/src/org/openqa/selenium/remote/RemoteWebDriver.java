@@ -116,7 +116,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   // For cglib
   protected RemoteWebDriver() {
-    init(new ImmutableCapabilities());
+    this.capabilities=init(new ImmutableCapabilities());
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
@@ -126,7 +126,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
     this.executor = executor;
 
-    init(capabilities);
+    capabilities=init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
@@ -154,8 +154,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return new RemoteWebDriverBuilder();
   }
 
-  private void init(Capabilities capabilities) {
-    this.capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
+  private Capabilities init(Capabilities capabilities) {
+    capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
     logger.addHandler(LoggingHandler.getInstance());
 
@@ -186,6 +186,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         logTypesToInclude);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
+    
+    return capabilities;
   }
 
   /**
@@ -274,6 +276,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public Capabilities getCapabilities() {
+    if(capabilities == null){
+      return new ImmutableCapabilities();
+    }
     return capabilities;
   }
 
