@@ -19,8 +19,11 @@ package org.openqa.selenium.grid.graphql;
 
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 
 import java.net.URI;
@@ -31,10 +34,12 @@ public class Grid {
 
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
+  private int sessionCount;
 
-  public Grid(Distributor distributor, URI uri) {
+  public Grid(Distributor distributor, URI uri, SessionMap sessions) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
+    this.sessionCount = sessions.getCount();
 
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
   }
@@ -52,6 +57,14 @@ public class Grid {
                                summary.getStereotypes()))
       .collect(ImmutableList.toImmutableList());
   }
+
+//  public List<Session> getSessions() {
+//    return distributorStatus.get().get
+//        .map(summary -> new Session(summary.getNodeId())
+//        .collect(ImmutableList.toImmutableList());
+////    allSessions.getAllSessions().forEach(s -> value.add(
+////        ImmutableMap.of("id", s.getId().toString(), "capabilities", s.getCapabilities())));
+//  }
 
   public int getTotalSlots() {
     return distributorStatus.get().getNodes().stream()

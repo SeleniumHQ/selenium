@@ -29,6 +29,7 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -51,12 +52,14 @@ public class GraphqlHandler implements HttpHandler {
   public static final String GRID_SCHEMA = "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
   public static final Json JSON = new Json();
   private final Distributor distributor;
+  private final SessionMap sessions;
   private final URI publicUri;
   private final GraphQL graphQl;
 
-  public GraphqlHandler(Distributor distributor, URI publicUri) {
+  public GraphqlHandler(Distributor distributor, URI publicUri, SessionMap sessions) {
     this.distributor = Objects.requireNonNull(distributor);
     this.publicUri = Objects.requireNonNull(publicUri);
+    this.sessions = sessions;
 
     GraphQLSchema schema = new SchemaGenerator()
       .makeExecutableSchema(buildTypeDefinitionRegistry(), buildRuntimeWiring());
@@ -104,7 +107,7 @@ public class GraphqlHandler implements HttpHandler {
       .scalar(Types.Uri)
       .scalar(Types.Url)
       .type("GridQuery", typeWiring -> typeWiring
-        .dataFetcher("grid", new GridData(distributor, publicUri)))
+        .dataFetcher("grid", new GridData(distributor, publicUri, sessions)))
       .build();
   }
 

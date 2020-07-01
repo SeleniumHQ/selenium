@@ -117,6 +117,10 @@ public class DistributorStatus {
       return up;
     }
 
+    public boolean isDocker() {
+      return up;
+    }
+
     public int getMaxSessionCount() {
       return maxSessionCount;
     }

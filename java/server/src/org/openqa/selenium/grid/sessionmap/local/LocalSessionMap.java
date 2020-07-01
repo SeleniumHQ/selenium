@@ -99,6 +99,11 @@ public class LocalSessionMap extends SessionMap {
   }
 
   @Override
+  public int getCount() {
+    return knownSessions.size();
+  }
+
+  @Override
   public void remove(SessionId id) {
     Require.nonNull("Session ID", id);
 

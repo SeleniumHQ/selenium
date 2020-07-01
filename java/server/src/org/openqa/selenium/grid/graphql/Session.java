@@ -17,29 +17,21 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingEnvironment;
-
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 
-import java.net.URI;
+import java.util.UUID;
 
-public class GridData implements DataFetcher {
-  private final Distributor distributor;
-  private final SessionMap sessions;
-  private final URI publicUri;
+public class Session {
 
-  public GridData(Distributor distributor, URI publicUri, SessionMap sessions) {
-    this.distributor = Require.nonNull("Distributor", distributor);
-    this.publicUri = Require.nonNull("Grid's public URI", publicUri);
-    this.sessions = sessions;
+  private final UUID id;
+
+
+  public Session(UUID id) {
+    this.id = Require.nonNull("Node id", id);
   }
 
-  @Override
-  public Object get(DataFetchingEnvironment environment) {
-    return new Grid(distributor, publicUri, sessions);
+  public UUID getId() {
+    return id;
   }
+
 }

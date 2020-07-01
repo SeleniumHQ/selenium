@@ -147,7 +147,7 @@ public class Standalone extends TemplateGridCommand {
     };
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
-    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
+    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri(), sessions);
     HttpHandler httpHandler = combine(
       router,
       Route.prefix("/wd/hub").to(combine(router)),

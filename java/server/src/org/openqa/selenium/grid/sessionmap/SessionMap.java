@@ -81,6 +81,10 @@ public abstract class SessionMap implements HasReadyState, Routable {
 
   public abstract void remove(SessionId id);
 
+  public int getCount() {
+    return -10;
+  };
+
   public URI getUri(SessionId id) throws NoSuchSessionException {
     return get(id).getUri();
   }
