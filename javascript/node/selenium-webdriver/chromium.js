@@ -672,10 +672,13 @@ class Driver extends webdriver.WebDriver {
             .setParameter('params', params));
   }
 
-  createCDPConnection(wsUrl) {
+  createCDPConnection() {
+    const caps = this.getCapabilities();
+    this._wsUrl = caps.get(this.VENDOR_COMMAND_PREFIX).get('debuggerAddress');
+
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(wsUrl);
+        this._wsConnection = new WebSocket(this._wsUrl);
       } catch (err) {
         reject(err);
         return
