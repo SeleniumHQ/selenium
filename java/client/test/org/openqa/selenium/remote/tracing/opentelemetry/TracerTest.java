@@ -18,9 +18,11 @@
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.common.AttributeValue;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
+import io.opentelemetry.sdk.trace.data.SpanData.TimedEvent;
 import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import org.junit.Test;
@@ -29,16 +31,22 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.BooleanAttributeValue;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.NumberAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.StringAttributeValue;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -58,12 +66,9 @@ public class TracerTest {
   public void shouldBeAbleToCreateATracer() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
-    long timeStamp = 1593493828L;
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       span.setAttribute("cheese", "gouda");
-      span.addEvent("Grating cheese");
-      span.addEvent("Melting cheese", timeStamp);
       span.setStatus(Status.NOT_FOUND);
     }
 
@@ -77,13 +82,50 @@ public class TracerTest {
     assertThat(values).element(0)
         .extracting(el -> el.getAttributes().get("cheese").getStringValue()).isEqualTo("gouda");
 
-    assertThat(values).element(0)
-        .extracting(SpanData::getTotalRecordedEvents).isEqualTo(2);
-    assertThat(values).element(0)
-        .extracting(el -> el.getTimedEvents().get(0).getName()).isEqualTo("Grating cheese");
-    assertThat(values).element(0)
-        .extracting(el -> el.getTimedEvents().get(1).getEpochNanos()).isEqualTo(timeStamp);
+  }
 
+  @Test
+  public void shouldBeAbleToCreateASpanWithEvents() {
+    List<SpanData> allSpans = new ArrayList<>();
+    Tracer tracer = createTracer(allSpans);
+    Map<String, AttributeValue> openTelAttributeValueMap = new HashMap<>();
+    openTelAttributeValueMap
+        .put("testString", AttributeValue.stringAttributeValue("attributeValue"));
+    openTelAttributeValueMap.put("testBoolean", AttributeValue.booleanAttributeValue(true));
+    openTelAttributeValueMap.put("testFloat", AttributeValue.doubleAttributeValue(5.5f));
+    openTelAttributeValueMap.put("testDouble", AttributeValue.doubleAttributeValue(5.55555));
+    openTelAttributeValueMap.put("testInt", AttributeValue.longAttributeValue(10));
+    openTelAttributeValueMap.put("testLong", AttributeValue.longAttributeValue(100L));
+
+    try (Span span = tracer.getCurrentContext().createSpan("parent")) {
+      span.addEvent("Test event start");
+
+      Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+      attributeValueMap.put("testString", new StringAttributeValue("attributeValue"));
+      attributeValueMap.put("testBoolean", new BooleanAttributeValue(true));
+      attributeValueMap.put("testFloat", new NumberAttributeValue(5.5f));
+      attributeValueMap.put("testDouble", new NumberAttributeValue(5.55555));
+      attributeValueMap.put("testInt", new NumberAttributeValue(10));
+      attributeValueMap.put("testLong", new NumberAttributeValue(100L));
+
+      span.addEvent("Test event end", attributeValueMap);
+    }
+
+    assertThat(allSpans).hasSize(1);
+
+    SpanData spanData = allSpans.get(0);
+    assertThat(spanData.getTimedEvents()).hasSize(2);
+
+    List<TimedEvent> timedEvents = spanData.getTimedEvents();
+    assertThat(timedEvents).element(0).extracting(TimedEvent::getName)
+        .isEqualTo("Test event start");
+    assertThat(timedEvents).element(0).extracting(TimedEvent::getTotalAttributeCount).isEqualTo(0);
+    assertThat(timedEvents).element(1).extracting(TimedEvent::getName).isEqualTo("Test event end");
+    assertThat(timedEvents).element(1).extracting(TimedEvent::getTotalAttributeCount).isEqualTo(6);
+    assertThat(timedEvents.get(1).getAttributes())
+        .containsKeys("testString", "testBoolean", "testFloat", "testDouble", "testInt",
+                      "testLong");
+    assertThat(timedEvents.get(1).getAttributes()).isEqualTo(openTelAttributeValueMap);
   }
 
   @Test

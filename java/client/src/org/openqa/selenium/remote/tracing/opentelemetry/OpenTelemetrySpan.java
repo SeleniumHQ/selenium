@@ -20,14 +20,18 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import io.grpc.Context;
+import io.opentelemetry.common.AttributeValue;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.Tracer;
 
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.EventAttributeValue.Type;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -78,18 +82,40 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
   }
 
   @Override
-  public Span addEvent(String name){
+  public Span addEvent(String name) {
     Require.nonNull("Name", name);
     span.addEvent(name);
     return this;
   }
 
   @Override
-  public Span addEvent(String name, long timestamp){
+  public Span addEvent(String name, Map<String, EventAttributeValue> attributeMap) {
     Require.nonNull("Name", name);
-    Require.nonNull("Timestamp", timestamp);
-    Require.precondition(timestamp>0, "Timestamp must be a positive value",timestamp);
-    span.addEvent(name, timestamp);
+    Require.nonNull("Event Attribute Map", attributeMap);
+    Map<String, AttributeValue> openTelAttributeMap = new HashMap<>();
+
+    attributeMap.forEach(
+        (key, value) -> {
+          Require.nonNull("Event Attribute Value", value);
+
+          if (Type.BOOLEAN.equals(value.getAttributeType())) {
+            boolean attributeValue = (boolean) value.getAttributeValue();
+            openTelAttributeMap.put(key, AttributeValue.booleanAttributeValue(attributeValue));
+          } else if (Type.STRING.equals(value.getAttributeType())) {
+            String attributeValue = (String) value.getAttributeValue();
+            openTelAttributeMap.put(key, AttributeValue.stringAttributeValue(attributeValue));
+          } else if (Type.DOUBLE.equals(value.getAttributeType())) {
+            Number attributeValue = (Number)value.getAttributeValue();
+            openTelAttributeMap.put(key, AttributeValue.doubleAttributeValue(attributeValue.doubleValue()));
+          } else if (Type.LONG.equals(value.getAttributeType())) {
+            Number attributeValue = (Number) value.getAttributeValue();
+            openTelAttributeMap.put(key, AttributeValue.longAttributeValue(attributeValue.longValue()));
+          }
+
+        }
+    );
+
+    span.addEvent(name, openTelAttributeMap);
     return this;
   }
 

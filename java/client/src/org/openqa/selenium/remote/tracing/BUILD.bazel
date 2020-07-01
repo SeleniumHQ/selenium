@@ -26,6 +26,7 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/http",
+        artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("io.opentelemetry:opentelemetry-context-prop"),
     ],

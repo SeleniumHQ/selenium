@@ -17,42 +17,24 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import java.util.Map;
+import org.openqa.selenium.internal.Require;
 
-public interface Span extends AutoCloseable, TraceContext {
+public class BooleanAttributeValue implements EventAttributeValue<Boolean> {
 
-  Span setName(String name);
+  private final boolean attributeValue;
 
-  Span setAttribute(String key, boolean value);
-  Span setAttribute(String key, Number value);
-  Span setAttribute(String key, String value);
-
-  Span addEvent(String name);
-  Span addEvent(String name, Map<String,EventAttributeValue> attributeMap);
-
-  Span setStatus(Status status);
+  public BooleanAttributeValue(boolean attributeValue) {
+    this.attributeValue = Require.nonNull("Event attribute value", attributeValue);
+  }
 
   @Override
-  void close();
-
-  enum Kind {
-    CLIENT("client"),
-    SERVER("server"),
-
-    PRODUCER("producer"),
-    CONSUMER("consumer"),
-    ;
-
-    // The nice name is the name expected in an OT trace.
-    private final String niceName;
-
-    private Kind(String niceName) {
-      this.niceName = niceName;
-    }
-
-    @Override
-    public String toString() {
-      return niceName;
-    }
+  public Boolean getAttributeValue() {
+    return attributeValue;
   }
+
+  @Override
+  public Type getAttributeType() {
+    return Type.BOOLEAN;
+  }
+
 }

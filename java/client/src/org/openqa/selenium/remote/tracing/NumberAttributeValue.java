@@ -17,42 +17,32 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import java.util.Map;
 
-public interface Span extends AutoCloseable, TraceContext {
+import com.google.common.primitives.Primitives;
 
-  Span setName(String name);
+import org.openqa.selenium.internal.Require;
 
-  Span setAttribute(String key, boolean value);
-  Span setAttribute(String key, Number value);
-  Span setAttribute(String key, String value);
+public class NumberAttributeValue implements EventAttributeValue<Number> {
 
-  Span addEvent(String name);
-  Span addEvent(String name, Map<String,EventAttributeValue> attributeMap);
+  private final Number attributeValue;
 
-  Span setStatus(Status status);
+  public NumberAttributeValue(Number attributeValue) {
+    this.attributeValue = Require.nonNull("Event attribute value", attributeValue);
+  }
 
   @Override
-  void close();
+  public Number getAttributeValue() {
+    return attributeValue;
+  }
 
-  enum Kind {
-    CLIENT("client"),
-    SERVER("server"),
+  @Override
+  public Type getAttributeType() {
 
-    PRODUCER("producer"),
-    CONSUMER("consumer"),
-    ;
-
-    // The nice name is the name expected in an OT trace.
-    private final String niceName;
-
-    private Kind(String niceName) {
-      this.niceName = niceName;
-    }
-
-    @Override
-    public String toString() {
-      return niceName;
+    Class<? extends Number> unwrapped = Primitives.unwrap(attributeValue.getClass());
+    if (double.class.equals(unwrapped) || float.class.equals(unwrapped)) {
+      return Type.DOUBLE;
+    } else {
+      return Type.LONG;
     }
   }
 }
