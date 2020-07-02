@@ -1428,7 +1428,7 @@ class WebDriver(BaseWebDriver):
         from selenium.webdriver.support import cdp
         ws_url = None
         if self.capabilities.get("se:options"):
-            ws_url = self.capabilities.get("se:options")
+            ws_url = self.capabilities.get("se:options").get("cdp")
         else:
             ws_url = self.capabilities.get(self.vendor_prefix["debuggerAddress"])
 
