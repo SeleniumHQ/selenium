@@ -17,12 +17,17 @@
 
 package org.openqa.selenium.grid.graphql;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class Node {
@@ -33,18 +38,21 @@ public class Node {
   private final int maxSession;
   private final String capabilities;
   private static final Json JSON = new Json();
+  private final Set<Session> activeSessions;
 
 
   public Node(UUID id,
               URI uri,
               boolean isUp,
               int maxSession,
-              Map<Capabilities, Integer> capabilities) {
+              Map<Capabilities, Integer> capabilities,
+              Set<Session> activeSessions) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
     this.maxSession = Require.nonNull("Node maxSession", maxSession);
     this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
+    this.activeSessions = activeSessions;
   }
 
   public UUID getId() {
@@ -57,6 +65,11 @@ public class Node {
 
   public int getMaxSession() {
     return maxSession;
+  }
+  
+  public List<String> getActiveSessionIds() {
+      return activeSessions.stream().map(session -> session.getId().toString())
+          .collect(ImmutableList.toImmutableList());
   }
 
   public String getStatus() {

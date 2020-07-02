@@ -19,6 +19,7 @@ type Node {
   uri: Uri!
   status: Status!
   maxSession: Int!
+  activeSessionIDs: [String]
   capabilities: String!
 }
 

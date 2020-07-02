@@ -89,6 +89,7 @@ public class DistributorStatus {
     private final int maxSessionCount;
     private final Map<Capabilities, Integer> stereotypes;
     private final Map<Capabilities, Integer> used;
+    private final Set<Session> activeSessions;
 
     public NodeSummary(
         UUID nodeId,
@@ -96,13 +97,15 @@ public class DistributorStatus {
         boolean up,
         int maxSessionCount,
         Map<Capabilities, Integer> stereotypes,
-        Map<Capabilities, Integer> usedStereotypes) {
+        Map<Capabilities, Integer> usedStereotypes,
+        Set <Session> activeSessions) {
       this.nodeId = Require.nonNull("Node id", nodeId);
       this.uri = Require.nonNull("URI", uri);
       this.up = up;
       this.maxSessionCount = maxSessionCount;
       this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereoytpes", stereotypes));
       this.used = ImmutableMap.copyOf(Require.nonNull("User stereotypes", usedStereotypes));
+      this.activeSessions = activeSessions;
     }
 
     public UUID getNodeId() {
@@ -117,10 +120,6 @@ public class DistributorStatus {
       return up;
     }
 
-    public boolean isDocker() {
-      return up;
-    }
-
     public int getMaxSessionCount() {
       return maxSessionCount;
     }
@@ -131,6 +130,10 @@ public class DistributorStatus {
 
     public Map<Capabilities, Integer> getUsedStereotypes() {
       return used;
+    }
+
+    public Set<Session> getActiveSessions() {
+      return activeSessions;
     }
 
     public boolean hasCapacity() {
@@ -207,7 +210,7 @@ public class DistributorStatus {
 
       input.endObject();
 
-      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used);
+      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used, null);
     }
 
     private static Map<Capabilities, Integer> readCapabilityCounts(JsonInput input) {

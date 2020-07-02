@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.graphql;
 
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -34,13 +33,10 @@ public class Grid {
 
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
-  private int sessionCount;
 
   public Grid(Distributor distributor, URI uri, SessionMap sessions) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
-    this.sessionCount = sessions.getCount();
-
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
   }
 
@@ -54,17 +50,23 @@ public class Grid {
                                summary.getUri(),
                                summary.isUp(),
                                summary.getMaxSessionCount(),
-                               summary.getStereotypes()))
+                               summary.getStereotypes(),
+                               summary.getActiveSessions()))
       .collect(ImmutableList.toImmutableList());
   }
 
 //  public List<Session> getSessions() {
-//    return distributorStatus.get().get
-//        .map(summary -> new Session(summary.getNodeId())
+//    return distributorStatus.get().getNodes().stream()
+//        .map(summary -> new Session(summary.getActiveSessions()))
 //        .collect(ImmutableList.toImmutableList());
-////    allSessions.getAllSessions().forEach(s -> value.add(
-////        ImmutableMap.of("id", s.getId().toString(), "capabilities", s.getCapabilities())));
 //  }
+
+  public int getSessionCount() {
+    return distributorStatus.get().getNodes().stream()
+        .map(summary -> summary.getUsedStereotypes().values().stream().mapToInt(i -> i).sum())
+        .mapToInt(i -> i)
+        .sum();
+  }
 
   public int getTotalSlots() {
     return distributorStatus.get().getNodes().stream()

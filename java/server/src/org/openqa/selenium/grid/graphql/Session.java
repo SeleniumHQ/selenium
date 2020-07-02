@@ -17,21 +17,25 @@
 
 package org.openqa.selenium.grid.graphql;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.internal.Require;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class Session {
 
-  private final UUID id;
+//  private final Set<DistributorStatus.NodeSummary> allNodes;
 
 
-  public Session(UUID id) {
-    this.id = Require.nonNull("Node id", id);
+  public Session() {
+//    this.allNodes = Require.nonNull("Node usedStereotypes", allNodes.);
   }
 
-  public UUID getId() {
-    return id;
-  }
+//  public Map<Capabilities, Integer> getUsedStereotypes() {
+//    return 0;
+//  }
 
 }
