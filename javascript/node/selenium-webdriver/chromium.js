@@ -674,7 +674,9 @@ class Driver extends webdriver.WebDriver {
 
   createCDPConnection() {
     const caps = this.getCapabilities();
-    this._wsUrl = caps.get(this.VENDOR_COMMAND_PREFIX).get('debuggerAddress');
+    const seOptions = caps.get('se:options') || {};
+    const vendorInfo = caps.get(this.VENDOR_COMMAND_PREFIX) || {};
+    this._wsUrl = seOptions.get('cdp') || vendorInfo.get('debuggerAddress');
 
     return new Promise((resolve, reject) => {
       try {
