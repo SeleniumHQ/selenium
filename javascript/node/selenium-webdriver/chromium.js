@@ -672,15 +672,15 @@ class Driver extends webdriver.WebDriver {
             .setParameter('params', params));
   }
 
-  createCDPConnection() {
-    const caps = this.getCapabilities();
-    const seOptions = caps.get('se:options') || {};
-    const vendorInfo = caps.get(this.VENDOR_COMMAND_PREFIX) || {};
-    this._wsUrl = seOptions.get('cdp') || vendorInfo.get('debuggerAddress');
+  async createCDPConnection() {
+    const caps = await this.getCapabilities()
+    const seOptions = caps['map_'].get('se:options') || new Map();
+    const vendorInfo = caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') || new Map();
+    this._wsUrl = seOptions['cdp'] || vendorInfo['debuggerAddress'];
 
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(this._wsUrl);
+        this._wsConnection = new WebSocket("ws://" + this._wsUrl);
       } catch (err) {
         reject(err);
         return

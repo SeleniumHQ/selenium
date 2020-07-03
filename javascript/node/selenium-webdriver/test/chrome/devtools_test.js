@@ -62,6 +62,19 @@ test.suite(function(env) {
     assert.equal(history.entries[history.currentIndex-1].url, test.Pages.ajaxyPage);
   });
 
+  it.only('returns performance metrics using devtools', async function() {
+    const cdpConnection = await driver.createCDPConnection();
+    cdpConnection.then((connection) => {
+      connection.execute('Page.enable', "", function(res, err) {
+        if (err) {
+          console.log(err);
+        }
+
+        console.log(res);
+      });
+    });
+  });
+
   describe('setDownloadPath', function() {
     it('can enable downloads in headless mode', async function() {
       const dir = await io.tmpDir();
