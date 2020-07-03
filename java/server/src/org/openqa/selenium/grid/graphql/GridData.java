@@ -29,17 +29,15 @@ import java.net.URI;
 
 public class GridData implements DataFetcher {
   private final Distributor distributor;
-  private final SessionMap sessions;
   private final URI publicUri;
 
-  public GridData(Distributor distributor, URI publicUri, SessionMap sessions) {
+  public GridData(Distributor distributor, URI publicUri) {
     this.distributor = Require.nonNull("Distributor", distributor);
     this.publicUri = Require.nonNull("Grid's public URI", publicUri);
-    this.sessions = sessions;
   }
 
   @Override
   public Object get(DataFetchingEnvironment environment) {
-    return new Grid(distributor, publicUri, sessions);
+    return new Grid(distributor, publicUri);
   }
 }

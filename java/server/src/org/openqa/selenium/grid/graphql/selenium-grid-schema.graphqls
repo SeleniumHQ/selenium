@@ -10,10 +10,6 @@ enum Status {
   UNAVAILABLE
 }
 
-type Session {
-  id: ID!
-}
-
 type Node {
   id: ID!
   uri: Uri!
@@ -30,8 +26,6 @@ type GridQuery {
 type Grid {
   uri: Uri!
   nodes: [Node!]!
-  sessions: [Session]
-  sessionCount: Int!
   totalSlots: Int
   usedSlots: Int
 }

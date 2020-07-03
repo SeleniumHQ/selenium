@@ -34,7 +34,7 @@ public class Grid {
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
 
-  public Grid(Distributor distributor, URI uri, SessionMap sessions) {
+  public Grid(Distributor distributor, URI uri) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
@@ -54,12 +54,6 @@ public class Grid {
                                summary.getActiveSessions()))
       .collect(ImmutableList.toImmutableList());
   }
-
-//  public List<Session> getSessions() {
-//    return distributorStatus.get().getNodes().stream()
-//        .map(summary -> new Session(summary.getActiveSessions()))
-//        .collect(ImmutableList.toImmutableList());
-//  }
 
   public int getSessionCount() {
     return distributorStatus.get().getNodes().stream()
