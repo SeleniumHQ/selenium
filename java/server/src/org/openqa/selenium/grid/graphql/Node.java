@@ -67,7 +67,7 @@ public class Node {
     return maxSession;
   }
   
-  public List<String> getActiveSessionIds() {
+  public List<String> getActiveSessionIDs() {
       return activeSessions.stream().map(session -> session.getId().toString())
           .collect(ImmutableList.toImmutableList());
   }
