@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 
 import java.net.URI;

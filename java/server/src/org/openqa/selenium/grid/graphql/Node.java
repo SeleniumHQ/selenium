@@ -52,7 +52,7 @@ public class Node {
     this.isUp = isUp;
     this.maxSession = Require.nonNull("Node maxSession", maxSession);
     this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
-    this.activeSessions = activeSessions;
+    this.activeSessions = Require.nonNull("Active sessions", activeSessions);
   }
 
   public UUID getId() {

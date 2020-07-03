@@ -20,9 +20,7 @@ package org.openqa.selenium.grid.graphql;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 
 import java.net.URI;

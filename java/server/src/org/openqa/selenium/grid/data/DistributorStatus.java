@@ -31,6 +31,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -174,6 +175,7 @@ public class DistributorStatus {
       int maxSessionCount = 0;
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<Capabilities, Integer> used = new HashMap<>();
+      Set<Session> activeSessions = new HashSet<>();
 
       input.beginObject();
       while (input.hasNext()) {
@@ -210,7 +212,7 @@ public class DistributorStatus {
 
       input.endObject();
 
-      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used, null);
+      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used, activeSessions);
     }
 
     private static Map<Capabilities, Integer> readCapabilityCounts(JsonInput input) {
