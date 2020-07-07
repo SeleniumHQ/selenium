@@ -39,11 +39,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class GraphqlHandler implements HttpHandler {
@@ -83,7 +86,21 @@ public class GraphqlHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    ExecutionInput executionInput = ExecutionInput.newExecutionInput(Contents.string(req))
+    Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);
+
+    if (!(inputs.get("query") instanceof String)) {
+      return new HttpResponse()
+        .setStatus(HTTP_INTERNAL_ERROR)
+        .setContent(Contents.utf8String("Unable to find query"));
+    }
+
+    String query = (String) inputs.get("query");
+    @SuppressWarnings("unchecked") Map<String, Object> variables = inputs.get("variables") instanceof Map ?
+      (Map<String, Object>) inputs.get("variables") :
+      new HashMap<>();
+
+    ExecutionInput executionInput = ExecutionInput.newExecutionInput(query)
+      .variables(variables)
       .build();
 
     ExecutionResult result = graphQl.execute(executionInput);
