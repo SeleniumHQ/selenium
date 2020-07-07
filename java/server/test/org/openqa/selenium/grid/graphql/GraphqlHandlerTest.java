@@ -77,7 +77,7 @@ public class GraphqlHandlerTest {
 
     Map<String, Object> topLevel = executeQuery(handler, "query { grid { uri } }");
 
-    assertThat(topLevel).isEqualTo(Map.of("data", Map.of("grid", Map.of("uri", publicUri))));
+    assertThat(topLevel).isEqualTo(Map.of("data", Map.of("grid", Map.of("uri", publicUri.toString()))));
   }
 
   @Test
