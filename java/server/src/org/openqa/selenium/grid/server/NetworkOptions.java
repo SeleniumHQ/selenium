@@ -46,6 +46,10 @@ public class NetworkOptions {
     // Base case: we do nothing
     Filter toReturn = httpHandler -> httpHandler;
 
+    if (config.getBool("network", "relax_checks").orElse(false)) {
+      return toReturn;
+    }
+
     if (config.getBool("network", "check_content_type").orElse(true)) {
       toReturn = toReturn.andThen(new CheckContentTypeHeader());
     }
