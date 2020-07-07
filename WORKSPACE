@@ -176,7 +176,7 @@ load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
 
 k8s_go_deps()
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_rules_dependencies", "go_register_toolchains")
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 go_rules_dependencies()
 
@@ -186,8 +186,8 @@ load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_defaults")
 
 k8s_defaults(
     name = "k8s_dev",
-    namespace = "selenium",
-    kind = "deployment",
     cluster = "docker-desktop",
     image_chroot = "localhost:5000",
+    kind = "deployment",
+    namespace = "selenium",
 )

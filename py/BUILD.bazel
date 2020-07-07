@@ -29,15 +29,16 @@ copy_file(
 
 py_library(
     name = "selenium",
-    srcs = glob(["selenium/**/*.py"],
-                exclude= ["generate.py"]
+    srcs = glob(
+        ["selenium/**/*.py"],
+        exclude = ["generate.py"],
     ),
     data = [
+        ":create-cdp-srcs",
         ":find-elements",
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
-        ":create-cdp-srcs",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -116,28 +117,28 @@ py_library(
 )
 
 genrule(
-    name="create-cdp-srcs",
-    srcs=[
+    name = "create-cdp-srcs",
+    srcs = [
         "generate.py",
         ":browser_protocol",
         ":js_protocol",
     ],
-    outs=["selenium/webdriver/common/devtools"],
-    cmd="python3 $(location generate.py) $(location :browser_protocol) $(location :js_protocol) $@",
-    tools=[
+    outs = ["selenium/webdriver/common/devtools"],
+    cmd = "python3 $(location generate.py) $(location :browser_protocol) $(location :js_protocol) $@",
+    tools = [
     ],
 )
 
 copy_file(
-    name="browser_protocol",
-    src="//common/devtools:browser_protocol.json",
-    out="browser_protocol.json",
+    name = "browser_protocol",
+    src = "//common/devtools:browser_protocol.json",
+    out = "browser_protocol.json",
 )
 
 copy_file(
-    name="js_protocol",
-    src="//common/devtools:js_protocol.json",
-    out="js_protocol.json",
+    name = "js_protocol",
+    src = "//common/devtools:js_protocol.json",
+    out = "js_protocol.json",
 )
 
 py_test_suite(

@@ -26,7 +26,7 @@ java_selenium_test_suite(
         "//java/server/src/org/openqa/selenium/grid/commands",
         "//java/server/src/org/openqa/selenium/grid/distributor/httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
-        "//java/server/test/org/openqa/selenium/grid/testing:testing",
+        "//java/server/test/org/openqa/selenium/grid/testing",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),

@@ -70,7 +70,7 @@ genrule(
         "//java/client/src/org/openqa/selenium/devtools:js_protocol",
     ],
     outs = ["cdp.srcjar"],
-    cmd="$(location :cdp-client-generator) $(location //java/client/src/org/openqa/selenium/devtools:js_protocol) $(location //java/client/src/org/openqa/selenium/devtools:browser_protocol) $@",
+    cmd = "$(location :cdp-client-generator) $(location //java/client/src/org/openqa/selenium/devtools:js_protocol) $(location //java/client/src/org/openqa/selenium/devtools:browser_protocol) $@",
     tools = [
         ":cdp-client-generator",
     ],
@@ -90,13 +90,13 @@ java_library(
 )
 
 copy_file(
-    name="browser_protocol",
-    src="//common/devtools:browser_protocol.json",
-    out="browser_protocol.json",
+    name = "browser_protocol",
+    src = "//common/devtools:browser_protocol.json",
+    out = "browser_protocol.json",
 )
 
 copy_file(
-    name="js_protocol",
-    src="//common/devtools:js_protocol.json",
-    out="js_protocol.json",
+    name = "js_protocol",
+    src = "//common/devtools:js_protocol.json",
+    out = "js_protocol.json",
 )
