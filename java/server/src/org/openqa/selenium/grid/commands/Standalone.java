@@ -49,6 +49,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -139,7 +140,10 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(sessions);
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     combinedHandler.addHandler(distributor);
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+
+    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+      .with(networkOptions.getSpecComplianceChecks());
+
     HttpHandler readinessCheck = req -> {
       boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
       return new HttpResponse()
