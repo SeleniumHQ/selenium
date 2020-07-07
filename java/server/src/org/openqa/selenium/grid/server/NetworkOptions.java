@@ -17,11 +17,18 @@
 
 package org.openqa.selenium.grid.server;
 
+import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.web.CheckContentTypeHeader;
+import org.openqa.selenium.grid.web.CheckOriginHeader;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
+
+import java.util.List;
+import java.util.Optional;
 
 public class NetworkOptions {
 
@@ -33,5 +40,23 @@ public class NetworkOptions {
 
   public HttpClient.Factory getHttpClientFactory(Tracer tracer) {
     return new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
+  }
+
+  public Filter getSpecComplianceChecks() {
+    // Base case: we do nothing
+    Filter toReturn = httpHandler -> httpHandler;
+
+    if (config.getBool("network", "check_content_type").orElse(true)) {
+      toReturn = toReturn.andThen(new CheckContentTypeHeader());
+    }
+
+    boolean checkOrigin = config.getBool("network", "check_origin_header").orElse(true);
+    Optional<List<String>> allowedOrigins = config.getAll("network", "allowed_origins");
+
+    if (checkOrigin || allowedOrigins.isPresent()) {
+      toReturn = toReturn.andThen(new CheckOriginHeader(allowedOrigins.orElse(ImmutableList.of())));
+    }
+
+    return toReturn;
   }
 }

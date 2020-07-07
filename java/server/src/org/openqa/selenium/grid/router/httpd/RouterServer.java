@@ -44,7 +44,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
@@ -116,7 +115,7 @@ public class RouterServer extends TemplateGridCommand {
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
 
     Route handler = Route.combine(
-      new Router(tracer, clientFactory, sessions, distributor),
+      new Router(tracer, clientFactory, sessions, distributor).with(networkOptions.getSpecComplianceChecks()),
       Route.post("/graphql").to(() -> graphqlHandler),
       get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
 
