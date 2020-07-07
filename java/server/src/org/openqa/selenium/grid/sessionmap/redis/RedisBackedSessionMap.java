@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.sessionmap.redis;
 
 import com.google.common.collect.ImmutableMap;
 import io.lettuce.core.KeyValue;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import org.openqa.selenium.Capabilities;
@@ -33,6 +31,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.redis.RedisClientHelper;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -44,14 +43,12 @@ import java.util.List;
 public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   private static final Json JSON = new Json();
-  private final RedisClient client;
   private final StatefulRedisConnection<String, String> connection;
 
   public RedisBackedSessionMap(Tracer tracer, URI serverUri) {
     super(tracer);
 
-    client = RedisClient.create(RedisURI.create(serverUri));
-    connection = client.connect();
+    connection = new RedisClientHelper(serverUri).getConnection();
   }
 
   public static SessionMap create(Config config) {
@@ -125,7 +122,7 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public void close() {
-    client.shutdown();
+    connection.close();
   }
 
   private String uriKey(SessionId id) {
