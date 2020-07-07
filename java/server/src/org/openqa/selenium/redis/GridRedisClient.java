@@ -21,13 +21,14 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 
+import java.io.Closeable;
 import java.net.URI;
 
-public class RedisClientHelper {
+public class GridRedisClient implements Closeable {
   private final RedisClient client;
   private final StatefulRedisConnection<String, String> connection;
 
-  public RedisClientHelper(URI serverUri) {
+  public GridRedisClient(URI serverUri) {
     client = RedisClient.create(RedisURI.create(serverUri));
     connection = client.connect();
   }
@@ -36,6 +37,7 @@ public class RedisClientHelper {
     return connection;
   }
 
+  @Override
   public void close() {
     client.shutdown();
   }

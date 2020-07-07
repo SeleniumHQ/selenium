@@ -31,7 +31,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.redis.RedisClientHelper;
+import org.openqa.selenium.redis.GridRedisClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -40,7 +40,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class RedisBackedSessionMap extends SessionMap implements Closeable {
+public class RedisBackedSessionMap extends SessionMap {
 
   private static final Json JSON = new Json();
   private final StatefulRedisConnection<String, String> connection;
@@ -48,7 +48,7 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
   public RedisBackedSessionMap(Tracer tracer, URI serverUri) {
     super(tracer);
 
-    connection = new RedisClientHelper(serverUri).getConnection();
+    connection = new GridRedisClient(serverUri).getConnection();
   }
 
   public static SessionMap create(Config config) {
@@ -118,11 +118,6 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
   @Override
   public boolean isReady() {
     return connection.isOpen();
-  }
-
-  @Override
-  public void close() {
-    connection.close();
   }
 
   private String uriKey(SessionId id) {
