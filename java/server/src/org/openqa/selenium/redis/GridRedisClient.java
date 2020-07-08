@@ -17,12 +17,15 @@
 
 package org.openqa.selenium.redis;
 
+import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 
 import java.io.Closeable;
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 public class GridRedisClient implements Closeable {
   private final RedisClient client;
@@ -37,6 +40,24 @@ public class GridRedisClient implements Closeable {
     return connection;
   }
 
+  public void mset(Map<String, String> map) {
+    connection.sync().mset(map);
+  }
+
+  public List<KeyValue<String, String>> mget(String...keys) {
+    return connection.sync().mget(keys);
+  }
+  public String get(String key) {
+    return connection.sync().get(key);
+  }
+
+  public boolean isOpen() {
+    return connection.isOpen();
+  }
+
+  public void del(String...var1) {
+    connection.sync().del(var1);
+  }
   @Override
   public void close() {
     client.shutdown();

@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.sessionmap.redis;
 
 import com.google.common.collect.ImmutableMap;
 import io.lettuce.core.KeyValue;
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.api.sync.RedisCommands;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -35,7 +33,6 @@ import org.openqa.selenium.redis.GridRedisClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -43,12 +40,12 @@ import java.util.List;
 public class RedisBackedSessionMap extends SessionMap {
 
   private static final Json JSON = new Json();
-  private final StatefulRedisConnection<String, String> connection;
+  private final GridRedisClient connection;
 
   public RedisBackedSessionMap(Tracer tracer, URI serverUri) {
     super(tracer);
 
-    connection = new GridRedisClient(serverUri).getConnection();
+    connection = new GridRedisClient(serverUri);
   }
 
   public static SessionMap create(Config config) {
@@ -62,8 +59,7 @@ public class RedisBackedSessionMap extends SessionMap {
   public boolean add(Session session) {
     Require.nonNull("Session to add", session);
 
-    RedisCommands<String, String> commands = connection.sync();
-    commands.mset(
+    connection.mset(
       ImmutableMap.of(
         uriKey(session.getId()), session.getUri().toString(),
         capabilitiesKey(session.getId()), JSON.toJson(session.getCapabilities())));
@@ -77,8 +73,7 @@ public class RedisBackedSessionMap extends SessionMap {
 
     URI uri = getUri(id);
 
-    RedisCommands<String, String> commands = connection.sync();
-    String rawCapabilities = commands.get(capabilitiesKey(id));
+    String rawCapabilities = connection.get(capabilitiesKey(id));
     Capabilities caps = rawCapabilities == null ?
       new ImmutableCapabilities() :
       JSON.toType(rawCapabilities, Capabilities.class);
@@ -90,9 +85,7 @@ public class RedisBackedSessionMap extends SessionMap {
   public URI getUri(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
 
-    RedisCommands<String, String> commands = connection.sync();
-
-    List<KeyValue<String, String>> rawValues = commands.mget(uriKey(id), capabilitiesKey(id));
+    List<KeyValue<String, String>> rawValues = connection.mget(uriKey(id), capabilitiesKey(id));
 
     String rawUri = rawValues.get(0).getValueOrElse(null);
     if (rawUri == null) {
@@ -110,9 +103,7 @@ public class RedisBackedSessionMap extends SessionMap {
   public void remove(SessionId id) {
     Require.nonNull("Session ID", id);
 
-    RedisCommands<String, String> commands = connection.sync();
-
-    commands.del(uriKey(id), capabilitiesKey(id));
+    connection.del(uriKey(id), capabilitiesKey(id));
   }
 
   @Override
