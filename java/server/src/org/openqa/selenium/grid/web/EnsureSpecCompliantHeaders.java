@@ -15,10 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.grid.web;
 
-public enum HttpMethod {
-  DELETE,
-  GET,
-  POST,
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpHandler;
+
+import java.util.Collection;
+
+public class EnsureSpecCompliantHeaders implements Filter {
+
+  private final Filter filter;
+
+  public EnsureSpecCompliantHeaders(Collection<String> allowedOriginHosts) {
+    Require.nonNull("Allowed origins list", allowedOriginHosts);
+
+    filter = new CheckOriginHeader(allowedOriginHosts).andThen(new CheckContentTypeHeader());
+  }
+
+  @Override
+  public HttpHandler apply(HttpHandler httpHandler) {
+    Require.nonNull("Next handler", httpHandler);
+    return filter.apply(httpHandler);
+  }
 }

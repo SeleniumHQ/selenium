@@ -20,10 +20,10 @@ _BROWSERS = {
     "edgehtml": {
         "deps": ["//java/client/src/org/openqa/selenium/edgehtml"],
         "jvm_flags": ["-Dselenium.browser=edgehtml"] +
-            select({
-                "//common:windows": ["-Dselenium.skiptest=false"],
-                "//conditions:default": ["-Dselenium.skiptest=true"],
-            }),
+                     select({
+                         "//common:windows": ["-Dselenium.skiptest=false"],
+                         "//conditions:default": ["-Dselenium.skiptest=true"],
+                     }),
         "tags": _COMMON_TAGS + ["exclusive", "edgehtml"],
     },
     "firefox": {
