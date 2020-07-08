@@ -39,6 +39,10 @@ public class SessionMapOptions {
   }
 
   public URI getSessionMapUri() {
+
+    String scheme = "http";
+    Optional<String> implementation = config.get(SESSIONS_SECTION, "implementation");
+
     Optional<URI> host = config.get(SESSIONS_SECTION, "host").map(str -> {
       try {
         return new URI(str);
@@ -58,9 +62,13 @@ public class SessionMapOptions {
       throw new ConfigException("Unable to determine host and port for the session map server");
     }
 
+    if (implementation.toString().contains("redis")) {
+      scheme = "redis"; // RedisBackedSessionMap needs the scheme to be `redis://..`
+    }
+
     try {
       return new URI(
-          "http",
+          scheme,
           null,
           hostname.get(),
           port.get(),
