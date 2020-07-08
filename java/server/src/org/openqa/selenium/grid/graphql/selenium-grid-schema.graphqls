@@ -10,12 +10,18 @@ enum Status {
   UNAVAILABLE
 }
 
+type Session {
+  id: String!
+  capabilities: String!
+  startTime: String!
+}
+
 type Node {
   id: ID!
   uri: Uri!
   status: Status!
   maxSession: Int!
-  activeSessionIDs: [String]
+  sessions: [Session]!
   capabilities: String!
 }
 

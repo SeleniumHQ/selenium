@@ -55,6 +55,14 @@ public class Node {
     this.activeSessions = Require.nonNull("Active sessions", activeSessions);
   }
 
+  public List<org.openqa.selenium.grid.graphql.Session> getSessions() {
+    return activeSessions.stream()
+        .map(session -> new org.openqa.selenium.grid.graphql.Session(session.getId().toString(),
+                                                                     session.getCapabilities(),
+                                                                     session.getStartTime()))
+        .collect(ImmutableList.toImmutableList());
+  }
+
   public UUID getId() {
     return id;
   }
@@ -65,11 +73,6 @@ public class Node {
 
   public int getMaxSession() {
     return maxSession;
-  }
-  
-  public List<String> getActiveSessionIDs() {
-      return activeSessions.stream().map(session -> session.getId().toString())
-          .collect(ImmutableList.toImmutableList());
   }
 
   public String getStatus() {
