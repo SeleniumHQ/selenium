@@ -4,5 +4,5 @@ java_library(
     visibility = [
         "//java/server/src/org/openqa/selenium:__subpackages__",
         "//java/server/test/org/openqa/selenium:__subpackages__",
-    ]
+    ],
 )

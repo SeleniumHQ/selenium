@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.netty.server;
 
-import static org.openqa.selenium.remote.http.Contents.memoize;
-
 import com.google.common.io.ByteStreams;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.ReferenceCountUtil;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -42,6 +43,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.remote.http.Contents.memoize;
+
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
@@ -50,8 +53,8 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   @Override
   protected void channelRead0(
-      ChannelHandlerContext ctx,
-      HttpObject msg) throws Exception {
+    ChannelHandlerContext ctx,
+    HttpObject msg) throws Exception {
     LOG.fine("Incoming message: " + msg);
 
     if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
@@ -73,7 +76,10 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
         return;
       }
 
-      HttpRequest req = createRequest(nettyRequest);
+      HttpRequest req = createRequest(ctx, nettyRequest);
+      if (req == null) {
+        return;
+      }
 
       out = new PipedOutputStream();
       InputStream in = new PipedInputStream(out);
@@ -107,14 +113,27 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     }
   }
 
-  private HttpRequest createRequest(io.netty.handler.codec.http.HttpRequest nettyRequest) {
+  private HttpRequest createRequest(
+    ChannelHandlerContext ctx,
+    io.netty.handler.codec.http.HttpRequest nettyRequest) {
+
+    // Attempt to map the netty method
+    HttpMethod method;
+    try {
+      method = HttpMethod.valueOf(nettyRequest.method().name());
+    } catch (IllegalArgumentException e) {
+      ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
+      return null;
+    }
+
+
     HttpRequest req = new HttpRequest(
-        HttpMethod.valueOf(nettyRequest.method().name()),
-        nettyRequest.uri());
+      method,
+      nettyRequest.uri());
 
     nettyRequest.headers().entries().stream()
-        .filter(entry -> entry.getKey() != null)
-        .forEach(entry -> req.addHeader(entry.getKey(), entry.getValue()));
+      .filter(entry -> entry.getKey() != null)
+      .forEach(entry -> req.addHeader(entry.getKey(), entry.getValue()));
 
     return req;
   }
