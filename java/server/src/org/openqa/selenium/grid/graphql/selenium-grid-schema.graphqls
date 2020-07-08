@@ -34,4 +34,5 @@ type Grid {
   nodes: [Node!]!
   totalSlots: Int
   usedSlots: Int
+  sessionCount: Int!
 }
