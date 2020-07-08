@@ -58,6 +58,7 @@ public class GridRedisClient implements Closeable {
   public void del(String...var1) {
     connection.sync().del(var1);
   }
+
   @Override
   public void close() {
     client.shutdown();
