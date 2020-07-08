@@ -35,6 +35,7 @@ def java_selenium_test_suite(
         name = "%s-base-lib" % name,
         srcs = srcs,
         deps = deps,
+        testonly = True,
         **kwargs
     )
 
