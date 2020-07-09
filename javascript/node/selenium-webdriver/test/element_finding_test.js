@@ -417,9 +417,10 @@ suite(function(env) {
         let below = await driver.findElement(By.id("below"));
         let elements = await driver.findElements(withTagName("p").above(below));
         let ids = [];
-        elements.forEach(element => {
-          ids.push(element.getAttribute("id"));
-        });
+        assert.equal(elements.length, 2);
+        for (let i = 0; i < elements.length; i++) {
+          ids.push(await elements[i].getAttribute("id"));
+        }
         assert.deepEqual(ids, ["above", "mid"]);
       });
 
@@ -427,13 +428,13 @@ suite(function(env) {
         await driver.get(Pages.relativeLocators);
 
         let elements = await driver.findElements(withTagName("td").
-                                                 above(await driver.findElement(By.id("center")).
-                                                 toRightOf(await driver.findElement(By.id('second')))));
+                                                 above(By.id("center")).
+                                                 toRightOf(By.id('second')));
         let ids = [];
-        elements.forEach(element => {
-          ids.push(element.getAttribute("id"));
-        });
-        assert.notEqual(elements.indexOf('third'), -1);
+        for (let i = 0; i < elements.length; i++) {
+          ids.push(await elements[i].getAttribute("id"));
+        }
+        assert.notEqual(ids.indexOf('third'), -1, `Elements are ${ids}`);
       });
     });
 
