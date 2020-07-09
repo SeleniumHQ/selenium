@@ -95,6 +95,9 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+
+  SET_PERMISSION: 'setPermission',
+
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
@@ -138,6 +141,10 @@ function configureExecutor(executor, vendorPrefix) {
       Command.SEND_DEVTOOLS_COMMAND,
       'POST',
       '/session/:sessionId/chromium/send_command');
+  executor.defineCommand(
+      Command.SET_PERMISSION,
+      'POST',
+      '/session/:sessionId/permissions');
   executor.defineCommand(
       Command.GET_CAST_SINKS,
       'GET',
@@ -663,6 +670,24 @@ class Driver extends webdriver.WebDriver {
         new command.Command(Command.SEND_DEVTOOLS_COMMAND)
             .setParameter('cmd', cmd)
             .setParameter('params', params));
+  }
+
+  /**
+   * Set a permission state to the given value.
+   *
+   * @param {string} name A name of the permission to update.
+   * @param {('granted'|'denied'|'prompt')} state State to set permission to.
+   * @returns {!Promise<Object>} A promise that will be resolved when the
+   *     command has finished.
+   * @see <https://w3c.github.io/permissions/#permission-registry> for valid
+   *     names
+   */
+  setPermission(name, state) {
+    return this.execute(
+      new command.Command(Command.SET_PERMISSION)
+        .setParameter('descriptor', { name })
+        .setParameter('state', state),
+    );
   }
 
   /**
