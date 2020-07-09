@@ -306,7 +306,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     WebElement textInput = driver.findElement(By.id("textInput"));
     sendLeftArrowSpaceTestKeys(textInput, leftArrowSpaceTestString);
 
-    Assertions.assertEquals(leftArrowSpaceTestStringExpected, textInput.getAttribute("value"));
+    assertThat(textInput.getAttribute("value")).isEqualTo(leftArrowSpaceTestStringExpected);
   }
   
   private void sendLeftArrowSpaceTestKeys(final WebElement inputElement, final String leftArrowSpaceTestString) {
