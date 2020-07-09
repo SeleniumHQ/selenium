@@ -45,10 +45,6 @@ import org.openqa.selenium.testing.NotYetImplemented;
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
-  static final String LEFT_ARROW_SPACE_TEST_STRING_CORE = "bfmtv";
-  static final String LEFT_ARROW_SPACE_TEST_STRING = LEFT_ARROW_SPACE_TEST_STRING_CORE+ ".frest";
-  static final String LEFT_ARROW_SPACE_TEST_STRING_EXPECTED = LEFT_ARROW_SPACE_TEST_STRING_CORE +".fr est";
-
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
@@ -302,15 +298,19 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   public void testLeftArrowEntry() {
-    driver.get("https://google.com/ncr");
-    WebElement q = driver.findElement(By.name("q"));
-    sendLeftArrowSpaceTestKeys(q);
+    final String leftArrowSpaceTestStringCore = "bfmtv.fr";
+    final String leftArrowSpaceTestString = leftArrowSpaceTestStringCore+ "est";
+    final String leftArrowSpaceTestStringExpected = leftArrowSpaceTestStringCore+" est";
 
-    Assertions.assertEquals(LEFT_ARROW_SPACE_TEST_STRING_EXPECTED, q.getAttribute("value"));
+    driver.get(appServer.whereIs("single_text_input.html"));
+    WebElement textInput = driver.findElement(By.id("textInput"));
+    sendLeftArrowSpaceTestKeys(textInput, leftArrowSpaceTestString);
+
+    Assertions.assertEquals(leftArrowSpaceTestStringExpected, textInput.getAttribute("value"));
   }
   
-  private void sendLeftArrowSpaceTestKeys(WebElement inputElement) {
-    inputElement.sendKeys(LEFT_ARROW_SPACE_TEST_STRING);
+  private void sendLeftArrowSpaceTestKeys(final WebElement inputElement, final String leftArrowSpaceTestString) {
+    inputElement.sendKeys(leftArrowSpaceTestString);
     for (byte j = 0; j < 3; j++)
       inputElement.sendKeys(Keys.LEFT);
     inputElement.sendKeys(Keys.SPACE);
