@@ -45,6 +45,9 @@ import org.openqa.selenium.testing.NotYetImplemented;
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
+  static final String LEFT_ARROW_SPACE_TEST_STRING_CORE = "bfmtv";
+  static final String LEFT_ARROW_SPACE_TEST_STRING = LEFT_ARROW_SPACE_TEST_STRING_CORE+ ".frest";
+  static final String LEFT_ARROW_SPACE_TEST_STRING_EXPECTED = LEFT_ARROW_SPACE_TEST_STRING_CORE +".fr est";
 
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
@@ -295,6 +298,22 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .perform();
 
     assertThat(input.getAttribute("value")).isEqualTo("");
+  }
+
+  @Test
+  public void testLeftArrowEntry() {
+    driver.get("https://google.com/ncr");
+    WebElement q = driver.findElement(By.name("q"));
+    sendLeftArrowSpaceTestKeys(q);
+
+    Assertions.assertEquals(LEFT_ARROW_SPACE_TEST_STRING_EXPECTED, q.getAttribute("value"));
+  }
+  
+  private void sendLeftArrowSpaceTestKeys(WebElement inputElement) {
+    inputElement.sendKeys(LEFT_ARROW_SPACE_TEST_STRING);
+    for (byte j = 0; j < 3; j++)
+      inputElement.sendKeys(Keys.LEFT);
+    inputElement.sendKeys(Keys.SPACE);
   }
 
   private void assertBackgroundColor(WebElement el, Colors expected) {
