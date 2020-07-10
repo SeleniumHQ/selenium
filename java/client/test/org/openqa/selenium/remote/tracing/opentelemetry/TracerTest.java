@@ -31,13 +31,11 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.BooleanAttributeValue;
+import org.openqa.selenium.remote.tracing.EventAttributeCreator;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.HttpTracing;
-import org.openqa.selenium.remote.tracing.NumberAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
-import org.openqa.selenium.remote.tracing.StringAttributeValue;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.ArrayList;
@@ -101,12 +99,12 @@ public class TracerTest {
       span.addEvent("Test event start");
 
       Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-      attributeValueMap.put("testString", new StringAttributeValue("attributeValue"));
-      attributeValueMap.put("testBoolean", new BooleanAttributeValue(true));
-      attributeValueMap.put("testFloat", new NumberAttributeValue(5.5f));
-      attributeValueMap.put("testDouble", new NumberAttributeValue(5.55555));
-      attributeValueMap.put("testInt", new NumberAttributeValue(10));
-      attributeValueMap.put("testLong", new NumberAttributeValue(100L));
+      attributeValueMap.put("testString", EventAttributeCreator.stringAttributeValue("attributeValue"));
+      attributeValueMap.put("testBoolean", EventAttributeCreator.booleanAttributeValue(true));
+      attributeValueMap.put("testFloat", EventAttributeCreator.doubleAttributeValue(5.5f));
+      attributeValueMap.put("testDouble", EventAttributeCreator.doubleAttributeValue(5.55555));
+      attributeValueMap.put("testInt", EventAttributeCreator.longAttributeValue(10));
+      attributeValueMap.put("testLong", EventAttributeCreator.longAttributeValue(100L));
 
       span.addEvent("Test event end", attributeValueMap);
     }

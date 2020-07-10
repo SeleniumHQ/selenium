@@ -17,32 +17,9 @@
 
 package org.openqa.selenium.remote.tracing;
 
-
-import com.google.common.primitives.Primitives;
-
-import org.openqa.selenium.internal.Require;
-
-public class NumberAttributeValue implements EventAttributeValue<Number> {
-
-  private final Number attributeValue;
-
-  public NumberAttributeValue(Number attributeValue) {
-    this.attributeValue = Require.nonNull("Event attribute value", attributeValue);
-  }
-
-  @Override
-  public Number getAttributeValue() {
-    return attributeValue;
-  }
-
-  @Override
-  public Type getAttributeType() {
-
-    Class<? extends Number> unwrapped = Primitives.unwrap(attributeValue.getClass());
-    if (double.class.equals(unwrapped) || float.class.equals(unwrapped)) {
-      return Type.DOUBLE;
-    } else {
-      return Type.LONG;
-    }
-  }
+public enum EventAttributeType {
+  STRING,
+  BOOLEAN,
+  LONG,
+  DOUBLE
 }

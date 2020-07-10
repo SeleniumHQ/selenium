@@ -17,17 +17,21 @@
 
 package org.openqa.selenium.remote.tracing;
 
-public interface EventAttributeValue<T> {
+public class EventAttributeValue {
 
-  T getAttributeValue();
+  private final Object value;
+  private final EventAttributeType type;
 
-  Type getAttributeType();
-
-  enum Type {
-    STRING,
-    BOOLEAN,
-    LONG,
-    DOUBLE
+  EventAttributeValue(Object value, EventAttributeType type) {
+    this.value = value;
+    this.type = type;
   }
 
+  public Object getAttributeValue() {
+    return value;
+  }
+
+  public EventAttributeType getAttributeType() {
+    return type;
+  }
 }

@@ -17,24 +17,25 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import org.openqa.selenium.internal.Require;
+public class EventAttributeCreator {
 
-public class BooleanAttributeValue implements EventAttributeValue<Boolean> {
-
-  private final boolean attributeValue;
-
-  public BooleanAttributeValue(boolean attributeValue) {
-    this.attributeValue = Require.nonNull("Event attribute value", attributeValue);
+  private EventAttributeCreator() {
   }
 
-  @Override
-  public Boolean getAttributeValue() {
-    return attributeValue;
+  public static EventAttributeValue stringAttributeValue(String value) {
+    return new EventAttributeValue(value, EventAttributeType.STRING);
   }
 
-  @Override
-  public Type getAttributeType() {
-    return Type.BOOLEAN;
+  public static EventAttributeValue booleanAttributeValue(boolean value) {
+    return new EventAttributeValue(value, EventAttributeType.BOOLEAN);
   }
 
+  public static EventAttributeValue longAttributeValue(long value) {
+    return new EventAttributeValue(value, EventAttributeType.LONG);
+  }
+
+  public static EventAttributeValue doubleAttributeValue(double value) {
+    return new EventAttributeValue(value, EventAttributeType.DOUBLE);
+  }
 }
+

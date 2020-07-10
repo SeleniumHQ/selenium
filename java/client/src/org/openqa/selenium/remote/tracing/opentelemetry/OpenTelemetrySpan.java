@@ -26,8 +26,8 @@ import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.Tracer;
 
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.tracing.EventAttributeType;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
-import org.openqa.selenium.remote.tracing.EventAttributeValue.Type;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 
@@ -98,16 +98,16 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
         (key, value) -> {
           Require.nonNull("Event Attribute Value", value);
 
-          if (Type.BOOLEAN.equals(value.getAttributeType())) {
+          if (EventAttributeType.BOOLEAN.equals(value.getAttributeType())) {
             boolean attributeValue = (boolean) value.getAttributeValue();
             openTelAttributeMap.put(key, AttributeValue.booleanAttributeValue(attributeValue));
-          } else if (Type.STRING.equals(value.getAttributeType())) {
+          } else if (EventAttributeType.STRING.equals(value.getAttributeType())) {
             String attributeValue = (String) value.getAttributeValue();
             openTelAttributeMap.put(key, AttributeValue.stringAttributeValue(attributeValue));
-          } else if (Type.DOUBLE.equals(value.getAttributeType())) {
+          } else if (EventAttributeType.DOUBLE.equals(value.getAttributeType())) {
             Number attributeValue = (Number)value.getAttributeValue();
             openTelAttributeMap.put(key, AttributeValue.doubleAttributeValue(attributeValue.doubleValue()));
-          } else if (Type.LONG.equals(value.getAttributeType())) {
+          } else if (EventAttributeType.LONG.equals(value.getAttributeType())) {
             Number attributeValue = (Number) value.getAttributeValue();
             openTelAttributeMap.put(key, AttributeValue.longAttributeValue(attributeValue.longValue()));
           }
