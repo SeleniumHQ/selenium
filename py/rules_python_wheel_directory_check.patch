@@ -1,0 +1,71 @@
+diff --git experimental/examples/wheel/BUILD experimental/examples/wheel/BUILD
+index 8916423..8a4aeb4 100644
+--- experimental/examples/wheel/BUILD
++++ experimental/examples/wheel/BUILD
+@@ -31,6 +31,20 @@ py_library(
+     ],
+ )
+
++py_library(
++    name = "main_with_gen_data",
++    srcs = ["main.py"],
++    data = [
++        ":gen_dir",
++    ],
++)
++
++genrule(
++    name="gen_dir",
++    outs=["someDir"],
++    cmd="mkdir -p $@",
++)
++
+ # Package just a specific py_libraries, without their dependencies
+ py_wheel(
+     name = "minimal_with_py_library",
+@@ -53,6 +67,12 @@ py_package(
+     deps = [":main"],
+ )
+
++py_package(
++    name = "example_pkg_with_data",
++    packages = ["experimental.examples.wheel"],
++    deps = [":main_with_gen_data"]
++)
++
+ py_wheel(
+     name = "minimal_with_py_package",
+     # Package data. We're building "example_minimal_package-0.0.1-py3-none-any.whl"
+@@ -131,6 +151,16 @@ py_wheel(
+     ],
+ )
+
++py_wheel(
++    name = "use_genrule_with_dir_in_outs",
++    distribution = "use_genrule_with_dir_in_outs",
++    python_tag = "py3",
++    version = "0.0.1",
++    deps = [
++        ":example_pkg_with_data"
++    ]
++)
++
+ py_test(
+     name = "wheel_test",
+     srcs = ["wheel_test.py"],
+diff --git experimental/rules_python/wheelmaker.py experimental/rules_python/wheelmaker.py
+index 1b3261d..1a28df2 100644
+--- experimental/rules_python/wheelmaker.py
++++ experimental/rules_python/wheelmaker.py
+@@ -101,6 +101,11 @@ class WheelMaker(object):
+
+             return normalized_arcname
+
++        # If anywhere in the dependency tree a directory is set
++        # it will be passed in as an input file and we need to
++        # ignore.
++        if os.path.isdir(real_filename):
++            return
+         arcname = arcname_from(package_filename)
+
+         self._zipfile.write(real_filename, arcname=arcname)
