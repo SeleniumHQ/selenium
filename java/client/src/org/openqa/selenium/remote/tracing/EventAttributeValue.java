@@ -20,9 +20,9 @@ package org.openqa.selenium.remote.tracing;
 public class EventAttributeValue {
 
   private final Object value;
-  private final EventAttributeType type;
+  private final Type type;
 
-  EventAttributeValue(Object value, EventAttributeType type) {
+  EventAttributeValue(Object value, Type type) {
     this.value = value;
     this.type = type;
   }
@@ -31,7 +31,15 @@ public class EventAttributeValue {
     return value;
   }
 
-  public EventAttributeType getAttributeType() {
+  public Type getAttributeType() {
     return type;
   }
+
+  public enum Type {
+    STRING,
+    BOOLEAN,
+    LONG,
+    DOUBLE
+  }
+
 }
