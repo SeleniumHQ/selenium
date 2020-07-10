@@ -191,7 +191,9 @@ module Selenium
         end
 
         def create_remote_driver(opt = {})
-          opt[:desired_capabilities] = remote_capabilities
+          options = opt.delete(:capabilities)
+          opt[:capabilities] = [remote_capabilities]
+          opt[:capabilities] << options if options
           opt[:url] = ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
           opt[:http_client] ||= WebDriver::Remote::Http::Default.new
 
