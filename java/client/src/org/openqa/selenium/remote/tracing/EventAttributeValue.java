@@ -19,16 +19,41 @@ package org.openqa.selenium.remote.tracing;
 
 public class EventAttributeValue {
 
-  private final Object value;
   private final Type type;
+  private String stringValue;
+  private Number numberValue;
+  private Boolean booleanValue;
 
-  EventAttributeValue(Object value, Type type) {
-    this.value = value;
-    this.type = type;
+  public EventAttributeValue(String value) {
+    this.stringValue = value;
+    this.type = Type.STRING;
   }
 
-  public Object getAttributeValue() {
-    return value;
+  public EventAttributeValue(long value) {
+    this.numberValue = value;
+    this.type = Type.LONG;
+  }
+
+  public EventAttributeValue(double value) {
+    this.numberValue = value;
+    this.type = Type.DOUBLE;
+  }
+
+  public EventAttributeValue(boolean value) {
+    this.booleanValue = value;
+    this.type = Type.BOOLEAN;
+  }
+
+  public String getStringValue() {
+    return stringValue;
+  }
+
+  public Number getNumberValue() {
+    return numberValue;
+  }
+
+  public Boolean getBooleanValue() {
+    return booleanValue;
   }
 
   public Type getAttributeType() {

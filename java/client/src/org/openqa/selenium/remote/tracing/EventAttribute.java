@@ -17,30 +17,25 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import static org.openqa.selenium.remote.tracing.EventAttributeValue.Type.BOOLEAN;
-import static org.openqa.selenium.remote.tracing.EventAttributeValue.Type.DOUBLE;
-import static org.openqa.selenium.remote.tracing.EventAttributeValue.Type.LONG;
-import static org.openqa.selenium.remote.tracing.EventAttributeValue.Type.STRING;
-
 public class EventAttribute {
 
   private EventAttribute() {
   }
 
   public static EventAttributeValue setValue(String value) {
-    return new EventAttributeValue(value, STRING);
+    return new EventAttributeValue(value);
   }
 
   public static EventAttributeValue setValue(boolean value) {
-    return new EventAttributeValue(value, BOOLEAN);
+    return new EventAttributeValue(value);
   }
 
   public static EventAttributeValue setValue(long value) {
-    return new EventAttributeValue(value, LONG);
+    return new EventAttributeValue(value);
   }
 
   public static EventAttributeValue setValue(double value) {
-    return new EventAttributeValue(value, DOUBLE);
+    return new EventAttributeValue(value);
   }
 }
 

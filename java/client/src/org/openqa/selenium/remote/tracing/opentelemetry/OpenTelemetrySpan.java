@@ -96,21 +96,22 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     attributeMap.forEach(
         (key, value) -> {
           Require.nonNull("Event Attribute Value", value);
-
-          if (EventAttributeValue.Type.BOOLEAN.equals(value.getAttributeType())) {
-            boolean attributeValue = (boolean) value.getAttributeValue();
-            openTelAttributeMap.put(key, AttributeValue.booleanAttributeValue(attributeValue));
-          } else if (EventAttributeValue.Type.STRING.equals(value.getAttributeType())) {
-            String attributeValue = (String) value.getAttributeValue();
-            openTelAttributeMap.put(key, AttributeValue.stringAttributeValue(attributeValue));
-          } else if (EventAttributeValue.Type.DOUBLE.equals(value.getAttributeType())) {
-            Number attributeValue = (Number)value.getAttributeValue();
-            openTelAttributeMap.put(key, AttributeValue.doubleAttributeValue(attributeValue.doubleValue()));
-          } else if (EventAttributeValue.Type.LONG.equals(value.getAttributeType())) {
-            Number attributeValue = (Number) value.getAttributeValue();
-            openTelAttributeMap.put(key, AttributeValue.longAttributeValue(attributeValue.longValue()));
+          switch (value.getAttributeType()) {
+            case DOUBLE:
+              openTelAttributeMap.put(key, AttributeValue.doubleAttributeValue(value.getNumberValue().doubleValue()));
+              break;
+            case LONG:
+              openTelAttributeMap.put(key, AttributeValue.longAttributeValue(value.getNumberValue().longValue()));
+              break;
+            case STRING:
+              openTelAttributeMap.put(key, AttributeValue.stringAttributeValue(value.getStringValue()));
+              break;
+            case BOOLEAN:
+              openTelAttributeMap.put(key, AttributeValue.booleanAttributeValue(value.getBooleanValue()));
+              break;
+            default:
+              throw new IllegalArgumentException("Unrecognized status value type: " + value.getAttributeType());
           }
-
         }
     );
 
