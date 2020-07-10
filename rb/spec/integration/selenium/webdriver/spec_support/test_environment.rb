@@ -47,14 +47,14 @@ module Selenium
           driver == :remote ? (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym : driver
         end
 
-        def driver_instance
-          @driver_instance ||= create_driver!
+        def driver_instance(&block)
+          @driver_instance ||= create_driver!(&block)
         end
 
-        def reset_driver!(time = 0)
+        def reset_driver!(time = 0, &block)
           quit_driver
           sleep time
-          driver_instance
+          driver_instance(&block)
         end
 
         # TODO: optimize since this approach is not assured on IE
@@ -142,6 +142,8 @@ module Selenium
         def create_driver!(**opts, &block)
           check_for_previous_error
 
+          verify_matching_options(opts[:options])
+
           method = "create_#{driver}_driver".to_sym
           instance = if private_methods.include?(method)
                        send method, opts
@@ -165,6 +167,12 @@ module Selenium
         end
 
         private
+
+        def verify_matching_options(options)
+          return if options.nil? || browser.to_s == options&.browser_name
+
+          raise StandardError, "Browser requested is #{browser}, but options provided are for #{options.browser_name}"
+        end
 
         def current_env
           {

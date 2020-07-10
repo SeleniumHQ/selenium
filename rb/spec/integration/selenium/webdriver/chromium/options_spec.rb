@@ -21,8 +21,8 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    module EdgeChrome
-      describe Options, only: {browser: :edge_chrome} do
+    module Chrome
+      describe Options, only: {browser: %i[chrome edge_chrome]} do
         subject(:options) { Options.new }
 
         it 'passes emulated device correctly' do
@@ -51,15 +51,6 @@ module Selenium
             expect(ua).to eq('foo;bar')
           end
         end
-
-        # it 'should be able to run in headless mode with #headless!' do
-        #   options.headless!
-        #
-        #   create_driver!(options: options) do |driver|
-        #     ua = driver.execute_script 'return window.navigator.userAgent'
-        #     expect(ua).to match(/HeadlessChrome/)
-        #   end
-        # end
       end
     end # Chrome
   end # WebDriver

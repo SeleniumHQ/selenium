@@ -24,6 +24,21 @@ module Selenium
     describe Driver do
       it_behaves_like 'driver that can be started concurrently', except: {browser: %i[edge safari safari_preview]}
 
+      it 'creates default capabilities' do
+        reset_driver! do |driver|
+          caps = driver.capabilities
+          expect(caps.proxy).to be_nil
+          expect(caps.browser_version).to match(/^\d\d\./)
+          expect(caps.platform_name).not_to be_nil
+
+          expect(caps.accept_insecure_certs).to be == false
+          expect(caps.page_load_strategy).to be == 'normal'
+          expect(caps.implicit_timeout).to be_zero
+          expect(caps.page_load_timeout).to be == 300000
+          expect(caps.script_timeout).to be == 30000
+        end
+      end
+
       it 'should get the page title' do
         driver.navigate.to url_for('xhtmlTest.html')
         expect(driver.title).to eq('XHTML Test Page')

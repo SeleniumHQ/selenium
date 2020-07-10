@@ -1,0 +1,6 @@
+Gemfile.lock
+.ruby-version
+go_ruby
+
+lib/selenium/webdriver/atoms/*
+lib/selenium/webdriver/devtools/*

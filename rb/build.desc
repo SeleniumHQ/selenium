@@ -25,9 +25,19 @@ rubydocs(
   ]
 )
 
-ruby_library(name = "common",
+ruby_library(name = "atoms",
   srcs = [
     "lib/selenium/webdriver/atoms.rb",
+  ],
+  resources = [
+    { "//javascript/webdriver/atoms:get-attribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"},
+    { "//javascript/atoms/fragments:find-elements": "rb/lib/selenium/webdriver/atoms/findElements.js"},
+    { "//javascript/atoms/fragments:is-displayed": "rb/lib/selenium/webdriver/atoms/isDisplayed.js"}
+  ]
+)
+
+ruby_library(name = "common",
+  srcs = [
     "lib/selenium/webdriver/common/**/*.rb",
     "lib/selenium/webdriver/common.rb",
     "lib/selenium/webdriver/remote/**/*.rb",
@@ -45,10 +55,8 @@ ruby_library(name = "common",
   ],
   resources = [
     { "../LICENSE": "rb/LICENSE" },
-    { "//javascript/webdriver/atoms:get-attribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"},
-    { "//javascript/atoms/fragments:find-elements": "rb/lib/selenium/webdriver/atoms/findElements.js"},
-    { "//javascript/atoms/fragments:is-displayed": "rb/lib/selenium/webdriver/atoms/isDisplayed.js"}
-  ]
+  ],
+  deps = [":atoms"]
 )
 
 ruby_library(name = "devtools",
@@ -70,7 +78,8 @@ ruby_library(name = "chrome",
 ruby_test(name = "chrome",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/chrome/**/*_spec.rb"
+    "spec/integration/selenium/webdriver/chrome/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/chromium/**/*_spec.rb"
   ],
   include = [
     "rb/spec/integration",
@@ -86,6 +95,7 @@ ruby_test(name = "remote-chrome",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/chrome/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/chromium/**/*_spec.rb",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = [
@@ -137,7 +147,7 @@ ruby_library(name = "edge-chrome",
 ruby_test(name = "edge-chrome",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge_chrome/**/*_spec.rb"
+    "spec/integration/selenium/webdriver/chromium/**/*_spec.rb"
   ],
   include = [
     "rb/spec/integration",
