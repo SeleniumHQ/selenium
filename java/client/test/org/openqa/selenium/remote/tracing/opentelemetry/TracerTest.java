@@ -31,7 +31,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.EventAttributeCreator;
+import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
@@ -99,12 +99,12 @@ public class TracerTest {
       span.addEvent("Test event start");
 
       Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-      attributeValueMap.put("testString", EventAttributeCreator.stringAttributeValue("attributeValue"));
-      attributeValueMap.put("testBoolean", EventAttributeCreator.booleanAttributeValue(true));
-      attributeValueMap.put("testFloat", EventAttributeCreator.doubleAttributeValue(5.5f));
-      attributeValueMap.put("testDouble", EventAttributeCreator.doubleAttributeValue(5.55555));
-      attributeValueMap.put("testInt", EventAttributeCreator.longAttributeValue(10));
-      attributeValueMap.put("testLong", EventAttributeCreator.longAttributeValue(100L));
+      attributeValueMap.put("testString", EventAttribute.setValue("attributeValue"));
+      attributeValueMap.put("testBoolean", EventAttribute.setValue(true));
+      attributeValueMap.put("testFloat", EventAttribute.setValue(5.5f));
+      attributeValueMap.put("testDouble", EventAttribute.setValue(5.55555));
+      attributeValueMap.put("testInt", EventAttribute.setValue(10));
+      attributeValueMap.put("testLong", EventAttribute.setValue(100L));
 
       span.addEvent("Test event end", attributeValueMap);
     }

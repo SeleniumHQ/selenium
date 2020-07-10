@@ -22,24 +22,24 @@ import static org.openqa.selenium.remote.tracing.EventAttributeValue.Type.DOUBLE
 import static org.openqa.selenium.remote.tracing.EventAttributeValue.Type.LONG;
 import static org.openqa.selenium.remote.tracing.EventAttributeValue.Type.STRING;
 
-public class EventAttributeCreator {
+public class EventAttribute {
 
-  private EventAttributeCreator() {
+  private EventAttribute() {
   }
 
-  public static EventAttributeValue stringAttributeValue(String value) {
+  public static EventAttributeValue setValue(String value) {
     return new EventAttributeValue(value, STRING);
   }
 
-  public static EventAttributeValue booleanAttributeValue(boolean value) {
+  public static EventAttributeValue setValue(boolean value) {
     return new EventAttributeValue(value, BOOLEAN);
   }
 
-  public static EventAttributeValue longAttributeValue(long value) {
+  public static EventAttributeValue setValue(long value) {
     return new EventAttributeValue(value, LONG);
   }
 
-  public static EventAttributeValue doubleAttributeValue(double value) {
+  public static EventAttributeValue setValue(double value) {
     return new EventAttributeValue(value, DOUBLE);
   }
 }

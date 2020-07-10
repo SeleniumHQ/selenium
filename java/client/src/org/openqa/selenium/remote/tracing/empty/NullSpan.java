@@ -61,7 +61,7 @@ public class NullSpan extends NullContext implements Span {
   @Override
   public Span addEvent(String name, Map<String, EventAttributeValue> attributeMap) {
     Require.nonNull("Name", name);
-    Require.nonNull("Event Attribute Map",attributeMap);
+    Require.nonNull("Event Attribute Map", attributeMap);
     return this;
   }
 
