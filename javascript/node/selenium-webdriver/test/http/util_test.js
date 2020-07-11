@@ -22,7 +22,6 @@ const http = require('http');
 
 const error = require('../../lib/error');
 const util = require('../../http/util');
-const promise = require('../../lib/promise');
 
 describe('selenium-webdriver/http/util', function() {
 

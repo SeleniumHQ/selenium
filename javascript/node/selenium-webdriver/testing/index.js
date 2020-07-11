@@ -33,7 +33,6 @@
 'use strict';
 
 const {isatty} = require('tty');
-
 const chrome = require('../chrome');
 const edge = require('../edge');
 const firefox = require('../firefox');
@@ -499,7 +498,6 @@ function getTestHook(name) {
 
 module.exports = {
   Environment,
-  TargetBrowser,
   SuiteOptions,
   init,
   ignore,

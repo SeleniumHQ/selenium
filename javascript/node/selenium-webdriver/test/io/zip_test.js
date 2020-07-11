@@ -25,7 +25,6 @@ const io = require('../../io');
 const zip = require('../../io/zip');
 const {InvalidArgumentError} = require('../../lib/error');
 
-
 const XPI_PATH =
     path.join(__dirname, '../../lib/test/data/firefox/webextension.xpi');
 

@@ -22,10 +22,8 @@
 'use strict';
 
 var assert = require('assert'),
-    child_process = require('child_process'),
     fs = require('fs'),
-    path = require('path'),
-    vm = require('vm');
+    path = require('path');
 
 var optparse = require('./optparse');
 var gendocs = require('./gendocs');

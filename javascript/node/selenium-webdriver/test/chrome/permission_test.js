@@ -18,7 +18,6 @@
 'use strict';
 
 const assert = require('assert');
-
 const chrome = require('../../chrome');
 const test = require('../../lib/test');
 

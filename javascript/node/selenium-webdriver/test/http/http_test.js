@@ -23,7 +23,6 @@ var assert = require('assert'),
 
 var HttpClient = require('../../http').HttpClient,
     HttpRequest = require('../../lib/http').Request,
-    HttpResponse = require('../../lib/http').Response,
     Server = require('../../lib/test/httpserver').Server;
 
 describe('HttpClient', function() {
