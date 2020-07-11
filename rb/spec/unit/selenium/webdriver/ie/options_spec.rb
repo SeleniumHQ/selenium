@@ -73,7 +73,7 @@ module Selenium
             expect(opts.require_window_focus).to eq(true)
             expect(opts.use_per_process_proxy).to eq(true)
             expect(opts.validate_cookie_document_type).to eq(true)
-            expect(opts.browser_name).to eq('internet_explorer')
+            expect(opts.browser_name).to eq('internet explorer')
             expect(opts.browser_version).to eq('11')
             expect(opts.platform_name).to eq('win10')
             expect(opts.accept_insecure_certs).to eq(false)
@@ -106,13 +106,13 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("browserName" => "internet_explorer",
+            expect(options.as_json).to eq("browserName" => "internet explorer",
                                           "se:ieOptions" => {"nativeEvents" => true})
           end
 
           it 'returns added option' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "internet_explorer",
+            expect(options.as_json).to eq("browserName" => "internet explorer",
                                           "se:ieOptions" => {"nativeEvents" => true, "foo" => "bar"})
           end
 
@@ -145,7 +145,7 @@ module Selenium
                                validate_cookie_document_type: true)
 
             key = 'se:ieOptions'
-            expect(opts.as_json).to eq('browserName' => 'internet_explorer',
+            expect(opts.as_json).to eq('browserName' => 'internet explorer',
                                        'browserVersion' => '11',
                                        'platformName' => 'win10',
                                        'acceptInsecureCerts' => false,
