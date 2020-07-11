@@ -17,42 +17,25 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import java.util.Map;
+public class EventAttribute {
 
-public interface Span extends AutoCloseable, TraceContext {
+  private EventAttribute() {
+  }
 
-  Span setName(String name);
+  public static EventAttributeValue setValue(String value) {
+    return new EventAttributeValue(value);
+  }
 
-  Span setAttribute(String key, boolean value);
-  Span setAttribute(String key, Number value);
-  Span setAttribute(String key, String value);
+  public static EventAttributeValue setValue(boolean value) {
+    return new EventAttributeValue(value);
+  }
 
-  Span addEvent(String name);
-  Span addEvent(String name, Map<String, EventAttributeValue> attributeMap);
+  public static EventAttributeValue setValue(long value) {
+    return new EventAttributeValue(value);
+  }
 
-  Span setStatus(Status status);
-
-  @Override
-  void close();
-
-  enum Kind {
-    CLIENT("client"),
-    SERVER("server"),
-
-    PRODUCER("producer"),
-    CONSUMER("consumer"),
-    ;
-
-    // The nice name is the name expected in an OT trace.
-    private final String niceName;
-
-    private Kind(String niceName) {
-      this.niceName = niceName;
-    }
-
-    @Override
-    public String toString() {
-      return niceName;
-    }
+  public static EventAttributeValue setValue(double value) {
+    return new EventAttributeValue(value);
   }
 }
+

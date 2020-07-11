@@ -20,14 +20,17 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import io.grpc.Context;
+import io.opentelemetry.common.AttributeValue;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.Tracer;
 
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -74,6 +77,45 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     Require.nonNull("Key", key);
     Require.nonNull("Value", value);
     span.setAttribute(key, value);
+    return this;
+  }
+
+  @Override
+  public Span addEvent(String name) {
+    Require.nonNull("Name", name);
+    span.addEvent(name);
+    return this;
+  }
+
+  @Override
+  public Span addEvent(String name, Map<String, EventAttributeValue> attributeMap) {
+    Require.nonNull("Name", name);
+    Require.nonNull("Event Attribute Map", attributeMap);
+    Map<String, AttributeValue> openTelAttributeMap = new HashMap<>();
+
+    attributeMap.forEach(
+        (key, value) -> {
+          Require.nonNull("Event Attribute Value", value);
+          switch (value.getAttributeType()) {
+            case DOUBLE:
+              openTelAttributeMap.put(key, AttributeValue.doubleAttributeValue(value.getNumberValue().doubleValue()));
+              break;
+            case LONG:
+              openTelAttributeMap.put(key, AttributeValue.longAttributeValue(value.getNumberValue().longValue()));
+              break;
+            case STRING:
+              openTelAttributeMap.put(key, AttributeValue.stringAttributeValue(value.getStringValue()));
+              break;
+            case BOOLEAN:
+              openTelAttributeMap.put(key, AttributeValue.booleanAttributeValue(value.getBooleanValue()));
+              break;
+            default:
+              throw new IllegalArgumentException("Unrecognized status value type: " + value.getAttributeType());
+          }
+        }
+    );
+
+    span.addEvent(name, openTelAttributeMap);
     return this;
   }
 
