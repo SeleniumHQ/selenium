@@ -31,7 +31,7 @@ module Selenium
         include DriverExtensions::TakesScreenshot
 
         def browser
-          :edge
+          :edge_html
         end
       end # Driver
     end # EdgeHtml

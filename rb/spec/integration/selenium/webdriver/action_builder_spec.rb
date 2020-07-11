@@ -38,7 +38,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'can send keys with shift pressed', except: {browser: %i[edge safari safari_preview]} do
+        it 'can send keys with shift pressed', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -53,7 +53,7 @@ module Selenium
           expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
         end
 
-        it 'can press and release modifier keys', except: {browser: %i[edge safari]} do
+        it 'can press and release modifier keys', except: {browser: :safari} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -161,7 +161,7 @@ module Selenium
 
         it 'can release pressed buttons via release action', except: [{browser: :safari},
                                                                       {driver: :remote, browser: :ie}],
-                                                             only: {browser: %i[edge chrome edge_chrome firefox ie]} do
+                                                             only: {browser: %i[edge chrome firefox ie]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

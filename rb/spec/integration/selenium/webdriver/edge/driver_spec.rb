@@ -21,8 +21,8 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    module EdgeChrome
-      describe Driver, only: {driver: :edge_chrome} do
+    module Edge
+      describe Driver, only: {driver: :edge} do
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(
@@ -53,6 +53,6 @@ module Selenium
           end
         end
       end
-    end # EdgeChrome
+    end # Edge
   end # WebDriver
 end # Selenium

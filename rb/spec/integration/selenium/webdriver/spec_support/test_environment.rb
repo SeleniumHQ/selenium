@@ -220,9 +220,9 @@ module Selenium
           WebDriver::Driver.for :safari, opt
         end
 
-        def create_edge_chrome_driver(opt = {})
+        def create_edge_driver(opt = {})
           WebDriver::EdgeChrome.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
-          WebDriver::Driver.for :edge_chrome, opt
+          WebDriver::Driver.for :edge, opt
         end
       end
     end # SpecSupport

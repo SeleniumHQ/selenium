@@ -82,7 +82,7 @@ module Selenium
           end
 
           def edge(opts = {})
-            edge_html(opts)
+            edge_chrome(opts)
           end
 
           def edge_html(opts = {})

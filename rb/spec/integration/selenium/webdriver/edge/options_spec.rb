@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module EdgeChrome
-      describe Options, only: {browser: :edge_chrome} do
+      describe Options, only: {browser: :edge} do
         subject(:options) { Options.new }
 
         it 'passes emulated device correctly' do

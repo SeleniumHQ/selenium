@@ -256,7 +256,7 @@ task test_rb_local: [
   ('//rb:safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:safari-test' if SeleniumRake::Checks.mac?),
   ('//rb:ie-test' if SeleniumRake::Checks.windows?),
-  ('//rb:edge-test' if SeleniumRake::Checks.windows?)
+  ('//rb:edge-test' unless SeleniumRake::Checks.linux?)
 ].compact
 
 task test_rb_remote: [
@@ -264,7 +264,6 @@ task test_rb_remote: [
   '//rb:remote-firefox-test',
   ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
-  ('//rb:remote-edge-test' if SeleniumRake::Checks.windows?)
 ].compact
 
 task test_py: [:py_prep_for_install_release, 'py:marionette_test']

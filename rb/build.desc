@@ -4,8 +4,8 @@ rubygem(
     "//rb:chrome",
     "//rb:common",
     "//rb:devtools",
-    "//rb:edge",
     "//rb:edge-chrome",
+    "//rb:edge-html",
     "//rb:firefox",
     "//rb:ie",
     "//rb:safari",
@@ -87,37 +87,12 @@ ruby_test(name = "remote-chrome",
   deps = [":chrome"]
 )
 
-ruby_library(name = "edge",
+ruby_library(name = "edge-html",
   srcs = [
     "lib/selenium/webdriver/edge_html/**/*.rb",
     "lib/selenium/webdriver/edge.rb"
   ],
   deps = [":common"]
-)
-
-ruby_test(name = "edge",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge_html/**/*_spec.rb"
-  ],
-  include = [
-    "rb/spec/integration",
-    "build/rb/lib"
-  ],
-  deps = [":edge"]
-)
-
-ruby_test(name = "remote-edge",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge_html/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = [
-    "rb/spec/integration",
-    "build/rb/lib"
-  ],
-  deps = [":edge"]
 )
 
 ruby_library(name = "edge-chrome",
@@ -128,10 +103,23 @@ ruby_library(name = "edge-chrome",
   deps = [":chrome"]
 )
 
-ruby_test(name = "edge-chrome",
+ruby_test(name = "edge",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge_chrome/**/*_spec.rb"
+    "spec/integration/selenium/webdriver/edge/**/*_spec.rb"
+  ],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [":edge-chrome"]
+)
+
+ruby_test(name = "remote-edge",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/edge/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = [
     "rb/spec/integration",
@@ -286,7 +274,8 @@ ruby_test(name = "unit",
   ],
   deps = [
     ":chrome",
-    ":edge",
+    ":edge-html",
+    ":edge-chrome",
     ":firefox",
     ":ie",
     ":safari",
