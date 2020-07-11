@@ -25,7 +25,7 @@ const http = require('./http');
 const io = require('./io');
 const remote = require('./remote');
 const webdriver = require('./lib/webdriver');
-const {Browser, Capabilities, Capability} = require('./lib/capabilities');
+const {Browser, Capabilities} = require('./lib/capabilities');
 
 
 /**

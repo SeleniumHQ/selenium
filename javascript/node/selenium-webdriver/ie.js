@@ -33,7 +33,7 @@ const io = require('./io');
 const portprober = require('./net/portprober');
 const remote = require('./remote');
 const webdriver = require('./lib/webdriver');
-const {Browser, Capabilities, Capability} = require('./lib/capabilities');
+const {Browser, Capabilities} = require('./lib/capabilities');
 const error = require('./lib/error');
 
 

@@ -95,9 +95,7 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
-
   SET_PERMISSION: 'setPermission',
-
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
