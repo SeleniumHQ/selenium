@@ -118,7 +118,7 @@ module Selenium
 
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
       # https://github.com/mozilla/geckodriver/issues/1281
-      it 'can make window full screen', only: {window_manager: true, browser: %i[chrome edge_chrome ie firefox safari_preview]},
+      it 'can make window full screen', only: {window_manager: true},
                                         exclude: [{driver: :remote, browser: :firefox, platform: :linux},
                                                   {browser: %i[chrome edge_chrome]}] do
         window.size = old_size = Dimension.new(700, 700)
