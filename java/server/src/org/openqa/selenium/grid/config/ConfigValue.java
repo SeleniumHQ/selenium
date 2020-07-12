@@ -33,4 +33,6 @@ public @interface ConfigValue {
   String section();
 
   String name();
+
+  String example();
 }

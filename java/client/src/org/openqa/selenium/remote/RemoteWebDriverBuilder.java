@@ -31,6 +31,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
@@ -84,11 +85,12 @@ import java.util.stream.StreamSupport;
 @Beta
 public class RemoteWebDriverBuilder {
 
-  private final static Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
+  private static final Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
       "alwaysMatch",
       "capabilities",
       "firstMatch");
-  private final static AcceptedW3CCapabilityKeys OK_KEYS = new AcceptedW3CCapabilityKeys();
+  private static final AcceptedW3CCapabilityKeys OK_KEYS = new AcceptedW3CCapabilityKeys();
+
   private final List<Map<String, Object>> options = new ArrayList<>();
   private final Map<String, Object> metadata = new TreeMap<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
@@ -118,7 +120,7 @@ public class RemoteWebDriverBuilder {
    * available for two different kinds of browser, and you'd like to test it).
    */
   public RemoteWebDriverBuilder addAlternative(Capabilities options) {
-    Map<String, Object> serialized = validate(Objects.requireNonNull(options));
+    Map<String, Object> serialized = validate(Require.nonNull("Driver options", options));
     this.options.add(serialized);
     return this;
   }
@@ -133,7 +135,7 @@ public class RemoteWebDriverBuilder {
     if (ILLEGAL_METADATA_KEYS.contains(key)) {
       throw new IllegalArgumentException(key + " is a reserved key");
     }
-    metadata.put(Objects.requireNonNull(key), Objects.requireNonNull(value));
+    metadata.put(Require.nonNull("Key", key), Require.nonNull("Value", value));
     return this;
   }
 
@@ -172,7 +174,7 @@ public class RemoteWebDriverBuilder {
    * {@link #withDriverService(DriverService)}.
    */
   public RemoteWebDriverBuilder url(URL url) {
-    this.remoteHost = Objects.requireNonNull(url);
+    this.remoteHost = Require.nonNull("Remote server URL", url);
     validateDriverServiceAndUrlConstraint();
     return this;
   }
@@ -182,7 +184,7 @@ public class RemoteWebDriverBuilder {
    * both this and also call {@link #url(URL)}.
    */
   public RemoteWebDriverBuilder withDriverService(DriverService service) {
-    this.service = Objects.requireNonNull(service);
+    this.service = Require.nonNull("Driver service", service);
     validateDriverServiceAndUrlConstraint();
     return this;
   }

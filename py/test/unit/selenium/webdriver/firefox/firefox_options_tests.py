@@ -154,9 +154,32 @@ def test_creates_capabilities(options):
 
 def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
-    assert options._caps == DesiredCapabilities.FIREFOX
+    caps = DesiredCapabilities.FIREFOX.copy()
+    caps.update({"pageLoadStrategy": "normal"})
+    assert options._caps == caps
 
 
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
     assert isinstance(options, BaseOptions)
+
+
+def test_raises_exception_with_invalid_page_load_strategy(options):
+    with pytest.raises(ValueError):
+        options.page_load_strategy = 'never'
+
+
+def test_set_page_load_strategy(options):
+    options.page_load_strategy = 'normal'
+    assert options._caps["pageLoadStrategy"] == 'normal'
+
+
+def test_get_page_load_strategy(options):
+    options._page_load_strategy = 'normal'
+    assert options._caps["pageLoadStrategy"] == 'normal'
+
+
+def test_creates_capabilities_with_page_load_strategy(options):
+    options.page_load_strategy = 'eager'
+    caps = options.to_capabilities()
+    assert caps['pageLoadStrategy'] == 'eager'

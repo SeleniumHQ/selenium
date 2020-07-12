@@ -39,8 +39,6 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium:helpers",
         "//java/client/test/org/openqa/selenium/build",
         artifact("org.assertj:assertj-core"),
-        artifact("com.google.guava:guava"),
-        artifact("net.sourceforge.htmlunit:htmlunit"),
         artifact("net.sourceforge.htmlunit:htmlunit-core-js"),
         artifact("junit:junit"),
     ],

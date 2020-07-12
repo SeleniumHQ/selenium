@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UrlPath {
@@ -30,13 +31,11 @@ public class UrlPath {
   }
 
   public static String relativeToServer(HttpRequest req, String location) {
-    Objects.requireNonNull(location, "Location must be set");
-
-    return location;
+    return Require.nonNull("Location", location);
   }
 
   public static String relativeToContext(HttpRequest req, String location) {
-    Objects.requireNonNull(location, "Location to redirect to must be set");
+    Require.nonNull("Location", location);
 
     Object rawPrefix = req.getAttribute(ROUTE_PREFIX_KEY);
     String prefix;

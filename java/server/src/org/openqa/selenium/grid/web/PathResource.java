@@ -21,18 +21,20 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
+import org.openqa.selenium.internal.Require;
 
 public class PathResource implements Resource {
 
   private final Path base;
 
   public PathResource(Path base) {
-    this.base = Objects.requireNonNull(base).normalize();
+    this.base = Require.nonNull("Base path", base).normalize();
   }
 
   @Override
@@ -66,8 +68,8 @@ public class PathResource implements Resource {
 
   @Override
   public Set<Resource> list() {
-    try {
-      return Files.list(base).map(PathResource::new).collect(toImmutableSet());
+    try (Stream<Path> files = Files.list(base)) {
+      return files.map(PathResource::new).collect(toImmutableSet());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

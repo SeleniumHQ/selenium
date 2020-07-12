@@ -21,8 +21,13 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+
+import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
+import static java.util.Comparator.naturalOrder;
+
+import org.openqa.selenium.internal.Require;
 
 /**
  * Exposes environment variables as config settings by mapping
@@ -34,11 +39,11 @@ public class EnvConfig implements Config {
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    Objects.requireNonNull(section, "Section name not set");
-    Objects.requireNonNull(option, "Option name not set");
+    Require.nonNull("Section name", section);
+    Require.nonNull("Option name", option);
 
     String key = String.format("%s_%s", section, option)
-      .toUpperCase(Locale.US)
+      .toUpperCase(Locale.ENGLISH)
       .replace("-", "_")
       .replace(".", "_");
 
@@ -52,5 +57,27 @@ public class EnvConfig implements Config {
     }
 
     return Optional.ofNullable(value).map(ImmutableList::of);
+  }
+
+  @Override
+  public Set<String> getSectionNames() {
+    return System.getenv().keySet().stream()
+      // We need at least two "_" characters
+      .filter(key -> key.split("_").length > 1)
+      .map(key -> key.substring(0, key.indexOf('_')))
+      .map(key -> key.toLowerCase(Locale.ENGLISH))
+      .collect(toImmutableSortedSet(naturalOrder()));
+  }
+
+  @Override
+  public Set<String> getOptions(String section) {
+    Require.nonNull("Section name to get options for", section);
+
+    String prefix = String.format("%s_", section).toUpperCase(Locale.ENGLISH);
+    return System.getenv().keySet().stream()
+      .filter(key -> key.startsWith(prefix))
+      .map(key -> key.substring(prefix.length()))
+      .map(key -> key.toLowerCase(Locale.ENGLISH))
+      .collect(toImmutableSortedSet(naturalOrder()));
   }
 }

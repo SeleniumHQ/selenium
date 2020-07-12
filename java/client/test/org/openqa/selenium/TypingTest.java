@@ -26,10 +26,9 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
 import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -239,9 +238,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   private static void checkRecordedKeySequence(WebElement element, int expectedKeyCode) {
-    assertThat(element.getText().trim()).isIn(
-        String.format("down: %1$d press: %1$d up: %1$d", expectedKeyCode),
-        String.format("down: %1$d up: %1$d", expectedKeyCode));
+    assertThat(element.getText().trim()).contains(
+        String.format("down: %1$d", expectedKeyCode),
+        String.format("up: %1$d", expectedKeyCode));
   }
 
   @Test
@@ -584,7 +583,6 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
-    assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
     driver.get(pages.javascriptPage);
 
     WebElement silent = driver.findElement(By.name("suppress"));
@@ -655,6 +653,22 @@ public class TypingTest extends JUnit4TestBase {
     input.clear();
     input.sendKeys("3");
     assertThat(input.getAttribute("value")).isEqualTo("3");
+  }
+
+  @Test
+  public void canTypeSingleNewLineCharacterIntoTextArea() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.id("emptyTextArea"));
+    element.sendKeys("\n");
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "\n"));
+  }
+
+  @Test
+  public void canTypeMultipleNewLineCharactersIntoTextArea() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.id("emptyTextArea"));
+    element.sendKeys("\n\n\n");
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "\n\n\n"));
   }
 
   private static String getValueText(WebElement el) {

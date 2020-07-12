@@ -18,8 +18,10 @@
 package org.openqa.selenium.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
@@ -58,9 +60,14 @@ public abstract class JUnit4TestBase {
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;
 
+  @BeforeClass
+  public static void shouldTestBeRunAtAll() {
+    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
+  }
+
   @Before
   public void prepareEnvironment() {
-    environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    environment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     appServer = environment.getAppServer();
 
     pages = new Pages(appServer);
@@ -77,7 +84,6 @@ public abstract class JUnit4TestBase {
   @Rule
   public TestRule chain = RuleChain
     .outerRule(new TraceMethodNameRule())
-    .around(new NotificationRule())
     .around(new ManageDriverRule())
     .around(new SwitchToTopRule())
     .around(new NotYetImplementedRule());

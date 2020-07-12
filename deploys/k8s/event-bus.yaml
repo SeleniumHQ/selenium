@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-bus
+  labels:
+    app: event-bus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event-bus
+  template:
+    metadata:
+      labels:
+        app: event-bus
+    spec:
+      containers:
+        - name: event-bus
+          image: selenium/event-bus:latest
+          env:
+            - name: EVENTS_BIND
+              value: "true"
+            - name: EVENTS_PUBLISH
+              value: "tcp://*:4442"
+            - name: EVENTS_SUBSCRIBE
+              value: "tcp://*:4443"
+          ports:
+            - containerPort: 4442
+              protocol: TCP
+              name: publish
+            - containerPort: 4443
+              protocol: TCP
+              name: subscribe
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: ".5"
+          readinessProbe:
+            httpGet:
+              port: 5557
+              path: "/readyz"
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          livenessProbe:
+            tcpSocket:
+              port: 4442
+            initialDelaySeconds: 2
+            periodSeconds: 60
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: event-bus
+  labels:
+    run: event-bus
+spec:
+  type: NodePort
+  selector:
+    app: event-bus
+  ports:
+    - port: 5557
+      targetPort: 5557
+      name: httpd
+    - port: 4442
+      targetPort: 4442
+      protocol: TCP
+      name: publish
+    - port: 4443
+      targetPort: 4443
+      protocol: TCP
+      name: subscribe

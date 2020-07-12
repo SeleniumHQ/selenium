@@ -23,7 +23,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 @pytest.mark.xfail_ie
 @pytest.mark.xfail_chromiumedge(reason="Fails on Travis")
-@pytest.mark.xfail_marionette(reason="Fails on Travis")
 @pytest.mark.xfail_firefox(reason="Fails on Travis")
 @pytest.mark.xfail_remote(reason="Fails on Travis")
 def testShouldMaximizeTheWindow(driver):
@@ -72,16 +71,14 @@ def test_should_set_the_position_of_the_current_window(driver):
     target_y = position.get('y') + 10
     driver.set_window_position(x=target_x, y=target_y)
 
-    WebDriverWait(driver, 2).until(lambda d: d.get_window_position()['x'] != position['x'] and
-                                   d.get_window_position()['y'] != position['y'])
+    WebDriverWait(driver, 2)\
+        .until(lambda d: d.get_window_position()['x'] != position['x'] and d.get_window_position()['y'] != position['y'])
 
     new_position = driver.get_window_position()
     assert new_position.get('x') == target_x
     assert new_position.get('y') == target_y
 
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 def test_should_get_the_rect_of_the_current_window(driver):
@@ -92,8 +89,6 @@ def test_should_get_the_rect_of_the_current_window(driver):
     assert rect.get('height') >= 0
 
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 def test_should_set_the_rect_of_the_current_window(driver):
@@ -106,8 +101,8 @@ def test_should_set_the_rect_of_the_current_window(driver):
 
     driver.set_window_rect(x=target_x, y=target_y, width=target_width, height=target_height)
 
-    WebDriverWait(driver, 2).until(lambda d: d.get_window_position()['x'] != rect['x'] and
-                                   d.get_window_position()['y'] != rect['y'])
+    WebDriverWait(driver, 2)\
+        .until(lambda d: d.get_window_position()['x'] != rect['x'] and d.get_window_position()['y'] != rect['y'])
 
     new_rect = driver.get_window_rect()
 
@@ -117,43 +112,32 @@ def test_should_set_the_rect_of_the_current_window(driver):
     assert new_rect.get('height') == target_height
 
 
-@pytest.mark.xfail_chrome(raises=WebDriverException,
-                          reason='Fullscreen command not implemented')
-@pytest.mark.xfail_chromiumedge(raises=WebDriverException,
-                                reason='Fullscreen command not implemented')
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Fullscreen command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Fullscreen command not implemented')
-@pytest.mark.skipif(os.environ.get('CI') == 'true',
+@pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
                     reason='Fullscreen command causes Travis to hang')
+@pytest.mark.no_driver_after_test
 def test_should_fullscreen_the_current_window(driver):
     start_width = driver.execute_script('return window.innerWidth;')
     start_height = driver.execute_script('return window.innerHeight;')
 
     driver.fullscreen_window()
 
-    WebDriverWait(driver, 2).until(lambda d: driver.execute_script('return window.innerWidth;') >
-                                   start_width)
+    WebDriverWait(driver, 2)\
+        .until(lambda d: driver.execute_script('return window.innerWidth;') > start_width)
 
     end_width = driver.execute_script('return window.innerWidth;')
     end_height = driver.execute_script('return window.innerHeight;')
 
-    driver.fullscreen_window()  # Restore to original size
+    driver.quit()  # Kill driver so we aren't running fullscreen after
 
     assert end_width > start_width
     assert end_height > start_height
 
 
-@pytest.mark.xfail_chrome(raises=WebDriverException,
-                          reason='Minimize command not implemented')
-@pytest.mark.xfail_chromiumedge(raises=WebDriverException,
-                                reason='Minimize command not implemented')
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Minimize command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Minimize command not implemented')
-@pytest.mark.skipif(os.environ.get('CI') == 'true',
+@pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
                     reason='Minimize command causes Travis to hang')
 @pytest.mark.no_driver_after_test
 def test_should_minimize_the_current_window(driver):

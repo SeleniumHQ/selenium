@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.session.remote;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
@@ -27,7 +28,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.util.Objects;
 
 class ActiveSessionCommandExecutor implements CommandExecutor {
 
@@ -35,7 +35,7 @@ class ActiveSessionCommandExecutor implements CommandExecutor {
   private boolean active;
 
   public ActiveSessionCommandExecutor(ActiveSession session) {
-    this.session = Objects.requireNonNull(session, "Session must not be null");
+    this.session = Require.nonNull("Session", session);
   }
 
   @Override

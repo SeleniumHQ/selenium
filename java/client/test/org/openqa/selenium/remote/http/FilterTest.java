@@ -20,8 +20,6 @@ package org.openqa.selenium.remote.http;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableList;
-
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -65,6 +63,6 @@ public class FilterTest {
     assertThat(res).isNotNull();
     // Because the headers are applied to the response _after_ the request has been processed,
     // we expect to see them in reverse order.
-    assertThat(res.getHeaders("cheese")).isEqualTo(ImmutableList.of("brie", "cheddar"));
+    assertThat(res.getHeaders("cheese")).containsExactly("brie", "cheddar");
   }
 }

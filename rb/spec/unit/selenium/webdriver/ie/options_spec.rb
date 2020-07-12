@@ -29,7 +29,17 @@ module Selenium
           it 'accepts all defined parameters' do
             allow(File).to receive(:directory?).and_return(true)
 
-            opts = Options.new(args: %w[foo bar],
+            opts = Options.new(browser_version: '11',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               args: %w[foo bar],
                                browser_attach_timeout: 30000,
                                element_scroll_behavior: Options::SCROLL_BOTTOM,
                                full_page_screenshot: true,
@@ -44,7 +54,8 @@ module Selenium
                                persistent_hover: true,
                                require_window_focus: true,
                                use_per_process_proxy: true,
-                               validate_cookie_document_type: true)
+                               validate_cookie_document_type: true,
+                               'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
             expect(opts.browser_attach_timeout).to eq(30000)
@@ -62,6 +73,16 @@ module Selenium
             expect(opts.require_window_focus).to eq(true)
             expect(opts.use_per_process_proxy).to eq(true)
             expect(opts.validate_cookie_document_type).to eq(true)
+            expect(opts.browser_name).to eq('internet explorer')
+            expect(opts.browser_version).to eq('11')
+            expect(opts.platform_name).to eq('win10')
+            expect(opts.accept_insecure_certs).to eq(false)
+            expect(opts.page_load_strategy).to eq('eager')
+            expect(opts.unhandled_prompt_behavior).to eq('accept')
+            expect(opts.strict_file_interactability).to eq(true)
+            expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
+            expect(opts.set_window_rect).to eq(false)
+            expect(opts.options[:'custom:options']).to eq(foo: 'bar')
           end
 
           it 'has native events on by default' do
@@ -85,16 +106,28 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("se:ieOptions" => {"nativeEvents" => true})
+            expect(options.as_json).to eq("browserName" => "internet explorer",
+                                          "se:ieOptions" => {"nativeEvents" => true})
           end
 
           it 'returns added option' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("se:ieOptions" => {"nativeEvents" => true, "foo" => "bar"})
+            expect(options.as_json).to eq("browserName" => "internet explorer",
+                                          "se:ieOptions" => {"nativeEvents" => true, "foo" => "bar"})
           end
 
           it 'returns a JSON hash' do
-            opts = Options.new(args: %w[foo bar],
+            opts = Options.new(browser_version: '11',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               args: %w[foo bar],
                                browser_attach_timeout: 30000,
                                element_scroll_behavior: Options::SCROLL_BOTTOM,
                                full_page_screenshot: true,
@@ -110,10 +143,20 @@ module Selenium
                                require_window_focus: true,
                                use_per_process_proxy: true,
                                validate_cookie_document_type: true)
-            opts.add_option(:foo, 'bar')
 
             key = 'se:ieOptions'
-            expect(opts.as_json).to eq(key => {'ie.browserCommandLineSwitches' => 'foo bar',
+            expect(opts.as_json).to eq('browserName' => 'internet explorer',
+                                       'browserVersion' => '11',
+                                       'platformName' => 'win10',
+                                       'acceptInsecureCerts' => false,
+                                       'pageLoadStrategy' => 'eager',
+                                       'unhandledPromptBehavior' => 'accept',
+                                       'strictFileInteractability' => true,
+                                       'timeouts' => {'script' => 40000,
+                                                      'pageLoad' => 400000,
+                                                      'implicit' => 1},
+                                       'setWindowRect' => false,
+                                       key => {'ie.browserCommandLineSwitches' => 'foo bar',
                                                'browserAttachTimeout' => 30000,
                                                'elementScrollBehavior' => 1,
                                                'ie.enableFullPageScreenshot' => true,
@@ -128,8 +171,7 @@ module Selenium
                                                'enablePersistentHover' => true,
                                                'requireWindowFocus' => true,
                                                'ie.usePerProcessProxy' => true,
-                                               'ie.validateCookieDocumentType' => true,
-                                               'foo' => 'bar'})
+                                               'ie.validateCookieDocumentType' => true})
           end
         end
       end # Options

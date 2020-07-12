@@ -24,6 +24,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Internal;
 
@@ -145,7 +146,15 @@ namespace OpenQA.Selenium.Remote
             HttpResponseInfo responseInfo = null;
             try
             {
-                responseInfo = this.MakeHttpRequest(requestInfo).GetAwaiter().GetResult();
+                // Use TaskFactory to avoid deadlock in multithreaded implementations.
+                responseInfo = new TaskFactory(CancellationToken.None,
+                        TaskCreationOptions.None,
+                        TaskContinuationOptions.None,
+                        TaskScheduler.Default)
+                    .StartNew(() => this.MakeHttpRequest(requestInfo))
+                    .Unwrap()
+                    .GetAwaiter()
+                    .GetResult();
             }
             catch (HttpRequestException ex)
             {

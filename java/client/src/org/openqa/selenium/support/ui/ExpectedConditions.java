@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  */
 public class ExpectedConditions {
 
-  private final static Logger log = Logger.getLogger(ExpectedConditions.class.getName());
+  private static final Logger log = Logger.getLogger(ExpectedConditions.class.getName());
 
   private ExpectedConditions() {
     // Utility class
@@ -203,7 +203,8 @@ public class ExpectedConditions {
       public WebElement apply(WebDriver driver) {
         try {
           return elementIfVisible(driver.findElement(locator));
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
+          // Returns null because the element is no longer or not present in DOM.
           return null;
         }
       }
@@ -1346,7 +1347,7 @@ public class ExpectedConditions {
   private static boolean isInvisible(final WebElement element) {
     try {
       return !element.isDisplayed();
-    } catch (StaleElementReferenceException ignored) {
+    } catch (StaleElementReferenceException | NoSuchElementException ignored) {
       // We can assume a stale element isn't displayed.
       return true;
     }

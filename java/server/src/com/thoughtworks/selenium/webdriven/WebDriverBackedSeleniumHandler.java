@@ -21,7 +21,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -40,6 +39,7 @@ import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.safari.SafariOptions;
 
 import java.io.UncheckedIOException;
@@ -65,7 +65,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
 
   // Prepare the shared set of thingies
   private static final Map<SessionId, CommandProcessor> PROCESSORS = new ConcurrentHashMap<>();
-  public static final Logger LOG = Logger.getLogger(WebDriverBackedSelenium.class.getName());
+  private static final Logger LOG = Logger.getLogger(WebDriverBackedSelenium.class.getName());
 
   private NewSessionPipeline pipeline;
   private ActiveSessions sessions;
@@ -79,7 +79,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
         PROCESSORS.remove(session.getId());
       }
     };
-    sessions.addListener(listener);
+    this.sessions.addListener(listener);
 
     this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory(tracer)).create();
   }

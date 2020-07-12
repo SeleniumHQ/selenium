@@ -32,6 +32,8 @@ import java.util.logging.Logger;
 
 public class BaseServerOptions {
 
+  private static final String SERVER_SECTION = "server";
+
   private static final Logger LOG = Logger.getLogger(BaseServerOptions.class.getName());
   private final Config config;
   private int port = -1;
@@ -41,28 +43,26 @@ public class BaseServerOptions {
   }
 
   public Optional<String> getHostname() {
-    return config.get("server", "hostname");
+    return config.get(SERVER_SECTION, "hostname");
   }
 
   public int getPort() {
-    if (port != -1) {
-      return port;
+    if (port == -1) {
+      int newPort = config.getInt(SERVER_SECTION, "port")
+          .orElseGet(PortProber::findFreePort);
+
+      if (newPort < 0) {
+        throw new ConfigException("Port cannot be less than 0: " + newPort);
+      }
+
+      port = newPort;
     }
-
-    int port = config.getInt("server", "port")
-        .orElseGet(PortProber::findFreePort);
-
-    if (port < 0) {
-      throw new ConfigException("Port cannot be less than 0: " + port);
-    }
-
-    this.port = port;
 
     return port;
   }
 
   public int getMaxServerThreads() {
-    int count = config.getInt("server", "max-threads")
+    int count = config.getInt(SERVER_SECTION, "max-threads")
         .orElse(200);
 
     if (count < 0) {
@@ -95,15 +95,15 @@ public class BaseServerOptions {
   }
 
   public boolean getAllowCORS() {
-    return config.getBool("server", "allow-cors").orElse(false);
+    return config.getBool(SERVER_SECTION, "allow-cors").orElse(false);
   }
 
   public boolean isSecure() {
-    return config.get("server", "https-private-key").isPresent() && config.get("server", "https-certificate").isPresent();
+    return config.get(SERVER_SECTION, "https-private-key").isPresent() && config.get(SERVER_SECTION, "https-certificate").isPresent();
   }
 
   public File getPrivateKey() {
-    String privateKey = config.get("server", "https-private-key").orElse(null);
+    String privateKey = config.get(SERVER_SECTION, "https-private-key").orElse(null);
     if (privateKey != null) {
       return new File(privateKey);
     }
@@ -111,7 +111,7 @@ public class BaseServerOptions {
   }
 
   public File getCertificate() {
-    String certificatePath = config.get("server", "https-certificate").orElse(null);
+    String certificatePath = config.get(SERVER_SECTION, "https-certificate").orElse(null);
     if (certificatePath != null) {
       return new File(certificatePath);
     }
@@ -119,10 +119,10 @@ public class BaseServerOptions {
   }
 
   public String getRegistrationSecret() {
-    return config.get("server", "registration-secret").orElse(null);
+    return config.get(SERVER_SECTION, "registration-secret").orElse(null);
   }
 
   public boolean isSelfSigned() {
-    return config.getBool("server", "https-self-signed").orElse(false);
+    return config.getBool(SERVER_SECTION, "https-self-signed").orElse(false);
   }
 }

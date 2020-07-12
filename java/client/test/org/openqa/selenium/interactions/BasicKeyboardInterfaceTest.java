@@ -40,13 +40,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
 
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
-
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
@@ -296,6 +294,26 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         .perform();
 
     assertThat(input.getAttribute("value")).isEqualTo("");
+  }
+
+  @Test
+  public void testLeftArrowEntry() {
+    final String leftArrowSpaceTestStringCore = "bfmtv.fr";
+    final String leftArrowSpaceTestString = leftArrowSpaceTestStringCore+ "est";
+    final String leftArrowSpaceTestStringExpected = leftArrowSpaceTestStringCore+" est";
+
+    driver.get(appServer.whereIs("single_text_input.html"));
+    WebElement textInput = driver.findElement(By.id("textInput"));
+    sendLeftArrowSpaceTestKeys(textInput, leftArrowSpaceTestString);
+
+    assertThat(textInput.getAttribute("value")).isEqualTo(leftArrowSpaceTestStringExpected);
+  }
+  
+  private void sendLeftArrowSpaceTestKeys(final WebElement inputElement, final String leftArrowSpaceTestString) {
+    inputElement.sendKeys(leftArrowSpaceTestString);
+    for (byte j = 0; j < 3; j++)
+      inputElement.sendKeys(Keys.LEFT);
+    inputElement.sendKeys(Keys.SPACE);
   }
 
   private void assertBackgroundColor(WebElement el, Colors expected) {

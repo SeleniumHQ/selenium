@@ -1,11 +1,11 @@
 load(
     "@d2l_rules_csharp//csharp/private:common.bzl",
     "collect_transitive_info",
-    "fill_in_missing_frameworks"
+    "fill_in_missing_frameworks",
 )
 load(
     "@d2l_rules_csharp//csharp/private:providers.bzl",
-    "CSharpAssemblyInfo"
+    "CSharpAssemblyInfo",
 )
 
 def _merged_assembly_impl(ctx):

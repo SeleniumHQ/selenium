@@ -23,17 +23,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 public class PageServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    try {
-      Thread.sleep(500);
-    } catch (InterruptedException e) {
-      // Do nothing
-    }
-
     response.setContentType("text/html");
 
     int lastIndex = request.getPathInfo().lastIndexOf('/');

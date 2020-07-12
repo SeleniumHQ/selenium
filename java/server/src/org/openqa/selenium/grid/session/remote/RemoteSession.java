@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.grid.session.remote;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -27,6 +25,7 @@ import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.Command;
@@ -41,13 +40,13 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -76,14 +75,14 @@ public abstract class RemoteSession implements ActiveSession {
       HttpHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
-    this.downstream = Objects.requireNonNull(downstream);
-    this.upstream = Objects.requireNonNull(upstream);
-    this.codec = Objects.requireNonNull(codec);
-    this.id = Objects.requireNonNull(id);
-    this.capabilities = Objects.requireNonNull(capabilities);
+    this.downstream = Require.nonNull("Downstream dialect", downstream);
+    this.upstream = Require.nonNull("Upstream dialect", upstream);
+    this.codec = Require.nonNull("Codec", codec);
+    this.id = Require.nonNull("Session id", id);
+    this.capabilities = Require.nonNull("Capabilities", capabilities);
 
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
-    Preconditions.checkState(tempRoot.mkdirs());
+    Require.stateCondition(tempRoot.mkdirs(), "Could not create directory %s", tempRoot);
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
 
     CommandExecutor executor = new ActiveSessionCommandExecutor(this);

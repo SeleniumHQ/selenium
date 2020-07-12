@@ -19,24 +19,26 @@ package org.openqa.selenium.remote.http.netty;
 
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.RemoteCall;
 
-import java.util.Objects;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class NettyHttpHandler extends RemoteCall {
 
-  private final AsyncHttpClient client;
   private final HttpHandler handler;
+  private final AsyncHttpClient client;
 
-  public NettyHttpHandler(ClientConfig config) {
+  public NettyHttpHandler(ClientConfig config, AsyncHttpClient client) {
     super(config);
-    this.client = new CreateNettyClient().apply(config);
+    this.client = client;
     this.handler = config.filter().andFinally(this::makeCall);
   }
 
@@ -46,7 +48,7 @@ public class NettyHttpHandler extends RemoteCall {
   }
 
   private HttpResponse makeCall(HttpRequest request) {
-    Objects.requireNonNull(request, "Request must be set.");
+    Require.nonNull("Request", request);
 
     Future<Response> whenResponse = client.executeRequest(
         NettyMessages.toNettyRequest(getConfig().baseUri(), request));
@@ -58,6 +60,15 @@ public class NettyHttpHandler extends RemoteCall {
       Thread.currentThread().interrupt();
       throw new RuntimeException("NettyHttpHandler request interrupted", e);
     } catch (ExecutionException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof UncheckedIOException) {
+        throw (UncheckedIOException) cause;
+      }
+
+      if (cause instanceof IOException) {
+        throw new UncheckedIOException((IOException) cause);
+      }
+
       throw new RuntimeException("NettyHttpHandler request execution error", e);
     }
   }

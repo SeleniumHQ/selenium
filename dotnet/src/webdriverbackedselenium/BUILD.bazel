@@ -1,26 +1,28 @@
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
+load("//:copy_file.bzl", "copy_file")
 load("//dotnet:nuget.bzl", "nuget_package")
 load("//dotnet:assembly-info.bzl", "generated_assembly_info")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
-    "ASSEMBLY_VERSION",
-    "SE_VERSION",
-    "SUPPORTED_NET_FRAMEWORKS",
     "ASSEMBLY_COMPANY",
     "ASSEMBLY_COPYRIGHT",
     "ASSEMBLY_INFORMATIONAL_VERSION",
     "ASSEMBLY_PRODUCT",
+    "ASSEMBLY_VERSION",
+    "SE_VERSION",
+    "SUPPORTED_NET_FRAMEWORKS",
+    "SUPPORTED_NET_STANDARD_VERSIONS",
 )
 
 generated_assembly_info(
     name = "assembly-info",
-    version = ASSEMBLY_VERSION,
     company = ASSEMBLY_COMPANY,
     copyright = ASSEMBLY_COPYRIGHT,
     description = "Selenium RC API using WebDriver .NET Bindings",
+    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
     product = ASSEMBLY_PRODUCT,
     title = "Selenium WebDriver WebDriverBackedSelenium",
-    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
+    version = ASSEMBLY_VERSION,
 )
 
 [csharp_library(
@@ -63,8 +65,8 @@ generated_assembly_info(
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-csharp_library(
-    name = "netstandard2.0",
+[csharp_library(
+    name = "{}".format(standard_version),
     srcs = glob([
         "*.cs",
         "Internal/**/*.cs",
@@ -86,13 +88,13 @@ csharp_library(
         "//javascript/selenium-atoms:type.js",
     ],
     target_frameworks = [
-        "netstandard2.0",
+        "{}".format(standard_version),
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:netstandard2.0assembly",
+        "//dotnet/src/webdriver:{}assembly".format(standard_version),
     ],
-)
+) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
 [csharp_library(
     name = "{}-strongnamed".format(framework),
@@ -135,8 +137,8 @@ csharp_library(
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-csharp_library(
-    name = "netstandard2.0-strongnamed",
+[csharp_library(
+    name = "{}-strongnamed".format(standard_version),
     srcs = glob([
         "*.cs",
         "Internal/**/*.cs",
@@ -159,13 +161,13 @@ csharp_library(
         "//javascript/selenium-atoms:type.js",
     ],
     target_frameworks = [
-        "netstandard2.0",
+        "{}".format(standard_version),
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:netstandard2.0-strongnamed",
+        "//dotnet/src/webdriver:{}assembly-strongnamed".format(standard_version),
     ],
-)
+) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
 nuget_package(
     name = "package",
@@ -177,37 +179,25 @@ nuget_package(
         ":net45",
         ":net46",
         ":net47",
+        ":net48",
         ":netstandard2.0",
+        ":netstandard2.1",
     ],
 )
 
-copy_file(
-    name = "copy-net45-strongnamed",
-    src = ":net45-strongnamed",
-    out = "strongnamed/net45/Selenium.WebDriverBackedSelenium.dll",
+[copy_file(
+    name = "copy-{}-strongnamed".format(framework),
+    src = ":{}-strongnamed".format(framework),
+    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
     visibility = ["//visibility:public"],
-)
+) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-copy_file(
-    name = "copy-net46-strongnamed",
-    src = ":net46-strongnamed",
-    out = "strongnamed/net46/Selenium.WebDriverBackedSelenium.dll",
+[copy_file(
+    name = "copy-{}-strongnamed".format(standard_version),
+    src = ":{}-strongnamed".format(standard_version),
+    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium.dll".format(standard_version),
     visibility = ["//visibility:public"],
-)
-
-copy_file(
-    name = "copy-net47-strongnamed",
-    src = ":net47-strongnamed",
-    out = "strongnamed/net47/Selenium.WebDriverBackedSelenium.dll",
-    visibility = ["//visibility:public"],
-)
-
-copy_file(
-    name = "copy-netstandard2.0-strongnamed",
-    src = ":netstandard2.0-strongnamed",
-    out = "strongnamed/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
-    visibility = ["//visibility:public"],
-)
+) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
 nuget_package(
     name = "package-strongnamed",
@@ -219,6 +209,8 @@ nuget_package(
         ":copy-net45-strongnamed",
         ":copy-net46-strongnamed",
         ":copy-net47-strongnamed",
+        ":copy-net48-strongnamed",
         ":copy-netstandard2.0-strongnamed",
+        ":copy-netstandard2.1-strongnamed",
     ],
 )

@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
-  s.required_ruby_version = Gem::Requirement.new('>= 2.4')
+  s.required_ruby_version = Gem::Requirement.new('>= 2.5')
 
   s.files = Dir[root + '/**/*'].reject { |e| e =~ /ruby\.iml|build\.desc/ }.map { |e| e.sub(root + '/', '') }
   s.require_paths = ['lib']
@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']
-  s.add_development_dependency 'rubocop', ['~> 0.73.0']
+  s.add_development_dependency 'rubocop', ['~> 0.84.0']
   s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'rubocop-rspec'
   s.add_development_dependency 'webmock', ['~> 3.5']

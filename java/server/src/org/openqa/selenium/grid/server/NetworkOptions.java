@@ -17,22 +17,50 @@
 
 package org.openqa.selenium.grid.server;
 
-import io.opentelemetry.trace.Tracer;
+import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.web.CheckContentTypeHeader;
+import org.openqa.selenium.grid.web.CheckOriginHeader;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.util.Objects;
+import java.util.List;
+import java.util.Optional;
 
 public class NetworkOptions {
 
   private final Config config;
 
   public NetworkOptions(Config config) {
-    this.config = Objects.requireNonNull(config, "Config to use must be set.");
+    this.config = Require.nonNull("Config", config);
   }
 
   public HttpClient.Factory getHttpClientFactory(Tracer tracer) {
     return new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
+  }
+
+  public Filter getSpecComplianceChecks() {
+    // Base case: we do nothing
+    Filter toReturn = httpHandler -> httpHandler;
+
+    if (config.getBool("network", "relax_checks").orElse(false)) {
+      return toReturn;
+    }
+
+    if (config.getBool("network", "check_content_type").orElse(true)) {
+      toReturn = toReturn.andThen(new CheckContentTypeHeader());
+    }
+
+    boolean checkOrigin = config.getBool("network", "check_origin_header").orElse(true);
+    Optional<List<String>> allowedOrigins = config.getAll("network", "allowed_origins");
+
+    if (checkOrigin || allowedOrigins.isPresent()) {
+      toReturn = toReturn.andThen(new CheckOriginHeader(allowedOrigins.orElse(ImmutableList.of())));
+    }
+
+    return toReturn;
   }
 }

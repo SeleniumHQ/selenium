@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.javascript;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import com.google.common.collect.ImmutableList;
+import static java.util.stream.Collectors.toList;
 
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -36,6 +34,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,26 +48,24 @@ import java.util.function.Supplier;
  */
 public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
-  private final ImmutableList<Runner> children;
-
-  private WebDriver webDriver = null;
+  private final List<Runner> children;
+  private final Supplier<WebDriver> driverSupplier;
 
   public JavaScriptTestSuite(Class<?> testClass) throws InitializationError, IOException {
     super(testClass);
 
     long timeout = Math.max(0, Long.getLong("js.test.timeout", 0));
 
-    Supplier<WebDriver> driverSupplier =
-      () -> checkNotNull(webDriver, "WebDriver has not been started yet!");
+    driverSupplier = new DriverSupplier();
 
     children = createChildren(driverSupplier, timeout);
   }
-  
+
   private static boolean isBazel() {
     return InProject.findRunfilesRoot() != null;
   }
 
-  private static ImmutableList<Runner> createChildren(
+  private static List<Runner> createChildren(
       final Supplier<WebDriver> driverSupplier, final long timeout) throws IOException {
     final Path baseDir = InProject.findProjectRoot();
     final Function<String, URL> pathToUrlFn = s -> {
@@ -84,7 +81,6 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
       }
     };
 
-
     List<Path> tests = TestFileLocator.findTestFiles();
     return tests.stream()
         .map(file -> {
@@ -96,7 +92,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
               driverSupplier, path, pathToUrlFn, timeout);
           return new StatementRunner(testStatement, description);
         })
-        .collect(ImmutableList.toImmutableList());
+        .collect(toList());
   }
 
   @Override
@@ -117,20 +113,20 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
   @Override
   protected Statement classBlock(RunNotifier notifier) {
     final Statement suite = super.classBlock(notifier);
+
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
         TestEnvironment testEnvironment = null;
         try {
-          testEnvironment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
-          webDriver = new WebDriverBuilder().get();
+          testEnvironment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
           suite.evaluate();
         } finally {
           if (testEnvironment != null) {
             testEnvironment.stop();
           }
-          if (webDriver != null) {
-            webDriver.quit();
+          if (driverSupplier instanceof Closeable) {
+            ((Closeable) driverSupplier).close();
           }
         }
       }
@@ -162,6 +158,32 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
         notifier.fireTestFailure(failure);
       } finally {
         notifier.fireTestFinished(description);
+      }
+    }
+  }
+
+  private static class DriverSupplier implements Supplier<WebDriver>, Closeable {
+
+    private WebDriver driver;
+
+    @Override
+    public WebDriver get() {
+      if (driver != null) {
+        return driver;
+      }
+
+      synchronized (this) {
+        if (driver == null) {
+          driver = new WebDriverBuilder().get();
+        }
+      }
+
+      return driver;
+    }
+
+    public void close() {
+      if (driver != null) {
+        driver.quit();
       }
     }
   }

@@ -14,8 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+import sys
 import warnings
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
@@ -28,8 +31,8 @@ class ChromiumDriver(RemoteWebDriver):
     Controls the WebDriver instance of ChromiumDriver and allows you to drive the browser.
     """
 
-    def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
-                 options=None, service_args=None,
+    def __init__(self, browser_name, vendor_prefix,
+                 port=DEFAULT_PORT, options=None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  service=None, keep_alive=True):
         """
@@ -37,7 +40,8 @@ class ChromiumDriver(RemoteWebDriver):
         Starts the service and then creates new WebDriver instance of ChromiumDriver.
 
         :Args:
-         - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
+         - browser_name - Browser name used when matching capabilities.
+         - vendor_prefix - Company prefix to apply to vendor-specific WebDriver extension commands.
          - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
          - options - this takes an instance of ChromiumOptions
          - service_args - Deprecated: List of args to pass to the driver service
@@ -46,9 +50,6 @@ class ChromiumDriver(RemoteWebDriver):
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-        if executable_path != 'chromedriver':
-            warnings.warn('executable_path has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
         if desired_capabilities is not None:
             warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
@@ -70,6 +71,8 @@ class ChromiumDriver(RemoteWebDriver):
             else:
                 desired_capabilities.update(options.to_capabilities())
 
+        self.vendor_prefix = vendor_prefix
+
         if service is None:
             raise AttributeError('service cannot be None')
 
@@ -81,6 +84,7 @@ class ChromiumDriver(RemoteWebDriver):
                 self,
                 command_executor=ChromiumRemoteConnection(
                     remote_server_addr=self.service.service_url,
+                    browser_name=browser_name, vendor_prefix=vendor_prefix,
                     keep_alive=keep_alive),
                 desired_capabilities=desired_capabilities)
         except Exception:

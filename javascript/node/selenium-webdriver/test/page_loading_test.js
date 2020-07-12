@@ -18,16 +18,13 @@
 'use strict';
 
 const assert = require('assert');
-
 const error = require('../lib/error');
 const test = require('../lib/test');
 const {Browser, By, until} = require('..');
-
 const Pages = test.Pages;
 
 
 test.suite(function(env) {
-  var browsers = (...args) => env.browsers(...args);
 
   var driver;
   before(async function() {

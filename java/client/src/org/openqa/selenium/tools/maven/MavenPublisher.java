@@ -18,7 +18,6 @@
 package org.openqa.selenium.tools.maven;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.common.hash.Hashing;
 import com.google.common.io.ByteStreams;
 import org.openqa.selenium.os.CommandLine;
@@ -208,11 +207,9 @@ public class MavenPublisher {
     Path dir = Files.createTempDirectory("maven-sign");
     Path file = dir.resolve(toSign.getFileName() + ".asc");
 
-    List<String> args = ImmutableList.of(
-      "gpg", "--use-agent", "--armor", "--detach-sign", "--no-tty",
-      "-o", file.toAbsolutePath().toString(), toSign.toAbsolutePath().toString());
-
-    CommandLine gpg = new CommandLine(args.toArray(new String[0]));
+    CommandLine gpg = new CommandLine(
+        "gpg", "--use-agent", "--armor", "--detach-sign", "--no-tty",
+        "-o", file.toAbsolutePath().toString(), toSign.toAbsolutePath().toString());
     gpg.execute();
     if (!gpg.isSuccessful()) {
       throw new IllegalStateException("Unable to sign: " + toSign + "\n" + gpg.getStdOut());

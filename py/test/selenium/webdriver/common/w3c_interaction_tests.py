@@ -19,6 +19,7 @@ import pytest
 
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -32,9 +33,10 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
-    e = driver.find_element_by_id("working")
+    e = driver.find_element(By.ID, "working")
     e.click()
 
     actions = ActionBuilder(driver)
@@ -95,7 +97,7 @@ def test_can_clear_actions(driver, pages):
 @pytest.mark.xfail_firefox
 def test_move_and_click(driver, pages):
     pages.load("javascriptPage.html")
-    toClick = driver.find_element_by_id("clickField")
+    toClick = driver.find_element(By.ID, "clickField")
 
     actions = ActionBuilder(driver)
     pointer = actions.pointer_action
@@ -118,8 +120,8 @@ def testDragAndDrop(driver, pages):
     if not _isElementAvailable(driver, "draggable"):
         raise AssertionError("Could not find draggable element after 15 seconds.")
 
-    toDrag = driver.find_element_by_id("draggable")
-    dropInto = driver.find_element_by_id("droppable")
+    toDrag = driver.find_element(By.ID, "draggable")
+    dropInto = driver.find_element(By.ID, "droppable")
     actions = ActionBuilder(driver)
     pointer = actions.pointer_action
     pointer.click_and_hold(toDrag) \
@@ -128,8 +130,8 @@ def testDragAndDrop(driver, pages):
 
     actions.perform()
 
-    dropInto = driver.find_element_by_id("droppable")
-    text = dropInto.find_element_by_tag_name("p").text
+    dropInto = driver.find_element(By.ID, "droppable")
+    text = dropInto.find_element(By.TAG_NAME, "p").text
     assert "Dropped!" == text
 
 
@@ -137,7 +139,7 @@ def testDragAndDrop(driver, pages):
 def test_context_click(driver, pages):
 
     pages.load("javascriptPage.html")
-    toContextClick = driver.find_element_by_id("doubleClickField")
+    toContextClick = driver.find_element(By.ID, "doubleClickField")
 
     actions = ActionBuilder(driver)
     pointer = actions.pointer_action
@@ -148,12 +150,12 @@ def test_context_click(driver, pages):
 
 
 @pytest.mark.xfail_firefox
-@pytest.mark.xfail_marionette(reason="Fails on Travis")
+@pytest.mark.xfail_safari
 @pytest.mark.xfail_remote(reason="Fails on Travis")
 def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
-    toDoubleClick = driver.find_element_by_id("doubleClickField")
+    toDoubleClick = driver.find_element(By.ID, "doubleClickField")
 
     actions = ActionBuilder(driver)
     pointer = actions.pointer_action
@@ -167,28 +169,28 @@ def test_double_click(driver, pages):
 @pytest.mark.xfail_firefox
 def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
     _performDragAndDropWithMouse(driver, pages)
-    dragInto = driver.find_element_by_id("sortable1")
-    assert 6 == len(dragInto.find_elements_by_tag_name("li"))
+    dragInto = driver.find_element(By.ID, "sortable1")
+    assert 6 == len(dragInto.find_elements(By.TAG_NAME, "li"))
 
 
 @pytest.mark.xfail_firefox
 def test_dragging_element_with_mouse_fires_events(driver, pages):
     _performDragAndDropWithMouse(driver, pages)
-    dragReporter = driver.find_element_by_id("dragging_reports")
+    dragReporter = driver.find_element(By.ID, "dragging_reports")
     assert "Nothing happened. DragOut DropIn RightItem 3" == dragReporter.text
 
 
 def _performDragAndDropWithMouse(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("draggableLists.html")
-    dragReporter = driver.find_element_by_id("dragging_reports")
-    toDrag = driver.find_element_by_id("rightitem-3")
-    dragInto = driver.find_element_by_id("sortable1")
+    dragReporter = driver.find_element(By.ID, "dragging_reports")
+    toDrag = driver.find_element(By.ID, "rightitem-3")
+    dragInto = driver.find_element(By.ID, "sortable1")
 
     actions = ActionBuilder(driver)
     pointer = actions.pointer_action
     pointer.click_and_hold(toDrag) \
-           .move_to(driver.find_element_by_id("leftitem-4")) \
+           .move_to(driver.find_element(By.ID, "leftitem-4")) \
            .move_to(dragInto) \
            .release()
 
@@ -201,7 +203,7 @@ def _performDragAndDropWithMouse(driver, pages):
 def _isElementAvailable(driver, id):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     try:
-        driver.find_element_by_id(id)
+        driver.find_element(By.ID, id)
         return True
     except Exception:
         return False

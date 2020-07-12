@@ -18,6 +18,7 @@
 """Tests for advanced user interactions."""
 import pytest
 
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
@@ -26,13 +27,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 def performDragAndDropWithMouse(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("draggableLists.html")
-    dragReporter = driver.find_element_by_id("dragging_reports")
-    toDrag = driver.find_element_by_id("rightitem-3")
-    dragInto = driver.find_element_by_id("sortable1")
+    dragReporter = driver.find_element(By.ID, "dragging_reports")
+    toDrag = driver.find_element(By.ID, "rightitem-3")
+    dragInto = driver.find_element(By.ID, "sortable1")
 
     holdItem = ActionChains(driver).click_and_hold(toDrag)
     moveToSpecificItem = ActionChains(driver) \
-        .move_to_element(driver.find_element_by_id("leftitem-4"))
+        .move_to_element(driver.find_element(By.ID, "leftitem-4"))
     moveToOtherList = ActionChains(driver).move_to_element(dragInto)
     drop = ActionChains(driver).release(dragInto)
     assert "Nothing happened." == dragReporter.text
@@ -45,29 +46,32 @@ def performDragAndDropWithMouse(driver, pages):
     drop.perform()
 
 
+@pytest.mark.xfail_safari
 def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     performDragAndDropWithMouse(driver, pages)
-    dragInto = driver.find_element_by_id("sortable1")
-    assert 6 == len(dragInto.find_elements_by_tag_name("li"))
+    dragInto = driver.find_element(By.ID, "sortable1")
+    assert 6 == len(dragInto.find_elements(By.TAG_NAME, "li"))
 
 
+@pytest.mark.xfail_safari
 def testDraggingElementWithMouseFiresEvents(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     performDragAndDropWithMouse(driver, pages)
-    dragReporter = driver.find_element_by_id("dragging_reports")
+    dragReporter = driver.find_element(By.ID, "dragging_reports")
     assert "Nothing happened. DragOut DropIn RightItem 3" == dragReporter.text
 
 
 def _isElementAvailable(driver, id):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     try:
-        driver.find_element_by_id(id)
+        driver.find_element(By.ID, id)
         return True
     except Exception:
         return False
 
 
+@pytest.mark.xfail_safari
 def testDragAndDrop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
@@ -78,8 +82,8 @@ def testDragAndDrop(driver, pages):
     if not _isElementAvailable(driver, "draggable"):
         raise AssertionError("Could not find draggable element after 15 seconds.")
 
-    toDrag = driver.find_element_by_id("draggable")
-    dropInto = driver.find_element_by_id("droppable")
+    toDrag = driver.find_element(By.ID, "draggable")
+    dropInto = driver.find_element(By.ID, "droppable")
 
     holdDrag = ActionChains(driver) \
         .click_and_hold(toDrag)
@@ -91,15 +95,16 @@ def testDragAndDrop(driver, pages):
     move.perform()
     drop.perform()
 
-    dropInto = driver.find_element_by_id("droppable")
-    text = dropInto.find_element_by_tag_name("p").text
+    dropInto = driver.find_element(By.ID, "droppable")
+    text = dropInto.find_element(By.TAG_NAME, "p").text
     assert "Dropped!" == text
 
 
+@pytest.mark.xfail_safari
 def testDoubleClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
-    toDoubleClick = driver.find_element_by_id("doubleClickField")
+    toDoubleClick = driver.find_element(By.ID, "doubleClickField")
 
     dblClick = ActionChains(driver) \
         .double_click(toDoubleClick)
@@ -111,7 +116,7 @@ def testDoubleClick(driver, pages):
 def testContextClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
-    toContextClick = driver.find_element_by_id("doubleClickField")
+    toContextClick = driver.find_element(By.ID, "doubleClickField")
 
     contextClick = ActionChains(driver) \
         .context_click(toContextClick)
@@ -123,7 +128,7 @@ def testContextClick(driver, pages):
 def testMoveAndClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
-    toClick = driver.find_element_by_id("clickField")
+    toClick = driver.find_element(By.ID, "clickField")
 
     click = ActionChains(driver) \
         .move_to_element(toClick) \
@@ -143,11 +148,11 @@ def testCannotMoveToANullLocator(driver, pages):
         move.perform()
 
 
-@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def testClickingOnFormElements(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("formSelectionPage.html")
-    options = driver.find_elements_by_tag_name("option")
+    options = driver.find_elements(By.TAG_NAME, "option")
     selectThreeOptions = ActionChains(driver) \
         .click(options[1]) \
         .key_down(Keys.SHIFT) \
@@ -155,20 +160,22 @@ def testClickingOnFormElements(driver, pages):
         .key_up(Keys.SHIFT)
     selectThreeOptions.perform()
 
-    showButton = driver.find_element_by_name("showselected")
+    showButton = driver.find_element(By.NAME, "showselected")
     showButton.click()
 
-    resultElement = driver.find_element_by_id("result")
+    resultElement = driver.find_element(By.ID, "result")
     assert "roquefort parmigiano cheddar" == resultElement.text
 
 
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def testSelectingMultipleItems(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("selectableItems.html")
-    reportingElement = driver.find_element_by_id("infodiv")
+    reportingElement = driver.find_element(By.ID, "infodiv")
     assert "no info" == reportingElement.text
 
-    listItems = driver.find_elements_by_tag_name("li")
+    listItems = driver.find_elements(By.TAG_NAME, "li")
     selectThreeItems = ActionChains(driver) \
         .key_down(Keys.CONTROL) \
         .click(listItems[1]) \
@@ -185,9 +192,10 @@ def testSelectingMultipleItems(driver, pages):
     assert "#item7" == reportingElement.text
 
 
+@pytest.mark.xfail_safari
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
-    e = driver.find_element_by_id("working")
+    e = driver.find_element(By.ID, "working")
     e.click()
 
     ActionChains(driver) \
@@ -201,7 +209,7 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
 
 def testSendingKeysToElement(driver, pages):
     pages.load("formPage.html")
-    e = driver.find_element_by_id("working")
+    e = driver.find_element(By.ID, "working")
 
     ActionChains(driver).send_keys_to_element(e, 'abc').perform()
 
@@ -214,8 +222,8 @@ def testCanSendKeysBetweenClicks(driver, pages):
     input device.
     """
     pages.load('javascriptPage.html')
-    keyup = driver.find_element_by_id("keyUp")
-    keydown = driver.find_element_by_id("keyDown")
+    keyup = driver.find_element(By.ID, "keyUp")
+    keydown = driver.find_element(By.ID, "keyDown")
     ActionChains(driver).click(keyup).send_keys('foobar').click(keydown).perform()
 
     assert 'foobar' == keyup.get_attribute('value')
@@ -243,8 +251,8 @@ def test_can_pause(driver, pages):
     pages.load("javascriptPage.html")
 
     pause_time = 2
-    toClick = driver.find_element_by_id("clickField")
-    toDoubleClick = driver.find_element_by_id("doubleClickField")
+    toClick = driver.find_element(By.ID, "clickField")
+    toDoubleClick = driver.find_element(By.ID, "doubleClickField")
 
     pause = ActionChains(driver).click(toClick).pause(pause_time).click(toDoubleClick)
 

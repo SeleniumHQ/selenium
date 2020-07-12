@@ -21,11 +21,8 @@ const assert = require('assert');
 const fs = require('fs');
 
 const chrome = require('../../chrome');
-const proxy = require('../../proxy');
 const symbols = require('../../lib/symbols');
 const test = require('../../lib/test');
-const webdriver = require('../..');
-
 
 describe('chrome.Options', function() {
   describe('addArguments', function() {

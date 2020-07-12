@@ -50,7 +50,7 @@ def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(dr
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
 
-    driver.find_element_by_link_text("Open new window").click()
+    driver.find_element(By.LINK_TEXT, "Open new window").click()
     assert driver.title == "XHTML Test Page"
     handles = driver.window_handles
     handles.remove(current)
@@ -59,7 +59,7 @@ def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(dr
 
     pages.load("iframes.html")
     handle = driver.current_window_handle
-    driver.find_element_by_id("iframe_page_heading")
+    driver.find_element(By.ID, "iframe_page_heading")
     driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
     assert driver.current_window_handle == handle
 
@@ -79,6 +79,7 @@ def testShouldThrowNoSuchWindowException(driver, pages):
         driver.switch_to.window("invalid name")
 
 
+@pytest.mark.xfail_safari
 def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
@@ -110,10 +111,11 @@ def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(driver, 
         driver.title
 
     with pytest.raises(NoSuchWindowException):
-        driver.find_element_by_tag_name("body")
+        driver.find_element(By.TAG_NAME, "body")
 
 
 @pytest.mark.xfail_ie
+@pytest.mark.xfail_safari
 def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
@@ -123,7 +125,7 @@ def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(d
     handles = driver.window_handles
     handles.remove(current)
     driver.switch_to.window(handles[0])
-    element = driver.find_element_by_tag_name("body")
+    element = driver.find_element(By.TAG_NAME, "body")
     driver.close()
 
     with pytest.raises(NoSuchWindowException):
@@ -134,27 +136,28 @@ def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(driv
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
-    driver.find_element_by_name("windowThree").click()
+    driver.find_element(By.NAME, "windowThree").click()
     WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
     handles = driver.window_handles
     handles.remove(current)
     driver.switch_to.window(handles[0])
-    driver.find_element_by_id("close").click()
+    driver.find_element(By.ID, "close").click()
     driver.switch_to.window(current)
-    driver.find_element_by_id("linkId")
+    driver.find_element(By.ID, "linkId")
 
 
+@pytest.mark.xfail_safari
 def testCanCallGetWindowHandlesAfterClosingAWindow(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
-    driver.find_element_by_name("windowThree").click()
+    driver.find_element(By.NAME, "windowThree").click()
     WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
     handles = driver.window_handles
     handles.remove(current)
     driver.switch_to.window(handles[0])
 
-    driver.find_element_by_id("close").click()
+    driver.find_element(By.ID, "close").click()
     WebDriverWait(driver, 3).until(EC.number_of_windows_to_be(1))
 
 
@@ -173,21 +176,22 @@ def testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs(driver, pages):
     assert current == new_handle
 
 
+@pytest.mark.xfail_safari
 def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
     handles = driver.window_handles
-    driver.find_element_by_name("windowThree").click()
+    driver.find_element(By.NAME, "windowThree").click()
     WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
     handles = driver.window_handles
     handles.remove(current)
     driver.switch_to.window(handles[0])
 
     with pytest.raises(WebDriverException):
-        driver.find_element_by_id("close").click()
+        driver.find_element(By.ID, "close").click()
         all_handles = driver.window_handles
         assert 1 == len(all_handles)
-        driver.find_element_by_id("close")
+        driver.find_element(By.ID, "close")
     driver.switch_to.window(current)
 
 

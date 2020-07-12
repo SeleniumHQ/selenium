@@ -1,0 +1,11 @@
+java_library(
+    name = "empty",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing-lib",
+    ],
+)

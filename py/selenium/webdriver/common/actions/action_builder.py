@@ -38,7 +38,7 @@ class ActionBuilder(object):
         try:
             idx = self.devices.index(name)
             return self.devices[idx]
-        except:
+        except Exception:
             pass
 
     @property
@@ -73,6 +73,7 @@ class ActionBuilder(object):
             encoded = device.encode()
             if encoded['actions']:
                 enc["actions"].append(encoded)
+                device.actions = []
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
     def clear_actions(self):

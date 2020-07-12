@@ -248,6 +248,114 @@ class By {
     // The static By.name() overrides this.constructor.name.  Shame...
     return `By(${this.using}, ${this.value})`;
   }
+
+  toObject() {
+    var tmp = {};
+    tmp[this.using] = this.value;
+    return tmp;
+  }
+}
+
+function withTagName(tagName) {
+  return new RelativeBy(tagName);
+}
+
+
+/**
+ * Describes a mechanism for locating an element relative to others
+ * on the page.
+ * @final
+ */
+class RelativeBy {
+
+  /**
+   * @param {string} tagName
+   * @param {Array<Object>} filters
+   */
+  constructor(tagName, filters = null) {
+    this.root = tagName;
+    this.filters = filters || [];
+  }
+
+  /**
+   * Look for elements above the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  above(locatorOrElement) {
+    this.filters.push({ "kind": "above", "args": [this.getLocator(locatorOrElement)] });
+    return this;
+  }
+
+  /**
+   * Look for elements below the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  below(locatorOrElement) {
+    this.filters.push({ "kind": "below", "args": [this.getLocator(locatorOrElement)] });
+    return this;
+  }
+
+  /**
+   * Look for elements left the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  toLeftOf(locatorOrElement) {
+    this.filters.push({ "kind": "left", "args": [this.getLocator(locatorOrElement)] });
+    return this;
+  }
+
+  /**
+  * Look for elements right the root element passed in
+  * @param {string|WebElement} locatorOrElement
+  * @return {!RelativeBy} Return this object
+  */
+  toRightOf(locatorOrElement) {
+    this.filters.push({ "kind": "right", "args": [this.getLocator(locatorOrElement)] });
+    return this;
+  }
+
+  /**
+  * Look for elements near the root element passed in
+  * @param {string|WebElement} locatorOrElement
+  * @return {!RelativeBy} Return this object
+  */
+  near(locatorOrElement) {
+    this.filters.push({ "kind": "near", "args": [this.getLocator(locatorOrElement)]});
+    return this;
+  }
+
+  /**
+   * Returns a marshalled version of the {@link RelativeBy}
+   * @return {!Object} Object representation of a {@link WebElement}
+   *     that will be used in {@link #findElements}.
+   */
+  marshall() {
+    return {
+      "relative": {
+        "root": {"css selector": this.root},
+        "filters": this.filters,
+      }
+    }
+  }
+
+  getLocator(locatorOrElement) {
+    let toFind;
+    if (locatorOrElement instanceof By) {
+      toFind = locatorOrElement.toObject();
+    } else {
+      toFind = locatorOrElement;
+    }
+    return toFind;
+  }
+
+  /** @override */
+  toString() {
+    // The static By.name() overrides this.constructor.name.  Shame...
+    return `RelativeBy(${JSON.stringify(this.marshall())})`;
+  }
 }
 
 
@@ -284,5 +392,7 @@ function check(locator) {
 
 module.exports = {
   By: By,
+  RelativeBy: RelativeBy,
+  withTagName: withTagName,
   checkedLocator: check,
 };

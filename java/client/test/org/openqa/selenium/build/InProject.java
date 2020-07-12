@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.build;
 
-import com.google.common.base.Preconditions;
+import static org.openqa.selenium.Platform.WINDOWS;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.FileNotFoundException;
@@ -38,7 +39,6 @@ public class InProject {
    *         be found
    */
   public static Path locate(String... paths) {
-    Preconditions.checkArgument(paths.length > 0);
     return Stream.of(paths)
         .map(path -> Paths.get(path))
         .filter(path -> Files.exists(path))
@@ -59,9 +59,12 @@ public class InProject {
   }
 
   public static Path findProjectRoot() {
-    Path dir = findRunfilesRoot();
-    if (dir != null) {
-      return dir.resolve("selenium").normalize();
+    Path dir;
+    if (!Platform.getCurrent().is(WINDOWS)) {
+      dir = findRunfilesRoot();
+      if (dir != null) {
+        return dir.resolve("selenium").normalize();
+      }
     }
 
     // Find the rakefile first
@@ -74,7 +77,11 @@ public class InProject {
       }
       dir = dir.getParent();
     }
-    Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking", pwd);
+
+    if (dir == null) {
+      throw new IllegalStateException(String.format("Unable to find root of project in %s when looking", pwd));
+    }
+
     return dir.normalize();
   }
 

@@ -26,7 +26,6 @@ const error = require('../../lib/error');
 const fileServer = require('../../lib/test/fileserver');
 const io = require('../../io');
 const test = require('../../lib/test');
-const webdriver = require('../..');
 
 test.suite(function(env) {
   let driver;
@@ -45,6 +44,22 @@ test.suite(function(env) {
     await driver.sendDevToolsCommand(
         'Page.navigate', {url: test.Pages.echoPage});
     assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
+  });
+
+  
+  it('can send commands to devtools and get return', async function() {
+    await driver.get(test.Pages.ajaxyPage);
+    assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage);
+
+    await driver.get(test.Pages.echoPage);
+    assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
+
+    let history = await driver.sendDevToolsCommandAndGetReturn(
+        'Page.getNavigationHistory');
+    assert(history);
+    assert(history.currentIndex >= 2);
+    assert.equal(history.entries[history.currentIndex].url, test.Pages.echoPage);
+    assert.equal(history.entries[history.currentIndex-1].url, test.Pages.ajaxyPage);
   });
 
   describe('setDownloadPath', function() {

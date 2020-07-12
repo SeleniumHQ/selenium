@@ -85,3 +85,11 @@ py_import(
     ],
     wheel = "urllib3-1.23-py2.py3-none-any.whl",
 )
+
+py_import(
+    name = "certifi",
+    visibility = [
+        "//visibility:public",
+    ],
+    wheel = "certifi-2018.8.24-py2.py3-none-any.whl",
+)

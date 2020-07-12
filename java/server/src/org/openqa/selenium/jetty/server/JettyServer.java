@@ -36,6 +36,7 @@ import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.WrapExceptions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -46,7 +47,6 @@ import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.EnumSet;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -62,7 +62,7 @@ public class JettyServer implements Server<JettyServer> {
   private final HttpHandler handler;
 
   public JettyServer(BaseServerOptions options, HttpHandler handler) {
-    this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
+    this.handler = Require.nonNull("Handler", handler);
     int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
 
     String host = options.getHostname().orElseGet(() -> {

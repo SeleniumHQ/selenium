@@ -31,8 +31,6 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.collect.ImmutableList;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
@@ -50,6 +48,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,7 +93,7 @@ public class UploadTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = SAFARI, reason = "Returns wrong text of the frame body")
   public void testMultipleFileUploading() {
-    List<String> multiContent = ImmutableList.of(LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT);
+    List<String> multiContent = Arrays.asList(LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT);
     String fileNames = multiContent.stream()
         .map(text -> "<div>" + text + "</div>")
         .map(this::createTmpFile)

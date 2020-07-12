@@ -9,5 +9,8 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/config",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
+        artifact("io.ous:jtoml"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
     ],
 )

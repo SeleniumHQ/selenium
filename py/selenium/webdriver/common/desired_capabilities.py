@@ -107,20 +107,13 @@ class DesiredCapabilities(object):
         "platform": "MAC",
     }
 
-    ANDROID = {
-        "browserName": "android",
-        "version": "",
-        "platform": "ANDROID",
-    }
-
-    PHANTOMJS = {
-        "browserName": "phantomjs",
+    WEBKITGTK = {
+        "browserName": "MiniBrowser",
         "version": "",
         "platform": "ANY",
-        "javascriptEnabled": True,
     }
 
-    WEBKITGTK = {
+    WPEWEBKIT = {
         "browserName": "MiniBrowser",
         "version": "",
         "platform": "ANY",

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -32,6 +30,8 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -65,7 +65,7 @@ public class SessionMapTest {
         new URI("http://localhost:1234"),
         new ImmutableCapabilities());
 
-    Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+    Tracer tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
     local = new LocalSessionMap(tracer, bus);

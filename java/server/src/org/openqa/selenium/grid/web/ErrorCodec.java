@@ -46,11 +46,11 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.ScreenshotException;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 // TODO(simon): Push back into the remote jar and centralise all error decoding and encoding.
@@ -100,7 +100,7 @@ public class ErrorCodec {
   }
 
   public Map<String, Object> encode(Throwable throwable) {
-    Objects.requireNonNull(throwable, "Throwable to encode must not be null.");
+    Require.nonNull("Throwable to encode", throwable);
 
     W3CError err = fromThrowable(throwable);
 
@@ -112,7 +112,7 @@ public class ErrorCodec {
   }
 
   public int getHttpStatusCode(Throwable throwable) {
-    Objects.requireNonNull(throwable, "Throwable to encode must not be null.");
+    Require.nonNull("Throwable to encode", throwable);
 
     return fromThrowable(throwable).httpErrorCode;
   }

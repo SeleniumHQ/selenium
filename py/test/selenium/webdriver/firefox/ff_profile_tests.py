@@ -30,6 +30,7 @@ except NameError:
     unicode = str
 
 from selenium.webdriver import Firefox, FirefoxProfile
+from selenium.webdriver.common.by import By
 
 
 def test_that_we_can_accept_a_profile(capabilities, webserver):
@@ -133,7 +134,7 @@ def test_add_extension_web_extension_with_id(capabilities, webserver):
     extension_path_in_profile = os.path.join(profile_path, 'extensions', 'webextensions-selenium-example@example.com')
     assert os.path.exists(extension_path_in_profile)
     driver.get(webserver.where_is('simpleTest.html'))
-    driver.find_element_by_id('webextensions-selenium-example')
+    driver.find_element(By.ID, 'webextensions-selenium-example')
     driver.quit()
 
 

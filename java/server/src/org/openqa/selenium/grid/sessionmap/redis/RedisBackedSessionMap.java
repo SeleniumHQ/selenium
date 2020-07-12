@@ -19,11 +19,6 @@ package org.openqa.selenium.grid.sessionmap.redis;
 
 import com.google.common.collect.ImmutableMap;
 import io.lettuce.core.KeyValue;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.api.sync.RedisCommands;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -32,26 +27,25 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.redis.GridRedisClient;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
 
-public class RedisBackedSessionMap extends SessionMap implements Closeable {
+public class RedisBackedSessionMap extends SessionMap {
 
   private static final Json JSON = new Json();
-  private final RedisClient client;
-  private final StatefulRedisConnection<String, String> connection;
+  private final GridRedisClient connection;
 
   public RedisBackedSessionMap(Tracer tracer, URI serverUri) {
     super(tracer);
 
-    client = RedisClient.create(RedisURI.create(serverUri));
-    connection = client.connect();
+    connection = new GridRedisClient(serverUri);
   }
 
   public static SessionMap create(Config config) {
@@ -63,10 +57,9 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public boolean add(Session session) {
-    Objects.requireNonNull(session, "Session to add must be set.");
+    Require.nonNull("Session to add", session);
 
-    RedisCommands<String, String> commands = connection.sync();
-    commands.mset(
+    connection.mset(
       ImmutableMap.of(
         uriKey(session.getId()), session.getUri().toString(),
         capabilitiesKey(session.getId()), JSON.toJson(session.getCapabilities())));
@@ -76,12 +69,11 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public Session get(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
     URI uri = getUri(id);
 
-    RedisCommands<String, String> commands = connection.sync();
-    String rawCapabilities = commands.get(capabilitiesKey(id));
+    String rawCapabilities = connection.get(capabilitiesKey(id));
     Capabilities caps = rawCapabilities == null ?
       new ImmutableCapabilities() :
       JSON.toType(rawCapabilities, Capabilities.class);
@@ -91,11 +83,9 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public URI getUri(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
-    RedisCommands<String, String> commands = connection.sync();
-
-    List<KeyValue<String, String>> rawValues = commands.mget(uriKey(id), capabilitiesKey(id));
+    List<KeyValue<String, String>> rawValues = connection.mget(uriKey(id), capabilitiesKey(id));
 
     String rawUri = rawValues.get(0).getValueOrElse(null);
     if (rawUri == null) {
@@ -111,26 +101,24 @@ public class RedisBackedSessionMap extends SessionMap implements Closeable {
 
   @Override
   public void remove(SessionId id) {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
-    RedisCommands<String, String> commands = connection.sync();
-
-    commands.del(uriKey(id), capabilitiesKey(id));
+    connection.del(uriKey(id), capabilitiesKey(id));
   }
 
   @Override
-  public void close() {
-    client.shutdown();
+  public boolean isReady() {
+    return connection.isOpen();
   }
 
   private String uriKey(SessionId id) {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
     return "session:" + id.toString() + ":uri";
   }
 
   private String capabilitiesKey(SessionId id) {
-    Objects.requireNonNull(id, "Session ID to use must be set.");
+    Require.nonNull("Session ID", id);
 
     return "session:" + id.toString() + ":capabilities";
   }

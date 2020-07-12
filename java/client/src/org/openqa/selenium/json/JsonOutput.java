@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LogLevelMapping;
 
 import java.io.Closeable;
@@ -103,7 +104,7 @@ public class JsonOutput implements Closeable {
   private String indentBy = "  ";
 
   JsonOutput(Appendable appendable) {
-    this.appendable = Objects.requireNonNull(appendable);
+    this.appendable = Require.nonNull("Underlying appendable", appendable);
 
     this.appender =
         str -> {

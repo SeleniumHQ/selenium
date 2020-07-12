@@ -28,6 +28,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
@@ -57,14 +58,16 @@ import static java.util.stream.Collectors.joining;
 public class CdpClientGenerator {
 
   public static void main(String[] args) throws IOException {
-    Path source = Paths.get("java/client/src/org/openqa/selenium/devtools");
+    Path browserProtocol = Paths.get(args[0]);
+    Path jsProtocol = Paths.get(args[1]);
+
     Path target = Files.createTempDirectory("devtools");
     String devtoolsDir = "org/openqa/selenium/devtools/";
 
     Model model = new Model("org.openqa.selenium.devtools");
-    Stream.of("browser_protocol.json", "js_protocol.json").forEach(protoFile -> {
+    Stream.of(browserProtocol, jsProtocol).forEach(protoFile -> {
       try {
-        String text = String.join("\n", Files.readAllLines(source.resolve(protoFile)));
+        String text = String.join("\n", Files.readAllLines(protoFile));
         Map<String, Object> json = new Json().toType(text, Json.MAP_TYPE);
         model.parse(json);
       } catch (IOException e) {
@@ -73,7 +76,7 @@ public class CdpClientGenerator {
     });
     model.dumpTo(target);
 
-    Path outputJar = Paths.get(args[0]);
+    Path outputJar = Paths.get(args[2]).toAbsolutePath();
     Files.createDirectories(outputJar.getParent());
 
     try (OutputStream os = Files.newOutputStream(outputJar);
@@ -481,6 +484,9 @@ public class CdpClientGenerator {
     }
 
     public String getJavaType() {
+      if (optional) {
+        return String.format("java.util.Optional<%s>", type.getJavaType());
+      }
       return type.getJavaType();
     }
 
@@ -606,6 +612,7 @@ public class CdpClientGenerator {
                       VariableSpec field = new VariableSpec(command.domain);
                       field.name = item.name;
                       field.description = item.description;
+                      field.optional = item.optional;
                       field.type = item.type;
                       return field;
                     }).collect(Collectors.toList());
@@ -924,18 +931,29 @@ public class CdpClientGenerator {
       fromJson.addParameter(JsonInput.class, "input");
       BlockStmt body = fromJson.getBody().get();
       if (properties.size() > 0) {
-        properties.forEach(property -> body.addStatement(
-            String.format("%s %s = null;", property.getJavaType(), property.getFieldName())));
+        properties.forEach(property -> {
+          if (property.optional) {
+            body.addStatement(String.format("%s %s = java.util.Optional.empty();", property.getJavaType(), property.getFieldName()));
+          } else {
+            body.addStatement(String.format("%s %s = null;", property.getJavaType(), property.getFieldName()));
+          }
+        });
 
         body.addStatement("input.beginObject();");
         body.addStatement(
             "while (input.hasNext()) {"
             + "switch (input.nextName()) {"
-            + properties.stream().map(property -> String.format(
+            + properties.stream().map(property -> {
+              String mapper = String.format(
+                property.optional ? "java.util.Optional.ofNullable(%s)" : "%s",
+                property.type.getMapper());
+
+              return String.format(
                 "case \"%s\":"
-                + "  %s = %s;"
-                + "  break;",
-                property.name, property.getFieldName(), property.type.getMapper()))
+                  + "  %s = %s;"
+                  + "  break;",
+                property.name, property.getFieldName(), mapper);
+            })
                 .collect(joining("\n"))
             + "  default:\n"
             + "    input.skipValue();\n"

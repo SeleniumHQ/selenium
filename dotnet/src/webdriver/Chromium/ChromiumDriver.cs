@@ -28,6 +28,9 @@ using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chromium
 {
+    /// <summary>
+    /// Provides an abstract way to access Chromium-based browsers to run tests.
+    /// </summary>
     public abstract class ChromiumDriver : RemoteWebDriver, ISupportsLogs, IDevTools
     {
         /// <summary>
@@ -71,6 +74,16 @@ namespace OpenQA.Selenium.Chromium
             this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
             this.AddCustomChromeCommand(SendChromeCommandWithResult, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromiumDriver"/> class
+        /// </summary>
+        /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        protected ChromiumDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+            : base(commandExecutor, desiredCapabilities)
+        {
         }
 
         /// <summary>
@@ -131,6 +144,12 @@ namespace OpenQA.Selenium.Chromium
             this.Execute(SendChromeCommand, parameters);
         }
 
+        /// <summary>
+        /// Executes a custom Chrome command.
+        /// </summary>
+        /// <param name="commandName">Name of the command to execute.</param>
+        /// <param name="commandParameters">Parameters of the command to execute.</param>
+        /// <returns>An object representing the result of the command.</returns>
         public object ExecuteChromeCommandWithResult(string commandName, Dictionary<string, object> commandParameters)
         {
             if (commandName == null)

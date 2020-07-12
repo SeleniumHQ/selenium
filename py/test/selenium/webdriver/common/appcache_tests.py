@@ -23,8 +23,9 @@ from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_chromiumedge
-@pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote
+@pytest.mark.xfail_safari
 def testWeCanGetTheStatusOfTheAppCache(driver, pages):
     pages.load('html5Page')
     driver.implicitly_wait(2)

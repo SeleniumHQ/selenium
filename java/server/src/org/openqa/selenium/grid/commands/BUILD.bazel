@@ -6,6 +6,7 @@ java_library(
     resources = glob(["*.txt"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     runtime_deps = [
         "//java/server/src/org/openqa/selenium/events/local",
@@ -13,13 +14,16 @@ java_library(
     deps = [
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid:base-command",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/local",
         "//java/server/src/org/openqa/selenium/grid/docker",
+        "//java/server/src/org/openqa/selenium/grid/graphql",
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/config",
@@ -30,6 +34,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/netty/server",
+        "//java/server/src/org/openqa/selenium/status",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],

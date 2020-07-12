@@ -3,19 +3,20 @@ load("//java:defs.bzl", "java_test_suite")
 
 java_library(
     name = "test-base",
+    srcs = [
+        "InternalSelenseTestBase.java",
+    ],
     resource_strip_prefix = "java/client/test",
     resources = [
         "testHelpers.js",
-    ],
-    srcs = [
-        "InternalSelenseTestBase.java",
     ],
     deps = [
         "//java/client/src/com/thoughtworks/selenium:leg-rc",
         "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/edge",
-        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/edgehtml",
         "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/opera",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/safari",
@@ -31,24 +32,30 @@ java_library(
 java_test_suite(
     name = "LargeTests",
     size = "large",
-    test_identifiers = ["Test", "Test.java"],
+    srcs = glob(
+        [
+            "*.java",
+            "condition/*.java",
+            "corebased/*.java",
+        ],
+        exclude = [
+            "InternalSelenseTestBase.java",
+        ],
+    ),
     jvm_flags = [
         "-Dselenium.browser=chrome",
+    ],
+    resource_strip_prefix = "java/client/test",
+    resources = [
+        "testHelpers.js",
     ],
     tags = [
         "flaky",
         "no-sandbox",
     ],
-    srcs = glob([
-        "*.java",
-        "condition/*.java",
-        "corebased/*.java",
-    ], exclude = [
-        "InternalSelenseTestBase.java",
-    ]),
-    resource_strip_prefix = "java/client/test",
-    resources = [
-        "testHelpers.js",
+    test_identifiers = [
+        "Test",
+        "Test.java",
     ],
     deps = [
         ":test-base",

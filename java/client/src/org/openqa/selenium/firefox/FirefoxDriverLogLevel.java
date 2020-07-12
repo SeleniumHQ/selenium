@@ -34,7 +34,7 @@ public enum FirefoxDriverLogLevel {
   ERROR,
   FATAL;
 
-  private final static Map<Level, FirefoxDriverLogLevel> logLevelToGeckoLevelMap
+  private static final Map<Level, FirefoxDriverLogLevel> logLevelToGeckoLevelMap
       = new ImmutableMap.Builder<Level, FirefoxDriverLogLevel>()
       .put(Level.ALL, TRACE)
       .put(Level.FINEST, TRACE)

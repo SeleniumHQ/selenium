@@ -28,7 +28,7 @@ const safari = require('../safari');
 const test = require('../lib/test');
 const {Browser} = require('../lib/capabilities');
 const {Pages} = require('../lib/test');
-const {Builder, Capabilities, WebDriver} = require('..');
+const {Builder, Capabilities} = require('..');
 
 
 test.suite(function(env) {

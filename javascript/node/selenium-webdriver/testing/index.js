@@ -33,38 +33,38 @@
 'use strict';
 
 const {isatty} = require('tty');
-
 const chrome = require('../chrome');
 const edge = require('../edge');
 const firefox = require('../firefox');
 const ie = require('../ie');
 const remote = require('../remote');
 const safari = require('../safari');
+const opera = require('../opera');
 const {Browser} = require('../lib/capabilities');
 const {Builder} = require('../index');
 
 
 /**
- * Describes a browser targetted by a {@linkplain suite test suite}.
+ * Describes a browser targeted by a {@linkplain suite test suite}.
  * @record
  */
 function TargetBrowser() {}
 
 /**
- * The {@linkplain Browser name} of the targetted browser.
+ * The {@linkplain Browser name} of the targeted browser.
  * @type {string}
  */
 TargetBrowser.prototype.name;
 
 /**
- * The specific version of the targetted browser, if any.
+ * The specific version of the targeted browser, if any.
  * @type {(string|undefined)}
  */
 TargetBrowser.prototype.version;
 
 /**
  * The specific {@linkplain ../lib/capabilities.Platform platform} for the
- * targetted browser, if any.
+ * targeted browser, if any.
  * @type {(string|undefined)}.
  */
 TargetBrowser.prototype.platform;
@@ -116,18 +116,21 @@ function getAvailableBrowsers() {
   let targets = [
     [chrome.locateSynchronously, Browser.CHROME],
     [edge.locateSynchronously, Browser.EDGE],
+    [() => edge.locateSynchronously("msedge"), Browser.EDGE, { "ms:edgeChromium": true }],
     [firefox.locateSynchronously, Browser.FIREFOX],
     [ie.locateSynchronously, Browser.IE],
     [safari.locateSynchronously, Browser.SAFARI],
+    [opera.locateSynchronously, Browser.OPERA],
   ];
 
   let availableBrowsers = [];
   for (let pair of targets) {
     const fn = pair[0];
     const name = pair[1];
+    const capabilities = pair[2];
     if (fn()) {
       info(`... located ${name}`);
-      availableBrowsers.push({name});
+      availableBrowsers.push({name, capabilities});
     }
   }
 
@@ -158,10 +161,10 @@ let seleniumServer;
  *     SELENIUM_BROWSER=chrome,firefox mocha --recursive tests/
  *
  * The `SELENIUM_REMOTE_URL` environment variable may be set to configure tests
- * to run againt an externally managed (usually remote) Selenium server. When
+ * to run against an externally managed (usually remote) Selenium server. When
  * set, the WebDriver builder provided by each
  * {@linkplain TestEnvironment#builder TestEnvironment} will automatically be
- * configured to use this server instead of starting a browser drively locally.
+ * configured to use this server instead of starting a browser driver locally.
  *
  * The `SELENIUM_SERVER_JAR` environment variable may be set to the path of a
  * standalone Selenium server on the local machine that should be used for
@@ -284,6 +287,11 @@ class Environment {
     const realBuild = builder.build;
     builder.build = function() {
       builder.forBrowser(browser.name, browser.version, browser.platform);
+
+      if (browser.capabilities) {
+        builder.getCapabilities().merge(browser.capabilities);
+      }
+
       if (typeof urlOrServer === 'string') {
         builder.usingServer(urlOrServer);
       } else if (urlOrServer) {
@@ -490,7 +498,6 @@ function getTestHook(name) {
 
 module.exports = {
   Environment,
-  TargetBrowser,
   SuiteOptions,
   init,
   ignore,

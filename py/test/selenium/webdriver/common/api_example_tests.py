@@ -37,6 +37,7 @@ from selenium.common.exceptions import (
     NoSuchWindowException,
     TimeoutException,
     WebDriverException)
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -55,90 +56,90 @@ def testGetCurrentUrl(driver, pages, webserver):
 
 def testFindElementsByXPath(driver, pages):
     pages.load("simpleTest.html")
-    elem = driver.find_element_by_xpath("//h1")
+    elem = driver.find_element(By.XPATH, "//h1")
     assert "Heading" == elem.text
 
 
 def testFindElementByXpathThrowNoSuchElementException(driver, pages):
     pages.load("simpleTest.html")
     with pytest.raises(NoSuchElementException):
-        driver.find_element_by_xpath("//h4")
+        driver.find_element(By.XPATH, "//h4")
 
 
 def testFindElementsByXpath(driver, pages):
     pages.load("nestedElements.html")
-    elems = driver.find_elements_by_xpath("//option")
+    elems = driver.find_elements(By.XPATH, "//option")
     assert 48 == len(elems)
     assert "One" == elems[0].get_attribute("value")
 
 
 def testFindElementsByName(driver, pages):
     pages.load("xhtmlTest.html")
-    elem = driver.find_element_by_name("windowOne")
+    elem = driver.find_element(By.NAME, "windowOne")
     assert "Open new window" == elem.text
 
 
 def testFindElementsByNameInElementContext(driver, pages):
     pages.load("nestedElements.html")
-    elem = driver.find_element_by_name("form2")
-    sub_elem = elem.find_element_by_name("selectomatic")
+    elem = driver.find_element(By.NAME, "form2")
+    sub_elem = elem.find_element(By.NAME, "selectomatic")
     assert "2" == sub_elem.get_attribute("id")
 
 
 def testFindElementsByLinkTextInElementContext(driver, pages):
     pages.load("nestedElements.html")
-    elem = driver.find_element_by_name("div1")
-    sub_elem = elem.find_element_by_link_text("hello world")
+    elem = driver.find_element(By.NAME, "div1")
+    sub_elem = elem.find_element(By.LINK_TEXT, "hello world")
     assert "link1" == sub_elem.get_attribute("name")
 
 
 def testFindElementByIdInElementContext(driver, pages):
     pages.load("nestedElements.html")
-    elem = driver.find_element_by_name("form2")
-    sub_elem = elem.find_element_by_id("2")
+    elem = driver.find_element(By.NAME, "form2")
+    sub_elem = elem.find_element(By.ID, "2")
     assert "selectomatic" == sub_elem.get_attribute("name")
 
 
 def testFindElementByXpathInElementContext(driver, pages):
     pages.load("nestedElements.html")
-    elem = driver.find_element_by_name("form2")
-    sub_elem = elem.find_element_by_xpath("select")
+    elem = driver.find_element(By.NAME, "form2")
+    sub_elem = elem.find_element(By.XPATH, "select")
     assert "2" == sub_elem.get_attribute("id")
 
 
 def testFindElementByXpathInElementContextNotFound(driver, pages):
     pages.load("nestedElements.html")
-    elem = driver.find_element_by_name("form2")
+    elem = driver.find_element(By.NAME, "form2")
     with pytest.raises(NoSuchElementException):
-        elem.find_element_by_xpath("div")
+        elem.find_element(By.XPATH, "div")
 
 
 def testShouldBeAbleToEnterDataIntoFormFields(driver, pages):
     pages.load("xhtmlTest.html")
-    elem = driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
+    elem = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
     elem.clear()
     elem.send_keys("some text")
-    elem = driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
+    elem = driver.find_element(By.XPATH, "//form[@name='someForm']/input[@id='username']")
     assert "some text" == elem.get_attribute("value")
 
 
 def testFindElementByTagName(driver, pages):
     pages.load("simpleTest.html")
-    elems = driver.find_elements_by_tag_name("div")
-    num_by_xpath = len(driver.find_elements_by_xpath("//div"))
+    elems = driver.find_elements(By.TAG_NAME, "div")
+    num_by_xpath = len(driver.find_elements(By.XPATH, "//div"))
     assert num_by_xpath == len(elems)
-    elems = driver.find_elements_by_tag_name("iframe")
+    elems = driver.find_elements(By.TAG_NAME, "iframe")
     assert 0 == len(elems)
 
 
 def testFindElementByTagNameWithinElement(driver, pages):
     pages.load("simpleTest.html")
-    div = driver.find_element_by_id("multiline")
-    elems = div.find_elements_by_tag_name("p")
+    div = driver.find_element(By.ID, "multiline")
+    elems = div.find_elements(By.TAG_NAME, "p")
     assert len(elems) == 1
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason="W3C implementations can't switch to a window by name",
     raises=TimeoutException,
     run=False)
@@ -148,7 +149,7 @@ def testSwitchToWindow(driver, pages):
     switch_to_window_timeout = 5
     wait = WebDriverWait(driver, switch_to_window_timeout, ignored_exceptions=[NoSuchWindowException])
     pages.load("xhtmlTest.html")
-    driver.find_element_by_link_text("Open new window").click()
+    driver.find_element(By.LINK_TEXT, "Open new window").click()
     assert title_1 == driver.title
     wait.until(lambda dr: dr.switch_to.window("result") is None)
     assert title_2 == driver.title
@@ -156,24 +157,24 @@ def testSwitchToWindow(driver, pages):
 
 def testSwitchFrameByName(driver, pages):
     pages.load("frameset.html")
-    driver.switch_to.frame(driver.find_element_by_name("third"))
-    checkbox = driver.find_element_by_id("checky")
+    driver.switch_to.frame(driver.find_element(By.NAME, "third"))
+    checkbox = driver.find_element(By.ID, "checky")
     checkbox.click()
     checkbox.submit()
 
 
 def testIsEnabled(driver, pages):
     pages.load("formPage.html")
-    elem = driver.find_element_by_xpath("//input[@id='working']")
+    elem = driver.find_element(By.XPATH, "//input[@id='working']")
     assert elem.is_enabled()
-    elem = driver.find_element_by_xpath("//input[@id='notWorking']")
+    elem = driver.find_element(By.XPATH, "//input[@id='notWorking']")
     assert not elem.is_enabled()
 
 
 def testIsSelectedAndToggle(driver, pages):
     pages.load("formPage.html")
-    elem = driver.find_element_by_id("multi")
-    option_elems = elem.find_elements_by_xpath("option")
+    elem = driver.find_element(By.ID, "multi")
+    option_elems = elem.find_elements(By.XPATH, "option")
     assert option_elems[0].is_selected()
     option_elems[0].click()
     assert not option_elems[0].is_selected()
@@ -184,7 +185,7 @@ def testIsSelectedAndToggle(driver, pages):
 
 def testNavigate(driver, pages):
     pages.load("formPage.html")
-    driver.find_element_by_id("imageButton").submit()
+    driver.find_element(By.ID, "imageButton").submit()
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
     driver.back()
     assert "We Leave From Here" == driver.title
@@ -195,14 +196,14 @@ def testNavigate(driver, pages):
 def testGetAttribute(driver, pages):
     url = pages.url('xhtmlTest.html')
     driver.get(url)
-    elem = driver.find_element_by_id("id1")
+    elem = driver.find_element(By.ID, "id1")
     attr = elem.get_attribute("href")
     assert '{0}#'.format(url) == attr
 
 
 def testGetImplicitAttribute(driver, pages):
     pages.load("nestedElements.html")
-    elems = driver.find_elements_by_xpath("//option")
+    elems = driver.find_elements(By.XPATH, "//option")
     assert len(elems) >= 3
     for i, elem in enumerate(elems[:3]):
         assert i == int(elem.get_attribute("index"))
@@ -235,21 +236,21 @@ def testExecuteScriptWithMultipleArgs(driver, pages):
 
 def testExecuteScriptWithElementArgs(driver, pages):
     pages.load("javascriptPage.html")
-    button = driver.find_element_by_id("plainButton")
+    button = driver.find_element(By.ID, "plainButton")
     result = driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)
     assert "plainButton" == result
 
 
 def testFindElementsByPartialLinkText(driver, pages):
     pages.load("xhtmlTest.html")
-    elem = driver.find_element_by_partial_link_text("new window")
+    elem = driver.find_element(By.PARTIAL_LINK_TEXT, "new window")
     elem.click()
 
 
 def testIsElementDisplayed(driver, pages):
     pages.load("javascriptPage.html")
-    visible = driver.find_element_by_id("displayed").is_displayed()
-    not_visible = driver.find_element_by_id("hidden").is_displayed()
+    visible = driver.find_element(By.ID, "displayed").is_displayed()
+    not_visible = driver.find_element(By.ID, "hidden").is_displayed()
     assert visible
     assert not not_visible
 
@@ -285,15 +286,17 @@ def testChangeWindowSize(driver, pages):
     assert size['height'] == newSize[1]
 
 
-@pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote
+@pytest.mark.xfail_safari
 def testGetLogTypes(driver, pages):
     pages.load("blank.html")
     assert isinstance(driver.log_types, list)
 
 
-@pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote
+@pytest.mark.xfail_safari
 def testGetLog(driver, pages):
     pages.load("blank.html")
     for log_type in driver.log_types:

@@ -9,9 +9,11 @@ SMALL_TESTS = [
     "ImmutableCapabilitiesTest.java",
     "KeysTest.java",
     "OutputTypeTest.java",
+    "PersistentCapabilitiesTest.java",
     "PlatformTest.java",
     "PointTest.java",
     "ProxyTest.java",
+    "RequireTest.java",
     "WebDriverExceptionTest.java",
 ]
 
@@ -67,6 +69,7 @@ java_selenium_test_suite(
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",
         artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-codec-haproxy"),
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-transport"),
         artifact("junit:junit"),
@@ -83,14 +86,9 @@ java_library(
     srcs = glob([
         "*Test.java",
         "html5/*.java",
-        "internal/*Test.java",
         "interactions/*.java",
         "interactions/touch/*Test.java",
-        "io/*Test.java",
         "logging/*.java",
-        "net/*Test.java",
-        "os/*Test.java",
-        "virtualauthenticator/*Test.java",
     ]) + [
         "interactions/touch/TouchTestBase.java",
     ],

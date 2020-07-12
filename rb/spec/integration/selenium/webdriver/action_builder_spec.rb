@@ -53,7 +53,7 @@ module Selenium
           expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
         end
 
-        it 'can press and release modifier keys', except: {browser: %i[edge safari_preview]} do
+        it 'can press and release modifier keys', except: {browser: %i[edge safari]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -102,7 +102,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcd')
         end
 
-        it 'can release pressed keys via release action', except: {browser: :safari_preview} do
+        it 'can release pressed keys via release action', except: {browser: :safari} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -159,7 +159,8 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', except: {browser: :safari},
+        it 'can release pressed buttons via release action', except: [{browser: :safari},
+                                                                      {driver: :remote, browser: :ie}],
                                                              only: {browser: %i[edge chrome edge_chrome firefox ie]} do
           driver.navigate.to url_for('javascriptPage.html')
 

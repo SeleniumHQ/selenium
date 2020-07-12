@@ -47,14 +47,14 @@ def testShouldBeAbleToGetAFragmentOnTheCurrentPage(driver, pages):
     driver.find_element(by=By.ID, value="id1")
 
 
-@pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote(raises=WebDriverException)
 def testShouldReturnWhenGettingAUrlThatDoesNotResolve(driver):
     #  Of course, we're up the creek if this ever does get registered
     driver.get("http://www.thisurldoesnotexist.comx/")
 
 
-@pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote(raises=WebDriverException)
 def testShouldReturnWhenGettingAUrlThatDoesNotConnect(driver):
     #  Here's hoping that there's nothing here. There shouldn't be
@@ -81,6 +81,7 @@ def testShouldReturnWhenGettingAUrlThatDoesNotConnect(driver):
 #     self.assertEqual(driver.title, anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToNavigateBackInTheBrowserHistory(driver, pages):
     pages.load("formPage.html")
 
@@ -91,6 +92,7 @@ def testShouldBeAbleToNavigateBackInTheBrowserHistory(driver, pages):
     assert driver.title == "We Leave From Here"
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(driver, pages):
     pages.load("xhtmlTest.html")
 
@@ -116,7 +118,7 @@ def testShouldBeAbleToNavigateForwardsInTheBrowserHistory(driver, pages):
 
 
 @pytest.mark.xfail_ie
-@pytest.mark.xfail_marionette(run=False)
+@pytest.mark.xfail_firefox(run=False)
 @pytest.mark.xfail_remote(run=False)
 @pytest.mark.xfail_chrome(run=False)
 @pytest.mark.xfail_chromiumedge(run=False)

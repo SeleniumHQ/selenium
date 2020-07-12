@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote.server.commandhandler;
 
 import com.google.common.collect.ImmutableMap;
+
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -28,7 +30,6 @@ import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -42,8 +43,8 @@ public class NoSessionHandler implements HttpHandler {
   private final SessionId sessionId;
 
   public NoSessionHandler(Json json, SessionId sessionId) {
-    this.json = Objects.requireNonNull(json);
-    this.sessionId = Objects.requireNonNull(sessionId);
+    this.json = Require.nonNull("Json converter", json);
+    this.sessionId = Require.nonNull("Session id", sessionId);
   }
 
   @Override

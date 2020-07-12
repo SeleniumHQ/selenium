@@ -127,20 +127,13 @@
 
 'use strict';
 
-const fs = require('fs');
-const util = require('util');
-
 const http = require('./http');
 const io = require('./io');
-const {Browser, Capabilities, Capability} = require('./lib/capabilities');
+const {Browser, Capabilities} = require('./lib/capabilities');
 const command = require('./lib/command');
 const error = require('./lib/error');
-const logging = require('./lib/logging');
-const promise = require('./lib/promise');
-const Symbols = require('./lib/symbols');
-const webdriver = require('./lib/webdriver');
-const portprober = require('./net/portprober');
 const remote = require('./remote');
+const chromium = require('./chromium');
 
 
 /**
@@ -161,6 +154,10 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
+
+  SET_PERMISSION: 'setPermission',
+
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
@@ -205,6 +202,14 @@ function configureExecutor(executor) {
       'POST',
       '/session/:sessionId/chromium/send_command');
   executor.defineCommand(
+      Command.SEND_AND_GET_DEVTOOLS_COMMAND,
+      'POST',
+      '/session/:sessionId/chromium/send_command_and_get_result');
+  executor.defineCommand(
+      Command.SET_PERMISSION,
+      'POST',
+      '/session/:sessionId/permissions');
+  executor.defineCommand(
       Command.GET_CAST_SINKS,
       'GET',
       '/session/:sessionId/goog/cast/get_sinks');
@@ -243,7 +248,7 @@ function locateSynchronously() {
  * a [ChromeDriver](https://chromedriver.chromium.org/)
  * server in a child process.
  */
-class ServiceBuilder extends remote.DriverService.Builder {
+class ServiceBuilder extends chromium.ServiceBuilder {
   /**
    * @param {string=} opt_exe Path to the server executable to use. If omitted,
    *     the builder will attempt to locate the chromedriver on the current
@@ -262,58 +267,8 @@ class ServiceBuilder extends remote.DriverService.Builder {
     }
 
     super(exe);
-    this.setLoopback(true);  // Required
-  }
-
-  /**
-   * Sets which port adb is listening to. _The ChromeDriver will connect to adb
-   * if an {@linkplain Options#androidPackage Android session} is requested, but
-   * adb **must** be started beforehand._
-   *
-   * @param {number} port Which port adb is running on.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  setAdbPort(port) {
-    return this.addArguments('--adb-port=' + port);
-  }
-
-  /**
-   * Sets the path of the log file the driver should log to. If a log file is
-   * not specified, the driver will log to stderr.
-   * @param {string} path Path of the log file to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  loggingTo(path) {
-    return this.addArguments('--log-path=' + path);
-  }
-
-  /**
-   * Enables verbose logging.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  enableVerboseLogging() {
-    return this.addArguments('--verbose');
-  }
-
-  /**
-   * Sets the number of threads the driver should use to manage HTTP requests.
-   * By default, the driver will use 4 threads.
-   * @param {number} n The number of threads to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  setNumHttpThreads(n) {
-    return this.addArguments('--http-threads=' + n);
-  }
-
-  /**
-   * @override
-   */
-  setPath(path) {
-    super.setPath(path);
-    return this.addArguments('--url-base=' + path);
   }
 }
-
 
 
 /** @type {remote.DriverService} */
@@ -349,111 +304,10 @@ function getDefaultService() {
 }
 
 
-const OPTIONS_CAPABILITY_KEY = 'goog:chromeOptions';
-
-
 /**
  * Class for managing ChromeDriver specific options.
  */
-class Options extends Capabilities {
-  /**
-   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
-   *     capabilities to initialize this instance from.
-   */
-  constructor(other = undefined) {
-    super(other);
-
-    /** @private {!Object} */
-    this.options_ = this.get(OPTIONS_CAPABILITY_KEY) || {};
-
-    this.setBrowserName(Browser.CHROME);
-    this.set(OPTIONS_CAPABILITY_KEY, this.options_);
-  }
-
-  /**
-   * Add additional command line arguments to use when launching the Chrome
-   * browser.  Each argument may be specified with or without the "--" prefix
-   * (e.g. "--foo" and "foo"). Arguments with an associated value should be
-   * delimited by an "=": "foo=bar".
-   *
-   * @param {...(string|!Array<string>)} args The arguments to add.
-   * @return {!Options} A self reference.
-   */
-  addArguments(...args) {
-    let newArgs = (this.options_.args || []).concat(...args);
-    if (newArgs.length) {
-      this.options_.args = newArgs;
-    }
-    return this;
-  }
-
-  /**
-   * Configures the chromedriver to start Chrome in headless mode.
-   *
-   * > __NOTE:__ Resizing the browser window in headless mode is only supported
-   * > in Chrome 60. Users are encouraged to set an initial window size with
-   * > the {@link #windowSize windowSize({width, height})} option.
-   *
-   * > __NOTE__: For security, Chrome disables downloads by default when
-   * > in headless mode (to prevent sites from silently downloading files to
-   * > your machine). After creating a session, you may call
-   * > {@link ./chrome.Driver#setDownloadPath setDownloadPath} to re-enable
-   * > downloads, saving files in the specified directory.
-   *
-   * @return {!Options} A self reference.
-   */
-  headless() {
-    return this.addArguments('headless');
-  }
-
-  /**
-   * Sets the initial window size.
-   *
-   * @param {{width: number, height: number}} size The desired window size.
-   * @return {!Options} A self reference.
-   * @throws {TypeError} if width or height is unspecified, not a number, or
-   *     less than or equal to 0.
-   */
-  windowSize({width, height}) {
-    function checkArg(arg) {
-      if (typeof arg !== 'number' || arg <= 0) {
-        throw TypeError('Arguments must be {width, height} with numbers > 0');
-      }
-    }
-    checkArg(width);
-    checkArg(height);
-    return this.addArguments(`window-size=${width},${height}`);
-  }
-
-  /**
-   * List of Chrome command line switches to exclude that ChromeDriver by default
-   * passes when starting Chrome.  Do not prefix switches with "--".
-   *
-   * @param {...(string|!Array<string>)} args The switches to exclude.
-   * @return {!Options} A self reference.
-   */
-  excludeSwitches(...args) {
-    let switches = (this.options_.excludeSwitches || []).concat(...args);
-    if (switches.length) {
-      this.options_.excludeSwitches = switches;
-    }
-    return this;
-  }
-
-  /**
-   * Add additional extensions to install when launching Chrome. Each extension
-   * should be specified as the path to the packed CRX file, or a Buffer for an
-   * extension.
-   * @param {...(string|!Buffer|!Array<(string|!Buffer)>)} args The
-   *     extensions to add.
-   * @return {!Options} A self reference.
-   */
-  addExtensions(...args) {
-    let current = this.options_.extensions || [];
-    this.options_.extensions = current.concat(...args);
-    return this;
-  }
-
+class Options extends chromium.Options {
   /**
    * Sets the path to the Chrome binary to use. On Mac OS X, this path should
    * reference the actual Chrome executable, not just the application binary
@@ -466,98 +320,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setChromeBinaryPath(path) {
-    this.options_.binary = path;
-    return this;
-  }
-
-  /**
-   * Sets whether to leave the started Chrome browser running if the controlling
-   * ChromeDriver service is killed before {@link webdriver.WebDriver#quit()} is
-   * called.
-   * @param {boolean} detach Whether to leave the browser running if the
-   *     chromedriver service is killed before the session.
-   * @return {!Options} A self reference.
-   */
-  detachDriver(detach) {
-    this.options_.detach = detach;
-    return this;
-  }
-
-  /**
-   * Sets the user preferences for Chrome's user profile. See the "Preferences"
-   * file in Chrome's user data directory for examples.
-   * @param {!Object} prefs Dictionary of user preferences to use.
-   * @return {!Options} A self reference.
-   */
-  setUserPreferences(prefs) {
-    this.options_.prefs = prefs;
-    return this;
-  }
-
-  /**
-   * Sets the performance logging preferences. Options include:
-   *
-   * - `enableNetwork`: Whether or not to collect events from Network domain.
-   * - `enablePage`: Whether or not to collect events from Page domain.
-   * - `enableTimeline`: Whether or not to collect events from Timeline domain.
-   *     Note: when tracing is enabled, Timeline domain is implicitly disabled,
-   *     unless `enableTimeline` is explicitly set to true.
-   * - `tracingCategories`: A comma-separated string of Chrome tracing
-   *     categories for which trace events should be collected. An unspecified
-   *     or empty string disables tracing.
-   * - `bufferUsageReportingInterval`: The requested number of milliseconds
-   *     between DevTools trace buffer usage events. For example, if 1000, then
-   *     once per second, DevTools will report how full the trace buffer is. If
-   *     a report indicates the buffer usage is 100%, a warning will be issued.
-   *
-   * @param {{enableNetwork: boolean,
-   *          enablePage: boolean,
-   *          enableTimeline: boolean,
-   *          tracingCategories: string,
-   *          bufferUsageReportingInterval: number}} prefs The performance
-   *     logging preferences.
-   * @return {!Options} A self reference.
-   */
-  setPerfLoggingPrefs(prefs) {
-    this.options_.perfLoggingPrefs = prefs;
-    return this;
-  }
-
-  /**
-   * Sets preferences for the "Local State" file in Chrome's user data
-   * directory.
-   * @param {!Object} state Dictionary of local state preferences.
-   * @return {!Options} A self reference.
-   */
-  setLocalState(state) {
-    this.options_.localState = state;
-    return this;
-  }
-
-  /**
-   * Sets the name of the activity hosting a Chrome-based Android WebView. This
-   * option must be set to connect to an [Android WebView](
-   * https://chromedriver.chromium.org/getting-started/getting-started---android)
-   *
-   * @param {string} name The activity name.
-   * @return {!Options} A self reference.
-   */
-  androidActivity(name) {
-    this.options_.androidActivity = name;
-    return this;
-  }
-
-  /**
-   * Sets the device serial number to connect to via ADB. If not specified, the
-   * ChromeDriver will select an unused device at random. An error will be
-   * returned if all devices already have active sessions.
-   *
-   * @param {string} serial The device serial number to connect to.
-   * @return {!Options} A self reference.
-   */
-  androidDeviceSerial(serial) {
-    this.options_.androidDeviceSerial = serial;
-    return this;
+    return this.setBinaryPath(path);
   }
 
   /**
@@ -571,52 +334,13 @@ class Options extends Capabilities {
   }
 
   /**
-   * Sets the package name of the Chrome or WebView app.
-   *
-   * @param {?string} pkg The package to connect to, or `null` to disable Android
-   *     and switch back to using desktop Chrome.
-   * @return {!Options} A self reference.
-   */
-  androidPackage(pkg) {
-    this.options_.androidPackage = pkg;
-    return this;
-  }
-
-  /**
-   * Sets the process name of the Activity hosting the WebView (as given by
-   * `ps`). If not specified, the process name is assumed to be the same as
-   * {@link #androidPackage}.
-   *
-   * @param {string} processName The main activity name.
-   * @return {!Options} A self reference.
-   */
-  androidProcess(processName) {
-    this.options_.androidProcess = processName;
-    return this;
-  }
-
-  /**
-   * Sets whether to connect to an already-running instead of the specified
-   * {@linkplain #androidProcess app} instead of launching the app with a clean
-   * data directory.
-   *
-   * @param {boolean} useRunning Whether to connect to a running instance.
-   * @return {!Options} A self reference.
-   */
-  androidUseRunningApp(useRunning) {
-    this.options_.androidUseRunningApp = useRunning;
-    return this;
-  }
-
-  /**
    * Sets the path to Chrome's log file. This path should exist on the machine
    * that will launch Chrome.
    * @param {string} path Path to the log file to use.
    * @return {!Options} A self reference.
    */
   setChromeLogFile(path) {
-    this.options_.logPath = path;
-    return this;
+    return this.setBrowserLogFile(path);
   }
 
   /**
@@ -626,79 +350,18 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setChromeMinidumpPath(path) {
-    this.options_.minidumpPath = path;
-    return this;
-  }
-
-  /**
-   * Configures Chrome to emulate a mobile device. For more information, refer
-   * to the ChromeDriver project page on [mobile emulation][em]. Configuration
-   * options include:
-   *
-   * - `deviceName`: The name of a pre-configured [emulated device][devem]
-   * - `width`: screen width, in pixels
-   * - `height`: screen height, in pixels
-   * - `pixelRatio`: screen pixel ratio
-   *
-   * __Example 1: Using a Pre-configured Device__
-   *
-   *     let options = new chrome.Options().setMobileEmulation(
-   *         {deviceName: 'Google Nexus 5'});
-   *
-   *     let driver = chrome.Driver.createSession(options);
-   *
-   * __Example 2: Using Custom Screen Configuration__
-   *
-   *     let options = new chrome.Options().setMobileEmulation({
-   *         width: 360,
-   *         height: 640,
-   *         pixelRatio: 3.0
-   *     });
-   *
-   *     let driver = chrome.Driver.createSession(options);
-   *
-   *
-   * [em]: https://chromedriver.chromium.org/mobile-emulation
-   * [devem]: https://developer.chrome.com/devtools/docs/device-mode
-   *
-   * @param {?({deviceName: string}|
-   *           {width: number, height: number, pixelRatio: number})} config The
-   *     mobile emulation configuration, or `null` to disable emulation.
-   * @return {!Options} A self reference.
-   */
-  setMobileEmulation(config) {
-    this.options_.mobileEmulation = config;
-    return this;
-  }
-
-  /**
-   * Converts this instance to its JSON wire protocol representation. Note this
-   * function is an implementation not intended for general use.
-   *
-   * @return {!Object} The JSON wire protocol representation of this instance.
-   * @suppress {checkTypes} Suppress [] access on a struct.
-   */
-  [Symbols.serialize]() {
-    if (this.options_.extensions &&  this.options_.extensions.length) {
-      this.options_.extensions =
-          this.options_.extensions.map(function(extension) {
-            if (Buffer.isBuffer(extension)) {
-              return extension.toString('base64');
-            }
-            return io.read(/** @type {string} */(extension))
-                .then(buffer => buffer.toString('base64'));
-          });
-    }
-    return super[Symbols.serialize]();
+    return this.setBrowserMinidumpPath(path);
   }
 }
+
+Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions';
+Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME;
 
 
 /**
  * Creates a new WebDriver client for Chrome.
  */
-class Driver extends webdriver.WebDriver {
-
+class Driver extends chromium.Driver {
   /**
    * Creates a new session with the ChromeDriver.
    *
@@ -711,30 +374,8 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(opt_config, opt_serviceExecutor) {
-    let executor;
-    let onQuit;
-    if (opt_serviceExecutor instanceof http.Executor) {
-      executor = opt_serviceExecutor;
-      configureExecutor(executor);
-    } else {
-      let service = opt_serviceExecutor || getDefaultService();
-      executor = createExecutor(service.start());
-      onQuit = () => service.kill();
-    }
-
-    let caps = opt_config || Capabilities.chrome();
-
-    // W3C spec requires noProxy value to be an array of strings, but Chrome
-    // expects a single host as a string.
-    let proxy = caps.get(Capability.PROXY);
-    if (proxy && Array.isArray(proxy.noProxy)) {
-      proxy.noProxy = proxy.noProxy[0];
-      if (!proxy.noProxy) {
-        proxy.noProxy = undefined;
-      }
-    }
-
-    return /** @type {!Driver} */(super.createSession(executor, caps, onQuit));
+    let caps = opt_config || new Options();
+    return /** @type {!Driver} */(super.createSession(caps, opt_serviceExecutor));
   }
 
   /**
@@ -803,6 +444,41 @@ class Driver extends webdriver.WebDriver {
         new command.Command(Command.SEND_DEVTOOLS_COMMAND)
             .setParameter('cmd', cmd)
             .setParameter('params', params));
+  }
+
+  /**
+   * Sends an arbitrary devtools command to the browser and get the result.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<Object>} A promise that will be resolved when the command
+   *     has finished.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
+   */
+  sendAndGetDevToolsCommand(cmd, params = {}) {
+    return this.schedule(
+      new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
+        .setParameter('cmd', cmd)
+        .setParameter('params', params)
+    );
+  }
+
+  /**
+   * Set a permission state to the given value.
+   *
+   * @param {string} name A name of the permission to update.
+   * @param {('granted'|'denied'|'prompt')} state State to set permission to.
+   * @returns {!Promise<Object>} A promise that will be resolved when the
+   *     command has finished.
+   * @see <https://w3c.github.io/permissions/#permission-registry> for valid
+   *     names
+   */
+  setPermission(name, state) {
+    return this.execute(
+      new command.Command(Command.SET_PERMISSION)
+        .setParameter('descriptor', { name })
+        .setParameter('state', state),
+    );
   }
 
   /**
@@ -892,6 +568,9 @@ class Driver extends webdriver.WebDriver {
         'Driver.stopCasting(' + deviceName + ')');
   }
 }
+
+Driver.getDefaultService = getDefaultService;
+Driver.prototype.VENDOR_COMMAND_PREFIX = "goog";
 
 
 // PUBLIC API

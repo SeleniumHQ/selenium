@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import org.openqa.selenium.internal.Require;
+
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * A credential stored in a virtual authenticator.
- * @see https://w3c.github.io/webauthn/#credential-parameters
+ * @see <a href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>
  */
 public class Credential {
 
@@ -42,8 +43,8 @@ public class Credential {
    */
   public static Credential createNonResidentCredential(byte[] id, String rpId,
       PKCS8EncodedKeySpec privateKey, int signCount) {
-    return new Credential(id, /*isResidentCredential=*/false, Objects.requireNonNull(rpId),
-        privateKey, /*userHandle=*/null, signCount);
+    return new Credential(id, false, Require.nonNull("rpId", rpId),
+                          privateKey, null, signCount);
   }
 
   /**
@@ -51,8 +52,8 @@ public class Credential {
    */
   public static Credential createResidentCredential(byte[] id, String rpId,
       PKCS8EncodedKeySpec privateKey, byte[] userHandle, int signCount) {
-    return new Credential(id, /*isResidentCredential=*/true, Objects.requireNonNull(rpId),
-        privateKey, Objects.requireNonNull(userHandle), signCount);
+    return new Credential(id, true, Require.nonNull("rpId", rpId),
+                          privateKey, Require.nonNull("User handle", userHandle), signCount);
   }
 
   /**
@@ -70,10 +71,10 @@ public class Credential {
 
   private Credential(byte[] id, boolean isResidentCredential, String rpId,
       PKCS8EncodedKeySpec privateKey, byte[] userHandle, int signCount) {
-    this.id = Objects.requireNonNull(id);
+    this.id = Require.nonNull("Id", id);
     this.isResidentCredential = isResidentCredential;
     this.rpId = rpId;
-    this.privateKey = Objects.requireNonNull(privateKey);
+    this.privateKey = Require.nonNull("Private key", privateKey);
     this.userHandle = userHandle;
     this.signCount = signCount;
   }
@@ -104,7 +105,7 @@ public class Credential {
 
   public Map<String, Object> toMap() {
     Base64.Encoder encoder = Base64.getUrlEncoder();
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put("credentialId", encoder.encodeToString(id));
     map.put("isResidentCredential", isResidentCredential);
     map.put("rpId", rpId);

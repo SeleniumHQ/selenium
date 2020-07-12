@@ -1,1 +1,4 @@
-exports_files(["WebDriver.snk", "AssemblyInfo.cs.template"])
+exports_files([
+    "WebDriver.snk",
+    "AssemblyInfo.cs.template",
+])

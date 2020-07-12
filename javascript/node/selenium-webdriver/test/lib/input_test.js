@@ -18,13 +18,10 @@
 'use strict';
 
 const assert = require('assert');
-const sinon = require('sinon');
-
 const command = require('../../lib/command');
 const error = require('../../lib/error');
 const input = require('../../lib/input');
 const {WebElement} = require('../../lib/webdriver');
-
 
 describe('input.Actions', function() {
   class StubExecutor {

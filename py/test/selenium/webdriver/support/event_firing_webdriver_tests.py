@@ -78,6 +78,7 @@ def test_should_fire_navigation_events(driver, log, pages):
             b"after_navigate_forward") == log.getvalue()
 
 
+@pytest.mark.xfail_safari
 def test_should_fire_click_event(driver, log, pages):
 
     class EventListener(AbstractEventListener):
@@ -108,7 +109,7 @@ def test_should_fire_change_value_event(driver, log, pages):
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
     ef_driver.get(pages.url("readOnlyPage.html"))
-    element = ef_driver.find_element_by_id("writableTextInput")
+    element = ef_driver.find_element(By.ID, "writableTextInput")
     element.clear()
     assert "" == element.get_attribute("value")
 
@@ -135,14 +136,14 @@ def test_should_fire_find_event(driver, log, pages):
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
     ef_driver.get(pages.url("simpleTest.html"))
-    e = ef_driver.find_element_by_id("oneline")
+    e = ef_driver.find_element(By.ID, "oneline")
     assert "A single line of text" == e.text
 
-    e = ef_driver.find_element_by_xpath("/html/body/p[1]")
+    e = ef_driver.find_element(By.XPATH, "/html/body/p[1]")
     assert "A single line of text" == e.text
 
     ef_driver.get(pages.url("frameset.html"))
-    elements = ef_driver.find_elements_by_css_selector("frame#sixth")
+    elements = ef_driver.find_elements(By.CSS_SELECTOR, "frame#sixth")
     assert 1 == len(elements)
     assert "frame" == elements[0].tag_name.lower()
     assert "sixth" == elements[0].get_attribute("id")
@@ -172,7 +173,7 @@ def test_should_call_listener_when_an_exception_is_thrown(driver, log, pages):
 def test_should_unwrap_element_args_when_calling_scripts(driver, log, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     ef_driver.get(pages.url("javascriptPage.html"))
-    button = ef_driver.find_element_by_id("plainButton")
+    button = ef_driver.find_element(By.ID, "plainButton")
     value = ef_driver.execute_script(
         "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
         button)
@@ -182,9 +183,9 @@ def test_should_unwrap_element_args_when_calling_scripts(driver, log, pages):
 def test_should_unwrap_element_args_when_switching_frames(driver, log, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     ef_driver.get(pages.url("iframes.html"))
-    frame = ef_driver.find_element_by_id("iframe1")
+    frame = ef_driver.find_element(By.ID, "iframe1")
     ef_driver.switch_to.frame(frame)
-    assert "click me!" == ef_driver.find_element_by_id("imageButton").get_attribute("alt")
+    assert "click me!" == ef_driver.find_element(By.ID, "imageButton").get_attribute("alt")
 
 
 def test_should_be_able_to_access_wrapped_instance_from_event_calls(driver):
@@ -202,7 +203,7 @@ def test_using_kwargs(driver, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     ef_driver.get(pages.url("javascriptPage.html"))
     ef_driver.get_cookie(name="cookie_name")
-    element = ef_driver.find_element_by_id("plainButton")
+    element = ef_driver.find_element(By.ID, "plainButton")
     element.get_attribute(name="id")
 
 
@@ -213,7 +214,7 @@ def test_missing_attributes_raise_error(driver, pages):
         ef_driver.attribute_should_not_exist
 
     ef_driver.get(pages.url("readOnlyPage.html"))
-    element = ef_driver.find_element_by_id("writableTextInput")
+    element = ef_driver.find_element(By.ID, "writableTextInput")
 
     with pytest.raises(AttributeError):
         element.attribute_should_not_exist
@@ -222,7 +223,7 @@ def test_missing_attributes_raise_error(driver, pages):
 def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     pages.load("javascriptPage.html")
-    to_click = ef_driver.find_element_by_id("clickField")
+    to_click = ef_driver.find_element(By.ID, "clickField")
 
     actions = ActionBuilder(ef_driver)
     pointer = actions.pointer_action
@@ -232,15 +233,16 @@ def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
     assert to_click.get_attribute('value') == 'Clicked'
 
 
+@pytest.mark.xfail_safari
 def test_can_use_key_input_with_event_firing_webdriver(driver, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     pages.load("javascriptPage.html")
-    ef_driver.find_element_by_id("keyUp").click()
+    ef_driver.find_element(By.ID, "keyUp").click()
 
     actions = ActionBuilder(ef_driver)
     key = actions.key_action
     key.send_keys('Success')
     actions.perform()
 
-    result = ef_driver.find_element_by_id("result")
+    result = ef_driver.find_element(By.ID, "result")
     assert result.text == 'Success'

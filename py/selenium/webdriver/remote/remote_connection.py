@@ -21,7 +21,9 @@ import platform
 import socket
 import string
 
+import certifi
 import urllib3
+import os
 
 try:
     from urllib import parse
@@ -41,7 +43,9 @@ class RemoteConnection(object):
     Communicates with the server using the WebDriver wire protocol:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
 
+    browser_name = None
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+    _ca_certs = certifi.where()
 
     @classmethod
     def get_timeout(cls):
@@ -67,6 +71,25 @@ class RemoteConnection(object):
         Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT
         """
         cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+
+    @classmethod
+    def get_certificate_bundle_path(cls):
+        """
+        :Returns:
+            Paths of the .pem encoded certificate to verify connection to comand executor
+        """
+        return cls._ca_certs
+
+    @classmethod
+    def set_certificate_bundle_path(cls, path):
+        """
+        Set the path to the certificate bundle to verify connection to command executor.
+        Can also be set to None to disable certificate validation.
+
+        :Args:
+            - path - path of a .pem encoded certificate chain.
+        """
+        cls._ca_certs = path
 
     @classmethod
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
@@ -101,6 +124,23 @@ class RemoteConnection(object):
 
         return headers
 
+    def _get_proxy_url(self):
+        if self._url.startswith('https://'):
+            return os.environ.get('https_proxy', os.environ.get('HTTPS_PROXY'))
+        elif self._url.startswith('http://'):
+            return os.environ.get('http_proxy', os.environ.get('HTTP_PROXY'))
+
+    def _get_connection_manager(self):
+        pool_manager_init_args = {
+            'timeout': self._timeout
+        }
+        if self._ca_certs:
+            pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
+            pool_manager_init_args['ca_certs'] = self._ca_certs
+
+        return urllib3.PoolManager(**pool_manager_init_args) if self._proxy_url is None else \
+            urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
+
     def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None):
         if resolve_ip is not None:
             import warnings
@@ -109,8 +149,10 @@ class RemoteConnection(object):
                 DeprecationWarning)
         self.keep_alive = keep_alive
         self._url = remote_server_addr
+        self._proxy_url = self._get_proxy_url()
         if keep_alive:
-            self._conn = urllib3.PoolManager(timeout=self._timeout)
+            self._conn = self._get_connection_manager()
+
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -201,6 +243,8 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/timeouts/async_script'),
             Command.SET_TIMEOUTS:
                 ('POST', '/session/$sessionId/timeouts'),
+            Command.GET_TIMEOUTS:
+                ('GET', '/session/$sessionId/timeouts'),
             Command.DISMISS_ALERT:
                 ('POST', '/session/$sessionId/dismiss_alert'),
             Command.W3C_DISMISS_ALERT:
@@ -371,7 +415,8 @@ class RemoteConnection(object):
 
             statuscode = resp.status
         else:
-            with urllib3.PoolManager(timeout=self._timeout) as http:
+            conn = self._get_connection_manager()
+            with conn as http:
                 resp = http.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status

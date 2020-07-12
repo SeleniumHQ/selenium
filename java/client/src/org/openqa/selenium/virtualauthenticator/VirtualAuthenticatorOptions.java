@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * Options for the creation of virtual authenticators.
- * @see https://w3c.github.io/webauthn/#sctn-automation
+ * @see <a href="https://w3c.github.io/webauthn/#sctn-automation">https://w3c.github.io/webauthn/#sctn-automation</a>
  */
 public class VirtualAuthenticatorOptions {
 
@@ -33,7 +33,7 @@ public class VirtualAuthenticatorOptions {
 
     public final String id;
 
-    private Protocol(String id) {
+    Protocol(String id) {
       this.id = id;
     }
   }
@@ -46,7 +46,7 @@ public class VirtualAuthenticatorOptions {
 
     public final String id;
 
-    private Transport(String id) {
+    Transport(String id) {
       this.id = id;
     }
   }
@@ -91,7 +91,7 @@ public class VirtualAuthenticatorOptions {
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put("protocol", protocol.id);
     map.put("transport", transport.id);
     map.put("hasResidentKey", hasResidentKey);

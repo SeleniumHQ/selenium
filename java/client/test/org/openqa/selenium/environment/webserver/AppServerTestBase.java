@@ -118,7 +118,15 @@ public abstract class AppServerTestBase {
 
   @Test
   public void manifestHasCorrectMimeType() throws IOException {
-    assertUrlHasContentType(server.whereIs("html5/test.appcache"), APPCACHE_MIME_TYPE);
+    String url = server.whereIs("html5/test.appcache");
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    HttpClient client = factory.createClient(new URL(url));
+    HttpResponse response = client.execute(new HttpRequest(HttpMethod.GET, url));
+
+    System.out.printf("Content for %s was %s\n", url, string(response));
+
+    assertTrue(StreamSupport.stream(response.getHeaders("Content-Type").spliterator(), false)
+        .anyMatch(header -> header.contains(APPCACHE_MIME_TYPE)));
   }
 
   @Test
@@ -132,22 +140,9 @@ public abstract class AppServerTestBase {
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).submit();
 
-    // Nasty. Sorry.
-    Thread.sleep(50);
-
     driver.switchTo().frame("upload_target");
     new WebDriverWait(driver, Duration.ofSeconds(10)).until(
         d -> d.findElement(By.xpath("//body")).getText().equals(FILE_CONTENTS));
   }
 
-  private void assertUrlHasContentType(String url, String appcacheMimeType) throws IOException {
-    HttpClient.Factory factory = HttpClient.Factory.createDefault();
-    HttpClient client = factory.createClient(new URL(url));
-    HttpResponse response = client.execute(new HttpRequest(HttpMethod.GET, url));
-
-    System.out.printf("Content for %s was %s\n", url, string(response));
-
-    assertTrue(StreamSupport.stream(response.getHeaders("Content-Type").spliterator(), false)
-        .anyMatch(header -> header.contains(appcacheMimeType)));
-  }
 }

@@ -11,5 +11,10 @@ namespace OpenQA.Selenium.Chrome
             : base(service, options)
         {
         }
+
+        public static ChromeOptions DefaultOptions
+        {
+            get { return new ChromeOptions() { AcceptInsecureCertificates = true }; }
+        }
     }
 }

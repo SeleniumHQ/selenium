@@ -20,10 +20,12 @@ package org.openqa.selenium.docker;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.internal.Require;
 
 import java.util.Map;
-import java.util.Objects;
 
+@Beta
 public class ContainerInfo {
 
   private final Image image;
@@ -31,8 +33,8 @@ public class ContainerInfo {
   private final Multimap<String, Map<String, Object>> portBindings;
 
   private ContainerInfo(Image image, Multimap<String, Map<String, Object>> portBindings) {
-    this.image = Objects.requireNonNull(image);
-    this.portBindings = Objects.requireNonNull(portBindings);
+    this.image = Require.nonNull("Container image", image);
+    this.portBindings = Require.nonNull("Port bindings", portBindings);
   }
 
   public static ContainerInfo image(Image image) {
@@ -40,8 +42,8 @@ public class ContainerInfo {
   }
 
   public ContainerInfo map(Port containerPort, Port hostPort) {
-    Objects.requireNonNull(containerPort);
-    Objects.requireNonNull(hostPort);
+    Require.nonNull("Container port", containerPort);
+    Require.nonNull("Host port", hostPort);
 
     if (!hostPort.getProtocol().equals(containerPort.getProtocol())) {
       throw new DockerException(
@@ -54,6 +56,14 @@ public class ContainerInfo {
         ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
     return new ContainerInfo(image, updatedBindings);
+  }
+
+  @Override
+  public String toString() {
+    return "ContainerInfo{" +
+      "image=" + image +
+      ", portBindings=" + portBindings +
+      '}';
   }
 
   private Map<String, Object> toJson() {

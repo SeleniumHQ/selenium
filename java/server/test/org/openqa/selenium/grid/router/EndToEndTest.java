@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +55,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
@@ -76,8 +76,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -121,7 +121,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
-    Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -141,7 +141,7 @@ public class EndToEndTest {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
@@ -156,7 +156,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createRemotes() throws URISyntaxException {
-    Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
@@ -189,7 +189,7 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
+    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
 
@@ -283,10 +283,10 @@ public class EndToEndTest {
   @Test
   public void shouldAllowPassthroughForW3CMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(utf8String(json.toJson(
+    request.setContent(asJson(
         ImmutableMap.of(
             "capabilities", ImmutableMap.of(
-                "alwaysMatch", ImmutableMap.of("browserName", "cheese"))))));
+                "alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);
@@ -309,10 +309,10 @@ public class EndToEndTest {
   @Test
   public void shouldAllowPassthroughForJWPMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(utf8String(json.toJson(
+    request.setContent(asJson(
         ImmutableMap.of(
             "desiredCapabilities", ImmutableMap.of(
-                "browserName", "cheese")))));
+                "browserName", "cheese"))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);

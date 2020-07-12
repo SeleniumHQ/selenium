@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -26,7 +28,6 @@ import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.Objects;
 import java.util.function.Function;
 
 public class JsonInput implements Closeable {
@@ -41,10 +42,10 @@ public class JsonInput implements Closeable {
   private Deque<Container> stack = new ArrayDeque<>();
 
   JsonInput(Readable source, JsonTypeCoercer coercer, PropertySetting setter) {
-    this.source = Objects.requireNonNull(source);
-    this.coercer = Objects.requireNonNull(coercer);
+    this.source = Require.nonNull("Source", source);
+    this.coercer = Require.nonNull("Coercer", coercer);
     this.input = new Input(source);
-    this.setter = Objects.requireNonNull(setter);
+    this.setter = Require.nonNull("Setter", setter);
   }
 
   /**
@@ -54,7 +55,7 @@ public class JsonInput implements Closeable {
    */
   public PropertySetting propertySetting(PropertySetting setter) {
     PropertySetting previous = this.setter;
-    this.setter = Objects.requireNonNull(setter);
+    this.setter = Require.nonNull("Setter", setter);
     return previous;
   }
 

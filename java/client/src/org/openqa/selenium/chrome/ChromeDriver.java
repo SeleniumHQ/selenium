@@ -136,7 +136,7 @@ public class ChromeDriver extends ChromiumDriver {
    * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
   public ChromeDriver(ChromeOptions options) {
-    this(ChromeDriverService.createDefaultService(), options);
+    this(ChromeDriverService.createServiceWithConfig(options), options);
   }
 
   /**
@@ -160,7 +160,7 @@ public class ChromeDriver extends ChromiumDriver {
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
-    super(new ChromiumDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
+    super(new ChromiumDriverCommandExecutor("goog", service), capabilities, ChromeOptions.CAPABILITY);
   }
 
 }

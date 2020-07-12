@@ -17,12 +17,9 @@
 
 package org.openqa.selenium.os;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableMap.copyOf;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.Platform.WINDOWS;
-
-import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.commons.exec.DaemonExecutor;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -31,6 +28,7 @@ import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.MultiOutputStream;
 
@@ -61,8 +59,8 @@ class OsProcess {
   private final Map<String, String> env = new ConcurrentHashMap<>();
 
   public OsProcess(String executable, String... args) {
-    String actualExe = checkNotNull(new ExecutableFinder().find(executable),
-        "Unable to find executable for: %s", executable);
+    String actualExe = new ExecutableFinder().find(executable);
+    Require.state("Actual executable", actualExe).nonNull("Unable to find executable for: %s", executable);
     cl = new org.apache.commons.exec.CommandLine(actualExe);
     cl.addArguments(args, false);
   }
@@ -78,9 +76,8 @@ class OsProcess {
     env.put(name, value);
   }
 
-  @VisibleForTesting
   public Map<String, String> getEnvironment() {
-    return copyOf(env);
+    return unmodifiableMap(new HashMap<>(env));
   }
 
   private Map<String, String> getMergedEnv() {
@@ -161,6 +158,9 @@ class OsProcess {
     long until = System.currentTimeMillis() + timeout;
     boolean timedOut = true;
     while (System.currentTimeMillis() < until) {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
       if (handler.hasResult()) {
         timedOut = false;
         break;

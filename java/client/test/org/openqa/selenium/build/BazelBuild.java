@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.build;
 
-import com.google.common.collect.ImmutableList;
+import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
@@ -30,6 +30,14 @@ public class BazelBuild {
   private static Logger log = Logger.getLogger(BazelBuild.class.getName());
 
   public void build(String target) {
+    if (!isInDevMode()) {
+      // we should only need to do this when we're in dev mode
+      // when running in a test suite, our dependencies should already
+      // be listed.
+      log.info("Not in dev mode. Ignoring attempt to build: " + target);
+      return;
+    }
+
     Path projectRoot = InProject.findProjectRoot();
 
     if (!Files.exists(projectRoot.resolve("Rakefile"))) {
@@ -42,11 +50,7 @@ public class BazelBuild {
     }
     log.info("\nBuilding " + target + " ...");
 
-    ImmutableList.Builder<String> builder = ImmutableList.builder();
-    builder.add("bazel", "build", target);
-
-    ImmutableList<String> command = builder.build();
-    CommandLine commandLine = new CommandLine(command.toArray(new String[0]));
+    CommandLine commandLine = new CommandLine("bazel", "build", target);
     commandLine.setWorkingDirectory(projectRoot.toAbsolutePath().toString());
     commandLine.copyOutputTo(System.err);
     commandLine.execute();

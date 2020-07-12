@@ -17,10 +17,11 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.CharBuffer;
-import java.util.Objects;
 
 /**
  * Similar to a {@link Readable} but with the ability to peek a single character ahead.
@@ -39,7 +40,7 @@ class Input {
   private boolean filled = false;
 
   public Input(Readable source) {
-    this.source = Objects.requireNonNull(source);
+    this.source = Require.nonNull("Source", source);
   }
 
   public char peek() {

@@ -18,20 +18,26 @@
 package org.openqa.selenium.grid.docker;
 
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.Role;
 
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
-public class DockerFlags {
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+
+@AutoService(HasRoles.class)
+public class DockerFlags implements HasRoles {
 
   @Parameter(
       names = {"--docker-url"},
-      description = "URL for connecting to the docker daemon")
-  @ConfigValue(section = "docker", name = "url")
+      description = "URL for connecting to the docker daemon"
+  )
+  @ConfigValue(section = "docker", name = "url", example = "\"unix:/var/run/docker\"")
   private URL dockerUrl;
 
   @Parameter(
@@ -40,14 +46,14 @@ public class DockerFlags {
                     "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}')",
       arity = 2,
       variableArity = true)
-  @ConfigValue(section = "docker", name = "configs")
+  @ConfigValue(
+    section = "docker",
+    name = "configs",
+    example = "[\"selenium/standalone-firefox:latest\", \"{\\\"browserName\\\": \\\"firefox\\\"}\"]")
   private List<String> images2Capabilities;
 
-  public DockerFlags() {
-    try {
-      dockerUrl = new URL("http://localhost:2375");
-    } catch (MalformedURLException e) {
-      throw new UncheckedIOException(e);
-    }
+  @Override
+  public Set<Role> getRoles() {
+    return Collections.singleton(NODE_ROLE);
   }
 }

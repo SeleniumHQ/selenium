@@ -37,7 +37,7 @@ module Selenium
 
         def initialize(http_client: nil, url:)
           uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless %r{\/$}.match?(uri.path)
+          uri.path += '/' unless uri.path.end_with?('/')
 
           @http = http_client || Http::Default.new
           @http.server_url = uri
@@ -48,8 +48,8 @@ module Selenium
         # Creates session.
         #
 
-        def create_session(desired_capabilities, options = nil)
-          response = execute(:new_session, {}, merged_capabilities(desired_capabilities, options))
+        def create_session(capabilities)
+          response = execute(:new_session, {}, {capabilities: {firstMatch: [capabilities]}})
 
           @session_id = response['sessionId']
           capabilities = response['capabilities']
@@ -569,16 +569,6 @@ module Selenium
 
         def commands(command)
           COMMANDS[command]
-        end
-
-        def merged_capabilities(capabilities, options = nil)
-          capabilities.merge!(options.as_json) if options
-
-          {
-            capabilities: {
-              firstMatch: [capabilities]
-            }
-          }
         end
 
         def unwrap_script_result(arg)

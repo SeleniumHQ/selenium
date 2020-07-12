@@ -17,10 +17,11 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 
 class ObjectCoercer extends TypeCoercer {
@@ -28,7 +29,7 @@ class ObjectCoercer extends TypeCoercer {
   private final JsonTypeCoercer coercer;
 
   ObjectCoercer(JsonTypeCoercer coercer) {
-    this.coercer = Objects.requireNonNull(coercer);
+    this.coercer = Require.nonNull("Type coercer", coercer);
   }
 
   @Override

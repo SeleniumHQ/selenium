@@ -53,17 +53,14 @@ namespace OpenQA.Selenium.Chrome
     public class ChromeOptions : ChromiumOptions
     {
         private const string ChromeOptionsCapabilityName = "chromeOptions";
-
-        public ChromeOptions()
-        {
-        }
+        private const string BrowserNameValue = "chrome";
 
         /// <summary>
-        /// Gets the default value of the browserName capability.
+        /// Initializes a new instance of the <see cref="ChromeOptions"/> class.
         /// </summary>
-        protected override string BrowserNameValue
+        public ChromeOptions()
         {
-            get { return "chrome"; }
+            this.BrowserName = BrowserNameValue;
         }
 
         /// <summary>

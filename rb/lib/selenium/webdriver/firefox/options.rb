@@ -29,6 +29,7 @@ module Selenium
                         profile: 'profile',
                         log: 'log',
                         prefs: 'prefs'}.freeze
+        BROWSER = 'firefox'
 
         CAPABILITIES.each_key do |key|
           define_method key do
@@ -57,7 +58,7 @@ module Selenium
         #
 
         def initialize(log_level: nil, **opts)
-          super(opts)
+          super(**opts)
 
           @options[:log] ||= {level: log_level} if log_level
           process_profile(@options[:profile]) if @options.key?(:profile)
@@ -134,18 +135,12 @@ module Selenium
           @options[:log] = {level: level}
         end
 
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          options = super
-          options['binary'] ||= Firefox.path if Firefox.path
-
-          {KEY => generate_as_json(options)}
-        end
-
         private
+
+        def process_browser_options(browser_options)
+          options = browser_options[KEY]
+          options['binary'] ||= Firefox.path if Firefox.path
+        end
 
         def process_profile(profile)
           @options[:profile] = if profile.nil?

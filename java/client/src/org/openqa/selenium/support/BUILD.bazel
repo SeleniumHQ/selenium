@@ -53,6 +53,5 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/support/ui:clock",
         "//java/client/src/org/openqa/selenium/support/ui:components",
-        artifact("com.google.guava:guava"),
     ],
 )

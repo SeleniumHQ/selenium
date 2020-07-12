@@ -19,7 +19,6 @@ from .interaction import POINTER, POINTER_KINDS
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.event_firing_webdriver import EventFiringWebElement
 
 
 class PointerInput(InputDevice):
@@ -28,7 +27,7 @@ class PointerInput(InputDevice):
 
     def __init__(self, kind, name):
         super(PointerInput, self).__init__()
-        if (kind not in POINTER_KINDS):
+        if kind not in POINTER_KINDS:
             raise InvalidArgumentException("Invalid PointerInput kind '%s'" % kind)
         self.type = POINTER
         self.kind = kind
@@ -38,7 +37,7 @@ class PointerInput(InputDevice):
         action = dict(type="pointerMove", duration=duration)
         action["x"] = x
         action["y"] = y
-        if isinstance(origin, (WebElement, EventFiringWebElement)):
+        if isinstance(origin, WebElement):
             action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
         elif origin is not None:
             action["origin"] = origin

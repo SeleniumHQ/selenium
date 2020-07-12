@@ -25,6 +25,7 @@ module Selenium
         CAPABILITIES = {in_private: 'ms:inPrivate',
                         extension_paths: 'ms:extensionPaths',
                         start_page: 'ms:startPage'}.freeze
+        BROWSER = 'MicrosoftEdge'
 
         CAPABILITIES.each_key do |key|
           define_method key do
@@ -52,7 +53,7 @@ module Selenium
         #
 
         def initialize(**opts)
-          super
+          super(**opts)
           @options[:extensions]&.each(&method(:validate_extension))
         end
 
@@ -70,14 +71,6 @@ module Selenium
           validate_extension(path)
           @options[:extension_paths] ||= []
           @options[:extension_paths] << path
-        end
-
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          generate_as_json(super)
         end
 
         private

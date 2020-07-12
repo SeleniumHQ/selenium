@@ -18,14 +18,13 @@
 'use strict';
 
 const assert = require('assert');
-
 const test = require('../lib/test');
-const {Browser, By} = require('..');
+const {By} = require('..');
 const {UnknownCommandError} = require('../lib/error');
 
 
 test.suite(function(env) {
-  var driver;
+  let driver;
 
   before(async function() { driver = await env.builder().build(); });
   after(function() { return driver.quit(); });

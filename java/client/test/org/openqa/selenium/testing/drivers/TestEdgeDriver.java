@@ -19,7 +19,6 @@ package org.openqa.selenium.testing.drivers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.html5.LocalStorage;
@@ -31,7 +30,6 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
-import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,9 +38,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.logging.Logger;
-import java.util.stream.StreamSupport;
 
 /**
  * Customized RemoteWebDriver that will communicate with a service that lives and dies with the
@@ -57,25 +53,18 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
   private RemoteLocationContext locationContext;
 
   public TestEdgeDriver(Capabilities capabilities) {
-    super(getServiceUrl(), edgeWithCustomCapabilities(capabilities));
+    super(getServiceUrl(capabilities), edgeWithCustomCapabilities(capabilities));
     webStorage = new RemoteWebStorage(getExecuteMethod());
     locationContext = new RemoteLocationContext(getExecuteMethod());
   }
 
-  private static URL getServiceUrl() {
+  private static URL getServiceUrl(Capabilities capabilities) {
     try {
       if (service == null) {
         Path logFile = Files.createTempFile("edgedriver", ".log");
-        boolean isLegacy = System.getProperty("webdriver.edge.edgehtml") == null || Boolean.getBoolean("webdriver.edge.edgehtml");
 
-        EdgeDriverService.Builder<?, ?> builder =
-            StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
-                .filter(b -> b instanceof EdgeDriverService.Builder)
-                .map(b -> (EdgeDriverService.Builder<?, ?>) b)
-                .filter(b -> b.isLegacy() == isLegacy)
-                .findFirst().orElseThrow(WebDriverException::new);
-
-        service = (EdgeDriverService) builder.withVerbose(true).withLogFile(logFile.toFile()).build();
+        EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
+        service = builder.withVerbose(true).withLogFile(logFile.toFile()).build();
         LOG.info("edgedriver will log to " + logFile);
         service.start();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
@@ -88,9 +77,6 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
 
   private static Capabilities edgeWithCustomCapabilities(Capabilities originalCapabilities) {
     EdgeOptions options = new EdgeOptions();
-
-    if (System.getProperty("webdriver.edge.edgehtml") == null || Boolean.getBoolean("webdriver.edge.edgehtml"))
-      return options;
 
     options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
     Map<String, Object> prefs = new HashMap<>();

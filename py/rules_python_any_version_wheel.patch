@@ -1,0 +1,69 @@
+diff --git experimental/python/wheel.bzl experimental/python/wheel.bzl
+index 9cd6534..7802d42 100644
+--- experimental/python/wheel.bzl
++++ experimental/python/wheel.bzl
+@@ -85,7 +85,7 @@ def _py_wheel_impl(ctx):
+     outfile = ctx.actions.declare_file("-".join([
+         ctx.attr.distribution,
+         ctx.attr.version,
+-        ctx.attr.python_tag,
++        ".".join(ctx.attr.python_tag),
+         ctx.attr.abi,
+         ctx.attr.platform,
+     ]) + ".whl")
+@@ -101,7 +101,7 @@ def _py_wheel_impl(ctx):
+     args = ctx.actions.args()
+     args.add("--name", ctx.attr.distribution)
+     args.add("--version", ctx.attr.version)
+-    args.add("--python_tag", ctx.attr.python_tag)
++    args.add_all(ctx.attr.python_tag, format_each = "--python_tag=%s")
+     args.add("--abi", ctx.attr.abi)
+     args.add("--platform", ctx.attr.platform)
+     args.add("--out", outfile.path)
+@@ -177,10 +177,9 @@ refer to the package in other packages' dependencies.
+         default = "any",
+         doc = "Supported platforms. 'any' for pure-Python wheel.",
+     ),
+-    "python_tag": attr.string(
+-        default = "py3",
+-        doc = "Supported Python major version. 'py2' or 'py3'",
+-        values = ["py2", "py3"],
++    "python_tag": attr.string_list(
++        default = ["py3"],
++        doc = "Supported Python major version. 'py2' and/or 'py3'",
+     ),
+     "version": attr.string(
+         mandatory = True,
+diff --git experimental/rules_python/wheelmaker.py experimental/rules_python/wheelmaker.py
+index 6be5d38..34b5cb0 100644
+--- experimental/rules_python/wheelmaker.py
++++ experimental/rules_python/wheelmaker.py
+@@ -61,14 +61,14 @@ class WheelMaker(object):
+         components = [self._name, self._version]
+         if self._build_tag:
+             components.append(self._build_tag)
+-        components += [self._python_tag, self._abi, self._platform]
++        components += [".".join(self._python_tag), self._abi, self._platform]
+         return '-'.join(components) + '.whl'
+
+     def distname(self):
+         return self._name + '-' + self._version
+
+     def disttags(self):
+-        return ['-'.join([self._python_tag, self._abi, self._platform])]
++        return ['-'.join([tag, self._abi, self._platform]) for tag in self._python_tag]
+
+     def distinfo_path(self, basename):
+         return self.distname() + '.dist-info/' + basename
+@@ -206,7 +206,10 @@ def main():
+                                 help="Version of the distribution")
+     metadata_group.add_argument('--build_tag', type=str, default='',
+                                 help="Optional build tag for the distribution")
+-    metadata_group.add_argument('--python_tag', type=str, default='py3',
++    metadata_group.add_argument('--python_tag',
++                                type=str,
++                                default=[],
++                                action="append",
+                                 help="Python version, e.g. 'py2' or 'py3'")
+     metadata_group.add_argument('--abi', type=str, default='none')
+     metadata_group.add_argument('--platform', type=str, default='any',

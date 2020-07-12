@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.tools.javadoc;
 
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.tools.zip.StableZipEntry;
 
 import javax.tools.DocumentationTool;
@@ -31,7 +32,6 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,6 +46,8 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class JavadocJarMaker {
 
@@ -81,98 +83,90 @@ public class JavadocJarMaker {
       throw new IllegalArgumentException("The output jar location must be specified via the --out flag");
     }
 
-    Set<Path> tempDirs = new HashSet<>();
-    Path dir = Files.createTempDirectory("javadocs");
+    TemporaryFilesystem tmpFS = TemporaryFilesystem.getDefaultTmpFS();
+    Set<File> tempDirs = new HashSet<>();
+    File dir = tmpFS.createTempDir("javadocs", "");
     tempDirs.add(dir);
 
-    try {
-      DocumentationTool tool = ToolProvider.getSystemDocumentationTool();
-      try (StandardJavaFileManager fileManager = tool.getStandardFileManager(null, Locale.getDefault(), StandardCharsets.UTF_8)) {
-        fileManager.setLocation(DocumentationTool.Location.DOCUMENTATION_OUTPUT, List.of(dir.toFile()));
-        fileManager.setLocation(StandardLocation.CLASS_PATH, classpath.stream().map(Path::toFile).collect(Collectors.toSet()));
+    DocumentationTool tool = ToolProvider.getSystemDocumentationTool();
+    try (StandardJavaFileManager fileManager = tool.getStandardFileManager(null, Locale.getDefault(), UTF_8)) {
+      fileManager.setLocation(DocumentationTool.Location.DOCUMENTATION_OUTPUT, List.of(dir));
+      fileManager.setLocation(StandardLocation.CLASS_PATH, classpath.stream().map(Path::toFile).collect(Collectors.toSet()));
 
-        Set<JavaFileObject> sources = new HashSet<>();
-        Set<String> topLevelPackages = new HashSet<>();
+      Set<JavaFileObject> sources = new HashSet<>();
+      Set<String> topLevelPackages = new HashSet<>();
 
-        Path unpackTo = Files.createTempDirectory("unpacked-sources");
-        tempDirs.add(unpackTo);
-        Set<String> fileNames = new HashSet<>();
-        readSourceFiles(unpackTo, fileManager, sourceJars, sources, topLevelPackages, fileNames);
+      File unpackTo = tmpFS.createTempDir("unpacked-sources", "");
+      tempDirs.add(unpackTo);
+      Set<String> fileNames = new HashSet<>();
+      readSourceFiles(unpackTo.toPath(), fileManager, sourceJars, sources, topLevelPackages, fileNames);
 
-        // True if we're just exporting a set of modules
-        if (sources.isEmpty()) {
-          try (OutputStream os = Files.newOutputStream(out);
-               ZipOutputStream zos = new ZipOutputStream(os)) {
-            // It's enough to just create the thing
-          }
-          return;
-        }
-
-        List<String> options = new ArrayList<>();
-        if (!classpath.isEmpty()) {
-          options.add("-cp");
-          options.add(classpath.stream().map(String::valueOf).collect(Collectors.joining(File.pathSeparator)));
-        }
-        options.addAll(List.of("-html5", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
-
-
-        Path outputTo = Files.createTempDirectory("output-dir");
-        tempDirs.add(outputTo);
-
-        options.addAll(List.of("-d", outputTo.toAbsolutePath().toString()));
-
-        sources.forEach(obj -> options.add(obj.getName()));
-
-        Writer writer = new StringWriter();
-        DocumentationTool.DocumentationTask task = tool.getTask(writer, fileManager, null, null, options, sources);
-        Boolean result = task.call();
-        if (result == null || !result) {
-          System.err.println("javadoc " + String.join(" ", options));
-          System.err.println(writer);
-          return;
-        }
-
+      // True if we're just exporting a set of modules
+      if (sources.isEmpty()) {
         try (OutputStream os = Files.newOutputStream(out);
-             ZipOutputStream zos = new ZipOutputStream(os);
-             Stream<Path> walk = Files.walk(outputTo)) {
-          walk.sorted(Comparator.naturalOrder())
-            .forEachOrdered(path -> {
-              if (path.equals(outputTo)) {
-                return;
-              }
-
-              try {
-                if (Files.isDirectory(path)) {
-                  String name = outputTo.relativize(path) + "/";
-                  ZipEntry entry = new StableZipEntry(name);
-                  zos.putNextEntry(entry);
-                  zos.closeEntry();
-                } else {
-                  String name = outputTo.relativize(path).toString();
-                  ZipEntry entry = new StableZipEntry(name);
-                  zos.putNextEntry(entry);
-                  try (InputStream is = Files.newInputStream(path)) {
-                    is.transferTo(zos);
-                  }
-                  zos.closeEntry();
-                }
-              } catch (IOException e) {
-                throw new UncheckedIOException(e);
-              }
-            });
+             ZipOutputStream zos = new ZipOutputStream(os)) {
+          // It's enough to just create the thing
         }
+        return;
       }
-    } finally {
-      tempDirs.forEach(d -> {
-        try (Stream<Path> walk = Files.walk(d)) {
-          walk.sorted(Comparator.reverseOrder())
-            .map(Path::toFile)
-            .forEach(File::delete);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      });
+
+      List<String> options = new ArrayList<>();
+      if (!classpath.isEmpty()) {
+        options.add("-cp");
+        options.add(classpath.stream().map(String::valueOf).collect(Collectors.joining(File.pathSeparator)));
+      }
+      options.addAll(List.of("-html5", "--frames", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
+
+
+      File outputTo = tmpFS.createTempDir("output-dir", "");
+      tempDirs.add(outputTo);
+      Path outputToPath = outputTo.toPath();
+
+      options.addAll(List.of("-d", outputTo.getAbsolutePath()));
+
+      sources.forEach(obj -> options.add(obj.getName()));
+
+      Writer writer = new StringWriter();
+      DocumentationTool.DocumentationTask task = tool.getTask(writer, fileManager, null, null, options, sources);
+      Boolean result = task.call();
+      if (result == null || !result) {
+        System.err.println("javadoc " + String.join(" ", options));
+        System.err.println(writer);
+        return;
+      }
+
+      try (OutputStream os = Files.newOutputStream(out);
+           ZipOutputStream zos = new ZipOutputStream(os);
+           Stream<Path> walk = Files.walk(outputToPath)) {
+        walk.sorted(Comparator.naturalOrder())
+          .forEachOrdered(path -> {
+            if (path.equals(outputToPath)) {
+              return;
+            }
+
+            try {
+              if (Files.isDirectory(path)) {
+                String name = outputToPath.relativize(path) + "/";
+                ZipEntry entry = new StableZipEntry(name);
+                zos.putNextEntry(entry);
+                zos.closeEntry();
+              } else {
+                String name = outputToPath.relativize(path).toString();
+                ZipEntry entry = new StableZipEntry(name);
+                zos.putNextEntry(entry);
+                try (InputStream is = Files.newInputStream(path)) {
+                  is.transferTo(zos);
+                }
+                zos.closeEntry();
+              }
+            } catch (IOException e) {
+              throw new UncheckedIOException(e);
+            }
+          });
+      }
     }
+
+    tempDirs.forEach(tmpFS::deleteTempDir);
   }
 
   private static void readSourceFiles(

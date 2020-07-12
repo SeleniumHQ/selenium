@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.events;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Objects;
 
 public final class Type {
@@ -24,7 +26,7 @@ public final class Type {
   private final String name;
 
   public Type(String name) {
-    this.name = Objects.requireNonNull(name, "Type name must be set.");
+    this.name = Require.nonNull("Type name", name);
   }
 
   public String getName() {

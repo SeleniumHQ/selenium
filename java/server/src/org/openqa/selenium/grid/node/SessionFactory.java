@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.node.ActiveSession;
 
 import java.util.Optional;
 import java.util.function.Function;

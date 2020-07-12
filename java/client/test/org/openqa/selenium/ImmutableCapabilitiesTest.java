@@ -18,17 +18,21 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ImmutableCapabilitiesTest {
 
   @Test
   public void canCreateEmptyCapabilities() {
     Capabilities caps = new ImmutableCapabilities();
-    assertThat(caps.asMap()).isEqualTo(ImmutableMap.of());
+    assertThat(caps.asMap()).isEmpty();
   }
 
   @Test
@@ -74,6 +78,14 @@ public class ImmutableCapabilitiesTest {
 
     caps2.setCapability("xxx", "yyy");
     assertThat(new ImmutableCapabilities(caps2)).isEqualTo(new ImmutableCapabilities(caps1));
+  }
+
+  @Test
+  public void shouldCheckKeyType() {
+    Map<Object, Object> map = new HashMap<>();
+    map.put(new Object(), new Object());
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> new ImmutableCapabilities(map));
   }
 
 }

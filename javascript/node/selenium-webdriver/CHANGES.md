@@ -1,3 +1,18 @@
+## v.next
+
+* Rolling back native support for Opera Browser
+* Added new ieOptions capabilities:
+    - fileUploadDialogTimeout
+    - setEdgePath
+    - setEdgeChromium
+    - setScrollBehavior
+    - For consistent naming, deprecating `addArguments(...args)` in favor of `addBrowserCommandSwitches(...args)`
+* Add relative locators
+
+### API Changes
+
+* Added the 'opera' module
+
 ## v4.0.0-alpha.4
 
 ### Changes

@@ -17,24 +17,32 @@
 
 """The WebDriver implementation."""
 
+from abc import ABCMeta
 import base64
 import copy
-from contextlib import contextmanager
+from contextlib import (contextmanager, asynccontextmanager)
+import pkgutil
 import warnings
+import sys
 
 from .command import Command
-from .webelement import WebElement
-from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
-from .switch_to import SwitchTo
-from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
+from .mobile import Mobile
+from .remote_connection import RemoteConnection
+from .switch_to import SwitchTo
+from .webelement import WebElement
+
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
                                         UnknownMethodException)
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
+from selenium.webdriver.support.relative_locator import RelativeBy
+
+from six import add_metaclass
 
 try:
     str = basestring
@@ -95,7 +103,31 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
-class WebDriver(object):
+def get_remote_connection(capabilities, command_executor, keep_alive):
+    from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+    from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+
+    candidates = [RemoteConnection] + [ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    handler = next(
+        (c for c in candidates if c.browser_name == capabilities.get('browserName')),
+        RemoteConnection
+    )
+
+    return handler(command_executor, keep_alive=keep_alive)
+
+
+@add_metaclass(ABCMeta)
+class BaseWebDriver(object):
+    """
+    Abstract Base Class for all Webdriver subtypes.
+    ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
+    will succeed.
+    """
+    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove metaclass decorator.
+
+
+class WebDriver(BaseWebDriver):
     """
     Controls a browser by sending commands to a remote server.
     This server is expected to be running the WebDriver wire protocol
@@ -142,8 +174,8 @@ class WebDriver(object):
             else:
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
-            self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
+        if isinstance(self.command_executor, (str, bytes)):
+            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
@@ -358,6 +390,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_id('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.ID, value=id_)
 
     def find_elements_by_id(self, id_):
@@ -376,6 +409,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_id('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.ID, value=id_)
 
     def find_element_by_xpath(self, xpath):
@@ -396,6 +430,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_xpath('//div/td[1]')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.XPATH, value=xpath)
 
     def find_elements_by_xpath(self, xpath):
@@ -414,6 +449,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_link_text(self, link_text):
@@ -434,6 +470,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_link_text('Sign In')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, text):
@@ -452,6 +489,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_link_text('Sign In')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.LINK_TEXT, value=text)
 
     def find_element_by_partial_link_text(self, link_text):
@@ -472,6 +510,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_partial_link_text('Sign')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
@@ -490,6 +529,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_partial_link_text('Sign')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_name(self, name):
@@ -510,6 +550,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_name('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name):
@@ -528,6 +569,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_name('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_tag_name(self, name):
@@ -548,6 +590,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_tag_name('h1')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
@@ -566,6 +609,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_tag_name('h1')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_class_name(self, name):
@@ -586,6 +630,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_class_name('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
@@ -604,6 +649,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_class_name('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
@@ -624,6 +670,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_css_selector('#foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
@@ -642,6 +689,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_css_selector('.foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def execute_script(self, script, *args):
@@ -911,15 +959,20 @@ class WebDriver(object):
 
         :Args:
          - cookie_dict: A dictionary object, with required keys - "name" and "value";
-            optional keys - "path", "domain", "secure", "expiry"
+            optional keys - "path", "domain", "secure", "expiry", "sameSite"
 
         Usage:
             driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
             driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
             driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure':True})
+            driver.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
 
         """
-        self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+        if 'sameSite' in cookie_dict:
+            assert cookie_dict['sameSite'] in ['Strict', 'Lax']
+            self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+        else:
+            self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
     # Timeouts
     def implicitly_wait(self, time_to_wait):
@@ -985,6 +1038,36 @@ class WebDriver(object):
                 'ms': float(time_to_wait) * 1000,
                 'type': 'page load'})
 
+    @property
+    def timeouts(self):
+        """
+        Get all the timeouts that have been set on the current session
+
+        :Usage:
+            ::
+                driver.timeouts
+        :rtype: Timeout
+        """
+        timeouts = self.execute(Command.GET_TIMEOUTS)['value']
+        timeouts["implicit_wait"] = timeouts.pop("implicit") / 1000
+        timeouts["page_load"] = timeouts.pop("pageLoad") / 1000
+        timeouts["script"] = timeouts.pop("script") / 1000
+        return Timeouts(**timeouts)
+
+    @timeouts.setter
+    def timeouts(self, timeouts):
+        """
+        Set all timeouts for the session. This will override any previously
+        set timeouts.
+
+        :Usage:
+            ::
+                my_timeouts = Timeouts()
+                my_timeouts.implicit_wait = 10
+                driver.timeouts = my_timeouts
+        """
+        self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
+
     def find_element(self, by=By.ID, value=None):
         """
         Find an element given a By strategy and locator. Prefer the find_element_by_* methods when
@@ -1025,6 +1108,12 @@ class WebDriver(object):
 
         :rtype: list of WebElement
         """
+        if isinstance(by, RelativeBy):
+            _pkg = '.'.join(__name__.split('.')[:-1])
+            raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
+            find_element_js = "return (%s).apply(null, arguments);" % raw_function
+            return self.execute_script(find_element_js, by.to_dict())
+
         if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -1331,3 +1420,20 @@ class WebDriver(object):
                 driver.get_log('server')
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
+
+    @asynccontextmanager
+    async def get_devtools_connection(self):
+        assert sys.version_info >= (3, 6)
+
+        from selenium.webdriver.support import cdp
+        ws_url = None
+        if self.capabilities.get("se:options"):
+            ws_url = self.capabilities.get("se:options").get("cdp")
+        else:
+            ws_url = self.capabilities.get(self.vendor_prefix["debuggerAddress"])
+
+        if ws_url is None:
+            raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        async with cdp.open_cdp(ws_url) as conn:
+            yield conn

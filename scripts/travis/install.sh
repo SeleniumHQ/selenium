@@ -24,7 +24,16 @@ if [[ ! -z $TOXENV ]]; then
   pip install setuptools==28.8.0 tox==2.4.1
 fi
 
-echo -e "[ui]\n  superconsole = disabled\n" >> .buckconfig.local
+echo -e <<EOM >>.bazelrc.local
+# Set up caching on local disk so incremental builds are faster
+# See https://bazel.build/designs/2016/09/30/repository-cache.html
+build --repository_cache=~/.cache/bazel-repo
+test --repository_cache=~/.cache/bazel-repo
+# See https://docs.bazel.build/versions/master/remote-caching.html#disk-cache
+build --disk_cache=~/.cache/bazel-disk
+test --disk_cache=~/.cache/bazel-disk"
+EOM
 
-curl -L -o bazelisk "https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64"
+
+curl -L -o bazelisk "https://github.com/bazelbuild/bazelisk/releases/download/v1.3.0/bazelisk-linux-amd64"
 chmod +x bazelisk && sudo mv bazelisk /usr/local/bin/bazel

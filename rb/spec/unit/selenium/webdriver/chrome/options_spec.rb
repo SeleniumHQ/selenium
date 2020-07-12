@@ -29,7 +29,17 @@ module Selenium
           it 'accepts defined parameters' do
             allow(File).to receive(:file?).and_return(true)
 
-            opts = Options.new(args: %w[foo bar],
+            opts = Options.new(browser_version: '75',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               args: %w[foo bar],
                                prefs: {foo: 'bar'},
                                binary: '/foo/bar',
                                extensions: ['foo.crx', 'bar.crx'],
@@ -42,7 +52,8 @@ module Selenium
                                exclude_switches: %w[foobar barfoo],
                                minidump_path: 'linux/only',
                                perf_logging_prefs: {enable_network: true},
-                               window_types: %w[normal devtools])
+                               window_types: %w[normal devtools],
+                               'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
             expect(opts.prefs[:foo]).to eq('bar')
@@ -57,6 +68,16 @@ module Selenium
             expect(opts.minidump_path).to eq('linux/only')
             expect(opts.perf_logging_prefs[:enable_network]).to eq(true)
             expect(opts.window_types).to eq(%w[normal devtools])
+            expect(opts.browser_name).to eq('chrome')
+            expect(opts.browser_version).to eq('75')
+            expect(opts.platform_name).to eq('win10')
+            expect(opts.accept_insecure_certs).to eq(false)
+            expect(opts.page_load_strategy).to eq('eager')
+            expect(opts.unhandled_prompt_behavior).to eq('accept')
+            expect(opts.strict_file_interactability).to eq(true)
+            expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
+            expect(opts.set_window_rect).to eq(false)
+            expect(opts.options[:'custom:options']).to eq(foo: 'bar')
           end
         end
 
@@ -144,12 +165,12 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("goog:chromeOptions" => {})
+            expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {})
           end
 
           it 'returns added option' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("goog:chromeOptions" => {"foo" => "bar"})
+            expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {"foo" => "bar"})
           end
 
           it 'returns a JSON hash' do
@@ -157,8 +178,19 @@ module Selenium
             allow_any_instance_of(Options).to receive(:encode_extension).with('foo.crx').and_return("encoded_foo")
             allow_any_instance_of(Options).to receive(:encode_extension).with('bar.crx').and_return("encoded_bar")
 
-            opts = Options.new(args: %w[foo bar],
-                               prefs: {foo: 'bar'},
+            opts = Options.new(browser_version: '75',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               args: %w[foo bar],
+                               prefs: {foo: 'bar',
+                                       key_that_should_not_be_camelcased: 'baz'},
                                binary: '/foo/bar',
                                extensions: ['foo.crx', 'bar.crx'],
                                encoded_extensions: ['encoded_foobar'],
@@ -173,8 +205,20 @@ module Selenium
                                window_types: %w[normal devtools])
 
             key = 'goog:chromeOptions'
-            expect(opts.as_json).to eq(key => {'args' => %w[foo bar],
-                                               'prefs' => {'foo' => 'bar'},
+            expect(opts.as_json).to eq('browserName' => 'chrome',
+                                       'browserVersion' => '75',
+                                       'platformName' => 'win10',
+                                       'acceptInsecureCerts' => false,
+                                       'pageLoadStrategy' => 'eager',
+                                       'unhandledPromptBehavior' => 'accept',
+                                       'strictFileInteractability' => true,
+                                       'timeouts' => {'script' => 40000,
+                                                      'pageLoad' => 400000,
+                                                      'implicit' => 1},
+                                       'setWindowRect' => false,
+                                       key => {'args' => %w[foo bar],
+                                               'prefs' => {'foo' => 'bar',
+                                                           'key_that_should_not_be_camelcased' => 'baz'},
                                                'binary' => '/foo/bar',
                                                'extensions' => %w[encoded_foo encoded_bar encoded_foobar],
                                                'foo' => 'bar',

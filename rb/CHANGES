@@ -1,3 +1,47 @@
+4.0.0.alpha6 (2020-05-28)
+=========================
+
+Chrome:
+  * Added DevTools classes and methods generated from the CDP specification.
+    It currently supports commands and events and provides Rubyish API:
+      driver.devtools.page.navigate(url: 'http://google.com')
+      driver.devtools.console.clear_messages
+      driver.devtools.page.enable
+      driver.devtools.page.on(:load_event_fired) do |params|
+        puts("Page loaded in #{params['timestamp']}")
+      end
+    Check https://chromedevtools.github.io/devtools-protocol/ for more information
+    about possible commands and events. Please note that this API is considered
+    to be experimental and may change any time before stable 4.0 release.
+  * Fixed an issue when passing :prompt_for_download (or similar snake_cased
+    symbols) in Options#prefs would be ignored by Chrome because Selenium
+    would internally convert it to camelCased format (:promptForDownload).
+    Now :prefs are left intact.
+
+Edge:
+  * Fixed an issue when Driver#execute_cdp would not work for Chromium-based
+    Edge browser.
+
+Ruby:
+  * Deprecated passing :desired_capabilities and :options to driver initialization
+    in favor of :capabilities. They now can be combined in an array to make
+    custom capabilities requirements:
+      caps = Selenium::WebDriver::Remote::Capabilities.chrome
+      opts = Selenium::WebDriver::Chrome::Options.new
+      Selenium::WebDriver.for(:remote, capabilities: :chrome)
+      Selenium::WebDriver.for(:remote, capabilities: caps)
+      Selenium::WebDriver.for(:remote, capabilities: opts)
+      Selenium::WebDriver.for(:remote, capabilities: [caps, opts])
+  * Deprecated passing Hash to :capabilities in favor of Remote::Capabilities object.
+  * Updated minimum require Ruby version to 2.5.
+  * Improved keyword arguments handling to avoid warnings in Ruby 2.7.
+
+4.0.0.alpha5 (2020-03-18)
+=========================
+
+The release is just to synchronize version with other bindings and does not
+include any changes.
+
 4.0.0.alpha4 (2020-01-09)
 =========================
 

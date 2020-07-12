@@ -25,6 +25,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
@@ -76,7 +77,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         return options;
       })
       .put(Browser.CHROMIUMEDGE, EdgeOptions::new)
-      .put(Browser.EDGE, EdgeOptions::new)
+      .put(Browser.EDGE, EdgeHtmlOptions::new)
       .put(Browser.HTMLUNIT, () -> new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY))
       .put(Browser.OPERABLINK, OperaOptions::new)
       .put(Browser.SAFARI, () -> {

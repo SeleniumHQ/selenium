@@ -105,6 +105,7 @@ To list all available targets, you can append the `-T` flag:
 * `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE). 
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
+* [Bazel](https://docs.bazel.build/versions/master/install.html)
 * [Python](https://www.python.org/)
 * `python` on the PATH
 * [The Requests Library](http://python-requests.org) for Python: `pip install requests`
@@ -122,7 +123,7 @@ the “build maintainer” who's experimenting with a JRuby upgrade.
 
 ### Optional Requirements
 
-* Python 3.4+ (if you want to run Python tests for this version)
+* Python 3.5+ (if you want to run Python tests for this version)
 * Ruby 2.0
 
 ### Internet Explorer Driver
@@ -171,7 +172,7 @@ let's start there.  Working on the JavaScript is easy.  First of all,
 start the development server:
 
 ```sh
-./go debug-server
+bazel run debug-server
 ```
 
 Now, navigate to
@@ -193,7 +194,7 @@ can run all the JavaScript tests using:
 ## Maven POM files
 
 Here is the [public Selenium Maven
-repository](http://repo1.maven.org/maven2/org/seleniumhq/selenium/).
+repository](https://repo1.maven.org/maven2/org/seleniumhq/selenium/).
 
 ## Build Output
 

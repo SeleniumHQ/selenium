@@ -20,6 +20,19 @@
 module Selenium
   module WebDriver
     class Options
+      W3C_OPTIONS = %i[browser_name browser_version platform_name accept_insecure_certs page_load_strategy proxy
+                       set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability].freeze
+
+      W3C_OPTIONS.each do |key|
+        define_method key do
+          @options[key]
+        end
+
+        define_method "#{key}=" do |value|
+          @options[key] = value
+        end
+      end
+
       attr_accessor :options
 
       def initialize(options: nil, **opts)
@@ -31,6 +44,7 @@ module Selenium
                    else
                      opts
                    end
+        @options[:browser_name] = self.class::BROWSER
       end
 
       #
@@ -55,22 +69,30 @@ module Selenium
       def as_json(*)
         options = @options.dup
 
-        opts = self.class::CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
+        w3c_options = options.select { |key, _val| W3C_OPTIONS.include?(key) }
+        options.delete_if { |key, _val| W3C_OPTIONS.include?(key) }
+
+        self.class::CAPABILITIES.each do |capability_alias, capability_name|
           capability_value = options.delete(capability_alias)
-          hash[capability_name] = capability_value unless capability_value.nil?
+          options[capability_name] = capability_value unless capability_value.nil?
         end
-        opts.merge(options)
+        browser_options = defined?(self.class::KEY) ? {self.class::KEY => options} : options
+
+        process_browser_options(browser_options) if private_methods(false).include?(:process_browser_options)
+        generate_as_json(w3c_options.merge(browser_options))
       end
 
       private
 
-      def generate_as_json(value)
+      def generate_as_json(value, camelize_keys: true)
         if value.respond_to?(:as_json)
           value.as_json
         elsif value.is_a?(Hash)
-          value.each_with_object({}) { |(key, val), hash| hash[convert_json_key(key)] = generate_as_json(val) }
+          value.each_with_object({}) do |(key, val), hash|
+            hash[convert_json_key(key, camelize: camelize_keys)] = generate_as_json(val, camelize_keys: camelize_keys)
+          end
         elsif value.is_a?(Array)
-          value.map(&method(:generate_as_json))
+          value.map { |val| generate_as_json(val, camelize_keys: camelize_keys) }
         elsif value.is_a?(Symbol)
           value.to_s
         else
@@ -78,15 +100,16 @@ module Selenium
         end
       end
 
-      def convert_json_key(key)
-        key = camel_case(key) if key.is_a?(Symbol)
+      def convert_json_key(key, camelize: true)
+        key = key.to_s if key.is_a?(Symbol)
+        key = camel_case(key) if camelize
         return key if key.is_a?(String)
 
         raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class}"
       end
 
       def camel_case(str)
-        str.to_s.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+        str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
       end
     end # Options
   end # WebDriver

@@ -30,7 +30,7 @@ module Selenium
         driver.file_detector = nil
       end
 
-      context 'when uploading one file', only: {browser: %i[chrome firefox ie]} do
+      context 'when uploading one file', only: {browser: %i[chrome firefox ie safari]} do
         it 'uses the file detector' do
           driver.navigate.to url_for('upload.html')
 
@@ -46,7 +46,7 @@ module Selenium
         end
       end
 
-      context 'when uploading multiple files', only: {browser: %i[chrome firefox]} do
+      context 'when uploading multiple files', only: {browser: %i[chrome firefox safari]} do
         it 'uses the file detector' do
           driver.navigate.to url_for('upload_multiple.html')
 

@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
@@ -35,6 +34,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
@@ -57,8 +60,8 @@ public class GeckoDriverService extends FirefoxDriverService {
   public GeckoDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
@@ -74,8 +77,8 @@ public class GeckoDriverService extends FirefoxDriverService {
       File executable,
       int port,
       Duration timeout,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -94,7 +97,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   static GeckoDriverService createDefaultService(Capabilities caps) {
     Builder builder = new Builder();
 
-    Object binary = caps.getCapability(FirefoxDriver.BINARY);
+    Object binary = caps.getCapability(FirefoxDriver.Capability.BINARY);
     if (binary != null) {
       FirefoxBinary actualBinary;
       if (binary instanceof FirefoxBinary) {
@@ -141,8 +144,8 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     @Override
     public int score(Capabilities capabilities) {
-      if (capabilities.getCapability(FirefoxDriver.MARIONETTE) != null
-          && ! capabilities.is(FirefoxDriver.MARIONETTE)) {
+      if (capabilities.getCapability(FirefoxDriver.Capability.MARIONETTE) != null
+          && ! capabilities.is(FirefoxDriver.Capability.MARIONETTE)) {
         return 0;
       }
 
@@ -166,7 +169,7 @@ public class GeckoDriverService extends FirefoxDriverService {
      * @return A self reference.
      */
     public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
-      checkNotNull(firefoxBinary);
+      Require.nonNull("Firefox binary", firefoxBinary);
       checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
       return this;
@@ -187,21 +190,29 @@ public class GeckoDriverService extends FirefoxDriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+    protected List<String> createArgs() {
+      List<String> args = new ArrayList<>();
+      args.add(String.format("--port=%d", getPort()));
       if (firefoxBinary != null) {
-        argsBuilder.add("-b");
-        argsBuilder.add(firefoxBinary.getPath());
-      } // else GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
-      return argsBuilder.build();
+        args.add("-b");
+        args.add(firefoxBinary.getPath());
+      } else {
+        // Read system property for Firefox binary and use those if they are set
+        Optional<Executable> executable = Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
+        executable.ifPresent( e -> {
+          args.add("-b");
+          args.add(e.getPath());
+        });
+      }
+      // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
+      return unmodifiableList(args);
     }
 
     @Override
     protected GeckoDriverService createDriverService(File exe, int port,
                                                      Duration timeout,
-                                                     ImmutableList<String> args,
-                                                     ImmutableMap<String, String> environment) {
+                                                     List<String> args,
+                                                     Map<String, String> environment) {
       try {
         GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment);
         String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);

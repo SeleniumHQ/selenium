@@ -18,6 +18,11 @@
 package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.primitives.Primitives;
+
+import org.openqa.selenium.internal.Require;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -29,7 +34,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -103,7 +107,7 @@ public class AnnotatedConfig implements Config {
       throw new ConfigException("Collection fields may not be used for configuration: " + value);
     }
 
-    if (Boolean.FALSE.equals(value)) {
+    if (Boolean.FALSE.equals(value) && !Primitives.isWrapperType(value.getClass())) {
       return null;
     }
 
@@ -131,7 +135,7 @@ public class AnnotatedConfig implements Config {
           .forEach(toSet::addLast);
 
       Class<?> toAdd = clazz.getSuperclass();
-      if (!Object.class.equals(toAdd) && !seen.contains(toAdd)) {
+      if (toAdd != null && !Object.class.equals(toAdd) && !seen.contains(toAdd)) {
         toVisit.add(toAdd);
       }
       Arrays.stream(clazz.getInterfaces())
@@ -144,8 +148,8 @@ public class AnnotatedConfig implements Config {
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    Objects.requireNonNull(section, "Section name not set");
-    Objects.requireNonNull(option, "Option name not set");
+    Require.nonNull("Section name", section);
+    Require.nonNull("Option name", option);
 
     Map<String, List<String>> sec = config.get(section);
     if (sec == null || sec.isEmpty()) {
@@ -158,5 +162,16 @@ public class AnnotatedConfig implements Config {
     }
 
     return Optional.of(ImmutableList.copyOf(values));
+  }
+
+  @Override
+  public Set<String> getSectionNames() {
+    return ImmutableSortedSet.copyOf(config.keySet());
+  }
+
+  @Override
+  public Set<String> getOptions(String section) {
+    Require.nonNull("Section name to get options for", section);
+    return ImmutableSortedSet.copyOf(config.getOrDefault(section, ImmutableMap.of()).keySet());
   }
 }
