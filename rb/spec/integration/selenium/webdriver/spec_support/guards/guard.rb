@@ -22,9 +22,20 @@ module Selenium
     module SpecSupport
       class Guards
         class Guard
+
+          attr_reader :message
+
           def initialize(guard, type)
             @type = type
 
+            reason = guard.delete(:message) || 'no reason given.'
+            @message = if @type == :exclude
+                         "Test not guarded because it breaks test run; #{reason}."
+                       elsif @type == :exclusive
+                         'Test does not apply to this configuration.'
+                       else
+                         "Test guarded; #{reason}."
+                       end
             @drivers = []
             @browsers = []
             @platforms = []
@@ -35,16 +46,24 @@ module Selenium
             expand_platforms(guard)
           end
 
+          # Bug is present on all configurations specified
           def except?
             @type == :except
           end
 
+          # Bug is present on all configurations not specified
           def only?
             @type == :only
           end
 
+          # Bug is present on all configurations specified, but test can not be run because it breaks other tests
           def exclude?
             @type == :exclude
+          end
+
+          # Test only applies to configurations specified
+          def exclusive?
+            @type == :exclusive
           end
 
           def satisfied?

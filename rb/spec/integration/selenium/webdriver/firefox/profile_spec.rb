@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Profile, only: {browser: %i[firefox]} do
+      describe Profile, exclusive: {browser: :firefox} do
         let(:profile) { Profile.new }
 
         def read_generated_prefs(from = nil)

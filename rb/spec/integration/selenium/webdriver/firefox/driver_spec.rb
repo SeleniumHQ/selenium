@@ -21,7 +21,7 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Firefox, only: {browser: %i[firefox]} do
+    describe Firefox, exclusive: {browser: :firefox} do
       it 'creates default capabilities' do
         create_driver! do |driver|
           caps = driver.capabilities
