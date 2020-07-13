@@ -23,8 +23,8 @@ import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.DOWN;
 import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.DRAINING;
 import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.UP;
-import static org.openqa.selenium.grid.distributor.local.Slot.Status.ACTIVE;
-import static org.openqa.selenium.grid.distributor.local.Slot.Status.AVAILABLE;
+import static org.openqa.selenium.grid.distributor.gridmodel.Slot.Status.ACTIVE;
+import static org.openqa.selenium.grid.distributor.gridmodel.Slot.Status.AVAILABLE;
 
 import com.google.common.collect.ImmutableList;
 
@@ -36,7 +36,6 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.distributor.local.Slot;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
