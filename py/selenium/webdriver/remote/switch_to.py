@@ -20,11 +20,6 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException, NoSuchWindowException
 
-try:
-    basestring
-except NameError:
-    basestring = str
-
 
 class SwitchTo:
     def __init__(self, driver):
@@ -85,7 +80,7 @@ class SwitchTo:
                 driver.switch_to.frame(1)
                 driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])
         """
-        if isinstance(frame_reference, basestring) and self._driver.w3c:
+        if isinstance(frame_reference, str) and self._driver.w3c:
             try:
                 frame_reference = self._driver.find_element(By.ID, frame_reference)
             except NoSuchElementException:

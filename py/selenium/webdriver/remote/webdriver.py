@@ -17,7 +17,7 @@
 
 """The WebDriver implementation."""
 
-from abc import ABCMeta
+from abc import ABC
 import base64
 import copy
 from contextlib import (contextmanager, asynccontextmanager)
@@ -41,13 +41,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
-
-from six import add_metaclass
-
-try:
-    str = basestring
-except NameError:
-    pass
 
 
 _W3C_CAPABILITY_NAMES = frozenset([
@@ -117,14 +110,12 @@ def get_remote_connection(capabilities, command_executor, keep_alive):
     return handler(command_executor, keep_alive=keep_alive)
 
 
-@add_metaclass(ABCMeta)
-class BaseWebDriver(object):
+class BaseWebDriver(ABC):
     """
     Abstract Base Class for all Webdriver subtypes.
     ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
     will succeed.
     """
-    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove metaclass decorator.
 
 
 class WebDriver(BaseWebDriver):

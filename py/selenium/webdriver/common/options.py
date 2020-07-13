@@ -41,6 +41,7 @@ class BaseOptions(ABC):
         """Convert options into capabilities dictionary."""
 
     @property
+    @abstractmethod
     def default_capabilities(self):
         """Return minimal capabilities necessary as a dictionary."""
 
