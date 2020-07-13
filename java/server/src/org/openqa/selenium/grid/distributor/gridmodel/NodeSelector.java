@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.distributor.gridmodel;
 
 import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.UP;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -89,6 +91,7 @@ public class NodeSelector {
    * @param capabilities Passing in the whole Capabilities object will allow us to prioritize more than just browser
    * @return Stream of distinct Hosts with the more rare Capabilities removed
    */
+  @VisibleForTesting
   Stream<Host> getPrioritizedHostStream(Stream<Host> hostStream, Capabilities capabilities) {
     //TODO for the moment, we're not going to operate on the Stream that was passed in--we need to
     // alter and futz with the contents, so the stream isn't the right place to operate. This
@@ -164,6 +167,7 @@ public class NodeSelector {
     return hostBuckets;
   }
 
+  @VisibleForTesting
   boolean allBucketsSameSize(Map<String, Set<Host>> hostBuckets) {
     Set<Integer> intSet = new HashSet<>();
     hostBuckets.values().forEach(bucket ->  intSet.add(bucket.size()));
