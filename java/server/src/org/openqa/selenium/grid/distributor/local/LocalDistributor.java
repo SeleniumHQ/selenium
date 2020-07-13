@@ -34,6 +34,8 @@ import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.gridmodel.Host;
+import org.openqa.selenium.grid.distributor.gridmodel.NodeSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -81,7 +83,7 @@ import java.util.stream.Stream;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
+import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.http.Contents.reader;
@@ -100,6 +102,7 @@ public class LocalDistributor extends Distributor {
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
   private final String registrationSecret;
+  private final NodeSelector nodeSelector = new NodeSelector();
 
   public LocalDistributor(
       Tracer tracer,
@@ -161,31 +164,7 @@ public class LocalDistributor extends Distributor {
           iterator.next(),
           ImmutableMap.of("span", span));
 
-      Lock writeLock = this.lock.writeLock();
-      writeLock.lock();
-      try {
-        Stream<Host> firstRound = this.hosts.stream()
-            .filter(host -> host.getHostStatus() == UP)
-            // Find a host that supports this kind of thing
-            .filter(host -> host.hasCapacity(firstRequest.getCapabilities()));
-
-        //of the hosts that survived the first round, separate into buckets and prioritize by browser "rarity"
-        Stream<Host> prioritizedHosts = getPrioritizedHostStream(firstRound, firstRequest.getCapabilities());
-
-        //Take the further-filtered Stream and prioritize by load, then by session age
-        selected = prioritizedHosts
-            .min(
-                // Now sort by node which has the lowest load (natural ordering)
-                Comparator.comparingDouble(Host::getLoad)
-                    // Then last session created (oldest first), so natural ordering again
-                    .thenComparingLong(Host::getLastSessionCreated)
-                    // And use the host id as a tie-breaker.
-                    .thenComparing(Host::getId))
-            // And reserve some space for this session
-            .map(host -> host.reserve(firstRequest));
-      } finally {
-        writeLock.unlock();
-      }
+      selected = nodeSelector.selectNode(firstRequest);
 
       CreateSessionResponse sessionResponse = selected
           .orElseThrow(

@@ -15,14 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.local;
+package org.openqa.selenium.grid.distributor.gridmodel;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.DOWN;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.DRAINING;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
+import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.DOWN;
+import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.DRAINING;
+import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.UP;
 import static org.openqa.selenium.grid.distributor.local.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.local.Slot.Status.AVAILABLE;
 
@@ -36,6 +36,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.distributor.local.Slot;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -53,7 +54,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-class Host {
+public class Host {
 
   private static final Logger LOG = Logger.getLogger("Selenium Host");
   private final Node node;
@@ -106,7 +107,7 @@ class Host {
     update(node.getStatus());
   }
 
-  void update(NodeStatus status) {
+  public void update(NodeStatus status) {
     Require.nonNull("Node status", status);
 
     Lock writeLock = lock.writeLock();
@@ -239,7 +240,7 @@ class Host {
     }
   }
 
-  void runHealthCheck() {
+  public void runHealthCheck() {
     performHealthCheck.run();
   }
 
