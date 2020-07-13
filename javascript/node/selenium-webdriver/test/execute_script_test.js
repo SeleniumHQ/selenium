@@ -18,8 +18,6 @@
 'use strict';
 
 const assert = require('assert');
-const {fail} = require('assert');
-
 const {Browser, By, WebElement, error} = require('..');
 const {Pages, ignore, suite} = require('../lib/test');
 
@@ -225,7 +223,7 @@ suite(function(env) {
       });
 
       it('WebElement arguments are passed as DOM elements', async function() {
-        let el = await driver.findElement(By.tagName('div'));
+        let el = await driver.findElement(By.css('div'));
         let result =
             await execute('return arguments[0].tagName.toLowerCase();', el);
         assert.equal(result, 'div');
@@ -324,7 +322,7 @@ suite(function(env) {
       it('fails if script took too long', function() {
         return executeTimeOutScript(TOO_LONG_WAIT)
           .then(function() {
-            fail('it should have timed out');
+            assert.fail('it should have timed out');
           }).catch(function(e) {
             if (env.browser.name === Browser.SAFARI) {
               assert.equal(e.name, error.TimeoutError.name);

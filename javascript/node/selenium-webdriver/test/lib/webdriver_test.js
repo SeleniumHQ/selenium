@@ -719,7 +719,7 @@ describe('WebDriver', function() {
       var driver = executor.createDriver();
       var element = driver.findElement(function(d) {
         assert.equal(driver, d);
-        return d.findElements(By.tagName('a'));
+        return d.findElements(By.css('a'));
       });
       return element.click();
     });
@@ -744,7 +744,7 @@ describe('WebDriver', function() {
           end();
 
       var driver = executor.createDriver();
-      return driver.findElements(By.tagName('a'))
+      return driver.findElements(By.css('a'))
           .then(function(elements) {
             return Promise.all(elements.map(function(e) {
               assert.ok(e instanceof WebElement);

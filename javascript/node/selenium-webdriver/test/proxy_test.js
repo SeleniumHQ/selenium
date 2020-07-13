@@ -112,7 +112,7 @@ test.suite(function(env) {
       await driver.get(helloServer.url());
       assert.equal(await driver.getTitle(), 'Proxy page');
       assert.equal(
-          await driver.findElement({tagName: 'h3'}).getText(),
+          await driver.findElement({css: 'h3'}).getText(),
           'This is the proxy landing page');
     });
 
@@ -125,7 +125,7 @@ test.suite(function(env) {
       await driver.get(helloServer.url());
       assert.equal(await driver.getTitle(), 'Hello');
       assert.equal(
-          await driver.findElement({tagName: 'h3'}).getText(),
+          await driver.findElement({css: 'h3'}).getText(),
           'Hello, world!');
 
       // For firefox the no proxy settings appear to match on hostname only.
@@ -133,7 +133,7 @@ test.suite(function(env) {
       await driver.get(url);
       assert.equal(await driver.getTitle(), 'Proxy page');
       assert.equal(
-          await driver.findElement({tagName: 'h3'}).getText(),
+          await driver.findElement({css: 'h3'}).getText(),
           'This is the proxy landing page');
     });
 
@@ -150,13 +150,13 @@ test.suite(function(env) {
       await driver.get(helloServer.url());
       assert.equal(await driver.getTitle(), 'Proxy page');
       assert.equal(
-          await driver.findElement({tagName: 'h3'}).getText(),
+          await driver.findElement({css: 'h3'}).getText(),
           'This is the proxy landing page');
 
       await driver.get(goodbyeServer.url());
       assert.equal(await driver.getTitle(), 'Goodbye');
       assert.equal(
-          await driver.findElement({tagName: 'h3'}).getText(),
+          await driver.findElement({css: 'h3'}).getText(),
           'Goodbye, world!');
     });
   });

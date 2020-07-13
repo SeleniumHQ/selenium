@@ -375,7 +375,7 @@ suite(function(env) {
         await driver.get(Pages.javascriptPage);
 
         let link = await driver.findElement(function(driver) {
-          let links = driver.findElements(By.tagName('a'));
+          let links = driver.findElements(By.css('a'));
           return promise.filter(links, function(link) {
             return link.getAttribute('id').then(id => id === 'updatediv');
           }).then(links => links[0]);
@@ -390,7 +390,7 @@ suite(function(env) {
         await driver.get(Pages.javascriptPage);
 
         let link = await driver.findElement(function() {
-          return driver.findElements(By.tagName('a'));
+          return driver.findElements(By.css('a'));
         });
 
         assert.equal(await link.getText(), 'Change the page title!');
