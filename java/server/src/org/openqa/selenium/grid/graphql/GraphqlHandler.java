@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -45,6 +46,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -86,6 +88,9 @@ public class GraphqlHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    if (req.getMethod() == HttpMethod.OPTIONS) {
+      return new HttpResponse().setStatus(HTTP_OK);
+    }
     Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);
 
     if (!(inputs.get("query") instanceof String)) {

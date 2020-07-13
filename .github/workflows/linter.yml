@@ -43,6 +43,7 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v2.0.0
         env:
+          DEFAULT_BRANCH: trunk
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
           VALIDATE_COFFEE: false
