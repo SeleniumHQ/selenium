@@ -222,7 +222,6 @@ class By {
    *
    * @param {string} name The tag name to search for.
    * @return {!By} The new locator.
-   * @deprecated Use {@link By.css() By.css(tagName)} instead.
    */
   static tagName(name) {
     return By.css(name);
