@@ -69,7 +69,7 @@ def _pom_file_impl(ctx):
         OutputGroupInfo(
             pom = depset([out]),
         ),
-        PomInfo(pom = out)
+        PomInfo(pom = out),
     ]
 
 pom_file = rule(

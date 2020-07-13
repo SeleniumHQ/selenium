@@ -17,13 +17,11 @@
 
 package org.openqa.selenium.events.zeromq;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.collect.EvictingQueue;
-
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -37,7 +35,6 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,6 +44,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 class UnboundZmqEventBus implements EventBus {
 
@@ -137,6 +136,11 @@ class UnboundZmqEventBus implements EventBus {
     }
   }
 
+  @Override
+  public boolean isReady() {
+    return !executor.isShutdown();
+  }
+
   private boolean isSubAddressIPv6(String connection) {
     try {
       return InetAddress.getByName(new URI(connection).getHost()) instanceof Inet6Address;
@@ -148,8 +152,8 @@ class UnboundZmqEventBus implements EventBus {
 
   @Override
   public void addListener(Type type, Consumer<Event> onType) {
-    Objects.requireNonNull(type, "Event type must be set.");
-    Objects.requireNonNull(onType, "Event listener must be set.");
+    Require.nonNull("Event type", type);
+    Require.nonNull("Event listener", onType);
 
     List<Consumer<Event>> typeListeners = listeners.computeIfAbsent(type, t -> new LinkedList<>());
     typeListeners.add(onType);
@@ -157,7 +161,7 @@ class UnboundZmqEventBus implements EventBus {
 
   @Override
   public void fire(Event event) {
-    Objects.requireNonNull(event, "Event to send must be set.");
+    Require.nonNull("Event to send", event);
 
     pub.sendMore(event.getType().getName().getBytes(UTF_8));
     pub.sendMore(event.getId().toString().getBytes(UTF_8));

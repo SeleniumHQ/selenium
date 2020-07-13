@@ -9,6 +9,7 @@ java_library(
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",
         artifact("com.google.guava:guava"),

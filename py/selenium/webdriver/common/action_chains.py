@@ -290,7 +290,9 @@ class ActionChains:
          - yoffset: Y offset to move to.
         """
         if self._driver.w3c:
-            self.w3c_actions.pointer_action.move_to(to_element, xoffset, yoffset)
+            self.w3c_actions.pointer_action.move_to(to_element,
+                                                    int(xoffset),
+                                                    int(yoffset))
             self.w3c_actions.key_action.pause()
         else:
             self._actions.append(

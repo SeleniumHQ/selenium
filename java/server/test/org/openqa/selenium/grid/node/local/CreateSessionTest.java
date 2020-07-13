@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.node.local;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.OpenTelemetry;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -31,8 +30,8 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -63,9 +62,9 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        OpenTelemetry.getTracerProvider().get("default"),
+      DefaultTestTracer.createTracer(),
         new GuavaEventBus(),
-        HttpClient.Factory.createDefault(),
+        uri,
         uri,
         null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
@@ -114,9 +113,9 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        OpenTelemetry.getTracerProvider().get("default"),
+      DefaultTestTracer.createTracer(),
         new GuavaEventBus(),
-        HttpClient.Factory.createDefault(),
+        uri,
         uri,
         null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
@@ -157,9 +156,9 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        OpenTelemetry.getTracerProvider().get("default"),
+      DefaultTestTracer.createTracer(),
         new GuavaEventBus(),
-        HttpClient.Factory.createDefault(),
+        uri,
         uri,
         null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))

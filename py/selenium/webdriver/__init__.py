@@ -27,9 +27,6 @@ from .edge.webdriver import WebDriver as ChromiumEdge  # noqa
 from .edge.options import Options as EdgeOptions # noqa
 from .opera.webdriver import WebDriver as Opera  # noqa
 from .safari.webdriver import WebDriver as Safari  # noqa
-from .blackberry.webdriver import WebDriver as BlackBerry  # noqa
-from .phantomjs.webdriver import WebDriver as PhantomJS  # noqa
-from .android.webdriver import WebDriver as Android  # noqa
 from .webkitgtk.webdriver import WebDriver as WebKitGTK # noqa
 from .webkitgtk.options import Options as WebKitGTKOptions # noqa
 from .wpewebkit.webdriver import WebDriver as WPEWebKit # noqa
@@ -40,4 +37,4 @@ from .common.action_chains import ActionChains  # noqa
 from .common.touch_actions import TouchActions  # noqa
 from .common.proxy import Proxy  # noqa
 
-__version__ = '4.0.0a5'
+__version__ = '4.0.0a6'

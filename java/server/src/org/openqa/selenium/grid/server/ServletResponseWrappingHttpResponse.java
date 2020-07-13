@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.grid.server;
 
-import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -36,7 +36,7 @@ class ServletResponseWrappingHttpResponse extends HttpResponse {
   private final HttpServletResponse resp;
 
   ServletResponseWrappingHttpResponse(HttpServletResponse resp) {
-    this.resp = Preconditions.checkNotNull(resp, "Response to wrap must not be null");
+    this.resp = Require.nonNull("Response to wrap", resp);
   }
 
   @Override

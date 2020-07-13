@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -34,14 +35,13 @@ import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class NoHandler implements HttpHandler {
 
   private final Json json;
 
   public NoHandler(Json json) {
-    this.json = Objects.requireNonNull(json);
+    this.json = Require.nonNull("Json converter", json);
   }
 
   @Override

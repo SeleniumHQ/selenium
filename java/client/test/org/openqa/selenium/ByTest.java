@@ -17,18 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.internal.FindsByClassName;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.json.Json;
-
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -43,6 +31,11 @@ import static org.openqa.selenium.By.ByTagName;
 import static org.openqa.selenium.By.ByXPath;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import java.util.List;
+import java.util.Map;
+import org.junit.Test;
+import org.openqa.selenium.json.Json;
+
 public class ByTest {
 
   @Test
@@ -52,34 +45,46 @@ public class ByTest {
     By.name("cheese").findElement(driver);
     By.name("peas").findElements(driver);
 
-    verify(driver).findElementByName("cheese");
-    verify(driver).findElementsByName("peas");
+    verify(driver).findElement(By.name("cheese"));
+    verify(driver).findElements(By.name("peas"));
     verifyNoMoreInteractions(driver);
   }
 
   @Test
-  public void shouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
-    final OnlyXPath driver = mock(OnlyXPath.class);
+  public void shouldUseXpathLocateElementsByXpath() {
+    AllDriver driver = mock(AllDriver.class);
 
-    By.name("cheese").findElement(driver);
-    By.name("peas").findElements(driver);
+    By.xpath(".//*[@name = 'cheese']").findElement(driver);
+    By.xpath(".//*[@name = 'peas']").findElements(driver);
 
-    verify(driver).findElementByXPath(".//*[@name = 'cheese']");
-    verify(driver).findElementsByXPath(".//*[@name = 'peas']");
+    verify(driver).findElement(By.xpath(".//*[@name = 'cheese']"));
+    verify(driver).findElements(By.xpath(".//*[@name = 'peas']"));
     verifyNoMoreInteractions(driver);
   }
+//
+//  @Test
+//  public void shouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
+//    final OnlyXPath driver = mock(OnlyXPath.class);
+//
+//    By.name("cheese").findElement(driver);
+//    By.name("peas").findElements(driver);
+//
+//    verify(driver).findElementByXPath(".//*[@name = 'cheese']");
+//    verify(driver).findElementsByXPath(".//*[@name = 'peas']");
+//    verifyNoMoreInteractions(driver);
+//  }
 
-  @Test
-  public void fallsBackOnXPathIfContextDoesNotImplementFallsById() {
-    OnlyXPath driver = mock(OnlyXPath.class);
-
-    By.id("foo").findElement(driver);
-    By.id("bar").findElements(driver);
-
-    verify(driver).findElementByXPath(".//*[@id = 'foo']");
-    verify(driver).findElementsByXPath(".//*[@id = 'bar']");
-    verifyNoMoreInteractions(driver);
-  }
+//  @Test
+//  public void fallsBackOnXPathIfContextDoesNotImplementFallsById() {
+//    OnlyXPath driver = mock(OnlyXPath.class);
+//
+//    By.id("foo").findElement(driver);
+//    By.id("bar").findElements(driver);
+//
+//    verify(driver).findElementByXPath(".//*[@id = 'foo']");
+//    verify(driver).findElementsByXPath(".//*[@id = 'bar']");
+//    verifyNoMoreInteractions(driver);
+//  }
 
   @Test
   public void doesNotUseXPathIfContextFindsById() {
@@ -88,8 +93,8 @@ public class ByTest {
     By.id("foo").findElement(context);
     By.id("bar").findElements(context);
 
-    verify(context).findElementById("foo");
-    verify(context).findElementsById("bar");
+    verify(context).findElement(By.id("foo"));
+    verify(context).findElements(By.id("bar"));
     verifyNoMoreInteractions(context);
   }
 
@@ -100,22 +105,22 @@ public class ByTest {
     By.tagName("foo").findElement(context);
     By.tagName("bar").findElements(context);
 
-    verify(context).findElementByTagName("foo");
-    verify(context).findElementsByTagName("bar");
+    verify(context).findElement(By.tagName("foo"));
+    verify(context).findElements(By.tagName("bar"));
     verifyNoMoreInteractions(context);
   }
 
-  @Test
-  public void searchesByXPathIfCannotFindByTagName() {
-    OnlyXPath context = mock(OnlyXPath.class);
-
-    By.tagName("foo").findElement(context);
-    By.tagName("bar").findElements(context);
-
-    verify(context).findElementByXPath(".//foo");
-    verify(context).findElementsByXPath(".//bar");
-    verifyNoMoreInteractions(context);
-  }
+//  @Test
+//  public void searchesByXPathIfCannotFindByTagName() {
+//    OnlyXPath context = mock(OnlyXPath.class);
+//
+//    By.tagName("foo").findElement(context);
+//    By.tagName("bar").findElements(context);
+//
+//    verify(context).findElementByXPath(".//foo");
+//    verify(context).findElementsByXPath(".//bar");
+//    verifyNoMoreInteractions(context);
+//  }
 
   @Test
   public void searchesByClassNameIfSupported() {
@@ -124,24 +129,24 @@ public class ByTest {
     By.className("foo").findElement(context);
     By.className("bar").findElements(context);
 
-    verify(context).findElementByClassName("foo");
-    verify(context).findElementsByClassName("bar");
+    verify(context).findElement(By.className("foo"));
+    verify(context).findElements(By.className("bar"));
     verifyNoMoreInteractions(context);
   }
 
-  @Test
-  public void searchesByXPathIfFindingByClassNameNotSupported() {
-    OnlyXPath context = mock(OnlyXPath.class);
-
-    By.className("foo").findElement(context);
-    By.className("bar").findElements(context);
-
-    verify(context).findElementByXPath(
-        ".//*[contains(concat(' ',normalize-space(@class),' '),' foo ')]");
-    verify(context).findElementsByXPath(
-        ".//*[contains(concat(' ',normalize-space(@class),' '),' bar ')]");
-    verifyNoMoreInteractions(context);
-  }
+//  @Test
+//  public void searchesByXPathIfFindingByClassNameNotSupported() {
+//    OnlyXPath context = mock(OnlyXPath.class);
+//
+//    By.className("foo").findElement(context);
+//    By.className("bar").findElements(context);
+//
+//    verify(context).findElementByXPath(
+//        ".//*[contains(concat(' ',normalize-space(@class),' '),' foo ')]");
+//    verify(context).findElementsByXPath(
+//        ".//*[contains(concat(' ',normalize-space(@class),' '),' bar ')]");
+//    verifyNoMoreInteractions(context);
+//  }
 
   @Test
   public void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {
@@ -192,13 +197,8 @@ public class ByTest {
 
   }
 
-  private interface AllDriver
-      extends FindsById, FindsByLinkText, FindsByName, FindsByXPath, FindsByTagName,
-              FindsByClassName, SearchContext {
+  private interface AllDriver extends SearchContext {
     // Place holder
   }
 
-  private interface OnlyXPath extends FindsByXPath, SearchContext {
-
-  }
 }

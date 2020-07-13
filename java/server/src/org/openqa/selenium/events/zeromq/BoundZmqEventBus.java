@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 class BoundZmqEventBus implements EventBus {
 
-  public static final Logger LOG = Logger.getLogger(EventBus.class.getName());
+  private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private final UnboundZmqEventBus delegate;
   private final ZMQ.Socket xpub;
   private final ZMQ.Socket xsub;
@@ -71,7 +71,10 @@ class BoundZmqEventBus implements EventBus {
     LOG.info("Event bus ready");
   }
 
-
+  @Override
+  public boolean isReady() {
+    return !executor.isShutdown();
+  }
 
   @Override
   public void addListener(Type type, Consumer<Event> onType) {

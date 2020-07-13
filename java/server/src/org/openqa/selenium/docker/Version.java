@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.docker;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
 /**
  * Models simple version strings. Does not attempt to be semver compatible,
@@ -31,7 +31,7 @@ class Version {
   private final String[] segments;
 
   public Version(String versionString) {
-    this.versionString = Objects.requireNonNull(versionString, "Version string to use must be set.");
+    this.versionString = Require.nonNull("Version string", versionString);
 
     this.segments = versionString.split("\\.");
   }

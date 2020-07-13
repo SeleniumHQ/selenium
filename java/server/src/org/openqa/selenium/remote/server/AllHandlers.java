@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.web.NoHandler;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -52,7 +53,7 @@ class AllHandlers {
   private final Map<HttpMethod, ImmutableList<Function<String, HttpHandler>>> additionalHandlers;
 
   public AllHandlers(NewSessionPipeline pipeline, ActiveSessions allSessions) {
-    this.allSessions = Objects.requireNonNull(allSessions);
+    this.allSessions = Require.nonNull("Active sessions", allSessions);
     this.json = new Json();
 
     this.additionalHandlers = ImmutableMap.of(

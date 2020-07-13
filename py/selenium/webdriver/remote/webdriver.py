@@ -17,11 +17,13 @@
 
 """The WebDriver implementation."""
 
+from abc import ABCMeta
 import base64
 import copy
-from contextlib import contextmanager
+from contextlib import (contextmanager, asynccontextmanager)
 import pkgutil
 import warnings
+import sys
 
 from .command import Command
 from .errorhandler import ErrorHandler
@@ -36,11 +38,11 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         NoSuchCookieException,
                                         UnknownMethodException)
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
-
 from selenium.webdriver.common.timeouts import Timeouts
-
+from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
+
+from six import add_metaclass
 
 try:
     str = basestring
@@ -115,7 +117,17 @@ def get_remote_connection(capabilities, command_executor, keep_alive):
     return handler(command_executor, keep_alive=keep_alive)
 
 
-class WebDriver:
+@add_metaclass(ABCMeta)
+class BaseWebDriver(object):
+    """
+    Abstract Base Class for all Webdriver subtypes.
+    ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
+    will succeed.
+    """
+    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove metaclass decorator.
+
+
+class WebDriver(BaseWebDriver):
     """
     Controls a browser by sending commands to a remote server.
     This server is expected to be running the WebDriver wire protocol
@@ -162,7 +174,7 @@ class WebDriver:
             else:
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
+        if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
@@ -1408,3 +1420,20 @@ class WebDriver:
                 driver.get_log('server')
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
+
+    @asynccontextmanager
+    async def get_devtools_connection(self):
+        assert sys.version_info >= (3, 6)
+
+        from selenium.webdriver.support import cdp
+        ws_url = None
+        if self.capabilities.get("se:options"):
+            ws_url = self.capabilities.get("se:options").get("cdp")
+        else:
+            ws_url = self.capabilities.get(self.vendor_prefix["debuggerAddress"])
+
+        if ws_url is None:
+            raise WebDriverException("Unable to find url to connect to from capabilities")
+
+        async with cdp.open_cdp(ws_url) as conn:
+            yield conn

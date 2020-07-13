@@ -79,7 +79,8 @@ maven_artifacts = rule(
             mandatory = True,
             aspects = [has_maven_deps],
             providers = [
-                [JavaInfo, JavaModuleInfo, MavenInfo], [JavaInfo, MavenInfo],
+                [JavaInfo, JavaModuleInfo, MavenInfo],
+                [JavaInfo, MavenInfo],
             ],
         ),
         "pom": attr.label(

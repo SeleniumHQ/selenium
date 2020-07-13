@@ -20,7 +20,6 @@
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-const util = require('util');
 
 const httpUtil = require('../http/util');
 const io = require('../io');

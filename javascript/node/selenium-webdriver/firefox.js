@@ -117,16 +117,10 @@
 'use strict';
 
 const path = require('path');
-const url = require('url');
-
 const Symbols = require('./lib/symbols');
 const command = require('./lib/command');
-const exec = require('./io/exec');
 const http = require('./http');
-const httpUtil = require('./http/util');
 const io = require('./io');
-const net = require('./net');
-const portprober = require('./net/portprober');
 const remote = require('./remote');
 const webdriver = require('./lib/webdriver');
 const zip = require('./io/zip');

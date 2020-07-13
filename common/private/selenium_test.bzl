@@ -17,6 +17,15 @@ _BROWSERS = {
         "jvm_flags": ["-Dselenium.browser=edge"],
         "tags": _COMMON_TAGS + ["edge"],
     },
+    "edgehtml": {
+        "deps": ["//java/client/src/org/openqa/selenium/edgehtml"],
+        "jvm_flags": ["-Dselenium.browser=edgehtml"] +
+                     select({
+                         "//common:windows": ["-Dselenium.skiptest=false"],
+                         "//conditions:default": ["-Dselenium.skiptest=true"],
+                     }),
+        "tags": _COMMON_TAGS + ["exclusive", "edgehtml"],
+    },
     "firefox": {
         "deps": ["//java/client/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"],
@@ -25,19 +34,19 @@ _BROWSERS = {
     "ie": {
         "deps": ["//java/client/src/org/openqa/selenium/ie"],
         "jvm_flags": ["-Dselenium.browser=ie"] +
-            select({
-                "//common:windows": ["-Dselenium.skiptest=false"],
-                "//conditions:default": ["-Dselenium.skiptest=true"],
-            }),
+                     select({
+                         "//common:windows": ["-Dselenium.skiptest=false"],
+                         "//conditions:default": ["-Dselenium.skiptest=true"],
+                     }),
         "tags": _COMMON_TAGS + ["exclusive", "ie"],
     },
     "safari": {
         "deps": ["//java/client/src/org/openqa/selenium/safari"],
         "jvm_flags": ["-Dselenium.browser=safari"] +
-            select({
-                "//common:macos": ["-Dselenium.skiptest=false"],
-                "//conditions:default": ["-Dselenium.skiptest=true"],
-            }),
+                     select({
+                         "//common:macos": ["-Dselenium.skiptest=false"],
+                         "//conditions:default": ["-Dselenium.skiptest=true"],
+                     }),
         "tags": _COMMON_TAGS + ["exclusive", "safari"],
     },
 }
@@ -73,7 +82,7 @@ def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
             size = size,
             jvm_flags = _BROWSERS[browser]["jvm_flags"] + jvm_flags,
             tags = _BROWSERS[browser]["tags"] + tags,
-            **stripped_args,
+            **stripped_args
         )
         tests.append(test)
     native.test_suite(name = "%s-all" % test_name, tests = tests, tags = ["manual"])

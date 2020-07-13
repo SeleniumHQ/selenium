@@ -19,26 +19,17 @@ package org.openqa.selenium.grid.server;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.json.Json;
 
 import java.io.PrintStream;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class HelpFlags {
 
-  private static final ImmutableSet<String> IGNORED_SECTIONS = ImmutableSet.of("java", "lc", "term");
   @Parameter(names = {"-h", "-help", "--help", "/?"}, help = true, hidden = true)
   private boolean help;
 
   @Parameter(names = "--version", description = "Displays the version and exits.")
   private boolean version;
-
-  @Parameter(names = "--dump-config", description = "Dump the config of the server as JSON.", hidden = true)
-  private boolean dumpConfig;
 
   public boolean displayHelp(JCommander commander, PrintStream outputTo) {
     if (version) {
@@ -59,28 +50,5 @@ public class HelpFlags {
     }
 
     return false;
-  }
-
-  public boolean dumpConfig(Config config, PrintStream dumpTo) {
-    if (!dumpConfig) {
-      return false;
-    }
-
-    Map<String, Map<String, Object>> toOutput = new TreeMap<>();
-    for (String section : config.getSectionNames()) {
-      if (section.isEmpty() || IGNORED_SECTIONS.contains(section)) {
-        continue;
-      }
-
-      config.getOptions(section).forEach(option ->
-        config.get(section, option).ifPresent(value ->
-          toOutput.computeIfAbsent(section, ignored -> new TreeMap<>()).put(option, value)
-        )
-      );
-    }
-
-    dumpTo.print(new Json().toJson(toOutput));
-
-    return true;
   }
 }

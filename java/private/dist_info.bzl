@@ -1,12 +1,12 @@
-load("//java/private:common.bzl", "MavenInfo", "has_maven_deps", "read_coordinates", "explode_coordinates")
+load("//java/private:common.bzl", "MavenInfo", "explode_coordinates", "has_maven_deps", "read_coordinates")
 load("//java/private:module.bzl", "JavaModuleInfo")
 
 DistInfo = provider(
     fields = {
-       "target": "Label that this info was derived from",
-       "name": "The name by which this target is known, which may be derived from maven coordinates",
-       "binary_jars": "The binary jars associated with this target",
-       "source_jars": "The source jars associated with this target",
+        "target": "Label that this info was derived from",
+        "name": "The name by which this target is known, which may be derived from maven coordinates",
+        "binary_jars": "The binary jars associated with this target",
+        "source_jars": "The source jars associated with this target",
     },
 )
 

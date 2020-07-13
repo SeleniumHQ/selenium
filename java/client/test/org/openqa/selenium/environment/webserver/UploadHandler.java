@@ -79,7 +79,7 @@ public class UploadHandler implements HttpHandler {
             if (matcher.find()) {
               values.put(matcher.group(1), matcher.group(2));
             }
-          };
+          }
         } else if (!inHeaders) {
           String c = (String) values.getOrDefault("content", "");
           c += splits[i];

@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.http.netty;
 
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -27,7 +28,6 @@ import org.openqa.selenium.remote.http.RemoteCall;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -48,7 +48,7 @@ public class NettyHttpHandler extends RemoteCall {
   }
 
   private HttpResponse makeCall(HttpRequest request) {
-    Objects.requireNonNull(request, "Request must be set.");
+    Require.nonNull("Request", request);
 
     Future<Response> whenResponse = client.executeRequest(
         NettyMessages.toNettyRequest(getConfig().baseUri(), request));

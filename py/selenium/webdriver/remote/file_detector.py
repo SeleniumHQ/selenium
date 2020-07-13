@@ -25,6 +25,7 @@ class FileDetector(abc.ABC):
     Used for identifying whether a sequence of chars represents the path to a
     file.
     """
+    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def is_local_file(self, *keys):

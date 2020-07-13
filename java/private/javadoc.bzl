@@ -19,7 +19,9 @@ def generate_javadoc(ctx, javadoc, source_jars, classpath, output):
 
 def _javadoc_impl(ctx):
     (first, ignored) = separate_first_and_third_party(
-        ctx.attr.third_party_prefixes, [dep[DistZipInfo] for dep in ctx.attr.deps])
+        ctx.attr.third_party_prefixes,
+        [dep[DistZipInfo] for dep in ctx.attr.deps],
+    )
 
     sources = depset(transitive = [dep.source_jars for dep in first])
 
@@ -36,21 +38,21 @@ def _javadoc_impl(ctx):
 javadoc = rule(
     _javadoc_impl,
     attrs = {
-      "deps": attr.label_list(
-          mandatory = True,
-          providers = [
-              [DistZipInfo],
-          ],
-          aspects = [
-              dist_aspect,
-          ],
-      ),
-      "transitive": attr.bool(),
-      "third_party_prefixes": attr.string_list(),
-      "_javadoc": attr.label(
-          default = "//java/client/src/org/openqa/selenium/tools/javadoc",
-          cfg = "host",
-          executable = True,
-      ),
+        "deps": attr.label_list(
+            mandatory = True,
+            providers = [
+                [DistZipInfo],
+            ],
+            aspects = [
+                dist_aspect,
+            ],
+        ),
+        "transitive": attr.bool(),
+        "third_party_prefixes": attr.string_list(),
+        "_javadoc": attr.label(
+            default = "//java/client/src/org/openqa/selenium/tools/javadoc",
+            cfg = "host",
+            executable = True,
+        ),
     },
 )

@@ -19,6 +19,7 @@ package org.openqa.selenium.grid;
 
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
+import org.openqa.selenium.grid.config.Role;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -30,6 +31,7 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -163,6 +165,16 @@ public class Main {
     @Override
     public String getName() {
       return "Selenium Server commands";
+    }
+
+    @Override
+    public Set<Role> getConfigurableRoles() {
+      return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Object> getFlagObjects() {
+      return Collections.emptySet();
     }
 
     @Override

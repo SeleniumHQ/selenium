@@ -6,6 +6,7 @@ module CrazyFun
           desc 'Run RuboCop'
           task task_name(dir, args[:name]) => args[:deps] do
             ruby :command => 'rubocop',
+                 :args    => args[:args],
                  :files   => args[:srcs]
           end
         end

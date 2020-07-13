@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Preconditions;
+import org.openqa.selenium.internal.Require;
 
 import java.time.Duration;
 import java.util.Map;
@@ -30,7 +30,7 @@ class InitialHandshakeResponse {
   public InitialHandshakeResponse(long millis, int statusCode, Map<?, ?> data) {
     this.requestDuration = Duration.ofMillis(millis);
     this.httpStatusCode = statusCode;
-    this.data = Preconditions.checkNotNull(data);
+    this.data = Require.nonNull("Payload", data);
   }
 
   public Duration getRequestDuration() {

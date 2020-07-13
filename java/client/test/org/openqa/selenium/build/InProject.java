@@ -19,8 +19,6 @@ package org.openqa.selenium.build;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import com.google.common.base.Preconditions;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
@@ -41,7 +39,6 @@ public class InProject {
    *         be found
    */
   public static Path locate(String... paths) {
-    Preconditions.checkArgument(paths.length > 0);
     return Stream.of(paths)
         .map(path -> Paths.get(path))
         .filter(path -> Files.exists(path))
@@ -80,7 +77,11 @@ public class InProject {
       }
       dir = dir.getParent();
     }
-    Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking", pwd);
+
+    if (dir == null) {
+      throw new IllegalStateException(String.format("Unable to find root of project in %s when looking", pwd));
+    }
+
     return dir.normalize();
   }
 

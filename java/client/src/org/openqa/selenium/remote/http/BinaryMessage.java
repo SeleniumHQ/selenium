@@ -17,23 +17,22 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.internal.Require;
+
 import java.nio.ByteBuffer;
-import java.util.Objects;
 
 public class BinaryMessage implements Message {
 
   private final byte[] data;
 
   public BinaryMessage(ByteBuffer data) {
-    Objects.requireNonNull(data, "Data to use must be set.");
-
-    ByteBuffer copy = data.asReadOnlyBuffer();
+    ByteBuffer copy = Require.nonNull("Data to use", data).asReadOnlyBuffer();
     this.data = new byte[copy.capacity()];
     copy.get(this.data);
   }
 
   public BinaryMessage(byte[] data) {
-    Objects.requireNonNull(data, "Data to use must be set.");
+    Require.nonNull("Data to use", data);
 
     this.data = new byte[data.length];
     System.arraycopy(data, 0, this.data, 0, data.length);

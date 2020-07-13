@@ -17,23 +17,19 @@
 
 package org.openqa.selenium.grid.distributor.config;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
-import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Optional;
-
-import static org.openqa.selenium.net.Urls.fromUri;
+import java.util.logging.Logger;
 
 public class DistributorOptions {
 
   private static final String DISTRIBUTOR_SECTION = "distributor";
+  private static final Logger LOG = Logger.getLogger(DistributorOptions.class.getName());
 
   private final Config config;
 
@@ -78,11 +74,7 @@ public class DistributorOptions {
     }
   }
 
-  public Distributor getDistributor(Tracer tracer, HttpClient.Factory clientFactory) {
-    URL distributorUrl = fromUri(getDistributorUri());
-    return new RemoteDistributor(
-        tracer,
-        clientFactory,
-        distributorUrl);
+  public Distributor getDistributor(String defaultClass) {
+    return config.getClass(DISTRIBUTOR_SECTION, "implementation", Distributor.class, defaultClass);
   }
 }

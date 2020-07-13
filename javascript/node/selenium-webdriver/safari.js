@@ -21,16 +21,11 @@
 
 'use strict';
 
-const command = require('./lib/command');
-const error = require('./lib/error');
 const http = require('./http');
 const io = require('./io');
-const portprober = require('./net/portprober');
-const promise = require('./lib/promise');
 const remote = require('./remote');
-const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
-const {Browser, Capabilities, Capability} = require('./lib/capabilities');
+const {Browser, Capabilities} = require('./lib/capabilities');
 
 
 /**

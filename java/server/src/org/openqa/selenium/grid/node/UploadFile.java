@@ -17,29 +17,26 @@
 
 package org.openqa.selenium.grid.node;
 
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Objects;
 
 class UploadFile implements HttpHandler {
 
   private final Node node;
-  private final Json json;
   private final SessionId id;
 
-  UploadFile(Node node, Json json, SessionId id) {
-    this.node = Objects.requireNonNull(node);
-    this.json = Objects.requireNonNull(json);
-    this.id = Objects.requireNonNull(id);
+  UploadFile(Node node, SessionId id) {
+    this.node = Require.nonNull("Node", node);
+    this.id = Require.nonNull("Session id", id);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return node.uploadFile(req, json, id);
+    return node.uploadFile(req, id);
   }
 }

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
 import org.junit.Test;
@@ -32,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.openqa.selenium.remote.http.Contents.bytes;
@@ -54,7 +54,7 @@ public class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", ImmutableList.of("value")));
+    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", singletonList("value")));
   }
 
   @Test
@@ -64,7 +64,7 @@ public class FormEncodedDataTest {
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
     assertThat(data.get()).isEqualTo(
-      ImmutableMap.of("key", ImmutableList.of("value"), "foo", ImmutableList.of("bar")));
+      ImmutableMap.of("key", singletonList("value"), "foo", singletonList("bar")));
   }
 
   @Test
@@ -73,7 +73,7 @@ public class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", ImmutableList.of("")));
+    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", singletonList("")));
   }
 
   @Test
@@ -82,7 +82,7 @@ public class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("%foo%", ImmutableList.of("value")));
+    assertThat(data.get()).isEqualTo(ImmutableMap.of("%foo%", singletonList("value")));
   }
 
   @Test
@@ -91,7 +91,7 @@ public class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", ImmutableList.of("%bar%")));
+    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", singletonList("%bar%")));
   }
 
   @Test
@@ -100,7 +100,7 @@ public class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("foo", ImmutableList.of("bar", "baz")));
+    assertThat(data.get()).isEqualTo(ImmutableMap.of("foo", Arrays.asList("bar", "baz")));
   }
 
   @Test
@@ -111,7 +111,7 @@ public class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("param", ImmutableList.of("")));
+    assertThat(data.get()).isEqualTo(ImmutableMap.of("param", singletonList("")));
   }
 
   private HttpRequest createRequest(String key, String value, String... others) {

@@ -19,25 +19,23 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
-import org.openqa.selenium.grid.docker.DockerFlags;
-import org.openqa.selenium.grid.docker.DockerOptions;
+import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
-import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.node.local.LocalNodeFactory;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -47,14 +45,28 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
 public class Standalone extends TemplateGridCommand {
@@ -72,12 +84,13 @@ public class Standalone extends TemplateGridCommand {
   }
 
   @Override
-  protected Set<Object> getFlagObjects() {
-    return ImmutableSet.of(
-      new BaseServerFlags(),
-      new DockerFlags(),
-      new EventBusFlags(),
-      new StandaloneFlags());
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE);
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
+    return Collections.singleton(new StandaloneFlags());
   }
 
   @Override
@@ -127,24 +140,30 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(sessions);
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     combinedHandler.addHandler(distributor);
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
 
-    LocalNode.Builder nodeBuilder = LocalNode.builder(
-      tracer,
-      bus,
-      clientFactory,
-      localhost,
-      null)
-      .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
+    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+      .with(networkOptions.getSpecComplianceChecks());
 
-    new NodeOptions(config).configure(tracer, clientFactory, nodeBuilder);
-    new DockerOptions(config).configure(tracer, clientFactory, nodeBuilder);
+    HttpHandler readinessCheck = req -> {
+      boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
+      return new HttpResponse()
+        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+        .setContent(Contents.utf8String("Standalone is " + ready));
+    };
 
-    Node node = nodeBuilder.build();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
+    HttpHandler httpHandler = combine(
+      router,
+      Route.prefix("/wd/hub").to(combine(router)),
+      Route.post("/graphql").to(() -> graphqlHandler),
+      Route.get("/readyz").to(() -> readinessCheck));
+
+    Node node = LocalNodeFactory.create(config);
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    Server<?> server = new NettyServer(new BaseServerOptions(config), router);
+    Server<?> server = new NettyServer(serverOptions, httpHandler, new ProxyNodeCdp(clientFactory, node));
     server.start();
 
     BuildInfo info = new BuildInfo();

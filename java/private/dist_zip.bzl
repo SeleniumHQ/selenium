@@ -10,8 +10,9 @@ def _java_dist_zip_impl(ctx):
     combined = depset(transitive = [i.dist_infos for i in infos]).to_list()
 
     inputs = depset(
-      ctx.files.files,
-      transitive = [i.binary_jars for i in combined] + [i.source_jars for i in combined])
+        ctx.files.files,
+        transitive = [i.binary_jars for i in combined] + [i.source_jars for i in combined],
+    )
 
     (first, third) = separate_first_and_third_party(ctx.attr.third_party_prefixes, infos)
 
@@ -55,7 +56,8 @@ java_dist_zip = rule(
                 [DistZipInfo],
             ],
             aspects = [
-                dist_aspect, has_maven_deps,
+                dist_aspect,
+                has_maven_deps,
             ],
         ),
         "third_party_prefixes": attr.string_list(),

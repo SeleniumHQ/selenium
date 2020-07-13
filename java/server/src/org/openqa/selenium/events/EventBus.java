@@ -17,10 +17,12 @@
 
 package org.openqa.selenium.events;
 
+import org.openqa.selenium.status.HasReadyState;
+
 import java.io.Closeable;
 import java.util.function.Consumer;
 
-public interface EventBus extends Closeable {
+public interface EventBus extends Closeable, HasReadyState {
 
   void addListener(Type type, Consumer<Event> onType);
 

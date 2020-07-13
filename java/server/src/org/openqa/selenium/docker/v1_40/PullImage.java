@@ -19,6 +19,7 @@ package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.internal.Reference;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -26,7 +27,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -39,11 +39,11 @@ class PullImage {
   private final HttpHandler client;
 
   public PullImage(HttpHandler client) {
-    this.client = Objects.requireNonNull(client);
+    this.client = Require.nonNull("HTTP client", client);
   }
 
   public void apply(Reference ref) {
-    Objects.requireNonNull(ref, "Reference to pull must be set");
+    Require.nonNull("Reference to pull", ref);
 
     LOG.info("Pulling " + ref);
 

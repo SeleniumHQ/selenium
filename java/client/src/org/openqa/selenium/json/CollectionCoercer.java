@@ -17,10 +17,11 @@
 
 package org.openqa.selenium.json;
 
+import org.openqa.selenium.internal.Require;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
 
@@ -34,9 +35,9 @@ public class CollectionCoercer<T extends Collection> extends TypeCoercer<T> {
       Class<T> stereotype,
       JsonTypeCoercer coercer,
       Collector<Object, ?, T> collector) {
-    this.stereotype = Objects.requireNonNull(stereotype);
-    this.coercer = Objects.requireNonNull(coercer);
-    this.collector = Objects.requireNonNull(collector);
+    this.stereotype = Require.nonNull("Stereotype", stereotype);
+    this.coercer = Require.nonNull("Coercer", coercer);
+    this.collector = Require.nonNull("Collector", collector);
   }
 
   @Override

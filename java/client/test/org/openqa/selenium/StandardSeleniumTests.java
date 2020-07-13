@@ -91,6 +91,6 @@ public class StandardSeleniumTests {
 
   @BeforeClass
   public static void prepareCommonEnvironment() {
-    GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+    GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
   }
 }

@@ -130,6 +130,8 @@
 const http = require('./http');
 const io = require('./io');
 const {Browser, Capabilities} = require('./lib/capabilities');
+const command = require('./lib/command');
+const error = require('./lib/error');
 const remote = require('./remote');
 const chromium = require('./chromium');
 
@@ -153,6 +155,8 @@ const Command = {
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
   SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
+
+  SET_PERMISSION: 'setPermission',
 
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
@@ -201,6 +205,10 @@ function configureExecutor(executor) {
       Command.SEND_AND_GET_DEVTOOLS_COMMAND,
       'POST',
       '/session/:sessionId/chromium/send_command_and_get_result');
+  executor.defineCommand(
+      Command.SET_PERMISSION,
+      'POST',
+      '/session/:sessionId/permissions');
   executor.defineCommand(
       Command.GET_CAST_SINKS,
       'GET',
@@ -452,6 +460,24 @@ class Driver extends chromium.Driver {
       new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
         .setParameter('cmd', cmd)
         .setParameter('params', params)
+    );
+  }
+
+  /**
+   * Set a permission state to the given value.
+   *
+   * @param {string} name A name of the permission to update.
+   * @param {('granted'|'denied'|'prompt')} state State to set permission to.
+   * @returns {!Promise<Object>} A promise that will be resolved when the
+   *     command has finished.
+   * @see <https://w3c.github.io/permissions/#permission-registry> for valid
+   *     names
+   */
+  setPermission(name, state) {
+    return this.execute(
+      new command.Command(Command.SET_PERMISSION)
+        .setParameter('descriptor', { name })
+        .setParameter('state', state),
     );
   }
 

@@ -19,8 +19,6 @@ package org.openqa.selenium.support.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableList;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -45,7 +43,7 @@ public class SelectLargeTest extends JUnit4TestBase {
 
     List<WebElement> picked = selection.getAllSelectedOptions();
     assertThat(picked).extracting(element -> element.getAttribute("id"))
-        .isEqualTo(ImmutableList.of("multi_2", "multi_3"));
+        .containsExactly("multi_2", "multi_3");
 
     selection.deselectAll();
     assertThat(selection.getAllSelectedOptions()).isEmpty();

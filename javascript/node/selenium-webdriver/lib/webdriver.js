@@ -22,6 +22,7 @@
 'use strict';
 
 const by = require('./by');
+const { RelativeBy } = require('./by')
 const command = require('./command');
 const error = require('./error');
 const input = require('./input');
@@ -955,22 +956,29 @@ class WebDriver {
 
   /** @override */
   async findElements(locator) {
-    locator = by.checkedLocator(locator);
+    let cmd = null;
+    if (locator instanceof RelativeBy) {
+      cmd = new command.Command(command.Name.FIND_ELEMENTS_RELATIVE).
+          setParameter('args', locator.marshall());
+    } else {
+      locator = by.checkedLocator(locator);
+    }
+
     if (typeof locator === 'function') {
       return this.findElementsInternal_(locator, this);
-    } else {
-      let cmd = new command.Command(command.Name.FIND_ELEMENTS).
+    } else if (cmd === null){
+      cmd = new command.Command(command.Name.FIND_ELEMENTS).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      try {
-        let res = await this.execute(cmd);
-        return Array.isArray(res) ? res : [];
-      } catch (ex) {
-        if (ex instanceof error.NoSuchElementError) {
-          return [];
-        }
-        throw ex;
+    }
+    try {
+      let res = await this.execute(cmd);
+      return Array.isArray(res) ? res : [];
+    } catch (ex) {
+      if (ex instanceof error.NoSuchElementError) {
+        return [];
       }
+      throw ex;
     }
   }
 

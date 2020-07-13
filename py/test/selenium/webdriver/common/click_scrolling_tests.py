@@ -101,6 +101,7 @@ def testShouldBeAbleToClickRadioButtonScrolledIntoView(driver, pages):
     # If we don't throw, we're good
 
 
+@pytest.mark.xfail_safari
 def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(driver, pages):
     pages.load("scroll5.html")
     driver.find_element(By.ID, "inner").click()
@@ -111,6 +112,7 @@ def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(dr
     reason='https://github.com/w3c/webdriver/issues/408')
 @pytest.mark.xfail_remote(
     reason='https://github.com/w3c/webdriver/issues/408')
+@pytest.mark.xfail_safari
 def testShouldBeAbleToClickElementInAFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_frame_out_of_view.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "frame"))
@@ -135,6 +137,7 @@ def testShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame(driver
     # TODO we should assert that the click was unsuccessful
 
 
+@pytest.mark.xfail_safari
 def testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_scrolling_frame_out_of_view.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))
@@ -154,6 +157,7 @@ def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame(driver, pages):
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
 def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))
@@ -178,6 +182,7 @@ def getScrollTop(driver):
     reason='https://github.com/w3c/webdriver/issues/408')
 @pytest.mark.xfail_remote(
     reason='https://github.com/w3c/webdriver/issues/408')
+@pytest.mark.xfail_safari
 def testShouldBeAbleToClickElementInATallFrame(driver, pages):
     pages.load("scrolling_tests/page_with_tall_frame.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "tall_frame"))

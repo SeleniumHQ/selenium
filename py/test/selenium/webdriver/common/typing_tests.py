@@ -101,6 +101,7 @@ def testShouldBeAbleToUseArrowKeys(driver, pages):
     assert keyReporter.get_attribute("value") == "Test"
 
 
+@pytest.mark.xfail_safari
 def testWillSimulateAKeyUpWhenEnteringTextIntoInputElements(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyUp")
@@ -109,6 +110,7 @@ def testWillSimulateAKeyUpWhenEnteringTextIntoInputElements(driver, pages):
     assert result.text == "I like cheese"
 
 
+@pytest.mark.xfail_safari
 def testWillSimulateAKeyDownWhenEnteringTextIntoInputElements(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyDown")
@@ -119,6 +121,7 @@ def testWillSimulateAKeyDownWhenEnteringTextIntoInputElements(driver, pages):
     assert result.text == "I like chees"
 
 
+@pytest.mark.xfail_safari
 def testWillSimulateAKeyPressWhenEnteringTextIntoInputElements(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyPress")
@@ -129,6 +132,7 @@ def testWillSimulateAKeyPressWhenEnteringTextIntoInputElements(driver, pages):
     assert result.text == "I like chees"
 
 
+@pytest.mark.xfail_safari
 def testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyUpArea")
@@ -137,6 +141,7 @@ def testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas(driver, pages):
     assert result.text == "I like cheese"
 
 
+@pytest.mark.xfail_safari
 def testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyDownArea")
@@ -147,6 +152,7 @@ def testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas(driver, pages):
     assert result.text == "I like chees"
 
 
+@pytest.mark.xfail_safari
 def testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyPressArea")
@@ -294,6 +300,7 @@ def testSpecialSpaceKeys(driver, pages):
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_safari
 def testNumberpadAndFunctionKeys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -313,6 +320,7 @@ def testNumberpadAndFunctionKeys(driver, pages):
     assert element.get_attribute("value") == "FUNCTION-KEYS-TOO"
 
 
+@pytest.mark.xfail_safari
 def testShiftSelectionDeletes(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")

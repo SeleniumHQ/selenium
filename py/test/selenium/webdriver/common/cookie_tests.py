@@ -72,6 +72,7 @@ def testAddCookie(cookie, driver):
 
 @pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
 @pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_safari
 def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
     driver.add_cookie(same_site_cookie_strict)
     returned = driver.get_cookie('foo')
@@ -80,6 +81,7 @@ def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
 
 @pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
 @pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_safari
 def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
     driver.add_cookie(same_site_cookie_lax)
     returned = driver.get_cookie('foo')
@@ -87,6 +89,7 @@ def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
 
 
 @pytest.mark.xfail_ie
+@pytest.mark.xfail_safari
 def testAddingACookieThatExpiredInThePast(cookie, driver):
     expired = cookie.copy()
     expired['expiry'] = calendar.timegm(time.gmtime()) - 1

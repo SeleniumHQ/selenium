@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server.commandhandler;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
@@ -31,7 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.string;
 
@@ -41,8 +41,8 @@ public class UploadFile implements HttpHandler {
   private final ActiveSession session;
 
   public UploadFile(Json json, ActiveSession session) {
-    this.json = Objects.requireNonNull(json);
-    this.session = Objects.requireNonNull(session);
+    this.json = Require.nonNull("Json converter", json);
+    this.session = Require.nonNull("Current session", session);
   }
 
   @Override

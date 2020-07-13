@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from __future__ import with_statement
-
 import base64
 import copy
 import json
@@ -26,10 +24,9 @@ import shutil
 import sys
 import tempfile
 import zipfile
-
 from io import BytesIO
-
 from xml.dom import minidom
+
 from selenium.common.exceptions import WebDriverException
 
 
@@ -306,6 +303,7 @@ class FirefoxProfile:
             if zipfile.is_zipfile(addon_path):
                 # Bug 944361 - We cannot use 'with' together with zipFile because
                 # it will cause an exception thrown in Python 2.6.
+                # TODO: use with statement when Python 2.x is no longer supported
                 try:
                     compressed_file = zipfile.ZipFile(addon_path, 'r')
                     if 'manifest.json' in compressed_file.namelist():

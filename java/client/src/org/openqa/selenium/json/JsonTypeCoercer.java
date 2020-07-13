@@ -19,6 +19,7 @@ package org.openqa.selenium.json;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.internal.Require;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
@@ -46,7 +46,7 @@ import static org.openqa.selenium.json.Types.narrow;
 class JsonTypeCoercer {
 
   private final Set<TypeCoercer<?>> additionalCoercers;
-  private final Set<TypeCoercer> coercers;
+  private final Set<TypeCoercer<?>> coercers;
   private final Map<Type, BiFunction<JsonInput, PropertySetting, Object>> knownCoercers = new ConcurrentHashMap<>();
 
   JsonTypeCoercer() {
@@ -77,7 +77,7 @@ class JsonTypeCoercer {
         new NumberCoercer<>(
             Number.class,
             num -> {
-              Double doubleValue = num.doubleValue();
+              double doubleValue = num.doubleValue();
               if (doubleValue % 1 != 0 || doubleValue > Long.MAX_VALUE) {
                 return doubleValue;
               }
@@ -85,7 +85,7 @@ class JsonTypeCoercer {
             }));
     builder.add(new NumberCoercer<>(Short.class, Number::shortValue));
     builder.add(new StringCoercer());
-    builder.add(new EnumCoercer());
+    builder.add(new EnumCoercer<>());
     builder.add(new UriCoercer());
     builder.add(new UrlCoercer());
     builder.add(new UuidCoercer());
@@ -123,7 +123,7 @@ class JsonTypeCoercer {
         knownCoercers.computeIfAbsent(typeOfT, this::buildCoercer);
 
     // We need to keep null checkers happy, apparently.
-    @SuppressWarnings("unchecked") T result = (T) Objects.requireNonNull(coercer).apply(json, setter);
+    @SuppressWarnings("unchecked") T result = (T) Require.nonNull("Coercer", coercer).apply(json, setter);
 
     return result;
   }
@@ -141,10 +141,8 @@ class JsonTypeCoercer {
                         return jsonInput.nextNull();
                       }
 
-                      //noinspection unchecked
                       return func.apply(jsonInput, setter);
                     })
         .orElseThrow(() -> new JsonException("Unable to find type coercer for " + type));
   }
-
 }

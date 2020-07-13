@@ -8,10 +8,12 @@ java_test_suite(
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/jetty/server",
+        "//java/server/src/org/openqa/selenium/jre/server",
         "//java/server/test/org/openqa/testing",
         artifact("com.google.guava:guava"),
         artifact("javax.servlet:javax.servlet-api"),

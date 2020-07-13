@@ -18,10 +18,9 @@
 package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.ContainerId;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
-
-import java.util.Objects;
 
 import static org.openqa.selenium.docker.v1_40.DockerMessages.throwIfNecessary;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -30,11 +29,11 @@ class StartContainer {
   private final HttpHandler client;
 
   public StartContainer(HttpHandler client) {
-    this.client = Objects.requireNonNull(client);
+    this.client = Require.nonNull("HTTP client", client);
   }
 
   public void apply(ContainerId id) {
-    Objects.requireNonNull(id);
+    Require.nonNull("Container id", id);
 
     throwIfNecessary(
       client.execute(

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.javascript;
 
-import com.google.common.collect.ImmutableList;
+import static java.util.stream.Collectors.toList;
 
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -48,7 +48,7 @@ import java.util.function.Supplier;
  */
 public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
-  private final ImmutableList<Runner> children;
+  private final List<Runner> children;
   private final Supplier<WebDriver> driverSupplier;
 
   public JavaScriptTestSuite(Class<?> testClass) throws InitializationError, IOException {
@@ -65,7 +65,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
     return InProject.findRunfilesRoot() != null;
   }
 
-  private static ImmutableList<Runner> createChildren(
+  private static List<Runner> createChildren(
       final Supplier<WebDriver> driverSupplier, final long timeout) throws IOException {
     final Path baseDir = InProject.findProjectRoot();
     final Function<String, URL> pathToUrlFn = s -> {
@@ -92,7 +92,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
               driverSupplier, path, pathToUrlFn, timeout);
           return new StatementRunner(testStatement, description);
         })
-        .collect(ImmutableList.toImmutableList());
+        .collect(toList());
   }
 
   @Override
@@ -119,7 +119,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
       public void evaluate() throws Throwable {
         TestEnvironment testEnvironment = null;
         try {
-          testEnvironment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
+          testEnvironment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
           suite.evaluate();
         } finally {
           if (testEnvironment != null) {

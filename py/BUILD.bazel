@@ -29,12 +29,16 @@ copy_file(
 
 py_library(
     name = "selenium",
-    srcs = glob(["selenium/**/*.py"]),
+    srcs = glob(
+        ["selenium/**/*.py"],
+        exclude = ["generate.py"],
+    ),
     data = [
+        ":create-cdp-srcs",
+        ":find-elements",
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
-        ":find-elements",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -50,8 +54,10 @@ py_package(
         "py.selenium",
         "py.selenium.common",
         "py.selenium.webdriver",
-        "py.selenium.webdriver.chromium",
         "py.selenium.webdriver.chrome",
+        "py.selenium.webdriver.chromium",
+        "py.selenium.webdriver.common",
+        "py.selenium.webdriver.common.devtools",
         "py.selenium.webdriver.edge",
         "py.selenium.webdriver.firefox",
         "py.selenium.webdriver.remote",
@@ -61,16 +67,19 @@ py_package(
 )
 
 py_wheel(
-    name = 'selenium-wheel',
-    distribution = 'selenium',
-    python_tag = ["py2", "py3"],
-    version = "4.0.0.a5",
-    strip_path_prefixes = [
-        "py",
+    name = "selenium-wheel",
+    distribution = "selenium",
+    python_tag = [
+        "py2",
+        "py3",
     ],
     requires = [
         "urllib3[secure]",
     ],
+    strip_path_prefixes = [
+        "py",
+    ],
+    version = "4.0.0.a6",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium-pkg",
@@ -105,6 +114,31 @@ py_library(
     deps = [
         ":webserver",
     ],
+)
+
+genrule(
+    name = "create-cdp-srcs",
+    srcs = [
+        "generate.py",
+        ":browser_protocol",
+        ":js_protocol",
+    ],
+    outs = ["selenium/webdriver/common/devtools"],
+    cmd = "python3 $(location generate.py) $(location :browser_protocol) $(location :js_protocol) $@",
+    tools = [
+    ],
+)
+
+copy_file(
+    name = "browser_protocol",
+    src = "//common/devtools:browser_protocol.json",
+    out = "browser_protocol.json",
+)
+
+copy_file(
+    name = "js_protocol",
+    src = "//common/devtools:js_protocol.json",
+    out = "js_protocol.json",
 )
 
 py_test_suite(
@@ -240,11 +274,11 @@ py_test_suite(
         "--instafail",
         "--driver=Remote",
     ],
-    tags = [
-        "no-sandbox",
-    ],
     data = [
         "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    ],
+    tags = [
+        "no-sandbox",
     ],
     deps = [
         ":init-tree",
@@ -281,15 +315,66 @@ py_test_suite(
     name = "test-safari",
     size = "large",
     srcs = glob([
-        #        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/safari/**/*.py",
-        #        "test/selenium/webdriver/support/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
         "--instafail",
         "--driver=Safari",
     ],
     tags = [
+        "exclusive",
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-webkitgtk",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=WebKitGTK",
+        "--browser-binary=MiniBrowser",
+        "--browser-args=--automation",
+    ],
+    tags = [
+        "exclusive",
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-wpewebkit",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=WPEWebKit",
+        "--browser-binary=MiniBrowser",
+        "--browser-args=--automation --headless",
+    ],
+    tags = [
+        "exclusive",
         "no-sandbox",
     ],
     deps = [

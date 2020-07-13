@@ -33,7 +33,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class ElementFinder {
-  private final static Logger log = Logger.getLogger(ElementFinder.class.getName());
+  private static final Logger log = Logger.getLogger(ElementFinder.class.getName());
+
   private final String findElement;
   private final String sizzle;
   private final Map<String, String> additionalLocators = new HashMap<>();

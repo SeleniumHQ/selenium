@@ -18,9 +18,14 @@
 package org.openqa.selenium.remote.http;
 
 import java.net.URL;
-import java.util.Objects;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
+
+import org.openqa.selenium.internal.Require;
 
 /**
  * Defines a simple client for making HTTP requests.
@@ -32,33 +37,37 @@ public interface HttpClient extends HttpHandler {
   interface Factory {
 
     /**
+     * Creates a new instance of {@link HttpClient.Factory} with the given name. It uses
+     * {@link ServiceLoader} to find all available implementations and selects the class
+     * that has an {@link @HttpClientName} annotation with the given name as the value.
+     *
+     * @throws IllegalArgumentException if no implementation with the given name can be found
+     * @throws IllegalStateException if more than one implementation with the given name can be found
+     */
+    static Factory create(String name) {
+      ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class);
+      Set<Factory> factories = StreamSupport.stream(loader.spliterator(), true)
+          .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
+          .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
+          .collect(Collectors.toSet());
+      if (factories.isEmpty()) {
+        throw new IllegalArgumentException("Unknown HttpClient factory " + name);
+      }
+      if (factories.size() > 1) {
+        throw new IllegalStateException(String.format(
+            "There are multiple HttpClient factories by name %s, check your classpath", name));
+      }
+      return factories.iterator().next();
+    }
+
+    /**
      * Use the {@code webdriver.http.factory} system property to determine which implementation of
-     * {@link HttpClient} should be used.
+     * {@link HttpClient.Factory} should be used.
+     *
+     * {@see create}
      */
     static Factory createDefault() {
-      String defaultFactory = System.getProperty("webdriver.http.factory", "netty");
-      switch (defaultFactory) {
-        case "netty":
-          try {
-            Class<? extends Factory> clazz =
-                Class.forName("org.openqa.selenium.remote.http.netty.NettyClient$Factory")
-                    .asSubclass(Factory.class);
-            return clazz.getConstructor().newInstance();
-          } catch (ReflectiveOperationException e) {
-            throw new UnsupportedOperationException("Unable to create HTTP client factory", e);
-          }
-
-        case "okhttp":
-        default:
-          try {
-            Class<? extends Factory> clazz =
-                Class.forName("org.openqa.selenium.remote.http.okhttp.OkHttpClient$Factory")
-                    .asSubclass(Factory.class);
-            return clazz.getConstructor().newInstance();
-          } catch (ReflectiveOperationException e) {
-            throw new UnsupportedOperationException("Unable to create HTTP client factory", e);
-          }
-      }
+      return create(System.getProperty("webdriver.http.factory", "netty"));
     }
 
     /**
@@ -67,7 +76,7 @@ public interface HttpClient extends HttpHandler {
      * @param url URL The base URL for requests.
      */
     default HttpClient createClient(URL url) {
-      Objects.requireNonNull(url, "URL to use as base URL must be set.");
+      Require.nonNull("URL to use as base URL", url);
       return createClient(defaultConfig().baseUrl(url));
     }
 

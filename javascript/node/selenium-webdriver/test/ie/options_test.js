@@ -20,7 +20,7 @@
 const assert = require('assert');
 const ie = require('../../ie');
 const test = require('../../lib/test');
-const {Browser} = require('../../');
+const Capabilities = require('../../lib/capabilities').Capabilities;
 
 test.suite(function(env) {
   let driver;
@@ -82,10 +82,10 @@ test.suite(function(env) {
       await driver.quit();
     });
 
-    it('can set multiple command-line switches', async function() {
+    it('can set multiple browser-command-line switches', async function() {
       let options = new ie.Options();
-      options.addArguments('-k');
-      options.addArguments('-private');
+      options.addBrowserCommandSwitches('-k');
+      options.addBrowserCommandSwitches('-private');
       options.forceCreateProcessApi(true);
       driver = await env.builder()
           .setIeOptions(options)
@@ -95,6 +95,15 @@ test.suite(function(env) {
       caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.BROWSER_COMMAND_LINE_SWITCHES];
       assert.equal(caps, '-k -private');
       await driver.quit();
+    });
+
+    it('can set capability', async function() {
+      let caps = Capabilities.ie();
+      assert.ok(!caps.has('silent'));
+      assert.equal(undefined, caps.get('silent'));
+      caps.set('silent', true)
+      assert.equal(true, caps.get('silent'));
+      assert.ok(caps.has('silent'));
     });
   });
 }, {browsers: ['internet explorer']});

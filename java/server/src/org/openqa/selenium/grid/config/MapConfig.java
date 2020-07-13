@@ -22,9 +22,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class MapConfig implements Config {
   private final Map<String, Map<String, Object>> raw;
 
   public MapConfig(Map<String, Object> raw) {
-    Objects.requireNonNull(raw, "Underlying map must be set.");
+    Require.nonNull("Underlying map", raw);
 
     ImmutableMap.Builder<String, Map<String, Object>> builder = ImmutableMap.builder();
     for (Map.Entry<String, Object> entry : raw.entrySet()) {
@@ -53,8 +54,8 @@ public class MapConfig implements Config {
 
   @Override
   public Optional<List<String>> getAll(String section, String option) {
-    Objects.requireNonNull(section, "Section name not set");
-    Objects.requireNonNull(option, "Option name not set");
+    Require.nonNull("Section name", section);
+    Require.nonNull("Option name", option);
 
     Map<String, Object> rawSection = raw.get(section);
     if (rawSection == null) {
@@ -72,7 +73,7 @@ public class MapConfig implements Config {
 
   @Override
   public Set<String> getOptions(String section) {
-    Objects.requireNonNull(section, "Section name to get options for must be set.");
+    Require.nonNull("Section name to get options for", section);
 
     Map<String, Object> values = raw.getOrDefault(section, ImmutableMap.of());
     return ImmutableSortedSet.copyOf(values.keySet());

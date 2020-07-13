@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
+
+import org.openqa.selenium.internal.Require;
 
 /**
  * A cross-domain RPC that specifies a command to execute in the WebDriver
@@ -40,9 +41,9 @@ public class CrossDomainRpc {
    * @param data The raw data associated with the command.
    */
   public CrossDomainRpc(String method, String path, String data) {
-    this.method = checkNotNull(method);
-    this.path = checkNotNull(path);
-    this.data = checkNotNull(data);
+    this.method = Require.nonNull("Method", method);
+    this.path = Require.nonNull("Path", path);
+    this.data = Require.nonNull("Data", data);
   }
 
   public String getMethod() {

@@ -19,28 +19,24 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Objects;
-
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
 class CreateSession implements HttpHandler {
 
-  private final Json json;
   private final Distributor distributor;
 
-  public CreateSession(Json json, Distributor distributor) {
-    this.json = Objects.requireNonNull(json);
-    this.distributor = Objects.requireNonNull(distributor);
+  CreateSession(Distributor distributor) {
+    this.distributor = Require.nonNull("Distributor", distributor);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
     CreateSessionResponse sessionResponse = distributor.newSession(req);
-    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", sessionResponse))));
+    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", sessionResponse)));
   }
 }

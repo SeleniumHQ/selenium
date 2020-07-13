@@ -22,7 +22,6 @@ import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.ImageId;
 import org.openqa.selenium.docker.internal.Reference;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -33,6 +32,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class ListImagesTest {
 
@@ -50,7 +50,7 @@ public class ListImagesTest {
 
         return new HttpResponse()
             .addHeader("Content-Type", "application/json")
-            .setContent(Contents.utf8String(
+            .setContent(utf8String(
                 "[{\"Containers\":-1,\"Created\":1581716253," +
                 "\"Id\":\"sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e\","
                 +

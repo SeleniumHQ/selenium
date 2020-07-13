@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.node.local;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -26,13 +25,10 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Status;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -44,24 +40,28 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
@@ -75,14 +75,17 @@ import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public class LocalNode extends Node {
 
-  public static final Json JSON = new Json();
+  private static final Json JSON = new Json();
+  private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
+  private final EventBus bus;
   private final URI externalUri;
+  private final URI gridUri;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
   private final List<SessionSlot> factories;
@@ -95,6 +98,7 @@ public class LocalNode extends Node {
     Tracer tracer,
     EventBus bus,
     URI uri,
+    URI gridUri,
     HealthCheck healthCheck,
     int maxSessionCount,
     Ticker ticker,
@@ -103,13 +107,12 @@ public class LocalNode extends Node {
     String registrationSecret) {
     super(tracer, UUID.randomUUID(), uri);
 
-    Preconditions.checkArgument(
-      maxSessionCount > 0,
-      "Only a positive number of sessions can be run: " + maxSessionCount);
+    this.bus = Require.nonNull("Event bus", bus);
 
-    this.externalUri = Objects.requireNonNull(uri);
-    this.healthCheck = Objects.requireNonNull(healthCheck);
-    this.maxSessionCount = Math.min(maxSessionCount, factories.size());
+    this.externalUri = Require.nonNull("Remote node URI", uri);
+    this.gridUri = Require.nonNull("Grid URI", gridUri);
+    this.healthCheck = Require.nonNull("Health checker", healthCheck);
+    this.maxSessionCount = Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.factories = ImmutableList.copyOf(factories);
     this.registrationSecret = registrationSecret;
 
@@ -148,6 +151,11 @@ public class LocalNode extends Node {
     });
   }
 
+  @Override
+  public boolean isReady() {
+    return bus.isReady();
+  }
+
   @VisibleForTesting
   public int getCurrentSessionCount() {
     // It seems wildly unlikely we'll overflow an int
@@ -161,13 +169,10 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Objects.requireNonNull(sessionRequest, "Session request has not been set.");
+    Require.nonNull("Session request", sessionRequest);
 
-    Span parentSpan = tracer.getCurrentSpan();
-    Span span = tracer.spanBuilder("node.new_session").setParent(parentSpan).startSpan();
-    Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
-
-    try (Scope scope = tracer.withSpan(span)) {
+    try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
+      LOG.fine("Creating new session using span: " + span);
       span.setAttribute("session_count", getCurrentSessionCount());
 
       if (getCurrentSessionCount() >= maxSessionCount) {
@@ -190,7 +195,7 @@ public class LocalNode extends Node {
         }
       }
 
-      if (possibleSession.isEmpty()) {
+      if (!possibleSession.isPresent()) {
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND.withDescription(
             "No slots available for capabilities " + sessionRequest.getCapabilities()));
@@ -212,20 +217,18 @@ public class LocalNode extends Node {
       return Optional.of(new CreateSessionResponse(
           externalSession,
           getEncoder(session.getDownstreamDialect()).apply(externalSession)));
-    } finally {
-      span.end();
     }
   }
 
   @Override
-  protected boolean isSessionOwner(SessionId id) {
-    Objects.requireNonNull(id, "Session ID has not been set");
+  public boolean isSessionOwner(SessionId id) {
+    Require.nonNull("Session ID", id);
     return currentSessions.getIfPresent(id) != null;
   }
 
   @Override
   public Session getSession(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
     SessionSlot slot = currentSessions.getIfPresent(id);
     if (slot == null) {
@@ -264,8 +267,8 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public HttpResponse uploadFile(HttpRequest req, Json json, SessionId id) {
-    Map<String, Object> incoming = json.toType(string(req), Json.MAP_TYPE);
+  public HttpResponse uploadFile(HttpRequest req, SessionId id) {
+    Map<String, Object> incoming = JSON.toType(string(req), Json.MAP_TYPE);
 
     File tempDir;
     try {
@@ -290,12 +293,12 @@ public class LocalNode extends Node {
     ImmutableMap<String, Object> result = ImmutableMap.of(
         "value", allFiles[0].getAbsolutePath());
 
-    return new HttpResponse().setContent(utf8String(json.toJson(result)));
+    return new HttpResponse().setContent(asJson(result));
   }
 
   @Override
   public void stop(SessionId id) throws NoSuchSessionException {
-    Objects.requireNonNull(id, "Session ID has not been set");
+    Require.nonNull("Session ID", id);
 
     SessionSlot slot = currentSessions.getIfPresent(id);
     if (slot == null) {
@@ -307,7 +310,37 @@ public class LocalNode extends Node {
   }
 
   private Session createExternalSession(ActiveSession other, URI externalUri) {
-    return new Session(other.getId(), externalUri, other.getCapabilities());
+    Capabilities toUse = ImmutableCapabilities.copyOf(other.getCapabilities());
+
+    // Rewrite the se:options if necessary
+    Object rawSeleniumOptions = other.getCapabilities().getCapability("se:options");
+    if (rawSeleniumOptions instanceof Map) {
+      @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
+      Map<String, Object> updated = new TreeMap<>(original);
+
+      Object cdp = original.get("cdp");
+      String cdpPath = String.format("/session/%s/se/cdp", other.getId());
+      updated.put("cdp", rewrite(cdpPath));
+
+      toUse = new PersistentCapabilities(toUse).setCapability("se:options", updated);
+    }
+
+    return new Session(other.getId(), externalUri, toUse);
+  }
+
+  private URI rewrite(String path) {
+    try {
+      return new URI(
+        gridUri.getScheme(),
+        gridUri.getUserInfo(),
+        gridUri.getHost(),
+        gridUri.getPort(),
+        path,
+        null,
+        null);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void killSession(SessionSlot slot) {
@@ -357,18 +390,18 @@ public class LocalNode extends Node {
   public static Builder builder(
     Tracer tracer,
     EventBus bus,
-    HttpClient.Factory httpClientFactory,
     URI uri,
+    URI gridUri,
     String registrationSecret) {
-    return new Builder(tracer, bus, httpClientFactory, uri, registrationSecret);
+    return new Builder(tracer, bus, uri, gridUri, registrationSecret);
   }
 
   public static class Builder {
 
     private final Tracer tracer;
     private final EventBus bus;
-    private final HttpClient.Factory httpClientFactory;
     private final URI uri;
+    private final URI gridUri;
     private final String registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
@@ -379,20 +412,20 @@ public class LocalNode extends Node {
     public Builder(
       Tracer tracer,
       EventBus bus,
-      HttpClient.Factory httpClientFactory,
       URI uri,
+      URI gridUri,
       String registrationSecret) {
-      this.tracer = Objects.requireNonNull(tracer);
-      this.bus = Objects.requireNonNull(bus);
-      this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
-      this.uri = Objects.requireNonNull(uri);
+      this.tracer = Require.nonNull("Tracer", tracer);
+      this.bus = Require.nonNull("Event bus", bus);
+      this.uri = Require.nonNull("Remote node URI", uri);
+      this.gridUri = Require.nonNull("Grid URI", gridUri);
       this.registrationSecret = registrationSecret;
       this.factories = ImmutableList.builder();
     }
 
     public Builder add(Capabilities stereotype, SessionFactory factory) {
-      Objects.requireNonNull(stereotype, "Capabilities must be set.");
-      Objects.requireNonNull(factory, "Session factory must be set.");
+      Require.nonNull("Capabilities", stereotype);
+      Require.nonNull("Session factory", factory);
 
       factories.add(new SessionSlot(bus, stereotype, factory));
 
@@ -400,11 +433,7 @@ public class LocalNode extends Node {
     }
 
     public Builder maximumConcurrentSessions(int maxCount) {
-      Preconditions.checkArgument(
-        maxCount > 0,
-        "Only a positive number of sessions can be run: " + maxCount);
-
-      this.maxCount = maxCount;
+      this.maxCount = Require.positive("Max session count", maxCount);
       return this;
     }
 
@@ -423,6 +452,7 @@ public class LocalNode extends Node {
         tracer,
         bus,
         uri,
+        gridUri,
         check,
         maxCount,
         ticker,
@@ -448,7 +478,7 @@ public class LocalNode extends Node {
       }
 
       public Advanced healthCheck(HealthCheck healthCheck) {
-        Builder.this.healthCheck = Objects.requireNonNull(healthCheck, "Health check must be set.");
+        Builder.this.healthCheck = Require.nonNull("Health check", healthCheck);
         return this;
       }
 

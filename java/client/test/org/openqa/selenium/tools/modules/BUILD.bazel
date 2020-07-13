@@ -2,7 +2,6 @@ load("//java:defs.bzl", "java_test_suite")
 
 # Disabled until we actually have a test. Where did it go?
 
-
 #java_test_suite(
 #    name = "SmallTests",
 #    size = "small",

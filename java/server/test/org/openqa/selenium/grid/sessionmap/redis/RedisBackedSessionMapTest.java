@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap.redis;
 
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +26,8 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import redis.embedded.RedisServer;
 
 import java.net.URI;
@@ -41,7 +41,7 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 public class RedisBackedSessionMapTest {
 
   private static RedisServer server;
-  private static Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
+  private static Tracer tracer = DefaultTestTracer.createTracer();
   private static URI uri;
 
   @BeforeClass

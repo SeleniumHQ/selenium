@@ -18,17 +18,15 @@
 package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.grid.web.ErrorCodec;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
 public class WrapExceptions implements Filter {
 
-  private static final Json JSON = new Json();
   private final ErrorCodec errors = ErrorCodec.createDefault();
 
   @Override
@@ -43,7 +41,7 @@ public class WrapExceptions implements Filter {
         res.addHeader("Content-Type", JSON_UTF_8.toString());
         res.addHeader("Cache-Control", "none");
 
-        res.setContent(utf8String(JSON.toJson(errors.encode(cause))));
+        res.setContent(asJson(errors.encode(cause)));
 
         return res;
       }

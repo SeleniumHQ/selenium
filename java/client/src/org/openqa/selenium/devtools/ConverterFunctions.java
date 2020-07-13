@@ -17,17 +17,17 @@
 
 package org.openqa.selenium.devtools;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.lang.reflect.Type;
-import java.util.Objects;
 import java.util.function.Function;
 
 public class ConverterFunctions {
 
   public static <X> Function<JsonInput, X> map(final String keyName, Type typeOfX) {
-    Objects.requireNonNull(keyName, "Key name must be set.");
-    Objects.requireNonNull(typeOfX, "Type to convert to must be set.");
+    Require.nonNull("Key name", keyName);
+    Require.nonNull("Type to convert to", typeOfX);
 
     return input -> {
       X value = null;

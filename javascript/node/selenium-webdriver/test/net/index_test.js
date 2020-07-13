@@ -18,7 +18,6 @@
 'use strict';
 
 var assert = require('assert');
-
 var net = require('../../net');
 
 describe('net.splitHostAndPort', function() {

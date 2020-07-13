@@ -25,8 +25,6 @@ import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -61,6 +59,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.servlet.Servlet;
@@ -325,7 +324,7 @@ public class JettyAppServer implements AppServer {
     staticResource.setMimeTypes(mimeTypes);
 
     context.setContextPath(contextPath);
-    context.setAliasChecks(ImmutableList.of(new ApproveAliases(), new AllowSymLinkAliasChecker()));
+    context.setAliasChecks(Arrays.asList(new ApproveAliases(), new AllowSymLinkAliasChecker()));
 
     HandlerList allHandlers = new HandlerList();
     allHandlers.addHandler(staticResource);

@@ -18,8 +18,6 @@
 'use strict';
 
 const assert = require('assert');
-const {fail} = require('assert');
-
 const test = require('../lib/test');
 const {Browser, By, error, until} = require('..');
 const Pages = test.Pages;
@@ -53,7 +51,7 @@ test.suite(function(env) {
 
     var el = await driver.findElement(By.id('oneline'));
     await driver.switchTo().defaultContent();
-    return el.getText().then(fail, function(e) {
+    return el.getText().then(assert.fail, function(e) {
       assert.ok(e instanceof error.StaleElementReferenceError);
     });
   });
