@@ -48,9 +48,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   Max: 18
   Exclude:
-    - "**/*_spec.rb"
-    - "**/spec_helper.rb"
-    - 'spec/rspec_matchers.rb'
+    - 'spec/**/*.rb'
     - 'selenium-webdriver.gemspec'
 
 Metrics/ClassLength:
