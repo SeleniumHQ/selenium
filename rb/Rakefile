@@ -1,0 +1,83 @@
+# frozen_string_literal: true
+
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+require 'selenium/server'
+require 'rake'
+require 'rspec/core/rake_task'
+require_relative '../rake_tasks/selenium_rake/checks'
+
+RSpec::Core::RakeTask.new(:spec)
+
+task default: 'test:local'
+
+task :clean_files do
+  FileUtils.rm('go_ruby') if File.exist?('go_ruby')
+  FileUtils.rm('go_ruby.bat') if File.exist?('go_ruby.bat')
+  FileUtils.rm('selenium_server_deploy.jar') if File.exist?('selenium_server_deploy.jar')
+  FileUtils.rm_rf('lib/selenium/webdriver/atoms')
+  FileUtils.rm_rf('lib/selenium/webdriver/devtools')
+end
+
+# need a go command that executes from rb/ directory but changes up a directory for all build commands
+task :copy_go do
+  replace_line = "#!/usr/bin/env bash"
+  file = File.read('../go').sub(/#{replace_line}/, "#{replace_line}\ncd ..\\")
+  File.write('./go_ruby', file)
+  system 'chmod 755 go_ruby'
+end
+
+task :build_prerequisites do
+  system './go_ruby //rb:devtools'
+  system './go_ruby //rb:atoms'
+
+  FileUtils.cp_r '../build/rb/lib/selenium/webdriver/atoms', 'lib/selenium/webdriver'
+  FileUtils.cp_r '../build/rb/lib/selenium/webdriver/devtools', 'lib/selenium/webdriver'
+end
+
+task :build_server do
+  Rake::Task[:copy_go].invoke unless File.exist?('go_ruby')
+  system './go_ruby selenium-server-standalone'
+  file_name = "selenium_server_deploy.jar"
+
+  FileUtils.cp '/bazel-bin/java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar', file_name
+end
+
+desc 'Prepare system to run tests'
+task prepare: %i[clean_files copy_go build_prerequisites]
+
+namespace :test do
+  desc 'Run Specified Local Tests'
+  task :local, [:browser] => [:prepare] do |_t, args|
+    ENV['WD_SPEC_DRIVER'] = args[:browser]
+    Rake::Task['test:run_tests'].invoke
+  end
+
+  desc 'Run Specified Remote Tests'
+  task :remote, [:browser] => [:prepare] do |_t, args|
+    ENV['WD_SPEC_DRIVER'] = :remote
+    ENV['WD_REMOTE_BROWSER'] = args[:browser]
+    Rake::Task[:build_server].invoke
+    Rake::Task[:run_tests].invoke
+  end
+
+  task :run_tests do
+    Rake::Task[:spec].invoke
+    Rake::Task[:clean_files].execute
+  end
+end
