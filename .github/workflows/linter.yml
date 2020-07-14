@@ -15,6 +15,9 @@ name: Lint Code Base
 #############################
 on:
   push:
+    branches: [trunk]
+  pull_request:
+    branches: [trunk]
 
 
 ###############
@@ -41,7 +44,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Super-Linter
-        uses: github/super-linter@v3.3.1
+        uses: docker://github/super-linter:v3
         env:
           DEFAULT_BRANCH: trunk
           VALIDATE_ALL_CODEBASE: false
