@@ -280,30 +280,16 @@ public class LocalDistributor extends Distributor {
 
   @Override
   public void remove(UUID nodeId) {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
     try {
-      hosts.removeIf(host -> nodeId.equals(host.getId()));
-      allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
+      nodeSelector.removeNode(nodeId);
     } finally {
-      writeLock.unlock();
       bus.fire(new NodeRemovedEvent(nodeId));
     }
   }
 
   @Override
   public DistributorStatus getStatus() {
-    Lock readLock = this.lock.readLock();
-    readLock.lock();
-    try {
-      ImmutableSet<DistributorStatus.NodeSummary> summaries = this.hosts.stream()
-          .map(Host::asSummary)
-          .collect(toImmutableSet());
-
-      return new DistributorStatus(summaries);
-    } finally {
-      readLock.unlock();
-    }
+    return nodeSelector.getStatus();
   }
 
   @Beta

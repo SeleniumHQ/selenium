@@ -17,14 +17,20 @@
 
 package org.openqa.selenium.grid.distributor.gridmodel;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DistributorStatus;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -45,6 +53,8 @@ public class NodeSelector {
   private static final Logger LOG = Logger.getLogger("Selenium Node Selector");
   private final Set<Host> hosts = new HashSet<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
+  private final Regularly hostChecker = new Regularly("Node Selector host checker");
+  private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
 
   public NodeSelector() {
 
@@ -81,6 +91,30 @@ public class NodeSelector {
     return selected;
   }
 
+  public void removeNode(UUID nodeId) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      hosts.removeIf(host -> nodeId.equals(host.getId()));
+      allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  public DistributorStatus getStatus() {
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
+    try {
+      ImmutableSet<DistributorStatus.NodeSummary> summaries = this.hosts.stream()
+          .map(Host::asSummary)
+          .collect(toImmutableSet());
+
+      return new DistributorStatus(summaries);
+    } finally {
+      readLock.unlock();
+    }
+  }
   /**
    * Takes a Stream of Hosts, along with the Capabilities of the current request, and prioritizes the
    * request by removing Hosts that offer Capabilities that are more rare. e.g. if there are only a

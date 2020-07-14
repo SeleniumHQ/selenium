@@ -14,6 +14,7 @@ java_library(
       "//java/server/src/org/openqa/selenium/events",
       "//java/client/src/org/openqa/selenium:core",
       "//java/client/src/org/openqa/selenium/remote",
+      "//java/server/src/org/openqa/selenium/concurrent",
       artifact("com.google.guava:guava"),
     ],
 )
