@@ -31,8 +31,7 @@ public class Node {
   private final URI uri;
   private final boolean isUp;
   private final int maxSession;
-  private final String capabilities;
-  private static final Json JSON = new Json();
+  private final Map<Capabilities, Integer> capabilities;
 
 
   public Node(UUID id,
@@ -44,7 +43,7 @@ public class Node {
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
     this.maxSession = Require.nonNull("Node maxSession", maxSession);
-    this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
+    this.capabilities = Require.nonNull("Node capabilities", capabilities);
   }
 
   public UUID getId() {
@@ -57,6 +56,22 @@ public class Node {
 
   public int getMaxSession() {
     return maxSession;
+  }
+
+  public StringBuilder getCapabilities() {
+    StringBuilder str = new StringBuilder("[");
+
+    for (Map.Entry<Capabilities, Integer> entry : capabilities.entrySet()) {
+      Capabilities k = entry.getKey();
+      Integer v = entry.getValue();
+      str.append("{browserName: " + k.getBrowserName() + ", slots:" + v + "},");
+    }
+
+    if (str.charAt(str.length() - 1) == ',')
+      str.setLength(str.length() - 1);
+
+    str.append("]");
+    return str;
   }
 
   public String getStatus() {
