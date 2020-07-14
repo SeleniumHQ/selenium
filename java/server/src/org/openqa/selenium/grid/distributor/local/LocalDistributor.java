@@ -93,10 +93,8 @@ public class LocalDistributor extends Distributor {
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
-  private final Regularly hostChecker = new Regularly("distributor host checker");
-  private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
   private final String registrationSecret;
-  private final NodeSelector nodeSelector = new NodeSelector();
+  private final NodeSelector nodeSelector;
 
   public LocalDistributor(
       Tracer tracer,
@@ -110,6 +108,7 @@ public class LocalDistributor extends Distributor {
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.sessions = Require.nonNull("Session map", sessions);
     this.registrationSecret = registrationSecret;
+    this.nodeSelector = new NodeSelector(this.bus);
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
     bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
@@ -203,42 +202,7 @@ public class LocalDistributor extends Distributor {
       return;
     }
 
-    // Iterate over the available nodes to find a match.
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      Optional<Host> existingByNodeId = hosts.stream()
-          .filter(host -> host.getId().equals(status.getNodeId()))
-          .findFirst();
-
-      if (existingByNodeId.isPresent()) {
-        // Modify the state
-        LOG.fine("Modifying existing state");
-        existingByNodeId.get().update(status);
-      } else {
-        Optional<Host> existingByUri = hosts.stream()
-          .filter(host -> host.asSummary().getUri().equals(status.getUri()))
-          .findFirst();
-        // There is a URI match, probably means a node was restarted. We need to remove
-        // the previous one so we add the new request.
-        existingByUri.ifPresent(host -> {
-          LOG.fine("Removing old node, a new one is registering with the same URI");
-          remove(host.getId());
-        });
-
-        // Add a new host.
-        LOG.info("Creating a new remote node for " + status.getUri());
-        Node node = new RemoteNode(
-            tracer,
-            clientFactory,
-            status.getNodeId(),
-            status.getUri(),
-            status.getStereotypes().keySet());
-        add(node, status);
-      }
-    } finally {
-      writeLock.unlock();
-    }
+    nodeSelector.refresh(status, tracer, clientFactory);
   }
 
   @Override
@@ -247,30 +211,13 @@ public class LocalDistributor extends Distributor {
   }
 
   private LocalDistributor add(Node node, NodeStatus status) {
-    StringBuilder sb = new StringBuilder();
-
-    Lock writeLock = this.lock.writeLock();
-    writeLock.lock();
-    try (JsonOutput out = JSON.newOutput(sb)) {
-      out.setPrettyPrint(false).write(node);
-      nodeSelector.addNode(node, bus, status);
-    } catch (Throwable t) {
-      LOG.log(Level.WARNING, "Unable to process host", t);
-    } finally {
-      writeLock.unlock();
-      bus.fire(new NodeAddedEvent(node.getId()));
-    }
-
+    nodeSelector.addNode(node, status);
     return this;
   }
 
   @Override
   public void remove(UUID nodeId) {
-    try {
-      nodeSelector.removeNode(nodeId);
-    } finally {
-      bus.fire(new NodeRemovedEvent(nodeId));
-    }
+    nodeSelector.removeNode(nodeId);
   }
 
   @Override
@@ -280,12 +227,6 @@ public class LocalDistributor extends Distributor {
 
   @Beta
   public void refresh() {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      hosts.forEach(Host::runHealthCheck);
-    } finally {
-      writeLock.unlock();
-    }
+    nodeSelector.refresh();
   }
 }

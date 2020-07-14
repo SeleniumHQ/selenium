@@ -40,7 +40,9 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -73,8 +75,7 @@ public class NodeSelectorTest {
                                       hosts.add(createHost("chrome", "firefox"))
     );
 
-    NodeSelector
-        selector = new NodeSelector();
+    NodeSelector selector = new NodeSelector(bus);
 
     //When you prioritize for Edge, you should only have 1 possibility
     Stream<Host>
@@ -95,6 +96,39 @@ public class NodeSelectorTest {
     assertThat(firefoxStream.count()).isEqualTo(4);
   }
 
+  @Test
+  public void testAllBucketsSameSize() {
+    Map<String, Set<Host>> hostBuckets = buildBuckets(5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
+
+    NodeSelector selector = new NodeSelector(bus);
+    assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
+  }
+
+  @Test
+  public void testAllBucketsNotSameSize() {
+    Map<String, Set<Host>> hostBuckets = buildBuckets(3, 5, 8 );
+
+     NodeSelector selector = new NodeSelector(bus);
+    assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
+  }
+
+  @Test
+  public void testOneBucketStillConsideredSameSize() {
+    Map<String, Set<Host>> hostBuckets = buildBuckets(3 );
+
+    NodeSelector selector = new NodeSelector(bus);
+    assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
+  }
+
+  @Test
+  public void testAllBucketsNotSameSizeProveNotUsingAverage() {
+    //Make sure the numbers don't just average out to the same size
+    Map<String, Set<Host>> hostBuckets = buildBuckets(4, 5, 6 );
+
+    NodeSelector selector = new NodeSelector(bus);
+    assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
+  }
+
   //Create a single host with the given browserName
   private Host createHost(String...browsers) {
     URI uri = createUri();
@@ -108,6 +142,22 @@ public class NodeSelectorTest {
 
     Node myNode = nodeBuilder.build();
     return new Host(bus, myNode);
+  }
+
+  //Build a few Host Buckets of different sizes
+  private Map<String, Set<Host>> buildBuckets(int...sizes) {
+    Map<String, Set<Host>> hostBuckets = new HashMap<>();
+    //The fact that it's re-using the same node doesn't matter--we're calculating "sameness"
+    // based purely on the number of hosts in the Set
+
+    IntStream.of(sizes).forEach(count -> {
+      Set<Host> hostSet = new HashSet<>();
+      for (int i=0; i<count; i++) {
+        hostSet.add(createHost(UUID.randomUUID().toString()));
+      }
+      hostBuckets.put(UUID.randomUUID().toString(), hostSet);
+    });
+    return hostBuckets;
   }
 
   private URI createUri() {

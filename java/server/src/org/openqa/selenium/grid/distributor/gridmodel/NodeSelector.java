@@ -29,8 +29,16 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -48,20 +56,23 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class NodeSelector {
 
+  private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger("Selenium Node Selector");
   private final Set<Host> hosts = new HashSet<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final Regularly hostChecker = new Regularly("Node Selector host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
+  private final EventBus bus;
 
-  public NodeSelector() {
-
+  public NodeSelector(EventBus bus) {
+    this.bus = Require.nonNull("Event bus", bus);
   }
 
   public Optional<Supplier<CreateSessionResponse>> selectNode(CreateSessionRequest firstRequest) {
@@ -95,21 +106,34 @@ public class NodeSelector {
     return selected;
   }
 
-  public void addNode(Node node, EventBus bus, NodeStatus status) {
-    Host host = new Host(bus, node);
-    host.update(status);
+  public void addNode(Node node, NodeStatus status) {
+    StringBuilder sb = new StringBuilder();
 
-    LOG.fine("Adding host: " + host.asSummary());
-    hosts.add(host);
+    Lock writeLock = this.lock.writeLock();
+    writeLock.lock();
 
-    LOG.info(String.format("Added node %s.", node.getId()));
-    host.runHealthCheck();
+    try (JsonOutput out = JSON.newOutput(sb)) {
+      out.setPrettyPrint(false).write(node);
+      Host host = new Host(bus, node);
+      host.update(status);
 
-    Runnable runnable = host::runHealthCheck;
-    Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
-    nodeRunnables.add(runnable);
-    allChecks.put(node.getId(), nodeRunnables);
-    hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
+      LOG.fine("Adding host: " + host.asSummary());
+      hosts.add(host);
+
+      LOG.info(String.format("Added node %s.", node.getId()));
+      host.runHealthCheck();
+
+      Runnable runnable = host::runHealthCheck;
+      Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
+      nodeRunnables.add(runnable);
+      allChecks.put(node.getId(), nodeRunnables);
+      hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
+    } catch (Throwable t) {
+      LOG.log(Level.WARNING, "Unable to process host", t);
+    } finally {
+      writeLock.unlock();
+      bus.fire(new NodeAddedEvent(node.getId()));
+    }
   }
 
   public void removeNode(UUID nodeId) {
@@ -118,6 +142,47 @@ public class NodeSelector {
     try {
       hosts.removeIf(host -> nodeId.equals(host.getId()));
       allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
+    } finally {
+      writeLock.unlock();
+      bus.fire(new NodeRemovedEvent(nodeId));
+    }
+  }
+
+  public void refresh(NodeStatus status, Tracer tracer, HttpClient.Factory clientFactory) {
+    // Iterate over the available nodes to find a match.
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+
+    try {
+      Optional<Host> existingByNodeId = hosts.stream()
+          .filter(host -> host.getId().equals(status.getNodeId()))
+          .findFirst();
+
+      if (existingByNodeId.isPresent()) {
+        // Modify the state
+        LOG.fine("Modifying existing state");
+        existingByNodeId.get().update(status);
+      } else {
+        Optional<Host> existingByUri = hosts.stream()
+            .filter(host -> host.asSummary().getUri().equals(status.getUri()))
+            .findFirst();
+        // There is a URI match, probably means a node was restarted. We need to remove
+        // the previous one so we add the new request.
+        existingByUri.ifPresent(host -> {
+          LOG.fine("Removing old node, a new one is registering with the same URI");
+          removeNode(host.getId());
+        });
+
+        // Add a new host.
+        LOG.info("Creating a new remote node for " + status.getUri());
+        Node node = new RemoteNode(
+            tracer,
+            clientFactory,
+            status.getNodeId(),
+            status.getUri(),
+            status.getStereotypes().keySet());
+        addNode(node, status);
+      }
     } finally {
       writeLock.unlock();
     }
@@ -227,5 +292,15 @@ public class NodeSelector {
     Set<Integer> intSet = new HashSet<>();
     hostBuckets.values().forEach(bucket ->  intSet.add(bucket.size()));
     return intSet.size() == 1;
+  }
+
+  public void refresh() {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      hosts.forEach(Host::runHealthCheck);
+    } finally {
+      writeLock.unlock();
+    }
   }
 }
