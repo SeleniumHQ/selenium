@@ -40,8 +40,8 @@ jobs:
       ################################
       # Run Linter against code base #
       ################################
-      - name: Lint Code Base
-        uses: github/super-linter@v2.0.0
+      - name: Super-Linter
+        uses: github/super-linter@v3.3.1
         env:
           DEFAULT_BRANCH: trunk
           VALIDATE_ALL_CODEBASE: false
@@ -49,3 +49,4 @@ jobs:
           VALIDATE_COFFEE: false
           VALIDATE_PERL: false
           VALIDATE_TERRAFORM: false
+
