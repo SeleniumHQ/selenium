@@ -25,10 +25,14 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.node.Node;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -89,6 +93,23 @@ public class NodeSelector {
     }
 
     return selected;
+  }
+
+  public void addNode(Node node, EventBus bus, NodeStatus status) {
+    Host host = new Host(bus, node);
+    host.update(status);
+
+    LOG.fine("Adding host: " + host.asSummary());
+    hosts.add(host);
+
+    LOG.info(String.format("Added node %s.", node.getId()));
+    host.runHealthCheck();
+
+    Runnable runnable = host::runHealthCheck;
+    Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
+    nodeRunnables.add(runnable);
+    allChecks.put(node.getId(), nodeRunnables);
+    hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
   }
 
   public void removeNode(UUID nodeId) {

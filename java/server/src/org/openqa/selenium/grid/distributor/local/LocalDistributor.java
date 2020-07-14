@@ -253,21 +253,7 @@ public class LocalDistributor extends Distributor {
     writeLock.lock();
     try (JsonOutput out = JSON.newOutput(sb)) {
       out.setPrettyPrint(false).write(node);
-
-      Host host = new Host(bus, node);
-      host.update(status);
-
-      LOG.fine("Adding host: " + host.asSummary());
-      hosts.add(host);
-
-      LOG.info(String.format("Added node %s.", node.getId()));
-      host.runHealthCheck();
-
-      Runnable runnable = host::runHealthCheck;
-      Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
-      nodeRunnables.add(runnable);
-      allChecks.put(node.getId(), nodeRunnables);
-      hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
+      nodeSelector.addNode(node, bus, status);
     } catch (Throwable t) {
       LOG.log(Level.WARNING, "Unable to process host", t);
     } finally {
