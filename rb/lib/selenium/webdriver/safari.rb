@@ -26,12 +26,19 @@ module Selenium
       autoload :Service, 'selenium/webdriver/safari/service'
 
       class << self
+        attr_accessor :use_technology_preview
+
         def technology_preview
           "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
         end
 
         def technology_preview!
           Service.driver_path = technology_preview
+          @use_technology_preview = true
+        end
+
+        def technology_preview?
+          use_technology_preview
         end
 
         def path=(path)

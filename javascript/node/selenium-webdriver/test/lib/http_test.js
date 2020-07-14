@@ -26,7 +26,6 @@ var Capabilities = require('../../lib/capabilities').Capabilities,
     error = require('../../lib/error'),
     http = require('../../lib/http'),
     Session = require('../../lib/session').Session,
-    promise = require('../../lib/promise'),
     WebElement = require('../../lib/webdriver').WebElement;
 
 describe('http', function() {

@@ -18,9 +18,8 @@
 'use strict';
 
 const assert = require('assert');
-
 const test = require('../lib/test');
-const {Browser, By} = require('..');
+const {By} = require('..');
 
 
 test.suite(function(env) {
