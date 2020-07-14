@@ -15,6 +15,9 @@ name: Lint Code Base
 #############################
 on:
   push:
+    branches: [trunk]
+  pull_request:
+    branches: [trunk]
 
 
 ###############
