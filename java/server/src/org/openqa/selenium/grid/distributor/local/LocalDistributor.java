@@ -85,10 +85,7 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 public class LocalDistributor extends Distributor {
 
-  private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Local)");
-  private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final Set<Host> hosts = new HashSet<>();
   private final Tracer tracer;
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
