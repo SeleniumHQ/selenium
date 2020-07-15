@@ -83,7 +83,7 @@ Please don't send your patch to us as we cannot accept it.
 We do accept help in upgrading our existing dependencies or removing
 superfluous dependencies. If you need to add a new dependency it's
 often a good idea to reach out to the committers on the
-[IRC channel or the mailing list](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md#communication)
+[IRC channel or the mailing list](https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md#communication)
 to check that your approach aligns with the project's
 ideas. Nothing is more frustrating than seeing your hard work go to
 waste because your vision doesn't align with the project's.
@@ -114,7 +114,7 @@ under the License.
 
 There's no need to include a copyright statement in the file's header.
 The copyright attributions can be reviewed in the
-[NOTICE](https://github.com/SeleniumHQ/selenium/blob/master/NOTICE)
+[NOTICE](https://github.com/SeleniumHQ/selenium/blob/trunk/NOTICE)
 file found in the top-level directory.
 
 ### Step 2: Branch
