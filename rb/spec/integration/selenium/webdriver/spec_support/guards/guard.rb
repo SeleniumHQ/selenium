@@ -23,19 +23,11 @@ module Selenium
       class Guards
         class Guard
 
-          attr_reader :message
-
           def initialize(guard, type)
             @type = type
 
-            reason = guard.delete(:message) || 'no reason given.'
-            @message = if @type == :exclude
-                         "Test not guarded because it breaks test run; #{reason}."
-                       elsif @type == :exclusive
-                         'Test does not apply to this configuration.'
-                       else
-                         "Test guarded; #{reason}."
-                       end
+            @reason = guard.delete(:reason)
+
             @drivers = []
             @browsers = []
             @platforms = []
@@ -44,6 +36,27 @@ module Selenium
             expand_drivers(guard)
             expand_browsers(guard)
             expand_platforms(guard)
+          end
+
+          def message
+            details = case @reason
+                      when Integer
+                        "Bug Filed: https://github.com/SeleniumHQ/selenium/issues/#{@reason}"
+                      when Symbol
+                        Guards::MESSAGES[@reason]
+                      when String
+                        @reason
+                      else
+                        'no reason given'
+                      end
+
+            if @type == :exclude
+              "Test not guarded because it breaks test run; #{details}"
+            elsif @type == :exclusive
+              'Test does not apply to this configuration'
+            else
+              "Test guarded; #{details}"
+            end
           end
 
           # Bug is present on all configurations specified

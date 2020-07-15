@@ -91,11 +91,43 @@ module Selenium
           end
         end
 
-        context 'guard messages on failing tests' do
-          it 'gives correct message with single only excludes', except: [{browser: :chrome, message: 'bug1'},
-                                                                         {browser: :not_chrome, message: 'bug2'}] do
+        context 'guard messages' do
+          it 'gives correct reason with single only excludes', except: [{browser: :chrome, reason: 'bug1'},
+                                                                        {browser: :not_chrome, reason: 'bug2'}] do
             fail
           end
+        end
+      end
+
+      describe Guards::Guard do
+        it 'Uses default message' do
+          guard = Guards::Guard.new({}, :except)
+          expect(guard.message).to eq 'Test guarded; no reason given'
+        end
+
+        it 'Creates message from Integer' do
+          guard = Guards::Guard.new({reason: 1}, :except)
+          expect(guard.message).to eq 'Test guarded; Bug Filed: https://github.com/SeleniumHQ/selenium/issues/1'
+        end
+
+        it 'Creates message from Symbol' do
+          guard = Guards::Guard.new({reason: :unk}, :except)
+          expect(guard.message).to eq 'Test guarded; TODO: Investigate why this is failing and file bug'
+        end
+
+        it 'Creates message from String' do
+          guard = Guards::Guard.new({reason: "Foo is bad"}, :except)
+          expect(guard.message).to eq 'Test guarded; Foo is bad'
+        end
+
+        it 'Uses correct message for exclusive' do
+          guard = Guards::Guard.new({reason: "Foo is bad"}, :exclusive)
+          expect(guard.message).to eq 'Test does not apply to this configuration'
+        end
+
+        it 'Uses correct message for exclude' do
+          guard = Guards::Guard.new({reason: "Foo is bad"}, :exclude)
+          expect(guard.message).to eq 'Test not guarded because it breaks test run; Foo is bad'
         end
       end
     end # SpecSupport
