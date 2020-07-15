@@ -676,18 +676,18 @@ class Driver extends webdriver.WebDriver {
     const caps = await this.getCapabilities()
     const seOptions = caps['map_'].get('se:options') || new Map();
     const vendorInfo = caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') || new Map();
-    this._wsUrl = seOptions['cdp'] || vendorInfo['debuggerAddress'];
-
+    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress'];
+    this._wsUrl = await this.getWsUrl(debuggerUrl);
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket("ws://" + this._wsUrl);
+        this._wsConnection = new WebSocket(this._wsUrl);
       } catch (err) {
         reject(err);
         return
       }
 
       this._wsConnection.on('open', () => {
-        this._cdpConnection = new CDPConnection(this._wsConnection);
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection);
         resolve(this._cdpConnection);
       })
 
@@ -697,6 +697,14 @@ class Driver extends webdriver.WebDriver {
     });
   }
 
+  async getWsUrl(debuggerAddress) {
+    let request = new http.Request('GET', '/json/version');
+    let client = new http.HttpClient("http://" + debuggerAddress);
+    let url;
+    let response = await client.send(request);
+    url = JSON.parse(response.body)['webSocketDebuggerUrl'];
+    return url;
+  }
   /**
    * Set a permission state to the given value.
    *

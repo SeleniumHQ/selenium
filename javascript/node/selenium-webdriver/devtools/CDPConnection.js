@@ -24,10 +24,12 @@ class CDPConnection {
 
   execute(method, params, callback) {
     const message = {
-      id, method,
+      method,
       params: params || {}
     };
 
     this._wsConnection.send(JSON.stringify(message), callback);
   }
 }
+
+exports.CdpConnection = CDPConnection;
