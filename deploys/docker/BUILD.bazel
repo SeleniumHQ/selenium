@@ -53,11 +53,11 @@ container_layer(
 container_image(
     name = "grid-base",
     base = "@java_image_base//image",
+    directory = "/app",
     layers = [
         ":grid-binary",
         ":passwd-layer",
     ],
-    directory = "/app",
     user = "seluser",
     workdir = "/app",
 )
@@ -146,7 +146,7 @@ container_layer(
     name = "one-shot",
     directory = "/opt/selenium",
     files = [
-        "//java/server/src/org/openqa/selenium/grid/node/k8s"
+        "//java/server/src/org/openqa/selenium/grid/node/k8s",
     ],
 )
 
@@ -161,6 +161,10 @@ container_layer(
 container_image(
     name = "chrome-node",
     base = "@chrome_standalone//image",
+    entrypoint = [
+        "/opt/selenium/bin/selenium.sh",
+        "node",
+    ],
     layers = [
         ":grid-binary",
         ":one-shot",
@@ -171,10 +175,6 @@ container_image(
         "5900",  # vnc,
     ],
     user = "seluser",
-    entrypoint = [
-        "/opt/selenium/bin/selenium.sh",
-        "node",
-    ],
 )
 
 container_push(
@@ -188,6 +188,10 @@ container_push(
 container_image(
     name = "firefox-node",
     base = "@firefox_standalone//image",
+    entrypoint = [
+        "/opt/selenium/bin/selenium.sh",
+        "node",
+    ],
     layers = [
         ":grid-binary",
         ":one-shot",
@@ -198,10 +202,6 @@ container_image(
         "5900",  # vnc,
     ],
     user = "seluser",
-    entrypoint = [
-        "/opt/selenium/bin/selenium.sh",
-        "node",
-    ],
 )
 
 container_push(

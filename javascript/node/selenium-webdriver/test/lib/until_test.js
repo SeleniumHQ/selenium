@@ -22,7 +22,6 @@ const assert = require('assert');
 const By = require('../../lib/by').By;
 const CommandName = require('../../lib/command').Name;
 const error = require('../../lib/error');
-const promise = require('../../lib/promise');
 const until = require('../../lib/until');
 const webdriver = require('../../lib/webdriver'),
       WebElement = webdriver.WebElement;

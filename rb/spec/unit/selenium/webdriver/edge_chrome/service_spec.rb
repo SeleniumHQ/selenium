@@ -23,19 +23,20 @@ module Selenium
   module WebDriver
     describe Service do
       describe '#new' do
-        let(:service_path) { "/path/to/#{Edge::Service::EXECUTABLE}" }
+        let(:service_path) { "/path/to/#{EdgeChrome::Service::EXECUTABLE}" }
 
         before do
           allow(Platform).to receive(:assert_executable).and_return(true)
+          EdgeChrome::Service.driver_path = nil
         end
 
         it 'uses default path and port' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.edge
+          service = Service.edge_chrome
 
-          expect(service.executable_path).to include Edge::Service::EXECUTABLE
-          expected_port = Edge::Service::DEFAULT_PORT
+          expect(service.executable_path).to include EdgeChrome::Service::EXECUTABLE
+          expected_port = EdgeChrome::Service::DEFAULT_PORT
           expect(service.port).to eq expected_port
           expect(service.host).to eq Platform.localhost
         end
@@ -44,51 +45,40 @@ module Selenium
           path = 'foo'
           port = 5678
 
-          service = Service.edge(path: path, port: port)
+          service = Service.edge_chrome(path: path, port: port)
 
           expect(service.executable_path).to eq path
           expect(service.port).to eq port
           expect(service.host).to eq Platform.localhost
         end
 
-        it 'allows #driver_path= with String value' do
-          path = '/path/to/driver'
-          Edge::Service.driver_path = path
+        describe "#driver_path=" do
+          after { EdgeChrome::Service.driver_path = nil }
 
-          service = Service.edge
+          it 'allows #driver_path= with String value' do
+            path = '/path/to/driver'
+            EdgeChrome::Service.driver_path = path
 
-          expect(service.executable_path).to eq path
-        end
+            service = Service.edge_chrome
 
-        it 'allows #driver_path= with Proc value' do
-          path = '/path/to/driver'
-          proc = proc { path }
-          Edge::Service.driver_path = proc
+            expect(service.executable_path).to eq path
+          end
 
-          service = Service.edge
+          it 'allows #driver_path= with Proc value' do
+            path = '/path/to/driver'
+            proc = proc { path }
+            EdgeChrome::Service.driver_path = proc
 
-          expect(service.executable_path).to eq path
-        end
+            service = Service.edge_chrome
 
-        it 'accepts Edge#driver_path= but throws deprecation notice' do
-          path = '/path/to/driver'
-          expect {
-            Selenium::WebDriver::Edge.driver_path = path
-          }.to have_deprecated(:driver_path)
-
-          expect {
-            expect(Selenium::WebDriver::Edge.driver_path).to eq path
-          }.to have_deprecated(:driver_path)
-
-          service = Service.edge
-
-          expect(service.executable_path).to eq path
+            expect(service.executable_path).to eq path
+          end
         end
 
         it 'does not create args by default' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.edge
+          service = Service.edge_chrome
 
           expect(service.extra_args).to be_empty
         end
@@ -96,7 +86,7 @@ module Selenium
         it 'uses provided args' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.edge(args: ['--foo', '--bar'])
+          service = Service.edge_chrome(args: ['--foo', '--bar'])
 
           expect(service.extra_args).to eq ['--foo', '--bar']
         end
@@ -105,26 +95,22 @@ module Selenium
         it 'uses args when passed in as a Hash' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.edge(args: {host: 'myhost',
-                                        silent: true})
+          service = Service.edge_chrome(args: {log_path: '/path/to/log',
+                                               verbose: true})
 
-          expect(service.extra_args).to eq ['--host=myhost', '--silent']
+          expect(service.extra_args).to eq ['--log-path=/path/to/log', '--verbose']
         end
       end
 
       context 'when initializing driver' do
-        let(:driver) { Edge::Driver }
+        let(:driver) { EdgeChrome::Driver }
         let(:service) { instance_double(Service, launch: service_manager) }
         let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
         let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
 
-        before do
-          allow(Remote::Bridge).to receive(:new).and_return(bridge)
-          allow(ServiceManager).to receive(:new).and_return(service_manager)
-        end
+        before { allow(Remote::Bridge).to receive(:new).and_return(bridge) }
 
         it 'is not created when :url is provided' do
-          expect(ServiceManager).not_to receive(:new)
           expect(Service).not_to receive(:new)
 
           driver.new(url: 'http://example.com:4321')
@@ -134,18 +120,6 @@ module Selenium
           expect(Service).to receive(:new).and_return(service)
 
           driver.new
-        end
-
-        it 'accepts :driver_path but throws deprecation notice' do
-          driver_path = '/path/to/driver'
-
-          allow(Service).to receive(:new).with(path: driver_path,
-                                               port: nil,
-                                               args: nil).and_return(service)
-
-          expect {
-            driver.new(driver_path: driver_path)
-          }.to have_deprecated(:service_driver_path)
         end
 
         it 'accepts :port but throws deprecation notice' do
@@ -174,9 +148,10 @@ module Selenium
         end
 
         it 'accepts :service without creating a new instance' do
-          expect(Service).not_to receive(:new)
+          allow(Service).to receive(:new)
 
           driver.new(service: service)
+          expect(Service).not_to have_received(:new)
         end
       end
     end

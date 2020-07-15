@@ -57,6 +57,9 @@ __pycache__
 .tox
 *.pyc
 dist/
+py/selenium/webdriver/common/devtools/*.py
+py/selenium/webdriver/common/devtools/py.typed
+!py/selenium/webdriver/common/devtools/util.py
 py/selenium/webdriver/firefox/amd64/
 py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/webdriver_prefs.json

@@ -18,11 +18,8 @@
 'use strict';
 
 const assert = require('assert');
-
-const chrome = require('../chrome');
 const error = require('../lib/error');
 const fileServer = require('../lib/test/fileserver');
-const firefox = require('../firefox');
 const test = require('../lib/test');
 const {Key, Origin} = require('../lib/input');
 const {Browser, By, until} = require('..');

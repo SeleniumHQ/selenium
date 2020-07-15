@@ -77,7 +77,6 @@ public class CdpClientGenerator {
     model.dumpTo(target);
 
     Path outputJar = Paths.get(args[2]).toAbsolutePath();
-    System.out.println(outputJar);
     Files.createDirectories(outputJar.getParent());
 
     try (OutputStream os = Files.newOutputStream(outputJar);

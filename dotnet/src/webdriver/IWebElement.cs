@@ -41,8 +41,7 @@ namespace OpenQA.Selenium
         string TagName { get; }
 
         /// <summary>
-        /// Gets the innerText of this element, without any leading or trailing whitespace,
-        /// and with other whitespace collapsed.
+        /// Get the visible (i.e. not hidden by CSS) text of this element, including sub-elements.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string Text { get; }

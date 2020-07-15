@@ -21,8 +21,8 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    module EdgeChrome
-      describe Profile do
+    module Edge
+      describe Profile, exclusive: {browser: :edge} do
         let(:profile) { Profile.new }
 
         it 'adds an extension' do
@@ -54,6 +54,6 @@ module Selenium
           }.to raise_error(Selenium::WebDriver::Error::WebDriverError)
         end
       end
-    end # Chrome
+    end # Edge
   end # WebDriver
 end # Selenium

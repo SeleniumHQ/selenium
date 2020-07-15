@@ -26,7 +26,6 @@ const promise = require('../../lib/promise');
 const NativePromise = Promise;
 const StubError = testutil.StubError;
 const assertIsStubError = testutil.assertIsStubError;
-const callbackHelper = testutil.callbackHelper;
 const callbackPair = testutil.callbackPair;
 const throwStubError = testutil.throwStubError;
 const fail = () => assert.fail();

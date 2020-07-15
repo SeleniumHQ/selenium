@@ -18,9 +18,8 @@
 'use strict';
 
 const assert = require('assert');
-
 const test = require('../lib/test');
-const {Browser, By, logging} = require('..');
+const {Browser,logging} = require('..');
 
 test.suite(function(env) {
   // Logging API is not supported in IE.

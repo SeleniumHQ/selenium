@@ -115,6 +115,6 @@ module Selenium
           end
         end
       end # Options
-    end # Edge
+    end # EdgeHtml
   end # WebDriver
 end # Selenium

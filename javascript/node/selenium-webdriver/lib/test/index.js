@@ -17,16 +17,10 @@
 
 'use strict';
 
-const assert = require('assert');
-
 const build = require('./build');
 const fileserver = require('./fileserver');
-const firefox = require('../../firefox');
 const logging = require('../../lib/logging');
-const remote = require('../../remote');
-const safari = require('../../safari');
 const testing = require('../../testing');
-const webdriver = require('../../');
 
 const NO_BUILD = /^1|true$/i.test(process.env['SELENIUM_NO_BUILD']);
 

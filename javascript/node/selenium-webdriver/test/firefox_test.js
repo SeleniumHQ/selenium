@@ -19,7 +19,6 @@
 
 const assert = require('assert');
 const path = require('path');
-
 const error = require('../lib/error');
 const firefox = require('../firefox');
 const io = require('../io');

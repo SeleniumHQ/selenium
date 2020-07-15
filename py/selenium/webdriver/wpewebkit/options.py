@@ -16,14 +16,15 @@
 # under the License.
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.options import ArgOptions
 
 
-class Options(object):
+class Options(ArgOptions):
     KEY = 'wpe:browserOptions'
 
     def __init__(self):
+        super(Options, self).__init__()
         self._binary_location = ''
-        self._arguments = []
         self._caps = DesiredCapabilities.WPEWEBKIT.copy()
 
     @property
@@ -50,25 +51,6 @@ class Options(object):
          - value : path to the browser binary
         """
         self._binary_location = value
-
-    @property
-    def arguments(self):
-        """
-        Returns a list of arguments needed for the browser
-        """
-        return self._arguments
-
-    def add_argument(self, argument):
-        """
-        Adds an argument to the list
-
-        :Args:
-         - Sets the arguments
-        """
-        if argument:
-            self._arguments.append(argument)
-        else:
-            raise ValueError("argument can not be null")
 
     def to_capabilities(self):
         """

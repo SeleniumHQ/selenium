@@ -92,13 +92,15 @@ describe('by', function() {
       let relative = by.withTagName("p").above(by.By.name("foobar"));
       let expected = {
         'relative': {
-          'root': "p",
-          'filters': [{ "kind": "near", "args": [{"name":"foobar"}] }],
+          'root': { 'css selector': 'p' },
+          'filters': [{ "kind": "above", "args": [{"css selector":"*[name=\"foobar\"]"}] }],
         }
       }
       assert.deepEqual(relative.marshall(), expected);
     });
   });
+
+
 
   describe('checkedLocator', function() {
     it('accepts a By instance', function() {

@@ -24,9 +24,8 @@ const Pages = test.Pages;
 
 
 test.suite(function(env) {
-  var browsers = env.browsers;
 
-  var driver;
+  let driver;
   test.before(function() {
     driver = env.builder().build();
   });
