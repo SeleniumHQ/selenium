@@ -26,11 +26,15 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -93,11 +97,23 @@ class GridStatusHandler implements HttpHandler {
       try {
         status = EXECUTOR_SERVICE.submit(span.wrap(distributor::getStatus)).get(2, SECONDS);
       } catch (ExecutionException | TimeoutException e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.CANCELLED);
+        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
+        span.addEvent("Unable to get distributor status due to execution error or timeout", attributeValueMap);
+
         return new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
             "ready", false,
             "message", "Unable to read distributor status."))));
       } catch (InterruptedException e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.ABORTED);
+        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
+        span.addEvent("Interruption while getting distributor status", attributeValueMap);
+
         Thread.currentThread().interrupt();
         return new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
@@ -158,8 +174,14 @@ class GridStatusHandler implements HttpHandler {
           try {
             return summary.get();
           } catch (ExecutionException e) {
+            span.setAttribute("error", true);
+            span.setStatus(Status.NOT_FOUND);
+            span.addEvent("Unable to get Node information");
             throw wrap(e);
           } catch (InterruptedException e) {
+            span.setAttribute("error", true);
+            span.setStatus(Status.NOT_FOUND);
+            span.addEvent("Unable to get Node information");
             Thread.currentThread().interrupt();
             throw wrap(e);
           }
@@ -168,6 +190,7 @@ class GridStatusHandler implements HttpHandler {
 
       HttpResponse res = new HttpResponse().setContent(asJson(ImmutableMap.of("value", value.build())));
       HTTP_RESPONSE.accept(span, res);
+      span.setStatus(Status.OK);
       return res;
     }
   }
