@@ -25,6 +25,8 @@ module Selenium
       describe Options, exclusive: {browser: :chrome} do
         subject(:options) { Options.new }
 
+        before { quit_driver }
+
         it 'passes emulated device correctly' do
           options.add_emulation(device_name: 'Nexus 5')
 
