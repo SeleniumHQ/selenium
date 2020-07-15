@@ -52,6 +52,7 @@ import org.openqa.selenium.support.events.internal.EventFiringTouch;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -666,21 +667,39 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       this.timeouts = timeouts;
     }
 
+    @Deprecated
     @Override
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
-      timeouts.implicitlyWait(time, unit);
+      return implicitlyWait(Duration.ofMillis(unit.toMillis(time)));
+    }
+
+    @Override
+    public Timeouts implicitlyWait(Duration duration) {
+      timeouts.implicitlyWait(duration);
       return this;
     }
 
+    @Deprecated
     @Override
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-      timeouts.setScriptTimeout(time, unit);
-      return this;
+      return setScriptTimeout(Duration.ofMillis(unit.toMillis(time)));
     }
 
     @Override
+    public Timeouts setScriptTimeout(Duration duration) {
+      timeouts.setScriptTimeout(duration);
+      return this;
+    }
+
+    @Deprecated
+    @Override
     public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-      timeouts.pageLoadTimeout(time, unit);
+      return pageLoadTimeout(Duration.ofMillis(unit.toMillis(time)));
+    }
+
+    @Override
+    public Timeouts pageLoadTimeout(Duration duration) {
+      timeouts.pageLoadTimeout(duration);
       return this;
     }
   }
