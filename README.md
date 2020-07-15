@@ -11,7 +11,7 @@ major web browsers.
 The project is made possible by volunteer contributors who've
 generously donated thousands of hours in code development and upkeep.
 
-Selenium's source code is made available under the [Apache 2.0 license](https://github.com/SeleniumHQ/selenium/blob/master/LICENSE).
+Selenium's source code is made available under the [Apache 2.0 license](https://github.com/SeleniumHQ/selenium/blob/trunk/LICENSE).
 
 ## Documentation
 
@@ -29,7 +29,7 @@ API documentation:
 
 ## Pull Requests
 
-Please read [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md)
+Please read [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md)
 before submitting your pull requests.
 
 ## Building
