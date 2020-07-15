@@ -690,6 +690,10 @@ class Driver extends webdriver.WebDriver {
         this._cdpConnection = new CDPConnection(this._wsConnection);
         resolve(this._cdpConnection);
       })
+
+      this._wsConnection.on('error', (error) => {
+        reject(error);
+      })
     });
   }
 
