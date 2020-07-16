@@ -23,6 +23,8 @@ module Selenium
       class Guards
         include Enumerable
 
+        MESSAGES = {unk: 'TODO: Investigate why this is failing and file bug'}.freeze
+
         GUARD_TYPES = %i[except only exclude exclusive].freeze
 
         def initialize(example, guards = nil)
