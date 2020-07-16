@@ -39,6 +39,10 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -48,6 +52,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -98,6 +103,7 @@ public class DockerSessionFactory implements SessionFactory {
     URL remoteAddress = getUrl(port);
     HttpClient client = clientFactory.createClient(remoteAddress);
 
+    try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
     LOG.info("Creating container, mapping container port 4444 to " + port);
     Container container = docker.create(image(image).map(Port.tcp(4444), Port.tcp(port)));
     container.start();
@@ -106,6 +112,14 @@ public class DockerSessionFactory implements SessionFactory {
     try {
       waitForServerToStart(client, Duration.ofMinutes(1));
     } catch (TimeoutException e) {
+      span.setAttribute("error", true);
+      span.setStatus(Status.CANCELLED);
+      Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+      attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
+      attributeValueMap
+          .put("Container id", EventAttribute.setValue(container.getId().toString()));
+      span.addEvent("Unable to connect to docker server. Stopping container", attributeValueMap);
+
       container.stop(Duration.ofMinutes(1));
       container.delete();
       LOG.warning(String.format(
@@ -123,6 +137,14 @@ public class DockerSessionFactory implements SessionFactory {
       result = new ProtocolHandshake().createSession(client, command);
       response = result.createResponse();
     } catch (IOException | RuntimeException e) {
+      span.setAttribute("error", true);
+      span.setStatus(Status.CANCELLED);
+      Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+      attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
+      attributeValueMap
+          .put("Container id", EventAttribute.setValue(container.getId().toString()));
+      span.addEvent("Unable to create session. Stopping container", attributeValueMap);
+
       container.stop(Duration.ofMinutes(1));
       container.delete();
       LOG.log(Level.WARNING, "Unable to create session: " + e.getMessage(), e);
@@ -150,6 +172,7 @@ public class DockerSessionFactory implements SessionFactory {
         capabilities,
         downstream,
         result.getDialect()));
+    }
   }
 
   private void waitForServerToStart(HttpClient client, Duration duration) {

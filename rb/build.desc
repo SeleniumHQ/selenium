@@ -59,6 +59,17 @@ ruby_library(name = "chrome",
   deps = [":common"]
 )
 
+ruby_library(name = "remote",
+  srcs = [
+      "lib/selenium/webdriver/remote/**/*.rb",
+      "lib/selenium/webdriver/remote.rb"
+  ],
+  resources = [
+    {"//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar": "rb/selenium_server_deploy.jar"}
+  ],
+  deps = [":common"]
+)
+
 ruby_test(name = "chrome",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
@@ -84,7 +95,10 @@ ruby_test(name = "remote-chrome",
     "rb/spec/integration",
     "build/rb/lib"
   ],
-  deps = [":chrome"]
+  deps = [
+    ":chrome",
+    ":remote"
+  ]
 )
 
 ruby_library(name = "edge-html",
@@ -125,7 +139,10 @@ ruby_test(name = "remote-edge",
     "rb/spec/integration",
     "build/rb/lib"
   ],
-  deps = [":edge-chrome"]
+  deps = [
+    ":edge-chrome",
+    ":remote"
+  ]
 )
 
 ruby_library(name = "firefox",
@@ -158,7 +175,10 @@ ruby_test(name = "remote-firefox",
     "rb/spec/integration",
     "build/rb/lib"
   ],
-  deps = [":firefox"]
+  deps = [
+    ":firefox",
+    ":remote"
+  ]
 )
 
 ruby_library(name = "ie",
@@ -191,7 +211,10 @@ ruby_test(name = "remote-ie",
     "rb/spec/integration",
     "build/rb/lib"
   ],
-  deps = [":ie"]
+  deps = [
+    ":ie",
+    ":remote"
+  ]
 )
 
 ruby_library(name = "safari",
@@ -224,7 +247,10 @@ ruby_test(name = "remote-safari",
     "rb/spec/integration",
     "build/rb/lib"
   ],
-  deps = [":safari"]
+  deps = [
+    ":safari",
+    ":remote"
+  ]
 )
 
 ruby_test(name = "safari-preview",
@@ -249,7 +275,10 @@ ruby_test(name = "remote-safari-preview",
     "rb/spec/integration",
     "build/rb/lib"
   ],
-  deps = [":safari"]
+  deps = [
+    ":safari",
+    ":remote"
+  ]
 )
 
 ruby_library(name = "devtools",

@@ -70,14 +70,13 @@ module Selenium
         expect(key_reporter.attribute('value')).to eq('Hello')
       end
 
-      it 'should handle file uploads', except: {browser: %i[safari safari_preview]} do
+      it 'should handle file uploads' do
         driver.navigate.to url_for('formPage.html')
 
         element = driver.find_element(id: 'upload')
         expect(element.attribute('value')).to be_empty
 
-        path = Tempfile.new('file-upload').path
-        path = WebDriver::Platform.windows_path(path) if WebDriver::Platform.windows?
+        path = WebDriver::Platform.windows? ? WebDriver::Platform.windows_path(__FILE__) : __FILE__
 
         element.send_keys path
 
