@@ -6,5 +6,6 @@ exports_files(
     visibility = [
         "//java/client/src/org/openqa/selenium/devtools:__pkg__",
         "//py:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__"
     ],
 )

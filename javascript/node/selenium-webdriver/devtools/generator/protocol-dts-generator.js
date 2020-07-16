@@ -9,9 +9,10 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 exports.__esModule = true;
 var fs = require("fs");
 var path = require("path");
+console.log(process.argv);
 // TODO: @noj validate this via https://github.com/andischerer/typescript-json-typesafe against protocol-schema.d.ts
-var jsProtocol = require('../js_protocol.json');
-var browserProtocol = require('../browser_protocol.json');
+var jsProtocol = JSON.parse(fs.readFileSync(process.argv[3]));
+var browserProtocol = JSON.parse(fs.readFileSync(process.argv[2]));
 var protocolDomains = jsProtocol.domains.concat(browserProtocol.domains);
 var numIndents = 0;
 var emitStr = '';
@@ -330,15 +331,15 @@ var flushEmitToFile = function (path) {
     emitStr = '';
 };
 // Main
-var destProtocolFilePath = process.argv[2];
+var destProtocolFilePath = process.argv[4];
 var protocolModuleName = path.basename(destProtocolFilePath, '.d.js');
 emitModule(protocolModuleName, protocolDomains);
 flushEmitToFile(destProtocolFilePath);
-var destMappingFilePath = process.argv[3];
+var destMappingFilePath = process.argv[5];
 var mappingModuleName = 'ProtocolMapping';
 emitMapping(mappingModuleName, protocolModuleName, protocolDomains);
 flushEmitToFile(destMappingFilePath);
-var destApiFilePath = process.argv[4];
+var destApiFilePath = process.argv[6];
 var apiModuleName = 'ProtocolProxyApi';
 emitApi(apiModuleName, protocolModuleName, protocolDomains);
 flushEmitToFile(destApiFilePath);
