@@ -137,7 +137,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
         span.setStatus(Status.CANCELLED);
         Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
         attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-        span.addEvent("Error while creating session with the driver service. Stopping driver service.", attributeValueMap);
+        span.addEvent(
+            "Error while creating session with the driver service. Stopping driver service.",
+            attributeValueMap);
         service.stop();
         return Optional.empty();
       }

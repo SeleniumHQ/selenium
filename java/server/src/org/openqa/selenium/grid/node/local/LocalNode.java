@@ -182,7 +182,8 @@ public class LocalNode extends Node {
         span.setAttribute("error", true);
         span.setStatus(Status.RESOURCE_EXHAUSTED);
         Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-        attributeValueMap.put("Current session count value", EventAttribute.setValue(getCurrentSessionCount()));
+        attributeValueMap
+            .put("Current session count value", EventAttribute.setValue(getCurrentSessionCount()));
         attributeValueMap.put("Max session count value", EventAttribute.setValue(maxSessionCount));
         span.addEvent("Max session count reached");
         return Optional.empty();

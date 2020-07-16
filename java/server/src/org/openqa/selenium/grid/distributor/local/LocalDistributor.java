@@ -213,14 +213,14 @@ public class LocalDistributor extends Distributor {
       span.setStatus(Status.ABORTED);
       Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
       attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-      span.addEvent("Session not created",attributeValueMap);
+      span.addEvent("Session not created", attributeValueMap);
       throw e;
     } catch (IOException e) {
       span.setAttribute("error", true);
       span.setStatus(Status.UNKNOWN);
       Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
       attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-      span.addEvent("Unknown error in LocalDistributor while creating session",attributeValueMap);
+      span.addEvent("Unknown error in LocalDistributor while creating session", attributeValueMap);
       throw new SessionNotCreatedException(e.getMessage(), e);
     } finally {
       span.close();

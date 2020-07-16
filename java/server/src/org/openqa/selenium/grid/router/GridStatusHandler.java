@@ -101,7 +101,8 @@ class GridStatusHandler implements HttpHandler {
         span.setStatus(Status.CANCELLED);
         Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
         attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-        span.addEvent("Unable to get distributor status due to execution error or timeout", attributeValueMap);
+        span.addEvent("Unable to get distributor status due to execution error or timeout",
+                      attributeValueMap);
 
         return new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
