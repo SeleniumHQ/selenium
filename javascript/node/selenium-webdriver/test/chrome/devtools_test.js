@@ -62,6 +62,24 @@ test.suite(function(env) {
     assert.equal(history.entries[history.currentIndex-1].url, test.Pages.ajaxyPage);
   });
 
+  it('sends Page.enable command using devtools', async function() {
+    const cdpConnection = await driver.createCDPConnection();
+    cdpConnection.execute('Page.enable', "", function(res, err) {
+      assert(!err);
+    });
+  });
+
+  it('sends Network and Page command using devtools', async function() {
+    const cdpConnection = await driver.createCDPConnection();
+    cdpConnection.execute('Network.enable', "", function(res, err) {
+      assert(!err);
+    });
+
+    cdpConnection.execute('Page.navigate', {'url': 'chrome://newtab/'}, function (res, err) {
+      assert(!err);
+    })
+  });
+
   describe('setDownloadPath', function() {
     it('can enable downloads in headless mode', async function() {
       const dir = await io.tmpDir();
