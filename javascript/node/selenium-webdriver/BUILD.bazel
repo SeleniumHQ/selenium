@@ -15,6 +15,7 @@ SRC_FILES = [
     "net/*.js",
     "remote/*.js",
     "testing/*.js",
+    "devtools/*.js"
 ])
 
 pkg_npm(
@@ -68,6 +69,7 @@ jasmine_node_test(
         "@npm//rimraf",
         "@npm//tmp",
         "@npm//sinon",
+        "@npm//ws",
     ],
     local = True,
     templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
