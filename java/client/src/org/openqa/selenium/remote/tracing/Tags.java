@@ -20,9 +20,21 @@ package org.openqa.selenium.remote.tracing;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class Tags {
+
+  private static Map<Integer, Status> httpStatusCodeMap = Map.of(
+      401, Status.UNAUTHENTICATED,
+      404, Status.NOT_FOUND,
+      408, Status.DEADLINE_EXCEEDED,
+      429, Status.RESOURCE_EXHAUSTED,
+      499, Status.CANCELLED,
+      501, Status.UNIMPLEMENTED,
+      503, Status.UNAVAILABLE,
+      504, Status.DEADLINE_EXCEEDED);
 
   private Tags() {
     // Utility class
@@ -38,6 +50,35 @@ public class Tags {
   };
 
   public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
-    span.setAttribute("http.status_code", res.getStatus());
+    int statusCode = res.getStatus();
+    if (res.getTargetHost() != null) {
+      span.setAttribute("http.target_host", res.getTargetHost());
+    }
+    res.getTargetHost();
+    span.setAttribute("http.status_code", statusCode);
+
+    switch (statusCode / 100) {
+      case 1:
+      case 2:
+      case 3:
+        span.setStatus(Status.OK);
+        break;
+      case 4:
+        if (httpStatusCodeMap.containsKey(statusCode)) {
+          span.setStatus(httpStatusCodeMap.get(statusCode));
+        } else {
+          span.setStatus(Status.INVALID_ARGUMENT);
+        }
+        break;
+      case 5:
+        if (httpStatusCodeMap.containsKey(statusCode)) {
+          span.setStatus(httpStatusCodeMap.get(statusCode));
+        } else {
+          span.setStatus(Status.INTERNAL);
+        }
+        break;
+      default:
+        span.setStatus(Status.UNKNOWN);
+    }
   };
 }
