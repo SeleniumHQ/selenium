@@ -56,7 +56,7 @@ public class RequestConverterTest {
     EmbeddedChannel channel = new EmbeddedChannel(converter);
 
     FullHttpRequest httpRequest = new DefaultFullHttpRequest(
-      HttpVersion.HTTP_1_1, HttpMethod.OPTIONS, "/cheese");
+      HttpVersion.HTTP_1_1, HttpMethod.PATCH, "/cheese");
 
     assertThat(channel.writeInbound(httpRequest)).isFalse();
     FullHttpResponse res = channel.readOutbound();

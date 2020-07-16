@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.html5;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.html5.AppCacheStatus.UNCACHED;
@@ -25,6 +24,8 @@ import static org.openqa.selenium.html5.AppCacheStatus.UNCACHED;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
+
+import java.time.Duration;
 
 public class AppCacheTest extends JUnit4TestBase {
 
@@ -36,7 +37,7 @@ public class AppCacheTest extends JUnit4TestBase {
   @Test
   public void testAppCacheStatus() {
     driver.get(pages.html5Page);
-    driver.manage().timeouts().implicitlyWait(2000, MILLISECONDS);
+    driver.manage().timeouts().implicitlyWait(Duration.ofMillis(2000));
 
     AppCacheStatus status = ((ApplicationCache) driver).getStatus();
     while (status == AppCacheStatus.DOWNLOADING) {
