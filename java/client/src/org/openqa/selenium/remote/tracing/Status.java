@@ -30,6 +30,16 @@ public class Status {
   public static final Status NOT_FOUND = new Status(Kind.NOT_FOUND, "");
   public static final Status RESOURCE_EXHAUSTED = new Status(Kind.RESOURCE_EXHAUSTED, "");
   public static final Status UNKNOWN = new Status(Kind.UNKNOWN, "");
+  public static final Status INVALID_ARGUMENT = new Status(Kind.INVALID_ARGUMENT, "");
+  public static final Status DEADLINE_EXCEEDED = new Status(Kind.DEADLINE_EXCEEDED, "");
+  public static final Status ALREADY_EXISTS = new Status(Kind.ALREADY_EXISTS, "");
+  public static final Status PERMISSION_DENIED = new Status(Kind.PERMISSION_DENIED, "");
+  public static final Status OUT_OF_RANGE = new Status(Kind.OUT_OF_RANGE, "");
+  public static final Status UNIMPLEMENTED = new Status(Kind.UNIMPLEMENTED, "");
+  public static final Status INTERNAL = new Status(Kind.INTERNAL, "");
+  public static final Status UNAVAILABLE = new Status(Kind.UNAVAILABLE, "");
+  public static final Status UNAUTHENTICATED = new Status(Kind.UNAUTHENTICATED, "");
+
 
   private Status(Kind kind, String description) {
     this.kind = Require.nonNull("Kind", kind);
@@ -55,6 +65,15 @@ public class Status {
     NOT_FOUND,
     RESOURCE_EXHAUSTED,
     UNKNOWN,
+    INVALID_ARGUMENT,
+    DEADLINE_EXCEEDED,
+    ALREADY_EXISTS,
+    PERMISSION_DENIED,
+    OUT_OF_RANGE,
+    UNIMPLEMENTED,
+    INTERNAL,
+    UNAVAILABLE,
+    UNAUTHENTICATED
   }
 
 }
