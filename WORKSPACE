@@ -108,7 +108,13 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 py_repositories()
 
 # This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_repositories")
+load("@rules_python//python:pip.bzl", "pip_repositories", "pip_import")
+pip_import(
+    name = "dev_requirements",
+    requirements="//py:requirements.txt",
+)
+load("@dev_requirements//:requirements.bzl", "pip_install")
+pip_install()
 
 pip_repositories()
 
