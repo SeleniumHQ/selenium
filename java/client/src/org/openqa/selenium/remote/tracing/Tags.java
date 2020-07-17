@@ -20,7 +20,8 @@ package org.openqa.selenium.remote.tracing;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.HashMap;
+import io.netty.handler.codec.http.HttpStatusClass;
+
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -57,20 +58,22 @@ public class Tags {
     res.getTargetHost();
     span.setAttribute("http.status_code", statusCode);
 
-    switch (statusCode / 100) {
-      case 1:
-      case 2:
-      case 3:
+    HttpStatusClass statusClass = HttpStatusClass.valueOf(statusCode);
+
+    switch (statusClass) {
+      case INFORMATIONAL:
+      case SUCCESS:
+      case REDIRECTION:
         span.setStatus(Status.OK);
         break;
-      case 4:
+      case CLIENT_ERROR:
         if (httpStatusCodeMap.containsKey(statusCode)) {
           span.setStatus(httpStatusCodeMap.get(statusCode));
         } else {
           span.setStatus(Status.INVALID_ARGUMENT);
         }
         break;
-      case 5:
+      case SERVER_ERROR:
         if (httpStatusCodeMap.containsKey(statusCode)) {
           span.setStatus(httpStatusCodeMap.get(statusCode));
         } else {
