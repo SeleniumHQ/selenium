@@ -287,7 +287,6 @@ namespace OpenQA.Selenium.Remote
                  fileName = this.UploadFile(fileName));
                }                    
             }
-            text = String.Join("\n",fileNames);
             // N.B. The Java remote server expects a CharSequence as the value input to
             // SendKeys. In JSON, these are serialized as an array of strings, with a
             // single character to each element of the array. Thus, we must use ToCharArray()
