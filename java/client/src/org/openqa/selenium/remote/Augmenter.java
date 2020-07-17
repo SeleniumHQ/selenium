@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static net.bytebuddy.matcher.ElementMatchers.anyOf;
@@ -63,15 +64,24 @@ public class Augmenter {
   private final Set<Augmentation<?>> augmentations;
 
   public Augmenter() {
-    this.augmentations = Collections.emptySet();
-    addDriverAugmentation(new AddApplicationCache());
-    addDriverAugmentation(new AddLocationContext());
-    addDriverAugmentation(new AddNetworkConnection());
-    addDriverAugmentation(new AddRotatable());
-    addDriverAugmentation(new AddWebStorage());
+    augmentations = new HashSet<>();
+    Stream.of(
+        new AddApplicationCache(),
+        new AddLocationContext(),
+        new AddNetworkConnection(),
+        new AddRotatable(),
+        new AddWebStorage()
+    ).forEach(provider -> augmentations.add(createAugmentation(provider)));
 
     StreamSupport.stream(ServiceLoader.load(AugmenterProvider.class).spliterator(), false)
-      .forEach(this::addDriverAugmentation);
+        .forEach(provider -> augmentations.add(createAugmentation(provider)));
+  }
+
+  private static <X> Augmentation<X> createAugmentation(AugmenterProvider<X> provider) {
+    Require.nonNull("Interface provider", provider);
+    return new Augmentation<>(provider.isApplicable(),
+                              provider.getDescribedInterface(),
+                              provider::getImplementation);
   }
 
   private Augmenter(Set<Augmentation<?>> augmentations, Augmentation<?> toAdd) {
