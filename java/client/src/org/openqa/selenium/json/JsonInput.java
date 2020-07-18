@@ -21,6 +21,7 @@ import org.openqa.selenium.internal.Require;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -32,7 +33,7 @@ import java.util.function.Function;
 
 public class JsonInput implements Closeable {
 
-  private final Readable source;
+  private final Reader source;
   private volatile boolean readPerformed = false;
   private JsonTypeCoercer coercer;
   private PropertySetting setter;
@@ -41,7 +42,7 @@ public class JsonInput implements Closeable {
   // figuring out whether we're expecting a NAME properly.
   private Deque<Container> stack = new ArrayDeque<>();
 
-  JsonInput(Readable source, JsonTypeCoercer coercer, PropertySetting setter) {
+  JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
     this.source = Require.nonNull("Source", source);
     this.coercer = Require.nonNull("Coercer", coercer);
     this.input = new Input(source);
@@ -77,12 +78,10 @@ public class JsonInput implements Closeable {
 
   @Override
   public void close() {
-    if (source instanceof Closeable) {
-      try {
-        ((Closeable) source).close();
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
+    try {
+      source.close();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 
