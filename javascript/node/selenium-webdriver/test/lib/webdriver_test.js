@@ -24,19 +24,14 @@ const error = require('../../lib/error');
 const logging = require('../../lib/logging');
 const promise = require('../../lib/promise');
 const until = require('../../lib/until');
-const {Alert, AlertPromise, WebDriver, WebElement, WebElementPromise} =
-    require('../../lib/webdriver');
-const {Button, Key} = require('../../lib/input');
+const {Alert, AlertPromise, WebDriver, WebElement, WebElementPromise} = require('../../lib/webdriver');
 const {By} = require('../../lib/by');
 const {Capabilities} = require('../../lib/capabilities');
-const {Executor, Name} = require('../../lib/command');
+const {Name} = require('../../lib/command');
 const {Session} = require('../../lib/session');
-
 const assert = require('assert');
-const sinon = require('sinon');
 
 const CName = Name;
-
 const SESSION_ID = 'test_session_id';
 const fail = (msg) => assert.fail(msg);
 

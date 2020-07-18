@@ -18,16 +18,12 @@
 'use strict';
 
 const assert = require('assert');
-const http = require('http');
 const url = require('url');
-
-const firefox = require('../firefox');
 const proxy = require('../proxy');
 const test = require('../lib/test');
 const {Browser} = require('..');
 const {Server} = require('../lib/test/httpserver');
 
-const Pages = test.Pages;
 
 test.suite(function(env) {
   function writeResponse(res, body, encoding, contentType) {

@@ -28,9 +28,7 @@ module Selenium
 
       let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
 
-      # Safari is using GET instead of POST (W3C vs JWP)
-      # Server - https://github.com/SeleniumHQ/selenium/issues/1795
-      it 'should find the active element', except: {driver: :remote, browser: :edge} do
+      it 'should find the active element' do
         driver.navigate.to url_for('xhtmlTest.html')
         expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
       end
@@ -127,7 +125,8 @@ module Selenium
         end
       end
 
-      context 'with more than two windows', except: {browser: %i[safari safari_preview]} do
+      context 'with more than two windows', except: [{browser: %i[safari safari_preview]},
+                                                     {driver: :remote, browser: :ie}] do
         after do
           # We need to reset driver because browsers behave differently
           # when trying to open the same blank target in a new window.

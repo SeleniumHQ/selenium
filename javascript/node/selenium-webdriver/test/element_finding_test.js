@@ -18,17 +18,15 @@
 'use strict';
 
 const assert = require('assert');
-const {fail} = require('assert');
-
 const promise = require('../lib/promise');
-const {Browser, By, RelativeBy, error, withTagName, until} = require('..');
+const {Browser, By, error, withTagName, until} = require('..');
 const {Pages, ignore, suite, whereIs} = require('../lib/test');
 
 
 suite(function(env) {
   const browsers = (...args) => env.browsers(...args);
 
-  var driver;
+  let driver;
 
   before(async function() {
     driver = await env.builder().build();
@@ -56,7 +54,7 @@ suite(function(env) {
       it('should fail if ID not present on page', async function() {
         await driver.get(Pages.formPage);
         return driver.findElement(By.id('nonExistantButton')).
-            then(fail, function(e) {
+            then(assert.fail, function(e) {
               assert.ok(e instanceof error.NoSuchElementError);
             });
       });
@@ -176,7 +174,7 @@ suite(function(env) {
             // Pass if this does not return an error.
           });
 
-      it('shoudl be able to find hidden elements by name', async function() {
+      it('should be able to find hidden elements by name', async function() {
         await driver.get(Pages.formPage);
         await driver.findElement(By.name('hidden'));
         // Pass if this does not return an error.
@@ -225,7 +223,7 @@ suite(function(env) {
       it('should fail if queried name only partially matches', async function() {
         await driver.get(Pages.xhtmlTestPage);
         return driver.findElement(By.className('nameB')).
-            then(fail, function(e) {
+            then(assert.fail, function(e) {
               assert.ok(e instanceof error.NoSuchElementError);
             });
       });
@@ -237,10 +235,10 @@ suite(function(env) {
         await driver.manage().setTimeouts({implicit: TIMEOUT_IN_MS});
         await driver.get(Pages.formPage);
 
-        var start = new Date();
+        let start = new Date();
         return driver.findElement(By.id('nonExistantButton')).
-            then(fail, function(e) {
-              var end = new Date();
+            then(assert.fail, function(e) {
+              let end = new Date();
               assert.ok(e instanceof error.NoSuchElementError);
 
               let elapsed = end - start;
@@ -406,7 +404,7 @@ suite(function(env) {
         });
 
         return link.then(
-            () => fail('Should have failed'),
+            () => assert.fail('Should have failed'),
             (e) => assert.ok(e instanceof TypeError));
       });
     });
@@ -417,9 +415,10 @@ suite(function(env) {
         let below = await driver.findElement(By.id("below"));
         let elements = await driver.findElements(withTagName("p").above(below));
         let ids = [];
-        elements.forEach(element => {
-          ids.push(element.getAttribute("id"));
-        });
+        assert.equal(elements.length, 2);
+        for (let i = 0; i < elements.length; i++) {
+          ids.push(await elements[i].getAttribute("id"));
+        }
         assert.deepEqual(ids, ["above", "mid"]);
       });
 
@@ -427,13 +426,13 @@ suite(function(env) {
         await driver.get(Pages.relativeLocators);
 
         let elements = await driver.findElements(withTagName("td").
-                                                 above(await driver.findElement(By.id("center")).
-                                                 toRightOf(await driver.findElement(By.id('second')))));
+                                                 above(By.id("center")).
+                                                 toRightOf(By.id('second')));
         let ids = [];
-        elements.forEach(element => {
-          ids.push(element.getAttribute("id"));
-        });
-        assert.notEqual(elements.indexOf('third'), -1);
+        for (let i = 0; i < elements.length; i++) {
+          ids.push(await elements[i].getAttribute("id"));
+        }
+        assert.notEqual(ids.indexOf('third'), -1, `Elements are ${ids}`);
       });
     });
 

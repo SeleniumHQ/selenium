@@ -82,7 +82,7 @@ module Selenium
           end
 
           def edge(opts = {})
-            edge_html(opts)
+            edge_chrome(opts)
           end
 
           def edge_html(opts = {})
@@ -112,8 +112,10 @@ module Selenium
           alias_method :ff, :firefox
 
           def safari(opts = {})
+            browser = Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari'
+
             new({
-              browser_name: 'safari',
+              browser_name: browser,
               platform_name: :mac
             }.merge(opts))
           end

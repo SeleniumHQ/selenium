@@ -18,11 +18,8 @@
 'use strict';
 
 const assert = require('assert');
-
 const chrome = require('../../chrome');
 const test = require('../../lib/test');
-const webdriver = require('../..');
-
 
 test.suite(function(env) {
   describe('chromedriver', function() {

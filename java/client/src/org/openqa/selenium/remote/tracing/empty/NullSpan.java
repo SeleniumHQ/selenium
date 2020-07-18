@@ -18,8 +18,11 @@
 package org.openqa.selenium.remote.tracing.empty;
 
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
+
+import java.util.Map;
 
 public class NullSpan extends NullContext implements Span {
 
@@ -46,6 +49,19 @@ public class NullSpan extends NullContext implements Span {
   public Span setAttribute(String key, String value) {
     Require.nonNull("Key", key);
     Require.nonNull("Value", value);
+    return this;
+  }
+
+  @Override
+  public Span addEvent(String name){
+    Require.nonNull("Name", name);
+    return this;
+  }
+
+  @Override
+  public Span addEvent(String name, Map<String, EventAttributeValue> attributeMap) {
+    Require.nonNull("Name", name);
+    Require.nonNull("Event Attribute Map", attributeMap);
     return this;
   }
 

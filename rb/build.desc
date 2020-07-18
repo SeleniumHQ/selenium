@@ -4,13 +4,11 @@ rubygem(
     "//rb:chrome",
     "//rb:common",
     "//rb:devtools",
-    "//rb:edge",
     "//rb:edge-chrome",
+    "//rb:edge-html",
     "//rb:firefox",
     "//rb:ie",
-    "//rb:remote",
     "//rb:safari",
-    "//rb:support"
   ]
 )
 
@@ -21,7 +19,10 @@ rubydocs(
   ],
   readme = "README.md",
   output_dir = "docs/api/rb",
-  deps = ["//rb:gem:build", "//rb:bundle"]
+  deps = [
+    "//rb:gem:build",
+    "//rb:bundle"
+  ]
 )
 
 ruby_library(name = "common",
@@ -50,17 +51,21 @@ ruby_library(name = "common",
   ]
 )
 
-ruby_library(name = "support",
-  srcs = [
-    "lib/selenium/webdriver/support/**/*.rb",
-    "lib/selenium/webdriver/support.rb"
-  ]
-)
-
 ruby_library(name = "chrome",
   srcs = [
     "lib/selenium/webdriver/chrome/**/*.rb",
     "lib/selenium/webdriver/chrome.rb"
+  ],
+  deps = [":common"]
+)
+
+ruby_library(name = "remote",
+  srcs = [
+      "lib/selenium/webdriver/remote/**/*.rb",
+      "lib/selenium/webdriver/remote.rb"
+  ],
+  resources = [
+    {"//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar": "rb/selenium_server_deploy.jar"}
   ],
   deps = [":common"]
 )
@@ -70,11 +75,33 @@ ruby_test(name = "chrome",
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/chrome/**/*_spec.rb"
   ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":chrome", ":devtools"]
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [
+    ":chrome",
+    ":devtools"
+  ]
 )
 
-ruby_library(name = "edge",
+ruby_test(name = "remote-chrome",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/chrome/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [
+    ":chrome",
+    ":remote"
+  ]
+)
+
+ruby_library(name = "edge-html",
   srcs = [
     "lib/selenium/webdriver/edge_html/**/*.rb",
     "lib/selenium/webdriver/edge.rb"
@@ -82,30 +109,40 @@ ruby_library(name = "edge",
   deps = [":common"]
 )
 
-ruby_test(name = "edge",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge_html/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":edge" ]
-)
-
 ruby_library(name = "edge-chrome",
   srcs = [
     "lib/selenium/webdriver/edge_chrome/**/*.rb",
     "lib/selenium/webdriver/edge.rb"
   ],
-  deps = [":common"]
+  deps = [":chrome"]
 )
 
-ruby_test(name = "edge-chrome",
+ruby_test(name = "edge",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge_chrome/**/*_spec.rb"
+    "spec/integration/selenium/webdriver/edge/**/*_spec.rb"
   ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":edge-chrome", ":chrome"]
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [":edge-chrome"]
+)
+
+ruby_test(name = "remote-edge",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/edge/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [
+    ":edge-chrome",
+    ":remote"
+  ]
 )
 
 ruby_library(name = "firefox",
@@ -121,8 +158,27 @@ ruby_test(name = "firefox",
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
   ],
-  include = ["rb/spec/integration", "build/rb/lib"],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
   deps = [":firefox"]
+)
+
+ruby_test(name = "remote-firefox",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [
+    ":firefox",
+    ":remote"
+  ]
 )
 
 ruby_library(name = "ie",
@@ -138,76 +194,11 @@ ruby_test(name = "ie",
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/ie/**/*_spec.rb"
   ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [ ":ie" ]
-)
-
-ruby_library(name = "remote",
-  srcs = [
-    "lib/selenium/webdriver/remote/**/*.rb",
-    "lib/selenium/webdriver/remote.rb"
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
   ],
-  deps = [":common"]
-)
-
-ruby_test(name = "remote",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":remote"]
-)
-
-ruby_test(name = "remote-chrome",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/chrome/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":chrome"]
-)
-
-ruby_test(name = "remote-firefox",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":firefox"
-  ]
-)
-
-ruby_test(name = "remote-safari",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":safari"
-  ]
-)
-
-ruby_test(name = "remote-safari-preview",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":safari"
-  ]
+  deps = [":ie"]
 )
 
 ruby_test(name = "remote-ie",
@@ -216,23 +207,13 @@ ruby_test(name = "remote-ie",
     "spec/integration/selenium/webdriver/ie/**/*_spec.rb",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":ie"
-    ]
-)
-
-ruby_test(name = "remote-edge",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge_html/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
   ],
-  include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    ":remote",
-    ":edge"
+    ":ie",
+    ":remote"
   ]
 )
 
@@ -249,8 +230,27 @@ ruby_test(name = "safari",
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
   ],
-  include = ["rb/spec/integration", "build/rb/lib"],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
   deps = [":safari"]
+)
+
+ruby_test(name = "remote-safari",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
+  ],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [
+    ":safari",
+    ":remote"
+  ]
 )
 
 ruby_test(name = "safari-preview",
@@ -258,8 +258,27 @@ ruby_test(name = "safari-preview",
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
   ],
-  include = ["rb/spec/integration", "build/rb/lib"],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
   deps = [":safari"]
+)
+
+ruby_test(name = "remote-safari-preview",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
+  ],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [
+    ":safari",
+    ":remote"
+  ]
 )
 
 ruby_library(name = "devtools",
@@ -278,16 +297,17 @@ ruby_test(name = "unit",
     "spec/unit/selenium/webdriver/**/*_spec.rb",
     "spec/unit/selenium/*_spec.rb",
   ],
-  include = ["rb/spec/unit", "build/rb/lib"],
+  include = [
+    "rb/spec/unit",
+    "build/rb/lib"
+  ],
   deps = [
     ":chrome",
-    ":common",
-    ":edge",
+    ":edge-html",
+    ":edge-chrome",
     ":firefox",
     ":ie",
-    ":remote",
     ":safari",
-    ":support"
   ]
 )
 

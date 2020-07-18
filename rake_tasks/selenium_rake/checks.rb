@@ -15,6 +15,10 @@ module SeleniumRake
         (RbConfig::CONFIG['host_os'] =~ /darwin|mac os/) != nil
       end
 
+      def linux?
+        !windows? && !mac?
+      end
+
       def dir_separator
         File::ALT_SEPARATOR || File::SEPARATOR
       end

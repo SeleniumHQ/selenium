@@ -19,8 +19,7 @@
 
 var assert = require('assert'),
     fs = require('fs'),
-    path = require('path'),
-    tmp = require('tmp');
+    path = require('path');
 
 var io = require('../../io');
 

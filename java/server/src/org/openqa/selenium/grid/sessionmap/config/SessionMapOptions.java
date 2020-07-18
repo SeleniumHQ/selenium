@@ -32,6 +32,7 @@ public class SessionMapOptions {
 
   private static final Logger LOG = Logger.getLogger(SessionMapOptions.class.getName());
   private static final String DEFAULT_SESSION_MAP = "org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap";
+  private static final String DEFAULT_SESSION_MAP_SCHEME = "http";
   private final Config config;
 
   public SessionMapOptions(Config config) {
@@ -39,6 +40,9 @@ public class SessionMapOptions {
   }
 
   public URI getSessionMapUri() {
+
+    String scheme = config.get(SESSIONS_SECTION, "scheme").orElse(DEFAULT_SESSION_MAP_SCHEME);
+
     Optional<URI> host = config.get(SESSIONS_SECTION, "host").map(str -> {
       try {
         return new URI(str);
@@ -60,7 +64,7 @@ public class SessionMapOptions {
 
     try {
       return new URI(
-          "http",
+          scheme,
           null,
           hostname.get(),
           port.get(),

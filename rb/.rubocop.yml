@@ -46,8 +46,9 @@ Metrics/AbcSize:
     - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/BlockLength:
+  Max: 18
   Exclude:
-    - "**/*_spec.rb"
+    - 'spec/**/*.rb'
     - 'selenium-webdriver.gemspec'
 
 Metrics/ClassLength:
@@ -171,3 +172,7 @@ Style/SlicingWithRange:
 
 Style/StringLiterals:
   Enabled: false
+
+Style/SignalException:
+  Exclude:
+    - 'spec/integration/selenium/webdriver/guard_spec.rb'

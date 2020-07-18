@@ -49,6 +49,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -64,6 +65,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
 import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
@@ -83,7 +85,7 @@ public class Standalone extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE);
+    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE);
   }
 
   @Override
@@ -138,7 +140,10 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(sessions);
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     combinedHandler.addHandler(distributor);
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+
+    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+      .with(networkOptions.getSpecComplianceChecks());
+
     HttpHandler readinessCheck = req -> {
       boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
       return new HttpResponse()
@@ -151,6 +156,7 @@ public class Standalone extends TemplateGridCommand {
     HttpHandler httpHandler = combine(
       router,
       Route.prefix("/wd/hub").to(combine(router)),
+      Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 

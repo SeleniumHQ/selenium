@@ -1,5 +1,6 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "pkg_npm")
 load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
+load("//:copy_file.bzl", "copy_file")
 
 SRC_FILES = [
     "CHANGES.md",
@@ -14,6 +15,7 @@ SRC_FILES = [
     "net/*.js",
     "remote/*.js",
     "testing/*.js",
+    "devtools/*.js"
 ])
 
 pkg_npm(
@@ -67,6 +69,7 @@ jasmine_node_test(
         "@npm//rimraf",
         "@npm//tmp",
         "@npm//sinon",
+        "@npm//ws",
     ],
     local = True,
     templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
@@ -87,4 +90,42 @@ genrule(
         "NOTICE",
     ],
     cmd = "cp $(locations //:license) $(@D)",
+)
+
+nodejs_binary(
+    name = "cdp-srcs-generator",
+    entry_point = "devtools/generator/protocol-dts-generator.js",
+    data = [
+       ":browser_protocol",
+       ":js_protocol"
+    ],
+)
+
+copy_file(
+    name = "browser_protocol",
+    src = "//common/devtools:browser_protocol.json",
+    out = "devtools/generator/browser_protocol.json",
+)
+
+copy_file(
+    name = "js_protocol",
+    src = "//common/devtools:js_protocol.json",
+    out = "devtools/generator/js_protocol.json",
+)
+
+genrule(
+    name="create-cdp-srcs",
+    srcs = [
+       ":browser_protocol",
+       ":js_protocol",
+    ],
+    outs=[
+      "devtools/generator/protocol.d.js",
+      "devtools/generator/protocol-mapping.d.js",
+      "devtools/generator/protocol-proxy-api.d.js",
+    ],
+    cmd = "$(location :cdp-srcs-generator) $(location :browser_protocol) $(location :js_protocol) $(OUTS)",
+    tools=[
+      ":cdp-srcs-generator"
+    ],
 )

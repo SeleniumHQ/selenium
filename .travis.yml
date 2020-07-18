@@ -83,29 +83,27 @@ matrix:
       <<: *chrome
     - env: TASK=javadocs
       <<: *java
-    - env: BZL="test //py:unit"
-      <<: *python
     - env: TOXENV=flake8
       <<: *python
-      python: 3.6
+      python: 3.7
     - env: TOXENV=docs
       <<: *python
-      python: 3.6
+      python: 3.7
     - env: BZL="test //py:unit"
       <<: *python
-      python: 3.6
+      python: 3.7
     - env: CHROME=1 BZL="test //py:test-chrome"
       <<: *python
       <<: *chrome
-      python: 3.6
+      python: 3.7
     - env: MARIONETTE=1 BZL="test --jobs 1 //py:test-remote"
       <<: *python
       <<: *firefox-nightly
-      python: 3.6
+      python: 3.7
     - env: MARIONETTE=1 BZL="test //py:test-firefox"
       <<: *python
       <<: *firefox-nightly
-      python: 3.6
+      python: 3.7
     - env: TASK=//rb:unit-test
       <<: *ruby
     - env: TASK=//rb:unit-test

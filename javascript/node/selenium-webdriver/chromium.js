@@ -83,6 +83,8 @@ const error = require('./lib/error');
 const promise = require('./lib/promise');
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
+const WebSocket = require('ws');
+const cdp = require('./devtools/CDPConnection');
 const remote = require('./remote');
 
 
@@ -95,6 +97,7 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  SET_PERMISSION: 'setPermission',
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
@@ -138,6 +141,10 @@ function configureExecutor(executor, vendorPrefix) {
       Command.SEND_DEVTOOLS_COMMAND,
       'POST',
       '/session/:sessionId/chromium/send_command');
+  executor.defineCommand(
+      Command.SET_PERMISSION,
+      'POST',
+      '/session/:sessionId/permissions');
   executor.defineCommand(
       Command.GET_CAST_SINKS,
       'GET',
@@ -663,6 +670,57 @@ class Driver extends webdriver.WebDriver {
         new command.Command(Command.SEND_DEVTOOLS_COMMAND)
             .setParameter('cmd', cmd)
             .setParameter('params', params));
+  }
+
+  async createCDPConnection() {
+    const caps = await this.getCapabilities()
+    const seOptions = caps['map_'].get('se:options') || new Map();
+    const vendorInfo = caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') || new Map();
+    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress'];
+    this._wsUrl = await this.getWsUrl(debuggerUrl);
+    return new Promise((resolve, reject) => {
+      try {
+        this._wsConnection = new WebSocket(this._wsUrl);
+      } catch (err) {
+        reject(err);
+        return
+      }
+
+      this._wsConnection.on('open', () => {
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection);
+        resolve(this._cdpConnection);
+      })
+
+      this._wsConnection.on('error', (error) => {
+        reject(error);
+      })
+    });
+  }
+
+  async getWsUrl(debuggerAddress) {
+    let request = new http.Request('GET', '/json/version');
+    let client = new http.HttpClient("http://" + debuggerAddress);
+    let url;
+    let response = await client.send(request);
+    url = JSON.parse(response.body)['webSocketDebuggerUrl'];
+    return url;
+  }
+  /**
+   * Set a permission state to the given value.
+   *
+   * @param {string} name A name of the permission to update.
+   * @param {('granted'|'denied'|'prompt')} state State to set permission to.
+   * @returns {!Promise<Object>} A promise that will be resolved when the
+   *     command has finished.
+   * @see <https://w3c.github.io/permissions/#permission-registry> for valid
+   *     names
+   */
+  setPermission(name, state) {
+    return this.execute(
+      new command.Command(Command.SET_PERMISSION)
+        .setParameter('descriptor', { name })
+        .setParameter('state', state),
+    );
   }
 
   /**

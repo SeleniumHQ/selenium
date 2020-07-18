@@ -232,7 +232,7 @@ module Selenium
                                                'windowTypes' => %w[normal devtools]})
           end
         end
-      end # Options
+      end
     end # Chrome
   end # WebDriver
 end # Selenium

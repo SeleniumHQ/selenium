@@ -270,7 +270,7 @@ namespace OpenQA.Selenium
             IWebElement oranges = options[1];
 
             Assert.That(apples.Selected, Is.True, "Apples should be selected");
-            Assert.That(oranges.Selected, Is.False, "Oranges shoudl be selected");
+            Assert.That(oranges.Selected, Is.False, "Oranges should be selected");
 
             oranges.Click();
             Assert.That(apples.Selected, Is.False, "Apples should not be selected");

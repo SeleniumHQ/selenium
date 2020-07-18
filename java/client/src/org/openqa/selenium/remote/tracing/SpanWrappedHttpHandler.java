@@ -23,6 +23,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -79,7 +81,10 @@ public class SpanWrappedHttpHandler implements HttpHandler {
       return res;
     } catch (Throwable t) {
       span.setAttribute("error", true);
-      span.setStatus(Status.UNKNOWN.withDescription(t.getMessage()));
+      span.setStatus(Status.UNKNOWN);
+      Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+      attributeValueMap.put("Error message", EventAttribute.setValue(t.getMessage()));
+      span.addEvent("Error while executing server request", attributeValueMap);
       LOG.log(Level.WARNING, "Unable to execute request: " + t.getMessage(), t);
       throw t;
     } finally {

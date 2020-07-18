@@ -956,17 +956,17 @@ class WebDriver {
 
   /** @override */
   async findElements(locator) {
-    let cmd;
+    let cmd = null;
     if (locator instanceof RelativeBy) {
-       cmd = new command.Command(command.Name.FIND_ELEMENTS_RELATIVE).
-          setParameters('args', locator.marshall());
+      cmd = new command.Command(command.Name.FIND_ELEMENTS_RELATIVE).
+          setParameter('args', locator.marshall());
     } else {
       locator = by.checkedLocator(locator);
     }
 
     if (typeof locator === 'function') {
       return this.findElementsInternal_(locator, this);
-    } else {
+    } else if (cmd === null){
       cmd = new command.Command(command.Name.FIND_ELEMENTS).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
