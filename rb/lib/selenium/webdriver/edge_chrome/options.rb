@@ -23,7 +23,8 @@ module Selenium
   module WebDriver
     module EdgeChrome
       class Options < Selenium::WebDriver::Chrome::Options
-        BROWSER = 'MSEdge'
+        KEY = 'ms:edgeOptions'
+        BROWSER = 'MicrosoftEdge'
 
         private
 

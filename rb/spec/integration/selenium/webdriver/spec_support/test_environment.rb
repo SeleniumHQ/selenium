@@ -191,7 +191,9 @@ module Selenium
         end
 
         def create_remote_driver(opt = {})
-          opt[:desired_capabilities] = remote_capabilities
+          options = opt.delete(:capabilities)
+          opt[:capabilities] = [remote_capabilities]
+          opt[:capabilities] << options if options
           opt[:url] = ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
           opt[:http_client] ||= WebDriver::Remote::Http::Default.new
 
@@ -204,7 +206,7 @@ module Selenium
         end
 
         def create_ie_driver(opt = {})
-          opt[:options] = WebDriver::IE::Options.new(require_window_focus: true)
+          opt[:capabilities] = WebDriver::IE::Options.new(require_window_focus: true)
           WebDriver::Driver.for :ie, opt
         end
 
@@ -218,9 +220,9 @@ module Selenium
           WebDriver::Driver.for :safari, opt
         end
 
-        def create_edge_chrome_driver(opt = {})
+        def create_edge_driver(opt = {})
           WebDriver::EdgeChrome.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
-          WebDriver::Driver.for :edge_chrome, opt
+          WebDriver::Driver.for :edge, opt
         end
       end
     end # SpecSupport

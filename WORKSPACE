@@ -93,6 +93,7 @@ http_archive(
     name = "rules_python",
     patches = [
         "//py:rules_python_any_version_wheel.patch",
+        "//py:rules_python_wheel_directory_check.patch",
     ],
     sha256 = "ddb2e1298684defde2f5e466d96e572119f30f9e2a901a7a81474fd4fa9f6d52",
     strip_prefix = "rules_python-dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f",

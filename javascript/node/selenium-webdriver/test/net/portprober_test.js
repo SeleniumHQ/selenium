@@ -19,7 +19,6 @@
 
 const assert = require('assert');
 const net = require('net');
-
 const portprober = require('../../net/portprober');
 
 describe('isFree', function() {

@@ -21,7 +21,7 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module Chrome
+    module EdgeChrome
       describe Options do
         subject(:options) { Options.new }
 
@@ -68,7 +68,7 @@ module Selenium
             expect(opts.minidump_path).to eq('linux/only')
             expect(opts.perf_logging_prefs[:enable_network]).to eq(true)
             expect(opts.window_types).to eq(%w[normal devtools])
-            expect(opts.browser_name).to eq('chrome')
+            expect(opts.browser_name).to eq('MicrosoftEdge')
             expect(opts.browser_version).to eq('75')
             expect(opts.platform_name).to eq('win10')
             expect(opts.accept_insecure_certs).to eq(false)
@@ -165,12 +165,12 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {})
+            expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "ms:edgeOptions" => {})
           end
 
           it 'returns added option' do
             options.add_option(:foo, 'bar')
-            expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {"foo" => "bar"})
+            expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "ms:edgeOptions" => {"foo" => "bar"})
           end
 
           it 'returns a JSON hash' do
@@ -204,8 +204,8 @@ module Selenium
                                perf_logging_prefs: {'enable_network': true},
                                window_types: %w[normal devtools])
 
-            key = 'goog:chromeOptions'
-            expect(opts.as_json).to eq('browserName' => 'chrome',
+            key = 'ms:edgeOptions'
+            expect(opts.as_json).to eq('browserName' => 'MicrosoftEdge',
                                        'browserVersion' => '75',
                                        'platformName' => 'win10',
                                        'acceptInsecureCerts' => false,
@@ -220,7 +220,10 @@ module Selenium
                                                'prefs' => {'foo' => 'bar',
                                                            'key_that_should_not_be_camelcased' => 'baz'},
                                                'binary' => '/foo/bar',
-                                               'extensions' => %w[encoded_foo encoded_bar encoded_foobar],
+                                               # TODO: verify this is correct behavior;
+                                               # I would expect extensions to come back encoded
+                                               'extensions' => %w[foo.crx bar.crx],
+                                               'encodedExtensions' => %w[encoded_foobar],
                                                'foo' => 'bar',
                                                'mobileEmulation' => {'deviceName' => 'mine'},
                                                'localState' => {'foo' => 'bar'},
@@ -233,6 +236,6 @@ module Selenium
           end
         end
       end
-    end # Chrome
+    end # EdgeChrome
   end # WebDriver
 end # Selenium

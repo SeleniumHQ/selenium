@@ -20,7 +20,7 @@
 var assert = require('assert'),
     url = require('url');
 
-var {Pages, ignore, suite} = require('../lib/test'),
+var {ignore, suite} = require('../lib/test'),
     fileserver = require('../lib/test/fileserver'),
     {Browser} = require('..');
 

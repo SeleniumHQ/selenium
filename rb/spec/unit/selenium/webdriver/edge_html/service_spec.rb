@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     describe Service do
       describe '#new' do
-        let(:service_path) { "/path/to/#{Edge::Service::EXECUTABLE}" }
+        let(:service_path) { "/path/to/#{EdgeHtml::Service::EXECUTABLE}" }
 
         before do
           allow(Platform).to receive(:assert_executable).and_return(true)
@@ -32,10 +32,10 @@ module Selenium
         it 'uses default path and port' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.edge
+          service = Service.edge_html
 
-          expect(service.executable_path).to include Edge::Service::EXECUTABLE
-          expected_port = Edge::Service::DEFAULT_PORT
+          expect(service.executable_path).to include EdgeHtml::Service::EXECUTABLE
+          expected_port = EdgeHtml::Service::DEFAULT_PORT
           expect(service.port).to eq expected_port
           expect(service.host).to eq Platform.localhost
         end
@@ -44,7 +44,7 @@ module Selenium
           path = 'foo'
           port = 5678
 
-          service = Service.edge(path: path, port: port)
+          service = Service.edge_html(path: path, port: port)
 
           expect(service.executable_path).to eq path
           expect(service.port).to eq port
@@ -53,9 +53,9 @@ module Selenium
 
         it 'allows #driver_path= with String value' do
           path = '/path/to/driver'
-          Edge::Service.driver_path = path
+          EdgeHtml::Service.driver_path = path
 
-          service = Service.edge
+          service = Service.edge_html
 
           expect(service.executable_path).to eq path
         end
@@ -63,24 +63,24 @@ module Selenium
         it 'allows #driver_path= with Proc value' do
           path = '/path/to/driver'
           proc = proc { path }
-          Edge::Service.driver_path = proc
+          EdgeHtml::Service.driver_path = proc
 
-          service = Service.edge
+          service = Service.edge_html
 
           expect(service.executable_path).to eq path
         end
 
-        it 'accepts Edge#driver_path= but throws deprecation notice' do
+        it 'accepts EdgeHtml#driver_path= but throws deprecation notice' do
           path = '/path/to/driver'
           expect {
-            Selenium::WebDriver::Edge.driver_path = path
+            Selenium::WebDriver::EdgeHtml.driver_path = path
           }.to have_deprecated(:driver_path)
 
           expect {
-            expect(Selenium::WebDriver::Edge.driver_path).to eq path
+            expect(Selenium::WebDriver::EdgeHtml.driver_path).to eq path
           }.to have_deprecated(:driver_path)
 
-          service = Service.edge
+          service = Service.edge_html
 
           expect(service.executable_path).to eq path
         end
@@ -88,7 +88,7 @@ module Selenium
         it 'does not create args by default' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.edge
+          service = Service.edge_html
 
           expect(service.extra_args).to be_empty
         end
@@ -96,7 +96,7 @@ module Selenium
         it 'uses provided args' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.edge(args: ['--foo', '--bar'])
+          service = Service.edge_html(args: ['--foo', '--bar'])
 
           expect(service.extra_args).to eq ['--foo', '--bar']
         end
@@ -105,15 +105,15 @@ module Selenium
         it 'uses args when passed in as a Hash' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.edge(args: {host: 'myhost',
-                                        silent: true})
+          service = Service.edge_html(args: {host: 'myhost',
+                                             silent: true})
 
           expect(service.extra_args).to eq ['--host=myhost', '--silent']
         end
       end
 
       context 'when initializing driver' do
-        let(:driver) { Edge::Driver }
+        let(:driver) { EdgeHtml::Driver }
         let(:service) { instance_double(Service, launch: service_manager) }
         let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
         let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }

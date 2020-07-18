@@ -18,7 +18,6 @@
 'use strict';
 
 const assert = require('assert');
-
 const {By} = require('..');
 const test = require('../lib/test');
 

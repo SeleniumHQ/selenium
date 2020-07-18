@@ -56,8 +56,8 @@ module Selenium
       def self.path
         @path ||= nil
       end
-    end # EdgeChrome
+    end # EdgeHtml
 
-    Edge = EdgeHtml # Alias EdgeHtml as Edge for now
+    Edge = EdgeChrome
   end # WebDriver
 end # Selenium

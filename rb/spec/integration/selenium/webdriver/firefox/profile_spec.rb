@@ -142,15 +142,15 @@ module Selenium
           end
 
           it 'should instantiate the browser with the correct profile' do
-            create_driver!(options: Options.new(profile: profile)) do |driver|
+            create_driver!(capabilities: Options.new(profile: profile)) do |driver|
               expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
             end
           end
 
           it 'should be able to use the same profile more than once' do
-            create_driver!(options: Options.new(profile: profile)) do |driver1|
+            create_driver!(capabilities: Options.new(profile: profile)) do |driver1|
               expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
-              create_driver!(options: Options.new(profile: profile)) do |driver2|
+              create_driver!(capabilities: Options.new(profile: profile)) do |driver2|
                 expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
               end
             end

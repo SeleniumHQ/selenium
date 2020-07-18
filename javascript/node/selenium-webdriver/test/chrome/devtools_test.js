@@ -26,7 +26,6 @@ const error = require('../../lib/error');
 const fileServer = require('../../lib/test/fileserver');
 const io = require('../../io');
 const test = require('../../lib/test');
-const webdriver = require('../..');
 
 test.suite(function(env) {
   let driver;
