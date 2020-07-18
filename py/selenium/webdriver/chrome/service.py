@@ -40,5 +40,5 @@ class Service(service.ChromiumService):
             service_args,
             log_path,
             env,
-            create_no_window=create_no_window,
-            "Please see https://chromedriver.chromium.org/home")
+            "Please see https://chromedriver.chromium.org/home",
+            create_no_window=create_no_window)
