@@ -59,7 +59,7 @@ class WebDriver(ChromiumDriver):
             options = chrome_options
 
         if service is None:
-            service = Service(executable_path, port, service_args, service_log_path)
+            service = Service(executable_path, port, service_args, service_log_path, create_no_window=create_no_window)
 
         super(WebDriver, self).__init__(DesiredCapabilities.CHROME['browserName'], "goog",
                                         port, options,
