@@ -19,7 +19,7 @@ import errno
 import os
 import platform
 import subprocess
-from subprocess import PIPE
+from subprocess import PIPE, CREATE_NO_WINDOW
 import time
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
@@ -34,7 +34,7 @@ except ImportError:
 
 class Service(object):
 
-    def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
+    def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message="", create_no_window=False):
         self.path = executable
 
         self.port = port
@@ -47,6 +47,7 @@ class Service(object):
         self.start_error_message = start_error_message
         self.log_file = log_file
         self.env = env or os.environ
+        self.create_no_window = create_no_window
 
     @property
     def service_url(self):
@@ -69,11 +70,19 @@ class Service(object):
         try:
             cmd = [self.path]
             cmd.extend(self.command_line_args())
-            self.process = subprocess.Popen(cmd, env=self.env,
-                                            close_fds=platform.system() != 'Windows',
-                                            stdout=self.log_file,
-                                            stderr=self.log_file,
-                                            stdin=PIPE)
+            if self.create_no_window == True:
+                self.process = subprocess.Popen(cmd, env=self.env,
+                                                close_fds=platform.system() != 'Windows',
+                                                stdout=self.log_file,
+                                                stderr=self.log_file,
+                                                stdin=PIPE,
+                                                creationflags=CREATE_NO_WINDOW)
+            else:
+                self.process = subprocess.Popen(cmd, env=self.env,
+                                                close_fds=platform.system() != 'Windows',
+                                                stdout=self.log_file,
+                                                stderr=self.log_file,
+                                                stdin=PIPE)
         except TypeError:
             raise
         except OSError as err:
