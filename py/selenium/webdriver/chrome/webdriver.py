@@ -35,7 +35,7 @@ class WebDriver(ChromiumDriver):
     def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
                  options=None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 chrome_options=None, service=None, keep_alive=True):
+                 chrome_options=None, service=None, keep_alive=True, create_no_window=False):
         """
         Creates a new instance of the chrome driver.
         Starts the service and then creates new instance of chrome driver.
