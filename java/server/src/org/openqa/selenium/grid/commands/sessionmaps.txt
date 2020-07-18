@@ -11,7 +11,7 @@ following types of data store.
 `RedisBackedSessionMap` uses Redis as datastore for key, value store.
 Below are the steps to start a `RedisBackedSessionMap`.
 
-1. Set an environment variable using `export SESSION_IMPLEMENTATION='org.openqa.selenium.grid.sessionmap.redis.RedisBackedSessionMap'`
+1. Set an environment variable using `export SESSIONS_IMPLEMENTATION='org.openqa.selenium.grid.sessionmap.redis.RedisBackedSessionMap'`
 2. Set scheme to redis using `export SESSIONS_SCHEME="redis"`
 3. Download the redis-session-map jar from MVN respository.
 4. Start the RedisBackedSessionMap using the command
