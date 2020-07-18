@@ -45,7 +45,7 @@ public class Session {
   public Session(SessionId id, URI uri, Capabilities capabilities) {
     this.id = Require.nonNull("Session ID", id);
     this.uri = Require.nonNull("Where the session is running", uri);
-    this.startTime = Require.nonNull("Session Start time", LocalDateTime.now());
+    this.startTime = LocalDateTime.now();
 
     this.capabilities = ImmutableCapabilities.copyOf(
         Require.nonNull("Session capabilities", capabilities));

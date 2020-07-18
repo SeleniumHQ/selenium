@@ -27,13 +27,13 @@ import java.time.format.DateTimeFormatter;
 public class Session {
 
   private final String id;
-  private final String capabilities;
+  private final Capabilities capabilities;
   private final LocalDateTime startTime;
   private static final Json JSON = new Json();
 
   public Session(String id, Capabilities capabilities, LocalDateTime startTime) {
     this.id = Require.nonNull("Node id", id);
-    this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
+    this.capabilities = Require.nonNull("Node capabilities", capabilities);
     this.startTime = Require.nonNull("Session Start time", startTime);
   }
 
@@ -42,7 +42,7 @@ public class Session {
   }
 
   public String getCapabilities() {
-    return capabilities;
+    return JSON.toJson(capabilities);
   }
 
   public String getStartTime() {
