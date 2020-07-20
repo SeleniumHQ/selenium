@@ -37,6 +37,16 @@ Prerequisites
 1. Ensure the appropriate JDBC driver jar is downloaded on the host machine.
 2. Ensure the "sessions_map" table with varchar "session_ids", "session_caps" and "session_uri" columns is created in the database.
 
+Example of creating the table:
+   `CREATE TABLE sessions_map
+         (
+           session_ids varchar(1000),
+           session_caps varchar(1000),
+           session_uri varchar(1000)
+         );`
+ Here the limit for varchar type is given 1000 as an arbitrary number in the example. Ensure the datatype and limit matches the selected database.
+ Also, the limit for varchar type should be able to accommodate the capabilities json stored in "sessions_caps".
+
 Below are the steps to start a `JdbcBackedSessionMap`.
 
 1. Set an environment variable using `export SESSIONS_IMPLEMENTATION='org.openqa.selenium.grid.sessionmap.jdbc.JdbcBackedSessionMap'`
