@@ -28,6 +28,5 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("io.opentelemetry:opentelemetry-context-prop"),
-        artifact("io.netty:netty-codec-http"),
     ],
 )
