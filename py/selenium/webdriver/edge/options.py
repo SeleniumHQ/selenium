@@ -53,7 +53,7 @@ class Options(ChromiumOptions):
         if self._use_chromium:
             caps = super(Options, self).to_capabilities()
             if self._use_webview:
-                caps['browserName'] = 'webview2'
+                caps['browserName'] = 'WebView2'
         else:
             caps['platform'] = 'windows'
 
