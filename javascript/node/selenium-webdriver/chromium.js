@@ -702,9 +702,9 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
-   * Creates a new WebSocket connection.
+   * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
    * @param {string} debuggerAddress
-   * @return {string} Returns parsed websocket url
+   * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
    */
   async getWsUrl(debuggerAddress) {
     let request = new http.Request('GET', '/json/version');
