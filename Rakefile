@@ -263,7 +263,10 @@ task test_rb_remote: [
   '//rb:remote-chrome-test',
   '//rb:remote-firefox-test',
   ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
+  # BUG - https://github.com/SeleniumHQ/selenium/issues/6791
+  # ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
+  ('//rb:remote-edge-test' unless SeleniumRake::Checks.linux?)
 ].compact
 
 task test_py: [:py_prep_for_install_release, 'py:marionette_test']
