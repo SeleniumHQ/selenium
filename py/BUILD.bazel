@@ -1,5 +1,6 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 load("@rules_python//experimental/python:wheel.bzl", "py_package", "py_wheel")
+load("@dev_requirements//:requirements.bzl", "requirement")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
 load("//:copy_file.bzl", "copy_file")
 
@@ -116,16 +117,23 @@ py_library(
     ],
 )
 
+py_binary(
+    name = "generate",
+    srcs = ["generate.py"],
+    srcs_version = "PY3",
+    deps = [requirement("inflection")],
+)
+
 genrule(
     name = "create-cdp-srcs",
     srcs = [
-        "generate.py",
         ":browser_protocol",
         ":js_protocol",
     ],
     outs = ["selenium/webdriver/common/devtools"],
-    cmd = "python3 $(location generate.py) $(location :browser_protocol) $(location :js_protocol) $@",
+    cmd = "python3 $(location :generate) $(location :browser_protocol) $(location :js_protocol) $@",
     tools = [
+        ":generate",
     ],
 )
 
