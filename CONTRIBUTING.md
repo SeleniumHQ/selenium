@@ -126,7 +126,7 @@ Create a feature branch and start hacking:
 ```
 
 We practice HEAD-based development, which means all changes are applied
-directly on top of master.
+directly on top of trunk.
 
 ### Step 3: Commit
 
@@ -174,7 +174,7 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 
 ```shell
 % git fetch upstream
-% git rebase upstream/master
+% git rebase upstream/trunk
 ```
 
 ### Step 5: Test
@@ -199,8 +199,8 @@ branch.
 ### Step 7: Integration
 
 When code review is complete, a committer will take your PR and
-integrate it on Selenium's master branch. Because we like to keep a
-linear history on the master branch, we will normally squash and rebase
+integrate it on Selenium's trunk branch. Because we like to keep a
+linear history on the trunk branch, we will normally squash and rebase
 your branch history.
 
 ## Stages of an Issue or PR
@@ -223,7 +223,7 @@ The review labels (**R**) are:
 * **awaiting reviewer**: pending code review
 * **blocked on external**: a change in an upstream repo is required
 * **needs code changes**: waiting for you to fix a review issue
-* **needs rebase**: the branch isn't in sync with master and needs to
+* **needs rebase**: the branch isn't in sync with trunk and needs to
     be rebased
 
 Issues are labelled to make them easier to categorise and find by:
