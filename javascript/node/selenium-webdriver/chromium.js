@@ -672,6 +672,10 @@ class Driver extends webdriver.WebDriver {
             .setParameter('params', params));
   }
 
+  /**
+   * Creates a new WebSocket connection.
+   * @return {!Promise<resolved>} A new CDP instance.
+   */
   async createCDPConnection() {
     const caps = await this.getCapabilities()
     const seOptions = caps['map_'].get('se:options') || new Map();
@@ -697,6 +701,11 @@ class Driver extends webdriver.WebDriver {
     });
   }
 
+  /**
+   * Creates a new WebSocket connection.
+   * @param {string} debuggerAddress
+   * @return {string} Returns parsed websocket url
+   */
   async getWsUrl(debuggerAddress) {
     let request = new http.Request('GET', '/json/version');
     let client = new http.HttpClient("http://" + debuggerAddress);
@@ -761,7 +770,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the target device has been selected to respond further webdriver commands.
    */
@@ -774,7 +783,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Initiates tab mirroring for the current browser tab on the specified device.
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the mirror command has been issued to the device.
    */
@@ -785,9 +794,7 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
-   *  a
-   *
-   * @param {String} Friendly name of the target device.
+   * Returns an error message when there is any issue in a Cast session.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the mirror command has been issued to the device.
    */
@@ -800,7 +807,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Stops casting from media router to the specified device, if connected.
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the stop command has been issued to the device.
    */
