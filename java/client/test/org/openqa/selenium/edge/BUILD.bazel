@@ -27,6 +27,9 @@ java_selenium_test_suite(
     browsers = [
         "edge",
     ],
+    tags = [
+        "no-remote",
+    ],
     data = [
         "//third_party/chrome_ext:backspace.crx",
     ],

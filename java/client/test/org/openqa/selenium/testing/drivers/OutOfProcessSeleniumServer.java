@@ -17,19 +17,17 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.build.InProject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class OutOfProcessSeleniumServer {
 
@@ -66,18 +64,14 @@ public class OutOfProcessSeleniumServer {
         Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
         Stream.of(extraFlags)).toArray(String[]::new));
 
-    if (Boolean.getBoolean("webdriver.development")) {
-      command.copyOutputTo(System.err);
-    }
-    command.setWorkingDirectory(
-      InProject.locate("Rakefile").getParent().toAbsolutePath().toString());
+    command.copyOutputTo(System.err);
     log.info("Starting selenium server: " + command.toString());
     command.executeAsync();
 
     try {
       URL url = new URL(baseUrl + "/status");
       log.info("Waiting for server status on URL " + url);
-      new UrlChecker().waitUntilAvailable(30, SECONDS, url);
+      new UrlChecker().waitUntilAvailable(5, SECONDS, url);
       log.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
       log.severe("Server failed to start: " + e.getMessage());
@@ -105,10 +99,11 @@ public class OutOfProcessSeleniumServer {
   }
 
   private String buildServerAndClasspath() {
-    new BazelBuild().build("//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar");
-    return InProject.locate("bazel-bin")
-        .resolve("java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar")
-        .toAbsolutePath().toString();
+    if (System.getProperty("selenium.browser.remote.path") != null) {
+      return System.getProperty("selenium.browser.remote.path");
+    }
+    throw new AssertionError(
+      "Please set the sys property selenium.browser.remote.path to point to the out-of-process selenium server");
   }
 
   public URL getWebDriverUrl() {

@@ -30,6 +30,9 @@ java_selenium_test_suite(
     browsers = [
         "firefox",
     ],
+    tags = [
+        "no-remote",
+    ],
     data = [
         "//third_party/firebug:firebug-1.5.0-fx.xpi",
         "//third_party/firebug:mooltipass-1.1.87.xpi",

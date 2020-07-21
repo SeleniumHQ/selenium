@@ -5,6 +5,9 @@ java_test_suite(
     name = "medium-tests",
     size = "medium",
     srcs = glob(["*.java"]),
+    tags = [
+        "no-remote",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/edge",
         "//java/client/src/org/openqa/selenium/edgehtml",

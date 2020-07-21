@@ -84,6 +84,8 @@ java_binary(
         "//:__pkg__",
         "//deploys/docker:__pkg__",
         "//py:__pkg__",
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
     ],
     runtime_deps = [
         ":grid",

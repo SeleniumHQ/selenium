@@ -29,4 +29,3 @@ java_test_suite(
         artifact("org.mockito:mockito-core"),
     ],
 )
-
