@@ -30,6 +30,8 @@ public class JdbcSessionMapOptions {
 
   private static final String SESSIONS_SECTION = "sessions";
   private static final Logger LOG = Logger.getLogger(JdbcSessionMapOptions.class.getName());
+  protected static String jdbcUrl;
+  protected static String jdbcUser;
 
   private final Config config;
 
@@ -41,8 +43,8 @@ public class JdbcSessionMapOptions {
 
   public Connection getJdbcConnection() throws SQLException {
     try {
-      String jdbcUrl = config.get(SESSIONS_SECTION, "jdbc-url").get();
-      String jdbcUser = config.get(SESSIONS_SECTION, "jdbc-user").get();
+      jdbcUrl = config.get(SESSIONS_SECTION, "jdbc-url").get();
+      jdbcUser = config.get(SESSIONS_SECTION, "jdbc-user").get();
       String jdbcPassword = config.get(SESSIONS_SECTION, "jdbc-password").get();
 
       if (jdbcUrl.isEmpty()) {
