@@ -1,7 +1,8 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 LARGE_TESTS = [
+    "ParallelSessionsTest.java",
     "RemoteWebDriverScreenshotTest.java",
 ]
 
@@ -27,5 +28,19 @@ java_test_suite(
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.mockito:mockito-core"),
+    ],
+)
+
+java_selenium_test_suite(
+    name = "large-tests",
+    size = "large",
+    srcs = LARGE_TESTS,
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        artifact("org.assertj:assertj-core"),
+        artifact("junit:junit"),
     ],
 )
