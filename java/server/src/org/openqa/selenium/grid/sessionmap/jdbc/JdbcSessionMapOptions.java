@@ -43,8 +43,10 @@ public class JdbcSessionMapOptions {
 
   public Connection getJdbcConnection() throws SQLException {
     try {
+
       jdbcUrl = config.get(SESSIONS_SECTION, "jdbc-url").get();
       jdbcUser = config.get(SESSIONS_SECTION, "jdbc-user").get();
+
       String jdbcPassword = config.get(SESSIONS_SECTION, "jdbc-password").get();
 
       if (jdbcUrl.isEmpty()) {
