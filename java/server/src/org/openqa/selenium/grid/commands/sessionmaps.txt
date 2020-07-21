@@ -1,0 +1,66 @@
+Selenium 4 Grid ships with SessionMap.
+
+A SessionMap is a store of session id and it's capabilities.
+It is a key value store. Now, how that data is stored differs
+on the implementation used. As of Selenium 4, we offer the
+following types of data store.
+
+1. RedisBackedSessionMap
+========================
+
+`RedisBackedSessionMap` uses Redis as datastore for key, value store.
+Below are the steps to start a `RedisBackedSessionMap`.
+
+1. Set an environment variable using `export SESSIONS_IMPLEMENTATION='org.openqa.selenium.grid.sessionmap.redis.RedisBackedSessionMap'`
+2. Set scheme to redis using `export SESSIONS_SCHEME="redis"`
+3. Download the redis-session-map jar from MVN respository.
+4. Start the RedisBackedSessionMap using the command
+`java -jar <path/to/grid/jar> --ext $(coursier fetch -p io.lettuce:lettuce-core:<latest release>): path/to/redis-session-map.jar sessions --sessions-host "<redis_host>" --sessions-port <redis_port>`
+
+After the sessionmap server successfully starts, you should see some log lines as below:
+```
+15:22:54.247 INFO [LoggingOptions.getTracer] - Using OpenTelemetry for tracing
+15:22:54.249 INFO [LoggingOptions.createTracer] - Using OpenTelemetry for tracing
+15:22:54.827 INFO [EpollProvider.<clinit>] - Starting without optional epoll library
+15:22:55.136 INFO [KqueueProvider.<clinit>] - Starting with kqueue library
+15:22:55.328 INFO [SessionMapServer.execute] - Started Selenium session map 4.0.0-alpha-7 (revision a5536dfb7b*): http://192.168.0.5:5556
+```
+2. JdbcBackedSessionMap
+========================
+
+`JdbcBackedSessionMap` uses the JDBC API to talk to the JDBC driver and use related database for sessions map store.
+
+The table name used to store sessions is : sessions_map
+It consists of three columns of string datatype : session_ids, session_caps, session_uri
+
+Prerequisites
+1. Ensure the appropriate JDBC driver jar is downloaded on the host machine.
+2. Ensure the "sessions_map" table with varchar "session_ids", "session_caps" and "session_uri" columns is created in the database.
+
+Example of creating the table:
+   `CREATE TABLE sessions_map
+         (
+           session_ids varchar(1000),
+           session_caps varchar(1000),
+           session_uri varchar(1000)
+         );`
+ Here the limit for varchar type is given 1000 as an arbitrary number in the example. Ensure the datatype and limit matches the selected database.
+ Also, the limit for varchar type should be able to accommodate the capabilities json stored in "sessions_caps".
+
+Below are the steps to start a `JdbcBackedSessionMap`.
+
+1. Set an environment variable using `export SESSIONS_IMPLEMENTATION='org.openqa.selenium.grid.sessionmap.jdbc.JdbcBackedSessionMap'`
+3. Build the grid deployment jar by running the command
+`bazel build grid`
+2. Start the JdbcBackedSessionMap using the command
+`java -jar <path/to/grid/jar> --ext path/to/selenium/bazel-bin/java/server/src/org/openqa/selenium/grid/sessionmap/jdbc/libjdbc.jar:path/to/jdbc-driver.jar sessions --jdbc-user "<jdbc_user>" --jdbc-password "<jdbc_password>" --jdbc-url "<jdbc_url>"`
+
+After the sessionmap server successfully starts, you should see some log lines as below:
+```
+15:05:20.345 INFO [LoggingOptions.getTracer] - Using OpenTelemetry for tracing
+15:05:20.348 INFO [LoggingOptions.createTracer] - Using OpenTelemetry for tracing
+15:05:20.439 INFO [UnboundZmqEventBus.<init>] - Connecting to tcp://*:4442 and tcp://*:4443
+15:05:20.489 INFO [UnboundZmqEventBus.<init>] - Sockets created
+15:05:20.492 INFO [UnboundZmqEventBus.lambda$new$2] - Bus started
+15:05:21.483 INFO [SessionMapServer.execute] - Started Selenium session map 4.0.0-alpha-7 (revision 857fe401ae): http://192.168.29.132:5556
+```
