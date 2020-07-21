@@ -259,7 +259,11 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private void setCommonSpanAttributes(Span span) {
     span.setAttribute("span.kind", Span.Kind.CLIENT.toString());
-    span.setAttribute("db.user", JdbcSessionMapOptions.jdbcUser);
-    span.setAttribute("db.connection_string", JdbcSessionMapOptions.jdbcUrl);
+    if (JdbcSessionMapOptions.jdbcUser != null) {
+      span.setAttribute("db.user", JdbcSessionMapOptions.jdbcUser);
+    }
+    if (JdbcSessionMapOptions.jdbcUrl != null) {
+      span.setAttribute("db.connection_string", JdbcSessionMapOptions.jdbcUrl);
+    }
   }
 }
