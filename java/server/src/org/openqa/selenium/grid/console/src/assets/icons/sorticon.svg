@@ -1,0 +1,39 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="9.146"
+    height="14.973"
+    viewBox="0 0 9.146 14.973">
+  <g transform="translate(-774.096 -231.096)">
+    <g transform="translate(781.839 244.666) rotate(180)">
+      <line
+          class="arrow-1"
+          y1="4.055"
+          x2="3.169"
+          transform="translate(0 0)"
+          stroke-linecap="round"
+          stroke-width="2" />
+      <line
+          x1="3.169"
+          y1="4.055"
+          class="arrow-1"
+          transform="translate(3.169 0)"
+          stroke-linecap="round"
+          stroke-width="2" />
+    </g>
+    <g transform="translate(775.5 232.5)">
+      <line
+          class="arrow-2"
+          y1="4.055"
+          x2="3.169"
+          stroke-linecap="round"
+          stroke-width="2" />
+      <line
+          class="arrow-2"
+          x1="3.169"
+          y1="4.055"
+          transform="translate(3.169)"
+          stroke-linecap="round"
+          stroke-width="2" />
+    </g>
+  </g>
+</svg>

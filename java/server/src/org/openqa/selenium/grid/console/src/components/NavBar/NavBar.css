@@ -1,0 +1,4 @@
+#sidebar ul.topics > li.parent,
+#sidebar ul.topics > li.active {
+  background: var(--MENU-SECTIONS-BG-color);
+}
