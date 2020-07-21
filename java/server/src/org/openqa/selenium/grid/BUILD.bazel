@@ -86,6 +86,7 @@ java_binary(
         "//py:__pkg__",
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
+        "//javascript:__subpackages__",
     ],
     runtime_deps = [
         ":grid",
