@@ -39,7 +39,7 @@ import typing
 import inflection  # type: ignore
 
 
-log_level = getattr(logging, os.environ.get('LOG_LEVEL', 'info').upper())
+log_level = getattr(logging, os.environ.get('LOG_LEVEL', 'warning').upper())
 logging.basicConfig(level=log_level)
 logger = logging.getLogger('generate')
 
