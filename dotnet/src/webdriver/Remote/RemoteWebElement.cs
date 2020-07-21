@@ -279,13 +279,18 @@ namespace OpenQA.Selenium.Remote
             {
                 throw new ArgumentNullException("text", "text cannot be null");
             }
-            var fileNames = text.Split("\n");
+            var fileNames = text.Split('\n');
+            var amendedText = "";
             foreach (var fileName in fileNames)
             {
                if (this.driver.FileDetector.IsFile(fileName))
                {
-                 fileName = this.UploadFile(fileName));
-               }                    
+                 amendedText += this.UploadFile(fileName) + "\n";
+               }
+               else
+               {
+                 amendedText = fileName + "\n";
+               }
             }
             // N.B. The Java remote server expects a CharSequence as the value input to
             // SendKeys. In JSON, these are serialized as an array of strings, with a
@@ -295,8 +300,8 @@ namespace OpenQA.Selenium.Remote
             // appropriate one for spec compliance.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
-            parameters.Add("text", text);
-            parameters.Add("value", text.ToCharArray());
+            parameters.Add("text", amendedText);
+            parameters.Add("value", amendedText.ToCharArray());
 
             this.Execute(DriverCommand.SendKeysToElement, parameters);
         }
