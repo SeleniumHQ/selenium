@@ -1,14 +1,16 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
+LARGE_TESTS = [
+    "RemoteWebDriverScreenshotTest.java",
+]
+
 java_test_suite(
     name = "small-tests",
     size = "small",
     srcs = glob(
         ["*Test.java"],
-        exclude = [
-            "RemoteWebDriverScreenshotTest.java",
-        ],
+        exclude = LARGE_TESTS,
     ),
     tags = [
         "no-sandbox",
@@ -27,3 +29,4 @@ java_test_suite(
         artifact("org.mockito:mockito-core"),
     ],
 )
+
