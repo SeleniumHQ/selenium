@@ -1,0 +1,27 @@
+Selenium 4 Grid ships with SessionMap.
+
+A SessionMap is a store of session id and it's capabilities.
+It is a key value store. Now, how that data is stored differs
+on the implementation used. As of Selenium 4, we offer the
+following types of data store.
+
+1. RedisBackedSessionMap
+========================
+
+`RedisBackedSessionMap` uses Redis as datastore for key, value store.
+Below are the steps to start a `RedisBackedSessionMap`.
+
+1. Set an environment variable using `export SESSIONS_IMPLEMENTATION='org.openqa.selenium.grid.sessionmap.redis.RedisBackedSessionMap'`
+2. Set scheme to redis using `export SESSIONS_SCHEME="redis"`
+3. Download the redis-session-map jar from MVN respository.
+4. Start the RedisBackedSessionMap using the command
+`java -jar <path/to/grid/jar> --ext $(coursier fetch -p io.lettuce:lettuce-core:<latest release>): path/to/redis-session-map.jar sessions --sessions-host "<redis_host>" --sessions-port <redis_port>`
+
+After the sessionmap server successfully starts, you should see some log lines as below:
+```
+15:22:54.247 INFO [LoggingOptions.getTracer] - Using OpenTelemetry for tracing
+15:22:54.249 INFO [LoggingOptions.createTracer] - Using OpenTelemetry for tracing
+15:22:54.827 INFO [EpollProvider.<clinit>] - Starting without optional epoll library
+15:22:55.136 INFO [KqueueProvider.<clinit>] - Starting with kqueue library
+15:22:55.328 INFO [SessionMapServer.execute] - Started Selenium session map 4.0.0-alpha-7 (revision a5536dfb7b*): http://192.168.0.5:5556
+```

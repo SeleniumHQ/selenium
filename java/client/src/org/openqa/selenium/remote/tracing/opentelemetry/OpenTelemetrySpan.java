@@ -97,18 +97,22 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
         (key, value) -> {
           Require.nonNull("Event Attribute Value", value);
           switch (value.getAttributeType()) {
-            case DOUBLE:
-              openTelAttributeMap.put(key, AttributeValue.doubleAttributeValue(value.getNumberValue().doubleValue()));
-              break;
-            case LONG:
-              openTelAttributeMap.put(key, AttributeValue.longAttributeValue(value.getNumberValue().longValue()));
-              break;
-            case STRING:
-              openTelAttributeMap.put(key, AttributeValue.stringAttributeValue(value.getStringValue()));
-              break;
             case BOOLEAN:
               openTelAttributeMap.put(key, AttributeValue.booleanAttributeValue(value.getBooleanValue()));
               break;
+
+            case DOUBLE:
+              openTelAttributeMap.put(key, AttributeValue.doubleAttributeValue(value.getNumberValue().doubleValue()));
+              break;
+
+            case LONG:
+              openTelAttributeMap.put(key, AttributeValue.longAttributeValue(value.getNumberValue().longValue()));
+              break;
+
+            case STRING:
+              openTelAttributeMap.put(key, AttributeValue.stringAttributeValue(value.getStringValue()));
+              break;
+
             default:
               throw new IllegalArgumentException("Unrecognized status value type: " + value.getAttributeType());
           }
