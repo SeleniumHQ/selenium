@@ -51,6 +51,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import com.google.common.collect.ImmutableMap;
+
 public class ProxyCdpTest {
 
   private final HttpHandler nullHandler = req -> new HttpResponse();
@@ -117,6 +119,41 @@ public class ProxyCdpTest {
           latch.countDown();
         }
       });
+
+    socket.sendText("Cheese!");
+
+    assertThat(latch.await(5, SECONDS)).isTrue();
+    assertThat(text.get()).isEqualTo("Asiago");
+
+    socket.close();
+  }
+
+  @Test
+  public void shouldBeAbleToSendMessagesOverSecureWebSocket()
+      throws URISyntaxException, InterruptedException {
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
+    Config secureConfig = new MapConfig(ImmutableMap.of("node", ImmutableMap.of("--self-signed-https","","https-private-key", "", "https-certificate", "")));
+
+    ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
+    proxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy).start();
+
+    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago");
+
+    // Push a session that resolves to the backend server into the session map
+    SessionId id = new SessionId(UUID.randomUUID());
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities()));
+
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicReference<String> text = new AtomicReference<>();
+    WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
+        .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
+          @Override
+          public void onText(CharSequence data) {
+            text.set(data.toString());
+            latch.countDown();
+          }
+        });
 
     socket.sendText("Cheese!");
 
