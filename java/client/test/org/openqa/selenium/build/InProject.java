@@ -45,6 +45,7 @@ public class InProject {
         .findFirst()
         .map(Path::toAbsolutePath)
         .orElseGet(() -> {
+          System.out.println("In the fallback");
           Path root = findProjectRoot();
           return Stream.of(paths)
               .map(path -> {

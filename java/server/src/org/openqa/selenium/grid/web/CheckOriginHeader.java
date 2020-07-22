@@ -34,10 +34,12 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 public class CheckOriginHeader implements Filter {
 
   private final Set<String> allowedHosts;
+  private final Set<String> skipChecksOn;
 
-  public CheckOriginHeader(Collection<String> allowedOriginHosts) {
+  public CheckOriginHeader(Collection<String> allowedOriginHosts, Set<String> skipChecksOn) {
     Require.nonNull("Allowed origins list", allowedOriginHosts);
     allowedHosts = ImmutableSet.copyOf(allowedOriginHosts);
+    this.skipChecksOn = ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
   }
 
   @Override
@@ -45,6 +47,10 @@ public class CheckOriginHeader implements Filter {
     Require.nonNull("Next handler", httpHandler);
 
     return req -> {
+      if (skipChecksOn.contains(req.getUri())) {
+        return httpHandler.execute(req);
+      }
+
       String origin = req.getHeader("Origin");
       if (origin != null && !allowedHosts.contains(origin)) {
         return new HttpResponse()

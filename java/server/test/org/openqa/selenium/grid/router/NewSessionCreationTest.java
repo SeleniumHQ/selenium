@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverInfo;
@@ -81,7 +82,8 @@ public class NewSessionCreationTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
     Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, null);
-    Routable router = new Router(tracer, clientFactory, sessions, distributor).with(new EnsureSpecCompliantHeaders(ImmutableList.of()));
+    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+      .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
     Server<?> server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),

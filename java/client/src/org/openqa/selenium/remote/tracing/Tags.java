@@ -20,14 +20,12 @@ package org.openqa.selenium.remote.tracing;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import io.netty.handler.codec.http.HttpStatusClass;
-
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class Tags {
 
-  private static Map<Integer, Status> httpStatusCodeMap = Map.of(
+  private final static Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Map.of(
       401, Status.UNAUTHENTICATED,
       404, Status.NOT_FOUND,
       408, Status.DEADLINE_EXCEEDED,
@@ -41,9 +39,8 @@ public class Tags {
     // Utility class
   }
 
-  public static final BiConsumer<Span, Span.Kind> KIND = (span, kind) -> {
-    span.setAttribute("span.kind", kind.toString());
-  };
+  public static final BiConsumer<Span, Span.Kind> KIND =
+    (span, kind) -> span.setAttribute("span.kind", kind.toString());
 
   public static final BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
     span.setAttribute("http.method", req.getMethod().toString());
@@ -58,30 +55,14 @@ public class Tags {
     res.getTargetHost();
     span.setAttribute("http.status_code", statusCode);
 
-    HttpStatusClass statusClass = HttpStatusClass.valueOf(statusCode);
-
-    switch (statusClass) {
-      case INFORMATIONAL:
-      case SUCCESS:
-      case REDIRECTION:
-        span.setStatus(Status.OK);
-        break;
-      case CLIENT_ERROR:
-        if (httpStatusCodeMap.containsKey(statusCode)) {
-          span.setStatus(httpStatusCodeMap.get(statusCode));
-        } else {
-          span.setStatus(Status.INVALID_ARGUMENT);
-        }
-        break;
-      case SERVER_ERROR:
-        if (httpStatusCodeMap.containsKey(statusCode)) {
-          span.setStatus(httpStatusCodeMap.get(statusCode));
-        } else {
-          span.setStatus(Status.INTERNAL);
-        }
-        break;
-      default:
-        span.setStatus(Status.UNKNOWN);
+    if (statusCode > 99 && statusCode < 400) {
+      span.setStatus(Status.OK);
+    } else if (statusCode > 399 && statusCode < 500) {
+      span.setStatus(STATUS_CODE_TO_TRACING_STATUS.getOrDefault(statusCode, Status.INVALID_ARGUMENT));
+    } else if (statusCode > 499 && statusCode < 600) {
+      span.setStatus(STATUS_CODE_TO_TRACING_STATUS.getOrDefault(statusCode, Status.INTERNAL));
+    } else {
+      span.setStatus(Status.UNKNOWN);
     }
   };
 }

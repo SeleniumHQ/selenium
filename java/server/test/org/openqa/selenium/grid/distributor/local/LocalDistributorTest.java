@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -30,9 +32,12 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
@@ -41,17 +46,26 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class LocalDistributorTest {
 
@@ -183,8 +197,73 @@ public class LocalDistributorTest {
     //Make sure the numbers don't just average out to the same size
     Map<String, Set<Host>> hostBuckets = buildBuckets(4, 5, 6 );
 
-    LocalDistributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    LocalDistributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      null);
     assertThat(distributor.allBucketsSameSize(hostBuckets)).isFalse();
+  }
+
+  @Test
+  public void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      null);
+
+    // Add one node to ensure that everything is created in that.
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
+
+    class VerifyingHandler extends Session implements HttpHandler {
+      private VerifyingHandler(SessionId id, Capabilities capabilities) {
+        super(id, uri, capabilities);
+      }
+
+      @Override
+      public HttpResponse execute(HttpRequest req) {
+        Optional<SessionId> id = HttpSessionId.getSessionId(req.getUri()).map(SessionId::new);
+        assertThat(id).isEqualTo(Optional.of(getId()));
+        return new HttpResponse();
+      }
+    }
+
+    // Only use one node.
+    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+      .add(caps, new TestSessionFactory(VerifyingHandler::new))
+      .add(caps, new TestSessionFactory(VerifyingHandler::new))
+      .add(caps, new TestSessionFactory(VerifyingHandler::new))
+      .build();
+    distributor.add(node);
+
+    HttpRequest req = new HttpRequest(HttpMethod.POST, "/session")
+      .setContent(Contents.asJson(ImmutableMap.of(
+        "capabilities", ImmutableMap.of(
+          "alwaysMatch", ImmutableMap.of(
+            "browserName", "cheese")))));
+
+
+    List<Callable<SessionId>> callables = new ArrayList<>();
+    for (int i = 0; i < 3; i++) {
+      callables.add(() -> {
+        CreateSessionResponse res = distributor.newSession(req);
+        assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
+        return res.getSession().getId();
+      });
+    }
+
+    List<Future<SessionId>> futures = Executors.newFixedThreadPool(3).invokeAll(callables);
+
+    for (Future<SessionId> future : futures) {
+      SessionId id = future.get(2, SECONDS);
+
+      // Now send a random command.
+      HttpResponse res = node.execute(new HttpRequest(GET, String.format("/session/%s/url", id)));
+      assertThat(res.isSuccessful()).isTrue();
+    }
   }
 
   //Build a few Host Buckets of different sizes

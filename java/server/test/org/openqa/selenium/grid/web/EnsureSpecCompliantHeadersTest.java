@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -37,7 +38,7 @@ public class EnsureSpecCompliantHeadersTest {
 
   @Test
   public void shouldBlockRequestsWithNoContentType() {
-    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of())
+    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of())
       .apply(alwaysOk)
       .execute(new HttpRequest(POST, "/session"));
 
@@ -46,7 +47,7 @@ public class EnsureSpecCompliantHeadersTest {
 
   @Test
   public void requestsWithAnOriginHeaderShouldBeBlocked() {
-    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of())
+    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of())
       .apply(alwaysOk)
       .execute(
         new HttpRequest(POST, "/session")
@@ -58,7 +59,7 @@ public class EnsureSpecCompliantHeadersTest {
 
   @Test
   public void requestsWithAnAllowedOriginHeaderShouldBeAllowed() {
-    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of("example.com"))
+    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of("example.com"), ImmutableSet.of())
       .apply(alwaysOk)
       .execute(
         new HttpRequest(POST, "/session")
@@ -71,7 +72,7 @@ public class EnsureSpecCompliantHeadersTest {
 
   @Test
   public void shouldAllowRequestsWithNoOriginHeader() {
-    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of())
+    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of())
       .apply(alwaysOk)
       .execute(
         new HttpRequest(POST, "/session")
