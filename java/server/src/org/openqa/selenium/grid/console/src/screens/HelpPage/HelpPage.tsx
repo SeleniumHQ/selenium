@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../../assets/selenium.png";
+import logo from "../../assets/selenium.svg";
 import "../../css/common.css";
 import styles from "./Help.module.css";
 import React from "react";

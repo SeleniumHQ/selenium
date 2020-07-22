@@ -13,11 +13,11 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import HelpPage from "./screens/HelpPage/HelpPage";
 import Console from "./screens/Console/Console";
-// import SearchAppBar from "./components/AppBar/AppBar";
 import NavBar from "./components/NavBar/NavBar";
 import Hubpage from "./screens/Hub/Hub";
 import { GridConfig } from "./config";
 import NodePage from "./screens/Node/NodePage";
+import NodeType from "./models/node";
 
 const cache = new InMemoryCache();
 const link = new HttpLink({
@@ -35,6 +35,7 @@ declare global {
 		pbar: any;
 		pauseUpdates: boolean;
 		updatesRunning: boolean;
+		activeNode: NodeType;
 	}
 }
 

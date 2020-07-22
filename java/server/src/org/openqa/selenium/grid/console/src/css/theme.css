@@ -66,25 +66,7 @@
 .button:active, .button-secondary:active {
     margin: 2px 0 -2px 0;
 }
-/* @font-face {
-    font-family: 'Novacento Sans Wide';
-    src: url("../fonts/Novecentosanswide-UltraLight-webfont.eot");
-    src: url("../fonts/Novecentosanswide-UltraLight-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/Novecentosanswide-UltraLight-webfont.woff2") format("woff2"), url("../fonts/Novecentosanswide-UltraLight-webfont.woff") format("woff"), url("../fonts/Novecentosanswide-UltraLight-webfont.ttf") format("truetype"), url("../fonts/Novecentosanswide-UltraLight-webfont.svg#novecento_sans_wideultralight") format("svg");
-    font-style: normal;
-    font-weight: 200;
-}
-@font-face {
-    font-family: 'Work Sans';
-    font-style: normal;
-    font-weight: 300;
-    src: url("../fonts/Work_Sans_300.eot?#iefix") format("embedded-opentype"), url("../fonts/Work_Sans_300.woff") format("woff"), url("../fonts/Work_Sans_300.woff2") format("woff2"), url("../fonts/Work_Sans_300.svg#WorkSans") format("svg"), url("../fonts/Work_Sans_300.ttf") format("truetype");
-}
-@font-face {
-    font-family: 'Work Sans';
-    font-style: normal;
-    font-weight: 500;
-    src: url("../fonts/Work_Sans_500.eot?#iefix") format("embedded-opentype"), url("../fonts/Work_Sans_500.woff") format("woff"), url("../fonts/Work_Sans_500.woff2") format("woff2"), url("../fonts/Work_Sans_500.svg#WorkSans") format("svg"), url("../fonts/Work_Sans_500.ttf") format("truetype");
-} */
+
 body {
     background: #fff;
     color: #777;
@@ -644,8 +626,6 @@ section.attachments.grey .attachments-files {
 }
 
 /* Children shortcode */
-
-/* Children shortcode */
 .children p {
     font-size: small;
     margin-top: 0px;
@@ -1057,7 +1037,6 @@ td {
     text-overflow: ellipsis;
     width: 70%;
     display: inline-block;
-    /* float: left; */
 }
 #body #breadcrumbs span {
     padding: 0 0.1rem;
@@ -1101,7 +1080,6 @@ td {
     }
 }
 .copy-to-clipboard {
-    /* background-image: url(../images/clippy.svg); */
     background-position: 50% 50%;
     background-size: 16px 16px;
     background-repeat: no-repeat;

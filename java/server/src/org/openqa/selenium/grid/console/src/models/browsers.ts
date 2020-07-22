@@ -1,11 +1,11 @@
-import chromeLogo from "../assets/chrome.svg";
-import firefoxLogo from "../assets/firefox.svg";
-import ieLogo from "../assets/internet-explorer.svg";
-import edgehtmlLogo from "../assets/edge.svg";
-import edgeNewLogo from "../assets/edge-new.svg";
-import operaLogo from "../assets/opera.svg";
-import safariLogo from "../assets/safari.svg";
-import unknownLogo from "../assets/unknown.svg";
+import chromeLogo from "../assets/browsers/chrome.svg";
+import firefoxLogo from "../assets/browsers/firefox.svg";
+import ieLogo from "../assets/browsers/internet-explorer.svg";
+import edgehtmlLogo from "../assets/browsers/edge.svg";
+import edgeNewLogo from "../assets/browsers/edge-new.svg";
+import operaLogo from "../assets/browsers/opera.svg";
+import safariLogo from "../assets/browsers/safari.svg";
+import unknownLogo from "../assets/browsers/unknown.svg";
 
 /* Added from https://github.com/SeleniumHQ/selenium/blob/1fce6ddd50ec795260c1717b1f9f15bf97faf673/java/client/src/org/openqa/selenium/remote/BrowserType.java#L23 */
 export const BrowserTypes: { [key: string]: string } = {

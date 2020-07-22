@@ -5,7 +5,6 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Collapse from "@material-ui/core/Collapse";
-import { red } from "@material-ui/core/colors";
 import IconButton from "@material-ui/core/IconButton";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
@@ -16,7 +15,6 @@ import React from "react";
 import NodeType from "../../../models/node";
 import ReactJson from "react-json-view";
 import { getLogo } from "../../../models/browsers";
-// import "./Node.css";
 
 // Not using this query for getting a single node
 // Because in Nodes.tsx we get all the attrs of all the existing Nodes
@@ -29,10 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
 		root: {
 			maxWidth: 345,
 		},
-		media: {
-			height: 0,
-			paddingTop: "56.25%", // 16:9
-		},
 		expand: {
 			transform: "rotate(0deg)",
 			marginLeft: "auto",
@@ -42,9 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		expandOpen: {
 			transform: "rotate(180deg)",
-		},
-		avatar: {
-			backgroundColor: red[500],
 		},
 	})
 );
@@ -61,7 +52,6 @@ const NodeInfo = React.memo(
 		};
 	}) => {
 		const node = props.node;
-
 
 		const classes = useStyles();
 		// By default it will be expanded
@@ -88,9 +78,9 @@ const NodeInfo = React.memo(
 								key={i}
 								alt={c.browserName}
 								src={getLogo(c.browserName)}
-								width="16"
-								height="16"
-								title={`${c.browserName} ${i}/${c.slots}`}
+								width="20"
+								height="20"
+								title={`${c.browserName} ${i+1}/${c.slots}`}
 								style={{ float: "left" }}
 							/>
 						))}
@@ -106,14 +96,17 @@ const NodeInfo = React.memo(
 					padding-top: 30px;
 					padding-right: 1vw;
 					padding-left: 1vw;
-					transform: translate(2vw, -21vh);
+					// Only translate up when used as a node info card
+					${props.closecallback ? "transform: translate(2vw, -21vh);" : ""}
 				`}
 			>
 				<CardHeader
 					action={
-						<IconButton aria-label="close" onClick={props.closecallback}>
-							<CloseIcon />
-						</IconButton>
+						props.closecallback && (
+							<IconButton aria-label="close" onClick={props.closecallback}>
+								<CloseIcon />
+							</IconButton>
+						)
 					}
 					/* TODO get selenium version from server */
 					title={"version : selenium-4.0.0-alpha-6"}

@@ -19,9 +19,10 @@ export const GridConfig = {
 
 	/** Server config */
 	serverUri:
-		// TODO add a cli flag somewhere (?)
+		// TODO(phanirithvij) add a cli flag somewhere (?)
 		process.env.NODE_ENV === "development"
-			? "http://localhost:4444/graphql"
+			? "http://localhost:5000/graphql"
+			// ? "http://localhost:4444/graphql"
 			: document.location.protocol + "//" + document.location.host + "/graphql",
 
 	/** Keybinds config */

@@ -12,9 +12,9 @@ const fetchStatusUpdates = async (
 	callback: _CallbackType,
 	gapms = GAP_MILLIS,
 	/* TODO can use redux for global state management here */
-	controlFlag = "window.pauseUpdates"
+	controlFlag = window.pauseUpdates
 ) => {
-	if (eval(controlFlag) !== undefined && eval(controlFlag)) {
+	if (controlFlag !== undefined && controlFlag) {
 		// pause updates
 		setTimeout(() => {
 			fetchStatusUpdates(callback);

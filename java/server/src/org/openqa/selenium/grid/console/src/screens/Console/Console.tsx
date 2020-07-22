@@ -8,7 +8,6 @@ import React, { useEffect, useReducer, useRef, useState } from "react";
 import { Query, QueryResult } from "react-apollo";
 import NodeRow from "../../components/Node/NodeRow";
 import RingSystem, { RingRef } from "../../components/RingSystem/RingSystem";
-import SortButton, { SelectState } from "../../components/SortButton";
 import { LABELS, LABEL_COLORS, StatusType } from "../../components/Status";
 import TopBar from "../../components/TopBar";
 import { GridConfig } from "../../config";
@@ -148,7 +147,7 @@ function paginationReducer(
 			newState.allNodes.forEach((node, i) => {
 				node.status = updates![i].status;
 			});
-			console.log(newState.allNodes.map(node => node.status));
+			console.log(newState.allNodes.map((node) => node.status));
 			return newState;
 
 		case PaginationDispatchTypes.filterNodes:
@@ -223,9 +222,6 @@ export default function Console(props: {
 	// Getting a reference to the ringsystem functions
 	const ringRef = useRef<RingRef>(null);
 
-	// TODO sort by column
-	let sortbutton = SortButton({ initialState: SelectState.up });
-
 	/* Should Ideally just show notifications */
 	const handleStatusUpdates = (data: NodeType[]) => {
 		// Update table data
@@ -236,8 +232,7 @@ export default function Console(props: {
 		window.pauseUpdates = false;
 		fetchStatusUpdates(
 			handleStatusUpdates,
-			GridConfig.status.xhrPollingIntervalMillis,
-			"window.pauseUpdates"
+			GridConfig.status.xhrPollingIntervalMillis
 		);
 
 		return () => {
@@ -266,26 +261,31 @@ export default function Console(props: {
 		// parsing capabilities from string to capabilities[]
 		const nodes = gridInfo.grid.nodes.map((node: NodeType) => {
 			const capStr = (node.capabilities as unknown) as string;
+			console.log(capStr);
 			if (capStr === "") return { ...node, capabilities: [] };
 			let json: { [key: string]: number } = JSON.parse(capStr);
 			let capabilities = Object.keys(json).map((key) => {
 				let data = key
-					.split(" ")
+					.split("{")
 					.slice(1)
 					.join("")
-					.replace(/{|}/g, "")
+					.replace(/}/g, "")
 					.split(":");
-				return { [data[0]]: data[1], slots: json[key] };
+				return { [data[0]]: data[1].trim(), slots: json[key] };
 			});
 			let caps = (capabilities as unknown) as CapabilitiesType[];
 			const newnode: NodeType = { ...node, capabilities: caps };
+			console.log(caps);
 			return newnode;
 		});
+
+		/* Initialize the data in the tables */
 		paginationDispatch({
 			type: PaginationDispatchTypes.initialiaze,
 			args: { allNodes: nodes },
 		});
 
+		/* Count the number of nodes based on their status */
 		const countHash: {
 			[x: string]: number;
 		} = {};
@@ -457,9 +457,7 @@ export default function Console(props: {
 														>
 															Name
 														</th>
-														<th scope="col">
-															ID
-														</th>
+														<th scope="col">ID</th>
 														<th scope="col">
 															status{" "}
 															{paginationState.filterIndex !== -1 && (
