@@ -16,8 +16,6 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service:1.0-rc6",
             "com.google.auto.service:auto-service-annotations:1.0-rc6",
             "com.graphql-java:graphql-java:14.0",
-            "com.squareup.okhttp3:okhttp:4.5.0",
-            "com.squareup.okio:okio:2.6.0",
             "com.typesafe.netty:netty-reactive-streams:2.0.4",
             "io.grpc:grpc-context:1.28.0",
             "io.lettuce:lettuce-core:5.2.2.RELEASE",
