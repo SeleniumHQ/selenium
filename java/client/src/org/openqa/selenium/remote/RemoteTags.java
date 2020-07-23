@@ -28,11 +28,11 @@ public class RemoteTags {
     // Utility class
   }
 
-  public static BiConsumer<Span, Capabilities> CAPABILITIES = (span, caps) -> {
+  public static final BiConsumer<Span, Capabilities> CAPABILITIES = (span, caps) -> {
     span.setAttribute("session.capabilities", String.valueOf(caps));
   };
 
-  public static BiConsumer<Span, SessionId> SESSION_ID = (span, id) -> {
+  public static final BiConsumer<Span, SessionId> SESSION_ID = (span, id) -> {
     span.setAttribute("session.id", String.valueOf(id));
   };
 
