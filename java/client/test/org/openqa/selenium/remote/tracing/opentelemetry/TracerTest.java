@@ -19,11 +19,11 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.common.AttributeValue;
+import io.opentelemetry.common.Attributes;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import io.opentelemetry.sdk.trace.data.SpanData.TimedEvent;
-import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
+import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import org.junit.Test;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -71,7 +71,7 @@ public class TracerTest {
     }
 
     Set<SpanData> values = allSpans.stream()
-      .filter(data -> data.getAttributes().containsKey("cheese"))
+      .filter(data -> data.getAttributes().get("cheese") != null)
       .collect(Collectors.toSet());
 
     assertThat(values).hasSize(1);
@@ -86,14 +86,13 @@ public class TracerTest {
   public void shouldBeAbleToCreateASpanWithEvents() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
-    Map<String, AttributeValue> openTelAttributeValueMap = new HashMap<>();
-    openTelAttributeValueMap
-        .put("testString", AttributeValue.stringAttributeValue("attributeValue"));
-    openTelAttributeValueMap.put("testBoolean", AttributeValue.booleanAttributeValue(true));
-    openTelAttributeValueMap.put("testFloat", AttributeValue.doubleAttributeValue(5.5f));
-    openTelAttributeValueMap.put("testDouble", AttributeValue.doubleAttributeValue(5.55555));
-    openTelAttributeValueMap.put("testInt", AttributeValue.longAttributeValue(10));
-    openTelAttributeValueMap.put("testLong", AttributeValue.longAttributeValue(100L));
+    Attributes.Builder atAttributes = new Attributes.Builder();
+    atAttributes.setAttribute("testString", AttributeValue.stringAttributeValue("attributeValue"));
+    atAttributes.setAttribute("testBoolean", AttributeValue.booleanAttributeValue(true));
+    atAttributes.setAttribute("testFloat", AttributeValue.doubleAttributeValue(5.5f));
+    atAttributes.setAttribute("testDouble", AttributeValue.doubleAttributeValue(5.55555));
+    atAttributes.setAttribute("testInt", AttributeValue.longAttributeValue(10));
+    atAttributes.setAttribute("testLong", AttributeValue.longAttributeValue(100L));
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       span.addEvent("Test event start");
@@ -112,18 +111,19 @@ public class TracerTest {
     assertThat(allSpans).hasSize(1);
 
     SpanData spanData = allSpans.get(0);
-    assertThat(spanData.getTimedEvents()).hasSize(2);
+    assertThat(spanData.getEvents()).hasSize(2);
 
-    List<TimedEvent> timedEvents = spanData.getTimedEvents();
-    assertThat(timedEvents).element(0).extracting(TimedEvent::getName)
+    List<SpanData.Event> timedEvents = spanData.getEvents();
+    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName)
         .isEqualTo("Test event start");
-    assertThat(timedEvents).element(0).extracting(TimedEvent::getTotalAttributeCount).isEqualTo(0);
-    assertThat(timedEvents).element(1).extracting(TimedEvent::getName).isEqualTo("Test event end");
-    assertThat(timedEvents).element(1).extracting(TimedEvent::getTotalAttributeCount).isEqualTo(6);
-    assertThat(timedEvents.get(1).getAttributes())
-        .containsKeys("testString", "testBoolean", "testFloat", "testDouble", "testInt",
-                      "testLong");
-    assertThat(timedEvents.get(1).getAttributes()).isEqualTo(openTelAttributeValueMap);
+    assertThat(timedEvents).element(0).extracting(SpanData.Event::getTotalAttributeCount).isEqualTo(0);
+    assertThat(timedEvents).element(1).extracting(SpanData.Event::getName).isEqualTo("Test event end");
+    assertThat(timedEvents).element(1).extracting(SpanData.Event::getTotalAttributeCount).isEqualTo(6);
+
+    List<String> allKeys = new ArrayList<>();
+    timedEvents.get(1).getAttributes().forEach((key, value) -> allKeys.add(key));
+    assertThat(allKeys).contains("testString", "testBoolean", "testFloat", "testDouble", "testInt", "testLong");
+    assertThat(timedEvents.get(1).getAttributes()).isEqualTo(atAttributes.build());
   }
 
   @Test
@@ -258,7 +258,7 @@ public class TracerTest {
 
   private Tracer createTracer(List<SpanData> exportTo) {
     TracerSdkProvider provider = OpenTelemetrySdk.getTracerProvider();
-    provider.addSpanProcessor(SimpleSpansProcessor.create(new SpanExporter() {
+    provider.addSpanProcessor(SimpleSpanProcessor.newBuilder(new SpanExporter() {
       @Override
       public ResultCode export(Collection<SpanData> spans) {
         exportTo.addAll(spans);
@@ -272,7 +272,7 @@ public class TracerTest {
       @Override
       public void shutdown() {
       }
-    }));
+    }).build());
 
     io.opentelemetry.trace.Tracer otTracer = provider.get("get");
     return new OpenTelemetryTracer(
