@@ -71,8 +71,8 @@ bot.locators.relative.above_ = function(selector) {
     selector,
     function (rect1, rect2) {
       // "rect1" is the element we're comparing against. "rect2" is the variable element
-      var bottom = rect2.top + rect2.height;
-      return bottom < rect1.top;
+      var top = rect2.top + rect2.height;
+      return top < rect1.top;
     });
 };
 
@@ -83,7 +83,7 @@ bot.locators.relative.above_ = function(selector) {
  * bottom of an element we're comparing to.
  *
  * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
- * @return {!Filter} A function that determines whether the selector is above the given element.
+ * @return {!Filter} A function that determines whether the selector is below the given element.
  * @private
  */
 bot.locators.relative.below_ = function(selector) {
@@ -100,15 +100,15 @@ bot.locators.relative.below_ = function(selector) {
  * Relative locator to find elements that are to the left of the expected one.
  *
  * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
- * @return {!Filter} A function that determines whether the selector is above the given element.
+ * @return {!Filter} A function that determines whether the selector is left of the given element.
  * @private
  */
 bot.locators.relative.leftOf_ = function(selector) {
   return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
-      var right = rect2.left + rect2.width;
-      return right < rect1.left;
+      var left = rect2.left + rect2.width;
+      return left < rect1.left;
     });
 };
 
@@ -117,7 +117,7 @@ bot.locators.relative.leftOf_ = function(selector) {
  * Relative locator to find elements that are to the left of the expected one.
  *
  * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
- * @return {!Filter} A function that determines whether the selector is above the given element.
+ * @return {!Filter} A function that determines whether the selector is right of the given element.
  * @private
  */
 bot.locators.relative.rightOf_ = function(selector) {
@@ -136,7 +136,7 @@ bot.locators.relative.rightOf_ = function(selector) {
  *
  * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
  * @param {number=} opt_distance Optional distance in pixels to count as "near" (defaults to 50 pixels).
- * @return {!Filter} A function that determines whether the selector is above the given element.
+ * @return {!Filter} A function that determines whether the selector is near the given element.
  * @private
  */
 bot.locators.relative.near_ = function(selector, opt_distance) {
