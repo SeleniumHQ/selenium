@@ -147,21 +147,21 @@ public class ProxyCdpTest {
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
-    WebSocket socket = clientFactory.createClient(secureProxyServer.getUrl())
-        .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
-          @Override
-          public void onText(CharSequence data) {
-            text.set(data.toString());
-            latch.countDown();
-          }
-        });
+    try (WebSocket socket = clientFactory.createClient(secureProxyServer.getUrl())
+      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
+        @Override
+        public void onText(CharSequence data) {
+          text.set(data.toString());
+          latch.countDown();
+        }
+      })) {
+      socket.sendText("Cheese!");
 
-    socket.sendText("Cheese!");
-
-    assertThat(latch.await(5, SECONDS)).isTrue();
-    assertThat(text.get()).isEqualTo("Cheedar");
-
-    socket.close();
+      assertThat(latch.await(5, SECONDS)).isTrue();
+      assertThat(text.get()).isEqualTo("Cheedar");
+    } catch (Exception e) {
+      throw e;
+    }
   }
 
   private Server<?> createBackendServer(CountDownLatch latch, AtomicReference<String> incomingRef, String response, Config config) {
