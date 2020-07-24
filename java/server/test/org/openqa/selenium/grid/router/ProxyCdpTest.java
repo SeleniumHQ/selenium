@@ -85,7 +85,7 @@ public class ProxyCdpTest {
     // Create a backend server which will capture any incoming text message
     AtomicReference<String> text = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
-    Server<?> backend = createBackendServer(latch, text, "");
+    Server<?> backend = createBackendServer(latch, text, "", emptyConfig);
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
@@ -107,7 +107,7 @@ public class ProxyCdpTest {
   public void shouldForwardTextMessageFromServerToLocalEnd() throws URISyntaxException, InterruptedException {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago");
+    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago", emptyConfig);
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
@@ -137,12 +137,9 @@ public class ProxyCdpTest {
   public void shouldBeAbleToSendMessagesOverSecureWebSocket()
       throws URISyntaxException, InterruptedException {
 
-    ClientConfig config = ClientConfig.defaultConfig();
-    config = config.baseUrl(secureProxyServer.getUrl());
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    HttpClient client = new ReactorClient.Factory().createClient(config);
-
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheedar");
+    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheedar", secureConfig);
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
@@ -150,7 +147,7 @@ public class ProxyCdpTest {
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
-    WebSocket socket = client
+    WebSocket socket = clientFactory.createClient(secureProxyServer.getUrl())
         .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
           @Override
           public void onText(CharSequence data) {
@@ -167,9 +164,9 @@ public class ProxyCdpTest {
     socket.close();
   }
 
-  private Server<?> createBackendServer(CountDownLatch latch, AtomicReference<String> incomingRef, String response) {
+  private Server<?> createBackendServer(CountDownLatch latch, AtomicReference<String> incomingRef, String response, Config config) {
     return new NettyServer(
-      new BaseServerOptions(emptyConfig),
+      new BaseServerOptions(config),
       nullHandler,
       (uri, sink) -> Optional.of(msg -> {
         if (msg instanceof TextMessage) {
