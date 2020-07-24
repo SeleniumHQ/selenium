@@ -32,7 +32,6 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.*;
-import org.openqa.selenium.remote.http.reactor.ReactorClient;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
