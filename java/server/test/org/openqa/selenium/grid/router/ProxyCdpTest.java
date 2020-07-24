@@ -31,12 +31,8 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.TextMessage;
-import org.openqa.selenium.remote.http.WebSocket;
+import org.openqa.selenium.remote.http.*;
+import org.openqa.selenium.remote.http.reactor.ReactorClient;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -57,8 +53,10 @@ public class ProxyCdpTest {
 
   private final HttpHandler nullHandler = req -> new HttpResponse();
   private final Config emptyConfig = new MapConfig(Map.of());
+  private Config secureConfig;
   private Server<?> proxyServer;
   private SessionMap sessions;
+  private Server<?> secureProxyServer;
 
   @Before
   public void setUp() {
@@ -69,8 +67,15 @@ public class ProxyCdpTest {
 
     // Set up the proxy we'll be using
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
     ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
     proxyServer = new NettyServer(new BaseServerOptions(emptyConfig), nullHandler, proxy).start();
+
+    secureConfig = new MapConfig(ImmutableMap.of(
+        "server", ImmutableMap.of(
+            "https-self-signed", true)));
+
+    secureProxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy).start();
   }
 
   @Test
@@ -131,14 +136,13 @@ public class ProxyCdpTest {
   @Test
   public void shouldBeAbleToSendMessagesOverSecureWebSocket()
       throws URISyntaxException, InterruptedException {
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    Config secureConfig = new MapConfig(ImmutableMap.of("node", ImmutableMap.of("--self-signed-https","","https-private-key", "", "https-certificate", "")));
+    ClientConfig config = ClientConfig.defaultConfig();
+    config = config.baseUrl(secureProxyServer.getUrl());
 
-    ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
-    proxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy).start();
+    HttpClient client = new ReactorClient.Factory().createClient(config);
 
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago");
+    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheedar");
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
@@ -146,7 +150,7 @@ public class ProxyCdpTest {
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
-    WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
+    WebSocket socket = client
         .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
           @Override
           public void onText(CharSequence data) {
@@ -158,7 +162,7 @@ public class ProxyCdpTest {
     socket.sendText("Cheese!");
 
     assertThat(latch.await(5, SECONDS)).isTrue();
-    assertThat(text.get()).isEqualTo("Asiago");
+    assertThat(text.get()).isEqualTo("Cheedar");
 
     socket.close();
   }
