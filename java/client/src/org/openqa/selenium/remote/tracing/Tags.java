@@ -52,7 +52,6 @@ public class Tags {
     if (res.getTargetHost() != null) {
       span.setAttribute("http.target_host", res.getTargetHost());
     }
-    res.getTargetHost();
     span.setAttribute("http.status_code", statusCode);
 
     if (statusCode > 99 && statusCode < 400) {

@@ -18,15 +18,19 @@
 package org.openqa.selenium.grid.log;
 
 import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.common.Attributes;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
+import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
+
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
@@ -40,8 +44,11 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -58,6 +65,8 @@ public class LoggingOptions {
   // tracing more than once for the entire JVM, so we're never going to be
   // adding unit tests for this.
   private static Tracer tracer;
+
+  public static final Json JSON = new Json();
 
   private final Config config;
 
@@ -102,7 +111,53 @@ public class LoggingOptions {
     exporters.add(SimpleSpanProcessor.newBuilder(new SpanExporter() {
       @Override
       public ResultCode export(Collection<SpanData> spans) {
-        spans.forEach(span -> LOG.fine(String.valueOf(span)));
+
+        spans.forEach(span -> {
+          LOG.fine(String.valueOf(span));
+
+          String traceId = span.getTraceId().toLowerBase16();
+          String spanId = span.getSpanId().toLowerBase16();
+          List<Event> eventList = span.getEvents();
+
+          eventList.forEach(event -> {
+            Map<String, Object> map = new TreeMap<>();
+            map.put("trace.id", traceId);
+            map.put("span.id", spanId);
+            map.put("event.name", event.getName());
+            Attributes attributes = event.getAttributes();
+            attributes.forEach((key, value) -> {
+              Object attributeValue = null;
+              switch (value.getType()) {
+                case LONG:
+                  attributeValue = value.getLongValue();
+                  break;
+                case DOUBLE:
+                  attributeValue = value.getDoubleValue();
+                  break;
+                case STRING:
+                  attributeValue = value.getStringValue();
+                  break;
+                case BOOLEAN:
+                  attributeValue = value.getBooleanValue();
+                  break;
+                case STRING_ARRAY:
+                  attributeValue = value.getStringArrayValue();
+                  break;
+                case LONG_ARRAY:
+                  attributeValue = value.getLongArrayValue();
+                  break;
+                case DOUBLE_ARRAY:
+                  attributeValue = value.getDoubleArrayValue();
+                  break;
+                case BOOLEAN_ARRAY:
+                  attributeValue = value.getDoubleArrayValue();
+                  break;
+              }
+              map.put(key, attributeValue);
+            });
+            LOG.log(Level.INFO, JSON.toJson(map));
+          });
+        });
         return ResultCode.SUCCESS;
       }
 

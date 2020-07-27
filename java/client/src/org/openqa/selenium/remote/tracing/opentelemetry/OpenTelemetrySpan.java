@@ -112,6 +112,21 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
               otAttributes.setAttribute(key, AttributeValue.stringAttributeValue(value.getStringValue()));
               break;
 
+            case STRING_ARRAY:
+              otAttributes.setAttribute(key, AttributeValue.arrayAttributeValue(value.getStringArrayValue()));
+              break;
+
+            case LONG_ARRAY:
+              otAttributes.setAttribute(key, AttributeValue.arrayAttributeValue(value.getLongArrayValue()));
+              break;
+
+            case DOUBLE_ARRAY:
+              otAttributes.setAttribute(key, AttributeValue.arrayAttributeValue(value.getDoubleArrayValue()));
+              break;
+
+            case BOOLEAN_ARRAY:
+              otAttributes.setAttribute(key, AttributeValue.arrayAttributeValue(value.getBooleanArrayValue()));
+              break;
             default:
               throw new IllegalArgumentException("Unrecognized status value type: " + value.getAttributeType());
           }

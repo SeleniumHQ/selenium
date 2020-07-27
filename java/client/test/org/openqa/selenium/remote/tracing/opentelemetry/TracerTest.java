@@ -86,6 +86,11 @@ public class TracerTest {
   public void shouldBeAbleToCreateASpanWithEvents() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
+    String[] stringArray = new String[]{"Hey", "Hello"};
+    Long[] longArray = new Long[]{10L, 5L};
+    Double[] doubleArray = new Double[]{4.5, 2.5};
+    Boolean[] booleanArray = new Boolean[]{true, false};
+
     Attributes.Builder atAttributes = new Attributes.Builder();
     atAttributes.setAttribute("testString", AttributeValue.stringAttributeValue("attributeValue"));
     atAttributes.setAttribute("testBoolean", AttributeValue.booleanAttributeValue(true));
@@ -93,6 +98,10 @@ public class TracerTest {
     atAttributes.setAttribute("testDouble", AttributeValue.doubleAttributeValue(5.55555));
     atAttributes.setAttribute("testInt", AttributeValue.longAttributeValue(10));
     atAttributes.setAttribute("testLong", AttributeValue.longAttributeValue(100L));
+    atAttributes.setAttribute("testStringArray", AttributeValue.arrayAttributeValue(stringArray));
+    atAttributes.setAttribute("testLongArray", AttributeValue.arrayAttributeValue(longArray));
+    atAttributes.setAttribute("testDoubleArray", AttributeValue.arrayAttributeValue(doubleArray));
+    atAttributes.setAttribute("testBooleanArray", AttributeValue.arrayAttributeValue(booleanArray));
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       span.addEvent("Test event start");
@@ -104,6 +113,10 @@ public class TracerTest {
       attributeValueMap.put("testDouble", EventAttribute.setValue(5.55555));
       attributeValueMap.put("testInt", EventAttribute.setValue(10));
       attributeValueMap.put("testLong", EventAttribute.setValue(100L));
+      attributeValueMap.put("testStringArray", EventAttribute.setValue(stringArray));
+      attributeValueMap.put("testLongArray", EventAttribute.setValue(longArray));
+      attributeValueMap.put("testDoubleArray", EventAttribute.setValue(doubleArray));
+      attributeValueMap.put("testBooleanArray", EventAttribute.setValue(booleanArray));
 
       span.addEvent("Test event end", attributeValueMap);
     }
@@ -118,11 +131,13 @@ public class TracerTest {
         .isEqualTo("Test event start");
     assertThat(timedEvents).element(0).extracting(SpanData.Event::getTotalAttributeCount).isEqualTo(0);
     assertThat(timedEvents).element(1).extracting(SpanData.Event::getName).isEqualTo("Test event end");
-    assertThat(timedEvents).element(1).extracting(SpanData.Event::getTotalAttributeCount).isEqualTo(6);
+    assertThat(timedEvents).element(1).extracting(SpanData.Event::getTotalAttributeCount).isEqualTo(10);
 
     List<String> allKeys = new ArrayList<>();
     timedEvents.get(1).getAttributes().forEach((key, value) -> allKeys.add(key));
-    assertThat(allKeys).contains("testString", "testBoolean", "testFloat", "testDouble", "testInt", "testLong");
+    assertThat(allKeys)
+        .contains("testString", "testBoolean", "testFloat", "testDouble", "testInt", "testLong",
+                  "testStringArray", "testLongArray", "testDoubleArray", "testBooleanArray");
     assertThat(timedEvents.get(1).getAttributes()).isEqualTo(atAttributes.build());
   }
 
