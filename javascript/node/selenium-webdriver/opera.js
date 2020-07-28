@@ -47,7 +47,7 @@
  * from the current process and direct all output to /dev/null. You may obtain
  * a handle to this default service using
  * {@link #getDefaultService getDefaultService()} and change its configuration
- * with {@link #setDefaultService setDefault()}.
+ * with {@link #setDefaultService setDefaultService()}.
  *
  * You may also create a {@link Driver} with its own driver service. This is
  * useful if you need to capture the server's log output for a specific session:
