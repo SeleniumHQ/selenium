@@ -20,10 +20,15 @@ package org.openqa.selenium.remote.tracing;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class Tags {
+
+  private static final Charset UTF_8 = Charset.forName("UTF-8");
 
   private final static Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Map.of(
       401, Status.UNAUTHENTICATED,
@@ -40,19 +45,19 @@ public class Tags {
   }
 
   public static final BiConsumer<Span, Span.Kind> KIND =
-    (span, kind) -> span.setAttribute("span.kind", kind.toString());
+    (span, kind) -> span.setAttribute(AttributeKey.SPAN_KIND.toString(), kind.toString());
 
   public static final BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
-    span.setAttribute("http.method", req.getMethod().toString());
-    span.setAttribute("http.url", req.getUri());
+    span.setAttribute(AttributeKey.HTTP_METHOD.toString(), req.getMethod().toString());
+    span.setAttribute(AttributeKey.HTTP_URL.toString(), req.getUri());
   };
 
   public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
     int statusCode = res.getStatus();
     if (res.getTargetHost() != null) {
-      span.setAttribute("http.target_host", res.getTargetHost());
+      span.setAttribute(AttributeKey.HTTP_TARGET_HOST.toString(), res.getTargetHost());
     }
-    span.setAttribute("http.status_code", statusCode);
+    span.setAttribute(AttributeKey.HTTP_STATUS_CODE.toString(), statusCode);
 
     if (statusCode > 99 && statusCode < 400) {
       span.setStatus(Status.OK);
@@ -64,4 +69,37 @@ public class Tags {
       span.setStatus(Status.UNKNOWN);
     }
   };
+
+  public static final BiConsumer<Map<String, EventAttributeValue>, HttpRequest>
+      HTTP_REQUEST_EVENT =
+      (map, req) -> {
+        map.put(AttributeKey.HTTP_METHOD.toString(),
+                EventAttribute.setValue(req.getMethod().toString()));
+        map.put(AttributeKey.HTTP_URL.toString(), EventAttribute.setValue(req.getUri()));
+      };
+
+  public static final BiConsumer<Map<String, EventAttributeValue>, HttpResponse>
+      HTTP_RESPONSE_EVENT =
+      (map, res) -> {
+        int statusCode = res.getStatus();
+        if (res.getTargetHost() != null) {
+          map.put(AttributeKey.HTTP_TARGET_HOST.toString(),
+                  EventAttribute.setValue(res.getTargetHost()));
+        }
+        map.put(AttributeKey.HTTP_STATUS_CODE.toString(), EventAttribute.setValue(statusCode));
+      };
+
+  public static final BiConsumer<Map<String, EventAttributeValue>, Throwable>
+      EXCEPTION =
+      (map, t) -> {
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+
+        map.put(AttributeKey.EXCEPTION_TYPE.toString(),
+                EventAttribute.setValue(t.getClass().getName()));
+        map.put(AttributeKey.EXCEPTION_STACKTRACE.toString(),
+                EventAttribute.setValue(sw.toString()));
+
+      };
+
 }

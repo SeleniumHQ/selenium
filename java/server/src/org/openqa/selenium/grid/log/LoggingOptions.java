@@ -27,6 +27,7 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
+import io.opentelemetry.trace.Status;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
@@ -42,11 +43,11 @@ import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -117,14 +118,18 @@ public class LoggingOptions {
 
           String traceId = span.getTraceId().toLowerBase16();
           String spanId = span.getSpanId().toLowerBase16();
+          Status status = span.getStatus();
           List<Event> eventList = span.getEvents();
-
           eventList.forEach(event -> {
-            Map<String, Object> map = new TreeMap<>();
-            map.put("trace.id", traceId);
-            map.put("span.id", spanId);
-            map.put("event.name", event.getName());
+            Map<String, Object> map = new HashMap<>();
+            map.put("eventTime", event.getEpochNanos());
+            map.put("traceId", traceId);
+            map.put("spanId", spanId);
+            map.put("spanKind", span.getKind().toString());
+            map.put("eventName", event.getName());
+
             Attributes attributes = event.getAttributes();
+            Map<String, Object> attributeMap = new HashMap<>();
             attributes.forEach((key, value) -> {
               Object attributeValue = null;
               switch (value.getType()) {
@@ -150,12 +155,19 @@ public class LoggingOptions {
                   attributeValue = value.getDoubleArrayValue();
                   break;
                 case BOOLEAN_ARRAY:
-                  attributeValue = value.getDoubleArrayValue();
+                  attributeValue = value.getBooleanArrayValue();
                   break;
               }
-              map.put(key, attributeValue);
+              attributeMap.put(key, attributeValue);
             });
-            LOG.log(Level.INFO, JSON.toJson(map));
+            map.put("attributes",attributeMap);
+            if(status.isOk()) {
+              LOG.log(Level.INFO, JSON.toJson(map));
+            }
+            else
+            {
+              LOG.log(Level.WARNING, JSON.toJson(map));
+            }
           });
         });
         return ResultCode.SUCCESS;
