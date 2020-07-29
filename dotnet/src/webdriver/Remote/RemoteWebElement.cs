@@ -891,8 +891,8 @@ namespace OpenQA.Selenium.Remote
                     {
                         string fileName = Path.GetFileName(localFile);
                         zipArchive.CreateEntryFromFile(localFile, fileName);
-                        base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
+                    base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
