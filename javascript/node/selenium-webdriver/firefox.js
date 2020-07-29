@@ -117,7 +117,6 @@
 'use strict';
 
 const path = require('path');
-
 const Symbols = require('./lib/symbols');
 const command = require('./lib/command');
 const http = require('./http');

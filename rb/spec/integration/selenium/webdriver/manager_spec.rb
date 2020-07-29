@@ -22,8 +22,8 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Manager do
-      describe 'logs', except: [{browser: %i[edge edge_chrome firefox ie safari safari_preview]},
-                                {driver: :remote, browser: :chrome}] do
+      describe 'logs', except: [{browser: %i[firefox ie safari safari_preview]},
+                                {driver: :remote, browser: %i[chrome edge]}] do
         it 'can fetch remote log types', only: {driver: :remote} do
           expect(driver.manage.logs.available_types).to include(:server, :browser, :driver)
         end
@@ -43,7 +43,7 @@ module Selenium
         end
 
         # Chrome - turned off by default
-        it 'can get the driver log', except: {browser: %i[chrome edge_chrome]} do
+        it 'can get the driver log', except: {browser: %i[chrome edge]} do
           driver.navigate.to url_for('simpleTest.html')
 
           entries = driver.manage.logs.get(:driver)
@@ -64,14 +64,14 @@ module Selenium
           expect(cookies.first[:value]).to eq('bar')
         end
 
-        it 'should add sameSite cookie with attribute Strict', only: {browser: :chrome} do
+        it 'should add sameSite cookie with attribute Strict', only: {browser: %i[chrome edge]} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Strict'
 
           expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Strict')
         end
 
-        it 'should add sameSite cookie with attribute Lax', only: {browser: :chrome} do
+        it 'should add sameSite cookie with attribute Lax', only: {browser: %i[chrome edge]} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Lax'
           expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Lax')
@@ -84,8 +84,7 @@ module Selenium
           expect(driver.manage.cookie_named('foo')[:value]).to eq('bar')
         end
 
-        # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
-        it 'should delete one', except: {browser: :edge} do
+        it 'should delete one' do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
@@ -93,7 +92,7 @@ module Selenium
           expect(driver.manage.all_cookies.find { |c| c[:name] == 'foo' }).to be_nil
         end
 
-        it 'should delete all', except: {browser: :edge} do
+        it 'should delete all' do
           driver.navigate.to url_for('xhtmlTest.html')
 
           driver.manage.add_cookie name: 'foo', value: 'bar'
@@ -121,7 +120,7 @@ module Selenium
 
         types = %i[tab window]
         types.each do |type|
-          it "should be able to open a new #{type}", only: {browser: %i[safari_preview firefox ie chrome edge_chrome]} do
+          it "should be able to open a new #{type}" do
             before_window_handles = driver.window_handles.length
             driver.manage.new_window(type)
             expect(driver.window_handles.length).to eq(before_window_handles + 1)

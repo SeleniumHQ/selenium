@@ -17,15 +17,26 @@
 
 package org.openqa.selenium.grid.server;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.web.CheckContentTypeHeader;
+import org.openqa.selenium.grid.web.CheckOriginHeader;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 public class NetworkOptions {
 
   private final Config config;
+  // These are commonly used by process which can't set various headers.
+  private final Set<String> SKIP_CHECKS_ON = ImmutableSet.of("/status", "/readyz");
 
   public NetworkOptions(Config config) {
     this.config = Require.nonNull("Config", config);
@@ -33,5 +44,27 @@ public class NetworkOptions {
 
   public HttpClient.Factory getHttpClientFactory(Tracer tracer) {
     return new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
+  }
+
+  public Filter getSpecComplianceChecks() {
+    // Base case: we do nothing
+    Filter toReturn = httpHandler -> httpHandler;
+
+    if (config.getBool("network", "relax_checks").orElse(false)) {
+      return toReturn;
+    }
+
+    if (config.getBool("network", "check_content_type").orElse(true)) {
+      toReturn = toReturn.andThen(new CheckContentTypeHeader(SKIP_CHECKS_ON));
+    }
+
+    boolean checkOrigin = config.getBool("network", "check_origin_header").orElse(true);
+    Optional<List<String>> allowedOrigins = config.getAll("network", "allowed_origins");
+
+    if (checkOrigin || allowedOrigins.isPresent()) {
+      toReturn = toReturn.andThen(new CheckOriginHeader(allowedOrigins.orElse(ImmutableList.of()), SKIP_CHECKS_ON));
+    }
+
+    return toReturn;
   }
 }

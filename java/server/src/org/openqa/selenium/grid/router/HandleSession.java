@@ -30,11 +30,16 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -82,7 +87,10 @@ class HandleSession implements HttpHandler {
         return res;
       } catch (ExecutionException e) {
         span.setAttribute("error", true);
-        span.setAttribute("error.message", e.getMessage());
+        span.setStatus(Status.CANCELLED);
+        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
+        span.addEvent("Error in executing request for an existing session", attributeValueMap);
 
         Throwable cause = e.getCause();
         if (cause instanceof RuntimeException) {

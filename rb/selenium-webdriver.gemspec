@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
   s.license = 'Apache-2.0'
   s.homepage = 'https://github.com/SeleniumHQ/selenium'
   s.metadata = {
-    'changelog_uri' => 'https://github.com/SeleniumHQ/selenium/blob/master/rb/CHANGES',
-    'source_code_uri' => 'https://github.com/SeleniumHQ/selenium/tree/master/rb'
+    'changelog_uri' => 'https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES',
+    'source_code_uri' => 'https://github.com/SeleniumHQ/selenium/tree/trunk/rb'
   }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=

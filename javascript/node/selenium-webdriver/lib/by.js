@@ -222,7 +222,6 @@ class By {
    *
    * @param {string} name The tag name to search for.
    * @return {!By} The new locator.
-   * @deprecated Use {@link By.css() By.css(tagName)} instead.
    */
   static tagName(name) {
     return By.css(name);
@@ -248,6 +247,12 @@ class By {
     // The static By.name() overrides this.constructor.name.  Shame...
     return `By(${this.using}, ${this.value})`;
   }
+
+  toObject() {
+    var tmp = {};
+    tmp[this.using] = this.value;
+    return tmp;
+  }
 }
 
 function withTagName(tagName) {
@@ -256,15 +261,15 @@ function withTagName(tagName) {
 
 
 /**
- * Describes a mechanism for locating an element relative to others 
+ * Describes a mechanism for locating an element relative to others
  * on the page.
  * @final
  */
 class RelativeBy {
 
   /**
-   * @param {string} tagName 
-   * @param {Array<Object>} filters 
+   * @param {string} tagName
+   * @param {Array<Object>} filters
    */
   constructor(tagName, filters = null) {
     this.root = tagName;
@@ -273,11 +278,11 @@ class RelativeBy {
 
   /**
    * Look for elements above the root element passed in
-   * @param {string|WebElement} locatorOrElement 
+   * @param {string|WebElement} locatorOrElement
    * @return {!RelativeBy} Return this object
    */
   above(locatorOrElement) {
-    this.filters.push({ "kind": "above", "args": [locatorOrElement] });
+    this.filters.push({ "kind": "above", "args": [this.getLocator(locatorOrElement)] });
     return this;
   }
 
@@ -287,7 +292,7 @@ class RelativeBy {
    * @return {!RelativeBy} Return this object
    */
   below(locatorOrElement) {
-    this.filters.push({ "kind": "below", "args": [locatorOrElement] });
+    this.filters.push({ "kind": "below", "args": [this.getLocator(locatorOrElement)] });
     return this;
   }
 
@@ -297,7 +302,7 @@ class RelativeBy {
    * @return {!RelativeBy} Return this object
    */
   toLeftOf(locatorOrElement) {
-    this.filters.push({ "kind": "left", "args": [locatorOrElement] });
+    this.filters.push({ "kind": "left", "args": [this.getLocator(locatorOrElement)] });
     return this;
   }
 
@@ -307,7 +312,7 @@ class RelativeBy {
   * @return {!RelativeBy} Return this object
   */
   toRightOf(locatorOrElement) {
-    this.filters.push({ "kind": "right", "args": [locatorOrElement] });
+    this.filters.push({ "kind": "right", "args": [this.getLocator(locatorOrElement)] });
     return this;
   }
 
@@ -317,7 +322,7 @@ class RelativeBy {
   * @return {!RelativeBy} Return this object
   */
   near(locatorOrElement) {
-    this.filters.push({ "kind": "near", "args": [locatorOrElement]});
+    this.filters.push({ "kind": "near", "args": [this.getLocator(locatorOrElement)]});
     return this;
   }
 
@@ -329,10 +334,26 @@ class RelativeBy {
   marshall() {
     return {
       "relative": {
-        "root": this.root,
+        "root": {"css selector": this.root},
         "filters": this.filters,
       }
     }
+  }
+
+  getLocator(locatorOrElement) {
+    let toFind;
+    if (locatorOrElement instanceof By) {
+      toFind = locatorOrElement.toObject();
+    } else {
+      toFind = locatorOrElement;
+    }
+    return toFind;
+  }
+
+  /** @override */
+  toString() {
+    // The static By.name() overrides this.constructor.name.  Shame...
+    return `RelativeBy(${JSON.stringify(this.marshall())})`;
   }
 }
 

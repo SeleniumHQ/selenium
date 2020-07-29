@@ -23,12 +23,15 @@ import org.openqa.selenium.internal.Require;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 public class JdbcSessionMapOptions {
 
   private static final String SESSIONS_SECTION = "sessions";
   private static final Logger LOG = Logger.getLogger(JdbcSessionMapOptions.class.getName());
+  protected static String jdbcUrl;
+  protected static String jdbcUser;
 
   private final Config config;
 
@@ -39,10 +42,21 @@ public class JdbcSessionMapOptions {
   }
 
   public Connection getJdbcConnection() throws SQLException {
-    String jdbcUrl = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-url"));
-    String jdbcUser = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-user"));
-    String jdbcPassword = String.valueOf(config.get(SESSIONS_SECTION, "jdbc-password"));
+    try {
 
-    return DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
+      jdbcUrl = config.get(SESSIONS_SECTION, "jdbc-url").get();
+      jdbcUser = config.get(SESSIONS_SECTION, "jdbc-user").get();
+
+      String jdbcPassword = config.get(SESSIONS_SECTION, "jdbc-password").get();
+
+      if (jdbcUrl.isEmpty()) {
+        throw new JdbcException(
+            "Missing JDBC Url value. Add sessions option value --jdbc-url <url-value>");
+      }
+      return DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
+    } catch (NoSuchElementException e) {
+      throw new JdbcException(
+          "Missing session options. Check and add all the following options \n --jdbc-url <url> \n --jdbc-user <user> \n --jdbc-password <password>");
+    }
   }
 }

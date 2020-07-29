@@ -41,7 +41,7 @@ module Selenium
           use_per_process_proxy: 'ie.usePerProcessProxy',
           validate_cookie_document_type: 'ie.validateCookieDocumentType'
         }.freeze
-        BROWSER = 'internet_explorer'
+        BROWSER = 'internet explorer'
 
         CAPABILITIES.each_key do |key|
           define_method key do

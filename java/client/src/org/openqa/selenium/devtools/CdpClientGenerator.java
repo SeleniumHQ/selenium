@@ -28,7 +28,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
@@ -77,7 +76,6 @@ public class CdpClientGenerator {
     model.dumpTo(target);
 
     Path outputJar = Paths.get(args[2]).toAbsolutePath();
-    System.out.println(outputJar);
     Files.createDirectories(outputJar.getParent());
 
     try (OutputStream os = Files.newOutputStream(outputJar);

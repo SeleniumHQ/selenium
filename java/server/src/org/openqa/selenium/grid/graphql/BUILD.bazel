@@ -3,12 +3,12 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 java_library(
     name = "graphql",
     srcs = glob(["*.java"]),
+    resources = [
+        "selenium-grid-schema.graphqls",
+    ],
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid/graphql:__pkg__",
-    ],
-    resources = [
-        "selenium-grid-schema.graphqls",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

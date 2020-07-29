@@ -83,6 +83,8 @@ const error = require('./lib/error');
 const promise = require('./lib/promise');
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
+const WebSocket = require('ws');
+const cdp = require('./devtools/CDPConnection');
 const remote = require('./remote');
 
 
@@ -95,6 +97,7 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  SET_PERMISSION: 'setPermission',
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
@@ -138,6 +141,10 @@ function configureExecutor(executor, vendorPrefix) {
       Command.SEND_DEVTOOLS_COMMAND,
       'POST',
       '/session/:sessionId/chromium/send_command');
+  executor.defineCommand(
+      Command.SET_PERMISSION,
+      'POST',
+      '/session/:sessionId/permissions');
   executor.defineCommand(
       Command.GET_CAST_SINKS,
       'GET',
@@ -666,6 +673,66 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
+   * Creates a new WebSocket connection.
+   * @return {!Promise<resolved>} A new CDP instance.
+   */
+  async createCDPConnection() {
+    const caps = await this.getCapabilities()
+    const seOptions = caps['map_'].get('se:options') || new Map();
+    const vendorInfo = caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') || new Map();
+    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress'];
+    this._wsUrl = await this.getWsUrl(debuggerUrl);
+    return new Promise((resolve, reject) => {
+      try {
+        this._wsConnection = new WebSocket(this._wsUrl);
+      } catch (err) {
+        reject(err);
+        return
+      }
+
+      this._wsConnection.on('open', () => {
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection);
+        resolve(this._cdpConnection);
+      })
+
+      this._wsConnection.on('error', (error) => {
+        reject(error);
+      })
+    });
+  }
+
+  /**
+   * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
+   * @param {string} debuggerAddress
+   * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
+   */
+  async getWsUrl(debuggerAddress) {
+    let request = new http.Request('GET', '/json/version');
+    let client = new http.HttpClient("http://" + debuggerAddress);
+    let url;
+    let response = await client.send(request);
+    url = JSON.parse(response.body)['webSocketDebuggerUrl'];
+    return url;
+  }
+  /**
+   * Set a permission state to the given value.
+   *
+   * @param {string} name A name of the permission to update.
+   * @param {('granted'|'denied'|'prompt')} state State to set permission to.
+   * @returns {!Promise<Object>} A promise that will be resolved when the
+   *     command has finished.
+   * @see <https://w3c.github.io/permissions/#permission-registry> for valid
+   *     names
+   */
+  setPermission(name, state) {
+    return this.execute(
+      new command.Command(Command.SET_PERMISSION)
+        .setParameter('descriptor', { name })
+        .setParameter('state', state),
+    );
+  }
+
+  /**
    * Sends a DevTools command to change the browser's download directory.
    *
    * @param {string} path The desired download directory.
@@ -703,7 +770,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the target device has been selected to respond further webdriver commands.
    */
@@ -716,7 +783,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Initiates tab mirroring for the current browser tab on the specified device.
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the mirror command has been issued to the device.
    */
@@ -727,9 +794,7 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
-   *  a
-   *
-   * @param {String} Friendly name of the target device.
+   * Returns an error message when there is any issue in a Cast session.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the mirror command has been issued to the device.
    */
@@ -742,7 +807,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Stops casting from media router to the specified device, if connected.
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the stop command has been issued to the device.
    */

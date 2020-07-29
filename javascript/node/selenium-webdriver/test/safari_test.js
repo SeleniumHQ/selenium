@@ -18,10 +18,8 @@
 'use strict';
 
 const assert = require('assert');
-
 const safari = require('../safari');
 const test = require('../lib/test');
-const webdriver = require('..');
 
 
 test.suite(function(env) {

@@ -20,17 +20,27 @@ package org.openqa.selenium.remote.tracing;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class Tags {
+
+  private final static Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Map.of(
+      401, Status.UNAUTHENTICATED,
+      404, Status.NOT_FOUND,
+      408, Status.DEADLINE_EXCEEDED,
+      429, Status.RESOURCE_EXHAUSTED,
+      499, Status.CANCELLED,
+      501, Status.UNIMPLEMENTED,
+      503, Status.UNAVAILABLE,
+      504, Status.DEADLINE_EXCEEDED);
 
   private Tags() {
     // Utility class
   }
 
-  public static final BiConsumer<Span, Span.Kind> KIND = (span, kind) -> {
-    span.setAttribute("span.kind", kind.toString());
-  };
+  public static final BiConsumer<Span, Span.Kind> KIND =
+    (span, kind) -> span.setAttribute("span.kind", kind.toString());
 
   public static final BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
     span.setAttribute("http.method", req.getMethod().toString());
@@ -38,6 +48,21 @@ public class Tags {
   };
 
   public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
-    span.setAttribute("http.status_code", res.getStatus());
+    int statusCode = res.getStatus();
+    if (res.getTargetHost() != null) {
+      span.setAttribute("http.target_host", res.getTargetHost());
+    }
+    res.getTargetHost();
+    span.setAttribute("http.status_code", statusCode);
+
+    if (statusCode > 99 && statusCode < 400) {
+      span.setStatus(Status.OK);
+    } else if (statusCode > 399 && statusCode < 500) {
+      span.setStatus(STATUS_CODE_TO_TRACING_STATUS.getOrDefault(statusCode, Status.INVALID_ARGUMENT));
+    } else if (statusCode > 499 && statusCode < 600) {
+      span.setStatus(STATUS_CODE_TO_TRACING_STATUS.getOrDefault(statusCode, Status.INTERNAL));
+    } else {
+      span.setStatus(Status.UNKNOWN);
+    }
   };
 }

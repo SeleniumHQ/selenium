@@ -47,6 +47,8 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -58,6 +60,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -177,33 +180,48 @@ public class LocalNode extends Node {
 
       if (getCurrentSessionCount() >= maxSessionCount) {
         span.setAttribute("error", true);
-        span.setStatus(Status.RESOURCE_EXHAUSTED.withDescription("Max session count reached"));
+        span.setStatus(Status.RESOURCE_EXHAUSTED);
+        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+        attributeValueMap
+            .put("Current session count value", EventAttribute.setValue(getCurrentSessionCount()));
+        attributeValueMap.put("Max session count value", EventAttribute.setValue(maxSessionCount));
+        span.addEvent("Max session count reached");
         return Optional.empty();
       }
 
-      Optional<ActiveSession> possibleSession = Optional.empty();
-      SessionSlot slot = null;
-      for (SessionSlot factory : factories) {
-        if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
-          continue;
-        }
+      // Identify possible slots to use as quickly as possible to enable concurrent session starting
+      SessionSlot slotToUse = null;
+      synchronized(factories) {
+        for (SessionSlot factory : factories) {
+          if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
+            continue;
+          }
 
-        possibleSession = factory.apply(sessionRequest);
-        if (possibleSession.isPresent()) {
-          slot = factory;
+          factory.reserve();
+          slotToUse = factory;
           break;
         }
       }
 
-      if (!possibleSession.isPresent()) {
+      if (slotToUse == null) {
         span.setAttribute("error", true);
-        span.setStatus(Status.NOT_FOUND.withDescription(
-            "No slots available for capabilities " + sessionRequest.getCapabilities()));
+        span.setStatus(Status.NOT_FOUND);
+        span.addEvent("No slot matched capabilities " + sessionRequest.getCapabilities());
+        return Optional.empty();
+      }
+
+      Optional<ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
+
+      if (!possibleSession.isPresent()) {
+        slotToUse.release();
+        span.setAttribute("error", true);
+        span.setStatus(Status.NOT_FOUND);
+        span.addEvent("No slots available for capabilities " + sessionRequest.getCapabilities());
         return Optional.empty();
       }
 
       ActiveSession session = possibleSession.get();
-      currentSessions.put(session.getId(), slot);
+      currentSessions.put(session.getId(), slotToUse);
 
       SESSION_ID.accept(span, session.getId());
       CAPABILITIES.accept(span, session.getCapabilities());
