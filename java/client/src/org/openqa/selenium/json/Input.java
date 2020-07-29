@@ -20,11 +20,11 @@ package org.openqa.selenium.json;
 import org.openqa.selenium.internal.Require;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.nio.CharBuffer;
 
 /**
- * Similar to a {@link Readable} but with the ability to peek a single character ahead.
+ * Similar to a {@link Reader} but with the ability to peek a single character ahead.
  * <p>
  * For the sake of providing a useful {@link #toString()} implementation, keeps a small circular
  * buffer of the most recently read characters.
@@ -32,14 +32,14 @@ import java.nio.CharBuffer;
 class Input {
 
   public static final char EOF = (char) -1;
-  private final Readable source;
+  private final Reader source;
   private boolean read;
   private char peekedChar;
   private char[] lastRead = new char[128];
   private int insertAt = 0;
   private boolean filled = false;
 
-  public Input(Readable source) {
+  public Input(Reader source) {
     this.source = Require.nonNull("Source", source);
   }
 
@@ -76,17 +76,10 @@ class Input {
       return;
     }
 
-    CharBuffer buf = CharBuffer.allocate(1);
-    int charsRead;
     try {
-      charsRead = source.read(buf);
+      peekedChar = (char) source.read();
     } catch (IOException e) {
       throw new UncheckedIOException(e.getMessage(), e);
-    }
-    if (charsRead != 1) {
-      peekedChar = EOF;
-    } else {
-      peekedChar = buf.array()[0];
     }
     read = true;
   }

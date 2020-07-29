@@ -303,8 +303,14 @@ public class JsonOutput implements Closeable {
 
     String.valueOf(obj)
         .chars()
-        .mapToObj(i -> ESCAPES.getOrDefault(i, "" + (char) i))
-        .forEach(toReturn::append);
+        .forEach(i -> {
+          String escaped = ESCAPES.get(i);
+          if (escaped != null) {
+            toReturn.append(escaped);
+          } else {
+            toReturn.append((char) i);
+          }
+        });
 
     toReturn.append('"');
 
