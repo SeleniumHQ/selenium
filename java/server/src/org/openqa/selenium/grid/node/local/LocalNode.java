@@ -189,21 +189,31 @@ public class LocalNode extends Node {
         return Optional.empty();
       }
 
-      Optional<ActiveSession> possibleSession = Optional.empty();
-      SessionSlot slot = null;
-      for (SessionSlot factory : factories) {
-        if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
-          continue;
-        }
+      // Identify possible slots to use as quickly as possible to enable concurrent session starting
+      SessionSlot slotToUse = null;
+      synchronized(factories) {
+        for (SessionSlot factory : factories) {
+          if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
+            continue;
+          }
 
-        possibleSession = factory.apply(sessionRequest);
-        if (possibleSession.isPresent()) {
-          slot = factory;
+          factory.reserve();
+          slotToUse = factory;
           break;
         }
       }
 
+      if (slotToUse == null) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.NOT_FOUND);
+        span.addEvent("No slot matched capabilities " + sessionRequest.getCapabilities());
+        return Optional.empty();
+      }
+
+      Optional<ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
+
       if (!possibleSession.isPresent()) {
+        slotToUse.release();
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND);
         span.addEvent("No slots available for capabilities " + sessionRequest.getCapabilities());
@@ -211,7 +221,7 @@ public class LocalNode extends Node {
       }
 
       ActiveSession session = possibleSession.get();
-      currentSessions.put(session.getId(), slot);
+      currentSessions.put(session.getId(), slotToUse);
 
       SESSION_ID.accept(span, session.getId());
       CAPABILITIES.accept(span, session.getCapabilities());

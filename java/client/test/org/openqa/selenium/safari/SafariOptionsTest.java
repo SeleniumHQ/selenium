@@ -49,13 +49,6 @@ public class SafariOptionsTest {
     SafariOptions options = new SafariOptions();
     assertThat(options.getUseTechnologyPreview()).isFalse();
 
-    options = new SafariOptions(new ImmutableCapabilities(SafariOptions.CAPABILITY, embeddedOptions));
-    assertThat(options.getUseTechnologyPreview()).isTrue();
-
-    embeddedOptions.put("technologyPreview", false);
-    options = new SafariOptions(new ImmutableCapabilities(SafariOptions.CAPABILITY, embeddedOptions));
-    assertThat(options.getUseTechnologyPreview()).isFalse();
-
     options = new SafariOptions(new ImmutableCapabilities(CapabilityType.BROWSER_NAME, "Safari Technology Preview"));
     assertThat(options.getUseTechnologyPreview()).isTrue();
 

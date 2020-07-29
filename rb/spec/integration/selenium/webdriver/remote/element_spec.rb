@@ -21,8 +21,7 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Element, {exclusive: {driver: :remote},
-                       except: {driver: :remote, reason: 8525}} do
+    describe Element, exclusive: {driver: :remote} do
       before do
         driver.file_detector = ->(filename) { File.join(__dir__, filename) }
       end

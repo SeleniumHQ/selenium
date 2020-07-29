@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.ie;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -34,7 +30,10 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.awt.Robot;
+import java.awt.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class InternetExplorerDriverTest extends JUnit4TestBase {
@@ -77,7 +76,7 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
     new Actions(driver).moveToElement(driver.findElement(By.id("keyUp"))).build().perform();
     WebElement element = driver.findElement(By.id("menu1"));
 
-    final WebElement item = driver.findElement(By.id("item1"));
+    WebElement item = driver.findElement(By.id("item1"));
     assertThat(item.getText()).isEqualTo("");
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
@@ -91,7 +90,7 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
     // Intentionally wait to make sure hover DOES NOT persist.
     Thread.sleep(1000);
 
-    wait.until(elementTextToEqual(item, ""));
+    wait.until(d -> item.getText().equals(""));
 
     assertThat(item.getText()).isEqualTo("");
   }

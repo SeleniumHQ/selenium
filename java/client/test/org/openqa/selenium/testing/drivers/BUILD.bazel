@@ -55,7 +55,6 @@ java_library(
         "//java/client/test/org/openqa/selenium/build",
         "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("com.google.guava:guava"),
-        artifact("com.squareup.okhttp3:okhttp"),
         artifact("junit:junit"),
         artifact("org.seleniumhq.selenium:htmlunit-driver"),
     ],

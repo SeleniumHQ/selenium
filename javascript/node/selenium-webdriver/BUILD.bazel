@@ -1,6 +1,6 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "pkg_npm")
-load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
 load("//:copy_file.bzl", "copy_file")
+load("@npm//@bazel/jasmine:index.bzl", "jasmine_node_test")
 
 SRC_FILES = [
     "CHANGES.md",

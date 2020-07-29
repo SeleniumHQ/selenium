@@ -15,3 +15,9 @@ config_setting(
     constraint_values = ["@platforms//os:windows"],
     visibility = ["//visibility:public"],
 )
+
+# Are we creating a stamped build?
+config_setting(
+    name = "stamp",
+    values = {"stamp": "true"},
+)
