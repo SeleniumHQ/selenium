@@ -32,6 +32,7 @@ import io.opentelemetry.trace.Status;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
@@ -160,13 +161,12 @@ public class LoggingOptions {
               }
               attributeMap.put(key, attributeValue);
             });
-            map.put("attributes",attributeMap);
-            if(status.isOk()) {
-              LOG.log(Level.INFO, JSON.toJson(map));
-            }
-            else
-            {
-              LOG.log(Level.WARNING, JSON.toJson(map));
+            map.put("attributes", attributeMap);
+            String jsonString = getJSONString(map);
+            if (status.isOk()) {
+              LOG.log(Level.INFO, jsonString);
+            } else {
+              LOG.log(Level.WARNING, jsonString);
             }
           });
         });
@@ -237,5 +237,14 @@ public class LoggingOptions {
           }
         })
         .orElse(System.out);
+  }
+
+  private String getJSONString(Map<String, Object> map) {
+    StringBuilder text = new StringBuilder();
+    try (JsonOutput json = JSON.newOutput(text).setPrettyPrint(false)) {
+      json.write(map);
+      text.append('\n');
+    }
+    return text.toString();
   }
 }

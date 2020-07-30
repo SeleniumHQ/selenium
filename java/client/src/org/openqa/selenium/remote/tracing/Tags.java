@@ -22,15 +22,11 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class Tags {
-
-  private static final Charset UTF_8 = Charset.forName("UTF-8");
-
-  private final static Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Map.of(
+  private static final Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Map.of(
       401, Status.UNAUTHENTICATED,
       404, Status.NOT_FOUND,
       408, Status.DEADLINE_EXCEEDED,

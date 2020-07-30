@@ -30,11 +30,18 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
+
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 
 import java.io.Closeable;
 import java.net.URI;
@@ -57,8 +64,12 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   private static final String SESSION_ID_COL = "session_ids";
   private static final String SESSION_CAPS_COL = "session_caps";
   private static final String SESSION_URI_COL = "session_uri";
-  private static final String DATABASE_STATEMENT = "db.statement";
-  private static final String DATABASE_OPERATION = "db.operation";
+  private static final String DATABASE_STATEMENT = AttributeKey.DATABASE_STATEMENT.toString();
+  private static final String DATABASE_OPERATION = AttributeKey.DATABASE_OPERATION.toString();
+  private static final String DATABASE_USER = AttributeKey.DATABASE_USER.toString();
+  private static final String DATABASE_CONNECTION_STRING = AttributeKey.DATABASE_CONNECTION_STRING.toString();
+  private static String jdbcUser;
+  private static String jdbcUrl;
   private final EventBus bus;
   private final Connection connection;
 
@@ -84,6 +95,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Connection connection;
 
     try {
+      jdbcUser = sessionMapOptions.getJdbcUser();
+      jdbcUrl = sessionMapOptions.getJdbcUrl();
       connection = sessionMapOptions.getJdbcConnection();
     } catch (SQLException e) {
       throw new ConfigException(e);
@@ -107,20 +120,34 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
     try (Span span = tracer.getCurrentContext().createSpan(
         "INSERT into  sessions_map (session_ids, session_uri, session_caps) values (?, ?, ?) ")) {
-      try (PreparedStatement statement = insertSessionStatement(session)) {
-        setCommonSpanAttributes(span);
-        span.setAttribute(DATABASE_STATEMENT, statement.toString());
-        span.setAttribute(DATABASE_OPERATION, "insert");
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      SESSION_ID.accept(span, session.getId());
+      SESSION_ID_EVENT.accept(attributeMap, session.getId());
+      CAPABILITIES.accept(span, session.getCapabilities());
+      CAPABILITIES_EVENT.accept(attributeMap, session.getCapabilities());
+      setCommonSpanAttributes(span);
+      setCommonEventAttributes(attributeMap);
+      attributeMap.put(AttributeKey.SESSION_URI.toString(),
+                       EventAttribute.setValue(session.getUri().toString()));
 
-        return statement.executeUpdate() >= 1;
+      try (PreparedStatement statement = insertSessionStatement(session)) {
+        String statementStr = statement.toString();
+        span.setAttribute(DATABASE_STATEMENT, statementStr);
+        span.setAttribute(DATABASE_OPERATION, "insert");
+        attributeMap.put(DATABASE_STATEMENT, EventAttribute.setValue(statementStr));
+        attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("insert"));
+
+        int rowCount = statement.executeUpdate();
+        attributeMap.put("rows.added", EventAttribute.setValue(rowCount));
+        span.addEvent("Inserted into the database", attributeMap);
+        return rowCount >= 1;
       } catch (SQLException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
-        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-        attributeValueMap
-            .put("Session id", EventAttribute.setValue(session.getId().toString()));
-        span.addEvent("Unable to add session information to the database.", attributeValueMap);
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+                         EventAttribute.setValue("Unable to add session information to the database: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
 
         throw new JdbcException(e);
       }
@@ -134,24 +161,33 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     URI uri = null;
     Capabilities caps = null;
     String rawUri = null;
-    Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-    attributeValueMap
-        .put("Session id", EventAttribute.setValue(id.toString()));
+    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
 
     try (Span span = tracer.getCurrentContext().createSpan(
         "SELECT * from  sessions_map where session_ids = ?")) {
+      SESSION_ID.accept(span, id);
+      SESSION_ID_EVENT.accept(attributeMap, id);
+      setCommonSpanAttributes(span);
+      setCommonEventAttributes(attributeMap);
+
       try (PreparedStatement statement = readSessionStatement(id)) {
-        setCommonSpanAttributes(span);
-        span.setAttribute(DATABASE_STATEMENT, statement.toString());
+        String statementStr = statement.toString();
+        span.setAttribute(DATABASE_STATEMENT, statementStr);
         span.setAttribute(DATABASE_OPERATION, "select");
+        attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("select"));
+        attributeMap.put(DATABASE_STATEMENT, EventAttribute.setValue(statementStr));
 
         ResultSet sessions = statement.executeQuery();
         if (!sessions.next()) {
+          NoSuchSessionException exception = new NoSuchSessionException("Unable to find session.");
           span.setAttribute("error", true);
           span.setStatus(Status.NOT_FOUND);
-          span.addEvent("Session id does not exist in the database.", attributeValueMap);
+          EXCEPTION.accept(attributeMap, exception);
+          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+                           EventAttribute.setValue("Session id does not exist in the database :" + exception.getMessage()));
+          span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
 
-          throw new NoSuchSessionException("Unable to find...");
+          throw exception;
         }
 
         rawUri = sessions.getString(SESSION_URI_COL);
@@ -160,25 +196,34 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         caps = rawCapabilities == null ?
                new ImmutableCapabilities() :
                JSON.toType(rawCapabilities, Capabilities.class);
+
+        CAPABILITIES_EVENT.accept(attributeMap, caps);
+
         try {
+          attributeMap.put(AttributeKey.SESSION_URI.toString(), EventAttribute.setValue(rawUri));
           uri = new URI(rawUri);
         } catch (URISyntaxException e) {
           span.setAttribute("error", true);
           span.setStatus(Status.INTERNAL);
-          attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-          span.addEvent("Unable to convert session id to uri.", attributeValueMap);
+          EXCEPTION.accept(attributeMap, e);
+          attributeMap.put(AttributeKey.SESSION_URI.toString(), EventAttribute.setValue(rawUri));
+          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+                           EventAttribute.setValue("Unable to convert session id to uri: " + e.getMessage()));
+          span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
 
           throw new NoSuchSessionException(
               String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
         }
 
+        span.addEvent("Retrieved session from the database", attributeMap);
         return new Session(id, uri, caps);
       } catch (SQLException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
-        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-        span.addEvent("Unable to get session information from the database.", attributeValueMap);
-
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+                         EventAttribute.setValue("Unable to get session information from the database: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
         throw new JdbcException(e);
       }
     }
@@ -189,22 +234,30 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session ID", id);
     try (Span span = tracer.getCurrentContext().createSpan(
         "DELETE from  sessions_map where session_ids = ?")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      SESSION_ID.accept(span, id);
+      SESSION_ID_EVENT.accept(attributeMap, id);
+      setCommonSpanAttributes(span);
+      setCommonEventAttributes(attributeMap);
 
       try (PreparedStatement statement = getDeleteSqlForSession(id)) {
-        setCommonSpanAttributes(span);
-        span.setAttribute(DATABASE_STATEMENT, statement.toString());
+        String statementStr = statement.toString();
+        span.setAttribute(DATABASE_STATEMENT, statementStr);
         span.setAttribute(DATABASE_OPERATION, "delete");
-        
-        statement.executeUpdate();
+        attributeMap.put(DATABASE_STATEMENT, EventAttribute.setValue(statementStr));
+        attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("delete"));
+
+        int rowCount = statement.executeUpdate();
+        attributeMap.put("rows.deleted", EventAttribute.setValue(rowCount));
+        span.addEvent("Deleted session from the database", attributeMap);
+
       } catch (SQLException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
-        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-        attributeValueMap
-            .put("Session id", EventAttribute.setValue(id.toString()));
-        span.addEvent("Unable to delete session information from the database.", attributeValueMap);
-
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+                         EventAttribute.setValue("Unable to delete session information from the database: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
         throw new JdbcException(e.getMessage());
       }
     }
@@ -259,11 +312,20 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private void setCommonSpanAttributes(Span span) {
     span.setAttribute("span.kind", Span.Kind.CLIENT.toString());
-    if (JdbcSessionMapOptions.jdbcUser != null) {
-      span.setAttribute("db.user", JdbcSessionMapOptions.jdbcUser);
+    if (jdbcUser != null) {
+      span.setAttribute(DATABASE_USER, jdbcUser);
     }
-    if (JdbcSessionMapOptions.jdbcUrl != null) {
-      span.setAttribute("db.connection_string", JdbcSessionMapOptions.jdbcUrl);
+    if (jdbcUrl != null) {
+      span.setAttribute(DATABASE_CONNECTION_STRING, jdbcUrl);
+    }
+  }
+
+  private void setCommonEventAttributes(Map<String, EventAttributeValue> attributeMap) {
+    if (jdbcUser != null) {
+      attributeMap.put(DATABASE_USER, EventAttribute.setValue(jdbcUser));
+    }
+    if (jdbcUrl != null) {
+      attributeMap.put(DATABASE_CONNECTION_STRING, EventAttribute.setValue(jdbcUrl));
     }
   }
 }

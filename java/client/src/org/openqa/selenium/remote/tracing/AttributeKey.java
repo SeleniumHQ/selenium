@@ -31,7 +31,17 @@ public enum AttributeKey {
   HTTP_STATUS_CODE("http.status_code"),
   HTTP_TARGET_HOST("http.target_host"),
   HTTP_CLIENT_CLASS("http.client_class"),
-  HTTP_HANDLER_CLASS("http.handler_class");
+  HTTP_HANDLER_CLASS("http.handler_class"),
+
+  SESSION_ID("session.id"),
+  SESSION_CAPABILITIES("session.capabilities"),
+  SESSION_URI("session.uri"),
+
+  DATABASE_STATEMENT ("db.statement"),
+  DATABASE_OPERATION ("db.operation"),
+  DATABASE_USER ("db.user"),
+  DATABASE_CONNECTION_STRING ("db.connection_string"),
+  DATABASE_SYSTEM("db.system");
 
   private String name;
 
@@ -39,7 +49,8 @@ public enum AttributeKey {
     this.name = name;
   }
 
+  @Override
   public String toString() {
-    return name;
+    return this.name;
   }
 }
