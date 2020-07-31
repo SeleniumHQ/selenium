@@ -139,42 +139,42 @@ namespace OpenQA.Selenium.Remote
             this.StartClient();
             this.StartSession(desiredCapabilities);
             this.elementFactory = new RemoteWebElementFactory(this);
+            CheckForSupportedCapabilities();
 
-            if (this.capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class that attaches to an existing test session
+        /// </summary>
+        /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
+        /// <param name="sessionId">The key for the existing session.</param>
+        public RemoteWebDriver(ICommandExecutor commandExecutor, string sessionId)
+        {
+            this.executor = commandExecutor;
+            this.sessionId = new SessionId(sessionId);
+            this.elementFactory = new RemoteWebElementFactory(this);
+
+            Response commandResponse = new Response();
+
+            try
             {
-                object appCacheCapability = this.capabilities.GetCapability(CapabilityType.SupportsApplicationCache);
-                if (appCacheCapability is bool && (bool)appCacheCapability)
-                {
-                    this.appCache = new RemoteApplicationCache(this);
-                }
+                commandResponse = this.Execute(DriverCommand.GetSessionCapabilities, null);
+            }
+            catch (System.Net.WebException e)
+            {
+                commandResponse.Status = WebDriverResult.UnhandledError;
+                commandResponse.Value = e;
             }
 
-            if (this.capabilities.HasCapability(CapabilityType.SupportsLocationContext))
+            if (commandResponse.Status != WebDriverResult.Success)
             {
-                object locationContextCapability = this.capabilities.GetCapability(CapabilityType.SupportsLocationContext);
-                if (locationContextCapability is bool && (bool)locationContextCapability)
-                {
-                    this.locationContext = new RemoteLocationContext(this);
-                }
+                UnpackAndThrowOnError(commandResponse);
             }
+            Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)commandResponse.Value;
+            ReturnedCapabilities returnedCapabilities = new ReturnedCapabilities(rawCapabilities);
+            this.capabilities = returnedCapabilities;
 
-            if (this.capabilities.HasCapability(CapabilityType.SupportsWebStorage))
-            {
-                object webContextCapability = this.capabilities.GetCapability(CapabilityType.SupportsWebStorage);
-                if (webContextCapability is bool && (bool)webContextCapability)
-                {
-                    this.storage = new RemoteWebStorage(this);
-                }
-            }
-
-            if ((this as ISupportsLogs) != null)
-            {
-                // Only add the legacy log commands if the driver supports
-                // retrieving the logs via the extension end points.
-                this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetAvailableLogTypes, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/se/log/types"));
-                this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetLog, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/se/log"));
-            }
-
+            CheckForSupportedCapabilities();
         }
 
         /// <summary>
@@ -1370,6 +1370,44 @@ namespace OpenQA.Selenium.Remote
             }
 
             return returnValue;
+        }
+
+        private void CheckForSupportedCapabilities()
+        {
+            if (this.capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
+            {
+                object appCacheCapability = this.capabilities.GetCapability(CapabilityType.SupportsApplicationCache);
+                if (appCacheCapability is bool && (bool)appCacheCapability)
+                {
+                    this.appCache = new RemoteApplicationCache(this);
+                }
+            }
+
+            if (this.capabilities.HasCapability(CapabilityType.SupportsLocationContext))
+            {
+                object locationContextCapability = this.capabilities.GetCapability(CapabilityType.SupportsLocationContext);
+                if (locationContextCapability is bool && (bool)locationContextCapability)
+                {
+                    this.locationContext = new RemoteLocationContext(this);
+                }
+            }
+
+            if (this.capabilities.HasCapability(CapabilityType.SupportsWebStorage))
+            {
+                object webContextCapability = this.capabilities.GetCapability(CapabilityType.SupportsWebStorage);
+                if (webContextCapability is bool && (bool)webContextCapability)
+                {
+                    this.storage = new RemoteWebStorage(this);
+                }
+            }
+
+            if ((this as ISupportsLogs) != null)
+            {
+                // Only add the legacy log commands if the driver supports
+                // retrieving the logs via the extension end points.
+                this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetAvailableLogTypes, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/se/log/types"));
+                this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetLog, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/se/log"));
+            }
         }
     }
 }
