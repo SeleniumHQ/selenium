@@ -147,6 +147,7 @@ public class ProxyCdpTest {
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
+
     sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities()));
 
     CountDownLatch latch = new CountDownLatch(1);
