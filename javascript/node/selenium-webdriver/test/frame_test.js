@@ -15,30 +15,39 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const test = require('../lib/test');
-const {By} = require('..');
+const assert = require('assert')
+const test = require('../lib/test')
+const { By } = require('..')
 
+test.suite(function (env) {
+  var driver
 
-test.suite(function(env) {
-  var driver;
+  before(async function () {
+    driver = await env.builder().build()
+  })
+  after(function () {
+    return driver.quit()
+  })
 
-  before(async function() { driver = await env.builder().build(); });
-  after(function() { return driver.quit(); });
+  beforeEach(function () {
+    return driver.switchTo().defaultContent()
+  })
 
-  beforeEach(function() {
-    return driver.switchTo().defaultContent();
-  });
+  it('can switch to a frame and back to the parent frame', async function () {
+    await driver.get(test.Pages.iframePage)
 
-  it('can switch to a frame and back to the parent frame', async function() {
-    await driver.get(test.Pages.iframePage);
-
-    let frame = await driver.findElement(By.name('iframe1-name'));
-    await driver.switchTo().frame(frame);
-    assert.equal(await driver.executeScript('return document.title'), 'We Leave From Here');
-    await driver.switchTo().parentFrame();
-    assert.equal(await driver.executeScript('return document.title'), 'This page has iframes');
-  });
-});
+    let frame = await driver.findElement(By.name('iframe1-name'))
+    await driver.switchTo().frame(frame)
+    assert.equal(
+      await driver.executeScript('return document.title'),
+      'We Leave From Here'
+    )
+    await driver.switchTo().parentFrame()
+    assert.equal(
+      await driver.executeScript('return document.title'),
+      'This page has iframes'
+    )
+  })
+})

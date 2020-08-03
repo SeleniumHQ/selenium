@@ -15,49 +15,67 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const chrome = require('../../chrome');
-const test = require('../../lib/test');
+const assert = require('assert')
+const chrome = require('../../chrome')
+const test = require('../../lib/test')
 
-test.suite(function (env) {
-  describe('setPermission', () => {
-    it('can set permission', async function () {
-      const driver = await env.builder().build();
+test.suite(
+  function (env) {
+    describe('setPermission', () => {
+      it('can set permission', async function () {
+        const driver = await env.builder().build()
 
-      await driver.get(test.Pages.clicksPage);
+        await driver.get(test.Pages.clicksPage)
 
-      await driver.setPermission('clipboard-read', 'prompt');
-      assert.strictEqual(await checkPermission(driver, 'clipboard-read'), 'prompt');
+        await driver.setPermission('clipboard-read', 'prompt')
+        assert.strictEqual(
+          await checkPermission(driver, 'clipboard-read'),
+          'prompt'
+        )
 
-      await driver.setPermission('clipboard-read', 'granted');
-      assert.strictEqual(await checkPermission(driver, 'clipboard-read'), 'granted');
+        await driver.setPermission('clipboard-read', 'granted')
+        assert.strictEqual(
+          await checkPermission(driver, 'clipboard-read'),
+          'granted'
+        )
 
-      await driver.quit()
-    });
+        await driver.quit()
+      })
 
-    it('can set permission in headless mode', async function () {
-      const driver = await env.builder()
-        .setChromeOptions(new chrome.Options().headless())
-        .build();
+      it('can set permission in headless mode', async function () {
+        const driver = await env
+          .builder()
+          .setChromeOptions(new chrome.Options().headless())
+          .build()
 
-      await driver.get(test.Pages.clicksPage);
+        await driver.get(test.Pages.clicksPage)
 
-      await driver.setPermission('clipboard-read', 'prompt');
-      assert.strictEqual(await checkPermission(driver, 'clipboard-read'), 'prompt');
+        await driver.setPermission('clipboard-read', 'prompt')
+        assert.strictEqual(
+          await checkPermission(driver, 'clipboard-read'),
+          'prompt'
+        )
 
-      await driver.setPermission('clipboard-read', 'granted');
-      assert.strictEqual(await checkPermission(driver, 'clipboard-read'), 'granted');
+        await driver.setPermission('clipboard-read', 'granted')
+        assert.strictEqual(
+          await checkPermission(driver, 'clipboard-read'),
+          'granted'
+        )
 
-      await driver.quit()
-    });
-  });
-}, { browsers: [ 'chrome' ] });
+        await driver.quit()
+      })
+    })
+  },
+  { browsers: ['chrome'] }
+)
 
 const checkPermission = (driver, permission) => {
   return driver.executeAsyncScript((permission, callback) => {
-    navigator.permissions.query({name: permission})
-      .then((result) => callback(result.state));
-  }, permission);
-};
+    // eslint-disable-next-line no-undef
+    navigator.permissions
+      .query({ name: permission })
+      .then((result) => callback(result.state))
+  }, permission)
+}

@@ -15,15 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const path = require('path');
-const {projectRoot} = require('./build');
-
+const fs = require('fs')
+const path = require('path')
+const { projectRoot } = require('./build')
 
 // PUBLIC API
-
 
 /**
  * Locates a test resource.
@@ -31,10 +29,10 @@ const {projectRoot} = require('./build');
  * @return {string} The full path for the file, if it exists.
  * @throws {Error} If the file does not exist.
  */
-exports.locate = function(filePath) {
-  var fullPath = path.normalize(path.join(projectRoot(), filePath));
+exports.locate = function (filePath) {
+  var fullPath = path.normalize(path.join(projectRoot(), filePath))
   if (!fs.existsSync(fullPath)) {
-    throw Error('File does not exist: ' + filePath);
+    throw Error('File does not exist: ' + filePath)
   }
-  return fullPath;
-};
+  return fullPath
+}

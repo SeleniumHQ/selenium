@@ -114,19 +114,18 @@
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
  */
 
-'use strict';
+'use strict'
 
-const path = require('path');
-const Symbols = require('./lib/symbols');
-const command = require('./lib/command');
-const http = require('./http');
-const io = require('./io');
-const remote = require('./remote');
-const webdriver = require('./lib/webdriver');
-const zip = require('./io/zip');
-const {Browser, Capabilities} = require('./lib/capabilities');
-const {Zip} = require('./io/zip');
-
+const path = require('path')
+const Symbols = require('./lib/symbols')
+const command = require('./lib/command')
+const http = require('./http')
+const io = require('./io')
+const remote = require('./remote')
+const webdriver = require('./lib/webdriver')
+const zip = require('./io/zip')
+const { Browser, Capabilities } = require('./lib/capabilities')
+const { Zip } = require('./io/zip')
 
 /**
  * Thrown when there an add-on is malformed.
@@ -135,12 +134,11 @@ const {Zip} = require('./io/zip');
 class AddonFormatError extends Error {
   /** @param {string} msg The error message. */
   constructor(msg) {
-    super(msg);
+    super(msg)
     /** @override */
-    this.name = this.constructor.name;
+    this.name = this.constructor.name
   }
 }
-
 
 /**
  * Installs an extension to the given directory.
@@ -150,57 +148,53 @@ class AddonFormatError extends Error {
  *     installed.
  */
 async function installExtension(extension, dir) {
-  const ext = extension.slice(-4);
+  const ext = extension.slice(-4)
   if (ext !== '.xpi' && ext !== '.zip') {
-    throw Error('File name does not end in ".zip" or ".xpi": ' + ext);
+    throw Error('File name does not end in ".zip" or ".xpi": ' + ext)
   }
 
-  let archive = await zip.load(extension);
+  let archive = await zip.load(extension)
   if (!archive.has('manifest.json')) {
-    throw new AddonFormatError(`Couldn't find manifest.json in ${extension}`);
+    throw new AddonFormatError(`Couldn't find manifest.json in ${extension}`)
   }
 
-  let buf = await archive.getFile('manifest.json');
-  let parsedJSON = JSON.parse(buf.toString('utf8'));
-  
+  let buf = await archive.getFile('manifest.json')
+  let parsedJSON = JSON.parse(buf.toString('utf8'))
+
   let { browser_specific_settings } =
     /** @type {{browser_specific_settings:{gecko:{id:string}}}} */
-    parsedJSON; 
+    parsedJSON
 
-  if (
-    browser_specific_settings &&
-    browser_specific_settings.gecko
-  ) {
+  if (browser_specific_settings && browser_specific_settings.gecko) {
     /* browser_specific_settings is an alternative to applications
      * It is meant to facilitate cross-browser plugins since Firefox48
      * see https://bugzilla.mozilla.org/show_bug.cgi?id=1262005
      */
-    parsedJSON.applications = browser_specific_settings;
+    parsedJSON.applications = browser_specific_settings
   }
 
   let { applications } =
     /** @type {{applications:{gecko:{id:string}}}} */
-    parsedJSON;
+    parsedJSON
   if (!(applications && applications.gecko && applications.gecko.id)) {
-    throw new AddonFormatError(`Could not find add-on ID for ${extension}`);
+    throw new AddonFormatError(`Could not find add-on ID for ${extension}`)
   }
 
-  await io.copy(extension, `${path.join(dir, applications.gecko.id)}.xpi`);
-  return applications.gecko.id;
+  await io.copy(extension, `${path.join(dir, applications.gecko.id)}.xpi`)
+  return applications.gecko.id
 }
-
 
 class Profile {
   constructor() {
     /** @private {?string} */
-    this.template_ = null;
+    this.template_ = null
 
     /** @private {!Array<string>} */
-    this.extensions_ = [];
+    this.extensions_ = []
   }
 
-  addExtensions(/** !Array<string> */paths) {
-    this.extensions_ = this.extensions_.concat(...paths);
+  addExtensions(/** !Array<string> */ paths) {
+    this.extensions_ = this.extensions_.concat(...paths)
   }
 
   /**
@@ -209,12 +203,11 @@ class Profile {
    */
   [Symbols.serialize]() {
     if (this.template_ || this.extensions_.length) {
-      return buildProfile(this.template_, this.extensions_);
+      return buildProfile(this.template_, this.extensions_)
     }
-    return undefined;
+    return undefined
   }
 }
-
 
 /**
  * @param {?string} template path to an existing profile to use as a template.
@@ -223,30 +216,32 @@ class Profile {
  * @return {!Promise<string>} a promise for the base64 encoded profile.
  */
 async function buildProfile(template, extensions) {
-  let dir = template;
+  let dir = template
 
   if (extensions.length) {
-    dir = await io.tmpDir();
+    dir = await io.tmpDir()
     if (template) {
       await io.copyDir(
-          /** @type {string} */(template),
-          dir, /(parent\.lock|lock|\.parentlock)/);
+        /** @type {string} */ (template),
+        dir,
+        /(parent\.lock|lock|\.parentlock)/
+      )
     }
 
-    const extensionsDir = path.join(dir, 'extensions');
-    await io.mkdir(extensionsDir);
+    const extensionsDir = path.join(dir, 'extensions')
+    await io.mkdir(extensionsDir)
 
     for (let i = 0; i < extensions.length; i++) {
-      await installExtension(extensions[i], extensionsDir);
+      await installExtension(extensions[i], extensionsDir)
     }
   }
 
-  let zip = new Zip;
-  return zip.addDir(dir)
-      .then(() => zip.toBuffer())
-      .then(buf => buf.toString('base64'));
+  let zip = new Zip()
+  return zip
+    .addDir(dir)
+    .then(() => zip.toBuffer())
+    .then((buf) => buf.toString('base64'))
 }
-
 
 /**
  * Configuration options for the FirefoxDriver.
@@ -257,8 +252,8 @@ class Options extends Capabilities {
    *     capabilities to initialize this instance from.
    */
   constructor(other) {
-    super(other);
-    this.setBrowserName(Browser.FIREFOX);
+    super(other)
+    this.setBrowserName(Browser.FIREFOX)
   }
 
   /**
@@ -266,12 +261,12 @@ class Options extends Capabilities {
    * @private
    */
   firefoxOptions_() {
-    let options = this.get('moz:firefoxOptions');
+    let options = this.get('moz:firefoxOptions')
     if (!options) {
-      options = {};
-      this.set('moz:firefoxOptions', options);
+      options = {}
+      this.set('moz:firefoxOptions', options)
     }
-    return options;
+    return options
   }
 
   /**
@@ -279,11 +274,11 @@ class Options extends Capabilities {
    * @private
    */
   profile_() {
-    let options = this.firefoxOptions_();
+    let options = this.firefoxOptions_()
     if (!options.profile) {
-      options.profile = new Profile();
+      options.profile = new Profile()
     }
-    return options.profile;
+    return options.profile
   }
 
   /**
@@ -295,10 +290,10 @@ class Options extends Capabilities {
    */
   addArguments(...args) {
     if (args.length) {
-      let options = this.firefoxOptions_();
-      options.args = options.args ? options.args.concat(...args) : args;
+      let options = this.firefoxOptions_()
+      options.args = options.args ? options.args.concat(...args) : args
     }
-    return this;
+    return this
   }
 
   /**
@@ -307,7 +302,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   headless() {
-    return this.addArguments('-headless');
+    return this.addArguments('-headless')
   }
 
   /**
@@ -319,15 +314,15 @@ class Options extends Capabilities {
    * @throws {TypeError} if width or height is unspecified, not a number, or
    *     less than or equal to 0.
    */
-  windowSize({width, height}) {
+  windowSize({ width, height }) {
     function checkArg(arg) {
       if (typeof arg !== 'number' || arg <= 0) {
-        throw TypeError('Arguments must be {width, height} with numbers > 0');
+        throw TypeError('Arguments must be {width, height} with numbers > 0')
       }
     }
-    checkArg(width);
-    checkArg(height);
-    return this.addArguments(`--width=${width}`, `--height=${height}`);
+    checkArg(width)
+    checkArg(height)
+    return this.addArguments(`--width=${width}`, `--height=${height}`)
   }
 
   /**
@@ -337,8 +332,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   addExtensions(...paths) {
-    this.profile_().addExtensions(paths);
-    return this;
+    this.profile_().addExtensions(paths)
+    return this
   }
 
   /**
@@ -349,18 +344,21 @@ class Options extends Capabilities {
    */
   setPreference(key, value) {
     if (typeof key !== 'string') {
-      throw TypeError(`key must be a string, but got ${typeof key}`);
+      throw TypeError(`key must be a string, but got ${typeof key}`)
     }
-    if (typeof value !== 'string'
-        && typeof value !== 'number'
-        && typeof value !== 'boolean') {
+    if (
+      typeof value !== 'string' &&
+      typeof value !== 'number' &&
+      typeof value !== 'boolean'
+    ) {
       throw TypeError(
-          `value must be a string, number, or boolean, but got ${typeof value}`);
+        `value must be a string, number, or boolean, but got ${typeof value}`
+      )
     }
-    let options = this.firefoxOptions_();
-    options.prefs = options.prefs || {};
-    options.prefs[key] = value;
-    return this;
+    let options = this.firefoxOptions_()
+    options.prefs = options.prefs || {}
+    options.prefs[key] = value
+    return this
   }
 
   /**
@@ -374,10 +372,10 @@ class Options extends Capabilities {
    */
   setProfile(profile) {
     if (typeof profile !== 'string') {
-      throw TypeError(`profile must be a string, but got ${typeof profile}`);
+      throw TypeError(`profile must be a string, but got ${typeof profile}`)
     }
-    this.profile_().template_ = profile;
-    return this;
+    this.profile_().template_ = profile
+    return this
   }
 
   /**
@@ -390,13 +388,12 @@ class Options extends Capabilities {
    */
   setBinary(binary) {
     if (binary instanceof Channel || typeof binary === 'string') {
-      this.firefoxOptions_().binary = binary;
-      return this;
+      this.firefoxOptions_().binary = binary
+      return this
     }
-    throw TypeError('binary must be a string path or Channel object');
+    throw TypeError('binary must be a string path or Channel object')
   }
 }
-
 
 /**
  * Enum of available command contexts.
@@ -409,14 +406,12 @@ class Options extends Capabilities {
  * @enum {string}
  */
 const Context = {
-  CONTENT: "content",
-  CHROME: "chrome",
-};
-
+  CONTENT: 'content',
+  CHROME: 'chrome',
+}
 
 const GECKO_DRIVER_EXE =
-    process.platform === 'win32' ? 'geckodriver.exe' : 'geckodriver';
-
+  process.platform === 'win32' ? 'geckodriver.exe' : 'geckodriver'
 
 /**
  * _Synchronously_ attempts to locate the geckodriver executable on the current
@@ -425,26 +420,27 @@ const GECKO_DRIVER_EXE =
  * @return {?string} the located executable, or `null`.
  */
 function locateSynchronously() {
-  return io.findInPath(GECKO_DRIVER_EXE, true);
+  return io.findInPath(GECKO_DRIVER_EXE, true)
 }
-
 
 /**
  * @return {string} .
  * @throws {Error}
  */
 function findGeckoDriver() {
-  let exe = locateSynchronously();
+  let exe = locateSynchronously()
   if (!exe) {
     throw Error(
-      'The ' + GECKO_DRIVER_EXE + ' executable could not be found on the current ' +
-      'PATH. Please download the latest version from ' +
-      'https://github.com/mozilla/geckodriver/releases/ ' +
-      'and ensure it can be found on your PATH.');
+      'The ' +
+        GECKO_DRIVER_EXE +
+        ' executable could not be found on the current ' +
+        'PATH. Please download the latest version from ' +
+        'https://github.com/mozilla/geckodriver/releases/ ' +
+        'and ensure it can be found on your PATH.'
+    )
   }
-  return exe;
+  return exe
 }
-
 
 /**
  * @param {string} file Path to the file to find, relative to the program files
@@ -455,15 +451,16 @@ function findGeckoDriver() {
 function findInProgramFiles(file) {
   let files = [
     process.env['PROGRAMFILES'] || 'C:\\Program Files',
-    process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)'
-  ].map(prefix => path.join(prefix, file));
-  return io.exists(files[0]).then(function(exists) {
-    return exists ? files[0] : io.exists(files[1]).then(function(exists) {
-      return exists ? files[1] : null;
-    });
-  });
+    process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)',
+  ].map((prefix) => path.join(prefix, file))
+  return io.exists(files[0]).then(function (exists) {
+    return exists
+      ? files[0]
+      : io.exists(files[1]).then(function (exists) {
+          return exists ? files[1] : null
+        })
+  })
 }
-
 
 /** @enum {string} */
 const ExtensionCommand = {
@@ -471,8 +468,7 @@ const ExtensionCommand = {
   SET_CONTEXT: 'setContext',
   INSTALL_ADDON: 'install addon',
   UNINSTALL_ADDON: 'uninstall addon',
-};
-
+}
 
 /**
  * Creates a command executor with support for Marionette's custom commands.
@@ -480,12 +476,11 @@ const ExtensionCommand = {
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(serverUrl) {
-  let client = serverUrl.then(url => new http.HttpClient(url));
-  let executor = new http.Executor(client);
-  configureExecutor(executor);
-  return executor;
+  let client = serverUrl.then((url) => new http.HttpClient(url))
+  let executor = new http.Executor(client)
+  configureExecutor(executor)
+  return executor
 }
-
 
 /**
  * Configures the given executor with Firefox-specific commands.
@@ -493,26 +488,29 @@ function createExecutor(serverUrl) {
  */
 function configureExecutor(executor) {
   executor.defineCommand(
-      ExtensionCommand.GET_CONTEXT,
-      'GET',
-      '/session/:sessionId/moz/context');
+    ExtensionCommand.GET_CONTEXT,
+    'GET',
+    '/session/:sessionId/moz/context'
+  )
 
   executor.defineCommand(
-      ExtensionCommand.SET_CONTEXT,
-      'POST',
-      '/session/:sessionId/moz/context');
+    ExtensionCommand.SET_CONTEXT,
+    'POST',
+    '/session/:sessionId/moz/context'
+  )
 
   executor.defineCommand(
-      ExtensionCommand.INSTALL_ADDON,
-      'POST',
-      '/session/:sessionId/moz/addon/install');
+    ExtensionCommand.INSTALL_ADDON,
+    'POST',
+    '/session/:sessionId/moz/addon/install'
+  )
 
   executor.defineCommand(
-      ExtensionCommand.UNINSTALL_ADDON,
-      'POST',
-      '/session/:sessionId/moz/addon/uninstall');
+    ExtensionCommand.UNINSTALL_ADDON,
+    'POST',
+    '/session/:sessionId/moz/addon/uninstall'
+  )
 }
-
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -525,8 +523,8 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the geckodriver on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || findGeckoDriver());
-    this.setLoopback(true);  // Required.
+    super(opt_exe || findGeckoDriver())
+    this.setLoopback(true) // Required.
   }
 
   /**
@@ -537,10 +535,9 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @return {!ServiceBuilder} A self reference.
    */
   enableVerboseLogging(opt_trace) {
-    return this.addArguments(opt_trace ? '-vv' : '-v');
+    return this.addArguments(opt_trace ? '-vv' : '-v')
   }
 }
-
 
 /**
  * A WebDriver client for Firefox.
@@ -570,25 +567,24 @@ class Driver extends webdriver.WebDriver {
    */
   static createSession(opt_config, opt_executor) {
     let caps =
-        opt_config instanceof Capabilities
-            ? opt_config : new Options(opt_config);
+      opt_config instanceof Capabilities ? opt_config : new Options(opt_config)
 
-    let executor;
-    let onQuit;
+    let executor
+    let onQuit
 
     if (opt_executor instanceof http.Executor) {
-      executor = opt_executor;
-      configureExecutor(executor);
+      executor = opt_executor
+      configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
-      executor = createExecutor(opt_executor.start());
-      onQuit = () => opt_executor.kill();
+      executor = createExecutor(opt_executor.start())
+      onQuit = () => opt_executor.kill()
     } else {
-      let service = new ServiceBuilder().build();
-      executor = createExecutor(service.start());
-      onQuit = () => service.kill();
+      let service = new ServiceBuilder().build()
+      executor = createExecutor(service.start())
+      onQuit = () => service.kill()
     }
 
-    return /** @type {!Driver} */(super.createSession(executor, caps, onQuit));
+    return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
   }
 
   /**
@@ -596,8 +592,7 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() {
-  }
+  setFileDetector() {}
 
   /**
    * Get the context that is currently in effect.
@@ -605,7 +600,7 @@ class Driver extends webdriver.WebDriver {
    * @return {!Promise<Context>} Current context.
    */
   getContext() {
-    return this.execute(new command.Command(ExtensionCommand.GET_CONTEXT));
+    return this.execute(new command.Command(ExtensionCommand.GET_CONTEXT))
   }
 
   /**
@@ -624,8 +619,11 @@ class Driver extends webdriver.WebDriver {
    */
   setContext(ctx) {
     return this.execute(
-        new command.Command(ExtensionCommand.SET_CONTEXT)
-            .setParameter("context", ctx));
+      new command.Command(ExtensionCommand.SET_CONTEXT).setParameter(
+        'context',
+        ctx
+      )
+    )
   }
 
   /**
@@ -636,18 +634,19 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {string} path Path on the local filesystem to the web extension to
    *     install.
-   * @param {boolean} temporary Flag indicating whether the extension should be 
+   * @param {boolean} temporary Flag indicating whether the extension should be
    *     installed temporarily - gets removed on restart
    * @return {!Promise<string>} A promise that will resolve to an ID for the
    *     newly installed addon.
    * @see #uninstallAddon
    */
-  async installAddon(path, temporary=false) {
-    let buf = await io.read(path);
+  async installAddon(path, temporary = false) {
+    let buf = await io.read(path)
     return this.execute(
-        new command.Command(ExtensionCommand.INSTALL_ADDON)
-            .setParameter('addon', buf.toString('base64'))
-            .setParameter('temporary', temporary));
+      new command.Command(ExtensionCommand.INSTALL_ADDON)
+        .setParameter('addon', buf.toString('base64'))
+        .setParameter('temporary', temporary)
+    )
   }
 
   /**
@@ -659,13 +658,15 @@ class Driver extends webdriver.WebDriver {
    * @see #installAddon
    */
   async uninstallAddon(id) {
-    id = await Promise.resolve(id);
+    id = await Promise.resolve(id)
     return this.execute(
-        new command.Command(ExtensionCommand.UNINSTALL_ADDON)
-            .setParameter('id', id));
+      new command.Command(ExtensionCommand.UNINSTALL_ADDON).setParameter(
+        'id',
+        id
+      )
+    )
   }
 }
-
 
 /**
  * Provides methods for locating the executable for a Firefox release channel
@@ -680,10 +681,10 @@ class Channel {
    * @param {string} win32 The path to check when running on Windows.
    */
   constructor(darwin, win32) {
-    /** @private @const */ this.darwin_ = darwin;
-    /** @private @const */ this.win32_ = win32;
+    /** @private @const */ this.darwin_ = darwin
+    /** @private @const */ this.win32_ = win32
     /** @private {Promise<string>} */
-    this.found_ = null;
+    this.found_ = null
   }
 
   /**
@@ -697,42 +698,43 @@ class Channel {
    */
   locate() {
     if (this.found_) {
-      return this.found_;
+      return this.found_
     }
 
-    let found;
+    let found
     switch (process.platform) {
       case 'darwin':
-        found = io.exists(this.darwin_)
-            .then(exists => exists ? this.darwin_ : io.findInPath('firefox'));
-        break;
+        found = io
+          .exists(this.darwin_)
+          .then((exists) => (exists ? this.darwin_ : io.findInPath('firefox')))
+        break
 
       case 'win32':
-        found = findInProgramFiles(this.win32_)
-            .then(found => found || io.findInPath('firefox.exe'));
-        break;
+        found = findInProgramFiles(this.win32_).then(
+          (found) => found || io.findInPath('firefox.exe')
+        )
+        break
 
       default:
-        found = Promise.resolve(io.findInPath('firefox'));
-        break;
+        found = Promise.resolve(io.findInPath('firefox'))
+        break
     }
 
-    this.found_ = found.then(found => {
+    this.found_ = found.then((found) => {
       if (found) {
         // TODO: verify version info.
-        return found;
+        return found
       }
-      throw Error('Could not locate Firefox on the current system');
-    });
-    return this.found_;
+      throw Error('Could not locate Firefox on the current system')
+    })
+    return this.found_
   }
 
   /** @return {!Promise<string>} */
   [Symbols.serialize]() {
-    return this.locate();
+    return this.locate()
   }
 }
-
 
 /**
  * Firefox's developer channel.
@@ -741,7 +743,8 @@ class Channel {
  */
 Channel.AURORA = new Channel(
   '/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox-bin',
-  'Firefox Developer Edition\\firefox.exe');
+  'Firefox Developer Edition\\firefox.exe'
+)
 
 /**
  * Firefox's beta channel. Note this is provided mainly for convenience as
@@ -752,7 +755,8 @@ Channel.AURORA = new Channel(
  */
 Channel.BETA = new Channel(
   '/Applications/Firefox.app/Contents/MacOS/firefox-bin',
-  'Mozilla Firefox\\firefox.exe');
+  'Mozilla Firefox\\firefox.exe'
+)
 
 /**
  * Firefox's release channel.
@@ -761,7 +765,8 @@ Channel.BETA = new Channel(
  */
 Channel.RELEASE = new Channel(
   '/Applications/Firefox.app/Contents/MacOS/firefox-bin',
-  'Mozilla Firefox\\firefox.exe');
+  'Mozilla Firefox\\firefox.exe'
+)
 
 /**
  * Firefox's nightly release channel.
@@ -770,15 +775,14 @@ Channel.RELEASE = new Channel(
  */
 Channel.NIGHTLY = new Channel(
   '/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin',
-  'Nightly\\firefox.exe');
-
+  'Nightly\\firefox.exe'
+)
 
 // PUBLIC API
 
-
-exports.Channel = Channel;
-exports.Context = Context;
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
-exports.locateSynchronously = locateSynchronously;
+exports.Channel = Channel
+exports.Context = Context
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder
+exports.locateSynchronously = locateSynchronously

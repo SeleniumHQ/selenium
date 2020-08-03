@@ -24,20 +24,22 @@
  * - https://www.mozilla.org/en-US/firefox/channel/desktop/#nightly
  */
 
+'use strict'
 
-'use strict';
+const { Builder, By, Key, promise, until } = require('..')
+const { Channel, Options } = require('../firefox')
 
-const {Builder, By, Key, promise, until} = require('..');
-const {Channel, Options} = require('../firefox');
-
-let i = 0;
+let i = 0
 function resposition(driver) {
-  return driver.manage().window().setRect({
-    width: 600,
-    height: 400,
-    x: 300 * (i++),
-    y: 0
-  });
+  return driver
+    .manage()
+    .window()
+    .setRect({
+      width: 600,
+      height: 400,
+      x: 300 * i++,
+      y: 0,
+    })
 }
 
 async function doSearch(driver) {
@@ -45,33 +47,38 @@ async function doSearch(driver) {
     // Start on the base about page.
     await driver.get('about:')
     // Reposition so users can see the three windows.
-    await resposition(driver);
+    await resposition(driver)
     // Pause so users can see the magic.
-    await promise.delayed(750);
+    await promise.delayed(750)
     // Now do the rest.
-    await driver.get('http://www.google.com/ncr');
-    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-    console.log('Success!');
+    await driver.get('http://www.google.com/ncr')
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN)
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000)
+    console.log('Success!')
   } catch (ex) {
-    console.log('An error occured! ' + ex);
+    console.log('An error occured! ' + ex)
   } finally {
-    await driver.quit();
+    await driver.quit()
   }
 }
 
 function createDriver(channel) {
-  let options = new Options().setBinary(channel);
-  return new Builder().forBrowser('firefox').setFirefoxOptions(options).build();
+  let options = new Options().setBinary(channel)
+  return new Builder().forBrowser('firefox').setFirefoxOptions(options).build()
 }
 
 Promise.all([
   doSearch(createDriver(Channel.RELEASE)),
-  doSearch(createDriver(Channel.AURORA)),  // Developer Edition.
+  doSearch(createDriver(Channel.AURORA)), // Developer Edition.
   doSearch(createDriver(Channel.NIGHTLY)),
-]).then(_ => {
-  console.log('All done!');
-}, err => {
-  console.error('An error occured! ' + err);
-  setTimeout(() => {throw err}, 0);
-});
+]).then(
+  (_) => {
+    console.log('All done!')
+  },
+  (err) => {
+    console.error('An error occured! ' + err)
+    setTimeout(() => {
+      throw err
+    }, 0)
+  }
+)
