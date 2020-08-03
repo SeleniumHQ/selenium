@@ -57,14 +57,12 @@ class NettyWebSocket implements WebSocket {
     try {
       URL origUrl = new URL(request.getUrl());
       String wsScheme = "ws";
-      int port = origUrl.getPort();
 
       if (origUrl.getProtocol().equals("https")) {
         wsScheme = "wss";
-        port = 443;
       }
 
-      URI wsUri = new URI(wsScheme, null, origUrl.getHost(), port, origUrl.getPath(), null, null);
+      URI wsUri = new URI(wsScheme, null, origUrl.getHost(), origUrl.getPort(), origUrl.getPath(), null, null);
       ListenableFuture<org.asynchttpclient.netty.ws.NettyWebSocket> future = client.prepareGet(wsUri.toString())
         .execute(new WebSocketUpgradeHandler.Builder()
           .addWebSocketListener(new WebSocketListener() {

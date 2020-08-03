@@ -55,10 +55,6 @@ public class BaseServerOptions {
         throw new ConfigException("Port cannot be less than 0: " + newPort);
       }
 
-      if (isSelfSigned() || isSecure()) {
-        newPort = 443;
-      }
-
       port = newPort;
     }
 
