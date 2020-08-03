@@ -607,16 +607,16 @@ class IWebDriver {
   switchTo() {}
 
   /**
-   * @param {string} orientation
-   * @param {number} scale
-   * @param {boolean} background
-   * @param {number} width
-   * @param {number} height
-   * @param {number} top
-   * @param {number} bottom
-   * @param {number} left
-   * @param {number} right
-   * @param {boolean} shrinkToFit
+   * @param {string} orientation page orientation, 'portrait' by default
+   * @param {number} scale page scale, 1 by default
+   * @param {boolean} background Page background, 'false' by default
+   * @param {number} width page width to consider, default is 21.59 from page
+   * @param {number} height page height to consider, default is 27.94 from page
+   * @param {number} top page margin to consider from top, default is 1 from margin
+   * @param {number} bottom page margin to consider from bottom, default is 1 from margin
+   * @param {number} left page margin to consider from left, default is 1 from margin
+   * @param {number} right page margin to consider from right, default is 1 from margin
+   * @param {boolean} shrinkToFit Shrink pdf to fit in page, default is true
    * @param {Array<Object>} pageRanges
    */
   printToPdf({orientation, scale, background, width, height, top, bottom, left, right, shrinkToFit, pageRanges}) {}
