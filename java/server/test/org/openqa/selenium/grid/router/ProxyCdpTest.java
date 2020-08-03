@@ -31,7 +31,12 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.*;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.TextMessage;
+import org.openqa.selenium.remote.http.WebSocket;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -138,7 +143,7 @@ public class ProxyCdpTest {
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheedar", secureConfig);
+    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheedar", emptyConfig);
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
@@ -158,8 +163,6 @@ public class ProxyCdpTest {
 
       assertThat(latch.await(5, SECONDS)).isTrue();
       assertThat(text.get()).isEqualTo("Cheedar");
-    } catch (Exception e) {
-      throw e;
     }
   }
 
