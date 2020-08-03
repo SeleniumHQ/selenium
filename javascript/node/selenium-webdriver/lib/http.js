@@ -228,6 +228,7 @@ const COMMAND_MAP = new Map([
     [cmd.Name.GET_ELEMENT_PROPERTY, get('/session/:sessionId/element/:id/property/:name')],
     [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
     [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
+    [cmd.Name.PRINT_PAGE, post('/session/:sessionId/print')],
     [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
     [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/current/maximize')],
     [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/current/position')],
@@ -348,6 +349,8 @@ const W3C_COMMAND_MAP = new Map([
   // Log extensions.
   [cmd.Name.GET_LOG, post('/session/:sessionId/se/log')],
   [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/se/log/types')],
+  // Print Page
+  [cmd.Name.PRINT_PAGE, post('/session/:sessionId/print')],
 ]);
 
 
