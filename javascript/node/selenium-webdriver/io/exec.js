@@ -15,10 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const childProcess = require('child_process');
-
+const childProcess = require('child_process')
 
 /**
  * Options for configuring an executed command.
@@ -31,7 +30,7 @@ class Options {
      * Command line arguments for the child process, if any.
      * @type (!Array<string>|undefined)
      */
-    this.args;
+    this.args
 
     /**
      * Environment variables for the spawned process. If unspecified, the
@@ -39,7 +38,7 @@ class Options {
      *
      * @type {(!Object<string, string>|undefined)}
      */
-    this.env;
+    this.env
 
     /**
      * IO conifguration for the spawned server child process. If unspecified,
@@ -49,10 +48,9 @@ class Options {
      *           undefined)}
      * @see <https://nodejs.org/dist/latest-v8.x/docs/api/child_process.html#child_process_options_stdio>
      */
-    this.stdio;
+    this.stdio
   }
 }
-
 
 /**
  * Describes a command's termination conditions.
@@ -66,21 +64,20 @@ class Result {
    */
   constructor(code, signal) {
     /** @type {?number} */
-    this.code = code;
+    this.code = code
 
     /** @type {?string} */
-    this.signal = signal;
+    this.signal = signal
   }
 
   /** @override */
   toString() {
-    return `Result(code=${this.code}, signal=${this.signal})`;
+    return `Result(code=${this.code}, signal=${this.signal})`
   }
 }
 
-
-const COMMAND_RESULT = /** !WeakMap<!Command, !Promise<!Result>> */new WeakMap;
-const KILL_HOOK = /** !WeakMap<!Command, function(string)> */new WeakMap;
+const COMMAND_RESULT = /** !WeakMap<!Command, !Promise<!Result>> */ new WeakMap()
+const KILL_HOOK = /** !WeakMap<!Command, function(string)> */ new WeakMap()
 
 /**
  * Represents a command running in a sub-process.
@@ -92,8 +89,8 @@ class Command {
    *     is called.
    */
   constructor(result, onKill) {
-    COMMAND_RESULT.set(this, result);
-    KILL_HOOK.set(this, onKill);
+    COMMAND_RESULT.set(this, result)
+    KILL_HOOK.set(this, onKill)
   }
 
   /**
@@ -101,7 +98,7 @@ class Command {
    *     command.
    */
   result() {
-    return /** @type {!Promise<!Result>} */(COMMAND_RESULT.get(this));
+    return /** @type {!Promise<!Result>} */ (COMMAND_RESULT.get(this))
   }
 
   /**
@@ -109,13 +106,11 @@ class Command {
    * @param {string=} opt_signal The signal to send; defaults to `SIGTERM`.
    */
   kill(opt_signal) {
-    KILL_HOOK.get(this)(opt_signal || 'SIGTERM');
+    KILL_HOOK.get(this)(opt_signal || 'SIGTERM')
   }
 }
 
-
 // PUBLIC API
-
 
 /**
  * Spawns a child process. The returned {@link Command} may be used to wait
@@ -126,42 +121,42 @@ class Command {
  * @return {!Command} The launched command.
  */
 module.exports = function exec(command, opt_options) {
-  var options = opt_options || {};
+  var options = opt_options || {}
 
   var proc = childProcess.spawn(command, options.args || [], {
     env: options.env || process.env,
-    stdio: options.stdio || 'ignore'
-  });
+    stdio: options.stdio || 'ignore',
+  })
 
   // This process should not wait on the spawned child, however, we do
   // want to ensure the child is killed when this process exits.
-  proc.unref();
-  process.once('exit', onProcessExit);
+  proc.unref()
+  process.once('exit', onProcessExit)
 
-  let result = new Promise(resolve => {
+  let result = new Promise((resolve) => {
     proc.once('exit', (code, signal) => {
-      proc = null;
-      process.removeListener('exit', onProcessExit);
-      resolve(new Result(code, signal));
-    });
-  });
-  return new Command(result, killCommand);
+      proc = null
+      process.removeListener('exit', onProcessExit)
+      resolve(new Result(code, signal))
+    })
+  })
+  return new Command(result, killCommand)
 
   function onProcessExit() {
-    killCommand('SIGTERM');
+    killCommand('SIGTERM')
   }
 
   function killCommand(signal) {
-    process.removeListener('exit', onProcessExit);
+    process.removeListener('exit', onProcessExit)
     if (proc) {
-      proc.kill(signal);
-      proc = null;
+      proc.kill(signal)
+      proc = null
     }
   }
-};
+}
 
 // Exported to improve generated API documentation.
 
-module.exports.Command = Command;
-module.exports.Options = Options;
-module.exports.Result = Result;
+module.exports.Command = Command
+module.exports.Options = Options
+module.exports.Result = Result

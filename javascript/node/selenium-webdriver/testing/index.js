@@ -30,19 +30,18 @@
  *     function maybe() { return Math.random() < 0.5; }
  */
 
-'use strict';
+'use strict'
 
-const {isatty} = require('tty');
-const chrome = require('../chrome');
-const edge = require('../edge');
-const firefox = require('../firefox');
-const ie = require('../ie');
-const remote = require('../remote');
-const safari = require('../safari');
-const opera = require('../opera');
-const {Browser} = require('../lib/capabilities');
-const {Builder} = require('../index');
-
+const { isatty } = require('tty')
+const chrome = require('../chrome')
+const edge = require('../edge')
+const firefox = require('../firefox')
+const ie = require('../ie')
+const remote = require('../remote')
+const safari = require('../safari')
+const opera = require('../opera')
+const { Browser } = require('../lib/capabilities')
+const { Builder } = require('../index')
 
 /**
  * Describes a browser targeted by a {@linkplain suite test suite}.
@@ -54,31 +53,37 @@ function TargetBrowser() {}
  * The {@linkplain Browser name} of the targeted browser.
  * @type {string}
  */
-TargetBrowser.prototype.name;
+TargetBrowser.prototype.name
 
 /**
  * The specific version of the targeted browser, if any.
  * @type {(string|undefined)}
  */
-TargetBrowser.prototype.version;
+TargetBrowser.prototype.version
 
 /**
  * The specific {@linkplain ../lib/capabilities.Platform platform} for the
  * targeted browser, if any.
  * @type {(string|undefined)}.
  */
-TargetBrowser.prototype.platform;
-
+TargetBrowser.prototype.platform
 
 /** @suppress {checkTypes} */
 function color(c, s) {
-  return isatty(process.stdout) ? `\u001b[${c}m${s}\u001b[0m` : s;
+  return isatty(process.stdout) ? `\u001b[${c}m${s}\u001b[0m` : s
 }
-function green(s) { return color(32, s); }
-function cyan(s) { return color(36, s); }
-function info(msg) { console.info(`${green('[INFO]')} ${msg}`); }
-function warn(msg) { console.warn(`${cyan('[WARNING]')} ${msg}`); }
-
+function green(s) {
+  return color(32, s)
+}
+function cyan(s) {
+  return color(36, s)
+}
+function info(msg) {
+  console.info(`${green('[INFO]')} ${msg}`)
+}
+function warn(msg) {
+  console.warn(`${cyan('[WARNING]')} ${msg}`)
+}
 
 /**
  * Extracts the browsers for a test suite to target from the `SELENIUM_BROWSER`
@@ -87,65 +92,68 @@ function warn(msg) { console.warn(`${cyan('[WARNING]')} ${msg}`); }
  * @return {!Array<!TargetBrowser>} the browsers to target.
  */
 function getBrowsersToTestFromEnv() {
-  let browsers = process.env['SELENIUM_BROWSER'];
+  let browsers = process.env['SELENIUM_BROWSER']
   if (!browsers) {
-    return [];
+    return []
   }
-  return browsers.split(',').map(spec => {
-    const parts = spec.split(/:/, 3);
-    let name = parts[0];
+  return browsers.split(',').map((spec) => {
+    const parts = spec.split(/:/, 3)
+    let name = parts[0]
     if (name === 'ie') {
-      name = Browser.IE;
+      name = Browser.IE
     } else if (name === 'edge') {
-      name = Browser.EDGE;
+      name = Browser.EDGE
     }
-    let version = parts[1];
-    let platform = parts[2];
-    return {name, version, platform};
-  });
+    let version = parts[1]
+    let platform = parts[2]
+    return { name, version, platform }
+  })
 }
-
 
 /**
  * @return {!Array<!TargetBrowser>} the browsers available for testing on this
  *     system.
  */
 function getAvailableBrowsers() {
-  info(`Searching for WebDriver executables installed on the current system...`);
+  info(`Searching for WebDriver executables installed on the current system...`)
 
   let targets = [
     [chrome.locateSynchronously, Browser.CHROME],
     [edge.locateSynchronously, Browser.EDGE],
-    [() => edge.locateSynchronously("msedge"), Browser.EDGE, { "ms:edgeChromium": true }],
+    [
+      () => edge.locateSynchronously('msedge'),
+      Browser.EDGE,
+      { 'ms:edgeChromium': true },
+    ],
     [firefox.locateSynchronously, Browser.FIREFOX],
     [ie.locateSynchronously, Browser.IE],
     [safari.locateSynchronously, Browser.SAFARI],
     [opera.locateSynchronously, Browser.OPERA],
-  ];
+  ]
 
-  let availableBrowsers = [];
+  let availableBrowsers = []
   for (let pair of targets) {
-    const fn = pair[0];
-    const name = pair[1];
-    const capabilities = pair[2];
+    const fn = pair[0]
+    const name = pair[1]
+    const capabilities = pair[2]
     if (fn()) {
-      info(`... located ${name}`);
-      availableBrowsers.push({name, capabilities});
+      info(`... located ${name}`)
+      availableBrowsers.push({ name, capabilities })
     }
   }
 
   if (availableBrowsers.length === 0) {
-    warn(`Unable to locate any WebDriver executables for testing`);
+    warn(`Unable to locate any WebDriver executables for testing`)
   }
 
-  return availableBrowsers;
+  return availableBrowsers
 }
 
-let wasInit;
-let targetBrowsers;
-let seleniumJar;
-let seleniumUrl;
-let seleniumServer;
+let wasInit
+let targetBrowsers
+let seleniumJar
+let seleniumUrl
+let seleniumServer
 
 /**
  * Initializes this module by determining which browsers a
@@ -184,80 +192,79 @@ let seleniumServer;
  */
 function init(force = false) {
   if (wasInit && !force) {
-    return;
+    return
   }
-  wasInit = true;
+  wasInit = true
 
   // If force re-init, kill the current server if there is one.
   if (seleniumServer) {
-    seleniumServer.kill();
-    seleniumServer = null;
+    seleniumServer.kill()
+    seleniumServer = null
   }
 
-  seleniumJar = process.env['SELENIUM_SERVER_JAR'];
-  seleniumUrl = process.env['SELENIUM_REMOTE_URL'];
+  seleniumJar = process.env['SELENIUM_SERVER_JAR']
+  seleniumUrl = process.env['SELENIUM_REMOTE_URL']
   if (seleniumJar) {
-    info(`Using Selenium server jar: ${seleniumJar}`);
+    info(`Using Selenium server jar: ${seleniumJar}`)
   }
 
   if (seleniumUrl) {
-    info(`Using Selenium remote end: ${seleniumUrl}`);
+    info(`Using Selenium remote end: ${seleniumUrl}`)
   }
 
   if (seleniumJar && seleniumUrl) {
     throw Error(
-        'Ambiguous test configuration: both SELENIUM_REMOTE_URL'
-            + ' && SELENIUM_SERVER_JAR environment variables are set');
+      'Ambiguous test configuration: both SELENIUM_REMOTE_URL' +
+        ' && SELENIUM_SERVER_JAR environment variables are set'
+    )
   }
 
-  const envBrowsers = getBrowsersToTestFromEnv();
+  const envBrowsers = getBrowsersToTestFromEnv()
   if ((seleniumJar || seleniumUrl) && envBrowsers.length === 0) {
     throw Error(
-        'Ambiguous test configuration: when either the SELENIUM_REMOTE_URL or'
-            + ' SELENIUM_SERVER_JAR environment variable is set, the'
-            + ' SELENIUM_BROWSER variable must also be set.');
+      'Ambiguous test configuration: when either the SELENIUM_REMOTE_URL or' +
+        ' SELENIUM_SERVER_JAR environment variable is set, the' +
+        ' SELENIUM_BROWSER variable must also be set.'
+    )
   }
 
-  targetBrowsers =
-      envBrowsers.length > 0 ? envBrowsers : getAvailableBrowsers();
-  info(`Running tests against [${targetBrowsers.map(b => b.name).join(', ')}]`);
+  targetBrowsers = envBrowsers.length > 0 ? envBrowsers : getAvailableBrowsers()
+  info(
+    `Running tests against [${targetBrowsers.map((b) => b.name).join(', ')}]`
+  )
 
-  after(function() {
+  after(function () {
     if (seleniumServer) {
-      return seleniumServer.kill();
+      return seleniumServer.kill()
     }
-  });
+  })
 }
 
-
-
-const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */new WeakMap;
-const URL_MAP =
-    /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */new WeakMap;
-
+const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */ new WeakMap()
+const URL_MAP = /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */ new WeakMap()
 
 /**
  * Defines the environment a {@linkplain suite test suite} is running against.
  * @final
  */
 class Environment {
-
   /**
    * @param {!TargetBrowser} browser the browser targetted in this environment.
    * @param {?(string|remote.SeleniumServer)=} url remote URL of an existing
    *     Selenium server to test against.
    */
   constructor(browser, url = undefined) {
-    browser =
-        /** @type {!TargetBrowser} */(Object.seal(Object.assign({}, browser)));
+    browser = /** @type {!TargetBrowser} */ (Object.seal(
+      Object.assign({}, browser)
+    ))
 
-    TARGET_MAP.set(this, browser);
-    URL_MAP.set(this, url || null);
+    TARGET_MAP.set(this, browser)
+    URL_MAP.set(this, url || null)
   }
 
   /** @return {!TargetBrowser} the target browser for this test environment. */
   get browser() {
-    return TARGET_MAP.get(this);
+    return TARGET_MAP.get(this)
   }
 
   /**
@@ -270,7 +277,7 @@ class Environment {
    * @return {function(): boolean} a new predicate function.
    */
   browsers(...browsersToIgnore) {
-    return () => browsersToIgnore.indexOf(this.browser.name) != -1;
+    return () => browsersToIgnore.indexOf(this.browser.name) != -1
   }
 
   /**
@@ -278,32 +285,31 @@ class Environment {
    *     environment's {@linkplain #browser browser}.
    */
   builder() {
-    const browser = this.browser;
-    const urlOrServer = URL_MAP.get(this);
+    const browser = this.browser
+    const urlOrServer = URL_MAP.get(this)
 
-    const builder = new Builder();
-    builder.disableEnvironmentOverrides();
+    const builder = new Builder()
+    builder.disableEnvironmentOverrides()
 
-    const realBuild = builder.build;
-    builder.build = function() {
-      builder.forBrowser(browser.name, browser.version, browser.platform);
+    const realBuild = builder.build
+    builder.build = function () {
+      builder.forBrowser(browser.name, browser.version, browser.platform)
 
       if (browser.capabilities) {
-        builder.getCapabilities().merge(browser.capabilities);
+        builder.getCapabilities().merge(browser.capabilities)
       }
 
       if (typeof urlOrServer === 'string') {
-        builder.usingServer(urlOrServer);
+        builder.usingServer(urlOrServer)
       } else if (urlOrServer) {
-        builder.usingServer(urlOrServer.address());
+        builder.usingServer(urlOrServer.address())
       }
-      return realBuild.call(builder);
-    };
+      return realBuild.call(builder)
+    }
 
-    return builder;
+    return builder
   }
 }
-
 
 /**
  * Configuration options for a {@linkplain ./index.suite test suite}.
@@ -315,11 +321,9 @@ function SuiteOptions() {}
  * The browsers to run the test suite against.
  * @type {!Array<!(Browser|TargetBrowser)>}
  */
-SuiteOptions.prototype.browsers;
+SuiteOptions.prototype.browsers
 
-
-let inSuite = false;
-
+let inSuite = false
 
 /**
  * Defines a test suite by calling the provided function once for each of the
@@ -366,55 +370,54 @@ let inSuite = false;
  */
 function suite(fn, options = undefined) {
   if (inSuite) {
-    throw Error('Calls to suite() may not be nested');
+    throw Error('Calls to suite() may not be nested')
   }
   try {
-    init();
-    inSuite = true;
+    init()
+    inSuite = true
 
-    const suiteBrowsers = new Map;
+    const suiteBrowsers = new Map()
     if (options && options.browsers) {
       for (let browser of options.browsers) {
         if (typeof browser === 'string') {
-          suiteBrowsers.set(browser, {name: browser});
+          suiteBrowsers.set(browser, { name: browser })
         } else {
-          suiteBrowsers.set(browser.name, browser);
+          suiteBrowsers.set(browser.name, browser)
         }
       }
     }
 
     for (let browser of targetBrowsers) {
       if (suiteBrowsers.size > 0 && !suiteBrowsers.has(browser.name)) {
-        continue;
+        continue
       }
 
-      describe(`[${browser.name}]`, function() {
+      describe(`[${browser.name}]`, function () {
         if (!seleniumUrl && seleniumJar && !seleniumServer) {
-          seleniumServer = new remote.SeleniumServer(seleniumJar);
+          seleniumServer = new remote.SeleniumServer(seleniumJar)
 
-          const startTimeout = 65 * 1000;
+          const startTimeout = 65 * 1000
+          // eslint-disable-next-line no-inner-declarations
           function startSelenium() {
             if (typeof this.timeout === 'function') {
-              this.timeout(startTimeout);  // For mocha.
+              this.timeout(startTimeout) // For mocha.
             }
 
-            info(`Starting selenium server ${seleniumJar}`);
-            return seleniumServer.start(60 * 1000);
+            info(`Starting selenium server ${seleniumJar}`)
+            return seleniumServer.start(60 * 1000)
           }
 
-          const /** !Function */beforeHook = global.beforeAll || global.before;
-          beforeHook(startSelenium, startTimeout);
+          const /** !Function */ beforeHook = global.beforeAll || global.before
+          beforeHook(startSelenium, startTimeout)
         }
 
-        fn(new Environment(browser, seleniumUrl || seleniumServer));
-      });
+        fn(new Environment(browser, seleniumUrl || seleniumServer))
+      })
     }
   } finally {
-    inSuite = false;
+    inSuite = false
   }
 }
-
-
 
 /**
  * Returns an object with wrappers for the standard mocha/jasmine test
@@ -442,38 +445,39 @@ function suite(fn, options = undefined) {
  *     versions of the `describe` and `it` wtest functions.
  */
 function ignore(predicateFn) {
-  const isJasmine = global.jasmine && typeof global.jasmine === 'object';
+  const isJasmine = global.jasmine && typeof global.jasmine === 'object'
 
   const hooks = {
     describe: getTestHook('describe'),
     xdescribe: getTestHook('xdescribe'),
     it: getTestHook('it'),
-    xit: getTestHook('xit')
-  };
-  hooks.fdescribe = isJasmine ? getTestHook('fdescribe') : hooks.describe.only;
-  hooks.fit = isJasmine ? getTestHook('fit') : hooks.it.only;
+    xit: getTestHook('xit'),
+  }
+  hooks.fdescribe = isJasmine ? getTestHook('fdescribe') : hooks.describe.only
+  hooks.fit = isJasmine ? getTestHook('fit') : hooks.it.only
 
-  let describe = wrap(hooks.xdescribe, hooks.describe);
-  let fdescribe = wrap(hooks.xdescribe, hooks.fdescribe);
-  describe.only = fdescribe;
+  let describe = wrap(hooks.xdescribe, hooks.describe)
+  let fdescribe = wrap(hooks.xdescribe, hooks.fdescribe)
+  //eslint-disable-next-line no-only-tests/no-only-tests
+  describe.only = fdescribe
 
-  let it = wrap(hooks.xit, hooks.it);
-  let fit = wrap(hooks.xit, hooks.fit);
-  it.only = fit;
+  let it = wrap(hooks.xit, hooks.it)
+  let fit = wrap(hooks.xit, hooks.fit)
+  //eslint-disable-next-line no-only-tests/no-only-tests
+  it.only = fit
 
-  return {describe, it};
+  return { describe, it }
 
   function wrap(onSkip, onRun) {
-    return function(...args) {
+    return function (...args) {
       if (predicateFn()) {
-        onSkip(...args);
+        onSkip(...args)
       } else {
-        onRun(...args);
+        onRun(...args)
       }
-    };
+    }
   }
 }
-
 
 /**
  * @param {string} name
@@ -481,25 +485,24 @@ function ignore(predicateFn) {
  * @throws {TypeError}
  */
 function getTestHook(name) {
-  let fn = global[name];
-  let type = typeof fn;
+  let fn = global[name]
+  let type = typeof fn
   if (type !== 'function') {
     throw TypeError(
-        `Expected global.${name} to be a function, but is ${type}.`
-            + ' This can happen if you try using this module when running with'
-            + ' node directly instead of using jasmine or mocha');
+      `Expected global.${name} to be a function, but is ${type}.` +
+        ' This can happen if you try using this module when running with' +
+        ' node directly instead of using jasmine or mocha'
+    )
   }
-  return fn;
+  return fn
 }
 
-
 // PUBLIC API
-
 
 module.exports = {
   Environment,
   SuiteOptions,
   init,
   ignore,
-  suite
-};
+  suite,
+}
