@@ -57,7 +57,6 @@ public class ProxyCdpTest {
 
   private final HttpHandler nullHandler = req -> new HttpResponse();
   private final Config emptyConfig = new MapConfig(Map.of());
-  private Config secureConfig;
   private Server<?> proxyServer;
   private SessionMap sessions;
   private Server<?> secureProxyServer;
@@ -75,11 +74,11 @@ public class ProxyCdpTest {
     ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
     proxyServer = new NettyServer(new BaseServerOptions(emptyConfig), nullHandler, proxy).start();
 
-    secureConfig = new MapConfig(ImmutableMap.of(
+    Config secureConfig = new MapConfig(ImmutableMap.of(
         "server", ImmutableMap.of(
             "https-self-signed", true)));
 
-    secureProxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy).start();
+    secureProxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy);
   }
 
   @Test
@@ -145,6 +144,7 @@ public class ProxyCdpTest {
 
     Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheedar", emptyConfig);
 
+    secureProxyServer.start();
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
 
@@ -164,6 +164,8 @@ public class ProxyCdpTest {
 
       assertThat(latch.await(5, SECONDS)).isTrue();
       assertThat(text.get()).isEqualTo("Cheedar");
+
+      secureProxyServer.stop();
     }
   }
 
