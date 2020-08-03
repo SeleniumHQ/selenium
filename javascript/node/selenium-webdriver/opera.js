@@ -35,7 +35,7 @@
  *     session, such as which {@linkplain Options#setProxy proxy} to use,
  *     what {@linkplain Options#addExtensions extensions} to install, or
  *     what {@linkplain Options#addArguments command-line switches} to use when
- *     starting the browser.
+ *     starting the browser.Service
  *
  * 3. {@linkplain Driver}: the WebDriver client; each new instance will control
  *     a unique browser session with a clean user profile (unless otherwise
@@ -356,15 +356,13 @@ class Driver extends webdriver.WebDriver {
   /**
    * Creates a new session for Opera.
    *
-   * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
+   * @param {(Capabilities|Options)=} opt_config The configuration
    *     options.
    * @param {remote.DriverService=} opt_service The session to use; will use
    *     the {@link getDefaultService default service} by default.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use,
-   *     or {@code null} to use the currently active flow.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_service, opt_flow) {
+  static createSession(opt_config, opt_service) {
     var service = opt_service || getDefaultService();
     var client = service.start().then(url => new http.HttpClient(url));
     var executor = new http.Executor(client);
@@ -389,7 +387,7 @@ class Driver extends webdriver.WebDriver {
     }
 
     return /** @type {!Driver} */(
-        super.createSession(executor, caps, opt_flow));
+        super.createSession(executor, caps, () => service.kill()));
   }
 
   /**
