@@ -158,11 +158,14 @@ public class LoggingOptions {
                 case BOOLEAN_ARRAY:
                   attributeValue = value.getBooleanArrayValue();
                   break;
+                default:
+                  throw new IllegalArgumentException(
+                      "Unrecognized status value type: " + value.getType());
               }
               attributeMap.put(key, attributeValue);
             });
             map.put("attributes", attributeMap);
-            String jsonString = getJSONString(map);
+            String jsonString = getJsonString(map);
             if (status.isOk()) {
               LOG.log(Level.INFO, jsonString);
             } else {
@@ -239,7 +242,7 @@ public class LoggingOptions {
         .orElse(System.out);
   }
 
-  private String getJSONString(Map<String, Object> map) {
+  private String getJsonString(Map<String, Object> map) {
     StringBuilder text = new StringBuilder();
     try (JsonOutput json = JSON.newOutput(text).setPrettyPrint(false)) {
       json.write(map);

@@ -93,14 +93,14 @@ public class EventAttributeValue {
   }
 
   public enum Type {
-    STRING,
     BOOLEAN,
-    LONG,
-    DOUBLE,
-    STRING_ARRAY,
     BOOLEAN_ARRAY,
+    DOUBLE,
+    DOUBLE_ARRAY,
+    LONG,
     LONG_ARRAY,
-    DOUBLE_ARRAY
+    STRING,
+    STRING_ARRAY
   }
 
 }

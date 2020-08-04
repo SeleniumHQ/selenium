@@ -33,6 +33,13 @@ public enum AttributeKey {
   HTTP_CLIENT_CLASS("http.client_class"),
   HTTP_HANDLER_CLASS("http.handler_class"),
 
+  LOGGER_CLASS("logger"),
+
+  DRIVER_RESPONSE("driver.response"),
+  DRIVER_URL("driver.url"),
+  DOWNSTREAM_DIALECT("downstream.dialect"),
+  UPSTREAM_DIALECT("upstream.dialect"),
+
   SESSION_ID("session.id"),
   SESSION_CAPABILITIES("session.capabilities"),
   SESSION_URI("session.uri"),
@@ -43,7 +50,7 @@ public enum AttributeKey {
   DATABASE_CONNECTION_STRING ("db.connection_string"),
   DATABASE_SYSTEM("db.system");
 
-  private String name;
+  private final String name;
 
   AttributeKey(String name) {
     this.name = name;
