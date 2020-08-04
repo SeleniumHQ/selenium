@@ -35,6 +35,8 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -132,7 +134,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
           });
       } catch (Exception e) {
         span.setAttribute("error", true);
-        span.setStatus(Status.UNKNOWN.withDescription(e.getMessage()));
+        span.setStatus(Status.CANCELLED);
+        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
+        span.addEvent(
+            "Error while creating session with the driver service. Stopping driver service.",
+            attributeValueMap);
         service.stop();
         return Optional.empty();
       }

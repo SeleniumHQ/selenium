@@ -50,10 +50,13 @@ RSpec.configure do |c|
 
   c.before do |example|
     guards = WebDriver::SpecSupport::Guards.new(example)
-    if guards.exclude.any?
-      skip 'Bug Prevents Execution.'
-    elsif guards.except.satisfied.any? || guards.only.unsatisfied.any?
-      ENV['SKIP_PENDING'] ? skip('Skip Guarded Spec') : pending('Guarded.')
+
+    skip_guard = guards.exclusive.unsatisfied.first || guards.exclude.satisfied.first
+    skip skip_guard.message if skip_guard
+
+    matching_guard = guards.except.satisfied.first || guards.only.unsatisfied.first
+    if matching_guard
+      ENV['SKIP_PENDING'] ? skip(matching_guard.message) : pending(matching_guard.message)
     end
   end
 

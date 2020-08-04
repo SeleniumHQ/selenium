@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.net.URL;
 import java.util.Base64;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -760,21 +761,39 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     protected class RemoteTimeouts implements Timeouts {
 
+      @Deprecated
       @Override
       public Timeouts implicitlyWait(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT(time, unit));
+        return implicitlyWait(Duration.ofMillis(unit.toMillis(time)));
+      }
+
+      @Override
+      public Timeouts implicitlyWait(Duration duration) {
+        execute(DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT(duration));
         return this;
       }
 
+      @Deprecated
       @Override
       public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_SCRIPT_TIMEOUT(time, unit));
-        return this;
+        return setScriptTimeout(Duration.ofMillis(unit.toMillis(time)));
       }
 
       @Override
+      public Timeouts setScriptTimeout(Duration duration) {
+        execute(DriverCommand.SET_SCRIPT_TIMEOUT(duration));
+        return this;
+      }
+
+      @Deprecated
+      @Override
       public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_PAGE_LOAD_TIMEOUT(time, unit));
+        return pageLoadTimeout(Duration.ofMillis(unit.toMillis(time)));
+      }
+
+      @Override
+      public Timeouts pageLoadTimeout(Duration duration) {
+        execute(DriverCommand.SET_PAGE_LOAD_TIMEOUT(duration));
         return this;
       }
     } // timeouts class.

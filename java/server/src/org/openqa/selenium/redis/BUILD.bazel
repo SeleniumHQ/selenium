@@ -8,6 +8,6 @@ java_library(
         "//java/server/test/org/openqa/selenium:__subpackages__",
     ],
     deps = [
-            artifact("io.lettuce:lettuce-core"),
-        ],
+        artifact("io.lettuce:lettuce-core"),
+    ],
 )

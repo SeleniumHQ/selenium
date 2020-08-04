@@ -53,7 +53,7 @@ public class NullSpan extends NullContext implements Span {
   }
 
   @Override
-  public Span addEvent(String name){
+  public Span addEvent(String name) {
     Require.nonNull("Name", name);
     return this;
   }

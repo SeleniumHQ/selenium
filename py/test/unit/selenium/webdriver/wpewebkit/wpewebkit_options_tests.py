@@ -48,4 +48,3 @@ def test_creates_capabilities(options):
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
     assert isinstance(options, BaseOptions)
-

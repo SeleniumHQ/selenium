@@ -15,99 +15,96 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const http = require('http');
-const path = require('path');
-const url = require('url');
+const path = require('path')
+const url = require('url')
 
-const express = require('express');
-const multer = require('multer');
-const serveIndex = require('serve-index');
+const express = require('express')
+const multer = require('multer')
+const serveIndex = require('serve-index')
 
-const {isDevMode} = require('./build');
-const resources = require('./resources');
-const {Server} = require('./httpserver');
+const { isDevMode } = require('./build')
+const resources = require('./resources')
+const { Server } = require('./httpserver')
 
-const WEB_ROOT = '/common';
-const DATA_ROOT = '/data';
-const JS_ROOT = '/javascript';
+const WEB_ROOT = '/common'
+const DATA_ROOT = '/data'
+const JS_ROOT = '/javascript'
 
-const baseDirectory = resources.locate('common/src/web');
-const dataDirectory = path.join(__dirname, 'data');
-const jsDirectory = resources.locate('javascript');
+const baseDirectory = resources.locate('common/src/web')
+const dataDirectory = path.join(__dirname, 'data')
+const jsDirectory = resources.locate('javascript')
 
-const Pages = (function() {
-  var pages = {};
+const Pages = (function () {
+  var pages = {}
   function addPage(page, path) {
-    pages.__defineGetter__(page, function() {
-      return exports.whereIs(path);
-    });
+    pages.__defineGetter__(page, function () {
+      return exports.whereIs(path)
+    })
   }
 
-  addPage('ajaxyPage', 'ajaxy_page.html');
-  addPage('alertsPage', 'alerts.html');
-  addPage('bodyTypingPage', 'bodyTypingTest.html');
-  addPage('booleanAttributes', 'booleanAttributes.html');
-  addPage('childPage', 'child/childPage.html');
-  addPage('chinesePage', 'cn-test.html');
-  addPage('clickJacker', 'click_jacker.html');
-  addPage('clickEventPage', 'clickEventPage.html');
-  addPage('clicksPage', 'clicks.html');
-  addPage('colorPage', 'colorPage.html');
-  addPage('deletingFrame', 'deletingFrame.htm');
-  addPage('draggableLists', 'draggableLists.html');
-  addPage('dragAndDropPage', 'dragAndDropTest.html');
-  addPage('droppableItems', 'droppableItems.html');
-  addPage('documentWrite', 'document_write_in_onload.html');
-  addPage('dynamicallyModifiedPage', 'dynamicallyModifiedPage.html');
-  addPage('dynamicPage', 'dynamic.html');
-  addPage('echoPage', 'echo');
-  addPage('errorsPage', 'errors.html');
-  addPage('xhtmlFormPage', 'xhtmlFormPage.xhtml');
-  addPage('formPage', 'formPage.html');
-  addPage('formSelectionPage', 'formSelectionPage.html');
-  addPage('framesetPage', 'frameset.html');
-  addPage('grandchildPage', 'child/grandchild/grandchildPage.html');
-  addPage('html5Page', 'html5Page.html');
-  addPage('html5OfflinePage', 'html5/offline.html');
-  addPage('iframePage', 'iframes.html');
-  addPage('javascriptEnhancedForm', 'javascriptEnhancedForm.html');
-  addPage('javascriptPage', 'javascriptPage.html');
-  addPage('linkedImage', 'linked_image.html');
-  addPage('longContentPage', 'longContentPage.html');
-  addPage('macbethPage', 'macbeth.html');
-  addPage('mapVisibilityPage', 'map_visibility.html');
-  addPage('metaRedirectPage', 'meta-redirect.html');
-  addPage('missedJsReferencePage', 'missedJsReference.html');
-  addPage('mouseTrackerPage', 'mousePositionTracker.html');
-  addPage('nestedPage', 'nestedElements.html');
-  addPage('readOnlyPage', 'readOnlyPage.html');
-  addPage('rectanglesPage', 'rectangles.html');
-  addPage('relativeLocators', 'relative_locators.html');
-  addPage('redirectPage', 'redirect');
-  addPage('resultPage', 'resultPage.html');
-  addPage('richTextPage', 'rich_text.html');
-  addPage('selectableItemsPage', 'selectableItems.html');
-  addPage('selectPage', 'selectPage.html');
-  addPage('simpleTestPage', 'simpleTest.html');
-  addPage('simpleXmlDocument', 'simple.xml');
-  addPage('sleepingPage', 'sleep');
-  addPage('slowIframes', 'slow_loading_iframes.html');
-  addPage('slowLoadingAlertPage', 'slowLoadingAlert.html');
-  addPage('svgPage', 'svgPiechart.xhtml');
-  addPage('tables', 'tables.html');
-  addPage('underscorePage', 'underscore.html');
-  addPage('unicodeLtrPage', 'utf8/unicode_ltr.html');
-  addPage('uploadPage', 'upload.html');
-  addPage('veryLargeCanvas', 'veryLargeCanvas.html');
-  addPage('xhtmlTestPage', 'xhtmlTest.html');
-  addPage('uploadInvisibleTestPage', 'upload_invisible.html');
+  addPage('ajaxyPage', 'ajaxy_page.html')
+  addPage('alertsPage', 'alerts.html')
+  addPage('bodyTypingPage', 'bodyTypingTest.html')
+  addPage('booleanAttributes', 'booleanAttributes.html')
+  addPage('childPage', 'child/childPage.html')
+  addPage('chinesePage', 'cn-test.html')
+  addPage('clickJacker', 'click_jacker.html')
+  addPage('clickEventPage', 'clickEventPage.html')
+  addPage('clicksPage', 'clicks.html')
+  addPage('colorPage', 'colorPage.html')
+  addPage('deletingFrame', 'deletingFrame.htm')
+  addPage('draggableLists', 'draggableLists.html')
+  addPage('dragAndDropPage', 'dragAndDropTest.html')
+  addPage('droppableItems', 'droppableItems.html')
+  addPage('documentWrite', 'document_write_in_onload.html')
+  addPage('dynamicallyModifiedPage', 'dynamicallyModifiedPage.html')
+  addPage('dynamicPage', 'dynamic.html')
+  addPage('echoPage', 'echo')
+  addPage('errorsPage', 'errors.html')
+  addPage('xhtmlFormPage', 'xhtmlFormPage.xhtml')
+  addPage('formPage', 'formPage.html')
+  addPage('formSelectionPage', 'formSelectionPage.html')
+  addPage('framesetPage', 'frameset.html')
+  addPage('grandchildPage', 'child/grandchild/grandchildPage.html')
+  addPage('html5Page', 'html5Page.html')
+  addPage('html5OfflinePage', 'html5/offline.html')
+  addPage('iframePage', 'iframes.html')
+  addPage('javascriptEnhancedForm', 'javascriptEnhancedForm.html')
+  addPage('javascriptPage', 'javascriptPage.html')
+  addPage('linkedImage', 'linked_image.html')
+  addPage('longContentPage', 'longContentPage.html')
+  addPage('macbethPage', 'macbeth.html')
+  addPage('mapVisibilityPage', 'map_visibility.html')
+  addPage('metaRedirectPage', 'meta-redirect.html')
+  addPage('missedJsReferencePage', 'missedJsReference.html')
+  addPage('mouseTrackerPage', 'mousePositionTracker.html')
+  addPage('nestedPage', 'nestedElements.html')
+  addPage('readOnlyPage', 'readOnlyPage.html')
+  addPage('rectanglesPage', 'rectangles.html')
+  addPage('relativeLocators', 'relative_locators.html')
+  addPage('redirectPage', 'redirect')
+  addPage('resultPage', 'resultPage.html')
+  addPage('richTextPage', 'rich_text.html')
+  addPage('selectableItemsPage', 'selectableItems.html')
+  addPage('selectPage', 'selectPage.html')
+  addPage('simpleTestPage', 'simpleTest.html')
+  addPage('simpleXmlDocument', 'simple.xml')
+  addPage('sleepingPage', 'sleep')
+  addPage('slowIframes', 'slow_loading_iframes.html')
+  addPage('slowLoadingAlertPage', 'slowLoadingAlert.html')
+  addPage('svgPage', 'svgPiechart.xhtml')
+  addPage('tables', 'tables.html')
+  addPage('underscorePage', 'underscore.html')
+  addPage('unicodeLtrPage', 'utf8/unicode_ltr.html')
+  addPage('uploadPage', 'upload.html')
+  addPage('veryLargeCanvas', 'veryLargeCanvas.html')
+  addPage('xhtmlTestPage', 'xhtmlTest.html')
+  addPage('uploadInvisibleTestPage', 'upload_invisible.html')
 
-  return pages;
-})();
-
+  return pages
+})()
 
 const Path = {
   BASIC_AUTH: WEB_ROOT + '/basicAuth',
@@ -117,112 +114,119 @@ const Path = {
   REDIRECT: WEB_ROOT + '/redirect',
   PAGE: WEB_ROOT + '/page',
   SLEEP: WEB_ROOT + '/sleep',
-  UPLOAD: WEB_ROOT + '/upload'
-};
+  UPLOAD: WEB_ROOT + '/upload',
+}
 
-var app = express();
+var app = express()
 
-app.get('/', sendIndex)
-.get('/favicon.ico', function(req, res) {
-  res.writeHead(204);
-  res.end();
-})
-.use(JS_ROOT, serveIndex(jsDirectory), express.static(jsDirectory))
-.post(Path.UPLOAD, handleUpload)
-.use(WEB_ROOT, serveIndex(baseDirectory), express.static(baseDirectory))
-.use(DATA_ROOT, serveIndex(dataDirectory), express.static(dataDirectory))
-.get(Path.ECHO, sendEcho)
-.get(Path.PAGE, sendInifinitePage)
-.get(Path.PAGE + '/*', sendInifinitePage)
-.get(Path.REDIRECT, redirectToResultPage)
-.get(Path.SLEEP, sendDelayedResponse)
+app
+  .get('/', sendIndex)
+  .get('/favicon.ico', function (_req, res) {
+    res.writeHead(204)
+    res.end()
+  })
+  .use(JS_ROOT, serveIndex(jsDirectory), express.static(jsDirectory))
+  .post(Path.UPLOAD, handleUpload)
+  .use(WEB_ROOT, serveIndex(baseDirectory), express.static(baseDirectory))
+  .use(DATA_ROOT, serveIndex(dataDirectory), express.static(dataDirectory))
+  .get(Path.ECHO, sendEcho)
+  .get(Path.PAGE, sendInifinitePage)
+  .get(Path.PAGE + '/*', sendInifinitePage)
+  .get(Path.REDIRECT, redirectToResultPage)
+  .get(Path.SLEEP, sendDelayedResponse)
 
 if (isDevMode()) {
-  var closureDir = resources.locate('third_party/closure/goog');
-  app.use('/third_party/closure/goog',
-      serveIndex(closureDir), express.static(closureDir));
+  var closureDir = resources.locate('third_party/closure/goog')
+  app.use(
+    '/third_party/closure/goog',
+    serveIndex(closureDir),
+    express.static(closureDir)
+  )
 }
-var server = new Server(app);
-
+var server = new Server(app)
 
 function redirectToResultPage(_, response) {
   response.writeHead(303, {
-    Location: Pages.resultPage
-  });
-  return response.end();
+    Location: Pages.resultPage,
+  })
+  return response.end()
 }
-
 
 function sendInifinitePage(request, response) {
-  var pathname = url.parse(request.url).pathname;
-  var lastIndex = pathname.lastIndexOf('/');
+  // eslint-disable-next-line node/no-deprecated-api
+  var pathname = url.parse(request.url).pathname
+  var lastIndex = pathname.lastIndexOf('/')
   var pageNumber =
-      (lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1));
+    lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1)
   var body = [
     '<!DOCTYPE html>',
-    '<title>Page', pageNumber, '</title>',
-    'Page number <span id="pageNumber">', pageNumber, '</span>',
-    '<p><a href="../xhtmlTest.html" target="_top">top</a>'
-  ].join('');
+    '<title>Page',
+    pageNumber,
+    '</title>',
+    'Page number <span id="pageNumber">',
+    pageNumber,
+    '</span>',
+    '<p><a href="../xhtmlTest.html" target="_top">top</a>',
+  ].join('')
   response.writeHead(200, {
     'Content-Length': Buffer.byteLength(body, 'utf8'),
-    'Content-Type': 'text/html; charset=utf-8'
-  });
-  response.end(body);
+    'Content-Type': 'text/html; charset=utf-8',
+  })
+  response.end(body)
 }
 
-
 function sendDelayedResponse(request, response) {
-  var duration = 0;
-  var query = url.parse(request.url).query || '';
-  var match = query.match(/\btime=(\d+)/);
+  var duration = 0
+  // eslint-disable-next-line node/no-deprecated-api
+  var query = url.parse(request.url).search.substr(1) || ''
+  var match = query.match(/\btime=(\d+)/)
   if (match) {
-    duration = parseInt(match[1], 10);
+    duration = parseInt(match[1], 10)
   }
 
-  setTimeout(function() {
+  setTimeout(function () {
     var body = [
       '<!DOCTYPE html>',
       '<title>Done</title>',
-      '<body>Slept for ', duration, 's</body>'
-    ].join('');
+      '<body>Slept for ',
+      duration,
+      's</body>',
+    ].join('')
     response.writeHead(200, {
       'Content-Length': Buffer.byteLength(body, 'utf8'),
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache',
-      'Expires': 0
-    });
-    response.end(body);
-  }, duration * 1000);
+      Pragma: 'no-cache',
+      Expires: 0,
+    })
+    response.end(body)
+  }, duration * 1000)
 }
-
 
 function handleUpload(request, response) {
-  let upload = multer({storage: multer.memoryStorage()}).any();
-  upload(request, response, function(err) {
+  let upload = multer({ storage: multer.memoryStorage() }).any()
+  upload(request, response, function (err) {
     if (err) {
-      response.writeHead(500);
-      response.end(err + '');
+      response.writeHead(500)
+      response.end(err + '')
     } else {
-      response.writeHead(200);
-      response.write(request.files[0].buffer);
-      response.end('<script>window.top.window.onUploadDone();</script>');
+      response.writeHead(200)
+      response.write(request.files[0].buffer)
+      response.end('<script>window.top.window.onUploadDone();</script>')
     }
-  });
+  })
 }
-
 
 function sendEcho(request, response) {
   if (request.query['html']) {
-    const html = request.query['html'];
+    const html = request.query['html']
     if (html) {
       response.writeHead(200, {
         'Content-Length': Buffer.byteLength(html, 'utf8'),
-        'Content-Type': 'text/html; charset=utf-8'
-      });
-      response.end(html);
-      return;
+        'Content-Type': 'text/html; charset=utf-8',
+      })
+      response.end(html)
+      return
     }
   }
 
@@ -230,21 +234,32 @@ function sendEcho(request, response) {
     '<!DOCTYPE html>',
     '<title>Echo</title>',
     '<div class="request">',
-    request.method, ' ', request.url, ' ', 'HTTP/', request.httpVersion,
-    '</div>'
-  ];
+    request.method,
+    ' ',
+    request.url,
+    ' ',
+    'HTTP/',
+    request.httpVersion,
+    '</div>',
+  ]
   for (var name in request.headers) {
-    body.push('<div class="header ', name , '">',
-        name, ': ', request.headers[name], '</div>');
+    body.push(
+      '<div class="header ',
+      name,
+      '">',
+      name,
+      ': ',
+      request.headers[name],
+      '</div>'
+    )
   }
-  body = body.join('');
+  body = body.join('')
   response.writeHead(200, {
     'Content-Length': Buffer.byteLength(body, 'utf8'),
-    'Content-Type': 'text/html; charset=utf-8'
-  });
-  response.end(body);
+    'Content-Type': 'text/html; charset=utf-8',
+  })
+  response.end(body)
 }
-
 
 /**
  * Responds to a request for the file server's main index.
@@ -252,39 +267,40 @@ function sendEcho(request, response) {
  * @param {!http.ServerResponse} response The response object.
  */
 function sendIndex(request, response) {
-  var pathname = url.parse(request.url).pathname;
+  // eslint-disable-next-line node/no-deprecated-api
+  var pathname = url.parse(request.url).pathname
 
-  var host = request.headers.host;
+  var host = request.headers.host
   if (!host) {
-    host = server.host();
+    host = server.host()
   }
 
-  var requestUrl = ['http://' + host + pathname].join('');
+  var requestUrl = ['http://' + host + pathname].join('')
 
   function createListEntry(path) {
-    var url = requestUrl + path;
-    return ['<li><a href="', url, '">', path, '</a>'].join('');
+    var url = requestUrl + path
+    return ['<li><a href="', url, '">', path, '</a>'].join('')
   }
 
-  var data = ['<!DOCTYPE html><h1>/</h1><hr/><ul>',
-              createListEntry('common'),
-              createListEntry('data')];
+  var data = [
+    '<!DOCTYPE html><h1>/</h1><hr/><ul>',
+    createListEntry('common'),
+    createListEntry('data'),
+  ]
   if (isDevMode()) {
-    data.push(createListEntry('javascript'));
+    data.push(createListEntry('javascript'))
   }
-  data.push('</ul>');
-  data = data.join('');
+  data.push('</ul>')
+  data = data.join('')
 
   response.writeHead(200, {
     'Content-Type': 'text/html; charset=UTF-8',
-    'Content-Length': Buffer.byteLength(data, 'utf8')
-  });
-  response.end(data);
+    'Content-Length': Buffer.byteLength(data, 'utf8'),
+  })
+  response.end(data)
 }
 
-
 // PUBLIC application
-
 
 /**
  * Starts the server on the specified port.
@@ -292,16 +308,14 @@ function sendIndex(request, response) {
  * @return {!Promise<Host>} A promise that will resolve
  *     with the server host when it has fully started.
  */
-exports.start = server.start.bind(server);
-
+exports.start = server.start.bind(server)
 
 /**
  * Stops the server.
  * @return {!Promise} A promise that will resolve when the
  *     server has closed all connections.
  */
-exports.stop = server.stop.bind(server);
-
+exports.stop = server.stop.bind(server)
 
 /**
  * Formats a URL for this server.
@@ -309,8 +323,7 @@ exports.stop = server.stop.bind(server);
  * @return {string} The formatted URL.
  * @throws {Error} If the server is not running.
  */
-exports.url = server.url.bind(server);
-
+exports.url = server.url.bind(server)
 
 /**
  * Builds the URL for a file in the //common/src/web directory of the
@@ -320,20 +333,18 @@ exports.url = server.url.bind(server);
  * @return {string} The formatted URL.
  * @throws {Error} If the server is not running.
  */
-exports.whereIs = function(filePath) {
-  filePath = filePath.replace(/\\/g, '/');
+exports.whereIs = function (filePath) {
+  filePath = filePath.replace(/\\/g, '/')
   if (!filePath.startsWith('/')) {
-    filePath = `${WEB_ROOT}/${filePath}`;
+    filePath = `${WEB_ROOT}/${filePath}`
   }
-  return server.url(filePath);
-};
+  return server.url(filePath)
+}
 
-
-exports.Pages = Pages;
-
+exports.Pages = Pages
 
 if (require.main === module) {
-  server.start(2310).then(function() {
-    console.log('Server running at ' + server.url());
-  });
+  server.start(2310).then(function () {
+    console.log('Server running at ' + server.url())
+  })
 }

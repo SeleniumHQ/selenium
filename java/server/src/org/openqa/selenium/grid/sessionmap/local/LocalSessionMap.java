@@ -26,6 +26,7 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Map;
@@ -48,8 +49,10 @@ public class LocalSessionMap extends SessionMap {
     this.bus = Require.nonNull("Event bus", bus);
 
     bus.addListener(SESSION_CLOSED, event -> {
+      try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.remove")) {
       SessionId id = event.getData(SessionId.class);
       knownSessions.remove(id);
+      }
     });
   }
 
@@ -71,13 +74,15 @@ public class LocalSessionMap extends SessionMap {
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
-    try {
-      knownSessions.put(session.getId(), session);
-    } finally {
-      writeLock.unlock();
-    }
+    try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.add")) {
+      try {
+        knownSessions.put(session.getId(), session);
+      } finally {
+        writeLock.unlock();
+      }
 
-    return true;
+      return true;
+    }
   }
 
   @Override

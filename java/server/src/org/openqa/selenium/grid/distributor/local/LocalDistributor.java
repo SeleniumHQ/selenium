@@ -49,6 +49,8 @@ import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -145,6 +147,7 @@ public class LocalDistributor extends Distributor {
       Iterator<Capabilities> iterator = payload.stream().iterator();
 
       if (!iterator.hasNext()) {
+        span.addEvent("No capabilities found");
         throw new SessionNotCreatedException("No capabilities found");
       }
 
@@ -176,11 +179,17 @@ public class LocalDistributor extends Distributor {
       return sessionResponse;
     } catch (SessionNotCreatedException e) {
       span.setAttribute("error", true);
-      span.setStatus(Status.ABORTED.withDescription(e.getMessage()));
+      span.setStatus(Status.ABORTED);
+      Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+      attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
+      span.addEvent("Session not created", attributeValueMap);
       throw e;
     } catch (IOException e) {
       span.setAttribute("error", true);
-      span.setStatus(Status.UNKNOWN.withDescription(e.getMessage()));
+      span.setStatus(Status.UNKNOWN);
+      Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
+      attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
+      span.addEvent("Unknown error in LocalDistributor while creating session", attributeValueMap);
       throw new SessionNotCreatedException(e.getMessage(), e);
     } finally {
       span.close();

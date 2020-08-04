@@ -15,38 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const command = require('./command');
-const error = require('./error');
-const input = require('./input');
-
+const command = require('./command')
+const error = require('./error')
+const input = require('./input')
 
 /**
  * @param {!IArrayLike} args .
  * @return {!Array} .
  */
 function flatten(args) {
-  let result = [];
+  let result = []
   for (let i = 0; i < args.length; i++) {
-    let element = args[i];
+    let element = args[i]
     if (Array.isArray(element)) {
-      result.push.apply(result, flatten(element));
+      result.push.apply(result, flatten(element))
     } else {
-      result.push(element);
+      result.push(element)
     }
   }
-  return result;
+  return result
 }
-
 
 const MODIFIER_KEYS = new Set([
   input.Key.ALT,
   input.Key.CONTROL,
   input.Key.SHIFT,
-  input.Key.COMMAND
-]);
-
+  input.Key.COMMAND,
+])
 
 /**
  * Checks that a key is a modifier key.
@@ -56,10 +53,9 @@ const MODIFIER_KEYS = new Set([
  */
 function checkModifierKey(key) {
   if (!MODIFIER_KEYS.has(key)) {
-    throw new error.InvalidArgumentError('Not a modifier key');
+    throw new error.InvalidArgumentError('Not a modifier key')
   }
 }
-
 
 /**
  * Class for defining sequences of complex user interactions. Each sequence
@@ -92,10 +88,10 @@ class LegacyActionSequence {
    */
   constructor(driver) {
     /** @private {!./webdriver.WebDriver} */
-    this.driver_ = driver;
+    this.driver_ = driver
 
     /** @private {!Array<{description: string, command: !command.Command}>} */
-    this.actions_ = [];
+    this.actions_ = []
   }
 
   /**
@@ -109,8 +105,8 @@ class LegacyActionSequence {
   schedule_(description, command) {
     this.actions_.push({
       description: description,
-      command: command
-    });
+      command: command,
+    })
   }
 
   /**
@@ -123,9 +119,9 @@ class LegacyActionSequence {
     // Make a protected copy of the scheduled actions. This will protect against
     // users defining additional commands before this sequence is actually
     // executed.
-    let actions = this.actions_.concat();
+    let actions = this.actions_.concat()
     for (let action of actions) {
-      await this.driver_.execute(action.command);
+      await this.driver_.execute(action.command)
     }
   }
 
@@ -145,24 +141,24 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    */
   mouseMove(location, opt_offset) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_MOUSE_MOVE);
+    let cmd = new command.Command(command.Name.LEGACY_ACTION_MOUSE_MOVE)
 
     if (typeof location.x === 'number') {
-      setOffset(/** @type {{x: number, y: number}} */(location));
+      setOffset(/** @type {{x: number, y: number}} */ (location))
     } else {
-      cmd.setParameter('element', location.getId());
+      cmd.setParameter('element', location.getId())
       if (opt_offset) {
-        setOffset(opt_offset);
+        setOffset(opt_offset)
       }
     }
 
-    this.schedule_('mouseMove', cmd);
-    return this;
+    this.schedule_('mouseMove', cmd)
+    return this
 
     /** @param {{x: number, y: number}} offset The offset to use. */
     function setOffset(offset) {
-      cmd.setParameter('xoffset', offset.x || 0);
-      cmd.setParameter('yoffset', offset.y || 0);
+      cmd.setParameter('xoffset', offset.x || 0)
+      cmd.setParameter('yoffset', offset.y || 0)
     }
   }
 
@@ -182,22 +178,26 @@ class LegacyActionSequence {
    * @private
    */
   scheduleMouseAction_(
-      description, commandName, opt_elementOrButton, opt_button) {
-    let button;
+    description,
+    commandName,
+    opt_elementOrButton,
+    opt_button
+  ) {
+    let button
     if (typeof opt_elementOrButton === 'number') {
-      button = opt_elementOrButton;
+      button = opt_elementOrButton
     } else {
       if (opt_elementOrButton) {
         this.mouseMove(
-            /** @type {!./webdriver.WebElement} */ (opt_elementOrButton));
+          /** @type {!./webdriver.WebElement} */ (opt_elementOrButton)
+        )
       }
-      button = opt_button !== void(0) ? opt_button : input.Button.LEFT;
+      button = opt_button !== void 0 ? opt_button : input.Button.LEFT
     }
 
-    let cmd = new command.Command(commandName).
-        setParameter('button', button);
-    this.schedule_(description, cmd);
-    return this;
+    let cmd = new command.Command(commandName).setParameter('button', button)
+    this.schedule_(description, cmd)
+    return this
   }
 
   /**
@@ -224,8 +224,12 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    */
   mouseDown(opt_elementOrButton, opt_button) {
-    return this.scheduleMouseAction_('mouseDown',
-        command.Name.LEGACY_ACTION_MOUSE_DOWN, opt_elementOrButton, opt_button);
+    return this.scheduleMouseAction_(
+      'mouseDown',
+      command.Name.LEGACY_ACTION_MOUSE_DOWN,
+      opt_elementOrButton,
+      opt_button
+    )
   }
 
   /**
@@ -250,8 +254,12 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    */
   mouseUp(opt_elementOrButton, opt_button) {
-    return this.scheduleMouseAction_('mouseUp',
-        command.Name.LEGACY_ACTION_MOUSE_UP, opt_elementOrButton, opt_button);
+    return this.scheduleMouseAction_(
+      'mouseUp',
+      command.Name.LEGACY_ACTION_MOUSE_UP,
+      opt_elementOrButton,
+      opt_button
+    )
   }
 
   /**
@@ -266,7 +274,7 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    */
   dragAndDrop(element, location) {
-    return this.mouseDown(element).mouseMove(location).mouseUp();
+    return this.mouseDown(element).mouseMove(location).mouseUp()
   }
 
   /**
@@ -287,8 +295,12 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    */
   click(opt_elementOrButton, opt_button) {
-    return this.scheduleMouseAction_('click',
-        command.Name.LEGACY_ACTION_CLICK, opt_elementOrButton, opt_button);
+    return this.scheduleMouseAction_(
+      'click',
+      command.Name.LEGACY_ACTION_CLICK,
+      opt_elementOrButton,
+      opt_button
+    )
   }
 
   /**
@@ -312,9 +324,12 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    */
   doubleClick(opt_elementOrButton, opt_button) {
-    return this.scheduleMouseAction_('doubleClick',
-        command.Name.LEGACY_ACTION_DOUBLE_CLICK, opt_elementOrButton,
-        opt_button);
+    return this.scheduleMouseAction_(
+      'doubleClick',
+      command.Name.LEGACY_ACTION_DOUBLE_CLICK,
+      opt_elementOrButton,
+      opt_button
+    )
   }
 
   /**
@@ -327,10 +342,11 @@ class LegacyActionSequence {
    * @private
    */
   scheduleKeyboardAction_(description, keys) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_SEND_KEYS)
-        .setParameter('value', keys);
-    this.schedule_(description, cmd);
-    return this;
+    let cmd = new command.Command(
+      command.Name.LEGACY_ACTION_SEND_KEYS
+    ).setParameter('value', keys)
+    this.schedule_(description, cmd)
+    return this
   }
 
   /**
@@ -345,8 +361,8 @@ class LegacyActionSequence {
    *     key.
    */
   keyDown(key) {
-    checkModifierKey(key);
-    return this.scheduleKeyboardAction_('keyDown', [key]);
+    checkModifierKey(key)
+    return this.scheduleKeyboardAction_('keyDown', [key])
   }
 
   /**
@@ -359,8 +375,8 @@ class LegacyActionSequence {
    *     key.
    */
   keyUp(key) {
-    checkModifierKey(key);
-    return this.scheduleKeyboardAction_('keyUp', [key]);
+    checkModifierKey(key)
+    return this.scheduleKeyboardAction_('keyUp', [key])
   }
 
   /**
@@ -373,12 +389,11 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    * @throws {Error} If the key is not a valid modifier key.
    */
-  sendKeys(var_args) {
-    let keys = flatten(arguments);
-    return this.scheduleKeyboardAction_('sendKeys', keys);
+  sendKeys(var_args) { // eslint-disable-line
+    let keys = flatten(arguments)
+    return this.scheduleKeyboardAction_('sendKeys', keys)
   }
 }
-
 
 /**
  * Class for defining sequences of user touch interactions. Each sequence
@@ -409,10 +424,10 @@ class LegacyTouchSequence {
    */
   constructor(driver) {
     /** @private {!./webdriver.WebDriver} */
-    this.driver_ = driver;
+    this.driver_ = driver
 
     /** @private {!Array<{description: string, command: !command.Command}>} */
-    this.actions_ = [];
+    this.actions_ = []
   }
 
   /**
@@ -425,8 +440,8 @@ class LegacyTouchSequence {
   schedule_(description, command) {
     this.actions_.push({
       description: description,
-      command: command
-    });
+      command: command,
+    })
   }
 
   /**
@@ -438,9 +453,9 @@ class LegacyTouchSequence {
     // Make a protected copy of the scheduled actions. This will protect against
     // users defining additional commands before this sequence is actually
     // executed.
-    let actions = this.actions_.concat();
+    let actions = this.actions_.concat()
     for (let action of actions) {
-      await this.driver_.execute(action.command);
+      await this.driver_.execute(action.command)
     }
   }
 
@@ -451,11 +466,12 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   tap(elem) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SINGLE_TAP).
-        setParameter('element', elem.getId());
+    let cmd = new command.Command(
+      command.Name.LEGACY_ACTION_TOUCH_SINGLE_TAP
+    ).setParameter('element', elem.getId())
 
-    this.schedule_('tap', cmd);
-    return this;
+    this.schedule_('tap', cmd)
+    return this
   }
 
   /**
@@ -465,11 +481,12 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   doubleTap(elem) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_DOUBLE_TAP).
-        setParameter('element', elem.getId());
+    let cmd = new command.Command(
+      command.Name.LEGACY_ACTION_TOUCH_DOUBLE_TAP
+    ).setParameter('element', elem.getId())
 
-    this.schedule_('doubleTap', cmd);
-    return this;
+    this.schedule_('doubleTap', cmd)
+    return this
   }
 
   /**
@@ -479,11 +496,12 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   longPress(elem) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_LONG_PRESS).
-        setParameter('element', elem.getId());
+    let cmd = new command.Command(
+      command.Name.LEGACY_ACTION_TOUCH_LONG_PRESS
+    ).setParameter('element', elem.getId())
 
-    this.schedule_('longPress', cmd);
-    return this;
+    this.schedule_('longPress', cmd)
+    return this
   }
 
   /**
@@ -493,12 +511,12 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   tapAndHold(location) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_DOWN).
-        setParameter('x', location.x).
-        setParameter('y', location.y);
+    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_DOWN)
+      .setParameter('x', location.x)
+      .setParameter('y', location.y)
 
-    this.schedule_('tapAndHold', cmd);
-    return this;
+    this.schedule_('tapAndHold', cmd)
+    return this
   }
 
   /**
@@ -508,12 +526,12 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   move(location) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_MOVE).
-        setParameter('x', location.x).
-        setParameter('y', location.y);
+    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_MOVE)
+      .setParameter('x', location.x)
+      .setParameter('y', location.y)
 
-    this.schedule_('move', cmd);
-    return this;
+    this.schedule_('move', cmd)
+    return this
   }
 
   /**
@@ -523,12 +541,12 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   release(location) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_UP).
-        setParameter('x', location.x).
-        setParameter('y', location.y);
+    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_UP)
+      .setParameter('x', location.x)
+      .setParameter('y', location.y)
 
-    this.schedule_('release', cmd);
-    return this;
+    this.schedule_('release', cmd)
+    return this
   }
 
   /**
@@ -538,12 +556,12 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   scroll(offset) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SCROLL).
-        setParameter('xoffset', offset.x).
-        setParameter('yoffset', offset.y);
+    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SCROLL)
+      .setParameter('xoffset', offset.x)
+      .setParameter('yoffset', offset.y)
 
-    this.schedule_('scroll', cmd);
-    return this;
+    this.schedule_('scroll', cmd)
+    return this
   }
 
   /**
@@ -555,13 +573,13 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   scrollFromElement(elem, offset) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SCROLL).
-        setParameter('element', elem.getId()).
-        setParameter('xoffset', offset.x).
-        setParameter('yoffset', offset.y);
+    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SCROLL)
+      .setParameter('element', elem.getId())
+      .setParameter('xoffset', offset.x)
+      .setParameter('yoffset', offset.y)
 
-    this.schedule_('scrollFromElement', cmd);
-    return this;
+    this.schedule_('scrollFromElement', cmd)
+    return this
   }
 
   /**
@@ -572,12 +590,12 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   flick(speed) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_FLICK).
-        setParameter('xspeed', speed.xspeed).
-        setParameter('yspeed', speed.yspeed);
+    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_FLICK)
+      .setParameter('xspeed', speed.xspeed)
+      .setParameter('yspeed', speed.yspeed)
 
-    this.schedule_('flick', cmd);
-    return this;
+    this.schedule_('flick', cmd)
+    return this
   }
 
   /**
@@ -589,21 +607,20 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   flickElement(elem, offset, speed) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_FLICK).
-        setParameter('element', elem.getId()).
-        setParameter('xoffset', offset.x).
-        setParameter('yoffset', offset.y).
-        setParameter('speed', speed);
+    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_FLICK)
+      .setParameter('element', elem.getId())
+      .setParameter('xoffset', offset.x)
+      .setParameter('yoffset', offset.y)
+      .setParameter('speed', speed)
 
-    this.schedule_('flickElement', cmd);
-    return this;
+    this.schedule_('flickElement', cmd)
+    return this
   }
 }
-
 
 // PUBLIC API
 
 module.exports = {
   LegacyActionSequence,
   LegacyTouchSequence,
-};
+}

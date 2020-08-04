@@ -18,12 +18,15 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.util.Set;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
@@ -36,11 +39,21 @@ public class CheckContentTypeHeader implements Filter {
       "message", "Content-Type header is missing",
       "stacktrace", ""))));
 
+  private final Set<String> skipChecksOn;
+
+  public CheckContentTypeHeader(Set<String> skipChecksOn) {
+    this.skipChecksOn = ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
+  }
+
   @Override
   public HttpHandler apply(HttpHandler httpHandler) {
     Require.nonNull("Next handler", httpHandler);
 
     return req -> {
+      if (skipChecksOn.contains(req.getUri())) {
+        return httpHandler.execute(req);
+      }
+
       String type = req.getHeader("Content-Type");
       if (type == null) {
         return NO_HEADER;
