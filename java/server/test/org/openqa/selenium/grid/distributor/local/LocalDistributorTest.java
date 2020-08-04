@@ -60,7 +60,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -190,45 +189,6 @@ public class LocalDistributorTest {
       // Now send a random command.
       HttpResponse res = node.execute(new HttpRequest(GET, String.format("/session/%s/url", id)));
       assertThat(res.isSuccessful()).isTrue();
-    }
-  }
-
-  //Build a few Host Buckets of different sizes
-  private Map<String, Set<Host>> buildBuckets(int...sizes) {
-    Map<String, Set<Host>> hostBuckets = new HashMap<>();
-    //The fact that it's re-using the same node doesn't matter--we're calculating "sameness"
-    // based purely on the number of hosts in the Set
-
-    IntStream.of(sizes).forEach(count -> {
-      Set<Host> hostSet = new HashSet<>();
-      for (int i=0; i<count; i++) {
-        hostSet.add(createHost(UUID.randomUUID().toString()));
-      }
-      hostBuckets.put(UUID.randomUUID().toString(), hostSet);
-    });
-    return hostBuckets;
-  }
-
-  //Create a single host with the given browserName
-  private Host createHost(String...browsers) {
-    URI uri = createUri();
-    LocalNode.Builder nodeBuilder = LocalNode.builder(tracer, bus, uri, uri, null);
-    nodeBuilder.maximumConcurrentSessions(browsers.length);
-
-    Arrays.stream(browsers).forEach(browser -> {
-      Capabilities caps = new ImmutableCapabilities("browserName", browser);
-        nodeBuilder.add(caps, new TestSessionFactory((id, c) -> new Handler(c)));
-    });
-
-    Node myNode = nodeBuilder.build();
-    return new Host(bus, myNode);
-  }
-
-  private URI createUri() {
-    try {
-      return new URI("http://localhost:" + new Random().nextInt());
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
     }
   }
 
