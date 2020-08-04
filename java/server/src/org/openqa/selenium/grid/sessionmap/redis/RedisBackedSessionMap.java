@@ -62,8 +62,8 @@ public class RedisBackedSessionMap extends SessionMap {
   private static final String REDIS_URI_VALUE = "session.uri_value";
   private static final String REDIS_CAPABILITIES_KEY = "session.capabilities_key";
   private static final String REDIS_CAPABILITIES_VALUE = "session.capabilities_value";
-  private static final String DATABASE_SYSTEM = AttributeKey.DATABASE_SYSTEM.toString();
-  private static final String DATABASE_OPERATION = AttributeKey.DATABASE_OPERATION.toString();
+  private static final String DATABASE_SYSTEM = AttributeKey.DATABASE_SYSTEM.getKey();
+  private static final String DATABASE_OPERATION = AttributeKey.DATABASE_OPERATION.getKey();
   private final GridRedisClient connection;
   private final EventBus bus;
   private final URI serverUri;
@@ -145,7 +145,7 @@ public class RedisBackedSessionMap extends SessionMap {
 
       attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey(id)));
       attributeMap
-          .put(AttributeKey.SESSION_URI.toString(), EventAttribute.setValue(uri.toString()));
+          .put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(uri.toString()));
 
       String capabilitiesKey=capabilitiesKey(id);
       String rawCapabilities = connection.get(capabilitiesKey);
@@ -195,9 +195,9 @@ public class RedisBackedSessionMap extends SessionMap {
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND);
         EXCEPTION.accept(attributeMap, exception);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Session URI does not exist in the database :" + exception.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         throw exception;
       }
@@ -212,10 +212,10 @@ public class RedisBackedSessionMap extends SessionMap {
         span.setAttribute("error", true);
         span.setStatus(Status.INTERNAL);
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.SESSION_URI.toString(), EventAttribute.setValue(rawUri));
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+        attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(rawUri));
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Unable to convert session id to uri: " + e.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         throw new NoSuchSessionException(String.format("Unable to convert session id (%s) to uri: %s", id, rawUri), e);
       }
@@ -272,7 +272,7 @@ public class RedisBackedSessionMap extends SessionMap {
   private void setCommonEventAttributes(Map<String, EventAttributeValue> map) {
     map.put(DATABASE_SYSTEM, EventAttribute.setValue("redis"));
     if (serverUri != null) {
-      map.put(AttributeKey.DATABASE_CONNECTION_STRING.toString(),
+      map.put(AttributeKey.DATABASE_CONNECTION_STRING.getKey(),
               EventAttribute.setValue(serverUri.toString()));
     }
   }

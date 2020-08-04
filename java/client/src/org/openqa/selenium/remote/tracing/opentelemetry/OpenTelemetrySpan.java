@@ -130,7 +130,7 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
 
             default:
               throw new IllegalArgumentException(
-                  "Unrecognized status value type: " + value.getAttributeType());
+                  "Unrecognized event attribute value type: " + value.getAttributeType());
           }
         }
     );

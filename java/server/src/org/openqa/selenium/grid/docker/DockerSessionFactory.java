@@ -107,7 +107,7 @@ public class DockerSessionFactory implements SessionFactory {
 
     try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.LOGGER_CLASS.toString(),
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
                        EventAttribute.setValue(this.getClass().getName()));
       LOG.info("Creating container, mapping container port 4444 to " + port);
       Container container = docker.create(image(image).map(Port.tcp(4444), Port.tcp(port)));
@@ -127,9 +127,9 @@ public class DockerSessionFactory implements SessionFactory {
         span.setStatus(Status.CANCELLED);
 
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Unable to connect to docker server. Stopping container: " + e.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
         container.delete();
@@ -147,15 +147,15 @@ public class DockerSessionFactory implements SessionFactory {
       try {
         result = new ProtocolHandshake().createSession(client, command);
         response = result.createResponse();
-        attributeMap.put(AttributeKey.DRIVER_RESPONSE.toString(), EventAttribute.setValue(response.toString()));
+        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
       } catch (IOException | RuntimeException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
 
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Unable to create session. Stopping and  container: " + e.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
         container.delete();
@@ -169,8 +169,8 @@ public class DockerSessionFactory implements SessionFactory {
       Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
                            result.getDialect() :
                            W3C;
-      attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.toString(), EventAttribute.setValue(downstream.toString()));
-      attributeMap.put(AttributeKey.DRIVER_RESPONSE.toString(), EventAttribute.setValue(response.toString()));
+      attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
+      attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
 
       span.addEvent("Docker driver service created session", attributeMap);
       LOG.info(String.format(

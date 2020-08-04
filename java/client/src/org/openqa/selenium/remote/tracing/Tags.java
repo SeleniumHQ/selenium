@@ -41,19 +41,19 @@ public class Tags {
   }
 
   public static final BiConsumer<Span, Span.Kind> KIND =
-    (span, kind) -> span.setAttribute(AttributeKey.SPAN_KIND.toString(), kind.toString());
+    (span, kind) -> span.setAttribute(AttributeKey.SPAN_KIND.getKey(), kind.toString());
 
   public static final BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
-    span.setAttribute(AttributeKey.HTTP_METHOD.toString(), req.getMethod().toString());
-    span.setAttribute(AttributeKey.HTTP_URL.toString(), req.getUri());
+    span.setAttribute(AttributeKey.HTTP_METHOD.getKey(), req.getMethod().toString());
+    span.setAttribute(AttributeKey.HTTP_URL.getKey(), req.getUri());
   };
 
   public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
     int statusCode = res.getStatus();
     if (res.getTargetHost() != null) {
-      span.setAttribute(AttributeKey.HTTP_TARGET_HOST.toString(), res.getTargetHost());
+      span.setAttribute(AttributeKey.HTTP_TARGET_HOST.getKey(), res.getTargetHost());
     }
-    span.setAttribute(AttributeKey.HTTP_STATUS_CODE.toString(), statusCode);
+    span.setAttribute(AttributeKey.HTTP_STATUS_CODE.getKey(), statusCode);
 
     if (statusCode > 99 && statusCode < 400) {
       span.setStatus(Status.OK);
@@ -69,9 +69,9 @@ public class Tags {
   public static final BiConsumer<Map<String, EventAttributeValue>, HttpRequest>
       HTTP_REQUEST_EVENT =
       (map, req) -> {
-        map.put(AttributeKey.HTTP_METHOD.toString(),
+        map.put(AttributeKey.HTTP_METHOD.name(),
                 EventAttribute.setValue(req.getMethod().toString()));
-        map.put(AttributeKey.HTTP_URL.toString(), EventAttribute.setValue(req.getUri()));
+        map.put(AttributeKey.HTTP_URL.getKey(), EventAttribute.setValue(req.getUri()));
       };
 
   public static final BiConsumer<Map<String, EventAttributeValue>, HttpResponse>
@@ -79,10 +79,10 @@ public class Tags {
       (map, res) -> {
         int statusCode = res.getStatus();
         if (res.getTargetHost() != null) {
-          map.put(AttributeKey.HTTP_TARGET_HOST.toString(),
+          map.put(AttributeKey.HTTP_TARGET_HOST.getKey(),
                   EventAttribute.setValue(res.getTargetHost()));
         }
-        map.put(AttributeKey.HTTP_STATUS_CODE.toString(), EventAttribute.setValue(statusCode));
+        map.put(AttributeKey.HTTP_STATUS_CODE.getKey(), EventAttribute.setValue(statusCode));
       };
 
   public static final BiConsumer<Map<String, EventAttributeValue>, Throwable>
@@ -91,9 +91,9 @@ public class Tags {
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
 
-        map.put(AttributeKey.EXCEPTION_TYPE.toString(),
+        map.put(AttributeKey.EXCEPTION_TYPE.getKey(),
                 EventAttribute.setValue(t.getClass().getName()));
-        map.put(AttributeKey.EXCEPTION_STACKTRACE.toString(),
+        map.put(AttributeKey.EXCEPTION_STACKTRACE.getKey(),
                 EventAttribute.setValue(sw.toString()));
 
       };

@@ -160,7 +160,7 @@ public class LoggingOptions {
                   break;
                 default:
                   throw new IllegalArgumentException(
-                      "Unrecognized status value type: " + value.getType());
+                      "Unrecognized event attribute value type: " + value.getType());
               }
               attributeMap.put(key, attributeValue);
             });

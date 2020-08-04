@@ -35,20 +35,20 @@ public class RemoteTags {
   public static final BiConsumer<Span, Capabilities>
       CAPABILITIES =
       (span, caps) -> span
-          .setAttribute(AttributeKey.SESSION_CAPABILITIES.toString(), String.valueOf(caps));
+          .setAttribute(AttributeKey.SESSION_CAPABILITIES.getKey(), String.valueOf(caps));
 
   public static final BiConsumer<Span, SessionId> SESSION_ID = (span, id) ->
-      span.setAttribute(AttributeKey.SESSION_ID.toString(), String.valueOf(id));
+      span.setAttribute(AttributeKey.SESSION_ID.getKey(), String.valueOf(id));
 
   public static final BiConsumer<Map<String, EventAttributeValue>, Capabilities>
       CAPABILITIES_EVENT =
       (map, caps) ->
-          map.put(AttributeKey.SESSION_CAPABILITIES.toString(),
+          map.put(AttributeKey.SESSION_CAPABILITIES.getKey(),
                   EventAttribute.setValue(String.valueOf(caps)));
 
   public static final BiConsumer<Map<String, EventAttributeValue>, SessionId>
       SESSION_ID_EVENT =
       (map, id) ->
-          map.put(AttributeKey.SESSION_ID.toString(), EventAttribute.setValue(String.valueOf(id)));
+          map.put(AttributeKey.SESSION_ID.getKey(), EventAttribute.setValue(String.valueOf(id)));
 
 }

@@ -77,7 +77,7 @@ class HandleSession implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
     try (Span span = HttpTracing.newSpanAsChildOf(tracer, req, "router.handle_session")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.toString(),
+      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
                        EventAttribute.setValue(getClass().getName()));
 
       HTTP_REQUEST.accept(span, req);
@@ -87,10 +87,10 @@ class HandleSession implements HttpHandler {
           .orElseThrow(() -> {
             NoSuchSessionException exception = new NoSuchSessionException("Cannot find session: " + req);
             EXCEPTION.accept(attributeMap, exception);
-            attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+            attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                              EventAttribute.setValue(
                                  "Unable to execute request for an existing session: " + exception.getMessage()));
-            span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
+            span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
             return exception;
           });
 
@@ -111,9 +111,9 @@ class HandleSession implements HttpHandler {
         span.setStatus(Status.CANCELLED);
 
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Unable to execute request for an existing session: " + e.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         Throwable cause = e.getCause();
         if (cause instanceof RuntimeException) {

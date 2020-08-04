@@ -54,7 +54,7 @@ public class TracedHttpClient implements HttpClient {
   public HttpResponse execute(HttpRequest req) {
     try (Span span = newSpanAsChildOf(tracer, req, "httpclient.execute")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.HTTP_CLIENT_CLASS.toString(),
+      attributeMap.put(AttributeKey.HTTP_CLIENT_CLASS.getKey(),
                        EventAttribute.setValue(delegate.getClass().getName()));
 
       KIND.accept(span, Span.Kind.CLIENT);

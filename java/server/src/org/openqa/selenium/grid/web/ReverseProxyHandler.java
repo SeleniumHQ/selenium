@@ -71,7 +71,7 @@ public class ReverseProxyHandler implements HttpHandler {
     try (Span span = newSpanAsChildOf(tracer, req, "reverse_proxy")) {
 
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.toString(),
+      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
                        EventAttribute.setValue(getClass().getName()));
 
       KIND.accept(span, Span.Kind.SERVER);

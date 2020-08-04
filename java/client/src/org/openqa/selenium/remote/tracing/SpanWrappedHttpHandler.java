@@ -56,7 +56,7 @@ public class SpanWrappedHttpHandler implements HttpHandler {
     // If there is already a span attached to this request, then do nothing.
     Object possibleSpan = req.getAttribute("selenium.tracing.span");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.toString(),
+    attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
                      EventAttribute.setValue(delegate.getClass().getName()));
 
     if (possibleSpan instanceof Span) {
@@ -95,9 +95,9 @@ public class SpanWrappedHttpHandler implements HttpHandler {
       span.setStatus(Status.UNKNOWN);
 
       EXCEPTION.accept(attributeMap, t);
-      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                        EventAttribute.setValue("Unable to execute request: " + t.getMessage()));
-      span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       LOG.log(Level.WARNING, "Unable to execute request: " + t.getMessage(), t);
       throw t;

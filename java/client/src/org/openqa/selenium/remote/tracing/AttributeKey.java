@@ -50,14 +50,13 @@ public enum AttributeKey {
   DATABASE_CONNECTION_STRING ("db.connection_string"),
   DATABASE_SYSTEM("db.system");
 
-  private final String name;
+  private final String key;
 
-  AttributeKey(String name) {
-    this.name = name;
+  AttributeKey(String key) {
+    this.key = key;
   }
 
-  @Override
-  public String toString() {
-    return this.name;
+  public String getKey() {
+    return this.key;
   }
 }

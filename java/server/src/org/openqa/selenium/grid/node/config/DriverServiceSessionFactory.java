@@ -92,14 +92,14 @@ public class DriverServiceSessionFactory implements SessionFactory {
       Capabilities capabilities = sessionRequest.getCapabilities();
       CAPABILITIES.accept(span, capabilities);
       CAPABILITIES_EVENT.accept(attributeMap, capabilities);
-      attributeMap.put(AttributeKey.LOGGER_CLASS.toString(), EventAttribute.setValue(this.getClass().getName()));
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(this.getClass().getName()));
 
       DriverService service = builder.build();
       try {
         service.start();
 
         URL serviceURL = service.getUrl();
-        attributeMap.put(AttributeKey.DRIVER_URL.toString(), EventAttribute.setValue(serviceURL.toString()));
+        attributeMap.put(AttributeKey.DRIVER_URL.getKey(), EventAttribute.setValue(serviceURL.toString()));
         HttpClient client = clientFactory.createClient(serviceURL);
 
         Command command = new Command(
@@ -116,9 +116,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         Response response = result.createResponse();
 
-        attributeMap.put(AttributeKey.UPSTREAM_DIALECT.toString(), EventAttribute.setValue(upstream.toString()));
-        attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.toString(), EventAttribute.setValue(downstream.toString()));
-        attributeMap.put(AttributeKey.DRIVER_RESPONSE.toString(), EventAttribute.setValue(response.toString()));
+        attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(), EventAttribute.setValue(upstream.toString()));
+        attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
+        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
 
 
         // TODO: This is a nasty hack. Try and make it elegant.
@@ -153,9 +153,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.toString(),
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Error while creating session with the driver service. Stopping driver service: " + e.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.toString(), attributeMap);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         service.stop();
         return Optional.empty();
       }
