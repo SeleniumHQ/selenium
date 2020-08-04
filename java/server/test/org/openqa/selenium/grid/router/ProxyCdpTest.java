@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.grid.router;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
@@ -55,14 +56,13 @@ import com.google.common.collect.ImmutableMap;
 
 public class ProxyCdpTest {
 
-  private final HttpHandler nullHandler = req -> new HttpResponse();
-  private final Config emptyConfig = new MapConfig(Map.of());
-  private Server<?> proxyServer;
-  private SessionMap sessions;
-  private Server<?> secureProxyServer;
+  private static final HttpHandler nullHandler = req -> new HttpResponse();
+  private static final Config emptyConfig = new MapConfig(Map.of());
+  private static Server<?> proxyServer;
+  private static SessionMap sessions;
 
-  @Before
-  public void setUp() {
+  @BeforeClass
+  public static void setUp() {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus events = new GuavaEventBus();
 
@@ -73,12 +73,11 @@ public class ProxyCdpTest {
 
     ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
     proxyServer = new NettyServer(new BaseServerOptions(emptyConfig), nullHandler, proxy).start();
+  }
 
-    Config secureConfig = new MapConfig(ImmutableMap.of(
-        "server", ImmutableMap.of(
-            "https-self-signed", true)));
-
-    secureProxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy);
+  @AfterClass
+  public static void tearDown() {
+    proxyServer.stop();
   }
 
   @Test
@@ -95,15 +94,14 @@ public class ProxyCdpTest {
     sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
-    WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener(){});
+    try (WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
+      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener(){})) {
 
-    socket.sendText("Cheese!");
+      socket.sendText("Cheese!");
 
-    assertThat(latch.await(5, SECONDS)).isTrue();
-    assertThat(text.get()).isEqualTo("Cheese!");
-
-    socket.close();
+      assertThat(latch.await(5, SECONDS)).isTrue();
+      assertThat(text.get()).isEqualTo("Cheese!");
+    }
   }
 
   @Test
@@ -119,30 +117,36 @@ public class ProxyCdpTest {
     // Now! Send a message. We expect it to eventually show up in the backend
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
-    WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
+    try(WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
       .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
         @Override
         public void onText(CharSequence data) {
           text.set(data.toString());
           latch.countDown();
         }
-      });
+      })) {
 
-    socket.sendText("Cheese!");
+      socket.sendText("Cheese!");
 
-    assertThat(latch.await(5, SECONDS)).isTrue();
-    assertThat(text.get()).isEqualTo("Asiago");
-
-    socket.close();
+      assertThat(latch.await(5, SECONDS)).isTrue();
+      assertThat(text.get()).isEqualTo("Asiago");
+    }
   }
 
   @Test
   public void shouldBeAbleToSendMessagesOverSecureWebSocket()
       throws URISyntaxException, InterruptedException {
 
+    Config secureConfig = new MapConfig(ImmutableMap.of(
+      "server", ImmutableMap.of(
+        "https-self-signed", true)));
+
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
 
     Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheedar", emptyConfig);
+
+    Server<?> secureProxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy);
 
     secureProxyServer.start();
     // Push a session that resolves to the backend server into the session map
@@ -164,9 +168,9 @@ public class ProxyCdpTest {
 
       assertThat(latch.await(5, SECONDS)).isTrue();
       assertThat(text.get()).isEqualTo("Cheedar");
-
-      secureProxyServer.stop();
     }
+
+    secureProxyServer.stop();
   }
 
   private Server<?> createBackendServer(CountDownLatch latch, AtomicReference<String> incomingRef, String response, Config config) {
