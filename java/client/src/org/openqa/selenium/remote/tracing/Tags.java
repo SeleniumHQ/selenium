@@ -69,7 +69,7 @@ public class Tags {
   public static final BiConsumer<Map<String, EventAttributeValue>, HttpRequest>
       HTTP_REQUEST_EVENT =
       (map, req) -> {
-        map.put(AttributeKey.HTTP_METHOD.name(),
+        map.put(AttributeKey.HTTP_METHOD.getKey(),
                 EventAttribute.setValue(req.getMethod().toString()));
         map.put(AttributeKey.HTTP_URL.getKey(), EventAttribute.setValue(req.getUri()));
       };

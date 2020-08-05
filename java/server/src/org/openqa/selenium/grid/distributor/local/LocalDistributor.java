@@ -46,8 +46,10 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
@@ -85,9 +87,12 @@ import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLET
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalDistributor extends Distributor {
 
@@ -146,16 +151,26 @@ public class LocalDistributor extends Distributor {
       throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
+    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
     try (
       Reader reader = reader(request);
       NewSessionPayload payload = NewSessionPayload.create(reader)) {
       Objects.requireNonNull(payload, "Requests to process must be set.");
 
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+                       EventAttribute.setValue(getClass().getName()));
+
       Iterator<Capabilities> iterator = payload.stream().iterator();
+      attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
 
       if (!iterator.hasNext()) {
-        span.addEvent("No capabilities found");
-        throw new SessionNotCreatedException("No capabilities found");
+        SessionNotCreatedException exception = new SessionNotCreatedException("No capabilities found");
+        EXCEPTION.accept(attributeMap, exception);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                         EventAttribute.setValue("Unable to create session. No capabilities found: "
+                                                 + exception.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        throw exception;
       }
 
       Optional<Supplier<CreateSessionResponse>> selected;
@@ -194,33 +209,54 @@ public class LocalDistributor extends Distributor {
           .orElseThrow(
               () -> {
                 span.setAttribute("error", true);
-                return new SessionNotCreatedException(
-                  "Unable to find provider for session: " + payload.stream()
-                    .map(Capabilities::toString)
-                    .collect(Collectors.joining(", ")));
+                SessionNotCreatedException
+                    exception =
+                    new SessionNotCreatedException(
+                        "Unable to find provider for session: " + payload.stream()
+                            .map(Capabilities::toString).collect(Collectors.joining(", ")));
+                EXCEPTION.accept(attributeMap, exception);
+                attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                                 EventAttribute.setValue(
+                                     "Unable to find provider for session: "
+                                     + exception.getMessage()));
+                span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+                return exception;
               })
           .get();
 
       sessions.add(sessionResponse.getSession());
 
-      SESSION_ID.accept(span, sessionResponse.getSession().getId());
-      CAPABILITIES.accept(span, sessionResponse.getSession().getCapabilities());
-      span.setAttribute("session.url", sessionResponse.getSession().getUri().toString());
+      SessionId sessionId = sessionResponse.getSession().getId();
+      Capabilities caps = sessionResponse.getSession().getCapabilities();
+      String sessionUri = sessionResponse.getSession().getUri().toString();
+      SESSION_ID.accept(span, sessionId);
+      CAPABILITIES.accept(span, caps);
+      SESSION_ID_EVENT.accept(attributeMap, sessionId);
+      CAPABILITIES_EVENT.accept(attributeMap, caps);
+      span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
+      attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
 
+      span.addEvent("Session created by the distributor", attributeMap);
       return sessionResponse;
     } catch (SessionNotCreatedException e) {
       span.setAttribute("error", true);
       span.setStatus(Status.ABORTED);
-      Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-      attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-      span.addEvent("Session not created", attributeValueMap);
+
+      EXCEPTION.accept(attributeMap, e);
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                       EventAttribute.setValue("Unable to create session: " + e.getMessage()));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
       throw e;
     } catch (IOException e) {
       span.setAttribute("error", true);
       span.setStatus(Status.UNKNOWN);
-      Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-      attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-      span.addEvent("Unknown error in LocalDistributor while creating session", attributeValueMap);
+
+      EXCEPTION.accept(attributeMap, e);
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                       EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
       throw new SessionNotCreatedException(e.getMessage(), e);
     } finally {
       span.close();
