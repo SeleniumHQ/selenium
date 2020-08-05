@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.router;
 
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
@@ -56,13 +56,13 @@ import com.google.common.collect.ImmutableMap;
 
 public class ProxyCdpTest {
 
-  private static final HttpHandler nullHandler = req -> new HttpResponse();
-  private static final Config emptyConfig = new MapConfig(Map.of());
-  private static Server<?> proxyServer;
-  private static SessionMap sessions;
+  private final HttpHandler nullHandler = req -> new HttpResponse();
+  private final Config emptyConfig = new MapConfig(Map.of());
+  private Server<?> proxyServer;
+  private SessionMap sessions;
 
-  @BeforeClass
-  public static void setUp() {
+  @Before
+  public void setUp() {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus events = new GuavaEventBus();
 
@@ -75,8 +75,8 @@ public class ProxyCdpTest {
     proxyServer = new NettyServer(new BaseServerOptions(emptyConfig), nullHandler, proxy).start();
   }
 
-  @AfterClass
-  public static void tearDown() {
+  @After
+  public void tearDown() {
     proxyServer.stop();
   }
 
