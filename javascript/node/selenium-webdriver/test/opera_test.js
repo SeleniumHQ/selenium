@@ -15,28 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const opera = require('../opera');
-const test = require('../lib/test');
+const assert = require('assert')
+const opera = require('../opera')
+const test = require('../lib/test')
 
+test.suite(
+  function (_env) {
+    describe('operadriver', function () {
+      let service
 
-test.suite(function(env) {
-  describe('operadriver', function() {
-    let service;
+      afterEach(function () {
+        if (service) {
+          return service.kill()
+        }
+      })
 
-    afterEach(function() {
-      if (service) {
-        return service.kill();
-      }
-    });
+      it('can start operadriver', async function () {
+        service = new opera.ServiceBuilder().build()
 
-    it('can start operadriver', async function() {
-      service = new opera.ServiceBuilder().build();
-
-      let url = await service.start();
-      assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`);
-    });
-  });
-}, {browsers: ['opera']});
+        let url = await service.start()
+        assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`)
+      })
+    })
+  },
+  { browsers: ['opera'] }
+)

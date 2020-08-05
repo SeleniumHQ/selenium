@@ -125,16 +125,14 @@
  * [webview]: https://developer.chrome.com/multidevice/webview/overview
  */
 
-'use strict';
+'use strict'
 
-const http = require('./http');
-const io = require('./io');
-const {Browser, Capabilities} = require('./lib/capabilities');
-const command = require('./lib/command');
-const error = require('./lib/error');
-const remote = require('./remote');
-const chromium = require('./chromium');
-
+const http = require('./http')
+const io = require('./io')
+const { Browser } = require('./lib/capabilities')
+const command = require('./lib/command')
+const error = require('./lib/error')
+const chromium = require('./chromium')
 
 /**
  * Name of the ChromeDriver executable.
@@ -142,8 +140,7 @@ const chromium = require('./chromium');
  * @const
  */
 const CHROMEDRIVER_EXE =
-    process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver';
-
+  process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver'
 
 /**
  * Custom command names supported by ChromeDriver.
@@ -163,22 +160,20 @@ const Command = {
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
   GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
   STOP_CASTING: 'stopCasting',
-};
-
+}
 
 /**
  * Creates a command executor with support for ChromeDriver's custom commands.
  * @param {!Promise<string>} url The server's URL.
  * @return {!command.Executor} The new command executor.
  */
-function createExecutor(url) {
-  let agent = new http.Agent({ keepAlive: true });
-  let client = url.then(url => new http.HttpClient(url, agent));
-  let executor = new http.Executor(client);
-  configureExecutor(executor);
-  return executor;
+function createExecutor(url) { // eslint-disable-line
+  let agent = new http.Agent({ keepAlive: true })
+  let client = url.then((url) => new http.HttpClient(url, agent))
+  let executor = new http.Executor(client)
+  configureExecutor(executor)
+  return executor
 }
-
 
 /**
  * Configures the given executor with Chrome-specific commands.
@@ -186,51 +181,61 @@ function createExecutor(url) {
  */
 function configureExecutor(executor) {
   executor.defineCommand(
-      Command.LAUNCH_APP,
-      'POST',
-      '/session/:sessionId/chromium/launch_app');
+    Command.LAUNCH_APP,
+    'POST',
+    '/session/:sessionId/chromium/launch_app'
+  )
   executor.defineCommand(
-      Command.GET_NETWORK_CONDITIONS,
-      'GET',
-      '/session/:sessionId/chromium/network_conditions');
+    Command.GET_NETWORK_CONDITIONS,
+    'GET',
+    '/session/:sessionId/chromium/network_conditions'
+  )
   executor.defineCommand(
-      Command.SET_NETWORK_CONDITIONS,
-      'POST',
-      '/session/:sessionId/chromium/network_conditions');
+    Command.SET_NETWORK_CONDITIONS,
+    'POST',
+    '/session/:sessionId/chromium/network_conditions'
+  )
   executor.defineCommand(
-      Command.SEND_DEVTOOLS_COMMAND,
-      'POST',
-      '/session/:sessionId/chromium/send_command');
+    Command.SEND_DEVTOOLS_COMMAND,
+    'POST',
+    '/session/:sessionId/chromium/send_command'
+  )
   executor.defineCommand(
-      Command.SEND_AND_GET_DEVTOOLS_COMMAND,
-      'POST',
-      '/session/:sessionId/chromium/send_command_and_get_result');
+    Command.SEND_AND_GET_DEVTOOLS_COMMAND,
+    'POST',
+    '/session/:sessionId/chromium/send_command_and_get_result'
+  )
   executor.defineCommand(
-      Command.SET_PERMISSION,
-      'POST',
-      '/session/:sessionId/permissions');
+    Command.SET_PERMISSION,
+    'POST',
+    '/session/:sessionId/permissions'
+  )
   executor.defineCommand(
-      Command.GET_CAST_SINKS,
-      'GET',
-      '/session/:sessionId/goog/cast/get_sinks');
+    Command.GET_CAST_SINKS,
+    'GET',
+    '/session/:sessionId/goog/cast/get_sinks'
+  )
   executor.defineCommand(
-      Command.SET_CAST_SINK_TO_USE,
-      'POST',
-      '/session/:sessionId/goog/cast/set_sink_to_use');
+    Command.SET_CAST_SINK_TO_USE,
+    'POST',
+    '/session/:sessionId/goog/cast/set_sink_to_use'
+  )
   executor.defineCommand(
-      Command.START_CAST_TAB_MIRRORING,
-      'POST',
-      '/session/:sessionId/goog/cast/start_tab_mirroring');
+    Command.START_CAST_TAB_MIRRORING,
+    'POST',
+    '/session/:sessionId/goog/cast/start_tab_mirroring'
+  )
   executor.defineCommand(
-      Command.GET_CAST_ISSUE_MESSAGE,
-      'GET',
-      '/session/:sessionId/goog/cast/get_issue_message');
+    Command.GET_CAST_ISSUE_MESSAGE,
+    'GET',
+    '/session/:sessionId/goog/cast/get_issue_message'
+  )
   executor.defineCommand(
-      Command.STOP_CASTING,
-      'POST',
-      '/session/:sessionId/goog/cast/stop_casting');
+    Command.STOP_CASTING,
+    'POST',
+    '/session/:sessionId/goog/cast/stop_casting'
+  )
 }
-
 
 /**
  * _Synchronously_ attempts to locate the chromedriver executable on the current
@@ -239,9 +244,8 @@ function configureExecutor(executor) {
  * @return {?string} the located executable, or `null`.
  */
 function locateSynchronously() {
-  return io.findInPath(CHROMEDRIVER_EXE, true);
+  return io.findInPath(CHROMEDRIVER_EXE, true)
 }
-
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -257,23 +261,22 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously();
+    let exe = opt_exe || locateSynchronously()
     if (!exe) {
       throw Error(
-          'The ChromeDriver could not be found on the current PATH. Please ' +
+        'The ChromeDriver could not be found on the current PATH. Please ' +
           'download the latest version of the ChromeDriver from ' +
           'http://chromedriver.storage.googleapis.com/index.html and ensure ' +
-          'it can be found on your PATH.');
+          'it can be found on your PATH.'
+      )
     }
 
-    super(exe);
+    super(exe)
   }
 }
 
-
 /** @type {remote.DriverService} */
-let defaultService = null;
-
+let defaultService = null
 
 /**
  * Sets the default service to use for new ChromeDriver instances.
@@ -283,12 +286,12 @@ let defaultService = null;
 function setDefaultService(service) {
   if (defaultService && defaultService.isRunning()) {
     throw Error(
-        'The previously configured ChromeDriver service is still running. ' +
-        'You must shut it down before you may adjust its configuration.');
+      'The previously configured ChromeDriver service is still running. ' +
+        'You must shut it down before you may adjust its configuration.'
+    )
   }
-  defaultService = service;
+  defaultService = service
 }
-
 
 /**
  * Returns the default ChromeDriver service. If such a service has not been
@@ -298,11 +301,10 @@ function setDefaultService(service) {
  */
 function getDefaultService() {
   if (!defaultService) {
-    defaultService = new ServiceBuilder().build();
+    defaultService = new ServiceBuilder().build()
   }
-  return defaultService;
+  return defaultService
 }
-
 
 /**
  * Class for managing ChromeDriver specific options.
@@ -320,7 +322,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeBinaryPath(path) {
-    return this.setBinaryPath(path);
+    return this.setBinaryPath(path)
   }
 
   /**
@@ -330,7 +332,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   androidChrome() {
-    return this.androidPackage('com.android.chrome');
+    return this.androidPackage('com.android.chrome')
   }
 
   /**
@@ -340,7 +342,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeLogFile(path) {
-    return this.setBrowserLogFile(path);
+    return this.setBrowserLogFile(path)
   }
 
   /**
@@ -350,13 +352,12 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeMinidumpPath(path) {
-    return this.setBrowserMinidumpPath(path);
+    return this.setBrowserMinidumpPath(path)
   }
 }
 
-Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions';
-Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME;
-
+Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'
+Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
 
 /**
  * Creates a new WebDriver client for Chrome.
@@ -374,8 +375,11 @@ class Driver extends chromium.Driver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(opt_config, opt_serviceExecutor) {
-    let caps = opt_config || new Options();
-    return /** @type {!Driver} */(super.createSession(caps, opt_serviceExecutor));
+    let caps = opt_config || new Options()
+    return /** @type {!Driver} */ (super.createSession(
+      caps,
+      opt_serviceExecutor
+    ))
   }
 
   /**
@@ -393,7 +397,8 @@ class Driver extends chromium.Driver {
    */
   launchApp(id) {
     return this.execute(
-        new command.Command(Command.LAUNCH_APP).setParameter('id', id));
+      new command.Command(Command.LAUNCH_APP).setParameter('id', id)
+    )
   }
 
   /**
@@ -402,7 +407,7 @@ class Driver extends chromium.Driver {
    *     emulation settings are retrievied.
    */
   getNetworkConditions() {
-    return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS));
+    return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS))
   }
 
   /**
@@ -423,11 +428,16 @@ class Driver extends chromium.Driver {
    */
   setNetworkConditions(spec) {
     if (!spec || typeof spec !== 'object') {
-      throw TypeError('setNetworkConditions called with non-network-conditions parameter');
+      throw TypeError(
+        'setNetworkConditions called with non-network-conditions parameter'
+      )
     }
     return this.execute(
-        new command.Command(Command.SET_NETWORK_CONDITIONS)
-            .setParameter('network_conditions', spec));
+      new command.Command(Command.SET_NETWORK_CONDITIONS).setParameter(
+        'network_conditions',
+        spec
+      )
+    )
   }
 
   /**
@@ -441,9 +451,10 @@ class Driver extends chromium.Driver {
    */
   sendDevToolsCommand(cmd, params = {}) {
     return this.execute(
-        new command.Command(Command.SEND_DEVTOOLS_COMMAND)
-            .setParameter('cmd', cmd)
-            .setParameter('params', params));
+      new command.Command(Command.SEND_DEVTOOLS_COMMAND)
+        .setParameter('cmd', cmd)
+        .setParameter('params', params)
+    )
   }
 
   /**
@@ -460,7 +471,7 @@ class Driver extends chromium.Driver {
       new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
         .setParameter('cmd', cmd)
         .setParameter('params', params)
-    );
+    )
   }
 
   /**
@@ -477,8 +488,8 @@ class Driver extends chromium.Driver {
     return this.execute(
       new command.Command(Command.SET_PERMISSION)
         .setParameter('descriptor', { name })
-        .setParameter('state', state),
-    );
+        .setParameter('state', state)
+    )
   }
 
   /**
@@ -491,18 +502,17 @@ class Driver extends chromium.Driver {
    */
   async setDownloadPath(path) {
     if (!path || typeof path !== 'string') {
-      throw new error.InvalidArgumentError('invalid download path');
+      throw new error.InvalidArgumentError('invalid download path')
     }
-    const stat = await io.stat(path);
+    const stat = await io.stat(path)
     if (!stat.isDirectory()) {
-      throw new error.InvalidArgumentError('not a directory: ' + path);
+      throw new error.InvalidArgumentError('not a directory: ' + path)
     }
     return this.sendDevToolsCommand('Page.setDownloadBehavior', {
-      'behavior': 'allow',
-      'downloadPath': path
-    });
+      behavior: 'allow',
+      downloadPath: path,
+    })
   }
-
 
   /**
    * Returns the list of cast sinks (Cast devices) available to the Chrome media router.
@@ -512,8 +522,9 @@ class Driver extends chromium.Driver {
    */
   getCastSinks() {
     return this.schedule(
-        new command.Command(Command.GET_CAST_SINKS),
-        'Driver.getCastSinks()');
+      new command.Command(Command.GET_CAST_SINKS),
+      'Driver.getCastSinks()'
+    )
   }
 
   /**
@@ -525,8 +536,12 @@ class Driver extends chromium.Driver {
    */
   setCastSinkToUse(deviceName) {
     return this.schedule(
-        new command.Command(Command.SET_CAST_SINK_TO_USE).setParameter('sinkName', deviceName),
-        'Driver.setCastSinkToUse(' + deviceName + ')');
+      new command.Command(Command.SET_CAST_SINK_TO_USE).setParameter(
+        'sinkName',
+        deviceName
+      ),
+      'Driver.setCastSinkToUse(' + deviceName + ')'
+    )
   }
 
   /**
@@ -538,8 +553,12 @@ class Driver extends chromium.Driver {
    */
   startCastTabMirroring(deviceName) {
     return this.schedule(
-        new command.Command(Command.START_CAST_TAB_MIRRORING).setParameter('sinkName', deviceName),
-        'Driver.startCastTabMirroring(' + deviceName + ')');
+      new command.Command(Command.START_CAST_TAB_MIRRORING).setParameter(
+        'sinkName',
+        deviceName
+      ),
+      'Driver.startCastTabMirroring(' + deviceName + ')'
+    )
   }
 
   /**
@@ -551,8 +570,9 @@ class Driver extends chromium.Driver {
    */
   getCastIssueMessage() {
     return this.schedule(
-        new command.Command(Command.GET_CAST_ISSUE_MESSAGE),
-        'Driver.getCastIssueMessage()');
+      new command.Command(Command.GET_CAST_ISSUE_MESSAGE),
+      'Driver.getCastIssueMessage()'
+    )
   }
 
   /**
@@ -564,21 +584,23 @@ class Driver extends chromium.Driver {
    */
   stopCasting(deviceName) {
     return this.schedule(
-        new command.Command(Command.STOP_CASTING).setParameter('sinkName', deviceName),
-        'Driver.stopCasting(' + deviceName + ')');
+      new command.Command(Command.STOP_CASTING).setParameter(
+        'sinkName',
+        deviceName
+      ),
+      'Driver.stopCasting(' + deviceName + ')'
+    )
   }
 }
 
-Driver.getDefaultService = getDefaultService;
-Driver.prototype.VENDOR_COMMAND_PREFIX = "goog";
-
+Driver.getDefaultService = getDefaultService
+Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
 
-
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
-exports.getDefaultService = getDefaultService;
-exports.setDefaultService = setDefaultService;
-exports.locateSynchronously = locateSynchronously;
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder
+exports.getDefaultService = getDefaultService
+exports.setDefaultService = setDefaultService
+exports.locateSynchronously = locateSynchronously
