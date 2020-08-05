@@ -479,7 +479,7 @@ class IWebDriver {
   getAllWindowHandles() {}
 
   /**
-   * Retrieves the current page's source. The returned souce is a representation
+   * Retrieves the current page's source. The returned source is a representation
    * of the underlying DOM: do not expect it to be formatted or escaped in the
    * same way as the raw response sent from the web server.
    *
@@ -1520,7 +1520,7 @@ class Window {
    *          height: (number|undefined)}} options
    *     The desired window size and position.
    * @return {!Promise<{x: number, y: number, width: number, height: number}>}
-   *     A promise that will resolve to the current widnow's updated window
+   *     A promise that will resolve to the current window's updated window
    *     rect.
    */
   async setRect({ x, y, width, height }) {
@@ -1577,7 +1577,7 @@ class Window {
 
   /**
    * Minimizes the current window. The exact behavior of this command is
-   * specific to individual window managers, but typicallly involves hiding
+   * specific to individual window managers, but typically involves hiding
    * the window in the system tray.
    *
    * @return {!Promise<void>} A promise that will be resolved when the command
