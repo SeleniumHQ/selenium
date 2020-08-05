@@ -1520,7 +1520,7 @@ class Window {
    *          height: (number|undefined)}} options
    *     The desired window size and position.
    * @return {!Promise<{x: number, y: number, width: number, height: number}>}
-   *     A promise that will resolve to the current widnow's updated window
+   *     A promise that will resolve to the current window's updated window
    *     rect.
    */
   async setRect({ x, y, width, height }) {
@@ -1577,7 +1577,7 @@ class Window {
 
   /**
    * Minimizes the current window. The exact behavior of this command is
-   * specific to individual window managers, but typicallly involves hiding
+   * specific to individual window managers, but typically involves hiding
    * the window in the system tray.
    *
    * @return {!Promise<void>} A promise that will be resolved when the command
