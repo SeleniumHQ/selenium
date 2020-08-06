@@ -49,4 +49,8 @@ public class GridModel {
   private void removeNode(NodeId nodeId) {
     nodes.removeIf(node -> nodeId.equals(node.getId()));
   }
+
+  public Set<Node> getNodes() {
+    return nodes;
+  }
 }
