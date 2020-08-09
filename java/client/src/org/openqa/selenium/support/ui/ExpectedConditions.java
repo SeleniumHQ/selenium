@@ -44,7 +44,7 @@ public class ExpectedConditions {
 
   private static final Logger log = Logger.getLogger(ExpectedConditions.class.getName());
 
-  private ExpectedConditions() {
+  public ExpectedConditions() {
     // Utility class
   }
 
