@@ -85,9 +85,9 @@ load("//dotnet:workspace.bzl", "selenium_register_dotnet")
 selenium_register_dotnet()
 
 http_archive(
-    name = "build_bazel_rules_nodejs",
-    sha256 = "5bf77cc2d13ddf9124f4c1453dd96063774d755d4fc75d922471540d1c9a8ea8",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.0.0/rules_nodejs-2.0.0.tar.gz"],
+    name="build_bazel_rules_nodejs",
+    sha256="6a67a8a1bf6fddc9113f73471029b819eef4575c3a936a4a01d57e411894d692",
+    urls=["https://github.com/bazelbuild/rules_nodejs/releases/download/2.0.2/rules_nodejs-2.0.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
