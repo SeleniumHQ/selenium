@@ -1,0 +1,51 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//:copy_file.bzl", "copy_file")
+load("//java:version.bzl", "SE_VERSION")
+
+java_library(
+      name = "v84",
+      exports = [
+          ":cdp",
+      ],
+      visibility = [
+          "//visibility:public",
+      ],
+)
+
+java_library(
+    name = "cdp",
+    srcs = [
+        ":create-cdp-srcs",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/devtools:devtools-prototypes",
+        "//java/client/src/org/openqa/selenium/json",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+genrule(
+    name = "create-cdp-srcs",
+    srcs = [
+        ":browser_protocol",
+        ":js_protocol",
+    ],
+    outs = ["cdp.srcjar"],
+    cmd = "$(location //java/client/src/org/openqa/selenium/devtools:cdp-client-generator) $(location :browser_protocol) $(location :js_protocol) v84 $@",
+    tools = [
+        "//java/client/src/org/openqa/selenium/devtools:cdp-client-generator",
+    ],
+)
+
+copy_file(
+    name = "browser_protocol",
+    src = "//common/devtools/chromium/v84:browser_protocol",
+    out = "browser_protocol.json",
+)
+
+copy_file(
+    name = "js_protocol",
+    src = "//common/devtools/chromium/v84:js_protocol",
+    out = "js_protocol.json",
+)

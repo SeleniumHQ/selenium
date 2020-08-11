@@ -26,7 +26,7 @@ def main(argv):
     protocol = pdl.loads(pdl_string, file_name, args.map_binary_to_string)
     input_file.close()
 
-    output_file = open(os.path.normpath(args.json_file), 'wb')
+    output_file = open(os.path.normpath(args.json_file), 'w')
     json.dump(protocol, output_file, indent=4, separators=(',', ': '))
     output_file.close()
 

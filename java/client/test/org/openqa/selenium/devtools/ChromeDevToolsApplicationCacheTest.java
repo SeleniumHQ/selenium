@@ -19,8 +19,8 @@ package org.openqa.selenium.devtools;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.devtools.applicationcache.ApplicationCache;
-import org.openqa.selenium.devtools.applicationcache.model.FrameWithManifest;
+import org.openqa.selenium.devtools.v84.applicationcache.ApplicationCache;
+import org.openqa.selenium.devtools.v84.applicationcache.model.FrameWithManifest;
 
 import java.util.List;
 
