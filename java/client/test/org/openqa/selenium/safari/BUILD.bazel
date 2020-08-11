@@ -12,8 +12,8 @@ java_selenium_test_suite(
         "no-remote",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing:annotations",

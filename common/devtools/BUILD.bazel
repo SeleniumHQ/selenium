@@ -11,11 +11,11 @@ exports_files(
 
 py_binary(
     name = "pdl_to_json",
-    main = "convert_protocol_to_json.py",
     srcs = [
         "convert_protocol_to_json.py",
         "pdl.py",
     ],
+    main = "convert_protocol_to_json.py",
     visibility = [
         "//common/devtools:__subpackages__",
     ],

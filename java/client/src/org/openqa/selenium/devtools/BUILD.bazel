@@ -17,14 +17,14 @@ PROTOTYPE_SOURCES = [
 java_library(
     name = "devtools-prototypes",
     srcs = PROTOTYPE_SOURCES,
+    visibility = [
+        "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         artifact("com.google.guava:guava"),
     ],
-    visibility = [
-        "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
-    ]
 )
 
 java_export(
@@ -57,6 +57,9 @@ java_binary(
     name = "cdp-client-generator",
     srcs = GENERATOR_SOURCES,
     main_class = "org.openqa.selenium.devtools.CdpClientGenerator",
+    visibility = [
+        "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/devtools:devtools-prototypes",
@@ -64,7 +67,4 @@ java_binary(
         artifact("com.github.javaparser:javaparser-core"),
         artifact("com.google.guava:guava"),
     ],
-    visibility = [
-        "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
-    ]
 )

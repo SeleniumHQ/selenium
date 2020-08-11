@@ -3,13 +3,13 @@ load("//:copy_file.bzl", "copy_file")
 load("//java:version.bzl", "SE_VERSION")
 
 java_library(
-      name = "v84",
-      exports = [
-          ":cdp",
-      ],
-      visibility = [
-          "//visibility:public",
-      ],
+    name = "v84",
+    visibility = [
+        "//visibility:public",
+    ],
+    exports = [
+        ":cdp",
+    ],
 )
 
 java_library(
