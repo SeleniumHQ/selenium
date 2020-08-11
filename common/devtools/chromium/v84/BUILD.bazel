@@ -1,0 +1,13 @@
+genrule(
+    name = "browser_protocol",
+    cmd = "$(location //common/devtools:pdl_to_json) $(location :browser_protocol.pdl) $@",
+    outs = [
+        "browser_protocol.json"
+    ],
+    srcs = [
+        "browser_protocol.pdl",
+    ],
+    tools = [
+        "//common/devtools:pdl_to_json",
+    ],
+)
