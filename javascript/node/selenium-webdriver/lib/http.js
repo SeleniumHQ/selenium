@@ -296,7 +296,7 @@ const COMMAND_MAP = new Map([
   [cmd.Name.GET_LOG, post('/session/:sessionId/log')],
   [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/log/types')],
   [cmd.Name.GET_SESSION_LOGS, post('/logs')],
-  [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/file')],
+  [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/se/file')],
   [cmd.Name.LEGACY_ACTION_CLICK, post('/session/:sessionId/click')],
   [
     cmd.Name.LEGACY_ACTION_DOUBLE_CLICK,
