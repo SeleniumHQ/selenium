@@ -348,10 +348,12 @@ public class ExpectedConditions {
                                                                     final String text) {
 
     return new ExpectedCondition<Boolean>() {
+      private String elementText = null;
+
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          String elementText = element.getText();
+          elementText = element.getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
           return null;
@@ -360,7 +362,11 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("text ('%s') to be present in element %s", text, element);
+        String renderedElementText = elementText != null && elementText.length() > 100
+            ? elementText.substring(0, 100) + "..."
+            : elementText;
+        return String.format("text ('%s') to be present in element %s which has text %s",
+            text, element, renderedElementText);
       }
     };
   }
@@ -377,10 +383,12 @@ public class ExpectedConditions {
                                                                            final String text) {
 
     return new ExpectedCondition<Boolean>() {
+      private String elementText = null;
+
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          String elementText = driver.findElement(locator).getText();
+          elementText = driver.findElement(locator).getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
           return null;
@@ -389,8 +397,11 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("text ('%s') to be present in element found by %s",
-                             text, locator);
+        String renderedElementText = elementText != null && elementText.length() > 100
+            ? elementText.substring(0, 100) + "..."
+            : elementText;
+        return String.format("text ('%s') to be present in element found by %s which has text %s",
+                             text, locator, renderedElementText);
       }
     };
   }
@@ -1083,7 +1094,10 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         return getAttributeOrCssValue(element, attribute)
-            .map(seen -> seen.contains(value))
+            .map(seen -> {
+              currentValue = seen;
+              return seen.contains(value);
+            })
             .orElse(false);
       }
 
@@ -1112,7 +1126,10 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         return getAttributeOrCssValue(driver.findElement(locator), attribute)
-            .map(seen -> seen.contains(value))
+            .map(seen -> {
+              currentValue = seen;
+              return seen.contains(value);
+            })
             .orElse(false);
       }
 

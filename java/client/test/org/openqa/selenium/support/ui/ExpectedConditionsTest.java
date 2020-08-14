@@ -482,11 +482,14 @@ public class ExpectedConditionsTest {
     By parent = By.cssSelector("parent");
     String attributeName = "attributeName";
     when(mockDriver.findElement(parent)).thenReturn(mockElement);
-    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getAttribute(attributeName)).thenReturn("actualValue");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(attributeContains(parent, attributeName, "test")));
+        .isThrownBy(() -> wait.until(attributeContains(parent, attributeName, "expectedValue")))
+        .withMessageContaining(String.format(
+            "value found by %s to contain \"expectedValue\". Current value: \"actualValue\"",
+            parent));
   }
 
   @Test
@@ -512,11 +515,12 @@ public class ExpectedConditionsTest {
   @Test
   public void waitingForCssAttributeToBeEqualForWebElementThrowsTimeoutExceptionWhenAttributeContainsNotEqual() {
     String attributeName = "attributeName";
-    when(mockElement.getAttribute(attributeName)).thenReturn("");
+    when(mockElement.getAttribute(attributeName)).thenReturn("actualValue");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(attributeContains(mockElement, attributeName, "test")));
+        .isThrownBy(() -> wait.until(attributeContains(mockElement, attributeName, "expectedValue")))
+        .withMessageContaining("value to contain \"expectedValue\". Current value: \"actualValue\"");
   }
 
   @Test
@@ -828,12 +832,70 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenTextNotPresent() {
-    String testSelector = "testSelector";
-    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    By locator = By.cssSelector("testSelector");
+    when(mockDriver.findElement(locator)).thenReturn(mockElement);
     when(mockElement.getText()).thenReturn("testText");
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(textToBePresentInElementLocated(By.cssSelector(testSelector), "failText")));
+        .isThrownBy(() -> wait.until(textToBePresentInElementLocated(locator, "failText")))
+        .withMessageContaining(String.format(
+            "text ('failText') to be present in element found by %s which has text testText",
+            locator));
+  }
+
+  @Test
+  public void
+      waitingForTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenTextNotPresentLongText() {
+    String longText = "";
+    for (int i = 0; i < 101; i++) {
+      longText += i;
+    }
+    String shortendText = "";
+    for (int i = 0; i < 100; i++) {
+      shortendText += i;
+    }
+    shortendText += "...";
+    By locator = By.cssSelector("testSelector");
+    when(mockDriver.findElement(locator)).thenReturn(mockElement);
+    when(mockElement.getText()).thenReturn(longText);
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(textToBePresentInElementLocated(locator, "failText")))
+        .withMessageContaining(
+            String.format(
+                "text ('failText') to be present in element found by %s which has text %s",
+                locator, shortendText));
+  }
+
+  @Test
+  public void waitingForTextToBePresentInElementThrowsTimeoutExceptionWhenTextNotPresent() {
+    when(mockElement.getText()).thenReturn("testText");
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(textToBePresentInElement(mockElement, "failText")))
+        .withMessageContaining(String.format(
+            "text ('failText') to be present in element %s which has text testText", mockElement));
+  }
+
+  @Test
+  public void waitingForTextToBePresentInElementThrowsTimeoutExceptionWhenTextNotPresentLongText() {
+    String longText = "";
+    for (int i = 0; i < 101; i++) {
+      longText += i;
+    }
+    String shortendText = "";
+    for (int i = 0; i < 100; i++) {
+      shortendText += i;
+    }
+    shortendText += "...";
+    when(mockElement.getText()).thenReturn(longText);
+
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(textToBePresentInElement(mockElement, "failText")))
+        .withMessageContaining(
+            String.format(
+                "text ('failText') to be present in element %s which has text %s",
+                mockElement, shortendText));
   }
 
   @Test
