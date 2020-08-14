@@ -8,7 +8,10 @@ LARGE_TESTS = [
 java_test_suite(
     name = "medium-tests",
     size = "medium",
-    srcs = glob(["*.java"], exclude = LARGE_TESTS),
+    srcs = glob(
+        ["*.java"],
+        exclude = LARGE_TESTS,
+    ),
     deps = [
         "//java/client/src/org/openqa/selenium/edge",
         "//java/client/src/org/openqa/selenium/edgehtml",
@@ -17,7 +20,7 @@ java_test_suite(
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
-    ]
+    ],
 )
 
 java_selenium_test_suite(
@@ -27,11 +30,11 @@ java_selenium_test_suite(
     browsers = [
         "edge",
     ],
-    tags = [
-        "no-remote",
-    ],
     data = [
         "//third_party/chrome_ext:backspace.crx",
+    ],
+    tags = [
+        "no-remote",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/edge",

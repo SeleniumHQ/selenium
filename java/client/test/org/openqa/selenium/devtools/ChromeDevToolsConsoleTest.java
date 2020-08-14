@@ -21,9 +21,9 @@ import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 
 import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.devtools.console.Console.disable;
-import static org.openqa.selenium.devtools.console.Console.enable;
-import static org.openqa.selenium.devtools.console.Console.messageAdded;
+import static org.openqa.selenium.devtools.v84.console.Console.disable;
+import static org.openqa.selenium.devtools.v84.console.Console.enable;
+import static org.openqa.selenium.devtools.v84.console.Console.messageAdded;
 
 public class ChromeDevToolsConsoleTest extends DevToolsTestBase {
 

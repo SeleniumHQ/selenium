@@ -19,11 +19,11 @@ package org.openqa.selenium.devtools;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import org.openqa.selenium.devtools.log.Log;
-import org.openqa.selenium.devtools.target.Target;
-import org.openqa.selenium.devtools.target.model.SessionID;
-import org.openqa.selenium.devtools.target.model.TargetID;
-import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.devtools.v84.log.Log;
+import org.openqa.selenium.devtools.v84.target.Target;
+import org.openqa.selenium.devtools.v84.target.model.SessionID;
+import org.openqa.selenium.devtools.v84.target.model.TargetID;
+import org.openqa.selenium.devtools.v84.target.model.TargetInfo;
 import org.openqa.selenium.internal.Require;
 
 import java.io.Closeable;
