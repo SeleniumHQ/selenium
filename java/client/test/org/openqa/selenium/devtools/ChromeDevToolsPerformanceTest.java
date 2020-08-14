@@ -19,17 +19,17 @@ package org.openqa.selenium.devtools;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.devtools.performance.Performance;
-import org.openqa.selenium.devtools.performance.model.Metric;
+import org.openqa.selenium.devtools.v84.performance.Performance;
+import org.openqa.selenium.devtools.v84.performance.model.Metric;
 import org.openqa.selenium.testing.Ignore;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.openqa.selenium.devtools.performance.Performance.disable;
-import static org.openqa.selenium.devtools.performance.Performance.enable;
-import static org.openqa.selenium.devtools.performance.Performance.getMetrics;
+import static org.openqa.selenium.devtools.v84.performance.Performance.disable;
+import static org.openqa.selenium.devtools.v84.performance.Performance.enable;
+import static org.openqa.selenium.devtools.v84.performance.Performance.getMetrics;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 @Ignore(FIREFOX)

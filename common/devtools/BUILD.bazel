@@ -4,8 +4,19 @@ exports_files(
         "js_protocol.json",
     ],
     visibility = [
-        "//java/client/src/org/openqa/selenium/devtools:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
-        "//javascript/node/selenium-webdriver:__pkg__"
+    ],
+)
+
+py_binary(
+    name = "pdl_to_json",
+    srcs = [
+        "convert_protocol_to_json.py",
+        "pdl.py",
+    ],
+    main = "convert_protocol_to_json.py",
+    visibility = [
+        "//common/devtools:__subpackages__",
     ],
 )

@@ -37,5 +37,5 @@ git commit -am "updating javadoc and py docs"
 echo "pushing to origin gh-pages"
 git push origin gh-pages
 
-echo "switching back to master branch"
-git checkout master
+echo "switching back to trunk branch"
+git checkout trunk

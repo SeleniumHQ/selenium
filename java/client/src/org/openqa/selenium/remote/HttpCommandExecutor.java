@@ -17,12 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Collections.emptyMap;
-import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
-import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
-import static org.openqa.selenium.remote.DriverCommand.QUIT;
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -41,6 +35,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+
+import static java.util.Collections.emptyMap;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
@@ -152,6 +153,12 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     }
 
     HttpRequest httpRequest = commandCodec.encode(command);
+
+    // Ensure that we set the required headers
+    if (httpRequest.getHeader("Content-Type") == null) {
+      httpRequest.addHeader("Content-Type", JSON_UTF_8);
+    }
+
     try {
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
       HttpResponse httpResponse = client.execute(httpRequest);

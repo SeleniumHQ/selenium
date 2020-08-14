@@ -38,6 +38,7 @@ public class NettyClient implements HttpClient {
 
   private static final AsyncHttpClient httpClient = Dsl.asyncHttpClient(
     new DefaultAsyncHttpClientConfig.Builder()
+      .setUseInsecureTrustManager(true)
       .setAggregateWebSocketFrameFragments(true)
       .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
       .setWebSocketMaxFrameSize(Integer.MAX_VALUE));

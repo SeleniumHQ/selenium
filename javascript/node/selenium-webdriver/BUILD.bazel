@@ -1,6 +1,6 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "pkg_npm")
-load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
 load("//:copy_file.bzl", "copy_file")
+load("@npm//@bazel/jasmine:index.bzl", "jasmine_node_test")
 
 SRC_FILES = [
     "CHANGES.md",
@@ -15,7 +15,7 @@ SRC_FILES = [
     "net/*.js",
     "remote/*.js",
     "testing/*.js",
-    "devtools/*.js"
+    "devtools/*.js",
 ])
 
 pkg_npm(
@@ -94,11 +94,11 @@ genrule(
 
 nodejs_binary(
     name = "cdp-srcs-generator",
-    entry_point = "devtools/generator/protocol-dts-generator.js",
     data = [
-       ":browser_protocol",
-       ":js_protocol"
+        ":browser_protocol",
+        ":js_protocol",
     ],
+    entry_point = "devtools/generator/protocol-dts-generator.js",
 )
 
 copy_file(
@@ -114,18 +114,18 @@ copy_file(
 )
 
 genrule(
-    name="create-cdp-srcs",
+    name = "create-cdp-srcs",
     srcs = [
-       ":browser_protocol",
-       ":js_protocol",
+        ":browser_protocol",
+        ":js_protocol",
     ],
-    outs=[
-      "devtools/generator/protocol.d.js",
-      "devtools/generator/protocol-mapping.d.js",
-      "devtools/generator/protocol-proxy-api.d.js",
+    outs = [
+        "devtools/generator/protocol.d.js",
+        "devtools/generator/protocol-mapping.d.js",
+        "devtools/generator/protocol-proxy-api.d.js",
     ],
     cmd = "$(location :cdp-srcs-generator) $(location :browser_protocol) $(location :js_protocol) $(OUTS)",
-    tools=[
-      ":cdp-srcs-generator"
+    tools = [
+        ":cdp-srcs-generator",
     ],
 )

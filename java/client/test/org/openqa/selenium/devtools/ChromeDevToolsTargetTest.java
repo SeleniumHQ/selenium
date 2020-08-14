@@ -19,11 +19,11 @@ package org.openqa.selenium.devtools;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.devtools.target.model.ReceivedMessageFromTarget;
-import org.openqa.selenium.devtools.target.model.SessionID;
-import org.openqa.selenium.devtools.target.model.TargetCrashed;
-import org.openqa.selenium.devtools.target.model.TargetID;
-import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.devtools.v84.target.model.ReceivedMessageFromTarget;
+import org.openqa.selenium.devtools.v84.target.model.SessionID;
+import org.openqa.selenium.devtools.v84.target.model.TargetCrashed;
+import org.openqa.selenium.devtools.v84.target.model.TargetID;
+import org.openqa.selenium.devtools.v84.target.model.TargetInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,20 +33,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.devtools.target.Target.activateTarget;
-import static org.openqa.selenium.devtools.target.Target.attachToTarget;
-import static org.openqa.selenium.devtools.target.Target.attachedToTarget;
-import static org.openqa.selenium.devtools.target.Target.closeTarget;
-import static org.openqa.selenium.devtools.target.Target.createTarget;
-import static org.openqa.selenium.devtools.target.Target.getTargetInfo;
-import static org.openqa.selenium.devtools.target.Target.getTargets;
-import static org.openqa.selenium.devtools.target.Target.receivedMessageFromTarget;
-import static org.openqa.selenium.devtools.target.Target.sendMessageToTarget;
-import static org.openqa.selenium.devtools.target.Target.setDiscoverTargets;
-import static org.openqa.selenium.devtools.target.Target.targetCrashed;
-import static org.openqa.selenium.devtools.target.Target.targetCreated;
-import static org.openqa.selenium.devtools.target.Target.targetDestroyed;
-import static org.openqa.selenium.devtools.target.Target.targetInfoChanged;
+import static org.openqa.selenium.devtools.v84.target.Target.activateTarget;
+import static org.openqa.selenium.devtools.v84.target.Target.attachToTarget;
+import static org.openqa.selenium.devtools.v84.target.Target.attachedToTarget;
+import static org.openqa.selenium.devtools.v84.target.Target.closeTarget;
+import static org.openqa.selenium.devtools.v84.target.Target.createTarget;
+import static org.openqa.selenium.devtools.v84.target.Target.getTargetInfo;
+import static org.openqa.selenium.devtools.v84.target.Target.getTargets;
+import static org.openqa.selenium.devtools.v84.target.Target.receivedMessageFromTarget;
+import static org.openqa.selenium.devtools.v84.target.Target.sendMessageToTarget;
+import static org.openqa.selenium.devtools.v84.target.Target.setDiscoverTargets;
+import static org.openqa.selenium.devtools.v84.target.Target.targetCrashed;
+import static org.openqa.selenium.devtools.v84.target.Target.targetCreated;
+import static org.openqa.selenium.devtools.v84.target.Target.targetDestroyed;
+import static org.openqa.selenium.devtools.v84.target.Target.targetInfoChanged;
 
 public class ChromeDevToolsTargetTest extends DevToolsTestBase {
 

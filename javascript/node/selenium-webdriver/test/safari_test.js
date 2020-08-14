@@ -15,28 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const safari = require('../safari');
-const test = require('../lib/test');
+const assert = require('assert')
+const safari = require('../safari')
+const test = require('../lib/test')
 
+test.suite(
+  function (_env) {
+    describe('safaridriver', function () {
+      let service
 
-test.suite(function(env) {
-  describe('safaridriver', function() {
-    let service;
+      afterEach(function () {
+        if (service) {
+          return service.kill()
+        }
+      })
 
-    afterEach(function() {
-      if (service) {
-        return service.kill();
-      }
-    });
+      it('can start safaridriver', async function () {
+        service = new safari.ServiceBuilder().build()
 
-    it('can start safaridriver', async function() {
-      service = new safari.ServiceBuilder().build();
-
-      let url = await service.start();
-      assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`);
-    });
-  });
-}, {browsers: ['safari']});
+        let url = await service.start()
+        assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`)
+      })
+    })
+  },
+  { browsers: ['safari'] }
+)

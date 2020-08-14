@@ -97,7 +97,6 @@ import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_NEW_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
-import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
@@ -164,7 +163,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
     defineCommand(SET_ALERT_CREDENTIALS, post(sessionId + "/alert/credentials"));
 
-    defineCommand(UPLOAD_FILE, post(sessionId + "/file"));
     defineCommand(SCREENSHOT, get(sessionId + "/screenshot"));
     defineCommand(ELEMENT_SCREENSHOT, get(sessionId + "/element/:id/screenshot"));
     defineCommand(GET_TITLE, get(sessionId + "/title"));

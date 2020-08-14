@@ -20,35 +20,32 @@
  * public API and provides convenience assessors to certain sub-modules.
  */
 
-'use strict';
+'use strict'
 
-const _http = require('./http');
-const by = require('./lib/by');
-const capabilities = require('./lib/capabilities');
-const chrome = require('./chrome');
-const edge = require('./edge');
-const error = require('./lib/error');
-const firefox = require('./firefox');
-const ie = require('./ie');
-const input = require('./lib/input');
-const logging = require('./lib/logging');
-const promise = require('./lib/promise');
-const remote = require('./remote');
-const safari = require('./safari');
-const session = require('./lib/session');
-const until = require('./lib/until');
-const webdriver = require('./lib/webdriver');
-const opera = require('./opera');
+const _http = require('./http')
+const by = require('./lib/by')
+const capabilities = require('./lib/capabilities')
+const chrome = require('./chrome')
+const edge = require('./edge')
+const error = require('./lib/error')
+const firefox = require('./firefox')
+const ie = require('./ie')
+const input = require('./lib/input')
+const logging = require('./lib/logging')
+const promise = require('./lib/promise')
+const remote = require('./remote')
+const safari = require('./safari')
+const session = require('./lib/session')
+const until = require('./lib/until')
+const webdriver = require('./lib/webdriver')
+const opera = require('./opera')
 
-const Browser = capabilities.Browser;
-const Capabilities = capabilities.Capabilities;
-const Capability = capabilities.Capability;
-const Session = session.Session;
-const WebDriver = webdriver.WebDriver;
+const Browser = capabilities.Browser
+const Capabilities = capabilities.Capabilities
+const Capability = capabilities.Capability
+const WebDriver = webdriver.WebDriver
 
-
-
-var seleniumServer;
+var seleniumServer
 
 /**
  * Starts an instance of the Selenium server if not yet running.
@@ -58,11 +55,10 @@ var seleniumServer;
  */
 function startSeleniumServer(jar) {
   if (!seleniumServer) {
-    seleniumServer = new remote.SeleniumServer(jar);
+    seleniumServer = new remote.SeleniumServer(jar)
   }
-  return seleniumServer.start();
+  return seleniumServer.start()
 }
-
 
 /**
  * {@linkplain webdriver.WebDriver#setFileDetector WebDriver's setFileDetector}
@@ -83,12 +79,11 @@ function ensureFileDetectorsAreEnabled(ctor) {
   const mixin = class extends ctor {
     /** @param {input.FileDetector} detector */
     setFileDetector(detector) {
-      webdriver.WebDriver.prototype.setFileDetector.call(this, detector);
+      webdriver.WebDriver.prototype.setFileDetector.call(this, detector)
     }
-  };
-  return mixin;
+  }
+  return mixin
 }
-
 
 /**
  * A thenable wrapper around a {@linkplain webdriver.IWebDriver IWebDriver}
@@ -108,16 +103,14 @@ function ensureFileDetectorsAreEnabled(ctor) {
  */
 class ThenableWebDriver {
   /** @param {...?} args */
-  static createSession(...args) {}
+  static createSession(...args) {} // eslint-disable-line
 }
-
 
 /**
  * @const {!Map<function(new: WebDriver, !IThenable<!Session>, ...?),
  *              function(new: ThenableWebDriver, !IThenable<!Session>, ...?)>}
  */
-const THENABLE_DRIVERS = new Map;
-
+const THENABLE_DRIVERS = new Map()
 
 /**
  * @param {function(new: WebDriver, !IThenable<!Session>, ...?)} ctor
@@ -125,7 +118,7 @@ const THENABLE_DRIVERS = new Map;
  * @return {!ThenableWebDriver}
  */
 function createDriver(ctor, ...args) {
-  let thenableWebDriverProxy = THENABLE_DRIVERS.get(ctor);
+  let thenableWebDriverProxy = THENABLE_DRIVERS.get(ctor)
   if (!thenableWebDriverProxy) {
     /**
      * @extends {WebDriver}  // Needed since `ctor` is dynamically typed.
@@ -137,24 +130,23 @@ function createDriver(ctor, ...args) {
        * @param {...?} rest
        */
       constructor(session, ...rest) {
-        super(session, ...rest);
+        super(session, ...rest)
 
-        const pd = this.getSession().then(session => {
-          return new ctor(session, ...rest);
-        });
-
-        /** @override */
-        this.then = pd.then.bind(pd);
+        const pd = this.getSession().then((session) => {
+          return new ctor(session, ...rest)
+        })
 
         /** @override */
-        this.catch = pd.catch.bind(pd);
+        this.then = pd.then.bind(pd)
+
+        /** @override */
+        this.catch = pd.catch.bind(pd)
       }
-    };
-    THENABLE_DRIVERS.set(ctor, thenableWebDriverProxy);
+    }
+    THENABLE_DRIVERS.set(ctor, thenableWebDriverProxy)
   }
-  return thenableWebDriverProxy.createSession(...args);
+  return thenableWebDriverProxy.createSession(...args)
 }
-
 
 /**
  * Creates new {@link webdriver.WebDriver WebDriver} instances. The environment
@@ -198,55 +190,55 @@ function createDriver(ctor, ...args) {
 class Builder {
   constructor() {
     /** @private @const */
-    this.log_ = logging.getLogger('webdriver.Builder');
+    this.log_ = logging.getLogger('webdriver.Builder')
 
     /** @private {string} */
-    this.url_ = '';
+    this.url_ = ''
 
     /** @private {?string} */
-    this.proxy_ = null;
+    this.proxy_ = null
 
     /** @private {!Capabilities} */
-    this.capabilities_ = new Capabilities();
+    this.capabilities_ = new Capabilities()
 
     /** @private {chrome.Options} */
-    this.chromeOptions_ = null;
+    this.chromeOptions_ = null
 
     /** @private {chrome.ServiceBuilder} */
-    this.chromeService_ = null;
+    this.chromeService_ = null
 
     /** @private {firefox.Options} */
-    this.firefoxOptions_ = null;
+    this.firefoxOptions_ = null
 
     /** @private {firefox.ServiceBuilder} */
-    this.firefoxService_ = null;
+    this.firefoxService_ = null
 
     /** @private {ie.Options} */
-    this.ieOptions_ = null;
+    this.ieOptions_ = null
 
     /** @private {ie.ServiceBuilder} */
-    this.ieService_ = null;
+    this.ieService_ = null
 
     /** @private {safari.Options} */
-    this.safariOptions_ = null;
+    this.safariOptions_ = null
 
     /** @private {edge.Options} */
-    this.edgeOptions_ = null;
+    this.edgeOptions_ = null
 
     /** @private {remote.DriverService.Builder} */
-    this.edgeService_ = null;
+    this.edgeService_ = null
 
     /** @private {boolean} */
-    this.ignoreEnv_ = false;
+    this.ignoreEnv_ = false
 
     /** @private {http.Agent} */
-    this.agent_ = null;
+    this.agent_ = null
 
     /** @private {opera.Options} */
-    this.operaOptions_ = null;
+    this.operaOptions_ = null
 
     /** @private {remote.DriverService.Builder} */
-    this.operaService_ = null;
+    this.operaService_ = null
   }
 
   /**
@@ -256,8 +248,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   disableEnvironmentOverrides() {
-    this.ignoreEnv_ = true;
-    return this;
+    this.ignoreEnv_ = true
+    return this
   }
 
   /**
@@ -273,8 +265,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   usingServer(url) {
-    this.url_ = url;
-    return this;
+    this.url_ = url
+    return this
   }
 
   /**
@@ -282,7 +274,7 @@ class Builder {
    *     configured to use.
    */
   getServerUrl() {
-    return this.url_;
+    return this.url_
   }
 
   /**
@@ -294,8 +286,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   usingWebDriverProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
+    this.proxy_ = proxy
+    return this
   }
 
   /**
@@ -303,7 +295,7 @@ class Builder {
    *    HTTP connections, or `null` if not set.
    */
   getWebDriverProxy() {
-    return this.proxy_;
+    return this.proxy_
   }
 
   /**
@@ -314,15 +306,15 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   usingHttpAgent(agent) {
-    this.agent_ = agent;
-    return this;
+    this.agent_ = agent
+    return this
   }
 
   /**
    * @return {http.Agent} The http agent used for each request
    */
   getHttpAgent() {
-    return this.agent_;
+    return this.agent_
   }
 
   /**
@@ -333,8 +325,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   withCapabilities(capabilities) {
-    this.capabilities_ = new Capabilities(capabilities);
-    return this;
+    this.capabilities_ = new Capabilities(capabilities)
+    return this
   }
 
   /**
@@ -343,7 +335,7 @@ class Builder {
    * @return {!Capabilities} The current capabilities for this builder.
    */
   getCapabilities() {
-    return this.capabilities_;
+    return this.capabilities_
   }
 
   /**
@@ -364,14 +356,14 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   forBrowser(name, opt_version, opt_platform) {
-    this.capabilities_.setBrowserName(name);
+    this.capabilities_.setBrowserName(name)
     if (opt_version) {
-      this.capabilities_.setBrowserVersion(opt_version);
+      this.capabilities_.setBrowserVersion(opt_version)
     }
     if (opt_platform) {
-      this.capabilities_.setPlatform(opt_platform);
+      this.capabilities_.setPlatform(opt_platform)
     }
-    return this;
+    return this
   }
 
   /**
@@ -383,8 +375,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   setProxy(config) {
-    this.capabilities_.setProxy(config);
-    return this;
+    this.capabilities_.setProxy(config)
+    return this
   }
 
   /**
@@ -395,8 +387,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   setLoggingPrefs(prefs) {
-    this.capabilities_.setLoggingPrefs(prefs);
-    return this;
+    this.capabilities_.setLoggingPrefs(prefs)
+    return this
   }
 
   /**
@@ -408,8 +400,8 @@ class Builder {
    * @see capabilities.Capabilities#setAlertBehavior
    */
   setAlertBehavior(behavior) {
-    this.capabilities_.setAlertBehavior(behavior);
-    return this;
+    this.capabilities_.setAlertBehavior(behavior)
+    return this
   }
 
   /**
@@ -422,8 +414,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   setChromeOptions(options) {
-    this.chromeOptions_ = options;
-    return this;
+    this.chromeOptions_ = options
+    return this
   }
 
   /**
@@ -436,8 +428,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   setOperaOptions(options) {
-    this.operaOptions_ = options;
-    return this;
+    this.operaOptions_ = options
+    return this
   }
 
   /**
@@ -445,7 +437,7 @@ class Builder {
    *     for this builder.
    */
   getChromeOptions() {
-    return this.chromeOptions_;
+    return this.chromeOptions_
   }
 
   /**
@@ -457,10 +449,10 @@ class Builder {
    */
   setChromeService(service) {
     if (service && !(service instanceof chrome.ServiceBuilder)) {
-      throw TypeError('not a chrome.ServiceBuilder object');
+      throw TypeError('not a chrome.ServiceBuilder object')
     }
-    this.chromeService_ = service;
-    return this;
+    this.chromeService_ = service
+    return this
   }
 
   /**
@@ -473,8 +465,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   setFirefoxOptions(options) {
-    this.firefoxOptions_ = options;
-    return this;
+    this.firefoxOptions_ = options
+    return this
   }
 
   /**
@@ -482,7 +474,7 @@ class Builder {
    *     for this instance.
    */
   getFirefoxOptions() {
-    return this.firefoxOptions_;
+    return this.firefoxOptions_
   }
 
   /**
@@ -494,10 +486,10 @@ class Builder {
    */
   setFirefoxService(service) {
     if (service && !(service instanceof firefox.ServiceBuilder)) {
-      throw TypeError('not a firefox.ServiceBuilder object');
+      throw TypeError('not a firefox.ServiceBuilder object')
     }
-    this.firefoxService_ = service;
-    return this;
+    this.firefoxService_ = service
+    return this
   }
 
   /**
@@ -509,8 +501,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   setIeOptions(options) {
-    this.ieOptions_ = options;
-    return this;
+    this.ieOptions_ = options
+    return this
   }
 
   /**
@@ -521,8 +513,8 @@ class Builder {
    * @return {!Builder} a self reference.
    */
   setIeService(service) {
-    this.ieService_ = service;
-    return this;
+    this.ieService_ = service
+    return this
   }
 
   /**
@@ -535,8 +527,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   setEdgeOptions(options) {
-    this.edgeOptions_ = options;
-    return this;
+    this.edgeOptions_ = options
+    return this
   }
 
   /**
@@ -548,10 +540,10 @@ class Builder {
    */
   setEdgeService(service) {
     if (service && !(service instanceof edge.ServiceBuilder)) {
-      throw TypeError('not a edge.ServiceBuilder object');
+      throw TypeError('not a edge.ServiceBuilder object')
     }
-    this.edgeService_ = service;
-    return this;
+    this.edgeService_ = service
+    return this
   }
 
   /**
@@ -563,10 +555,10 @@ class Builder {
    */
   setOperaService(service) {
     if (service && !(service instanceof opera.ServiceBuilder)) {
-      throw TypeError('not a opera.ServiceBuilder object');
+      throw TypeError('not a opera.ServiceBuilder object')
     }
-    this.operaService_ = service;
-    return this;
+    this.operaService_ = service
+    return this
   }
 
   /**
@@ -578,8 +570,8 @@ class Builder {
    * @return {!Builder} A self reference.
    */
   setSafariOptions(options) {
-    this.safariOptions_ = options;
-    return this;
+    this.safariOptions_ = options
+    return this
   }
 
   /**
@@ -587,7 +579,7 @@ class Builder {
    *     for this instance.
    */
   getSafariOptions() {
-    return this.safariOptions_;
+    return this.safariOptions_
   }
 
   /**
@@ -606,141 +598,150 @@ class Builder {
   build() {
     // Create a copy for any changes we may need to make based on the current
     // environment.
-    var capabilities = new Capabilities(this.capabilities_);
+    var capabilities = new Capabilities(this.capabilities_)
 
-    var browser;
+    var browser
     if (!this.ignoreEnv_ && process.env.SELENIUM_BROWSER) {
-      this.log_.fine(`SELENIUM_BROWSER=${process.env.SELENIUM_BROWSER}`);
-      browser = process.env.SELENIUM_BROWSER.split(/:/, 3);
-      capabilities.setBrowserName(browser[0]);
+      this.log_.fine(`SELENIUM_BROWSER=${process.env.SELENIUM_BROWSER}`)
+      browser = process.env.SELENIUM_BROWSER.split(/:/, 3)
+      capabilities.setBrowserName(browser[0])
 
-      browser[1] && capabilities.setBrowserVersion(browser[1]);
-      browser[2] && capabilities.setPlatform(browser[2]);
+      browser[1] && capabilities.setBrowserVersion(browser[1])
+      browser[2] && capabilities.setPlatform(browser[2])
     }
 
-    browser = capabilities.get(Capability.BROWSER_NAME);
+    browser = capabilities.get(Capability.BROWSER_NAME)
 
     if (typeof browser !== 'string') {
       throw TypeError(
-          `Target browser must be a string, but is <${typeof browser}>;` +
-          ' did you forget to call forBrowser()?');
+        `Target browser must be a string, but is <${typeof browser}>;` +
+          ' did you forget to call forBrowser()?'
+      )
     }
 
     if (browser === 'ie') {
-      browser = Browser.INTERNET_EXPLORER;
+      browser = Browser.INTERNET_EXPLORER
     }
 
     // Apply browser specific overrides.
     if (browser === Browser.CHROME && this.chromeOptions_) {
-      capabilities.merge(this.chromeOptions_);
-
+      capabilities.merge(this.chromeOptions_)
     } else if (browser === Browser.FIREFOX && this.firefoxOptions_) {
-      capabilities.merge(this.firefoxOptions_);
-
+      capabilities.merge(this.firefoxOptions_)
     } else if (browser === Browser.INTERNET_EXPLORER && this.ieOptions_) {
-      capabilities.merge(this.ieOptions_);
-
+      capabilities.merge(this.ieOptions_)
     } else if (browser === Browser.SAFARI && this.safariOptions_) {
-      capabilities.merge(this.safariOptions_);
-
+      capabilities.merge(this.safariOptions_)
     } else if (browser === Browser.EDGE && this.edgeOptions_) {
-      capabilities.merge(this.edgeOptions_);
-
+      capabilities.merge(this.edgeOptions_)
     } else if (browser === Browser.OPERA && this.operaOptions_) {
-      capabilities.merge(this.operaOptions_);
+      capabilities.merge(this.operaOptions_)
     }
 
     checkOptions(
-        capabilities, 'chromeOptions', chrome.Options, 'setChromeOptions');
+      capabilities,
+      'chromeOptions',
+      chrome.Options,
+      'setChromeOptions'
+    )
     checkOptions(
-        capabilities, 'moz:firefoxOptions', firefox.Options,
-        'setFirefoxOptions');
+      capabilities,
+      'moz:firefoxOptions',
+      firefox.Options,
+      'setFirefoxOptions'
+    )
     checkOptions(
-        capabilities, 'safari.options', safari.Options, 'setSafariOptions');
+      capabilities,
+      'safari.options',
+      safari.Options,
+      'setSafariOptions'
+    )
 
     // Check for a remote browser.
-    let url = this.url_;
+    let url = this.url_
     if (!this.ignoreEnv_) {
       if (process.env.SELENIUM_REMOTE_URL) {
-        this.log_.fine(
-            `SELENIUM_REMOTE_URL=${process.env.SELENIUM_REMOTE_URL}`);
-        url = process.env.SELENIUM_REMOTE_URL;
+        this.log_.fine(`SELENIUM_REMOTE_URL=${process.env.SELENIUM_REMOTE_URL}`)
+        url = process.env.SELENIUM_REMOTE_URL
       } else if (process.env.SELENIUM_SERVER_JAR) {
-        this.log_.fine(
-            `SELENIUM_SERVER_JAR=${process.env.SELENIUM_SERVER_JAR}`);
-        url = startSeleniumServer(process.env.SELENIUM_SERVER_JAR);
+        this.log_.fine(`SELENIUM_SERVER_JAR=${process.env.SELENIUM_SERVER_JAR}`)
+        url = startSeleniumServer(process.env.SELENIUM_SERVER_JAR)
       }
     }
 
     if (url) {
-      this.log_.fine('Creating session on remote server');
-      let client = Promise.resolve(url)
-          .then(url => new _http.HttpClient(url, this.agent_, this.proxy_));
-      let executor = new _http.Executor(client);
+      this.log_.fine('Creating session on remote server')
+      let client = Promise.resolve(url).then(
+        (url) => new _http.HttpClient(url, this.agent_, this.proxy_)
+      )
+      let executor = new _http.Executor(client)
 
       if (browser === Browser.CHROME) {
-        const driver = ensureFileDetectorsAreEnabled(chrome.Driver);
-        return createDriver(driver, capabilities, executor);
+        const driver = ensureFileDetectorsAreEnabled(chrome.Driver)
+        return createDriver(driver, capabilities, executor)
       }
 
       if (browser === Browser.FIREFOX) {
-        const driver = ensureFileDetectorsAreEnabled(firefox.Driver);
-        return createDriver(driver, capabilities, executor);
+        const driver = ensureFileDetectorsAreEnabled(firefox.Driver)
+        return createDriver(driver, capabilities, executor)
       }
-      return createDriver(WebDriver, executor, capabilities);
+      return createDriver(WebDriver, executor, capabilities)
     }
 
     // Check for a native browser.
     switch (browser) {
       case Browser.CHROME: {
-        let service = null;
+        let service = null
         if (this.chromeService_) {
-          service = this.chromeService_.build();
+          service = this.chromeService_.build()
         }
-        return createDriver(chrome.Driver, capabilities, service);
+        return createDriver(chrome.Driver, capabilities, service)
       }
 
       case Browser.FIREFOX: {
-        let service = null;
+        let service = null
         if (this.firefoxService_) {
-          service = this.firefoxService_.build();
+          service = this.firefoxService_.build()
         }
-        return createDriver(firefox.Driver, capabilities, service);
+        return createDriver(firefox.Driver, capabilities, service)
       }
 
-      case Browser.INTERNET_EXPLORER:
-        let service = null;
+      case Browser.INTERNET_EXPLORER: {
+        let service = null
         if (this.ieService_) {
-          service = this.ieService_.build();
+          service = this.ieService_.build()
         }
-        return createDriver(ie.Driver, capabilities, service);
+        return createDriver(ie.Driver, capabilities, service)
+      }
 
       case Browser.EDGE: {
-        let service = null;
+        let service = null
         if (this.edgeService_) {
-          service = this.edgeService_.build();
+          service = this.edgeService_.build()
         }
-        return createDriver(edge.Driver, capabilities, service);
+        return createDriver(edge.Driver, capabilities, service)
       }
 
       case Browser.OPERA: {
-        let service = null;
+        let service = null
         if (this.operaService_) {
-          service = this.operaService_.build();
+          service = this.operaService_.build()
         }
-        return createDriver(opera.Driver, capabilities, service);
+        return createDriver(opera.Driver, capabilities, service)
       }
 
       case Browser.SAFARI:
-        return createDriver(safari.Driver, capabilities);
+        return createDriver(safari.Driver, capabilities)
 
       default:
-        throw new Error('Do not know how to build driver: ' + browser
-            + '; did you forget to call usingServer(url)?');
+        throw new Error(
+          'Do not know how to build driver: ' +
+            browser +
+            '; did you forget to call usingServer(url)?'
+        )
     }
   }
 }
-
 
 /**
  * In the 3.x releases, the various browser option classes
@@ -788,38 +789,37 @@ class Builder {
  * @throws {error.InvalidArgumentError}
  */
 function checkOptions(caps, key, optionType, setMethod) {
-  let val = caps.get(key);
+  let val = caps.get(key)
   if (val instanceof optionType) {
     throw new error.InvalidArgumentError(
-        'Options class extends Capabilities and should not be set as key '
-            + `"${key}"; set browser-specific options with `
-            + `Builder.${setMethod}(). For more information, see the `
-            + 'documentation attached to the function that threw this error');
+      'Options class extends Capabilities and should not be set as key ' +
+        `"${key}"; set browser-specific options with ` +
+        `Builder.${setMethod}(). For more information, see the ` +
+        'documentation attached to the function that threw this error'
+    )
   }
 }
 
-
 // PUBLIC API
 
-
-exports.Browser = capabilities.Browser;
-exports.Builder = Builder;
-exports.Button = input.Button;
-exports.By = by.By;
-exports.withTagName = by.withTagName;
-exports.Capabilities = capabilities.Capabilities;
-exports.Capability = capabilities.Capability;
-exports.Condition = webdriver.Condition;
-exports.FileDetector = input.FileDetector;
-exports.Key = input.Key;
-exports.Origin = input.Origin;
-exports.Session = session.Session;
-exports.ThenableWebDriver = ThenableWebDriver;
-exports.WebDriver = webdriver.WebDriver;
-exports.WebElement = webdriver.WebElement;
-exports.WebElementCondition = webdriver.WebElementCondition;
-exports.WebElementPromise = webdriver.WebElementPromise;
-exports.error = error;
-exports.logging = logging;
-exports.promise = promise;
-exports.until = until;
+exports.Browser = capabilities.Browser
+exports.Builder = Builder
+exports.Button = input.Button
+exports.By = by.By
+exports.withTagName = by.withTagName
+exports.Capabilities = capabilities.Capabilities
+exports.Capability = capabilities.Capability
+exports.Condition = webdriver.Condition
+exports.FileDetector = input.FileDetector
+exports.Key = input.Key
+exports.Origin = input.Origin
+exports.Session = session.Session
+exports.ThenableWebDriver = ThenableWebDriver
+exports.WebDriver = webdriver.WebDriver
+exports.WebElement = webdriver.WebElement
+exports.WebElementCondition = webdriver.WebElementCondition
+exports.WebElementPromise = webdriver.WebElementPromise
+exports.error = error
+exports.logging = logging
+exports.promise = promise
+exports.until = until

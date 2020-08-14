@@ -100,6 +100,11 @@ public class InfoCommand implements CliCommand {
           toDisplay = "tracing.txt";
           break;
 
+        case "sessionmap":
+          title = "About SessionMaps";
+          toDisplay = "sessionmaps.txt";
+          break;
+
         case "help":
         case "info":
         default:

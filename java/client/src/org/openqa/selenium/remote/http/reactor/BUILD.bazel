@@ -4,6 +4,7 @@ java_library(
     name = "reactor",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java:__subpackages__",
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
         "//java/client/test/org/openqa/selenium/remote/http:__pkg__",
         "//java/client/test/org/openqa/selenium/remote/http/reactor:__pkg__",
