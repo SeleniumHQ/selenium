@@ -88,9 +88,6 @@ public class GraphqlHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    if (req.getMethod() == HttpMethod.OPTIONS) {
-      return new HttpResponse().setStatus(HTTP_OK);
-    }
     Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);
 
     if (!(inputs.get("query") instanceof String)) {
