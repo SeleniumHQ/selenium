@@ -15,15 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.idealized;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.devtools.idealized.fetch.Fetch;
+import org.openqa.selenium.devtools.idealized.log.Log;
+import org.openqa.selenium.devtools.idealized.target.Target;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+/**
+ * The idealized set of CDP domains that Selenium itself needs. Should you
+ * need domains from a specific version of the CDP, then depend upon that
+ * version of the CDP and use the domains directly.
+ */
+public interface Domains {
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
-  }
+  Fetch fetch();
+
+  Log log();
+
+  Target target();
 }

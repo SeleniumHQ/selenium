@@ -15,15 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.v84;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.devtools.idealized.Domains;
+import org.openqa.selenium.devtools.idealized.fetch.Fetch;
+import org.openqa.selenium.devtools.idealized.log.Log;
+import org.openqa.selenium.devtools.idealized.target.Target;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+public class V84Domains implements Domains {
+  @Override
+  public Fetch fetch() {
+    return new V84Fetch();
+  }
 
   @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  public Log log() {
+    return new V84Log();
+  }
+
+  @Override
+  public Target target() {
+    return new V84Target();
   }
 }

@@ -15,15 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.noop;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.devtools.CdpInfo;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+public class NoOpCdpInfo extends CdpInfo {
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  public NoOpCdpInfo() {
+    super(1, NoOpDomains::new);
   }
+
 }

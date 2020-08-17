@@ -15,15 +15,32 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.idealized.target.model;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+/**
+ * Unique identifier of attached debugging session.
+ */
+public class SessionID {
+
+  private final String sessionID;
+
+  public SessionID(java.lang.String sessionID) {
+    this.sessionID = Require.nonNull("Session ID", sessionID);
+  }
+
+  private static SessionID fromJson(JsonInput input) {
+    return new SessionID(input.nextString());
+  }
+
+  private String toJson() {
+    return sessionID;
+  }
 
   @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  public String toString() {
+    return sessionID;
   }
 }

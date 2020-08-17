@@ -15,15 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.v84;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.devtools.Command;
+import org.openqa.selenium.devtools.idealized.log.Log;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
-
+public class V84Log implements Log {
   @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  public Command<Void> clear() {
+    return org.openqa.selenium.devtools.v84.log.Log.enable();
   }
 }

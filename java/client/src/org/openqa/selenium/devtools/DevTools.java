@@ -17,13 +17,10 @@
 
 package org.openqa.selenium.devtools;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import org.openqa.selenium.devtools.v84.log.Log;
-import org.openqa.selenium.devtools.v84.target.Target;
-import org.openqa.selenium.devtools.v84.target.model.SessionID;
-import org.openqa.selenium.devtools.v84.target.model.TargetID;
-import org.openqa.selenium.devtools.v84.target.model.TargetInfo;
+import org.openqa.selenium.devtools.idealized.Domains;
+import org.openqa.selenium.devtools.idealized.target.model.SessionID;
+import org.openqa.selenium.devtools.idealized.target.model.TargetID;
+import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
 import org.openqa.selenium.internal.Require;
 
 import java.io.Closeable;
@@ -35,14 +32,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 public class DevTools implements Closeable {
 
+  private final Domains protocol;
   private final Duration timeout = Duration.ofSeconds(10);
   private final Connection connection;
   private SessionID cdpSession = null;
 
-  public DevTools(Connection connection) {
-    this.connection = connection;
+  public DevTools(Domains protocol, Connection connection) {
+    this.protocol = Require.nonNull("CDP protocol", protocol);
+    this.connection = Require.nonNull("WebSocket connection", connection);
+  }
+
+  public Domains getDomains() {
+    return protocol;
   }
 
   @Override
@@ -51,7 +56,7 @@ public class DevTools implements Closeable {
       SessionID id = cdpSession;
       cdpSession = null;
       connection.sendAndWait(
-        cdpSession, Target.detachFromTarget(Optional.of(id), Optional.empty()), timeout);
+        cdpSession, getDomains().target().detachFromTarget(Optional.of(id), Optional.empty()), timeout);
     }
   }
 
@@ -79,7 +84,7 @@ public class DevTools implements Closeable {
 
   public void createSession() {
     // Figure out the targets.
-    List<TargetInfo> infos = connection.sendAndWait(cdpSession, Target.getTargets(), timeout);
+    List<TargetInfo> infos = connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
 
     // Grab the first "page" type, and glom on to that.
     // TODO: Find out which one might be the current one
@@ -92,15 +97,15 @@ public class DevTools implements Closeable {
     // Start the session.
     cdpSession =
         connection
-            .sendAndWait(cdpSession, Target.attachToTarget(targetId, Optional.of(true)), timeout);
+            .sendAndWait(cdpSession, getDomains().target().attachToTarget(targetId), timeout);
 
     try {
       // We can do all of these in parallel, and we don't care about the result.
       CompletableFuture.allOf(
           // Set auto-attach to true and run for the hills.
-          connection.send(cdpSession, Target.setAutoAttach(true, false, Optional.empty())),
+          connection.send(cdpSession, getDomains().target().setAutoAttach()),
           // Clear the existing logs
-          connection.send(cdpSession, Log.clear()))
+          connection.send(cdpSession, getDomains().log().clear()))
           .get(timeout.toMillis(), MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();

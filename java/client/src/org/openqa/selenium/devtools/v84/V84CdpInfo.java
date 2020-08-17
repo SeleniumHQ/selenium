@@ -15,15 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.v84;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+@AutoService(CdpInfo.class)
+public class V84CdpInfo extends CdpInfo {
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  public V84CdpInfo() {
+    super(84, V84Domains::new);
   }
 }

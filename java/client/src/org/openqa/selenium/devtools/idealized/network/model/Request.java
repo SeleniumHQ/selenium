@@ -15,15 +15,42 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.idealized.network.model;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.devtools.idealized.security.model.MixedContentType;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+import java.util.Optional;
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+public interface Request {
+
+  String getUrl();
+
+  Optional<String> getUrlFragment();
+
+  String getMethod();
+
+  Headers getHeaders();
+
+  Optional<String> getPostData();
+
+  Optional<Boolean> getHasPostData();
+
+  Optional<MixedContentType> getMixedContentType();
+
+  ResourcePriority getInitialPriority();
+
+  Request.ReferrerPolicy getReferrerPolicy();
+
+  Optional<Boolean> getIsLinkPreload();
+
+  enum ReferrerPolicy {
+    UNSAFE_URL,
+    NO_REFERRER_WHEN_DOWNGRADE,
+    NO_REFERRER,
+    ORIGIN,
+    ORIGIN_WHEN_CROSS_ORIGIN,
+    SAME_ORIGIN,
+    STRICT_ORIGIN,
+    STRICT_ORIGIN_WHEN_CROSS_ORIGIN;
   }
 }

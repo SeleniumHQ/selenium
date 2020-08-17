@@ -15,15 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.idealized.fetch.model;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.internal.Require;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+import java.util.Optional;
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+public class RequestPattern {
+
+  private final Optional<String> urlPattern;
+  private final Optional<ResourceType> type;
+
+  public RequestPattern(Optional<String> urlPattern, Optional<ResourceType> type) {
+    this.urlPattern = Require.nonNull("URL pattern must be set but may be empty", urlPattern);
+    this.type = Require.nonNull("Resource type must be set but may be empty", type);
+  }
+
+  public Optional<String> getUrlPattern() {
+    return urlPattern;
+  }
+
+  public Optional<ResourceType> getType() {
+    return type;
   }
 }

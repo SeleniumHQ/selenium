@@ -15,15 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.idealized.browser.model;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.internal.Require;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+public class BrowserContextID {
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  private final String browserContextID;
+
+  public BrowserContextID(String browserContextID) {
+    this.browserContextID = Require.nonNull("Browser context ID", browserContextID);
   }
+
+  public String toString() {
+    return browserContextID;
+  }
+
 }

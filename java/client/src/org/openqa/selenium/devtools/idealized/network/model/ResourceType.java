@@ -15,15 +15,5 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
-
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
-
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
-
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
-  }
+package org.openqa.selenium.devtools.idealized.network.model;public interface ResourceType {
 }

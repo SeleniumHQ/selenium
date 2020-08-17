@@ -15,15 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.idealized.fetch.model;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+public enum ResourceType {
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+  DOCUMENT("Document"),
+  STYLESHEET("Stylesheet"),
+  IMAGE("Image"),
+  MEDIA("Media"),
+  FONT("Font"),
+  SCRIPT("Script"),
+  TEXTTRACK("TextTrack"),
+  XHR("XHR"),
+  FETCH("Fetch"),
+  EVENTSOURCE("EventSource"),
+  WEBSOCKET("WebSocket"),
+  MANIFEST("Manifest"),
+  SIGNEDEXCHANGE("SignedExchange"),
+  PING("Ping"),
+  CSPVIOLATIONREPORT("CSPViolationReport"),
+  OTHER("Other");
+
+  private final String value;
+
+  ResourceType(String value) {
+    this.value = value;
+  }
 
   @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  public String toString() {
+    return value;
   }
 }

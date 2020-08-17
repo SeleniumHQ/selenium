@@ -15,15 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.idealized.target;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.devtools.Command;
+import org.openqa.selenium.devtools.idealized.target.model.SessionID;
+import org.openqa.selenium.devtools.idealized.target.model.TargetID;
+import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+import java.util.List;
+import java.util.Optional;
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
-  }
+public interface Target {
+
+  /**
+   * Detaches session with given id.
+   */
+  Command<Void> detachFromTarget(Optional<SessionID> sessionId, Optional<TargetID> targetId);
+
+  Command<List<TargetInfo>> getTargets();
+
+  Command<SessionID> attachToTarget(TargetID targetId);
+
+  Command<Void> setAutoAttach();
 }

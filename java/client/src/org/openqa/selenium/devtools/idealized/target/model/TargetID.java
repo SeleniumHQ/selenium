@@ -15,15 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools.idealized.target.model;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.internal.Require;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+public class TargetID {
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  private final String targetID;
+
+  public TargetID(String targetID) {
+    this.targetID = Require.nonNull("Target ID", targetID);
+  }
+
+  public String toString() {
+    return targetID;
   }
 }

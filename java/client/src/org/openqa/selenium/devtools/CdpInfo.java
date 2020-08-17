@@ -15,15 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.devtools;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.devtools.idealized.Domains;
+import org.openqa.selenium.internal.Require;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
+import java.util.function.Supplier;
+
+public abstract class CdpInfo implements Comparable<CdpInfo> {
+
+  private final int majorVersion;
+  private final Supplier<Domains> domains;
+
+  public CdpInfo(int majorVersion, Supplier<Domains> domains) {
+    this.majorVersion = majorVersion;
+    this.domains = Require.nonNull("Domain supplier", domains);
+  }
+
+  public int getMajorVersion() {
+    return majorVersion;
+  }
+
+  public Domains getDomains() {
+    return domains.get();
+  }
 
   @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
+  public int compareTo(CdpInfo that) {
+    return Integer.compare(this.getMajorVersion(), that.getMajorVersion());
+  }
+
+  @Override
+  public String toString() {
+    return "CDP version: " + getMajorVersion();
   }
 }
