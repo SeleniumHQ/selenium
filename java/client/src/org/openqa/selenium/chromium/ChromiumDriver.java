@@ -21,10 +21,12 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.CdpInfo;
+import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.v84.V84Domains;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -83,7 +85,19 @@ public class ChromiumDriver extends RemoteWebDriver
         factory,
         getCapabilities(),
         capabilityKey);
-    devTools = connection.map(conn -> new DevTools(new V84Domains(), conn));
+
+    CdpInfo cdpInfo = new CdpVersionFinder().match(getCapabilities().getVersion())
+      .orElseThrow(() ->
+        new DevToolsException(String.format(
+          "Unable to find version of CDP to use for %s. You may need to " +
+            "include a dependency on a specific version of the CDP using " +
+            "something similar to " +
+            "`org.seleniumhq.selenium:selenium-devtools:86` where the " +
+            "version matches the version of the chromium-based browser " +
+            "you're using.",
+          capabilities.getVersion())));
+
+    devTools = connection.map(conn -> new DevTools(cdpInfo.getDomains(), conn));
   }
 
   @Override
