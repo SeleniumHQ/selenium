@@ -101,11 +101,11 @@ public class LocalDistributor extends Distributor {
   private final String registrationSecret;
 
   public LocalDistributor(
-    Tracer tracer,
-    EventBus bus,
-    HttpClient.Factory clientFactory,
-    SessionMap sessions,
-    String registrationSecret) {
+      Tracer tracer,
+      EventBus bus,
+      HttpClient.Factory clientFactory,
+      SessionMap sessions,
+      String registrationSecret) {
     super(tracer, clientFactory);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -140,7 +140,7 @@ public class LocalDistributor extends Distributor {
 
   @Override
   public CreateSessionResponse newSession(HttpRequest request)
-    throws SessionNotCreatedException {
+      throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
     try (
@@ -157,9 +157,9 @@ public class LocalDistributor extends Distributor {
 
       Optional<Supplier<CreateSessionResponse>> selected;
       CreateSessionRequest firstRequest = new CreateSessionRequest(
-        payload.getDownstreamDialects(),
-        iterator.next(),
-        ImmutableMap.of("span", span));
+          payload.getDownstreamDialects(),
+          iterator.next(),
+          ImmutableMap.of("span", span));
 
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
@@ -174,15 +174,15 @@ public class LocalDistributor extends Distributor {
       }
 
       CreateSessionResponse sessionResponse = selected
-        .orElseThrow(
-          () -> {
-            span.setAttribute("error", true);
-            return new SessionNotCreatedException(
-              "Unable to find provider for session: " + payload.stream()
-                .map(Capabilities::toString)
-                .collect(Collectors.joining(", ")));
-          })
-        .get();
+          .orElseThrow(
+            () -> {
+              span.setAttribute("error", true);
+              return new SessionNotCreatedException(
+                "Unable to find provider for session: " + payload.stream()
+                  .map(Capabilities::toString)
+                  .collect(Collectors.joining(", ")));
+            })
+          .get();
 
       sessions.add(sessionResponse.getSession());
 
@@ -227,8 +227,8 @@ public class LocalDistributor extends Distributor {
     writeLock.lock();
     try {
       Optional<Host> existingByNodeId = hosts.stream()
-        .filter(host -> host.getId().equals(status.getNodeId()))
-        .findFirst();
+          .filter(host -> host.getId().equals(status.getNodeId()))
+          .findFirst();
 
       if (existingByNodeId.isPresent()) {
         // Modify the state
@@ -248,11 +248,11 @@ public class LocalDistributor extends Distributor {
         // Add a new host.
         LOG.info("Creating a new remote node for " + status.getUri());
         Node node = new RemoteNode(
-          tracer,
-          clientFactory,
-          status.getNodeId(),
-          status.getUri(),
-          status.getStereotypes().keySet());
+            tracer,
+            clientFactory,
+            status.getNodeId(),
+            status.getUri(),
+            status.getStereotypes().keySet());
         add(node, status);
       }
     } finally {
@@ -316,8 +316,8 @@ public class LocalDistributor extends Distributor {
     readLock.lock();
     try {
       ImmutableSet<DistributorStatus.NodeSummary> summaries = this.hosts.stream()
-        .map(Host::asSummary)
-        .collect(toImmutableSet());
+          .map(Host::asSummary)
+          .collect(toImmutableSet());
 
       return new DistributorStatus(summaries);
     } finally {

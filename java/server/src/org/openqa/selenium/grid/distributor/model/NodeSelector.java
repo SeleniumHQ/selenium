@@ -60,8 +60,6 @@ public class NodeSelector {
                 .thenComparingLong(Host::getLastSessionCreated)
                 // And use the host id as a tie-breaker.
                 .thenComparing(Host::getId));
-          // And reserve some space for this session
-//          .map(host -> host.reserve(firstRequest));
     return selected;
   }
 
