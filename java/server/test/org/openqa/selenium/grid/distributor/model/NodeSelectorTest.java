@@ -75,7 +75,7 @@ public class NodeSelectorTest {
                                       hosts.add(createHost("chrome", "firefox"))
     );
 
-    NodeSelector selector = new NodeSelector(bus);
+    NodeSelector selector = new NodeSelector();
 
     //When you prioritize for Edge, you should only have 1 possibility
     Stream<Host>
@@ -100,7 +100,7 @@ public class NodeSelectorTest {
   public void testAllBucketsSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
 
-    NodeSelector selector = new NodeSelector(bus);
+    NodeSelector selector = new NodeSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
   }
 
@@ -108,7 +108,7 @@ public class NodeSelectorTest {
   public void testAllBucketsNotSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(3, 5, 8 );
 
-     NodeSelector selector = new NodeSelector(bus);
+     NodeSelector selector = new NodeSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
   }
 
@@ -116,7 +116,7 @@ public class NodeSelectorTest {
   public void testOneBucketStillConsideredSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(3 );
 
-    NodeSelector selector = new NodeSelector(bus);
+    NodeSelector selector = new NodeSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
   }
 
@@ -125,7 +125,7 @@ public class NodeSelectorTest {
     //Make sure the numbers don't just average out to the same size
     Map<String, Set<Host>> hostBuckets = buildBuckets(4, 5, 6 );
 
-    NodeSelector selector = new NodeSelector(bus);
+    NodeSelector selector = new NodeSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
   }
 
