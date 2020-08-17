@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
-
 import com.google.common.annotations.VisibleForTesting;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.distributor.model.Host;
 
@@ -35,32 +32,34 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
+
 public class HostSelector {
 
-  private static final Logger LOG = Logger.getLogger("Selenium Node Selector");
+  private static final Logger LOG = Logger.getLogger("Selenium Host Selector");
 
   public HostSelector() {
   }
 
-  public Optional<Host> selectNode(Capabilities capabilities, Set<Host> hosts) {
+  public Optional<Host> selectHost(Capabilities capabilities, Set<Host> hosts) {
     Optional<Host> selected;
     Stream<Host> firstRound = hosts.stream()
-        .filter(host -> host.getHostStatus() == UP)
-        // Find a host that supports this kind of thing
-        .filter(host -> host.hasCapacity(capabilities));
+      .filter(host -> host.getHostStatus() == UP)
+      // Find a host that supports this kind of thing
+      .filter(host -> host.hasCapacity(capabilities));
 
     //of the hosts that survived the first round, separate into buckets and prioritize by browser "rarity"
     Stream<Host> prioritizedHosts = getPrioritizedHostStream(firstRound, capabilities);
 
     //Take the further-filtered Stream and prioritize by load, then by session age
     selected = prioritizedHosts
-        .min(
-            // Now sort by node which has the lowest load (natural ordering)
-            Comparator.comparingDouble(Host::getLoad)
-                // Then last session created (oldest first), so natural ordering again
-                .thenComparingLong(Host::getLastSessionCreated)
-                // And use the host id as a tie-breaker.
-                .thenComparing(Host::getId));
+      .min(
+        // Now sort by node which has the lowest load (natural ordering)
+        Comparator.comparingDouble(Host::getLoad)
+          // Then last session created (oldest first), so natural ordering again
+          .thenComparingLong(Host::getLastSessionCreated)
+          // And use the host id as a tie-breaker.
+          .thenComparing(Host::getId));
     return selected;
   }
 
@@ -107,12 +106,12 @@ public class HostSelector {
     //TODO a List of Map.Entry is silly. whatever this structure needs to be needs to be returned by
     // the sortHostsToBucketsByBrowser method in a way that we don't have to sort it separately like this
     final List<Map.Entry<String, Set<Host>>> sorted = hostBuckets.entrySet().stream().sorted(
-        Comparator.comparingInt(v -> v.getValue().size())
+      Comparator.comparingInt(v -> v.getValue().size())
     ).collect(Collectors.toList());
 
     // Until the buckets are the same size, keep removing hosts that have more "rare" browser capabilities
     Map<String, Set<Host>> newHostBuckets;
-    for (Map.Entry<String, Set<Host>> entry: sorted) {
+    for (Map.Entry<String, Set<Host>> entry : sorted) {
       //Don't examine the bucket containing the browser in question--we're prioritizing the other browsers
       //TODO This shouldn't be necessary, because if the list is sorted by size, this won't be possible until
       // they're all the same size. Create a unit test to prove it
@@ -153,7 +152,7 @@ public class HostSelector {
   @VisibleForTesting
   boolean allBucketsSameSize(Map<String, Set<Host>> hostBuckets) {
     Set<Integer> intSet = new HashSet<>();
-    hostBuckets.values().forEach(bucket ->  intSet.add(bucket.size()));
+    hostBuckets.values().forEach(bucket -> intSet.add(bucket.size()));
     return intSet.size() == 1;
   }
 }

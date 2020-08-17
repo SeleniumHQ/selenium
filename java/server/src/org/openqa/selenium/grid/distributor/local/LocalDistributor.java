@@ -166,7 +166,7 @@ public class LocalDistributor extends Distributor {
       try {
         HostSelector hostSelector = new HostSelector();
         // Find a host that supports the capabilities present in the new session
-        Optional<Host> selectedHost = hostSelector.selectNode(firstRequest.getCapabilities(), this.hosts);
+        Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), this.hosts);
         // Reserve some space for this session
         selected = selectedHost.map(host -> host.reserve(firstRequest));
       } finally {
