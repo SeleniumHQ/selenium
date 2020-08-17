@@ -17,32 +17,12 @@
 
 package org.openqa.selenium.grid.distributor.model;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.concurrent.Regularly;
-import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NodeAddedEvent;
-import org.openqa.selenium.grid.data.NodeRemovedEvent;
-import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.remote.RemoteNode;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,157 +30,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class NodeSelector {
 
-  private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger("Selenium Node Selector");
-  private final Set<Host> hosts = new HashSet<>();
-  private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final Regularly hostChecker = new Regularly("Node Selector host checker");
-  private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
-  private final EventBus bus;
 
-  public NodeSelector(EventBus bus) {
-    this.bus = Require.nonNull("Event bus", bus);
+  public NodeSelector() {
   }
 
-  public Optional<Supplier<CreateSessionResponse>> selectNode(CreateSessionRequest firstRequest) {
-    Optional<Supplier<CreateSessionResponse>> selected;
-    Lock writeLock = this.lock.writeLock();
-    writeLock.lock();
-    try {
-      Stream<Host> firstRound = this.hosts.stream()
-          .filter(host -> host.getHostStatus() == UP)
-          // Find a host that supports this kind of thing
-          .filter(host -> host.hasCapacity(firstRequest.getCapabilities()));
+  public Optional<Host> selectNode(Capabilities capabilities, Set<Host> hosts) {
+    Optional<Host> selected;
+    Stream<Host> firstRound = hosts.stream()
+        .filter(host -> host.getHostStatus() == UP)
+        // Find a host that supports this kind of thing
+        .filter(host -> host.hasCapacity(capabilities));
 
-      //of the hosts that survived the first round, separate into buckets and prioritize by browser "rarity"
-      Stream<Host> prioritizedHosts = getPrioritizedHostStream(firstRound, firstRequest.getCapabilities());
+    //of the hosts that survived the first round, separate into buckets and prioritize by browser "rarity"
+    Stream<Host> prioritizedHosts = getPrioritizedHostStream(firstRound, capabilities);
 
-      //Take the further-filtered Stream and prioritize by load, then by session age
-      selected = prioritizedHosts
-          .min(
-              // Now sort by node which has the lowest load (natural ordering)
-              Comparator.comparingDouble(Host::getLoad)
-                  // Then last session created (oldest first), so natural ordering again
-                  .thenComparingLong(Host::getLastSessionCreated)
-                  // And use the host id as a tie-breaker.
-                  .thenComparing(Host::getId))
+    //Take the further-filtered Stream and prioritize by load, then by session age
+    selected = prioritizedHosts
+        .min(
+            // Now sort by node which has the lowest load (natural ordering)
+            Comparator.comparingDouble(Host::getLoad)
+                // Then last session created (oldest first), so natural ordering again
+                .thenComparingLong(Host::getLastSessionCreated)
+                // And use the host id as a tie-breaker.
+                .thenComparing(Host::getId));
           // And reserve some space for this session
-          .map(host -> host.reserve(firstRequest));
-    } finally {
-      writeLock.unlock();
-    }
-
+//          .map(host -> host.reserve(firstRequest));
     return selected;
   }
 
-  public void addNode(Node node, NodeStatus status) {
-    StringBuilder sb = new StringBuilder();
-
-    Lock writeLock = this.lock.writeLock();
-    writeLock.lock();
-
-    try (JsonOutput out = JSON.newOutput(sb)) {
-      out.setPrettyPrint(false).write(node);
-      Host host = new Host(bus, node);
-      host.update(status);
-
-      LOG.fine("Adding host: " + host.asSummary());
-      hosts.add(host);
-
-      LOG.info(String.format("Added node %s.", node.getId()));
-      host.runHealthCheck();
-
-      Runnable runnable = host::runHealthCheck;
-      Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
-      nodeRunnables.add(runnable);
-      allChecks.put(node.getId(), nodeRunnables);
-      hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
-    } catch (Throwable t) {
-      LOG.log(Level.WARNING, "Unable to process host", t);
-    } finally {
-      writeLock.unlock();
-      bus.fire(new NodeAddedEvent(node.getId()));
-    }
-  }
-
-  public void removeNode(UUID nodeId) {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      hosts.removeIf(host -> nodeId.equals(host.getId()));
-      allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
-    } finally {
-      writeLock.unlock();
-      bus.fire(new NodeRemovedEvent(nodeId));
-    }
-  }
-
-  public void refresh(NodeStatus status, Tracer tracer, HttpClient.Factory clientFactory) {
-    // Iterate over the available nodes to find a match.
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-
-    try {
-      Optional<Host> existingByNodeId = hosts.stream()
-          .filter(host -> host.getId().equals(status.getNodeId()))
-          .findFirst();
-
-      if (existingByNodeId.isPresent()) {
-        // Modify the state
-        LOG.fine("Modifying existing state");
-        existingByNodeId.get().update(status);
-      } else {
-        Optional<Host> existingByUri = hosts.stream()
-            .filter(host -> host.asSummary().getUri().equals(status.getUri()))
-            .findFirst();
-        // There is a URI match, probably means a node was restarted. We need to remove
-        // the previous one so we add the new request.
-        existingByUri.ifPresent(host -> {
-          LOG.fine("Removing old node, a new one is registering with the same URI");
-          removeNode(host.getId());
-        });
-
-        // Add a new host.
-        LOG.info("Creating a new remote node for " + status.getUri());
-        Node node = new RemoteNode(
-            tracer,
-            clientFactory,
-            status.getNodeId(),
-            status.getUri(),
-            status.getStereotypes().keySet());
-        addNode(node, status);
-      }
-    } finally {
-      writeLock.unlock();
-    }
-  }
-
-  public DistributorStatus getStatus() {
-    Lock readLock = this.lock.readLock();
-    readLock.lock();
-    try {
-      ImmutableSet<DistributorStatus.NodeSummary> summaries = this.hosts.stream()
-          .map(Host::asSummary)
-          .collect(toImmutableSet());
-
-      return new DistributorStatus(summaries);
-    } finally {
-      readLock.unlock();
-    }
-  }
   /**
    * Takes a Stream of Hosts, along with the Capabilities of the current request, and prioritizes the
    * request by removing Hosts that offer Capabilities that are more rare. e.g. if there are only a
@@ -292,15 +156,5 @@ public class NodeSelector {
     Set<Integer> intSet = new HashSet<>();
     hostBuckets.values().forEach(bucket ->  intSet.add(bucket.size()));
     return intSet.size() == 1;
-  }
-
-  public void refresh() {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
-    try {
-      hosts.forEach(Host::runHealthCheck);
-    } finally {
-      writeLock.unlock();
-    }
   }
 }
