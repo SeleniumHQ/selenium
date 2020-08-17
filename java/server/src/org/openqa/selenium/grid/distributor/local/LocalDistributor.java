@@ -34,7 +34,7 @@ import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
-import org.openqa.selenium.grid.distributor.model.NodeSelector;
+import org.openqa.selenium.grid.distributor.selector.HostSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -164,9 +164,9 @@ public class LocalDistributor extends Distributor {
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
-        NodeSelector nodeSelector = new NodeSelector();
+        HostSelector hostSelector = new HostSelector();
         // Find a host that supports the capabilities present in the new session
-        Optional<Host> selectedHost = nodeSelector.selectNode(firstRequest.getCapabilities(), this.hosts);
+        Optional<Host> selectedHost = hostSelector.selectNode(firstRequest.getCapabilities(), this.hosts);
         // Reserve some space for this session
         selected = selectedHost.map(host -> host.reserve(firstRequest));
       } finally {

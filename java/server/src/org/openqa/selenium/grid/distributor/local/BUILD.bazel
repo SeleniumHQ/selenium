@@ -24,6 +24,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/config",
         "//java/server/src/org/openqa/selenium/grid/distributor/model",
+        "//java/server/src/org/openqa/selenium/grid/distributor/selector",
         artifact("com.google.guava:guava"),
     ],
 )

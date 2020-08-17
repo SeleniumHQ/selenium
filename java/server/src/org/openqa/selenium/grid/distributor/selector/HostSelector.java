@@ -15,13 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.model;
+package org.openqa.selenium.grid.distributor.selector;
 
 import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.distributor.model.Host;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,11 +35,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class NodeSelector {
+public class HostSelector {
 
   private static final Logger LOG = Logger.getLogger("Selenium Node Selector");
 
-  public NodeSelector() {
+  public HostSelector() {
   }
 
   public Optional<Host> selectNode(Capabilities capabilities, Set<Host> hosts) {

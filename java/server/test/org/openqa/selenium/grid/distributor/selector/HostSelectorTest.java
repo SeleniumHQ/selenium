@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.model;
+package org.openqa.selenium.grid.distributor.selector;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +26,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
@@ -49,7 +50,7 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class NodeSelectorTest {
+public class HostSelectorTest {
 
   private Tracer tracer;
   private EventBus bus;
@@ -75,7 +76,7 @@ public class NodeSelectorTest {
                                       hosts.add(createHost("chrome", "firefox"))
     );
 
-    NodeSelector selector = new NodeSelector();
+    HostSelector selector = new HostSelector();
 
     //When you prioritize for Edge, you should only have 1 possibility
     Stream<Host>
@@ -100,7 +101,7 @@ public class NodeSelectorTest {
   public void testAllBucketsSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
 
-    NodeSelector selector = new NodeSelector();
+    HostSelector selector = new HostSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
   }
 
@@ -108,7 +109,7 @@ public class NodeSelectorTest {
   public void testAllBucketsNotSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(3, 5, 8 );
 
-     NodeSelector selector = new NodeSelector();
+     HostSelector selector = new HostSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
   }
 
@@ -116,7 +117,7 @@ public class NodeSelectorTest {
   public void testOneBucketStillConsideredSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(3 );
 
-    NodeSelector selector = new NodeSelector();
+    HostSelector selector = new HostSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
   }
 
@@ -125,7 +126,7 @@ public class NodeSelectorTest {
     //Make sure the numbers don't just average out to the same size
     Map<String, Set<Host>> hostBuckets = buildBuckets(4, 5, 6 );
 
-    NodeSelector selector = new NodeSelector();
+    HostSelector selector = new HostSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
   }
 
