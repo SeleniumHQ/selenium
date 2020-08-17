@@ -16,6 +16,7 @@ java_export(
     deps = [
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/devtools/v84",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
