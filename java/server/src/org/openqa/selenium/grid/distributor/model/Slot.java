@@ -15,11 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.gridmodel;
+package org.openqa.selenium.grid.distributor.model;
 
-import static org.openqa.selenium.grid.distributor.gridmodel.Slot.Status.ACTIVE;
-import static org.openqa.selenium.grid.distributor.gridmodel.Slot.Status.AVAILABLE;
-import static org.openqa.selenium.grid.distributor.gridmodel.Slot.Status.RESERVED;
+import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
+import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
+import static org.openqa.selenium.grid.distributor.model.Slot.Status.RESERVED;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;

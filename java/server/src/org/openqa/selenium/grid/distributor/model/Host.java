@@ -15,16 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.gridmodel;
+package org.openqa.selenium.grid.distributor.model;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.DOWN;
-import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.DRAINING;
-import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.UP;
-import static org.openqa.selenium.grid.distributor.gridmodel.Slot.Status.ACTIVE;
-import static org.openqa.selenium.grid.distributor.gridmodel.Slot.Status.AVAILABLE;
+import static org.openqa.selenium.grid.distributor.model.Host.Status.DOWN;
+import static org.openqa.selenium.grid.distributor.model.Host.Status.DRAINING;
+import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
+import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
+import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
 
 import com.google.common.collect.ImmutableList;
 

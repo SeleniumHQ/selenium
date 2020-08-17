@@ -15,9 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.gridmodel;
+package org.openqa.selenium.grid.distributor.model;
 
-import org.openqa.selenium.devtools.dom.model.NodeId;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
@@ -39,15 +38,15 @@ public class GridModel {
     this.bus = Require.nonNull("EventBus", bus);
 
     this.bus.addListener(NODE_ADDED, event -> addNode(event.getData(Node.class)));
-    this.bus.addListener(NODE_REMOVED, event -> removeNode(event.getData(NodeId.class)));
+    this.bus.addListener(NODE_REMOVED, event -> removeNode(event.getData(Node.class)));
   }
 
   private void addNode(Node node){
     nodes.add(node);
   }
 
-  private void removeNode(NodeId nodeId) {
-    nodes.removeIf(node -> nodeId.equals(node.getId()));
+  private void removeNode(Node nodeToRemove) {
+    nodes.removeIf(node -> nodeToRemove.getId().equals(node.getId()));
   }
 
   public Set<Node> getNodes() {

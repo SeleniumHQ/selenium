@@ -15,7 +15,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/events/local",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/client/src/org/openqa/selenium/remote/http",
-        "//java/server/src/org/openqa/selenium/grid/distributor/gridmodel",
+        "//java/server/src/org/openqa/selenium/grid/distributor/model",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ]

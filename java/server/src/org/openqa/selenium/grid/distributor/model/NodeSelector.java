@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.gridmodel;
+package org.openqa.selenium.grid.distributor.model;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.distributor.gridmodel.Host.Status.UP;
+import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
