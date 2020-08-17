@@ -25,12 +25,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class CdpVersionFinder {
+  private static final Logger LOG = Logger.getLogger(CdpVersionFinder.class.getName());
   private final int fudgeFactor;
   private final Set<CdpInfo> infos;
   private static final Pattern MAJOR_VERSION_EXTRACTOR = Pattern.compile(".*/(\\d+)\\..*");
@@ -133,6 +135,11 @@ public class CdpVersionFinder {
         }
       }
     }
+
+    LOG.warning(String.format(
+      "Unable to find an exact match for CDP version %d, so returning the closest version found: %s",
+      version,
+      nearestMatch == null ? "a no-op implementation" : nearestMatch.getMajorVersion()));
 
     return Optional.ofNullable(nearestMatch);
   }
