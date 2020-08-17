@@ -175,13 +175,13 @@ public class LocalDistributor extends Distributor {
 
       CreateSessionResponse sessionResponse = selected
           .orElseThrow(
-            () -> {
-              span.setAttribute("error", true);
-              return new SessionNotCreatedException(
-                "Unable to find provider for session: " + payload.stream()
-                  .map(Capabilities::toString)
-                  .collect(Collectors.joining(", ")));
-            })
+              () -> {
+                span.setAttribute("error", true);
+                return new SessionNotCreatedException(
+                  "Unable to find provider for session: " + payload.stream()
+                    .map(Capabilities::toString)
+                    .collect(Collectors.joining(", ")));
+              })
           .get();
 
       sessions.add(sessionResponse.getSession());
