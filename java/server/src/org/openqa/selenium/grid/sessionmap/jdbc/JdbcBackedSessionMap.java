@@ -177,26 +177,31 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("select"));
         attributeMap.put(DATABASE_STATEMENT, EventAttribute.setValue(statementStr));
 
-        ResultSet sessions = statement.executeQuery();
-        if (!sessions.next()) {
-          NoSuchSessionException exception = new NoSuchSessionException("Unable to find session.");
-          span.setAttribute("error", true);
-          span.setStatus(Status.NOT_FOUND);
-          EXCEPTION.accept(attributeMap, exception);
-          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                           EventAttribute.setValue("Session id does not exist in the database :" + exception.getMessage()));
-          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        try (ResultSet sessions = statement.executeQuery()) {
+          if (!sessions.next()) {
+            NoSuchSessionException
+                exception =
+                new NoSuchSessionException("Unable to find session.");
+            span.setAttribute("error", true);
+            span.setStatus(Status.NOT_FOUND);
+            EXCEPTION.accept(attributeMap, exception);
+            attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                             EventAttribute.setValue(
+                                 "Session id does not exist in the database :" + exception
+                                     .getMessage()));
+            span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-          throw exception;
-        }
+            throw exception;
+          }
 
           rawUri = sessions.getString(SESSION_URI_COL);
           String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
 
-         caps = rawCapabilities == null ?
-               new ImmutableCapabilities() :
-               JSON.toType(rawCapabilities, Capabilities.class);
+          caps = rawCapabilities == null ?
+                 new ImmutableCapabilities() :
+                 JSON.toType(rawCapabilities, Capabilities.class);
 
+        }
         CAPABILITIES_EVENT.accept(attributeMap, caps);
 
         try {
