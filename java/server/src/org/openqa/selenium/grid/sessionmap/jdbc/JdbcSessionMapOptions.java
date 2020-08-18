@@ -31,28 +31,40 @@ public class JdbcSessionMapOptions {
   private static final String SESSIONS_SECTION = "sessions";
   private static final Logger LOG = Logger.getLogger(JdbcSessionMapOptions.class.getName());
 
+  private String jdbcUrl;
+  private String jdbcUser;
+  private String jdbcPassword;
+
   private final Config config;
 
   public JdbcSessionMapOptions(Config config) {
     Require.nonNull("Config", config);
 
     this.config = config;
-  }
-
-  public Connection getJdbcConnection() throws SQLException {
     try {
-      String jdbcUrl = config.get(SESSIONS_SECTION, "jdbc-url").get();
-      String jdbcUser = config.get(SESSIONS_SECTION, "jdbc-user").get();
-      String jdbcPassword = config.get(SESSIONS_SECTION, "jdbc-password").get();
+      this.jdbcUrl = config.get(SESSIONS_SECTION, "jdbc-url").get();
+      this.jdbcUser = config.get(SESSIONS_SECTION, "jdbc-user").get();
+      this.jdbcPassword = config.get(SESSIONS_SECTION, "jdbc-password").get();
 
       if (jdbcUrl.isEmpty()) {
         throw new JdbcException(
             "Missing JDBC Url value. Add sessions option value --jdbc-url <url-value>");
       }
-      return DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
     } catch (NoSuchElementException e) {
       throw new JdbcException(
           "Missing session options. Check and add all the following options \n --jdbc-url <url> \n --jdbc-user <user> \n --jdbc-password <password>");
     }
+  }
+
+  public Connection getJdbcConnection() throws SQLException {
+    return DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
+  }
+
+  public String getJdbcUrl() {
+    return jdbcUrl;
+  }
+
+  public String getJdbcUser() {
+    return jdbcUser;
   }
 }

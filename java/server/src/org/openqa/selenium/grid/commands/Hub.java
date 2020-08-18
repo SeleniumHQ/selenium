@@ -44,7 +44,6 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -143,7 +142,6 @@ public class Hub extends TemplateGridCommand {
     HttpHandler httpHandler = combine(
       router.with(networkOptions.getSpecComplianceChecks()),
       Route.prefix("/wd/hub").to(combine(router.with(networkOptions.getSpecComplianceChecks()))),
-      Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 

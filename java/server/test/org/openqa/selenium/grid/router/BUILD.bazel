@@ -14,6 +14,7 @@ java_selenium_test_suite(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/devtools/v84",
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",

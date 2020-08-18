@@ -15,16 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.local;
+package org.openqa.selenium.grid.distributor.model;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.DOWN;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.DRAINING;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
-import static org.openqa.selenium.grid.distributor.local.Slot.Status.ACTIVE;
-import static org.openqa.selenium.grid.distributor.local.Slot.Status.AVAILABLE;
+import static org.openqa.selenium.grid.distributor.model.Host.Status.DOWN;
+import static org.openqa.selenium.grid.distributor.model.Host.Status.DRAINING;
+import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
+import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
+import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
 
 import com.google.common.collect.ImmutableList;
 
@@ -53,7 +53,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-class Host {
+public class Host {
 
   private static final Logger LOG = Logger.getLogger("Selenium Host");
   private final Node node;
@@ -106,7 +106,7 @@ class Host {
     update(node.getStatus());
   }
 
-  void update(NodeStatus status) {
+  public void update(NodeStatus status) {
     Require.nonNull("Node status", status);
 
     Lock writeLock = lock.writeLock();
@@ -239,7 +239,7 @@ class Host {
     }
   }
 
-  void runHealthCheck() {
+  public void runHealthCheck() {
     performHealthCheck.run();
   }
 

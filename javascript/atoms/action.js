@@ -165,7 +165,7 @@ bot.action.focusOnElement = function(element) {
  */
 bot.action.type = function(
     element, values, opt_keyboard, opt_persistModifiers) {
-  // If the element has already been brought into focus somewhow, typing is
+  // If the element has already been brought into focus somehow, typing is
   // always allowed to proceed. Otherwise, we require the element be in an
   // "interactable" state. For example, an element that is hidden by overflow
   // can be typed on, so long as the user first tabs to it or the app calls
@@ -473,7 +473,7 @@ bot.action.swipe = function(element, dx, dy, opt_steps, opt_coords,
 /**
  * Pinches the given `element` by the given distance with a virtual touch
  * screen. A positive distance moves two fingers inward toward each and a
- * negative distances spreds them outward. The optional coordinate is the point
+ * negative distances spreads them outward. The optional coordinate is the point
  * the fingers move towards (for positive distances) or away from (for negative
  * distances); and if not provided, defaults to the center of the element.
  *

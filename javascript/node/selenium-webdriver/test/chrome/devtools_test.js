@@ -15,112 +15,130 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
+const assert = require('assert')
+const fs = require('fs')
+const path = require('path')
 
-const chrome = require('../../chrome');
-const error = require('../../lib/error');
-const fileServer = require('../../lib/test/fileserver');
-const io = require('../../io');
-const test = require('../../lib/test');
+const chrome = require('../../chrome')
+const error = require('../../lib/error')
+const fileServer = require('../../lib/test/fileserver')
+const io = require('../../io')
+const test = require('../../lib/test')
 
-test.suite(function(env) {
-  let driver;
+test.suite(
+  function (env) {
+    let driver
 
-  before(async function() {
-    driver = await env.builder()
+    before(async function () {
+      driver = await env
+        .builder()
         .setChromeOptions(new chrome.Options().headless())
-        .build();
-  });
-  after(() => driver.quit());
-
-  it('can send commands to devtools', async function() {
-    await driver.get(test.Pages.ajaxyPage);
-    assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage);
-
-    await driver.sendDevToolsCommand(
-        'Page.navigate', {url: test.Pages.echoPage});
-    assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
-  });
-
-  
-  it('can send commands to devtools and get return', async function() {
-    await driver.get(test.Pages.ajaxyPage);
-    assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage);
-
-    await driver.get(test.Pages.echoPage);
-    assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
-
-    let history = await driver.sendDevToolsCommandAndGetReturn(
-        'Page.getNavigationHistory');
-    assert(history);
-    assert(history.currentIndex >= 2);
-    assert.equal(history.entries[history.currentIndex].url, test.Pages.echoPage);
-    assert.equal(history.entries[history.currentIndex-1].url, test.Pages.ajaxyPage);
-  });
-
-  it('sends Page.enable command using devtools', async function() {
-    const cdpConnection = await driver.createCDPConnection();
-    cdpConnection.execute('Page.enable', "", function(res, err) {
-      assert(!err);
-    });
-  });
-
-  it('sends Network and Page command using devtools', async function() {
-    const cdpConnection = await driver.createCDPConnection();
-    cdpConnection.execute('Network.enable', "", function(res, err) {
-      assert(!err);
-    });
-
-    cdpConnection.execute('Page.navigate', {'url': 'chrome://newtab/'}, function (res, err) {
-      assert(!err);
+        .build()
     })
-  });
+    after(() => driver.quit())
 
-  describe('setDownloadPath', function() {
-    it('can enable downloads in headless mode', async function() {
-      const dir = await io.tmpDir();
-      await driver.setDownloadPath(dir);
+    it('can send commands to devtools', async function () {
+      await driver.get(test.Pages.ajaxyPage)
+      assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage)
 
-      const url = fileServer.whereIs('/data/firefox/webextension.xpi');
-      await driver.get(`data:text/html,<!DOCTYPE html>
-  <div><a download="" href="${url}">Go!</a></div>`);
+      await driver.sendDevToolsCommand('Page.navigate', {
+        url: test.Pages.echoPage,
+      })
+      assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage)
+    })
 
-      await driver.findElement({css: 'a'}).click();
+    it('can send commands to devtools and get return', async function () {
+      await driver.get(test.Pages.ajaxyPage)
+      assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage)
 
-      const downloadPath = path.join(dir, 'webextension.xpi');
-      await driver.wait(() => io.exists(downloadPath), 5000);
+      await driver.get(test.Pages.echoPage)
+      assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage)
 
-      const goldenPath =
-          path.join(__dirname, '../../lib/test/data/firefox/webextension.xpi');
+      let history = await driver.sendDevToolsCommandAndGetReturn(
+        'Page.getNavigationHistory'
+      )
+      assert(history)
+      assert(history.currentIndex >= 2)
       assert.equal(
-          fs.readFileSync(downloadPath, 'binary'),
-          fs.readFileSync(goldenPath, 'binary'));
-    });
+        history.entries[history.currentIndex].url,
+        test.Pages.echoPage
+      )
+      assert.equal(
+        history.entries[history.currentIndex - 1].url,
+        test.Pages.ajaxyPage
+      )
+    })
 
-    it('throws if path is not a directory', async function() {
-      await assertInvalidArgumentError(() => driver.setDownloadPath());
-      await assertInvalidArgumentError(() => driver.setDownloadPath(null));
-      await assertInvalidArgumentError(() => driver.setDownloadPath(''));
-      await assertInvalidArgumentError(() => driver.setDownloadPath(1234));
+    it('sends Page.enable command using devtools', async function () {
+      const cdpConnection = await driver.createCDPConnection()
+      cdpConnection.execute('Page.enable', '', function (_res, err) {
+        assert(!err)
+      })
+    })
 
-      const file = await io.tmpFile();
-      await assertInvalidArgumentError(() => driver.setDownloadPath(file));
+    it('sends Network and Page command using devtools', async function () {
+      const cdpConnection = await driver.createCDPConnection()
+      cdpConnection.execute('Network.enable', '', function (_res, err) {
+        assert(!err)
+      })
 
-      async function assertInvalidArgumentError(fn) {
-        try {
-          await fn();
-          return Promise.reject(Error('should have failed'));
-        } catch (err) {
-          if (err instanceof error.InvalidArgumentError) {
-            return;
-          }
-          throw err;
+      cdpConnection.execute(
+        'Page.navigate',
+        { url: 'chrome://newtab/' },
+        function (_res, err) {
+          assert(!err)
         }
-      }
-    });
-  });
-}, {browsers: ['chrome']});
+      )
+    })
+
+    describe('setDownloadPath', function () {
+      it('can enable downloads in headless mode', async function () {
+        const dir = await io.tmpDir()
+        await driver.setDownloadPath(dir)
+
+        const url = fileServer.whereIs('/data/firefox/webextension.xpi')
+        await driver.get(`data:text/html,<!DOCTYPE html>
+  <div><a download="" href="${url}">Go!</a></div>`)
+
+        await driver.findElement({ css: 'a' }).click()
+
+        const downloadPath = path.join(dir, 'webextension.xpi')
+        await driver.wait(() => io.exists(downloadPath), 5000)
+
+        const goldenPath = path.join(
+          __dirname,
+          '../../lib/test/data/firefox/webextension.xpi'
+        )
+        assert.equal(
+          fs.readFileSync(downloadPath, 'binary'),
+          fs.readFileSync(goldenPath, 'binary')
+        )
+      })
+
+      it('throws if path is not a directory', async function () {
+        await assertInvalidArgumentError(() => driver.setDownloadPath())
+        await assertInvalidArgumentError(() => driver.setDownloadPath(null))
+        await assertInvalidArgumentError(() => driver.setDownloadPath(''))
+        await assertInvalidArgumentError(() => driver.setDownloadPath(1234))
+
+        const file = await io.tmpFile()
+        await assertInvalidArgumentError(() => driver.setDownloadPath(file))
+
+        async function assertInvalidArgumentError(fn) {
+          try {
+            await fn()
+            return Promise.reject(Error('should have failed'))
+          } catch (err) {
+            if (err instanceof error.InvalidArgumentError) {
+              return
+            }
+            throw err
+          }
+        }
+      })
+    })
+  },
+  { browsers: ['chrome'] }
+)

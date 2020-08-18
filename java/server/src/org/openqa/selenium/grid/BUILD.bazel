@@ -83,10 +83,10 @@ java_binary(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
-        "//py:__pkg__",
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
         "//javascript:__subpackages__",
+        "//py:__pkg__",
     ],
     runtime_deps = [
         ":grid",

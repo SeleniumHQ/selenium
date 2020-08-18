@@ -30,6 +30,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.HttpTracing;
@@ -45,8 +46,12 @@ import java.util.concurrent.ExecutionException;
 
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
 class HandleSession implements HttpHandler {
 
@@ -71,26 +76,44 @@ class HandleSession implements HttpHandler {
   @Override
   public HttpResponse execute(HttpRequest req) {
     try (Span span = HttpTracing.newSpanAsChildOf(tracer, req, "router.handle_session")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
+                       EventAttribute.setValue(getClass().getName()));
+
       HTTP_REQUEST.accept(span, req);
+      HTTP_REQUEST_EVENT.accept(attributeMap, req);
 
       SessionId id = getSessionId(req.getUri()).map(SessionId::new)
-        .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
+          .orElseThrow(() -> {
+            NoSuchSessionException exception = new NoSuchSessionException("Cannot find session: " + req);
+            EXCEPTION.accept(attributeMap, exception);
+            attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                             EventAttribute.setValue(
+                                 "Unable to execute request for an existing session: " + exception.getMessage()));
+            span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+            return exception;
+          });
 
       SESSION_ID.accept(span, id);
+      SESSION_ID_EVENT.accept(attributeMap, id);
 
       try {
         HttpTracing.inject(tracer, span, req);
         HttpResponse res = knownSessions.get(id, loadSessionId(tracer, span, id)).execute(req);
 
         HTTP_RESPONSE.accept(span, res);
+        HTTP_RESPONSE_EVENT.accept(attributeMap, res);
 
+        span.addEvent("Session request execution complete", attributeMap);
         return res;
       } catch (ExecutionException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
-        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-        span.addEvent("Error in executing request for an existing session", attributeValueMap);
+
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                         EventAttribute.setValue("Unable to execute request for an existing session: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         Throwable cause = e.getCause();
         if (cause instanceof RuntimeException) {

@@ -32,7 +32,6 @@ import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
-import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNodeFactory;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -156,7 +155,6 @@ public class Standalone extends TemplateGridCommand {
     HttpHandler httpHandler = combine(
       router,
       Route.prefix("/wd/hub").to(combine(router)),
-      Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 

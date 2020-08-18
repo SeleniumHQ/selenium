@@ -18,13 +18,16 @@
 package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.CdpInfo;
+import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -45,6 +48,7 @@ import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
@@ -64,6 +68,7 @@ import java.util.Optional;
 public class ChromiumDriver extends RemoteWebDriver
     implements HasDevTools, HasTouchScreen, LocationContext, NetworkConnection, WebStorage {
 
+  private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
   private final RemoteLocationContext locationContext;
   private final RemoteWebStorage webStorage;
   private final TouchScreen touchScreen;
@@ -83,7 +88,22 @@ public class ChromiumDriver extends RemoteWebDriver
         factory,
         getCapabilities(),
         capabilityKey);
-    devTools = connection.map(DevTools::new);
+
+    CdpInfo cdpInfo = new CdpVersionFinder().match(getCapabilities().getVersion())
+      .orElseGet(() -> {
+          LOG.warning(
+            String.format(
+              "Unable to find version of CDP to use for %s. You may need to " +
+                "include a dependency on a specific version of the CDP using " +
+                "something similar to " +
+                "`org.seleniumhq.selenium:selenium-devtools:86` where the " +
+                "version matches the version of the chromium-based browser " +
+                "you're using.",
+              capabilities.getVersion()));
+          return new NoOpCdpInfo();
+        });
+
+    devTools = connection.map(conn -> new DevTools(cdpInfo.getDomains(), conn));
   }
 
   @Override
