@@ -21,12 +21,15 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
+import org.openqa.selenium.devtools.idealized.runtime.model.BindingCalled;
 import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
+import org.openqa.selenium.devtools.v84.runtime.Runtime;
 import org.openqa.selenium.devtools.v84.runtime.model.ConsoleAPICalled;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 public class V84Runtime implements RuntimeDomain {
   @Override
@@ -53,6 +56,24 @@ public class V84Runtime implements RuntimeDomain {
           v84.getType().toString(),
           Instant.ofEpochMilli(ts),
           modifiedArgs);
+      }
+    );
+  }
+
+  @Override
+  public Command<Void> addBinding(String name) {
+    return Runtime.addBinding(name, Optional.empty());
+  }
+
+  @Override
+  public Event<BindingCalled> bindingCalled() {
+    return new Event<BindingCalled>(
+      org.openqa.selenium.devtools.v84.runtime.Runtime.bindingCalled().getMethod(),
+      input -> {
+        org.openqa.selenium.devtools.v84.runtime.model.BindingCalled res = input.read(
+          org.openqa.selenium.devtools.v84.runtime.model.BindingCalled.class);
+
+        return new BindingCalled(res.getName(), res.getPayload());
       }
     );
   }

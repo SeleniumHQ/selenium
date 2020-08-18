@@ -19,8 +19,12 @@ package org.openqa.selenium.chromium;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.devtools.events.CdpEventTypes;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
+import org.openqa.selenium.devtools.events.DomMutationEvent;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -31,6 +35,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.devtools.events.CdpEventTypes.consoleEvent;
+import static org.openqa.selenium.devtools.events.CdpEventTypes.domMutation;
 
 public class LoggingTest extends JUnit4TestBase {
 
@@ -55,5 +60,26 @@ public class LoggingTest extends JUnit4TestBase {
 
     assertThat(latch.await(10, SECONDS)).isTrue();
     assertThat(seen.get().toString()).contains("I like cheese");
+  }
+
+  @Test
+  public void watchDomMutations() throws InterruptedException {
+    HasLogEvents logger = (HasLogEvents) driver;
+
+    AtomicReference<DomMutationEvent> seen = new AtomicReference<>();
+    CountDownLatch latch = new CountDownLatch(1);
+    logger.onLogEvent(domMutation(mutation -> {
+      seen.set(mutation);
+      latch.countDown();
+    }));
+
+    driver.get(pages.simpleTestPage);
+    WebElement span = driver.findElement(By.id("span"));
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].setAttribute('cheese', 'gouda');", span);
+
+    assertThat(latch.await(10, SECONDS)).isTrue();
+    assertThat(seen.get().getAttributeName()).isEqualTo("cheese");
+    assertThat(seen.get().getCurrentValue()).isEqualTo("gouda");
   }
 }

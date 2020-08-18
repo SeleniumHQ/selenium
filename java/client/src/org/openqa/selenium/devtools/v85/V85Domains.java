@@ -20,6 +20,7 @@ package org.openqa.selenium.devtools.v85;
 import org.openqa.selenium.devtools.idealized.Domains;
 import org.openqa.selenium.devtools.idealized.fetch.Fetch;
 import org.openqa.selenium.devtools.idealized.log.Log;
+import org.openqa.selenium.devtools.idealized.page.Page;
 import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
 import org.openqa.selenium.devtools.idealized.target.Target;
 
@@ -32,6 +33,11 @@ public class V85Domains implements Domains {
   @Override
   public Log log() {
     return new V85Log();
+  }
+
+  @Override
+  public Page page() {
+    return new V85Page();
   }
 
   @Override

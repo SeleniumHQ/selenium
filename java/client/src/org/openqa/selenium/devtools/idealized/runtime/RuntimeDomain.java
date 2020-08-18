@@ -19,6 +19,7 @@ package org.openqa.selenium.devtools.idealized.runtime;
 
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.idealized.runtime.model.BindingCalled;
 import org.openqa.selenium.devtools.idealized.runtime.model.ConsoleAPICalled;
 
 public interface RuntimeDomain {
@@ -26,4 +27,8 @@ public interface RuntimeDomain {
   Command<Void> enable();
 
   Event<ConsoleAPICalled> consoleAPICalled();
+
+  Command<Void> addBinding(String webdriver_attribute);
+
+  Event<BindingCalled> bindingCalled();
 }

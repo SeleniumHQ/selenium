@@ -19,6 +19,7 @@ package org.openqa.selenium.devtools.idealized;
 
 import org.openqa.selenium.devtools.idealized.fetch.Fetch;
 import org.openqa.selenium.devtools.idealized.log.Log;
+import org.openqa.selenium.devtools.idealized.page.Page;
 import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
 import org.openqa.selenium.devtools.idealized.target.Target;
 
@@ -32,6 +33,8 @@ public interface Domains {
   Fetch fetch();
 
   Log log();
+
+  Page page();
 
   Target target();
 
