@@ -190,10 +190,10 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
           throw exception;
         }
 
-        rawUri = sessions.getString(SESSION_URI_COL);
-        String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
+          rawUri = sessions.getString(SESSION_URI_COL);
+          String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
 
-        caps = rawCapabilities == null ?
+         caps = rawCapabilities == null ?
                new ImmutableCapabilities() :
                JSON.toType(rawCapabilities, Capabilities.class);
 
