@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.distributor.redis;
 
+import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -26,16 +27,23 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.redis.GridRedisClient;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -64,8 +72,7 @@ public class RedisDistributor extends Distributor implements Closeable {
   private final Regularly hostChecker = new Regularly("redis distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
   private final String registrationSecret;
-  private final RedisClient client;
-  private final StatefulRedisConnection<String, String> connection;
+  private final GridRedisClient connection;
 
   public RedisDistributor(
       Tracer tracer,
@@ -82,10 +89,21 @@ public class RedisDistributor extends Distributor implements Closeable {
     this.sessions = Require.nonNull("Session map", sessions);
     this.registrationSecret = registrationSecret;
 
-    this.client = RedisClient.create(RedisURI.create(redisServerUri));
-    this.connection = this.client.connect();
+    this.connection = new GridRedisClient(redisServerUri);
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
+    bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
+  }
+
+  public static Distributor create(Config config) {
+    Tracer tracer = new LoggingOptions(config).getTracer();
+    EventBus bus = new EventBusOptions(config).getEventBus();
+    HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
+    SessionMap sessions = new SessionMapOptions(config).getSessionMap();
+    URI redisServerUri = new RedisDistributorOptions(config).getRedisServerUri();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+
+    return new RedisDistributor(tracer, bus, clientFactory, sessions, serverOptions.getRegistrationSecret(), redisServerUri);
   }
 
   @Override
@@ -98,8 +116,7 @@ public class RedisDistributor extends Distributor implements Closeable {
   public Distributor add(Node node) {
     Require.nonNull("Node to add", node);
 
-    RedisCommands<String, String> commands = connection.sync();
-    commands.mset(
+    connection.mset(
         ImmutableMap.of(
             nodeIdKey(node.getId()), node.getId().toString(),
             nodeUriKey(node.getId()), node.getUri().toString()));
@@ -112,9 +129,7 @@ public class RedisDistributor extends Distributor implements Closeable {
   public void remove(UUID nodeId) {
     Require.nonNull("NodeId to remove", nodeId);
 
-    RedisCommands<String, String> commands = connection.sync();
-
-    commands.del(nodeIdKey(nodeId), nodeUriKey(nodeId));
+    connection.del(nodeIdKey(nodeId), nodeUriKey(nodeId));
 
     bus.fire(new NodeRemovedEvent(nodeId));
   }
@@ -142,14 +157,13 @@ public class RedisDistributor extends Distributor implements Closeable {
 
   @Override
   public void close() {
-    client.shutdown();
+    connection.close();
   }
 
   @VisibleForTesting
   String getNodeUri(UUID id) {
-    RedisCommands<String, String> commands = connection.sync();
 
-    return commands.get(nodeUriKey(id));
+    return connection.get(nodeUriKey(id));
   }
 
   @Override
