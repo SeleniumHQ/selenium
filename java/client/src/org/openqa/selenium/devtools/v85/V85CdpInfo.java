@@ -15,17 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized.log;
+package org.openqa.selenium.devtools.v85;
 
-import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.idealized.log.model.LogEntry;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
 
-public interface Log {
+@AutoService(CdpInfo.class)
+public class V85CdpInfo extends CdpInfo {
 
-  Command<Void> enable();
-
-  Command<Void> clear();
-
-  Event<LogEntry> entryAdded();
+  public V85CdpInfo() {
+    super(85, V85Domains::new);
+  }
 }

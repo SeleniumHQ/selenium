@@ -15,17 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized.log;
+package org.openqa.selenium.devtools.idealized.runtime.model;
 
-import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.idealized.log.model.LogEntry;
+import org.openqa.selenium.internal.Require;
 
-public interface Log {
+import java.time.Instant;
+import java.util.List;
 
-  Command<Void> enable();
+public class ConsoleAPICalled {
 
-  Command<Void> clear();
+  private final String type;
+  private final Instant timestamp;
+  private final List<Object> args;
 
-  Event<LogEntry> entryAdded();
+  public ConsoleAPICalled(String type, Instant timestamp, List<Object> args) {
+    this.type = Require.nonNull("Type", type);
+    this.timestamp = Require.nonNull("Timestamp", timestamp);
+    this.args = Require.nonNull("Args", args);
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public Instant getTimestamp() {
+    return timestamp;
+  }
+
+  public List<Object> getArgs() {
+    return args;
+  }
 }

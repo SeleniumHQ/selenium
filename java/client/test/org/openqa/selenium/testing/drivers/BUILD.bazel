@@ -42,6 +42,7 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/devtools/v84",
+        "//java/client/src/org/openqa/selenium/devtools/v85",
         "//java/client/src/org/openqa/selenium/edge",
         "//java/client/src/org/openqa/selenium/edgehtml",
         "//java/client/src/org/openqa/selenium/firefox",

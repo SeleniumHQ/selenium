@@ -15,17 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized.log;
+package org.openqa.selenium.devtools.idealized.runtime.model;
 
-import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.idealized.log.model.LogEntry;
+public class RemoteObject {
 
-public interface Log {
+  private final String type;
+  private final Object value;
 
-  Command<Void> enable();
+  public RemoteObject(String type, Object value) {
+    this.type = type;
+    this.value = value;
+  }
 
-  Command<Void> clear();
-
-  Event<LogEntry> entryAdded();
+  @Override
+  public String toString() {
+    return value instanceof String ?
+      ("\"" + ((String) value).replace("\"", "\\\"") + "\"") :
+      String.valueOf(value);
+  }
 }

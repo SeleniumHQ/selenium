@@ -15,17 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized.log;
+package org.openqa.selenium.devtools.idealized.log.model;
 
-import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.idealized.log.model.LogEntry;
+import org.openqa.selenium.internal.Require;
 
-public interface Log {
+public class LogEntry {
 
-  Command<Void> enable();
+  private final String kind;
+  private final org.openqa.selenium.logging.LogEntry entry;
 
-  Command<Void> clear();
+  public LogEntry(String kind, org.openqa.selenium.logging.LogEntry entry) {
+    this.kind = Require.nonNull("Kind", kind);
+    this.entry = Require.nonNull("Entry", entry);
+  }
 
-  Event<LogEntry> entryAdded();
+  public String getKind() {
+    return kind;
+  }
+
+  public org.openqa.selenium.logging.LogEntry getEntry() {
+    return entry;
+  }
 }

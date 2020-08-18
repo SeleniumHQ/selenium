@@ -15,17 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized.log;
+package org.openqa.selenium.devtools.idealized.runtime;
 
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.idealized.log.model.LogEntry;
+import org.openqa.selenium.devtools.idealized.runtime.model.ConsoleAPICalled;
 
-public interface Log {
+public interface RuntimeDomain {
 
   Command<Void> enable();
 
-  Command<Void> clear();
-
-  Event<LogEntry> entryAdded();
+  Event<ConsoleAPICalled> consoleAPICalled();
 }

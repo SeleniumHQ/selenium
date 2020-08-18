@@ -3,9 +3,9 @@ load("//:copy_file.bzl", "copy_file")
 load("//java:defs.bzl", "java_export")
 
 java_export(
-    name = "v84",
+    name = "v85",
     srcs = glob(["*.java"]),
-    maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:84",
+    maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:85",
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = [
         "//visibility:public",
@@ -21,7 +21,7 @@ java_export(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
-    ],
+    ]
 )
 
 java_library(
@@ -44,7 +44,7 @@ genrule(
         ":js_protocol",
     ],
     outs = ["cdp.srcjar"],
-    cmd = "$(location //java/client/src/org/openqa/selenium/devtools:cdp-client-generator) $(location :browser_protocol) $(location :js_protocol) v84 $@",
+    cmd = "$(location //java/client/src/org/openqa/selenium/devtools:cdp-client-generator) $(location :browser_protocol) $(location :js_protocol) v85 $@",
     tools = [
         "//java/client/src/org/openqa/selenium/devtools:cdp-client-generator",
     ],
@@ -52,12 +52,12 @@ genrule(
 
 copy_file(
     name = "browser_protocol",
-    src = "//common/devtools/chromium/v84:browser_protocol",
+    src = "//common/devtools/chromium/v85:browser_protocol",
     out = "browser_protocol.json",
 )
 
 copy_file(
     name = "js_protocol",
-    src = "//common/devtools/chromium/v84:js_protocol",
+    src = "//common/devtools/chromium/v85:js_protocol",
     out = "js_protocol.json",
 )

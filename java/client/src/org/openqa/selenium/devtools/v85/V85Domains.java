@@ -15,17 +15,32 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized.log;
+package org.openqa.selenium.devtools.v85;
 
-import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.idealized.log.model.LogEntry;
+import org.openqa.selenium.devtools.idealized.Domains;
+import org.openqa.selenium.devtools.idealized.fetch.Fetch;
+import org.openqa.selenium.devtools.idealized.log.Log;
+import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
+import org.openqa.selenium.devtools.idealized.target.Target;
 
-public interface Log {
+public class V85Domains implements Domains {
+  @Override
+  public Fetch fetch() {
+    return new V85Fetch();
+  }
 
-  Command<Void> enable();
+  @Override
+  public Log log() {
+    return new V85Log();
+  }
 
-  Command<Void> clear();
+  @Override
+  public RuntimeDomain runtime() {
+    return new V85Runtime();
+  }
 
-  Event<LogEntry> entryAdded();
+  @Override
+  public Target target() {
+    return new V85Target();
+  }
 }
