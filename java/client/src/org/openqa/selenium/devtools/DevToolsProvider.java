@@ -41,7 +41,7 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   @Override
   public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
-    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(DevTools::new);
+    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(conn -> new DevTools(null, conn));
 
     return () -> devTools.orElseThrow(() -> new IllegalStateException("Unable to create connection to " + caps));
   }

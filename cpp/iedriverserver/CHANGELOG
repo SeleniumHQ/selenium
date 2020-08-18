@@ -11,6 +11,13 @@ not made generally available on the downloads page.
 
 v3.150.1.0
 ==========
+ * Made checking of the Content-Length header case-insensitive. This fixes
+   a number of issues where sessions cannot be started or where commands
+   fail because the HTTP client made a choice to not use properly-cased
+   header names.
+
+v3.150.1.0
+==========
  * Reverted change to use effective style for determining element visibility.
    If a containing element has scrollbars, simply using the client bounding
    rect to determine the click point could lead the click point behind a

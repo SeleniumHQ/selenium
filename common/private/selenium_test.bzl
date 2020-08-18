@@ -81,7 +81,7 @@ def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
             test_class = test_class,
             size = size,
             jvm_flags = _BROWSERS[browser]["jvm_flags"] + jvm_flags,
-            tags = _BROWSERS[browser]["tags"] + tags + ["remote"],
+            tags = _BROWSERS[browser]["tags"] + tags,
             **stripped_args
         )
         tests.append(test)

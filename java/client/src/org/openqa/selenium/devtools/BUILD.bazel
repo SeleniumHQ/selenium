@@ -40,11 +40,11 @@ java_export(
     ],
     exports = [
         ":devtools-prototypes",
+        "//java/client/src/org/openqa/selenium/devtools/idealized",
     ],
     deps = [
         ":devtools-prototypes",
-        # TODO(simon): Remove once we're broken this requirement
-        "//java/client/src/org/openqa/selenium/devtools/v84",
+        "//java/client/src/org/openqa/selenium/devtools/idealized",
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",

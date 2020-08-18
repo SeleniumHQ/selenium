@@ -17,28 +17,23 @@
 
 package org.openqa.selenium.support.devtools;
 
-import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.v84.fetch.Fetch;
-import org.openqa.selenium.devtools.v84.fetch.model.HeaderEntry;
-import org.openqa.selenium.devtools.v84.fetch.model.RequestPaused;
-import org.openqa.selenium.devtools.v84.network.model.Request;
+import org.openqa.selenium.devtools.idealized.fetch.model.RequestPaused;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
 import java.io.Closeable;
-import java.util.Base64;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 /**
  * Provides a mechanism for stubbing out responses to requests in drivers which
@@ -77,11 +72,9 @@ public class NetworkInterceptor implements Closeable {
     devTools = ((HasDevTools) driver).getDevTools();
     devTools.createSession();
 
-    devTools.addListener(Fetch.requestPaused(), this::handleRequest);
+    devTools.addListener(devTools.getDomains().fetch().requestPaused(), this::handleRequest);
 
-    devTools.send(Fetch.enable(
-      Optional.empty(),
-      Optional.of(false)));
+    devTools.send(devTools.getDomains().fetch().enable(Optional.empty(), false));
   }
 
   @Override
@@ -89,23 +82,17 @@ public class NetworkInterceptor implements Closeable {
   }
 
   private void handleRequest(RequestPaused incoming) {
-    // Only handle incoming requests. Diligently ignore responses.
-    if (incoming.getResponseStatusCode().isPresent() || incoming.getResponseErrorReason().isPresent()) {
+    if (!incoming.getRequest().isPresent()) {
+      continueRequest(incoming);
       return;
     }
 
     // The incoming request is fully qualified, so try and extract the bits
     // that make sense. We use URI since that doesn't need us to have network
     // handlers for all protocols.
-    HttpRequest req;
     try {
-      Request cdpReq = incoming.getRequest();
-      LOG.info(cdpReq.toString());
-      req = new HttpRequest(
-        HttpMethod.valueOf(cdpReq.getMethod()),
-        cdpReq.getUrl() + (cdpReq.getUrlFragment().isPresent() ? cdpReq.getUrlFragment() : ""));
-
-      cdpReq.getHeaders().forEach((key, value) -> req.addHeader(key, String.valueOf(value)));
+      HttpRequest req = incoming.getRequest().orElseThrow(() -> new DevToolsException("No request found"));
+      LOG.fine(req.toString());
 
       if (!route.matches(req)) {
         continueRequest(incoming);
@@ -120,36 +107,19 @@ public class NetworkInterceptor implements Closeable {
         return;
       }
 
-      ImmutableList.Builder<HeaderEntry> headers = ImmutableList.builder();
-      res.getHeaderNames().forEach(
-        name -> res.getHeaders(name).forEach(value -> headers.add(new HeaderEntry(name, value))));
-
-      byte[] bytes = Contents.bytes(res.getContent());
-      String body = bytes.length > 0 ? Base64.getEncoder().encodeToString(bytes) : null;
-
-      devTools.send(Fetch.fulfillRequest(
-        incoming.getRequestId(),
-        res.getStatus(),
-        Optional.of(headers.build()),
-        Optional.empty(),
-        Optional.ofNullable(body),
-        Optional.empty()));
-
+      devTools.send(devTools.getDomains().fetch().fulfillRequest(incoming.getRequestId(), res));
     } catch (Exception e) {
+      HttpRequest req = incoming.getRequest().orElseGet(() -> new HttpRequest(GET, "/no/request/has/been/found"));
+
       LOG.log(
         Level.WARNING,
-        String.format("Caught exception while handling %s: %s", incoming.getRequest().getUrl(), e.getMessage()),
+        String.format("Caught exception while handling %s: %s", req, e.getMessage()),
         e);
       continueRequest(incoming);
     }
   }
 
   private void continueRequest(RequestPaused incoming) {
-    devTools.send(Fetch.continueRequest(
-      incoming.getRequestId(),
-      Optional.empty(),
-      Optional.empty(),
-      Optional.empty(),
-      Optional.empty()));
+    devTools.send(devTools.getDomains().fetch().continueRequest(incoming.getRequestId()));
   }
 }

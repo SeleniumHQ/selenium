@@ -35,7 +35,6 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
@@ -109,14 +108,6 @@ public abstract class Route implements HttpHandler, Routable {
 
     return new TemplatizedRouteConfig(
         new MatchesHttpMethod(POST).and(new MatchesTemplate(urlTemplate)),
-        urlTemplate);
-  }
-
-  public static TemplatizedRouteConfig options(String template) {
-    UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL Template", template));
-
-    return new TemplatizedRouteConfig(
-        new MatchesHttpMethod(OPTIONS).and(new MatchesTemplate(urlTemplate)),
         urlTemplate);
   }
 
