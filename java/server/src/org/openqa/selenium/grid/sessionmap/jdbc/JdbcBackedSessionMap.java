@@ -145,21 +145,23 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         span.setAttribute(DATABASE_STATEMENT, statement.toString());
         span.setAttribute(DATABASE_OPERATION, "select");
 
-        ResultSet sessions = statement.executeQuery();
-        if (!sessions.next()) {
-          span.setAttribute("error", true);
-          span.setStatus(Status.NOT_FOUND);
-          span.addEvent("Session id does not exist in the database.", attributeValueMap);
+        try (ResultSet sessions = statement.executeQuery()) {
+          if (!sessions.next()) {
+            span.setAttribute("error", true);
+            span.setStatus(Status.NOT_FOUND);
+            span.addEvent("Session id does not exist in the database.", attributeValueMap);
 
-          throw new NoSuchSessionException("Unable to find...");
+            throw new NoSuchSessionException("Unable to find...");
+          }
+
+          rawUri = sessions.getString(SESSION_URI_COL);
+          String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
+
+          caps = rawCapabilities == null ?
+                 new ImmutableCapabilities() :
+                 JSON.toType(rawCapabilities, Capabilities.class);
         }
 
-        rawUri = sessions.getString(SESSION_URI_COL);
-        String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
-
-        caps = rawCapabilities == null ?
-               new ImmutableCapabilities() :
-               JSON.toType(rawCapabilities, Capabilities.class);
         try {
           uri = new URI(rawUri);
         } catch (URISyntaxException e) {
