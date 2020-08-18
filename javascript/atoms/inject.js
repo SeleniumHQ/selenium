@@ -205,7 +205,7 @@ bot.inject.unwrapValue = function(value, opt_doc) {
  * `Function.prototype.toString` and that it only refers to symbols
  * defined in the target window's context.
  *
- * @param {!(Function|string)} fn Either the function that shold be
+ * @param {!(Function|string)} fn Either the function that should be
  *     recompiled, or a string defining the body of an anonymous function
  *     that should be compiled in the target window's context.
  * @param {!Window} theWindow The window to recompile the function in.

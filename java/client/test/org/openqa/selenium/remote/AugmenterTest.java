@@ -30,6 +30,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.html5.LocationContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,8 +45,30 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
 public class AugmenterTest {
 
-  protected Augmenter getAugmenter() {
+  private Augmenter getAugmenter() {
     return new Augmenter();
+  }
+
+  @Test
+  public void shouldAugmentRotatable() {
+    final Capabilities caps = new ImmutableCapabilities(CapabilityType.ROTATABLE, true);
+    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+
+    WebDriver returned = getAugmenter().augment(driver);
+
+    assertThat(returned).isNotSameAs(driver);
+    assertThat(returned).isInstanceOf(Rotatable.class);
+  }
+
+  @Test
+  public void shouldAugmentLocationContext() {
+    final Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
+    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
+
+    WebDriver returned = getAugmenter().augment(driver);
+
+    assertThat(returned).isNotSameAs(driver);
+    assertThat(returned).isInstanceOf(LocationContext.class);
   }
 
   @Test
@@ -182,7 +205,7 @@ public class AugmenterTest {
 
   @Test
   public void shouldBeAbleToAugmentMultipleTimes() {
-    Capabilities caps = new ImmutableCapabilities("canRotate", true, "magic.numbers", true);
+    Capabilities caps = new ImmutableCapabilities("rotatable", true, "magic.numbers", true);
 
     StubExecutor stubExecutor = new StubExecutor(caps);
     stubExecutor.expect(DriverCommand.GET_SCREEN_ORIENTATION,
@@ -190,12 +213,7 @@ public class AugmenterTest {
       ScreenOrientation.PORTRAIT.name());
     RemoteWebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
-    WebDriver augmented = getAugmenter()
-      .addDriverAugmentation(
-        "canRotate",
-        Rotatable.class,
-        (c, exe) -> new RemoteRotatable(exe))
-      .augment(driver);
+    WebDriver augmented = getAugmenter().augment(driver);
 
     assertThat(driver).isNotSameAs(augmented);
     assertThat(augmented).isInstanceOf(Rotatable.class);

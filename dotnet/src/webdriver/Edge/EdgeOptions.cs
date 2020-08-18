@@ -46,7 +46,7 @@ namespace OpenQA.Selenium.Edge
     public class EdgeOptions : ChromiumOptions
     {
         private const string DefaultBrowserNameValue = "MicrosoftEdge";
-        private const string WebViewBrowserNameValue = "WebView2";
+        private const string WebViewBrowserNameValue = "webview2";
 
         // Engine switching
         private const string UseChromiumCapability = "ms:edgeChromium";
@@ -71,6 +71,7 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         public EdgeOptions()
         {
+            this.BrowserName = DefaultBrowserNameValue;
             this.AddKnownCapabilityName(UseChromiumCapability, "UseChromium property");
             this.AddKnownCapabilityName(UseInPrivateBrowsingCapability, "UseInPrivateBrowsing property");
             this.AddKnownCapabilityName(StartPageCapability, "StartPage property");
@@ -84,14 +85,6 @@ namespace OpenQA.Selenium.Edge
         {
             get { return this.useChromium; }
             set { this.useChromium = value; }
-        }
-
-        /// <summary>
-        /// Gets the default value of the browserName capability.
-        /// </summary>
-        protected override string BrowserNameValue
-        {
-            get { return UseWebView ? WebViewBrowserNameValue : DefaultBrowserNameValue; }
         }
 
         /// <summary>
@@ -116,8 +109,8 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         public bool UseWebView
         {
-            get { return this.useWebView; }
-            set { this.useWebView = value; }
+            get { return this.BrowserName == WebViewBrowserNameValue; }
+            set { this.BrowserName = value ? WebViewBrowserNameValue : DefaultBrowserNameValue; }
         }
 
 

@@ -67,7 +67,6 @@ namespace OpenQA.Selenium.Chromium
         /// </summary>
         public ChromiumOptions() : base()
         {
-            this.BrowserName = BrowserNameValue;
             this.AddKnownCapabilityName(this.CapabilityName, "current ChromiumOptions class instance");
             this.AddKnownCapabilityName(CapabilityType.LoggingPreferences, "SetLoggingPreference method");
             this.AddKnownCapabilityName(this.LoggingPreferencesChromeOption, "SetLoggingPreference method");
@@ -85,11 +84,6 @@ namespace OpenQA.Selenium.Chromium
             this.AddKnownCapabilityName(ChromiumOptions.WindowTypesChromeOption, "AddWindowTypes method");
             this.AddKnownCapabilityName(ChromiumOptions.UseSpecCompliantProtocolOption, "UseSpecCompliantProtocol property");
         }
-
-        /// <summary>
-        /// Gets the default value of the browserName capability.
-        /// </summary>
-        protected abstract string BrowserNameValue { get; }
 
         /// <summary>
         /// Gets the vendor prefix to apply to Chromium-specific capability names.

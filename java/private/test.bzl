@@ -35,6 +35,7 @@ def java_selenium_test_suite(
         name = "%s-base-lib" % name,
         srcs = srcs,
         deps = deps,
+        testonly = True,
         **kwargs
     )
 
@@ -52,6 +53,7 @@ def java_selenium_test_suite(
                 runtime_deps = [
                     ":%s-base-lib" % name,
                 ],
+                tags = tags,
                 visibility = visibility,
             )
             suites.append(test_name)

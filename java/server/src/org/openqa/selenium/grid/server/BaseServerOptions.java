@@ -88,7 +88,7 @@ public class BaseServerOptions {
     int port = getPort();
 
     try {
-      return new URI(isSecure() ? "https" : "http", null, host, port, null, null, null);
+      return new URI((isSecure() || isSelfSigned()) ? "https" : "http", null, host, port, null, null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
     }

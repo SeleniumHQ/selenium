@@ -57,14 +57,17 @@ import static java.util.stream.Collectors.joining;
 public class CdpClientGenerator {
 
   public static void main(String[] args) throws IOException {
-    Path source = Paths.get("java/client/src/org/openqa/selenium/devtools");
-    Path target = Files.createTempDirectory("devtools");
-    String devtoolsDir = "org/openqa/selenium/devtools/";
+    Path browserProtocol = Paths.get(args[0]);
+    Path jsProtocol = Paths.get(args[1]);
+    String version = args[2];
 
-    Model model = new Model("org.openqa.selenium.devtools");
-    Stream.of("browser_protocol.json", "js_protocol.json").forEach(protoFile -> {
+    Path target = Files.createTempDirectory("devtools");
+    String devtoolsDir = "org/openqa/selenium/devtools/" + version + "/";
+
+    Model model = new Model("org.openqa.selenium.devtools." + version);
+    Stream.of(browserProtocol, jsProtocol).forEach(protoFile -> {
       try {
-        String text = String.join("\n", Files.readAllLines(source.resolve(protoFile)));
+        String text = String.join("\n", Files.readAllLines(protoFile));
         Map<String, Object> json = new Json().toType(text, Json.MAP_TYPE);
         model.parse(json);
       } catch (IOException e) {
@@ -73,8 +76,7 @@ public class CdpClientGenerator {
     });
     model.dumpTo(target);
 
-    Path outputJar = Paths.get(args[0]).toAbsolutePath();
-    System.out.println(outputJar);
+    Path outputJar = Paths.get(args[3]).toAbsolutePath();
     Files.createDirectories(outputJar.getParent());
 
     try (OutputStream os = Files.newOutputStream(outputJar);
@@ -235,11 +237,11 @@ public class CdpClientGenerator {
     }
 
     public String getPackage() {
-      return "org.openqa.selenium.devtools." + name.toLowerCase();
+      return model.basePackage + "." + name.toLowerCase();
     }
 
     public void parse(Map<String, Object> json) {
-      new DomainParser().parse(this, json);
+      new DomainParser(model.basePackage).parse(this, json);
     }
 
     public void dumpTo(Path target) {
@@ -314,14 +316,14 @@ public class CdpClientGenerator {
 
   private static class DomainParser extends BaseSpecParser<Domain> {
     @SuppressWarnings("unchecked")
-    public DomainParser() {
+    public DomainParser(String basePackage) {
       super(new ImmutableMap.Builder<String, BiConsumer<Domain, Object>>()
                 .put("domain", (domain, value) -> domain.name = (String) value)
                 .put("dependencies", (domain, value) -> {
                   // TODO: what to do with dependencies?
                 })
                 .put("types", (domain, value) -> ((List<Map<String, Object>>) value).forEach(item -> {
-                  TypeSpec type = new TypeSpec(domain);
+                  TypeSpec type = new TypeSpec(basePackage, domain);
                   type.parse(item);
                   domain.types.add(type);
                 }))
@@ -425,8 +427,11 @@ public class CdpClientGenerator {
 
   private static class TypeSpec extends TypedSpec {
 
-    public TypeSpec(Domain domain) {
+    private final String basePackage;
+
+    public TypeSpec(String basePackage, Domain domain) {
       super(domain);
+      this.basePackage = basePackage;
     }
 
     public void parse(Map<String, Object> json) {
@@ -439,7 +444,7 @@ public class CdpClientGenerator {
 
     public void dumpTo(Path target) {
       CompilationUnit unit = new CompilationUnit();
-      unit.setPackageDeclaration("org.openqa.selenium.devtools." + domain.name.toLowerCase() + ".model");
+      unit.setPackageDeclaration(basePackage + "." + domain.name.toLowerCase() + ".model");
       unit.addImport(Beta.class);
       unit.addImport(JsonInput.class);
       unit.addType(toTypeDeclaration());
@@ -697,7 +702,7 @@ public class CdpClientGenerator {
         case "array":
           return Object.class.getName();
         default:
-          throw new RuntimeException("Unknown simple type " + name);
+          throw new RuntimeException("Unknown simple type: " + name);
       }
     }
 
