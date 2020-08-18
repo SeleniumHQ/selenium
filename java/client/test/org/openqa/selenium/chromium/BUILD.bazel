@@ -11,6 +11,7 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/chromium",
         "//java/client/src/org/openqa/selenium/edge",
         "//java/client/src/org/openqa/selenium/json",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],

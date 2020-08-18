@@ -8,7 +8,6 @@ java_library(
     ],
     deps = [
         "//java:auto-service",
-        "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/distributor",
         artifact("com.beust:jcommander"),
