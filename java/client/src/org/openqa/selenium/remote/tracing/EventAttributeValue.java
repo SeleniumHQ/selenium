@@ -23,6 +23,10 @@ public class EventAttributeValue {
   private String stringValue;
   private Number numberValue;
   private Boolean booleanValue;
+  private String[] stringArrayValue;
+  private Long[] longArrayValue;
+  private Double[] doubleArrayValue;
+  private Boolean[] booleanArrayValue;
 
   public EventAttributeValue(String value) {
     this.stringValue = value;
@@ -44,6 +48,26 @@ public class EventAttributeValue {
     this.type = Type.BOOLEAN;
   }
 
+  public EventAttributeValue(String[] value) {
+    this.stringArrayValue = value;
+    this.type = Type.STRING_ARRAY;
+  }
+
+  public EventAttributeValue(Long[] value) {
+    this.longArrayValue = value;
+    this.type = Type.LONG_ARRAY;
+  }
+
+  public EventAttributeValue(Double[] value) {
+    this.doubleArrayValue = value;
+    this.type = Type.DOUBLE_ARRAY;
+  }
+
+  public EventAttributeValue(Boolean[] value) {
+    this.booleanArrayValue = value;
+    this.type = Type.BOOLEAN_ARRAY;
+  }
+
   public String getStringValue() {
     return stringValue;
   }
@@ -56,15 +80,27 @@ public class EventAttributeValue {
     return booleanValue;
   }
 
+  public String[] getStringArrayValue() { return stringArrayValue; }
+
+  public Long[] getLongArrayValue() { return longArrayValue; }
+
+  public Double[] getDoubleArrayValue() { return doubleArrayValue; }
+
+  public Boolean[] getBooleanArrayValue() { return booleanArrayValue; }
+
   public Type getAttributeType() {
     return type;
   }
 
   public enum Type {
-    STRING,
     BOOLEAN,
+    BOOLEAN_ARRAY,
+    DOUBLE,
+    DOUBLE_ARRAY,
     LONG,
-    DOUBLE
+    LONG_ARRAY,
+    STRING,
+    STRING_ARRAY
   }
 
 }

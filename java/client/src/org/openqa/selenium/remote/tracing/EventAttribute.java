@@ -34,6 +34,22 @@ public class EventAttribute {
     return new EventAttributeValue(value);
   }
 
+  public static EventAttributeValue setValue(String... value) {
+    return new EventAttributeValue(value);
+  }
+
+  public static EventAttributeValue setValue(Long... value) {
+    return new EventAttributeValue(value);
+  }
+
+  public static EventAttributeValue setValue(Double... value) {
+    return new EventAttributeValue(value);
+  }
+
+  public static EventAttributeValue setValue(Boolean... value) {
+    return new EventAttributeValue(value);
+  }
+
   public static EventAttributeValue setValue(double value) {
     return new EventAttributeValue(value);
   }
