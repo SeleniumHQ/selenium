@@ -1,0 +1,32 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="30"
+    height="28.137"
+    viewBox="0 0 30 28.137">
+  <defs>
+    <style>.a{fill:#707070;}.b{fill:#fff;}</style>
+  </defs>
+  <g transform="translate(753.076 403.137) rotate(180)">
+    <rect
+        class="a"
+        width="18.96"
+        height="28.069"
+        transform="translate(734.117 375)" />
+    <path
+        class="a"
+        d="M26.521,0a14.069,14.069,0,0,1,0,28.137c-7.734,0-11.445-6.3-11.445-14.069S18.787,0,26.521,0Z"
+        transform="translate(708 375)" />
+    <g transform="translate(740.009 394.37) rotate(-180)">
+      <rect
+          class="b"
+          width="1.225"
+          height="14.006"
+          transform="translate(0 0.867) rotate(-45)" />
+      <rect
+          class="b"
+          width="1.225"
+          height="14.006"
+          transform="translate(9.903 0) rotate(45)" />
+    </g>
+  </g>
+</svg>

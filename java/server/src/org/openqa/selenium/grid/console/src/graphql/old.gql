@@ -1,0 +1,31 @@
+query NodeQuery($id: String!) {
+	node(id: $id) {
+		debug
+		host
+		port
+		role
+		timeout
+		cleanUpCycle
+		maxSession
+		downPollingLimit
+		browserTimeout
+		unregisterIfStillDownAfter
+		remoteHost
+		registerCycle
+		register
+		proxy
+		nodeStatusCheckTimeout
+		nodePolling
+		id
+		hub
+		capabilities {
+			browserName
+			marionette
+			maxInstances
+			platform
+			platformName
+			seleniumProtocol
+			serverConfigUUID
+		}
+	}
+}

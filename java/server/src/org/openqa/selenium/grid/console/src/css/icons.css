@@ -1,0 +1,7 @@
+.icon-green {
+	width: 16px;
+	height: auto;
+	fill: var(--MENU-SEARCH-BOX-ICONS-color);
+	padding-bottom: 4px;
+	padding-right: 4px;
+}
