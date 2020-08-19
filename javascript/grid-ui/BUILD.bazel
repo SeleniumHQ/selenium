@@ -1,0 +1,70 @@
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin", "nodejs_test")
+load("@npm//react-scripts:index.bzl", "react_scripts", "react_scripts_test")
+
+package(default_visibility = ["//visibility:public"])
+
+_RUNTIME_DEPS = [
+    "chdir.js",
+    "copy_static_files",
+    "@npm//react",
+    "@npm//react-dom",
+    "@npm//react-modal",
+    "@npm//react-apollo",
+    "@npm//react-json-view",
+    "@npm//react-router-dom",
+    "@npm//react-scripts",
+    "@npm//apollo-cache-inmemory",
+    "@npm//apollo-client",
+    "@npm//apollo-link-http",
+    "@npm//apollo-boost",
+    "@npm//findandreplacedomtext",
+    "@npm//graphql",
+    "@npm//graphql.macro",
+    "@npm//historyjs",
+    "@npm//keyboardjs",
+    "@npm//materialize-css",
+    "@npm//progressbar.js",
+    "@npm//rc-pagination",
+    "@npm//source-map-explorer",
+    "@npm//@emotion/core",
+    "@npm//@babel/preset-react",
+    "@npm//@tippyjs/react",
+    "@npm//clsx",
+    "@npm//@material-ui/core",
+    "@npm//@material-ui/icons"
+]
+
+copy_to_bin(
+    name = "copy_static_files",
+    srcs = glob(
+        [
+            "public/*",
+            "src/**/*",
+        ],
+    ) + [
+        "package.json",
+        "tsconfig.json",
+    ],
+)
+
+# react-scripts can only work if the working directory is the root of the application.
+# So we'll need to chdir before it runs.
+write_file(
+    name = "write_chdir_script",
+    out = "chdir.js",
+    content = ["process.chdir(__dirname)"],
+)
+
+react_scripts(
+    # Note: this must be named "build" since react-scripts hard-codes that as the output dir
+    name = "build",
+    args = [
+        "--node_options=--require=./$(execpath chdir.js)",
+        "build",
+    ],
+    data = _RUNTIME_DEPS + [
+        "@npm//@types",
+    ],
+    output_dir = True,
+)
