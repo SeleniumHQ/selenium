@@ -18,9 +18,14 @@
 package org.openqa.selenium.devtools.idealized.log;
 
 import org.openqa.selenium.devtools.Command;
+import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.idealized.log.model.LogEntry;
 
 public interface Log {
 
+  Command<Void> enable();
+
   Command<Void> clear();
 
+  Event<LogEntry> entryAdded();
 }

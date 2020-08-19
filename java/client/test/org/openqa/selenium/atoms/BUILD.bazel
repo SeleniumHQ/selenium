@@ -18,7 +18,6 @@ java_library(
     name = "lib",
     srcs = ["JavaScriptLoader.java"],
     deps = [
-        "//java/client/test/org/openqa/selenium/build",
         artifact("com.google.guava:guava"),
         artifact("org.hamcrest:hamcrest"),
         artifact("junit:junit"),

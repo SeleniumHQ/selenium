@@ -16,11 +16,12 @@ java_export(
     deps = [
         ":cdp",
         "//java:auto-service",
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
-    ]
+    ],
 )
 
 java_library(
