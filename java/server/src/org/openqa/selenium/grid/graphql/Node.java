@@ -22,6 +22,9 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,7 +34,7 @@ public class Node {
   private final URI uri;
   private final boolean isUp;
   private final int maxSession;
-  private final String capabilities;
+  private final Map<Capabilities, Integer> capabilities;
   private static final Json JSON = new Json();
 
 
@@ -44,7 +47,7 @@ public class Node {
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
     this.maxSession = Require.nonNull("Node maxSession", maxSession);
-    this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
+    this.capabilities = Require.nonNull("Node capabilities", capabilities);
   }
 
   public UUID getId() {
@@ -57,6 +60,19 @@ public class Node {
 
   public int getMaxSession() {
     return maxSession;
+  }
+
+  public String getCapabilities() {
+    List<Map> toReturn = new ArrayList<>();
+
+    for (Map.Entry<Capabilities, Integer> entry : capabilities.entrySet()) {
+      Map<String, Object> details  = new HashMap<>();
+      details.put("browserName", entry.getKey().getBrowserName());
+      details.put("slots", entry.getValue());
+      toReturn.add(details);
+    }
+
+    return JSON.toJson(toReturn);
   }
 
   public String getStatus() {

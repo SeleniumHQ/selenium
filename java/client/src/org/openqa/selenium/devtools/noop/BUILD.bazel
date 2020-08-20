@@ -1,0 +1,8 @@
+java_library(
+    name = "noop",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/src/org/openqa/selenium/chromium:__pkg__",
+    ],
+    deps = ["//java/client/src/org/openqa/selenium/devtools"],
+)

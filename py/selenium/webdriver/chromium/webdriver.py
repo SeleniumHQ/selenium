@@ -15,10 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
 import warnings
 
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 

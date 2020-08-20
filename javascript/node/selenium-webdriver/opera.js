@@ -35,7 +35,7 @@
  *     session, such as which {@linkplain Options#setProxy proxy} to use,
  *     what {@linkplain Options#addExtensions extensions} to install, or
  *     what {@linkplain Options#addArguments command-line switches} to use when
- *     starting the browser.
+ *     starting the browser.Service
  *
  * 3. {@linkplain Driver}: the WebDriver client; each new instance will control
  *     a unique browser session with a clean user profile (unless otherwise
@@ -70,16 +70,14 @@
  * {@link ./builder.Builder selenium-webdriver.Builder}.
  */
 
-'use strict';
+'use strict'
 
 const http = require('./http'),
-    io = require('./io'),
-    capabilities = require('./lib/capabilities'),
-    promise = require('./lib/promise'),
-    Symbols = require('./lib/symbols'),
-    webdriver = require('./lib/webdriver'),
-    remote = require('./remote');
-
+  io = require('./io'),
+  capabilities = require('./lib/capabilities'),
+  Symbols = require('./lib/symbols'),
+  webdriver = require('./lib/webdriver'),
+  remote = require('./remote')
 
 /**
  * Name of the OperaDriver executable.
@@ -87,7 +85,7 @@ const http = require('./http'),
  * @const
  */
 const OPERADRIVER_EXE =
-    process.platform === 'win32' ? 'operadriver.exe' : 'operadriver';
+  process.platform === 'win32' ? 'operadriver.exe' : 'operadriver'
 
 /**
  * _Synchronously_ attempts to locate the operadriver executable on the current
@@ -96,7 +94,7 @@ const OPERADRIVER_EXE =
  * @return {?string} the located executable, or `null`.
  */
 function locateSynchronously() {
-  return io.findInPath(OPERADRIVER_EXE, true);
+  return io.findInPath(OPERADRIVER_EXE, true)
 }
 
 /**
@@ -113,17 +111,18 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously();
+    let exe = opt_exe || locateSynchronously()
     if (!exe) {
       throw Error(
-          'The OperaDriver could not be found on the current PATH. Please ' +
+        'The OperaDriver could not be found on the current PATH. Please ' +
           'download the latest version of the OperaDriver from ' +
           'https://github.com/operasoftware/operachromiumdriver/releases and ' +
-          'ensure it can be found on your PATH.');
+          'ensure it can be found on your PATH.'
+      )
     }
 
-    super(exe);
-    this.setLoopback(true);
+    super(exe)
+    this.setLoopback(true)
   }
 
   /**
@@ -133,7 +132,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @return {!ServiceBuilder} A self reference.
    */
   loggingTo(path) {
-    return this.addArguments('--log-path=' + path);
+    return this.addArguments('--log-path=' + path)
   }
 
   /**
@@ -141,7 +140,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @return {!ServiceBuilder} A self reference.
    */
   enableVerboseLogging() {
-    return this.addArguments('--verbose');
+    return this.addArguments('--verbose')
   }
 
   /**
@@ -149,15 +148,12 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @return {!ServiceBuilder} A self reference.
    */
   silent() {
-    return this.addArguments('--silent');
+    return this.addArguments('--silent')
   }
 }
 
-
-
 /** @type {remote.DriverService} */
-var defaultService = null;
-
+var defaultService = null
 
 /**
  * Sets the default service to use for new OperaDriver instances.
@@ -167,12 +163,12 @@ var defaultService = null;
 function setDefaultService(service) {
   if (defaultService && defaultService.isRunning()) {
     throw Error(
-        'The previously configured OperaDriver service is still running. ' +
-        'You must shut it down before you may adjust its configuration.');
+      'The previously configured OperaDriver service is still running. ' +
+        'You must shut it down before you may adjust its configuration.'
+    )
   }
-  defaultService = service;
+  defaultService = service
 }
-
 
 /**
  * Returns the default OperaDriver service. If such a service has not been
@@ -182,18 +178,16 @@ function setDefaultService(service) {
  */
 function getDefaultService() {
   if (!defaultService) {
-    defaultService = new ServiceBuilder().build();
+    defaultService = new ServiceBuilder().build()
   }
-  return defaultService;
+  return defaultService
 }
-
 
 /**
  * @type {string}
  * @const
  */
-var OPTIONS_CAPABILITY_KEY = 'chromeOptions';
-
+var OPTIONS_CAPABILITY_KEY = 'chromeOptions'
 
 /**
  * Class for managing {@linkplain Driver OperaDriver} specific options.
@@ -201,19 +195,19 @@ var OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 class Options {
   constructor() {
     /** @private {!Array.<string>} */
-    this.args_ = [];
+    this.args_ = []
 
     /** @private {?string} */
-    this.binary_ = null;
+    this.binary_ = null
 
     /** @private {!Array.<(string|!Buffer)>} */
-    this.extensions_ = [];
+    this.extensions_ = []
 
     /** @private {./lib/logging.Preferences} */
-    this.logPrefs_ = null;
+    this.logPrefs_ = null
 
     /** @private {?capabilities.ProxyConfig} */
-    this.proxy_ = null;
+    this.proxy_ = null
   }
 
   /**
@@ -223,29 +217,28 @@ class Options {
    * @return {!Options} The OperaDriver options.
    */
   static fromCapabilities(caps) {
-    var options;
-    var o = caps.get(OPTIONS_CAPABILITY_KEY);
+    var options
+    var o = caps.get(OPTIONS_CAPABILITY_KEY)
     if (o instanceof Options) {
-      options = o;
+      options = o
     } else if (o) {
       options = new Options()
-          .addArguments(o.args || [])
-          .addExtensions(o.extensions || [])
-          .setOperaBinaryPath(o.binary);
+        .addArguments(o.args || [])
+        .addExtensions(o.extensions || [])
+        .setOperaBinaryPath(o.binary)
     } else {
-      options = new Options;
+      options = new Options()
     }
 
     if (caps.has(capabilities.Capability.PROXY)) {
-      options.setProxy(caps.get(capabilities.Capability.PROXY));
+      options.setProxy(caps.get(capabilities.Capability.PROXY))
     }
 
     if (caps.has(capabilities.Capability.LOGGING_PREFS)) {
-      options.setLoggingPrefs(
-          caps.get(capabilities.Capability.LOGGING_PREFS));
+      options.setLoggingPrefs(caps.get(capabilities.Capability.LOGGING_PREFS))
     }
 
-    return options;
+    return options
   }
 
   /**
@@ -256,9 +249,9 @@ class Options {
    * @param {...(string|!Array.<string>)} var_args The arguments to add.
    * @return {!Options} A self reference.
    */
-  addArguments(var_args) {
-    this.args_ = this.args_.concat.apply(this.args_, arguments);
-    return this;
+  addArguments(var_args) { // eslint-disable-line
+    this.args_ = this.args_.concat.apply(this.args_, arguments)
+    return this
   }
 
   /**
@@ -269,10 +262,12 @@ class Options {
    *     extensions to add.
    * @return {!Options} A self reference.
    */
-  addExtensions(var_args) {
+  addExtensions(var_args) { // eslint-disable-line
     this.extensions_ = this.extensions_.concat.apply(
-        this.extensions_, arguments);
-    return this;
+      this.extensions_,
+      arguments
+    )
+    return this
   }
 
   /**
@@ -285,8 +280,8 @@ class Options {
    * @return {!Options} A self reference.
    */
   setOperaBinaryPath(path) {
-    this.binary_ = path;
-    return this;
+    this.binary_ = path
+    return this
   }
 
   /**
@@ -295,8 +290,8 @@ class Options {
    * @return {!Options} A self reference.
    */
   setLoggingPrefs(prefs) {
-    this.logPrefs_ = prefs;
-    return this;
+    this.logPrefs_ = prefs
+    return this
   }
 
   /**
@@ -305,8 +300,8 @@ class Options {
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
+    this.proxy_ = proxy
+    return this
   }
 
   /**
@@ -317,12 +312,12 @@ class Options {
    * @return {!capabilities.Capabilities} The capabilities.
    */
   toCapabilities(opt_capabilities) {
-    var caps = opt_capabilities || capabilities.Capabilities.opera();
-    caps.
-        set(capabilities.Capability.PROXY, this.proxy_).
-        set(capabilities.Capability.LOGGING_PREFS, this.logPrefs_).
-        set(OPTIONS_CAPABILITY_KEY, this);
-    return caps;
+    var caps = opt_capabilities || capabilities.Capabilities.opera()
+    caps
+      .set(capabilities.Capability.PROXY, this.proxy_)
+      .set(capabilities.Capability.LOGGING_PREFS, this.logPrefs_)
+      .set(OPTIONS_CAPABILITY_KEY, this)
+    return caps
   }
 
   /**
@@ -333,21 +328,21 @@ class Options {
   [Symbols.serialize]() {
     var json = {
       args: this.args_,
-      extensions: this.extensions_.map(function(extension) {
+      extensions: this.extensions_.map(function (extension) {
         if (Buffer.isBuffer(extension)) {
-          return extension.toString('base64');
+          return extension.toString('base64')
         }
-        return io.read(/** @type {string} */(extension))
-            .then(buffer => buffer.toString('base64'));
-      })
-    };
-    if (this.binary_) {
-      json.binary = this.binary_;
+        return io
+          .read(/** @type {string} */ (extension))
+          .then((buffer) => buffer.toString('base64'))
+      }),
     }
-    return json;
+    if (this.binary_) {
+      json.binary = this.binary_
+    }
+    return json
   }
 }
-
 
 /**
  * Creates a new WebDriver client for Opera.
@@ -356,40 +351,41 @@ class Driver extends webdriver.WebDriver {
   /**
    * Creates a new session for Opera.
    *
-   * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
+   * @param {(Capabilities|Options)=} opt_config The configuration
    *     options.
    * @param {remote.DriverService=} opt_service The session to use; will use
    *     the {@link getDefaultService default service} by default.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use,
-   *     or {@code null} to use the currently active flow.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_service, opt_flow) {
-    var service = opt_service || getDefaultService();
-    var client = service.start().then(url => new http.HttpClient(url));
-    var executor = new http.Executor(client);
+  static createSession(opt_config, opt_service) {
+    var service = opt_service || getDefaultService()
+    var client = service.start().then((url) => new http.HttpClient(url))
+    var executor = new http.Executor(client)
 
     var caps =
-        opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || capabilities.Capabilities.opera());
+      opt_config instanceof Options
+        ? opt_config.toCapabilities()
+        : opt_config || capabilities.Capabilities.opera()
 
     // On Linux, the OperaDriver does not look for Opera on the PATH, so we
     // must explicitly find it. See: operachromiumdriver #9.
     if (process.platform === 'linux') {
-      var options = Options.fromCapabilities(caps);
+      var options = Options.fromCapabilities(caps)
       if (!options.binary_) {
-        let exe = io.findInPath('opera', true);
+        let exe = io.findInPath('opera', true)
         if (!exe) {
           throw Error(
-              'The opera executable could not be found on the current PATH');
+            'The opera executable could not be found on the current PATH'
+          )
         }
-        options.setOperaBinaryPath(exe);
+        options.setOperaBinaryPath(exe)
       }
-      caps = options.toCapabilities(caps);
+      caps = options.toCapabilities(caps)
     }
 
-    return /** @type {!Driver} */(
-        super.createSession(executor, caps, opt_flow));
+    return /** @type {!Driver} */ (super.createSession(executor, caps, () =>
+      service.kill()
+    ))
   }
 
   /**
@@ -400,13 +396,11 @@ class Driver extends webdriver.WebDriver {
   setFileDetector() {}
 }
 
-
 // PUBLIC API
 
-
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
-exports.getDefaultService = getDefaultService;
-exports.setDefaultService = setDefaultService;
-exports.locateSynchronously = locateSynchronously;
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder
+exports.getDefaultService = getDefaultService
+exports.setDefaultService = setDefaultService
+exports.locateSynchronously = locateSynchronously

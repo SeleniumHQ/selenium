@@ -16,14 +16,14 @@
 // under the License.
 package org.openqa.selenium.devtools;
 
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.devtools.security.Security.disable;
-import static org.openqa.selenium.devtools.security.Security.enable;
-import static org.openqa.selenium.devtools.security.Security.setIgnoreCertificateErrors;
-
 import org.junit.Test;
-import org.openqa.selenium.devtools.security.Security;
+import org.openqa.selenium.devtools.v84.security.Security;
 import org.openqa.selenium.testing.Ignore;
+
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.devtools.v84.security.Security.disable;
+import static org.openqa.selenium.devtools.v84.security.Security.enable;
+import static org.openqa.selenium.devtools.v84.security.Security.setIgnoreCertificateErrors;
 
 @Ignore
 public class ChromeDevToolsSecurityTest extends DevToolsTestBase {

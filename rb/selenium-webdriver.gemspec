@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
   s.license = 'Apache-2.0'
   s.homepage = 'https://github.com/SeleniumHQ/selenium'
   s.metadata = {
-    'changelog_uri' => 'https://github.com/SeleniumHQ/selenium/blob/master/rb/CHANGES',
-    'source_code_uri' => 'https://github.com/SeleniumHQ/selenium/tree/master/rb'
+    'changelog_uri' => 'https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES',
+    'source_code_uri' => 'https://github.com/SeleniumHQ/selenium/tree/trunk/rb'
   }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.files = Dir[root + '/**/*'].reject { |e| e =~ /ruby\.iml|build\.desc/ }.map { |e| e.sub(root + '/', '') }
   s.require_paths = ['lib']
 
-  s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 4.0']
+  s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 5.0']
   s.add_runtime_dependency 'rubyzip', ['>= 1.2.2']
   s.add_runtime_dependency 'websocket', ['~> 1.0']
 

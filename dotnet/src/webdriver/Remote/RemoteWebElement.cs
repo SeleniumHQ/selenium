@@ -25,6 +25,7 @@ using System.IO;
 using System.IO.Compression;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -278,12 +279,19 @@ namespace OpenQA.Selenium.Remote
             {
                 throw new ArgumentNullException("text", "text cannot be null");
             }
-
-            if (this.driver.FileDetector.IsFile(text))
+            var fileNames = text.Split('\n');
+            var amendedText = "";
+            foreach (var fileName in fileNames)
             {
-                text = this.UploadFile(text);
+               if (this.driver.FileDetector.IsFile(fileName))
+               {
+                 amendedText += this.UploadFile(fileName) + "\n";
+               }
+               else
+               {
+                 amendedText = fileName + "\n";
+               }
             }
-
             // N.B. The Java remote server expects a CharSequence as the value input to
             // SendKeys. In JSON, these are serialized as an array of strings, with a
             // single character to each element of the array. Thus, we must use ToCharArray()
@@ -292,8 +300,8 @@ namespace OpenQA.Selenium.Remote
             // appropriate one for spec compliance.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
-            parameters.Add("text", text);
-            parameters.Add("value", text.ToCharArray());
+            parameters.Add("text", amendedText);
+            parameters.Add("value", amendedText.ToCharArray());
 
             this.Execute(DriverCommand.SendKeysToElement, parameters);
         }
@@ -883,8 +891,8 @@ namespace OpenQA.Selenium.Remote
                     {
                         string fileName = Path.GetFileName(localFile);
                         zipArchive.CreateEntryFromFile(localFile, fileName);
-                        base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
+                    base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();

@@ -27,6 +27,7 @@ module Selenium
 
         before do
           allow(Platform).to receive(:assert_executable).and_return(true)
+          EdgeChrome::Service.driver_path = nil
         end
 
         it 'uses default path and port' do

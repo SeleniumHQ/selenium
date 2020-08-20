@@ -5,7 +5,9 @@ java_selenium_test_suite(
     name = "large-tests",
     size = "large",
     srcs = glob(["*Test.java"]),
-    browsers = ["chrome"],
+    browsers = [
+        "chrome",
+    ],
     data = [
         "//third_party/chrome_ext:backspace.crx",
     ],

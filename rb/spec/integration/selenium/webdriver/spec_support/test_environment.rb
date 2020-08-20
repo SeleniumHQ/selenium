@@ -99,13 +99,23 @@ module Selenium
         end
 
         def remote_server_jar
-          file_name = "selenium-server-standalone-#{Selenium::Server.latest}.jar"
-          locations = ["#{root}/#{file_name}", "#{root.join('rb/')}#{file_name}"]
-          @remote_server_jar = locations.find { |file| File.exist?(file) }
-          return @remote_server_jar if @remote_server_jar
+          local_selenium_jar = 'selenium_server_deploy.jar'
+          downloaded_selenium_jar = "selenium-server-standalone-#{Selenium::Server.latest}.jar"
 
-          Selenium::Server.download(:latest)
-          @remote_server_jar = locations.find { |file| File.exist?(file) }
+          directory_names = [root, root.join('rb'), root.join('build'), root.join('build/rb')]
+          file_names = [local_selenium_jar, downloaded_selenium_jar]
+          file_names.delete(local_selenium_jar) if ENV['DOWNLOAD_SERVER']
+
+          files = file_names.each_with_object([]) do |file, array|
+            directory_names.each { |dir| array << "#{dir}/#{file}" }
+          end
+
+          jar = files.find { |file| File.exist?(file) } ||
+                Selenium::Server.download(:latest) && files.find { |file| File.exist?(file) }
+
+          WebDriver.logger.info "Server Location: #{jar}"
+          puts "Server Location: #{jar}"
+          jar
         end
 
         def quit
@@ -124,19 +134,6 @@ module Selenium
           # prefer #realpath over #expand_path to avoid problems with UNC
           # see https://bugs.ruby-lang.org/issues/13515
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
-        end
-
-        def remote_capabilities
-          opt = {}
-          browser_name = case browser
-                         when :safari_preview
-                           opt["safari.options"] = {technology_preview: true}
-                           :safari
-                         else
-                           browser
-                         end
-
-          WebDriver::Remote::Capabilities.send(browser_name, opt)
         end
 
         def create_driver!(**opts, &block)
@@ -192,7 +189,7 @@ module Selenium
 
         def create_remote_driver(opt = {})
           options = opt.delete(:capabilities)
-          opt[:capabilities] = [remote_capabilities]
+          opt[:capabilities] = [WebDriver::Remote::Capabilities.send(browser)]
           opt[:capabilities] << options if options
           opt[:url] = ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
           opt[:http_client] ||= WebDriver::Remote::Http::Default.new

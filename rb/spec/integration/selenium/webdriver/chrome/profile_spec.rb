@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Profile do
+      describe Profile, exclusive: {browser: :chrome} do
         let(:profile) { Profile.new }
 
         it 'adds an extension' do

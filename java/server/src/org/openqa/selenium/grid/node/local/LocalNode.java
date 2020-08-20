@@ -47,6 +47,9 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -58,6 +61,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,7 +78,9 @@ import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
@@ -172,44 +178,78 @@ public class LocalNode extends Node {
     Require.nonNull("Session request", sessionRequest);
 
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap
+          .put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
       LOG.fine("Creating new session using span: " + span);
-      span.setAttribute("session_count", getCurrentSessionCount());
+      attributeMap.put("session.request.capabilities",
+                       EventAttribute.setValue(sessionRequest.getCapabilities().toString()));
+      attributeMap.put("session.request.downstreamdialect",
+                       EventAttribute.setValue(sessionRequest.getDownstreamDialects().toString()));
+      int currentSessionCount = getCurrentSessionCount();
+      span.setAttribute("current.session.count", currentSessionCount);
+      attributeMap.put("current.session.count", EventAttribute.setValue(currentSessionCount));
 
       if (getCurrentSessionCount() >= maxSessionCount) {
         span.setAttribute("error", true);
-        span.setStatus(Status.RESOURCE_EXHAUSTED.withDescription("Max session count reached"));
+        span.setStatus(Status.RESOURCE_EXHAUSTED);
+        attributeMap.put("max.session.count", EventAttribute.setValue(maxSessionCount));
+        span.addEvent("Max session count reached", attributeMap);
         return Optional.empty();
       }
 
-      Optional<ActiveSession> possibleSession = Optional.empty();
-      SessionSlot slot = null;
-      for (SessionSlot factory : factories) {
-        if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
-          continue;
-        }
+      // Identify possible slots to use as quickly as possible to enable concurrent session starting
+      SessionSlot slotToUse = null;
+      synchronized(factories) {
+        for (SessionSlot factory : factories) {
+          if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
+            continue;
+          }
 
-        possibleSession = factory.apply(sessionRequest);
-        if (possibleSession.isPresent()) {
-          slot = factory;
+          factory.reserve();
+          slotToUse = factory;
           break;
         }
       }
 
-      if (!possibleSession.isPresent()) {
+      if (slotToUse == null) {
         span.setAttribute("error", true);
-        span.setStatus(Status.NOT_FOUND.withDescription(
-            "No slots available for capabilities " + sessionRequest.getCapabilities()));
+        span.setStatus(Status.NOT_FOUND);
+        span.addEvent("No slot matched capabilities ", attributeMap);
+        return Optional.empty();
+      }
+
+      Optional<ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
+
+      if (!possibleSession.isPresent()) {
+        slotToUse.release();
+        span.setAttribute("error", true);
+        span.setStatus(Status.NOT_FOUND);
+        span.addEvent("No slots available for capabilities ", attributeMap);
         return Optional.empty();
       }
 
       ActiveSession session = possibleSession.get();
-      currentSessions.put(session.getId(), slot);
+      currentSessions.put(session.getId(), slotToUse);
 
-      SESSION_ID.accept(span, session.getId());
-      CAPABILITIES.accept(span, session.getCapabilities());
-      span.setAttribute("session.downstream.dialect", session.getDownstreamDialect().toString());
-      span.setAttribute("session.upstream.dialect", session.getUpstreamDialect().toString());
-      span.setAttribute("session.uri", session.getUri().toString());
+      SessionId sessionId = session.getId();
+      Capabilities caps = session.getCapabilities();
+      SESSION_ID.accept(span, sessionId);
+      CAPABILITIES.accept(span, caps);
+      SESSION_ID_EVENT.accept(attributeMap, sessionId);
+      CAPABILITIES_EVENT.accept(attributeMap, caps);
+      String downstream = session.getDownstreamDialect().toString();
+      String upstream = session.getUpstreamDialect().toString();
+      String sessionUri = session.getUri().toString();
+      span.setAttribute(AttributeKey.DOWNSTREAM_DIALECT.getKey(), downstream);
+      span.setAttribute(AttributeKey.UPSTREAM_DIALECT.getKey(), upstream);
+      span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
+
+      attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream));
+      attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(), EventAttribute.setValue(upstream));
+      attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
+
+      span.addEvent("Session created by node", attributeMap);
 
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
