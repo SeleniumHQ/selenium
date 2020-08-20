@@ -22,19 +22,23 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Tags {
-  private static final Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Map.of(
-      401, Status.UNAUTHENTICATED,
-      404, Status.NOT_FOUND,
-      408, Status.DEADLINE_EXCEEDED,
-      429, Status.RESOURCE_EXHAUSTED,
-      499, Status.CANCELLED,
-      501, Status.UNIMPLEMENTED,
-      503, Status.UNAVAILABLE,
-      504, Status.DEADLINE_EXCEEDED);
+  private static final Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Stream.of(
+    new SimpleEntry<>(401, Status.UNAUTHENTICATED),
+    new SimpleEntry<>(404, Status.NOT_FOUND),
+    new SimpleEntry<>(408, Status.DEADLINE_EXCEEDED),
+    new SimpleEntry<>(429, Status.RESOURCE_EXHAUSTED),
+    new SimpleEntry<>(499, Status.CANCELLED),
+    new SimpleEntry<>(501, Status.UNIMPLEMENTED),
+    new SimpleEntry<>(503, Status.UNAVAILABLE),
+    new SimpleEntry<>(504, Status.DEADLINE_EXCEEDED)
+  ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
   private Tags() {
     // Utility class
