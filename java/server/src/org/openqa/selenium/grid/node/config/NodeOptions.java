@@ -18,27 +18,30 @@
 package org.openqa.selenium.grid.node.config;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -47,6 +50,8 @@ public class NodeOptions {
 
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
+  private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
+
   private final Config config;
 
   public NodeOptions(Config config) {
@@ -63,34 +68,79 @@ public class NodeOptions {
     });
   }
 
-  public void configure(Tracer tracer, HttpClient.Factory httpClientFactory, LocalNode.Builder node) {
+  public Node getNode() {
+    return config.getClass("node", "implementation", Node.class, DEFAULT_IMPL);
+  }
+
+  public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
+    /* Danger! Java stereotype ahead! */ Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
+
     int maxSessions = Math.min(
       config.getInt("node", "max-concurrent-sessions").orElse(Runtime.getRuntime().availableProcessors()),
       Runtime.getRuntime().availableProcessors());
 
-    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(tracer, httpClientFactory, maxSessions);
+    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(maxSessions, factoryFactory);
 
     // If drivers have been specified, use those.
     List<String> drivers = config.getAll("node", "drivers").orElse(new ArrayList<>()).stream()
       .map(String::toLowerCase)
       .collect(Collectors.toList());
 
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories = ImmutableMultimap.builder();
+
     if (!drivers.isEmpty()) {
       allDrivers.entrySet().stream()
         .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
+        .sorted(Comparator.comparing(entry -> entry.getKey().getDisplayName().toLowerCase()))
         .peek(this::report)
-        .forEach(entry -> entry.getValue().forEach(factory -> node.add(entry.getKey().getCanonicalCapabilities(), factory)));
+        .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
 
-      return;
+      return sessionFactories.build().asMap();
     }
 
     if (!config.getBool("node", "detect-drivers").orElse(false)) {
-      return;
+      return sessionFactories.build().asMap();
     }
 
     allDrivers.entrySet().stream()
       .peek(this::report)
-      .forEach(entry -> entry.getValue().forEach(factory -> node.add(entry.getKey().getCanonicalCapabilities(), factory)));
+      .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+
+    return sessionFactories.build().asMap();
+  }
+
+  private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
+    int maxSessions,
+    Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
+
+    if (!config.getBool("node", "detect-drivers").orElse(false)) {
+      return ImmutableMap.of();
+    }
+
+    // We don't expect duplicates, but they're fine
+    List<WebDriverInfo> infos =
+      StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+        .filter(WebDriverInfo::isAvailable)
+        .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
+        .collect(Collectors.toList());
+
+    // Same
+    List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
+    ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
+
+    Multimap<WebDriverInfo, SessionFactory> toReturn = HashMultimap.create();
+    infos.forEach(info -> {
+      Capabilities caps = info.getCanonicalCapabilities();
+      builders.stream()
+        .filter(builder -> builder.score(caps) > 0)
+        .forEach(builder -> {
+          for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
+            toReturn.putAll(info, factoryFactory.apply(info));
+          }
+        });
+    });
+
+    return toReturn.asMap();
   }
 
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {
@@ -105,38 +155,5 @@ public class NodeOptions {
       entry.getKey().getDisplayName(),
       caps.toString().replaceAll("\\s+", " "),
       entry.getValue().size()));
-  }
-
-  private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
-    Tracer tracer,
-    HttpClient.Factory clientFactory,
-    int maxSessions) {
-    // We don't expect duplicates, but they're fine
-    List<WebDriverInfo> infos =
-      StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-        .filter(WebDriverInfo::isAvailable)
-        .collect(Collectors.toList());
-
-    // Same
-    List<DriverService.Builder> builders = new ArrayList<>();
-    ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
-
-    HashMultimap<WebDriverInfo, SessionFactory> toReturn = HashMultimap.create();
-    infos.forEach(info -> {
-      Capabilities caps = info.getCanonicalCapabilities();
-      builders.stream()
-        .filter(builder -> builder.score(caps) > 0)
-        .forEach(builder -> {
-          for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
-
-            DriverService.Builder freePortBuilder = builder.usingAnyFreePort();
-            toReturn.put(info, new DriverServiceSessionFactory(
-              tracer,
-              clientFactory, c -> freePortBuilder.score(c) > 0,
-              freePortBuilder));
-          }
-        });
-    });
-    return toReturn.asMap();
   }
 }

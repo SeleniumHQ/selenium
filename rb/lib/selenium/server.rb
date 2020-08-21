@@ -74,7 +74,7 @@ module Selenium
 
         begin
           File.open(download_file_name, 'wb') do |destination|
-            net_http.start('selenium-release.storage.googleapis.com') do |http|
+            net_http_start('selenium-release.storage.googleapis.com') do |http|
               resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
                 total = response.content_length
                 progress = 0
@@ -111,7 +111,7 @@ module Selenium
 
       def latest
         require 'rexml/document'
-        net_http.start('selenium-release.storage.googleapis.com') do |http|
+        net_http_start('selenium-release.storage.googleapis.com') do |http|
           versions = REXML::Document.new(http.get('/').body).root.get_elements('//Contents/Key').map do |e|
             e.text[/selenium-server-standalone-(\d+\.\d+\.\d+)\.jar/, 1]
           end
@@ -120,19 +120,26 @@ module Selenium
         end
       end
 
-      def net_http
+      def net_http_start(address, &block)
         http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
 
         if http_proxy
           http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
           uri = URI.parse(http_proxy)
 
-          Net::HTTP::Proxy(uri.host, uri.port)
+          Net::HTTP.start(address, nil, uri.host, uri.port, &block)
         else
-          Net::HTTP
+          Net::HTTP.start(address, &block)
         end
       end
     end
+
+    #
+    # The Mode of the Server
+    # :standalone, #hub, #node
+    #
+
+    attr_accessor :role
 
     #
     # The server port
@@ -175,6 +182,7 @@ module Selenium
 
       @jar        = jar
       @host       = '127.0.0.1'
+      @role       = opts.fetch(:role, 'standalone')
       @port       = opts.fetch(:port, 4444)
       @timeout    = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
@@ -216,6 +224,10 @@ module Selenium
 
     private
 
+    def selenium4?
+      @jar.match?(/[^\.][4]\./) || @jar.include?('deploy')
+    end
+
     def stop_process
       return unless @process.alive?
 
@@ -234,7 +246,11 @@ module Selenium
       @process ||= begin
         # extract any additional_args that start with -D as options
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
-        server_command = ['java'] + properties + ['-jar', @jar, '-port', @port.to_s] + @additional_args
+        args = ['-jar', @jar]
+        args << @role if selenium4?
+        args << (selenium4? ? '--port' : '-port')
+        args << @port.to_s
+        server_command = ['java'] + properties + args + @additional_args
         cp = ChildProcess.build(*server_command)
         WebDriver.logger.debug("Executing Process #{server_command}")
 

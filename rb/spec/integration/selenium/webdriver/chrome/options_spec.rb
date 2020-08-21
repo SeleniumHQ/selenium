@@ -22,13 +22,15 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Options, only: {browser: :chrome} do
+      describe Options, exclusive: {browser: :chrome} do
         subject(:options) { Options.new }
+
+        before { quit_driver }
 
         it 'passes emulated device correctly' do
           options.add_emulation(device_name: 'Nexus 5')
 
-          create_driver!(options: options) do |driver|
+          create_driver!(capabilities: options) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'
             expect(ua).to include('Nexus 5')
           end
@@ -37,7 +39,7 @@ module Selenium
         it 'passes emulated user agent correctly' do
           options.add_emulation(user_agent: 'foo;bar')
 
-          create_driver!(options: options) do |driver|
+          create_driver!(capabilities: options) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'
             expect(ua).to eq('foo;bar')
           end
@@ -46,7 +48,7 @@ module Selenium
         it 'passes args correctly' do
           options.add_argument('--user-agent=foo;bar')
 
-          create_driver!(options: options) do |driver|
+          create_driver!(capabilities: options) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'
             expect(ua).to eq('foo;bar')
           end
@@ -55,7 +57,7 @@ module Selenium
         it 'should be able to run in headless mode with #headless!' do
           options.headless!
 
-          create_driver!(options: options) do |driver|
+          create_driver!(capabilities: options) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'
             expect(ua).to match(/HeadlessChrome/)
           end

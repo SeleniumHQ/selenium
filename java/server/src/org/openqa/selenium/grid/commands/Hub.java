@@ -39,10 +39,11 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.grid.web.StatusBasedReadinessCheck;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -52,8 +53,10 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
@@ -73,7 +76,7 @@ public class Hub extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(HTTPD_ROLE);
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE);
   }
 
   @Override
@@ -128,12 +131,17 @@ public class Hub extends TemplateGridCommand {
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
-    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri().toString());
-    StatusBasedReadinessCheck readinessCheck = new StatusBasedReadinessCheck(router, GET, "/status");
+    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
+    HttpHandler readinessCheck = req -> {
+      boolean ready = router.isReady() && bus.isReady();
+      return new HttpResponse()
+        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+        .setContent(Contents.utf8String("Router is " + ready));
+    };
 
     HttpHandler httpHandler = combine(
-      router,
-      Route.prefix("/wd/hub").to(combine(router)),
+      router.with(networkOptions.getSpecComplianceChecks()),
+      Route.prefix("/wd/hub").to(combine(router.with(networkOptions.getSpecComplianceChecks()))),
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 

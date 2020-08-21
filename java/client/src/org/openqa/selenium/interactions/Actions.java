@@ -45,6 +45,8 @@ import java.util.logging.Logger;
  * <p>
  * Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
  * method calls.
+ * <p>
+ * Call {@link #perform()} at the end of the method chain to actually perform the actions.
  */
 public class Actions {
 
@@ -552,6 +554,9 @@ public class Actions {
    * Generates a composite action containing all actions so far, ready to be performed (and
    * resets the internal builder state, so subsequent calls to this method will contain fresh
    * sequences).
+   * <p>
+   * <b>Warning</b>: you may want to call {@link #perform()} instead to actually perform
+   * the actions.
    *
    * @return the composite action
    */

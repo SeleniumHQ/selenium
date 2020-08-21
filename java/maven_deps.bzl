@@ -4,7 +4,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 def selenium_java_deps():
     jetty_version = "9.4.28.v20200408"
     netty_version = "4.1.49.Final"
-    opentelemetry_version = "0.4.0"
+    opentelemetry_version = "0.7.1"
 
     maven_install(
         artifacts = [
@@ -16,8 +16,6 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service:1.0-rc6",
             "com.google.auto.service:auto-service-annotations:1.0-rc6",
             "com.graphql-java:graphql-java:14.0",
-            "com.squareup.okhttp3:okhttp:4.5.0",
-            "com.squareup.okio:okio:2.6.0",
             "com.typesafe.netty:netty-reactive-streams:2.0.4",
             "io.grpc:grpc-context:1.28.0",
             "io.lettuce:lettuce-core:5.2.2.RELEASE",
@@ -40,9 +38,9 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-exporters-logging:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk:%s" % opentelemetry_version,
             "io.ous:jtoml:2.0.0",
-            "it.ozimov:embedded-redis:0.7.2",
-            "io.projectreactor:reactor-core:3.3.5.RELEASE",
-            "io.projectreactor.netty:reactor-netty:0.9.6.RELEASE",
+            "it.ozimov:embedded-redis:0.7.3",
+            "io.projectreactor:reactor-core:3.4.0-M1",
+            "io.projectreactor.netty:reactor-netty:1.0.0-M1",
             "javax.servlet:javax.servlet-api:4.0.1",
             maven.artifact(
                 group = "junit",
@@ -71,6 +69,7 @@ def selenium_java_deps():
             "org.eclipse.jetty:jetty-xml:%s" % jetty_version,
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
+            "org.hsqldb:hsqldb:2.5.0",
             "org.mockito:mockito-core:3.3.3",
             "org.slf4j:slf4j-jdk14:1.7.30",
             "org.testng:testng:7.1.0",
@@ -92,9 +91,12 @@ def selenium_java_deps():
         fetch_sources = True,
         strict_visibility = True,
         repositories = [
-            "https://repo1.maven.org/maven2",
             "https://jcenter.bintray.com/",
+            "https://repo1.maven.org/maven2",
             "https://maven.google.com",
+
+            # Remove these once reactor m1 is released
+            "https://repo.spring.io/libs-snapshot",
         ],
         maven_install_json = "@selenium//java:maven_install.json",
     )

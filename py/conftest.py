@@ -45,6 +45,7 @@ drivers = (
     'Safari',
     'WebKitGTK',
     'ChromiumEdge',
+    'WPEWebKit',
 )
 
 
@@ -119,6 +120,8 @@ def driver(request):
         if driver_class == 'WebKitGTK':
             options = get_options(driver_class, request.config)
         if driver_class == 'ChromiumEdge':
+            options = get_options(driver_class, request.config)
+        if driver_class == 'WPEWebKit':
             options = get_options(driver_class, request.config)
         if driver_path is not None:
             kwargs['executable_path'] = driver_path

@@ -32,6 +32,7 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
 import java.io.UncheckedIOException;
 import java.util.UUID;
@@ -73,7 +74,7 @@ import static org.openqa.selenium.remote.http.Route.post;
  * </tr>
  * </table>
  */
-public abstract class Distributor implements Predicate<HttpRequest>, Routable, HttpHandler {
+public abstract class Distributor implements HasReadyState, Predicate<HttpRequest>, Routable {
 
   private final Route routes;
   protected final Tracer tracer;

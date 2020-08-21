@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//:copy_file.bzl", "copy_file")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -16,6 +17,9 @@ PROTOTYPE_SOURCES = [
 java_library(
     name = "devtools-prototypes",
     srcs = PROTOTYPE_SOURCES,
+    visibility = [
+        "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
@@ -26,7 +30,7 @@ java_library(
 java_export(
     name = "devtools",
     srcs = glob(
-        ["*.java"],
+        ["*.java", "events/*.java"],
         exclude = PROTOTYPE_SOURCES + GENERATOR_SOURCES,
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,
@@ -35,14 +39,14 @@ java_export(
         "//visibility:public",
     ],
     exports = [
-        ":cdp",
         ":devtools-prototypes",
+        "//java/client/src/org/openqa/selenium/devtools/idealized",
     ],
     deps = [
-        ":cdp",
         ":devtools-prototypes",
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/devtools/idealized",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
@@ -53,37 +57,14 @@ java_binary(
     name = "cdp-client-generator",
     srcs = GENERATOR_SOURCES,
     main_class = "org.openqa.selenium.devtools.CdpClientGenerator",
+    visibility = [
+        "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/devtools:devtools-prototypes",
         "//java/client/src/org/openqa/selenium/json",
         artifact("com.github.javaparser:javaparser-core"),
-        artifact("com.google.guava:guava"),
-    ],
-)
-
-genrule(
-    name = "create-cdp-srcs",
-    srcs = [
-        "browser_protocol.json",
-        "js_protocol.json",
-    ],
-    outs = ["cdp.srcjar"],
-    cmd = "$(location :cdp-client-generator) $@",
-    tools = [
-        ":cdp-client-generator",
-    ],
-)
-
-java_library(
-    name = "cdp",
-    srcs = [
-        ":create-cdp-srcs",
-    ],
-    deps = [
-        "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/devtools:devtools-prototypes",
-        "//java/client/src/org/openqa/selenium/json",
         artifact("com.google.guava:guava"),
     ],
 )

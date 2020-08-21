@@ -22,7 +22,23 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
-      it_behaves_like 'driver that can be started concurrently', except: {browser: %i[edge safari safari_preview]}
+      it_behaves_like 'driver that can be started concurrently', except: [{browser: %i[safari safari_preview]},
+                                                                          {driver: :remote, reason: 8524}]
+
+      it 'creates default capabilities' do
+        reset_driver! do |driver|
+          caps = driver.capabilities
+          expect(caps.proxy).to be_nil
+          expect(caps.browser_version).to match(/^\d\d\./)
+          expect(caps.platform_name).not_to be_nil
+
+          expect(caps.accept_insecure_certs).to be == false
+          expect(caps.page_load_strategy).to be == 'normal'
+          expect(caps.implicit_timeout).to be_zero
+          expect(caps.page_load_timeout).to be == 300000
+          expect(caps.script_timeout).to be == 30000
+        end
+      end
 
       it 'should get the page title' do
         driver.navigate.to url_for('xhtmlTest.html')
@@ -292,7 +308,7 @@ module Selenium
           expect(driver.execute_script('return true;')).to eq(true)
         end
 
-        it 'should raise if the script is bad', except: {browser: %i[edge]} do
+        it 'should raise if the script is bad' do
           driver.navigate.to url_for('xhtmlTest.html')
           expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
         end
@@ -363,9 +379,8 @@ module Selenium
           expect(result).to eq(3)
         end
 
-        # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
         # Safari raises TimeoutError instead
-        it 'times out if the callback is not invoked', except: {browser: %i[edge safari safari_preview]} do
+        it 'times out if the callback is not invoked', except: {browser: %i[safari safari_preview]} do
           expect {
             # Script is expected to be async and explicitly callback, so this should timeout.
             driver.execute_async_script 'return 1 + 2;'

@@ -23,12 +23,17 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.KIND;
@@ -50,6 +55,10 @@ public class SpanWrappedHttpHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     // If there is already a span attached to this request, then do nothing.
     Object possibleSpan = req.getAttribute("selenium.tracing.span");
+    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
+                     EventAttribute.setValue(delegate.getClass().getName()));
+
     if (possibleSpan instanceof Span) {
       return delegate.execute(req);
     }
@@ -70,16 +79,26 @@ public class SpanWrappedHttpHandler implements HttpHandler {
 
       KIND.accept(span, Span.Kind.SERVER);
       HTTP_REQUEST.accept(span, req);
+      HTTP_REQUEST_EVENT.accept(attributeMap, req);
+
       HttpTracing.inject(tracer, span, req);
 
       HttpResponse res = delegate.execute(req);
 
       HTTP_RESPONSE.accept(span, res);
+      HTTP_RESPONSE_EVENT.accept(attributeMap, res);
 
+      span.addEvent("HTTP request execution complete", attributeMap);
       return res;
     } catch (Throwable t) {
       span.setAttribute("error", true);
-      span.setStatus(Status.UNKNOWN.withDescription(t.getMessage()));
+      span.setStatus(Status.UNKNOWN);
+
+      EXCEPTION.accept(attributeMap, t);
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                       EventAttribute.setValue("Unable to execute request: " + t.getMessage()));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
       LOG.log(Level.WARNING, "Unable to execute request: " + t.getMessage(), t);
       throw t;
     } finally {

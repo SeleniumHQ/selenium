@@ -18,13 +18,13 @@ package org.openqa.selenium.devtools;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.devtools.fetch.Fetch;
-import org.openqa.selenium.devtools.fetch.model.HeaderEntry;
-import org.openqa.selenium.devtools.fetch.model.RequestPattern;
-import org.openqa.selenium.devtools.fetch.model.RequestStage;
-import org.openqa.selenium.devtools.io.model.StreamHandle;
-import org.openqa.selenium.devtools.network.model.ErrorReason;
-import org.openqa.selenium.devtools.network.model.ResourceType;
+import org.openqa.selenium.devtools.v84.fetch.Fetch;
+import org.openqa.selenium.devtools.v84.fetch.model.HeaderEntry;
+import org.openqa.selenium.devtools.v84.fetch.model.RequestPattern;
+import org.openqa.selenium.devtools.v84.fetch.model.RequestStage;
+import org.openqa.selenium.devtools.v84.io.model.StreamHandle;
+import org.openqa.selenium.devtools.v84.network.model.ErrorReason;
+import org.openqa.selenium.devtools.v84.network.model.ResourceType;
 import org.openqa.selenium.testing.Ignore;
 
 import java.util.ArrayList;
@@ -32,13 +32,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.openqa.selenium.devtools.fetch.Fetch.continueRequest;
-import static org.openqa.selenium.devtools.fetch.Fetch.enable;
-import static org.openqa.selenium.devtools.fetch.Fetch.failRequest;
-import static org.openqa.selenium.devtools.fetch.Fetch.fulfillRequest;
-import static org.openqa.selenium.devtools.fetch.Fetch.getResponseBody;
-import static org.openqa.selenium.devtools.fetch.Fetch.requestPaused;
-import static org.openqa.selenium.devtools.fetch.Fetch.takeResponseBodyAsStream;
+import static org.openqa.selenium.devtools.v84.fetch.Fetch.continueRequest;
+import static org.openqa.selenium.devtools.v84.fetch.Fetch.enable;
+import static org.openqa.selenium.devtools.v84.fetch.Fetch.failRequest;
+import static org.openqa.selenium.devtools.v84.fetch.Fetch.fulfillRequest;
+import static org.openqa.selenium.devtools.v84.fetch.Fetch.getResponseBody;
+import static org.openqa.selenium.devtools.v84.fetch.Fetch.requestPaused;
+import static org.openqa.selenium.devtools.v84.fetch.Fetch.takeResponseBodyAsStream;
 
 // TODO: Add some checks, the tests does not ensure a listener is actually invoked
 @Ignore

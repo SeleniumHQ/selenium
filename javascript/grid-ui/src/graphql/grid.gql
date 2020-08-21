@@ -1,0 +1,14 @@
+query {
+	grid {
+		uri
+		nodes {
+			id
+			uri
+			status
+			maxSession
+			capabilities
+		}
+		totalSlots
+		usedSlots
+	}
+}

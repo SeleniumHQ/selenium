@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
 import java.io.IOException;
 import java.net.URI;
@@ -97,7 +98,7 @@ import static org.openqa.selenium.remote.http.Route.post;
  * </tr>
  * </table>
  */
-public abstract class Node implements Routable, HttpHandler {
+public abstract class Node implements HasReadyState, Routable {
 
   protected final Tracer tracer;
   private final UUID id;
@@ -119,6 +120,9 @@ public abstract class Node implements Routable, HttpHandler {
         post("/session/{sessionId}/file")
             .to(params -> new UploadFile(this, sessionIdFrom(params)))
             .with(spanDecorator("node.upload_file")),
+        post("/session/{sessionId}/se/file")
+          .to(params -> new UploadFile(this, sessionIdFrom(params)))
+          .with(spanDecorator("node.upload_file")),
         get("/se/grid/node/owner/{sessionId}")
             .to(params -> new IsSessionOwner(this, sessionIdFrom(params)))
             .with(spanDecorator("node.is_session_owner")),

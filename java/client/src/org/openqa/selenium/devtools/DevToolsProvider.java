@@ -19,16 +19,15 @@ package org.openqa.selenium.devtools;
 
 import com.google.auto.service.AutoService;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.InterfaceImplementation;
+import org.openqa.selenium.remote.ExecuteMethod;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 @AutoService(AugmenterProvider.class)
-public class DevToolsProvider implements AugmenterProvider {
+public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   @Override
   public Predicate<Capabilities> isApplicable() {
@@ -36,25 +35,15 @@ public class DevToolsProvider implements AugmenterProvider {
   }
 
   @Override
-  public Class<?> getDescribedInterface() {
+  public Class<HasDevTools> getDescribedInterface() {
     return HasDevTools.class;
   }
 
   @Override
-  public InterfaceImplementation getImplementation(Object value) {
-    Require.argument("Implementation", value).instanceOf(Capabilities.class);
+  public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
+    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(conn -> new DevTools(null, conn));
 
-    Capabilities caps = (Capabilities) value;
-    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps)
-      .map(DevTools::new);
-
-    return (executeMethod, self, method, args) -> {
-      if (!"getDevTools".equals(method.getName())) {
-        throw new IllegalStateException("Unexpected call to " + method);
-      }
-
-      return devTools.orElseThrow(() -> new IllegalStateException("Unable to create connection to " + caps));
-    };
+    return () -> devTools.orElseThrow(() -> new IllegalStateException("Unable to create connection to " + caps));
   }
 
   private String getCdpUrl(Capabilities caps) {

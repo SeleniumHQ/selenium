@@ -185,7 +185,7 @@ module Selenium
         def process_browser_options(browser_options)
           options = browser_options[KEY]
           options['binary'] ||= binary_path if binary_path
-          (options['args'] || []) << "--user-data-dir=#{@profile[:directory]}" if @profile
+          (options['args'] || []) << "--user-data-dir=#{@profile.directory}" if @profile
           merge_extensions(options)
         end
 

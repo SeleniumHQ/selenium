@@ -39,6 +39,11 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -48,6 +53,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +64,7 @@ import static org.openqa.selenium.docker.ContainerInfo.image;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DockerSessionFactory implements SessionFactory {
 
@@ -98,58 +105,89 @@ public class DockerSessionFactory implements SessionFactory {
     URL remoteAddress = getUrl(port);
     HttpClient client = clientFactory.createClient(remoteAddress);
 
-    LOG.info("Creating container, mapping container port 4444 to " + port);
-    Container container = docker.create(image(image).map(Port.tcp(4444), Port.tcp(port)));
-    container.start();
+    try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+                       EventAttribute.setValue(this.getClass().getName()));
+      LOG.info("Creating container, mapping container port 4444 to " + port);
+      Container container = docker.create(image(image).map(Port.tcp(4444), Port.tcp(port)));
+      container.start();
 
-    LOG.info(String.format("Waiting for server to start (container id: %s)", container.getId()));
-    try {
-      waitForServerToStart(client, Duration.ofMinutes(1));
-    } catch (TimeoutException e) {
-      container.stop(Duration.ofMinutes(1));
-      container.delete();
-      LOG.warning(String.format(
-          "Unable to connect to docker server (container id: %s)", container.getId()));
-      return Optional.empty();
+      attributeMap.put("docker.image", EventAttribute.setValue(image.toString()));
+      attributeMap.put("container.port", EventAttribute.setValue(port));
+      attributeMap.put("container.id", EventAttribute.setValue(container.getId().toString()));
+      attributeMap.put("docker.server.url", EventAttribute.setValue(remoteAddress.toString()));
+
+      LOG.info(String.format("Waiting for server to start (container id: %s)", container.getId()));
+      try {
+        waitForServerToStart(client, Duration.ofMinutes(1));
+        span.addEvent("Container started. Docker server ready.", attributeMap);
+      } catch (TimeoutException e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.CANCELLED);
+
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                         EventAttribute.setValue("Unable to connect to docker server. Stopping container: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+        container.stop(Duration.ofMinutes(1));
+        container.delete();
+        LOG.warning(String.format(
+            "Unable to connect to docker server (container id: %s)", container.getId()));
+        return Optional.empty();
+      }
+      LOG.info(String.format("Server is ready (container id: %s)", container.getId()));
+
+      Command command = new Command(
+          null,
+          DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
+      ProtocolHandshake.Result result;
+      Response response;
+      try {
+        result = new ProtocolHandshake().createSession(client, command);
+        response = result.createResponse();
+        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+      } catch (IOException | RuntimeException e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.CANCELLED);
+
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                         EventAttribute.setValue("Unable to create session. Stopping and  container: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+        container.stop(Duration.ofMinutes(1));
+        container.delete();
+        LOG.log(Level.WARNING, "Unable to create session: " + e.getMessage(), e);
+        return Optional.empty();
+      }
+
+      SessionId id = new SessionId(response.getSessionId());
+      Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
+
+      Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
+                           result.getDialect() :
+                           W3C;
+      attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
+      attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+
+      span.addEvent("Docker driver service created session", attributeMap);
+      LOG.info(String.format(
+          "Created session: %s - %s (container id: %s)",
+          id,
+          capabilities,
+          container.getId()));
+      return Optional.of(new DockerSession(
+          container,
+          tracer,
+          client,
+          id,
+          remoteAddress,
+          capabilities,
+          downstream,
+          result.getDialect()));
     }
-    LOG.info(String.format("Server is ready (container id: %s)", container.getId()));
-
-    Command command = new Command(
-        null,
-        DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
-    ProtocolHandshake.Result result;
-    Response response;
-    try {
-      result = new ProtocolHandshake().createSession(client, command);
-      response = result.createResponse();
-    } catch (IOException | RuntimeException e) {
-      container.stop(Duration.ofMinutes(1));
-      container.delete();
-      LOG.log(Level.WARNING, "Unable to create session: " + e.getMessage(), e);
-      return Optional.empty();
-    }
-
-    SessionId id = new SessionId(response.getSessionId());
-    Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
-
-    Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
-                         result.getDialect() :
-                         W3C;
-
-    LOG.info(String.format(
-        "Created session: %s - %s (container id: %s)",
-        id,
-        capabilities,
-        container.getId()));
-    return Optional.of(new DockerSession(
-        container,
-        tracer,
-        client,
-        id,
-        remoteAddress,
-        capabilities,
-        downstream,
-        result.getDialect()));
   }
 
   private void waitForServerToStart(HttpClient client, Duration duration) {

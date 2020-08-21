@@ -22,9 +22,9 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.network.Network;
-import org.openqa.selenium.devtools.page.Page;
-import org.openqa.selenium.grid.commands.MessageBusCommand;
+import org.openqa.selenium.devtools.v84.network.Network;
+import org.openqa.selenium.devtools.v84.page.Page;
+import org.openqa.selenium.grid.commands.EventBusCommand;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.distributor.httpd.DistributorServer;
 import org.openqa.selenium.grid.node.httpd.NodeServer;
@@ -44,7 +44,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -67,16 +66,16 @@ public class DistributedCdpTest {
 
     assumeThat(browser.supportsCdp()).isTrue();
 
-    int messagePublishPort = PortProber.findFreePort();
-    int messageSubscribePort = PortProber.findFreePort();
-    String[] eventBusFlags = new String[]{"--publish-events", "tcp://*:" + messagePublishPort, "--subscribe-events", "tcp://*:" + messageSubscribePort};
+    int eventPublishPort = PortProber.findFreePort();
+    int eventSubscribePort = PortProber.findFreePort();
+    String[] eventBusFlags = new String[]{"--publish-events", "tcp://*:" + eventPublishPort, "--subscribe-events", "tcp://*:" + eventSubscribePort};
 
-    int messageBusPort = PortProber.findFreePort();
-    new MessageBusCommand().configure(
+    int eventBusPort = PortProber.findFreePort();
+    new EventBusCommand().configure(
       System.out,
       System.err,
-      mergeArgs(eventBusFlags, "--port", "" + messageBusPort)).run();
-    waitUntilUp(messageBusPort);
+      mergeArgs(eventBusFlags, "--port", "" + eventBusPort)).run();
+    waitUntilUp(eventBusPort);
 
     int sessionsPort = PortProber.findFreePort();
     new SessionMapServer().configure(
@@ -108,7 +107,8 @@ public class DistributedCdpTest {
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(new URL("http://localhost:" + routerPort));
     new FluentWait<>(client).withTimeout(ofSeconds(10)).until(c -> {
-      HttpResponse res = c.execute(new HttpRequest(GET, "/status"));
+      HttpResponse res = c.execute(new HttpRequest(GET, "/status")
+                                       .addHeader("Content-Type", "application/json; charset=utf-8"));
       if (!res.isSuccessful()) {
         return false;
       }
@@ -151,17 +151,7 @@ public class DistributedCdpTest {
   }
 
   private void waitUntilUp(int port) {
-    try {
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-      HttpClient client = clientFactory.createClient(new URL("http://localhost:" + port));
-
-      new FluentWait<>(client)
-        .ignoring(UncheckedIOException.class)
-        .withTimeout(ofSeconds(15))
-        .until(http -> http.execute(new HttpRequest(GET, "/status")).isSuccessful());
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
+    PortProber.waitForPortUp(port, 15, SECONDS);
   }
 
   private String getBrowserShortName() {

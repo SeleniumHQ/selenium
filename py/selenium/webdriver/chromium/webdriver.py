@@ -69,6 +69,8 @@ class ChromiumDriver(RemoteWebDriver):
             else:
                 desired_capabilities.update(options.to_capabilities())
 
+        self.vendor_prefix = vendor_prefix
+
         if service is None:
             raise AttributeError('service cannot be None')
 

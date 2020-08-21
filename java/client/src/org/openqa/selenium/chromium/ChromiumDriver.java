@@ -18,13 +18,16 @@
 package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
-
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.CdpInfo;
+import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -33,6 +36,8 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.logging.EventType;
+import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
@@ -45,6 +50,8 @@ import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
@@ -62,8 +69,9 @@ import java.util.Optional;
  * to the appropriate interface.
  */
 public class ChromiumDriver extends RemoteWebDriver
-    implements HasDevTools, HasTouchScreen, LocationContext, NetworkConnection, WebStorage {
+    implements HasDevTools, HasLogEvents, HasTouchScreen, LocationContext, NetworkConnection, WebStorage {
 
+  private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
   private final RemoteLocationContext locationContext;
   private final RemoteWebStorage webStorage;
   private final TouchScreen touchScreen;
@@ -83,7 +91,22 @@ public class ChromiumDriver extends RemoteWebDriver
         factory,
         getCapabilities(),
         capabilityKey);
-    devTools = connection.map(DevTools::new);
+
+    CdpInfo cdpInfo = new CdpVersionFinder().match(getCapabilities().getVersion())
+      .orElseGet(() -> {
+          LOG.warning(
+            String.format(
+              "Unable to find version of CDP to use for %s. You may need to " +
+                "include a dependency on a specific version of the CDP using " +
+                "something similar to " +
+                "`org.seleniumhq.selenium:selenium-devtools:86` where the " +
+                "version matches the version of the chromium-based browser " +
+                "you're using.",
+              capabilities.getVersion()));
+          return new NoOpCdpInfo();
+        });
+
+    devTools = connection.map(conn -> new DevTools(cdpInfo.getDomains(), conn));
   }
 
   @Override
@@ -91,6 +114,12 @@ public class ChromiumDriver extends RemoteWebDriver
     throw new WebDriverException(
         "Setting the file detector only works on remote webdriver instances obtained " +
         "via RemoteWebDriver");
+  }
+
+  @Override
+  public <X> void onLogEvent(EventType<X> kind) {
+    Require.nonNull("Event type", kind);
+    kind.initializeLogger(this);
   }
 
   @Override
@@ -161,7 +190,7 @@ public class ChromiumDriver extends RemoteWebDriver
   }
 
   public String getCastSinks() {
-    Object response =  getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_SINKS, null);
+    Object response = getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_SINKS, null);
     return response.toString();
   }
 
@@ -171,19 +200,19 @@ public class ChromiumDriver extends RemoteWebDriver
   }
 
   public void selectCastSink(String deviceName) {
-    Object response =  getExecuteMethod().execute(ChromiumDriverCommand.SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
+    getExecuteMethod().execute(ChromiumDriverCommand.SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
   }
 
   public void startTabMirroring(String deviceName) {
-    Object response =  getExecuteMethod().execute(ChromiumDriverCommand.START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+    getExecuteMethod().execute(ChromiumDriverCommand.START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
   }
 
   public void stopCasting(String deviceName) {
-    Object response = getExecuteMethod().execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+    getExecuteMethod().execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
   }
 
   public void setPermission(String name, String value) {
-    Object response = getExecuteMethod().execute(ChromiumDriverCommand.SET_PERMISSION,
+    getExecuteMethod().execute(ChromiumDriverCommand.SET_PERMISSION,
       ImmutableMap.of("descriptor", ImmutableMap.of("name", name), "state", value));
   }
 

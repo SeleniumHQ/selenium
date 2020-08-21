@@ -18,26 +18,39 @@
 package org.openqa.selenium.grid.log;
 
 import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.common.Attributes;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
+import io.opentelemetry.sdk.trace.data.SpanData.Event;
+import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
+import io.opentelemetry.trace.Status;
+
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -54,6 +67,8 @@ public class LoggingOptions {
   // tracing more than once for the entire JVM, so we're never going to be
   // adding unit tests for this.
   private static Tracer tracer;
+
+  public static final Json JSON = new Json();
 
   private final Config config;
 
@@ -95,10 +110,69 @@ public class LoggingOptions {
     TracerSdkProvider tracerFactory = OpenTelemetrySdk.getTracerProvider();
 
     List<SpanProcessor> exporters = new LinkedList<>();
-    exporters.add(SimpleSpansProcessor.create(new SpanExporter() {
+    exporters.add(SimpleSpanProcessor.newBuilder(new SpanExporter() {
       @Override
       public ResultCode export(Collection<SpanData> spans) {
-        spans.forEach(span -> LOG.fine(String.valueOf(span)));
+
+        spans.forEach(span -> {
+          LOG.fine(String.valueOf(span));
+
+          String traceId = span.getTraceId().toLowerBase16();
+          String spanId = span.getSpanId().toLowerBase16();
+          Status status = span.getStatus();
+          List<Event> eventList = span.getEvents();
+          eventList.forEach(event -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("eventTime", event.getEpochNanos());
+            map.put("traceId", traceId);
+            map.put("spanId", spanId);
+            map.put("spanKind", span.getKind().toString());
+            map.put("eventName", event.getName());
+
+            Attributes attributes = event.getAttributes();
+            Map<String, Object> attributeMap = new HashMap<>();
+            attributes.forEach((key, value) -> {
+              Object attributeValue = null;
+              switch (value.getType()) {
+                case LONG:
+                  attributeValue = value.getLongValue();
+                  break;
+                case DOUBLE:
+                  attributeValue = value.getDoubleValue();
+                  break;
+                case STRING:
+                  attributeValue = value.getStringValue();
+                  break;
+                case BOOLEAN:
+                  attributeValue = value.getBooleanValue();
+                  break;
+                case STRING_ARRAY:
+                  attributeValue = value.getStringArrayValue();
+                  break;
+                case LONG_ARRAY:
+                  attributeValue = value.getLongArrayValue();
+                  break;
+                case DOUBLE_ARRAY:
+                  attributeValue = value.getDoubleArrayValue();
+                  break;
+                case BOOLEAN_ARRAY:
+                  attributeValue = value.getBooleanArrayValue();
+                  break;
+                default:
+                  throw new IllegalArgumentException(
+                      "Unrecognized event attribute value type: " + value.getType());
+              }
+              attributeMap.put(key, attributeValue);
+            });
+            map.put("attributes", attributeMap);
+            String jsonString = getJsonString(map);
+            if (status.isOk()) {
+              LOG.log(Level.INFO, jsonString);
+            } else {
+              LOG.log(Level.WARNING, jsonString);
+            }
+          });
+        });
         return ResultCode.SUCCESS;
       }
 
@@ -111,14 +185,14 @@ public class LoggingOptions {
       public void shutdown() {
         // no-op
       }
-    }));
+    }).build());
 
     // The Jaeger exporter doesn't yet have a `TracerFactoryProvider`, so we
     //shall look up the class using reflection, and beg for forgiveness
     // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
-      exporter -> exporters.add(SimpleSpansProcessor.create(exporter)));
+      exporter -> exporters.add(SimpleSpanProcessor.newBuilder(exporter).build()));
     tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
 
     return new OpenTelemetryTracer(
@@ -141,17 +215,39 @@ public class LoggingOptions {
 
     // Now configure the root logger, since everything should flow up to that
     Logger logger = logManager.getLogger("");
+    OutputStream out = getOutputStream();
 
     if (isUsingPlainLogs()) {
-      Handler handler = new FlushingHandler(System.out);
+      Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter());
       logger.addHandler(handler);
-    }
+  }
 
     if (isUsingStructuredLogging()) {
-      Handler handler = new FlushingHandler(System.out);
+      Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
       logger.addHandler(handler);
     }
+  }
+
+  private OutputStream getOutputStream() {
+    return config.get(LOGGING_SECTION, "log-file")
+        .map(fileName -> {
+          try {
+            return (OutputStream) new FileOutputStream(fileName);
+          } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+          }
+        })
+        .orElse(System.out);
+  }
+
+  private String getJsonString(Map<String, Object> map) {
+    StringBuilder text = new StringBuilder();
+    try (JsonOutput json = JSON.newOutput(text).setPrettyPrint(false)) {
+      json.write(map);
+      text.append('\n');
+    }
+    return text.toString();
   }
 }

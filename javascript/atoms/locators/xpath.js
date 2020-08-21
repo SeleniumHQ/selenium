@@ -56,7 +56,7 @@ goog.require('wgxpath');
 // we set the flag --collapse_properties (http://goo.gl/5W6cP).
 // The compiler should have thrown the error anyways, it's a bug that it fails
 // only when introducing this enum.
-// Solution: remove --collapase_properties from the js_binary rule or
+// Solution: remove --collapse_properties from the js_binary rule or
 // use goog.exportSymbol to export the public methods and get rid of the alias.
 bot.locators.XPathResult_ = {
   ORDERED_NODE_SNAPSHOT_TYPE: 7,

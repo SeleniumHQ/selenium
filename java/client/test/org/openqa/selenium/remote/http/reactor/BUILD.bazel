@@ -1,0 +1,20 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/http/reactor",
+        "//java/client/test/org/openqa/selenium/remote/internal:test-lib",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("io.netty:netty-transport-native-kqueue"),
+        artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
+        artifact("io.netty:netty-transport-native-unix-common"),
+        artifact("io.projectreactor.netty:reactor-netty"),
+    ],
+)

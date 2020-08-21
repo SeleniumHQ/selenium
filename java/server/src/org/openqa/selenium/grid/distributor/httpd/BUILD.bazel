@@ -9,19 +9,16 @@ java_library(
     ],
     deps = [
         "//java:auto-service",
-        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium:core",
         "//java/server/src/org/openqa/selenium/cli",
-        "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid:base-command",
         "//java/server/src/org/openqa/selenium/grid/config",
-        "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/distributor/config",
+        # Loaded via reflection. Required for the Distributor to start
+        # if no implementation is given.
         "//java/server/src/org/openqa/selenium/grid/distributor/local",
-        "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/server",
-        "//java/server/src/org/openqa/selenium/grid/sessionmap",
-        "//java/server/src/org/openqa/selenium/grid/sessionmap/config",
-        "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),

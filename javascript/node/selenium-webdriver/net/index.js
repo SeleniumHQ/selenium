@@ -15,21 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const os = require('os');
-
+const os = require('os')
 
 function getLoInterface() {
-  let name;
+  let name
   if (process.platform === 'darwin') {
-    name = 'lo0';
+    name = 'lo0'
   } else if (process.platform === 'linux') {
-    name = 'lo';
+    name = 'lo'
   }
-  return name ? os.networkInterfaces()[name] : null;
+  return name ? os.networkInterfaces()[name] : null
 }
-
 
 /**
  * Queries the system network interfaces for an IP address.
@@ -38,49 +36,45 @@ function getLoInterface() {
  * @return {(string|undefined)} The located IP address or undefined.
  */
 function getAddress(loopback, family) {
-  let interfaces;
+  let interfaces
   if (loopback) {
-    let lo = getLoInterface();
-    interfaces = lo ? [lo] : null;
+    let lo = getLoInterface()
+    interfaces = lo ? [lo] : null
   }
-  interfaces = interfaces || os.networkInterfaces();
+  interfaces = interfaces || os.networkInterfaces()
   for (let key in interfaces) {
-    if (!interfaces.hasOwnProperty(key)) {
-      continue;
+    if (!Object.prototype.hasOwnProperty.call(interfaces, key)) {
+      continue
     }
 
     for (let ipAddress of interfaces[key]) {
       if (ipAddress.family === family && ipAddress.internal === loopback) {
-        return ipAddress.address;
+        return ipAddress.address
       }
     }
   }
-  return undefined;
+  return undefined
 }
 
-
 // PUBLIC API
-
 
 /**
  * Retrieves the external IP address for this host.
  * @param {string=} family The IP family to retrieve. Defaults to "IPv4".
  * @return {(string|undefined)} The IP address or undefined if not available.
  */
-exports.getAddress = function(family = 'IPv4') {
-  return getAddress(false, family);
-};
-
+exports.getAddress = function (family = 'IPv4') {
+  return getAddress(false, family)
+}
 
 /**
  * Retrieves a loopback address for this machine.
  * @param {string=} family The IP family to retrieve. Defaults to "IPv4".
  * @return {(string|undefined)} The IP address or undefined if not available.
  */
-exports.getLoopbackAddress = function(family = 'IPv4') {
-  return getAddress(true, family);
-};
-
+exports.getLoopbackAddress = function (family = 'IPv4') {
+  return getAddress(true, family)
+}
 
 /**
  * Splits a hostport string, e.g. "www.example.com:80", into its component
@@ -90,24 +84,24 @@ exports.getLoopbackAddress = function(family = 'IPv4') {
  * @return {{host: string, port: ?number}} A host and port. If no port is
  *     present in the argument `hostport`, port is null.
  */
-exports.splitHostAndPort = function(hostport) {
-  let lastIndex = hostport.lastIndexOf(':');
+exports.splitHostAndPort = function (hostport) {
+  let lastIndex = hostport.lastIndexOf(':')
   if (lastIndex < 0) {
-    return {host: hostport, port: null};
+    return { host: hostport, port: null }
   }
 
-  let firstIndex = hostport.indexOf(':');
+  let firstIndex = hostport.indexOf(':')
   if (firstIndex != lastIndex && !hostport.includes('[')) {
     // Multiple colons but no brackets, so assume the string is an IPv6 address
     // with no port (e.g. "1234:5678:9:0:1234:5678:9:0").
-    return {host: hostport, port: null};
+    return { host: hostport, port: null }
   }
 
-  let host = hostport.slice(0, lastIndex);
+  let host = hostport.slice(0, lastIndex)
   if (host.startsWith('[') && host.endsWith(']')) {
-    host = host.slice(1, -1);
+    host = host.slice(1, -1)
   }
 
-  let port = parseInt(hostport.slice(lastIndex + 1), 10);
-  return {host, port};
-};
+  let port = parseInt(hostport.slice(lastIndex + 1), 10)
+  return { host, port }
+}

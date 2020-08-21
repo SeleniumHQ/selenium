@@ -1,5 +1,6 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 load("@rules_python//experimental/python:wheel.bzl", "py_package", "py_wheel")
+load("@dev_requirements//:requirements.bzl", "requirement")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
 load("//:copy_file.bzl", "copy_file")
 
@@ -29,8 +30,12 @@ copy_file(
 
 py_library(
     name = "selenium",
-    srcs = glob(["selenium/**/*.py"]),
+    srcs = glob(
+        ["selenium/**/*.py"],
+        exclude = ["generate.py"],
+    ),
     data = [
+        ":create-cdp-srcs",
         ":find-elements",
         ":firefox-driver-prefs",
         ":get-attribute",
@@ -52,6 +57,8 @@ py_package(
         "py.selenium.webdriver",
         "py.selenium.webdriver.chrome",
         "py.selenium.webdriver.chromium",
+        "py.selenium.webdriver.common",
+        "py.selenium.webdriver.common.devtools",
         "py.selenium.webdriver.edge",
         "py.selenium.webdriver.firefox",
         "py.selenium.webdriver.remote",
@@ -108,6 +115,38 @@ py_library(
     deps = [
         ":webserver",
     ],
+)
+
+py_binary(
+    name = "generate",
+    srcs = ["generate.py"],
+    srcs_version = "PY3",
+    deps = [requirement("inflection")],
+)
+
+genrule(
+    name = "create-cdp-srcs",
+    srcs = [
+        ":browser_protocol",
+        ":js_protocol",
+    ],
+    outs = ["selenium/webdriver/common/devtools"],
+    cmd = "python3 $(location :generate) $(location :browser_protocol) $(location :js_protocol) $@",
+    tools = [
+        ":generate",
+    ],
+)
+
+copy_file(
+    name = "browser_protocol",
+    src = "//common/devtools:browser_protocol.json",
+    out = "browser_protocol.json",
+)
+
+copy_file(
+    name = "js_protocol",
+    src = "//common/devtools:js_protocol.json",
+    out = "js_protocol.json",
 )
 
 py_test_suite(
@@ -291,6 +330,56 @@ py_test_suite(
     args = [
         "--instafail",
         "--driver=Safari",
+    ],
+    tags = [
+        "exclusive",
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-webkitgtk",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=WebKitGTK",
+        "--browser-binary=MiniBrowser",
+        "--browser-args=--automation",
+    ],
+    tags = [
+        "exclusive",
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-wpewebkit",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=WPEWebKit",
+        "--browser-binary=MiniBrowser",
+        "--browser-args=--automation --headless",
     ],
     tags = [
         "exclusive",

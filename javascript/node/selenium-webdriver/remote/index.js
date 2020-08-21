@@ -15,35 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const path = require('path');
-const url = require('url');
-const util = require('util');
+const fs = require('fs')
+const path = require('path')
+const url = require('url')
 
-const httpUtil = require('../http/util');
-const io = require('../io');
-const exec = require('../io/exec');
-const {Zip} = require('../io/zip');
-const cmd = require('../lib/command');
-const input = require('../lib/input');
-const webdriver = require('../lib/webdriver');
-const net = require('../net');
-const portprober = require('../net/portprober');
-
+const httpUtil = require('../http/util')
+const io = require('../io')
+const exec = require('../io/exec')
+const { Zip } = require('../io/zip')
+const cmd = require('../lib/command')
+const input = require('../lib/input')
+const net = require('../net')
+const portprober = require('../net/portprober')
 
 /**
  * @typedef {(string|!Array<string|number|!stream.Stream|null|undefined>)}
  */
-var StdIoOptions;
-
+var StdIoOptions // eslint-disable-line
 
 /**
  * @typedef {(string|!IThenable<string>)}
  */
-var CommandLineFlag;
-
+var CommandLineFlag // eslint-disable-line
 
 /**
  * A record object that defines the configuration options for a DriverService
@@ -58,7 +53,7 @@ function ServiceOptions() {}
  *
  * @type {(boolean|undefined)}
  */
-ServiceOptions.prototype.loopback;
+ServiceOptions.prototype.loopback
 
 /**
  * The host name to access the server on. If this option is specified, the
@@ -66,7 +61,7 @@ ServiceOptions.prototype.loopback;
  *
  * @type {(string|undefined)}
  */
-ServiceOptions.prototype.hostname;
+ServiceOptions.prototype.hostname
 
 /**
  * The port to start the server on (must be > 0). If the port is provided as a
@@ -74,7 +69,7 @@ ServiceOptions.prototype.hostname;
  *
  * @type {(number|!IThenable<number>)}
  */
-ServiceOptions.prototype.port;
+ServiceOptions.prototype.port
 
 /**
  * The arguments to pass to the service. If a promise is provided, the service
@@ -82,7 +77,7 @@ ServiceOptions.prototype.port;
  *
  * @type {!(Array<CommandLineFlag>|IThenable<!Array<CommandLineFlag>>)}
  */
-ServiceOptions.prototype.args;
+ServiceOptions.prototype.args
 
 /**
  * The base path on the server for the WebDriver wire protocol (e.g. '/wd/hub').
@@ -90,7 +85,7 @@ ServiceOptions.prototype.args;
  *
  * @type {(string|undefined|null)}
  */
-ServiceOptions.prototype.path;
+ServiceOptions.prototype.path
 
 /**
  * The environment variables that should be visible to the server process.
@@ -98,7 +93,7 @@ ServiceOptions.prototype.path;
  *
  * @type {(Object<string, string>|undefined)}
  */
-ServiceOptions.prototype.env;
+ServiceOptions.prototype.env
 
 /**
  * IO configuration for the spawned server process. For more information, refer
@@ -107,8 +102,7 @@ ServiceOptions.prototype.env;
  * @type {(StdIoOptions|undefined)}
  * @see https://nodejs.org/dist/latest-v4.x/docs/api/child_process.html#child_process_options_stdio
  */
-ServiceOptions.prototype.stdio;
-
+ServiceOptions.prototype.stdio
 
 /**
  * Manages the life and death of a native executable WebDriver server.
@@ -125,40 +119,40 @@ class DriverService {
    */
   constructor(executable, options) {
     /** @private {string} */
-    this.executable_ = executable;
+    this.executable_ = executable
 
     /** @private {boolean} */
-    this.loopbackOnly_ = !!options.loopback;
+    this.loopbackOnly_ = !!options.loopback
 
     /** @private {(string|undefined)} */
-    this.hostname_ = options.hostname;
+    this.hostname_ = options.hostname
 
     /** @private {(number|!IThenable<number>)} */
-    this.port_ = options.port;
+    this.port_ = options.port
 
     /**
      * @private {!(Array<CommandLineFlag>|
      *             IThenable<!Array<CommandLineFlag>>)}
      */
-    this.args_ = options.args;
+    this.args_ = options.args
 
     /** @private {string} */
-    this.path_ = options.path || '/';
+    this.path_ = options.path || '/'
 
     /** @private {!Object<string, string>} */
-    this.env_ = options.env || process.env;
+    this.env_ = options.env || process.env
 
     /**
      * @private {(string|!Array<string|number|!stream.Stream|null|undefined>)}
      */
-    this.stdio_ = options.stdio || 'ignore';
+    this.stdio_ = options.stdio || 'ignore'
 
     /**
      * A promise for the managed subprocess, or null if the server has not been
      * started yet. This promise will never be rejected.
      * @private {Promise<!exec.Command>}
      */
-    this.command_ = null;
+    this.command_ = null
 
     /**
      * Promise that resolves to the server's address or null if the server has
@@ -166,7 +160,7 @@ class DriverService {
      * before it starts accepting WebDriver requests.
      * @private {Promise<string>}
      */
-    this.address_ = null;
+    this.address_ = null
   }
 
   /**
@@ -175,9 +169,9 @@ class DriverService {
    */
   address() {
     if (this.address_) {
-      return this.address_;
+      return this.address_
     }
-    throw Error('Server has not been started.');
+    throw Error('Server has not been started.')
   }
 
   /**
@@ -186,7 +180,7 @@ class DriverService {
    * @return {boolean} Whether the underlying service process is running.
    */
   isRunning() {
-    return !!this.address_;
+    return !!this.address_
   }
 
   /**
@@ -199,71 +193,78 @@ class DriverService {
    */
   start(opt_timeoutMs) {
     if (this.address_) {
-      return this.address_;
+      return this.address_
     }
 
-    var timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS;
-    var self = this;
+    var timeout = opt_timeoutMs || DriverService.DEFAULT_START_TIMEOUT_MS
+    var self = this
 
-    let resolveCommand;
-    this.command_ = new Promise(resolve => resolveCommand = resolve);
+    let resolveCommand
+    this.command_ = new Promise((resolve) => (resolveCommand = resolve))
 
     this.address_ = new Promise((resolveAddress, rejectAddress) => {
-      resolveAddress(Promise.resolve(this.port_).then(port => {
-        if (port <= 0) {
-          throw Error('Port must be > 0: ' + port);
-        }
-
-        return resolveCommandLineFlags(this.args_).then(args => {
-          var command = exec(self.executable_, {
-            args: args,
-            env: self.env_,
-            stdio: self.stdio_
-          });
-
-          resolveCommand(command);
-
-          var earlyTermination = command.result().then(function(result) {
-            var error = result.code == null ?
-                Error('Server was killed with ' + result.signal) :
-                Error('Server terminated early with status ' + result.code);
-            rejectAddress(error);
-            self.address_ = null;
-            self.command_ = null;
-            throw error;
-          });
-
-          var hostname = self.hostname_;
-          if (!hostname) {
-            hostname = !self.loopbackOnly_ && net.getAddress()
-                || net.getLoopbackAddress();
+      resolveAddress(
+        Promise.resolve(this.port_).then((port) => {
+          if (port <= 0) {
+            throw Error('Port must be > 0: ' + port)
           }
 
-          var serverUrl = url.format({
-            protocol: 'http',
-            hostname: hostname,
-            port: port + '',
-            pathname: self.path_
-          });
+          return resolveCommandLineFlags(this.args_).then((args) => {
+            var command = exec(self.executable_, {
+              args: args,
+              env: self.env_,
+              stdio: self.stdio_,
+            })
 
-          return new Promise((fulfill, reject) => {
-            let cancelToken =
-                earlyTermination.catch(e => reject(Error(e.message)));
+            resolveCommand(command)
 
-            httpUtil.waitForServer(serverUrl, timeout, cancelToken)
-                .then(_ => fulfill(serverUrl), err => {
+            var earlyTermination = command.result().then(function (result) {
+              var error =
+                result.code == null
+                  ? Error('Server was killed with ' + result.signal)
+                  : Error('Server terminated early with status ' + result.code)
+              rejectAddress(error)
+              self.address_ = null
+              self.command_ = null
+              throw error
+            })
+
+            var hostname = self.hostname_
+            if (!hostname) {
+              hostname =
+                (!self.loopbackOnly_ && net.getAddress()) ||
+                net.getLoopbackAddress()
+            }
+
+            var serverUrl = url.format({
+              protocol: 'http',
+              hostname: hostname,
+              port: port + '',
+              pathname: self.path_,
+            })
+
+            return new Promise((fulfill, reject) => {
+              let cancelToken = earlyTermination.catch((e) =>
+                reject(Error(e.message))
+              )
+
+              httpUtil.waitForServer(serverUrl, timeout, cancelToken).then(
+                (_) => fulfill(serverUrl),
+                (err) => {
                   if (err instanceof httpUtil.CancellationError) {
-                    fulfill(serverUrl);
+                    fulfill(serverUrl)
                   } else {
-                    reject(err);
+                    reject(err)
                   }
-                });
-          });
-        });
-      }));
-    });
+                }
+              )
+            })
+          })
+        })
+      )
+    })
 
-    return this.address_;
+    return this.address_
   }
 
   /**
@@ -275,15 +276,14 @@ class DriverService {
    */
   kill() {
     if (!this.address_ || !this.command_) {
-      return Promise.resolve(); // Not currently running.
+      return Promise.resolve() // Not currently running.
     }
-    let cmd = this.command_;
-    this.address_ = null;
-    this.command_ = null;
-    return cmd.then(c => c.kill('SIGTERM'));
+    let cmd = this.command_
+    this.address_ = null
+    this.command_ = null
+    return cmd.then((c) => c.kill('SIGTERM'))
   }
 }
-
 
 /**
  * @param {!(Array<CommandLineFlag>|IThenable<!Array<CommandLineFlag>>)} args
@@ -291,18 +291,17 @@ class DriverService {
  */
 function resolveCommandLineFlags(args) {
   // Resolve the outer array, then the individual flags.
-  return Promise.resolve(args)
-      .then(/** !Array<CommandLineFlag> */args => Promise.all(args));
+  return Promise.resolve(args).then(
+    /** !Array<CommandLineFlag> */ (args) => Promise.all(args)
+  )
 }
-
 
 /**
  * The default amount of time, in milliseconds, to wait for the server to
  * start.
  * @const {number}
  */
-DriverService.DEFAULT_START_TIMEOUT_MS = 30 * 1000;
-
+DriverService.DEFAULT_START_TIMEOUT_MS = 30 * 1000
 
 /**
  * Creates {@link DriverService} objects that manage a WebDriver server in a
@@ -316,19 +315,19 @@ DriverService.Builder = class {
    */
   constructor(exe) {
     if (!fs.existsSync(exe)) {
-      throw Error(`The specified executable path does not exist: ${exe}`);
+      throw Error(`The specified executable path does not exist: ${exe}`)
     }
 
     /** @private @const {string} */
-    this.exe_ = exe;
+    this.exe_ = exe
 
     /** @private {!ServiceOptions} */
     this.options_ = {
       args: [],
       port: 0,
       env: null,
-      stdio: 'ignore'
-    };
+      stdio: 'ignore',
+    }
   }
 
   /**
@@ -339,10 +338,10 @@ DriverService.Builder = class {
    * @this {THIS}
    * @template THIS
    */
-  addArguments(var_args) {
-    let args = Array.prototype.slice.call(arguments, 0);
-    this.options_.args = this.options_.args.concat(args);
-    return this;
+  addArguments(var_args) { // eslint-disable-line
+    let args = Array.prototype.slice.call(arguments, 0)
+    this.options_.args = this.options_.args.concat(args)
+    return this
   }
 
   /**
@@ -353,8 +352,8 @@ DriverService.Builder = class {
    * @return {!DriverService.Builder} A self reference.
    */
   setHostname(hostname) {
-    this.options_.hostname = hostname;
-    return this;
+    this.options_.hostname = hostname
+    return this
   }
 
   /**
@@ -365,8 +364,8 @@ DriverService.Builder = class {
    * @return {!DriverService.Builder} A self reference.
    */
   setLoopback(loopback) {
-    this.options_.loopback = loopback;
-    return this;
+    this.options_.loopback = loopback
+    return this
   }
 
   /**
@@ -378,8 +377,8 @@ DriverService.Builder = class {
    * @return {!DriverService.Builder} A self reference.
    */
   setPath(basePath) {
-    this.options_.path = basePath;
-    return this;
+    this.options_.path = basePath
+    return this
   }
 
   /**
@@ -391,10 +390,10 @@ DriverService.Builder = class {
    */
   setPort(port) {
     if (port < 0) {
-      throw Error(`port must be >= 0: ${port}`);
+      throw Error(`port must be >= 0: ${port}`)
     }
-    this.options_.port = port;
-    return this;
+    this.options_.port = port
+    return this
   }
 
   /**
@@ -409,12 +408,12 @@ DriverService.Builder = class {
    */
   setEnvironment(env) {
     if (env instanceof Map) {
-      let tmp = {};
-      env.forEach((value, key) => tmp[key] = value);
-      env = tmp;
+      let tmp = {}
+      env.forEach((value, key) => (tmp[key] = value))
+      env = tmp
     }
-    this.options_.env = env;
-    return this;
+    this.options_.env = env
+    return this
   }
 
   /**
@@ -426,8 +425,8 @@ DriverService.Builder = class {
    * @see https://nodejs.org/dist/latest-v4.x/docs/api/child_process.html#child_process_options_stdio
    */
   setStdio(config) {
-    this.options_.stdio = config;
-    return this;
+    this.options_.stdio = config
+    return this
   }
 
   /**
@@ -436,18 +435,17 @@ DriverService.Builder = class {
    * @return {!DriverService} A new driver service.
    */
   build() {
-    let port = this.options_.port || portprober.findFreePort();
-    let args = Promise.resolve(port).then(port => {
-      return this.options_.args.concat('--port=' + port);
-    });
+    let port = this.options_.port || portprober.findFreePort()
+    let args = Promise.resolve(port).then((port) => {
+      return this.options_.args.concat('--port=' + port)
+    })
 
     let options =
-        /** @type {!ServiceOptions} */
-        (Object.assign({}, this.options_, {args, port}));
-    return new DriverService(this.exe_, options);
+      /** @type {!ServiceOptions} */
+      (Object.assign({}, this.options_, { args, port }))
+    return new DriverService(this.exe_, options)
   }
-};
-
+}
 
 /**
  * Manages the life and death of the
@@ -464,27 +462,30 @@ class SeleniumServer extends DriverService {
    */
   constructor(jar, opt_options) {
     if (!jar) {
-      throw Error('Path to the Selenium jar not specified');
+      throw Error('Path to the Selenium jar not specified')
     }
 
-    var options = opt_options || {};
+    var options = opt_options || {}
 
     if (options.port < 0) {
-      throw Error('Port must be >= 0: ' + options.port);
+      throw Error('Port must be >= 0: ' + options.port)
     }
 
-    let port = options.port || portprober.findFreePort();
-    let args = Promise.all([port, options.jvmArgs || [], options.args || []])
-        .then(resolved => {
-          let port = resolved[0];
-          let jvmArgs = resolved[1];
-          let args = resolved[2];
-          return jvmArgs.concat('-jar', jar, '-port', port).concat(args);
-        });
+    let port = options.port || portprober.findFreePort()
+    let args = Promise.all([
+      port,
+      options.jvmArgs || [],
+      options.args || [],
+    ]).then((resolved) => {
+      let port = resolved[0]
+      let jvmArgs = resolved[1]
+      let args = resolved[2]
+      return jvmArgs.concat('-jar', jar, '-port', port).concat(args)
+    })
 
-    let java = 'java';
+    let java = 'java'
     if (process.env['JAVA_HOME']) {
-      java = path.join(process.env['JAVA_HOME'], 'bin/java');
+      java = path.join(process.env['JAVA_HOME'], 'bin/java')
     }
 
     super(java, {
@@ -493,11 +494,10 @@ class SeleniumServer extends DriverService {
       args: args,
       path: '/wd/hub',
       env: options.env,
-      stdio: options.stdio
-    });
+      stdio: options.stdio,
+    })
   }
 }
-
 
 /**
  * A record object describing configuration options for a {@link SeleniumServer}
@@ -513,7 +513,7 @@ SeleniumServer.Options = class {
      *
      * @type {(boolean|undefined)}
      */
-    this.loopback;
+    this.loopback
 
     /**
      * The port to start the server on (must be > 0). If the port is provided as
@@ -522,7 +522,7 @@ SeleniumServer.Options = class {
      *
      * @type {(number|!IThenable<number>)}
      */
-    this.port;
+    this.port
 
     /**
      * The arguments to pass to the service. If a promise is provided,
@@ -530,7 +530,7 @@ SeleniumServer.Options = class {
      *
      * @type {!(Array<string>|IThenable<!Array<string>>)}
      */
-    this.args;
+    this.args
 
     /**
      * The arguments to pass to the JVM. If a promise is provided,
@@ -538,7 +538,7 @@ SeleniumServer.Options = class {
      *
      * @type {(!Array<string>|!IThenable<!Array<string>>|undefined)}
      */
-    this.jvmArgs;
+    this.jvmArgs
 
     /**
      * The environment variables that should be visible to the server
@@ -546,7 +546,7 @@ SeleniumServer.Options = class {
      *
      * @type {(!Object<string, string>|undefined)}
      */
-    this.env;
+    this.env
 
     /**
      * IO configuration for the spawned server process. If unspecified, IO will
@@ -556,11 +556,9 @@ SeleniumServer.Options = class {
      *         undefined)}
      * @see <https://nodejs.org/dist/latest-v8.x/docs/api/child_process.html#child_process_options_stdio>
      */
-    this.stdio;
+    this.stdio
   }
-};
-
-
+}
 
 /**
  * A {@link webdriver.FileDetector} that may be used when running
@@ -590,33 +588,38 @@ class FileDetector extends input.FileDetector {
    * @override
    */
   handleFile(driver, file) {
-    return io.stat(file).then(function(stats) {
-      if (stats.isDirectory()) {
-        return file;  // Not a valid file, return original input.
-      }
+    return io.stat(file).then(
+      function (stats) {
+        if (stats.isDirectory()) {
+          return file // Not a valid file, return original input.
+        }
 
-      let zip = new Zip;
-      return zip.addFile(file)
+        let zip = new Zip()
+        return zip
+          .addFile(file)
           .then(() => zip.toBuffer())
-          .then(buf => buf.toString('base64'))
-          .then(encodedZip => {
-            let command = new cmd.Command(cmd.Name.UPLOAD_FILE)
-                .setParameter('file', encodedZip);
-            return driver.execute(command);
-          });
-    }, function(err) {
-      if (err.code === 'ENOENT') {
-        return file;  // Not a file; return original input.
+          .then((buf) => buf.toString('base64'))
+          .then((encodedZip) => {
+            let command = new cmd.Command(cmd.Name.UPLOAD_FILE).setParameter(
+              'file',
+              encodedZip
+            )
+            return driver.execute(command)
+          })
+      },
+      function (err) {
+        if (err.code === 'ENOENT') {
+          return file // Not a file; return original input.
+        }
+        throw err
       }
-      throw err;
-    });
+    )
   }
 }
 
-
 // PUBLIC API
 
-exports.DriverService = DriverService;
-exports.FileDetector = FileDetector;
-exports.SeleniumServer = SeleniumServer;
-exports.ServiceOptions = ServiceOptions;  // Exported for API docs.
+exports.DriverService = DriverService
+exports.FileDetector = FileDetector
+exports.SeleniumServer = SeleniumServer
+exports.ServiceOptions = ServiceOptions // Exported for API docs.

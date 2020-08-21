@@ -1,3 +1,8 @@
+Selenium 4.0 Alpha 6 Post 2
+
+* Correct usage of Abstract Base class in some instances
+* Correct build step for releasing
+
 Selenium 4.0 Alpha 6
 
 * Add Abstract Base Class to WebElement and WebDriver #7127 (#8348)

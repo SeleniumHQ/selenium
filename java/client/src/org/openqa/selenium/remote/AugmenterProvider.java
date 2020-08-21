@@ -25,25 +25,22 @@ import java.util.function.Predicate;
  * Describes and provides an implementation for a particular interface for use with the
  * {@link org.openqa.selenium.remote.Augmenter}. Think of this as a simulacrum of mixins.
  */
-public interface AugmenterProvider {
+public interface AugmenterProvider<X> {
 
   /**
    * @return Whether this provider should be applied given these {@code caps}.
    */
-  default Predicate<Capabilities> isApplicable() {
-    return caps -> false;
-  }
+  Predicate<Capabilities> isApplicable();
 
   /**
    * @return The interface that this augmentor describes.
    */
-  Class<?> getDescribedInterface();
+  Class<X> getDescribedInterface();
 
   /**
    * For the interface that this provider describes, return an implementation.
    *
-   * @param value The value from the capability map
    * @return An interface implementation
    */
-  InterfaceImplementation getImplementation(Object value);
+  X getImplementation(Capabilities capabilities, ExecuteMethod executeMethod);
 }

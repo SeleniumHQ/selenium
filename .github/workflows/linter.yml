@@ -1,0 +1,55 @@
+###########################
+###########################
+## Linter GitHub Actions ##
+###########################
+###########################
+name: Lint Code Base
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#############################
+# Start the job on all push #
+#############################
+on:
+  push:
+    branches: [trunk]
+  pull_request:
+    branches: [trunk]
+
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Lint Code Base
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      ################################
+      # Run Linter against code base #
+      ################################
+      - name: Super-Linter
+        uses: docker://github/super-linter:v3
+        env:
+          DEFAULT_BRANCH: trunk
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ANSIBLE: false
+          VALIDATE_COFFEE: false
+          VALIDATE_PERL: false
+          VALIDATE_TERRAFORM: false
+

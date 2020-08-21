@@ -222,6 +222,11 @@ public class AddingNodesTest {
     }
 
     @Override
+    public boolean isReady() {
+      return true;
+    }
+
+    @Override
     public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
       Objects.requireNonNull(sessionRequest);
 

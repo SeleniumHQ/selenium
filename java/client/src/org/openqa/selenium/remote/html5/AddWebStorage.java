@@ -17,31 +17,29 @@
 
 package org.openqa.selenium.remote.html5;
 
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.InterfaceImplementation;
+import org.openqa.selenium.remote.ExecuteMethod;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.function.Predicate;
 
-public class AddWebStorage implements AugmenterProvider {
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
+
+public class AddWebStorage implements AugmenterProvider<WebStorage> {
 
   @Override
-  public Class<?> getDescribedInterface() {
+  public Predicate<Capabilities> isApplicable() {
+    return caps -> caps.is(SUPPORTS_WEB_STORAGE);
+  }
+
+  @Override
+  public Class<WebStorage> getDescribedInterface() {
     return WebStorage.class;
   }
 
   @Override
-  public InterfaceImplementation getImplementation(Object value) {
-    return (executeMethod, self, method, args) -> {
-      RemoteWebStorage storage = new RemoteWebStorage(executeMethod);
-      try {
-        return method.invoke(storage, args);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
-      } catch (InvocationTargetException e) {
-        throw new RuntimeException(e.getCause());
-      }
-    };
+  public WebStorage getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+    return new RemoteWebStorage(executeMethod);
   }
 }

@@ -30,11 +30,10 @@ import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
-import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
-import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
@@ -61,6 +60,7 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.data.NodeAddedEvent.NODE_ADDED;
+import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
@@ -115,17 +115,7 @@ public class NodeServer extends TemplateGridCommand {
 
     NodeOptions nodeOptions = new NodeOptions(config);
 
-    LocalNode.Builder builder = LocalNode.builder(
-      tracer,
-      bus,
-      serverOptions.getExternalUri(),
-      nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
-      serverOptions.getRegistrationSecret());
-
-    nodeOptions.configure(tracer, clientFactory, builder);
-    new DockerOptions(config).configure(tracer, clientFactory, builder);
-
-    LocalNode node = builder.build();
+    Node node = nodeOptions.getNode();
 
     HttpHandler readinessCheck = req -> {
       if (node.getStatus().hasCapacity()) {
@@ -144,6 +134,29 @@ public class NodeServer extends TemplateGridCommand {
         LOG.info("Node has been added");
       }
     });
+
+    bus.addListener(NODE_DRAIN_COMPLETE, event -> {
+      UUID nodeId = event.getData(UUID.class);
+      if (!node.getId().equals(nodeId)) {
+        return;
+      }
+
+      // Wait a beat before shutting down so the final response from the
+      // node can escape.
+      new Thread(
+        () -> {
+          try {
+            Thread.sleep(1000);
+          } catch (InterruptedException e) {
+            // Swallow, the next thing we're doing is shutting down
+          }
+          LOG.info("Shutting down");
+          System.exit(0);
+        },
+        "Node shutdown: " + nodeId)
+        .start();
+    });
+
     Route httpHandler = Route.combine(
       node,
       get("/readyz").to(() -> readinessCheck));

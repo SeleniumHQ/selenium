@@ -3,7 +3,6 @@ schema {
 }
 
 scalar Uri
-scalar Url
 
 enum Status {
   UP
@@ -15,6 +14,8 @@ type Node {
   id: ID!
   uri: Uri!
   status: Status!
+  maxSession: Int!
+  capabilities: String!
 }
 
 type GridQuery {
@@ -22,7 +23,7 @@ type GridQuery {
 }
 
 type Grid {
-  url: Url!
+  uri: Uri!
   nodes: [Node!]!
   totalSlots: Int
   usedSlots: Int

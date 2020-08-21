@@ -1,0 +1,9 @@
+query NodeQuery($id: String!) {
+	node(id: $id) {
+		id
+		uri
+		status
+		maxSession
+		capabilities
+	}
+}

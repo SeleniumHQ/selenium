@@ -26,6 +26,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Sequence;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -210,18 +211,37 @@ public interface DriverCommand {
   String SET_ALERT_CREDENTIALS = "setAlertCredentials";
 
   String SET_TIMEOUT = "setTimeout";
+
+  @Deprecated
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
         SET_TIMEOUT, ImmutableMap.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
+
+  static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(Duration duration) {
+    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("implicit", duration.toMillis()));
+  }
+
+  @Deprecated
   static CommandPayload SET_SCRIPT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
         SET_TIMEOUT, ImmutableMap.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
+
+  static CommandPayload SET_SCRIPT_TIMEOUT(Duration duration) {
+    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("script", duration.toMillis()));
+  }
+
+  @Deprecated
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
         SET_TIMEOUT, ImmutableMap.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
+
+  static CommandPayload SET_PAGE_LOAD_TIMEOUT(Duration duration) {
+    return new CommandPayload(SET_TIMEOUT, ImmutableMap.of("pageLoad", duration.toMillis()));
+  }
+
   String IMPLICITLY_WAIT = "implicitlyWait";
   String SET_SCRIPT_TIMEOUT = "setScriptTimeout";
 

@@ -53,10 +53,13 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class GraphqlHandlerTest {
 
-  private final String publicUrl = "http://example.com/grid-o-matic";
+  private final URI publicUri = new URI("http://example.com/grid-o-matic");
   private Distributor distributor;
   private Tracer tracer;
   private EventBus events;
+
+  public GraphqlHandlerTest() throws URISyntaxException {
+  }
 
   @Before
   public void setupGrid() {
@@ -69,19 +72,19 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetGridUrl() {
-    GraphqlHandler handler = new GraphqlHandler(distributor, publicUrl);
+  public void shouldBeAbleToGetGridUri() {
+    GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
 
-    Map<String, Object> topLevel = executeQuery(handler, "query { grid { url } }");
+    Map<String, Object> topLevel = executeQuery(handler, "{ grid { uri } }");
 
-    assertThat(topLevel).isEqualTo(Map.of("data", Map.of("grid", Map.of("url", publicUrl))));
+    assertThat(topLevel).isEqualTo(Map.of("data", Map.of("grid", Map.of("uri", publicUri.toString()))));
   }
 
   @Test
   public void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
-    GraphqlHandler handler = new GraphqlHandler(distributor, publicUrl);
+    GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
 
-    Map<String, Object> topLevel = executeQuery(handler, "query { grid { nodes { uri } } }");
+    Map<String, Object> topLevel = executeQuery(handler, "{ grid { nodes { uri } } }");
 
     assertThat(topLevel)
       .describedAs(topLevel.toString())
@@ -92,7 +95,7 @@ public class GraphqlHandlerTest {
   public void shouldBeAbleToGetUrlsOfAllNodes() throws URISyntaxException {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "stilton");
     String nodeUri = "http://localhost:5556";
-    Node node = LocalNode.builder(tracer, events, new URI(nodeUri), new URI(publicUrl), null)
+    Node node = LocalNode.builder(tracer, events, new URI(nodeUri), publicUri, null)
       .add(stereotype, new SessionFactory() {
         @Override
         public Optional<ActiveSession> apply(CreateSessionRequest createSessionRequest) {
@@ -107,8 +110,8 @@ public class GraphqlHandlerTest {
       .build();
     distributor.add(node);
 
-    GraphqlHandler handler = new GraphqlHandler(distributor, publicUrl);
-    Map<String, Object> topLevel = executeQuery(handler, "query { grid { nodes { uri } } }");
+    GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
+    Map<String, Object> topLevel = executeQuery(handler, "{ grid { nodes { uri } } }");
 
     assertThat(topLevel)
       .describedAs(topLevel.toString())
@@ -118,7 +121,7 @@ public class GraphqlHandlerTest {
   private Map<String, Object> executeQuery(HttpHandler handler, String query) {
     HttpResponse res = handler.execute(
       new HttpRequest(GET, "/graphql")
-        .setContent(Contents.utf8String(query)));
+        .setContent(Contents.asJson(Map.of("query", query))));
 
     return new Json().toType(Contents.string(res), MAP_TYPE);
   }

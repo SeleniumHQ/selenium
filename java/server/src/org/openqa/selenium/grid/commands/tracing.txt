@@ -15,7 +15,7 @@ on macOS or Linux:
 ```
   java -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporters-jaeger:0.4.0 \
+          io.opentelemetry:opentelemetry-exporters-jaeger:0.7.1 \
           io.grpc:grpc-okhttp:1.29.0) \
        standalone
 ```
@@ -35,7 +35,7 @@ this can be done via system properties. Modifying our example:
        -DJAEGER_AGENT_PORT=14250 \
        -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporters-jaeger:0.4.0 \
+          io.opentelemetry:opentelemetry-exporters-jaeger:0.7.1 \
           io.grpc:grpc-okhttp:1.29.0) \
        standalone
 ```
@@ -48,7 +48,7 @@ locally:
   docker run --rm -it --name jaeger \
     -p 16686:16686 \
     -p 14250:14250 \
-    jaegertracing/all-in-one:1.17.1
+    jaegertracing/all-in-one:1.18.0
 ```
 
 Now run some tests, and then point a browser at

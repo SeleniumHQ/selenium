@@ -21,8 +21,6 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.logging.Logger;
 
 public class EventBusOptions {
@@ -50,28 +48,6 @@ public class EventBusOptions {
   }
 
   private EventBus createBus() {
-    String clazzName = config.get("events", "implementation").orElse(DEFAULT_CLASS);
-    LOG.info("Creating event bus: " + clazzName);
-    try {
-      Class<?> busClazz = Class.forName(clazzName);
-      Method create = busClazz.getMethod("create", Config.class);
-
-      if (!Modifier.isStatic(create.getModifiers())) {
-        throw new IllegalArgumentException(String.format(
-            "Event bus class %s's `create(Config)` method must be static", clazzName));
-      }
-
-      if (!EventBus.class.isAssignableFrom(create.getReturnType())) {
-        throw new IllegalArgumentException(String.format(
-            "Event bus class %s's `create(Config)` method must return an EventBus", clazzName));
-      }
-
-      return (EventBus) create.invoke(null, config);
-    } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(String.format(
-          "Event bus class %s must have a static `create(Config)` method", clazzName));
-    } catch (ReflectiveOperationException e) {
-      throw new IllegalArgumentException("Unable to find event bus class: " + clazzName, e);
-    }
+    return config.getClass("events", "implementation", EventBus.class, DEFAULT_CLASS);
   }
 }

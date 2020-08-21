@@ -208,6 +208,14 @@ module Selenium
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
 
+            it 'with Options instance with profile' do
+              profile = Profile.new.tap(&:layout_on_disk)
+              options = Options.new(profile: profile)
+              expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", 'goog:chromeOptions': {}]}})
+
+              expect { Driver.new(capabilities: [options]) }.not_to raise_exception
+            end
+
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
               expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})

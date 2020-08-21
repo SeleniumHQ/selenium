@@ -1,0 +1,10 @@
+.progressbar-text {
+  top: 50% !important;
+  letter-spacing: 8px;
+}
+
+#container {
+  position: absolute;
+  /* position: absolute !important; */
+  top: 50%;
+}

@@ -205,7 +205,7 @@ function buildConfig(modules) {
         path.join(externs, 'xml2js.js')
     ],
     sourceUrlTemplate:
-        'https://github.com/SeleniumHQ/selenium/tree/master/'
+        'https://github.com/SeleniumHQ/selenium/tree/trunk/'
             + 'javascript/node/selenium-webdriver/%path%#L%line%',
     strict: false
   }
