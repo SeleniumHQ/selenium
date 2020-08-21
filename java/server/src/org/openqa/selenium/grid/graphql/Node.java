@@ -52,8 +52,8 @@ public class Node {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
     this.isUp = isUp;
-    this.maxSession = Require.nonNull("Node maxSession", maxSession);
-    this.capabilities = Require.nonNull("Node capabilities", JSON.toJson(capabilities));
+    this.maxSession = maxSession;
+    this.capabilities = Require.nonNull("Node capabilities", capabilities);
     this.activeSessions = Require.nonNull("Active sessions", activeSessions);
   }
 
@@ -83,7 +83,7 @@ public class Node {
   }
 
   public String getCapabilities() {
-    List<Map> toReturn = new ArrayList<>();
+    List<Map<String, Object> > toReturn = new ArrayList<>();
 
     for (Map.Entry<Capabilities, Integer> entry : capabilities.entrySet()) {
       Map<String, Object> details  = new HashMap<>();
