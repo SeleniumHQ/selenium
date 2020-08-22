@@ -741,6 +741,22 @@ class WebDriver(BaseWebDriver):
             'script': script,
             'args': converted_args})['value']
 
+    def load_brython(self,
+                    src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js",
+                    stdlib="https://raw.githubusercontent.com/brython-dev/brython/master/www/src/"):
+        if not hasattr(self, 'loaded_brython'):
+            self.loaded_brython = False
+
+        if not self.loaded_brython:
+            _pkg = '.'.join(__name__.split('.')[:-1])
+            template = pkgutil.get_data(_pkg, 'loadBrython.js').decode('UTF-8')
+            brython = template.format(src)
+            self.execute_script(brython)
+            if stdlib:
+                load_stdlib = template.decode('UTF-8').format(stdlib)
+                self.execute_script(load_stdlib)
+            self.loaded_brython = True
+
     @property
     def current_url(self):
         """
