@@ -52,6 +52,9 @@ java_export(
         "org.openqa.selenium.grid.config.HasRoles",
         "org.openqa.selenium.remote.service.DriverService$Builder",
     ],
+    resource_jars = [
+        "//javascript/grid-ui:react_jar",
+    ],
     visibility = [
         "//visibility:public",
     ],

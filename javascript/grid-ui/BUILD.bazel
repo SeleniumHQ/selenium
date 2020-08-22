@@ -1,19 +1,19 @@
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
-load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin", "nodejs_test")
-load("@npm//react-scripts:index.bzl", "react_scripts", "react_scripts_test")
+load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin")
+load("@npm//react-scripts:index.bzl", "react_scripts")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
 package(default_visibility = ["//visibility:public"])
 
 _RUNTIME_DEPS = [
     "chdir.js",
-    "copy_static_files",
+    ":copy_static_files",
     "@npm//react",
     "@npm//react-dom",
     "@npm//react-modal",
     "@npm//react-apollo",
     "@npm//react-json-view",
     "@npm//react-router-dom",
-    "@npm//react-scripts",
     "@npm//apollo-cache-inmemory",
     "@npm//apollo-client",
     "@npm//apollo-link-http",
@@ -67,4 +67,13 @@ react_scripts(
         "@npm//@types",
     ],
     output_dir = True,
+)
+
+genrule(
+    name = "react_jar",
+    srcs = [
+        ":build"
+    ],
+    outs = ["react.jar"],
+    cmd="jar cf $@ $(locations :build)"
 )
