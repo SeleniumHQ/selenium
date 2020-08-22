@@ -176,7 +176,8 @@ class WebDriver(BaseWebDriver):
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
-            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
+            self.command_executor = get_remote_connection(
+                                    capabilities, command_executor=command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
@@ -267,7 +268,8 @@ class WebDriver(BaseWebDriver):
          - version - Which browser version to request.
          - platform - Which platform to request the browser on.
          - javascript_enabled - Whether the new session should support JavaScript.
-         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
+         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object.
+            Only used if Firefox is requested.
         """
         if not isinstance(capabilities, dict):
             raise InvalidArgumentException("Capabilities must be a dictionary")
