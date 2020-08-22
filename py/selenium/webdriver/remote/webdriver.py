@@ -745,6 +745,18 @@ class WebDriver(BaseWebDriver):
     def load_brython(self,
                     src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js",
                     stdlib="https://raw.githubusercontent.com/brython-dev/brython/master/www/src/"):
+        """
+        Loads the neccessary Javascript files to run Brython code. You must
+        call this method **BEFORE** you use the `execute_brython()` method.
+
+        :Args:
+        - src: The source of the Brython.js file; by default it is version
+            3.8.9. Local files **cannot** be used as the source.
+        - stdlib: The source of the Brython stdlib files; by default it is
+            the src folder in the Brython Github repository. Local files
+            **cannot** be used as the source. The brython_stdlib.js **cannot**
+            be used as the source either.
+        """
         if not hasattr(self, 'loaded_brython'):
             self.loaded_brython = False
 
