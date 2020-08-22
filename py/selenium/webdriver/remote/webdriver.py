@@ -749,7 +749,7 @@ class WebDriver(BaseWebDriver):
                      stdlib="https://raw.githubusercontent.com/brython-dev/brython/master/www/src/"):
         """
         Loads the neccessary Javascript files to run Brython code. You must
-        call this method **BEFORE** you use the `execute_brython()` method.
+        call this method **BEFORE** you use the 'execute_brython()' method.
 
         :Args:
         - src: The source of the Brython.js file; by default it is version
