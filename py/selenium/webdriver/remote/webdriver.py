@@ -771,6 +771,21 @@ class WebDriver(BaseWebDriver):
             self.loaded_brython = True
 
     def execute_brython(self, script, *args):
+        """
+        Synchronously Executes Brython in the current window/frame.
+
+        :Args:
+         - script: The Brython to execute.
+         - \\*args: Any applicable arguments for your Brython.
+
+        :Usage:
+            ::
+
+                driver.execute_brython('print(\"Hello World! :)\")')
+
+        :Returns:
+          The command's JSON response loaded into a dictionary object, if any.
+        """
         if not hasattr(self, 'loaded_brython') or not self.loaded_brython:
             raise BrythonNotLoaded("You cannot use 'execute_brython()' before you call 'load_brython()'.")
         _pkg = '.'.join(__name__.split('.')[:-1])
