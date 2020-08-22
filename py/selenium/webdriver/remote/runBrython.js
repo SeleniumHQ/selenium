@@ -3,5 +3,6 @@ scriptTag.type = 'text/python'
 var script = document.createTextNode('{}')
 scriptTag.appendChild(script)
 document.body.appendChild(scriptTag)
-brython()
-scriptTag.remove()
+
+try {{ brython() }}
+finally {{ scriptTag.remove() }}
