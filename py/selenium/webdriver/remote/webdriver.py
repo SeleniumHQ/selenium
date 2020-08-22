@@ -754,7 +754,7 @@ class WebDriver(BaseWebDriver):
             brython = template.format(src)
             self.execute_script(brython)
             if stdlib:
-                load_stdlib = template.decode('UTF-8').format(stdlib)
+                load_stdlib = template.format(stdlib)
                 self.execute_script(load_stdlib)
             self.loaded_brython = True
 
