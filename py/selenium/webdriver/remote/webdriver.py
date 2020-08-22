@@ -36,7 +36,8 @@ from .webelement import WebElement
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
-                                        UnknownMethodException)
+                                        UnknownMethodException,
+                                        BrythonNotLoaded)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
@@ -756,6 +757,16 @@ class WebDriver(BaseWebDriver):
                 load_stdlib = template.decode('UTF-8').format(stdlib)
                 self.execute_script(load_stdlib)
             self.loaded_brython = True
+
+    def execute_brython(self, script, *args):
+        if not hasattr(self, 'loaded_brython') or not self.loaded_brython:
+            raise BrythonNotLoaded("You cannot use 'execute_brython()' before you call 'load_brython()'.")
+        _pkg = '.'.join(__name__.split('.')[:-1])
+        running = pkgutil.get_data(_pkg, 'runBrython.js') \
+                    .decode('UTF-8').format(script.replace('"', '\\"'))
+                    # Use .replace() to escape any quotes to prevent errors
+                    # when running the script
+        return self.execute_script(running, *args)
 
     @property
     def current_url(self):
