@@ -790,7 +790,7 @@ class WebDriver(BaseWebDriver):
             raise BrythonNotLoaded("You cannot use 'execute_brython()' before you call 'load_brython()'.")
         _pkg = '.'.join(__name__.split('.')[:-1])
         running = pkgutil.get_data(_pkg, 'runBrython.js') \
-                  .decode('UTF-8').format(script.replace('"', '\\"'))
+                  .decode('UTF-8').format(script.replace("'", "\\'"))
         # Use .replace() to escape any quotes to prevent errors
         # when running the script
         return self.execute_script(running, *args)
