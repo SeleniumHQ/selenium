@@ -314,6 +314,7 @@ class UnknownMethodException(WebDriverException):
     """
     pass
 
+
 class BrythonNotLoaded(WebDriverException):
     """
     The 'load_brython()' method was not called before using 'execute_brython()'.
