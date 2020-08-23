@@ -4,5 +4,5 @@ var script = document.createTextNode({})
 scriptTag.appendChild(script)
 document.body.appendChild(scriptTag)
 
-try {{ brython() }}
+try {{ brython({{ indexedDB: false }}) }}
 finally {{ scriptTag.remove() }}
