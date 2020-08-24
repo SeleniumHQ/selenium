@@ -1,0 +1,52 @@
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.rc-pagination-prev,
+.rc-pagination-next {
+  border: 0;
+}
+.rc-pagination-item:hover {
+  border-color: var(--MENU-HEADER-BG-color);
+}
+.rc-pagination-item:hover a {
+  color: var(--MENU-HEADER-BG-color);
+}
+.rc-pagination-item-active {
+  background-color: var(--MENU-HEADER-BG-color);
+  border-color: var(--MENU-HEADER-BG-color);
+}
+.rc-pagination-item-active:hover a {
+  color: black;
+  border-color: black;
+}
+.rc-pagination-options-quick-jumper:hover input {
+  border-color: var(--MENU-HEADER-BG-color);
+}
+.rc-pagination-options-quick-jumper input:hover {
+  border-color: var(--MENU-HEADER-BG-color);
+}
+.rc-pagination-options-quick-jumper input:focus {
+  border-color: var(--MENU-HEADER-BG-color);
+}
+
+#body .padding {
+  padding: 1rem 2rem;
+}

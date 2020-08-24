@@ -21,6 +21,8 @@ import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.idealized.Domains;
 import org.openqa.selenium.devtools.idealized.fetch.Fetch;
 import org.openqa.selenium.devtools.idealized.log.Log;
+import org.openqa.selenium.devtools.idealized.page.Page;
+import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
 import org.openqa.selenium.devtools.idealized.target.Target;
 
 public class NoOpDomains implements Domains {
@@ -40,6 +42,16 @@ public class NoOpDomains implements Domains {
 
   @Override
   public Log log() {
+    throw new DevToolsException(WARNING);
+  }
+
+  @Override
+  public Page page() {
+    throw new DevToolsException(WARNING);
+  }
+
+  @Override
+  public RuntimeDomain runtime() {
     throw new DevToolsException(WARNING);
   }
 

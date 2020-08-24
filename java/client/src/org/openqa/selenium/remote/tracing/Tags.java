@@ -20,40 +20,44 @@ package org.openqa.selenium.remote.tracing;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Tags {
-
-  private final static Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Map.of(
-      401, Status.UNAUTHENTICATED,
-      404, Status.NOT_FOUND,
-      408, Status.DEADLINE_EXCEEDED,
-      429, Status.RESOURCE_EXHAUSTED,
-      499, Status.CANCELLED,
-      501, Status.UNIMPLEMENTED,
-      503, Status.UNAVAILABLE,
-      504, Status.DEADLINE_EXCEEDED);
+  private static final Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Stream.of(
+    new SimpleEntry<>(401, Status.UNAUTHENTICATED),
+    new SimpleEntry<>(404, Status.NOT_FOUND),
+    new SimpleEntry<>(408, Status.DEADLINE_EXCEEDED),
+    new SimpleEntry<>(429, Status.RESOURCE_EXHAUSTED),
+    new SimpleEntry<>(499, Status.CANCELLED),
+    new SimpleEntry<>(501, Status.UNIMPLEMENTED),
+    new SimpleEntry<>(503, Status.UNAVAILABLE),
+    new SimpleEntry<>(504, Status.DEADLINE_EXCEEDED)
+  ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
   private Tags() {
     // Utility class
   }
 
   public static final BiConsumer<Span, Span.Kind> KIND =
-    (span, kind) -> span.setAttribute("span.kind", kind.toString());
+    (span, kind) -> span.setAttribute(AttributeKey.SPAN_KIND.getKey(), kind.toString());
 
   public static final BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
-    span.setAttribute("http.method", req.getMethod().toString());
-    span.setAttribute("http.url", req.getUri());
+    span.setAttribute(AttributeKey.HTTP_METHOD.getKey(), req.getMethod().toString());
+    span.setAttribute(AttributeKey.HTTP_URL.getKey(), req.getUri());
   };
 
   public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
     int statusCode = res.getStatus();
     if (res.getTargetHost() != null) {
-      span.setAttribute("http.target_host", res.getTargetHost());
+      span.setAttribute(AttributeKey.HTTP_TARGET_HOST.getKey(), res.getTargetHost());
     }
-    res.getTargetHost();
-    span.setAttribute("http.status_code", statusCode);
+    span.setAttribute(AttributeKey.HTTP_STATUS_CODE.getKey(), statusCode);
 
     if (statusCode > 99 && statusCode < 400) {
       span.setStatus(Status.OK);
@@ -65,4 +69,37 @@ public class Tags {
       span.setStatus(Status.UNKNOWN);
     }
   };
+
+  public static final BiConsumer<Map<String, EventAttributeValue>, HttpRequest>
+      HTTP_REQUEST_EVENT =
+      (map, req) -> {
+        map.put(AttributeKey.HTTP_METHOD.getKey(),
+                EventAttribute.setValue(req.getMethod().toString()));
+        map.put(AttributeKey.HTTP_URL.getKey(), EventAttribute.setValue(req.getUri()));
+      };
+
+  public static final BiConsumer<Map<String, EventAttributeValue>, HttpResponse>
+      HTTP_RESPONSE_EVENT =
+      (map, res) -> {
+        int statusCode = res.getStatus();
+        if (res.getTargetHost() != null) {
+          map.put(AttributeKey.HTTP_TARGET_HOST.getKey(),
+                  EventAttribute.setValue(res.getTargetHost()));
+        }
+        map.put(AttributeKey.HTTP_STATUS_CODE.getKey(), EventAttribute.setValue(statusCode));
+      };
+
+  public static final BiConsumer<Map<String, EventAttributeValue>, Throwable>
+      EXCEPTION =
+      (map, t) -> {
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+
+        map.put(AttributeKey.EXCEPTION_TYPE.getKey(),
+                EventAttribute.setValue(t.getClass().getName()));
+        map.put(AttributeKey.EXCEPTION_STACKTRACE.getKey(),
+                EventAttribute.setValue(sw.toString()));
+
+      };
+
 }

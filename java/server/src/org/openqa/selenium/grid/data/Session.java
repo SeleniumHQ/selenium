@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,10 +40,12 @@ public class Session {
   private final SessionId id;
   private final URI uri;
   private final Capabilities capabilities;
+  private final LocalDateTime startTime;
 
   public Session(SessionId id, URI uri, Capabilities capabilities) {
     this.id = Require.nonNull("Session ID", id);
     this.uri = Require.nonNull("Where the session is running", uri);
+    this.startTime = LocalDateTime.now();
 
     this.capabilities = ImmutableCapabilities.copyOf(
         Require.nonNull("Session capabilities", capabilities));
@@ -58,6 +61,10 @@ public class Session {
 
   public Capabilities getCapabilities() {
     return capabilities;
+  }
+
+  public LocalDateTime getStartTime() {
+    return startTime;
   }
 
   private Map<String, Object> toJson() {

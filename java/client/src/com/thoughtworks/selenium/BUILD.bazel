@@ -40,8 +40,6 @@ java_library(
     deps = [
         ":api",
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/edge",
-        "//java/client/src/org/openqa/selenium/remote",
         artifact("junit:junit"),
         artifact("org.testng:testng"),
     ],

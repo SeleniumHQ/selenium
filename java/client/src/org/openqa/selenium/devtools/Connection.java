@@ -174,6 +174,7 @@ public class Connection implements Closeable {
           handle(data);
         } catch (Throwable t) {
           LOG.log(Level.WARNING, "Unable to process: " + data, t);
+          throw new DevToolsException(t);
         }
       });
     }

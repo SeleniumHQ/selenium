@@ -1,0 +1,8 @@
+/* This is to prevent the rings with z-index from going on top of the modal */
+body>div.ReactModalPortal>div {
+  z-index: 2;
+}
+
+body > div.ReactModalPortal > div > div{
+  background: rgb(231, 255, 235) !important;
+}

@@ -8,11 +8,12 @@ java_library(
         "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",
         artifact("com.google.guava:guava"),
+        artifact("net.jodah:failsafe"),
         artifact("org.zeromq:jeromq:0.5.1"),
     ],
 )

@@ -1,0 +1,303 @@
+/* @import url('https://fonts.googleapis.com/css?family=Encode+Sans:400,700|Open+Sans:400,700&display=swap'); */
+
+:root {
+
+    --MAIN-TEXT-color: #4D555A;
+
+    /* Color of text by default */
+    --MAIN-TITLES-TEXT-color: #4D555A;
+    /* Color of titles h2-h3-h4-h5 */
+    --MAIN-LINK-color: #43B02A;
+    /* Color of links */
+    --MAIN-LINK-HOVER-color: #167ad0;
+    /* Color of hovered links */
+    --MAIN-ANCHOR-color: #43B02A;
+    /* color of anchors on titles */
+
+    --MENU-HEADER-BG-color: #43B02A;
+    /* Background color of menu header */
+    --MENU-HEADER-BORDER-color: #50CE33;
+    /*Color of menu header border */
+
+    --MENU-SEARCH-BG-color: #256117;
+    /* Search field background color (by default borders + icons) */
+    --MENU-SEARCH-BOX-color: #50CE33;
+    /* Override search field border color */
+    --MENU-SEARCH-BOX-ICONS-color: #50CE33;
+    /* Override search field icons color */
+
+    --MENU-SECTIONS-ACTIVE-BG-color: #6F757A;
+    /* Background color of the active section and its childs */
+    --MENU-SECTIONS-BG-color: #4D555A;
+    /* Background color of other sections */
+    --MENU-SECTIONS-LINK-color: #F7F8F8;
+    /* Color of links in menu */
+    --MENU-SECTIONS-LINK-HOVER-color: #e6e6e6;
+    /* Color of links in menu, when hovered */
+    --MENU-SECTION-ACTIVE-CATEGORY-color: #4D555A;
+    /* Color of active category text */
+    --MENU-SECTION-ACTIVE-CATEGORY-BG-color: #fff;
+    /* Color of background for the active category (only) */
+
+    --MENU-VISITED-color: #43B02A;
+    /* Color of 'page visited' icons in menu */
+    --MENU-SECTION-HR-color: #20272b;
+    /* Color of <hr> separator in menu */
+
+}
+
+body {
+    color: var(--MAIN-TEXT-color) !important;
+}
+
+textarea:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="color"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+select[multiple=multiple]:focus {
+    border-color: none;
+    box-shadow: none;
+}
+
+h2,
+h3,
+h4,
+h5 {
+    color: var(--MAIN-TITLES-TEXT-color) !important;
+}
+
+a {
+    color: var(--MAIN-LINK-color);
+}
+
+.anchor {
+    color: var(--MAIN-ANCHOR-color);
+}
+
+a:hover {
+    color: var(--MAIN-LINK-HOVER-color);
+}
+
+#sidebar ul li.visited>a .read-icon {
+    color: var(--MENU-VISITED-color);
+}
+
+#body a.highlight:after {
+    display: block;
+    content: "";
+    height: 1px;
+    width: 0%;
+    -webkit-transition: width 0.5s ease;
+    -moz-transition: width 0.5s ease;
+    -ms-transition: width 0.5s ease;
+    transition: width 0.5s ease;
+    background-color: var(--MAIN-LINK-HOVER-color);
+}
+
+#sidebar {
+    background-color: var(--MENU-SECTIONS-BG-color);
+}
+
+#sidebar #header-wrapper {
+    background: var(--MENU-HEADER-BG-color);
+    color: var(--MENU-SEARCH-BOX-color);
+    border-color: var(--MENU-HEADER-BORDER-color);
+}
+
+#sidebar .searchbox {
+    border-color: var(--MENU-SEARCH-BOX-color);
+    background: var(--MENU-SEARCH-BG-color);
+}
+
+#sidebar ul.topics>li.parent,
+#sidebar ul.topics>li.active {
+    background: var(--MENU-SECTIONS-ACTIVE-BG-color);
+}
+
+#sidebar .searchbox * {
+    color: var(--MENU-SEARCH-BOX-ICONS-color);
+}
+
+#sidebar a {
+    color: var(--MENU-SECTIONS-LINK-color);
+}
+
+#sidebar a:hover {
+    color: var(--MENU-SECTIONS-LINK-HOVER-color);
+}
+
+#sidebar ul li.active>a {
+    background: var(--MENU-SECTION-ACTIVE-CATEGORY-BG-color);
+    color: var(--MENU-SECTION-ACTIVE-CATEGORY-color) !important;
+}
+
+#sidebar hr {
+    border-color: var(--MENU-SECTION-HR-color);
+}
+
+/*
+ Styling
+*/
+body {
+    font-family: "Open Sans", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
+    font-weight: normal;
+    line-height: 26px;
+    letter-spacing: 0;
+    font-size: 15px !important;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: "Encode Sans", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
+    color: #4D555A;
+}
+
+h1 {
+    font-size: 44px;
+    letter-spacing: 20;
+    line-height: 56px !important;
+    text-align: center;
+    text-transform: none;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 32px;
+    letter-spacing: 20;
+    line-height: 40px !important;
+}
+
+h3 {
+    font-size: 22px;
+    line-height: 28px !important;
+}
+
+h4 {
+    font-size: 20px;
+    line-height: 32px !important;
+    font-weight: bold;
+}
+
+/*
+  Styles for code tabs
+  https://codepen.io/markcaron/pen/MvGRYV
+*/
+
+/*
+ CSS for the main interaction
+*/
+.tabset>input[type="radio"] {
+    position: absolute;
+    left: -200vw;
+}
+
+.tabset .tab-panel {
+    display: none;
+}
+
+.tabset>input:first-child:checked~.tab-panels>.tab-panel:first-child,
+.tabset>input:nth-child(3):checked~.tab-panels>.tab-panel:nth-child(2),
+.tabset>input:nth-child(5):checked~.tab-panels>.tab-panel:nth-child(3),
+.tabset>input:nth-child(7):checked~.tab-panels>.tab-panel:nth-child(4),
+.tabset>input:nth-child(9):checked~.tab-panels>.tab-panel:nth-child(5),
+.tabset>input:nth-child(11):checked~.tab-panels>.tab-panel:nth-child(6) {
+    display: block;
+}
+
+.tabset>label {
+    position: relative;
+    display: inline-block;
+    padding: 15px 15px 25px;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.tabset>label::after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    bottom: 10px;
+    width: 22px;
+    height: 4px;
+    background: #8d8d8d;
+}
+
+.tabset>label:hover,
+.tabset>input:focus+label {
+    color: #06c;
+}
+
+.tabset>label:hover::after,
+.tabset>input:focus+label::after,
+.tabset>input:checked+label::after {
+    background: #06c;
+}
+
+.tabset>input:checked+label {
+    border-color: #ccc;
+    border-bottom: 1px solid #fff;
+    margin-bottom: -1px;
+}
+
+.tab-panel {
+    border-top: 1px solid #ccc;
+}
+
+/*
+ Demo purposes only
+*/
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+.tabset {
+    max-width: 65em;
+}
+
+/*
+  Metadata
+*/
+.meta-data {
+    padding-top: 80px;
+    font-size: 14px;
+    text-align: right;
+}
+
+/*
+  Chapter text alignment
+*/
+#chapter p {
+    text-align: left !important;
+}
+
+/*
+  Text size for chapters in left menu
+*/
+#sidebar ul.topics>li>a {
+    font-size: 1rem !important;
+}
+
+/*
+  Color for the select element of the languages
+*/
+
+.select-style select option {
+    color: black;
+}

@@ -22,7 +22,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/test/org/openqa/selenium/build",
         "//java/client/test/org/openqa/selenium/environment",
-        "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),

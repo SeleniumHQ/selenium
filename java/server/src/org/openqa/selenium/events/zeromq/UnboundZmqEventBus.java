@@ -18,6 +18,8 @@
 package org.openqa.selenium.events.zeromq;
 
 import com.google.common.collect.EvictingQueue;
+import net.jodah.failsafe.Failsafe;
+import net.jodah.failsafe.RetryPolicy;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
@@ -32,6 +34,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -66,17 +69,29 @@ class UnboundZmqEventBus implements EventBus {
       return thread;
     });
 
-    LOG.info(String.format("Connecting to %s and %s", publishConnection, subscribeConnection));
+    String connectionMessage = String.format("Connecting to %s and %s", publishConnection, subscribeConnection);
+    LOG.info(connectionMessage);
 
-    sub = context.createSocket(SocketType.SUB);
-    sub.setIPv6(isSubAddressIPv6(publishConnection));
-    sub.connect(publishConnection);
-    sub.subscribe(new byte[0]);
+    RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
+      .withMaxAttempts(5)
+      .withDelay(5, 10, ChronoUnit.SECONDS)
+      .onFailedAttempt(e -> LOG.log(Level.WARNING, String.format("%s failed", connectionMessage)))
+      .onRetry(e -> LOG.log(Level.WARNING, String.format("Failure #%s. Retrying.", e.getAttemptCount())))
+      .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."));
 
-    pub = context.createSocket(SocketType.PUB);
-    pub.setIPv6(isSubAddressIPv6(subscribeConnection));
-    pub.connect(subscribeConnection);
+    Failsafe.with(retryPolicy).run(
+      () -> {
+        sub = context.createSocket(SocketType.SUB);
+        sub.setIPv6(isSubAddressIPv6(publishConnection));
+        sub.connect(publishConnection);
+        sub.subscribe(new byte[0]);
 
+        pub = context.createSocket(SocketType.PUB);
+        pub.setIPv6(isSubAddressIPv6(subscribeConnection));
+        pub.connect(subscribeConnection);
+      }
+    );
+    // Connections are already established
     ZMQ.Poller poller = context.createPoller(1);
     poller.register(sub, ZMQ.Poller.POLLIN);
 
