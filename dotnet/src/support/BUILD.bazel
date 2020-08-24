@@ -1,5 +1,5 @@
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
-load("//:copy_file.bzl", "copy_file")
+load("//common:defs.bzl", "copy_file")
 load("//dotnet:nuget.bzl", "nuget_package")
 load("//dotnet:assembly-info.bzl", "generated_assembly_info")
 load(
