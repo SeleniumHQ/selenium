@@ -24,7 +24,7 @@ class Service(service.ChromiumService):
     """
 
     def __init__(self, executable_path, port=0, service_args=None,
-                 log_path=None, env=None):
+                 log_path=None, env=None, creationflags=0):
         """
         Creates a new instance of the Service
 
@@ -40,4 +40,5 @@ class Service(service.ChromiumService):
             service_args,
             log_path,
             env,
-            "Please see https://chromedriver.chromium.org/home")
+            "Please see https://chromedriver.chromium.org/home",
+            creationflags)
