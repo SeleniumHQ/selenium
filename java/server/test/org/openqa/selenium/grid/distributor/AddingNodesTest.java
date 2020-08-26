@@ -199,16 +199,17 @@ public class AddingNodesTest {
     // Craft a status that makes it look like the node is busy, and post it on the bus.
     NodeStatus status = node.getStatus();
     NodeStatus crafted = new NodeStatus(
-        status.getNodeId(),
-        status.getUri(),
-        status.getMaxSessionCount(),
-        ImmutableSet.of(
-          new Slot(
-            new SlotId(status.getNodeId(), UUID.randomUUID()),
-            CAPS,
-            Instant.now(),
-            Optional.of(new Active(CAPS, new SessionId(UUID.randomUUID()), CAPS, Instant.now())))),
-        null);
+      status.getNodeId(),
+      status.getUri(),
+      status.getMaxSessionCount(),
+      ImmutableSet.of(
+        new Slot(
+          new SlotId(status.getNodeId(), UUID.randomUUID()),
+          CAPS,
+          Instant.now(),
+          Optional.of(new Active(CAPS, new SessionId(UUID.randomUUID()), CAPS, Instant.now())))),
+      false,
+      null);
 
     bus.fire(new NodeStatusEvent(crafted));
 
@@ -298,21 +299,26 @@ public class AddingNodesTest {
       }
 
       return new NodeStatus(
-          getId(),
-          getUri(),
-          1,
-          ImmutableSet.of(
-            new Slot(
-              new SlotId(getId(), UUID.randomUUID()),
-              CAPS,
-              Instant.now(),
-              Optional.ofNullable(active))),
-          "cheese");
+        getId(),
+        getUri(),
+        1,
+        ImmutableSet.of(
+          new Slot(
+            new SlotId(getId(), UUID.randomUUID()),
+            CAPS,
+            Instant.now(),
+            Optional.ofNullable(active))),
+        false,
+        "cheese");
     }
 
     @Override
     public HealthCheck getHealthCheck() {
       return () -> new HealthCheck.Result(true, "tl;dr");
+    }
+
+    @Override
+    public void drain() {
     }
   }
 

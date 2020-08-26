@@ -34,6 +34,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -73,6 +74,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -102,6 +104,7 @@ public class LocalNode extends Node {
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
   private final String registrationSecret;
+  private AtomicInteger pendingSessions = new AtomicInteger();
 
   private LocalNode(
     Tracer tracer,
@@ -157,6 +160,13 @@ public class LocalNode extends Node {
         this.stop(event.getData(SessionId.class));
       } catch (NoSuchSessionException ignore) {
       }
+      if (this.isDraining()) {
+        int done = pendingSessions.decrementAndGet();
+        if (done <= 0) {
+          LOG.info("Firing node drain complete message");
+          bus.fire(new NodeDrainComplete(this.getId()));
+        }
+      }
     });
   }
 
@@ -198,6 +208,10 @@ public class LocalNode extends Node {
         span.setStatus(Status.RESOURCE_EXHAUSTED);
         attributeMap.put("max.session.count", EventAttribute.setValue(maxSessionCount));
         span.addEvent("Max session count reached", attributeMap);
+        return Optional.empty();
+      }
+      if (isDraining()) {
+        span.setStatus(Status.UNAVAILABLE.withDescription("The node is draining. Cannot accept new sessions."));
         return Optional.empty();
       }
 
@@ -386,7 +400,7 @@ public class LocalNode extends Node {
     }
   }
 
-  private void killSession(SessionSlot slot) {
+  private void  killSession(SessionSlot slot) {
     currentSessions.invalidate(slot.getSession().getId());
     // Attempt to stop the session
     if (!slot.isAvailable()) {
@@ -422,6 +436,7 @@ public class LocalNode extends Node {
       externalUri,
       maxSessionCount,
       slots,
+      isDraining(),
       registrationSecret);
   }
 
@@ -430,11 +445,24 @@ public class LocalNode extends Node {
     return healthCheck;
   }
 
+  @Override
+  public void drain() {
+    draining = true;
+    int currentSessionCount = getCurrentSessionCount();
+    if (currentSessionCount == 0) {
+      LOG.info("Firing node drain complete message");
+      bus.fire(new NodeDrainComplete(this.getId()));
+    } else {
+      pendingSessions.set(currentSessionCount);
+    }
+  }
+
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
       "id", getId(),
       "uri", externalUri,
       "maxSessions", maxSessionCount,
+      "draining", isDraining(),
       "capabilities", factories.stream()
         .map(SessionSlot::getStereotype)
         .collect(Collectors.toSet()));

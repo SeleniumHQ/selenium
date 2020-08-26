@@ -338,7 +338,13 @@ public class OneShotNode extends Node {
           driver == null ?
             Optional.empty() :
             Optional.of(new Active(stereotype, sessionId, capabilities, Instant.now())))),
+      draining,
       registrationSecret);
+  }
+
+  @Override
+  public void drain() {
+    draining = true;
   }
 
   @Override

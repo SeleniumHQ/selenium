@@ -66,7 +66,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -138,6 +138,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .to(() -> new CreateSession(this)),
       post("/se/grid/distributor/node")
           .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
+      post("/se/grid/distributor/node/{nodeId}/drain")
+          .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
       delete("/se/grid/distributor/node/{nodeId}")
           .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
       get("/se/grid/distributor/status")
@@ -146,7 +148,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   }
 
   public CreateSessionResponse newSession(HttpRequest request)
-    throws SessionNotCreatedException {
+      throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -251,6 +253,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   }
 
   public abstract Distributor add(Node node);
+
+  public abstract boolean drain(NodeId nodeId);
 
   public abstract void remove(NodeId nodeId);
 

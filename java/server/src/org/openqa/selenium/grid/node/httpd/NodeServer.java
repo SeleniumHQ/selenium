@@ -26,6 +26,7 @@ import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
@@ -136,7 +137,7 @@ public class NodeServer extends TemplateGridCommand {
     });
 
     bus.addListener(NODE_DRAIN_COMPLETE, event -> {
-      UUID nodeId = event.getData(UUID.class);
+      NodeId nodeId = event.getData(NodeId.class);
       if (!node.getId().equals(nodeId)) {
         return;
       }
