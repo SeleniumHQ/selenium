@@ -165,7 +165,6 @@ public class Host {
     return new DistributorStatus.NodeSummary(
         nodeId,
         uri,
-        getHostStatus() == UP,
         node.isDraining(),
         maxSessionCount,
         stereotypes,

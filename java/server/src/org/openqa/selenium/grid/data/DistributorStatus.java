@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
@@ -49,7 +50,7 @@ public class DistributorStatus {
 
   public boolean hasCapacity() {
     return getNodes().stream()
-        .map(summary -> summary.isUp() && summary.hasCapacity() && !summary.isDraining())
+        .map(summary -> summary.getHostStatus().toString().equals("UP") && summary.hasCapacity())
         .reduce(Boolean::logicalOr)
         .orElse(false);
   }
@@ -86,8 +87,7 @@ public class DistributorStatus {
 
     private final UUID nodeId;
     private final URI uri;
-    private final boolean up;
-    private final boolean draining;
+    private final Host.Status status ;
     private final int maxSessionCount;
     private final Map<Capabilities, Integer> stereotypes;
     private final Map<Capabilities, Integer> used;
@@ -96,16 +96,14 @@ public class DistributorStatus {
     public NodeSummary(
         UUID nodeId,
         URI uri,
-        boolean up,
-        boolean draining,
+        Host.Status status,
         int maxSessionCount,
         Map<Capabilities, Integer> stereotypes,
         Map<Capabilities, Integer> usedStereotypes,
-        Set <Session> activeSessions) {
+        Set<Session> activeSessions) {
       this.nodeId = Require.nonNull("Node id", nodeId);
       this.uri = Require.nonNull("URI", uri);
-      this.up = up;
-      this.draining = draining;
+      this.status = status;
       this.maxSessionCount = maxSessionCount;
       this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereoytpes", stereotypes));
       this.used = ImmutableMap.copyOf(Require.nonNull("User stereotypes", usedStereotypes));
@@ -120,11 +118,9 @@ public class DistributorStatus {
       return uri;
     }
 
-    public boolean isUp() {
-      return up;
+    public Host.Status getHostStatus() {
+      return status;
     }
-
-    public boolean isDraining() { return draining; }
 
     public int getMaxSessionCount() {
       return maxSessionCount;
@@ -157,9 +153,8 @@ public class DistributorStatus {
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
       builder.put("nodeId", getNodeId());
       builder.put("uri", getUri());
-      builder.put("up", isUp());
+      builder.put("status", status.toString());
       builder.put("maxSessionCount", getMaxSessionCount());
-      builder.put("draining", isDraining());
       builder.put("stereotypes", getStereotypes().entrySet().stream()
           .map(entry -> ImmutableMap.of(
               "capabilities", entry.getKey(),
@@ -177,8 +172,7 @@ public class DistributorStatus {
     private static NodeSummary fromJson(JsonInput input) {
       UUID nodeId = null;
       URI uri = null;
-      boolean up = false;
-      boolean draining = false;
+      Host.Status status = null;
       int maxSessionCount = 0;
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<Capabilities, Integer> used = new HashMap<>();
@@ -199,12 +193,12 @@ public class DistributorStatus {
             stereotypes = readCapabilityCounts(input);
             break;
 
-          case "up":
-            up = input.nextBoolean();
+          case "UP":
+            status = Host.Status.UP;
             break;
 
           case "draining":
-            draining = input.nextBoolean();
+            status = Host.Status.DRAINING;
             break;
 
           case "uri":
@@ -223,7 +217,7 @@ public class DistributorStatus {
 
       input.endObject();
 
-      return new NodeSummary(nodeId, uri, up, draining, maxSessionCount, stereotypes, used);
+      return new NodeSummary(nodeId, uri, status, maxSessionCount, stereotypes, used, activeSessions);
     }
 
     private static Map<Capabilities, Integer> readCapabilityCounts(JsonInput input) {
