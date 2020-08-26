@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.io.UncheckedIOException;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -93,6 +94,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .to(() -> new CreateSession(this)),
       post("/se/grid/distributor/node")
           .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
+      post("/se/grid/distributor/node/{nodeId}/drain")
+          .to((Map<String, String> params) -> new DrainNode(this, UUID.fromString(params.get("nodeId")))),
       delete("/se/grid/distributor/node/{nodeId}")
           .to(params -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
       get("/se/grid/distributor/status")
@@ -104,6 +107,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     throws SessionNotCreatedException;
 
   public abstract Distributor add(Node node);
+
+  public abstract void drain(UUID nodeId);
 
   public abstract void remove(UUID nodeId);
 

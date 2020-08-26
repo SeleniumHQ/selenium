@@ -200,6 +200,33 @@ public class DistributorTest {
   }
 
   @Test
+  public void testDrainingNodeDoesNotAcceptNewSessions() throws URISyntaxException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
+
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
+        .build();
+
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory(node),
+        sessions,
+        null);
+    distributor.add(node);
+    distributor.drain(node.getId());
+
+
+  }
+
+  @Test
+  public void testDrainedNodeShutsDownOnceEmpty() {
+
+  }
+
+  @Test
   public void registeringTheSameNodeMultipleTimesOnlyCountsTheFirstTime()
       throws URISyntaxException {
     URI nodeUri = new URI("http://example:5678");
@@ -683,6 +710,24 @@ public class DistributorTest {
 
   @Test
   public void statusShouldIndicateThatDistributorIsNotAvailableIfNodesAreDown()
+      throws URISyntaxException {
+    Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
+    URI uri = new URI("http://example.com");
+
+    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        .advanced()
+        .healthCheck(() -> new HealthCheck.Result(false, "TL;DR"))
+        .build();
+
+    local.add(node);
+
+    DistributorStatus status = local.getStatus();
+    assertFalse(status.hasCapacity());
+  }
+
+  @Test
+  public void disabledNodeShouldNotAcceptNewRequests()
       throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("http://example.com");

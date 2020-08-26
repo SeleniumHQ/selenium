@@ -42,6 +42,7 @@ public class NodeStatusTest {
         100,
         ImmutableMap.of(stereotype, 1),
         ImmutableSet.of(new NodeStatus.Active(stereotype, new SessionId(UUID.randomUUID()), new ImmutableCapabilities("peas", "sausages"))),
+        false,
         "cheese");
 
     Json json = new Json();

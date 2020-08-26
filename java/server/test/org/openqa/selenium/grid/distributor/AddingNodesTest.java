@@ -196,6 +196,7 @@ public class AddingNodesTest {
         status.getMaxSessionCount(),
         status.getStereotypes(),
         ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)),
+        false,
         null);
 
     bus.fire(new NodeStatusEvent(crafted));
@@ -291,12 +292,17 @@ public class AddingNodesTest {
           1,
           ImmutableMap.of(CAPS, 1),
           actives,
+          false,
           "cheese");
     }
 
     @Override
     public HealthCheck getHealthCheck() {
       return () -> new HealthCheck.Result(true, "tl;dr");
+    }
+
+    @Override
+    public void drain() {
     }
   }
 

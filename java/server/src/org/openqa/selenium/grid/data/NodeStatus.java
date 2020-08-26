@@ -48,17 +48,20 @@ public class NodeStatus {
   private final Set<Active> snapshot;
   private final String registrationSecret;
 
+  private final boolean draining;
+
   public NodeStatus(
       UUID nodeId,
       URI externalUri,
       int maxSessionCount,
       Map<Capabilities, Integer> stereotypes,
       Collection<Active> snapshot,
+      boolean draining,
       String registrationSecret) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count", maxSessionCount);
-
+    this.draining = draining;
     this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereotypes", stereotypes));
     this.snapshot = ImmutableSet.copyOf(Require.nonNull("Snapshot", snapshot));
     this.registrationSecret = registrationSecret;
@@ -88,6 +91,8 @@ public class NodeStatus {
     return stereotypes;
   }
 
+  public boolean isDraining() { return draining; }
+
   public Set<Active> getCurrentSessions() {
     return snapshot;
   }
@@ -108,6 +113,7 @@ public class NodeStatus {
            this.maxSessionCount == that.maxSessionCount &&
            Objects.equals(this.stereotypes, that.stereotypes) &&
            Objects.equals(this.snapshot, that.snapshot) &&
+           Objects.equals(this.draining, that.draining) &&
            Objects.equals(this.registrationSecret, that.registrationSecret);
   }
 
@@ -123,6 +129,7 @@ public class NodeStatus {
         .put("maxSessions", maxSessionCount)
         .put("stereotypes", asCapacity(stereotypes))
         .put("sessions", snapshot)
+        .put("isDraining", draining)
         .put("registrationSecret", Optional.ofNullable(registrationSecret))
         .build();
   }
@@ -152,6 +159,7 @@ public class NodeStatus {
           ((Number) raw.get("maxSessions")).intValue(),
           readCapacityNamed(raw, "stereotypes"),
           sessions,
+          (boolean) raw.get("isDraining"),
           ((String) raw.get("registrationSecret")));
     } catch (URISyntaxException e) {
       throw new JsonException(e);
@@ -176,6 +184,7 @@ public class NodeStatus {
 
     private final Capabilities stereotype;
     private final SessionId id;
+    private final boolean isDraining = true;
     private final Capabilities currentCapabilities;
 
     public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities) {
@@ -209,9 +218,7 @@ public class NodeStatus {
     }
 
     @Override
-    public int hashCode() {
-      return Objects.hash(getStereotype(), id, getCurrentCapabilities());
-    }
+    public int hashCode() { return Objects.hash(getStereotype(), id, getCurrentCapabilities()); }
 
     private Map<String, Object> toJson() {
       return ImmutableMap.of(

@@ -32,10 +32,10 @@ import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -85,6 +85,18 @@ public class RemoteDistributor extends Distributor {
     LOG.info(String.format("Added node %s.", node.getId()));
 
     return this;
+  }
+
+  @Override
+  public void drain(UUID nodeId) {
+    Objects.requireNonNull(nodeId, "Node ID must be set");
+    HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node/" + nodeId + "/drain");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
+    request.setContent(asJson(nodeId));
+
+    HttpResponse response = client.execute(request);
+
+    Values.get(response, Void.class);
   }
 
   @Override

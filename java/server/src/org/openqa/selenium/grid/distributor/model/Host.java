@@ -84,7 +84,9 @@ public class Host {
       HealthCheck.Result result = healthCheck.check();
       Host.Status current = result.isAlive() ? UP : DOWN;
       Host.Status previous = setHostStatus(current);
-      if (previous == DRAINING) {
+
+      //If the node has been set to maintenance mode, set the status here as draining
+      if (node.isDraining() || previous == DRAINING) {
         // We want to continue to allow the node to drain.
         setHostStatus(DRAINING);
         return;
@@ -164,12 +166,12 @@ public class Host {
         nodeId,
         uri,
         getHostStatus() == UP,
+        node.isDraining(),
         maxSessionCount,
         stereotypes,
         used,
         activeSessions);
   }
-
 
   public Status getHostStatus() {
     return status;
@@ -178,12 +180,20 @@ public class Host {
   /**
    * @return The previous status of the node.
    */
-  private Status setHostStatus(Status status) {
+  Status setHostStatus(Status status) {
     Status toReturn = this.status;
     this.status = Require.nonNull("Status", status);
+    if (status.equals(DRAINING) && !node.isDraining()) {
+      node.drain();
+    }
     return toReturn;
   }
 
+  /**
+   * Whether or not the number of sessions is less than maxSessions
+   * @param caps
+   * @return
+   */
   public boolean hasCapacity(Capabilities caps) {
     Lock read = lock.readLock();
     read.lock();
@@ -262,6 +272,7 @@ public class Host {
     Host that = (Host) obj;
     return this.node.equals(that.node);
   }
+
 
   public enum Status {
     UP,
