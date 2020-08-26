@@ -65,7 +65,7 @@ public class LocalDistributorTest {
   private EventBus bus;
   private HttpClient.Factory clientFactory;
   private URI uri;
-  private Node local;
+  private Node localNode;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -75,7 +75,7 @@ public class LocalDistributorTest {
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
     uri = new URI("http://localhost:1234");
-    local = LocalNode.builder(tracer, bus, uri, uri, null)
+    localNode = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .maximumConcurrentSessions(2)
         .build();
@@ -84,7 +84,7 @@ public class LocalDistributorTest {
   @Test
   public void testAddNodeToDistributor() {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
-    distributor.add(local);
+    distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
     //Check the size
@@ -93,14 +93,14 @@ public class LocalDistributorTest {
 
     //Check a couple attributes
     final DistributorStatus.NodeSummary distributorNode = nodes.iterator().next();
-    assertThat(distributorNode.getNodeId()).isEqualByComparingTo(local.getId());
+    assertThat(distributorNode.getNodeId()).isEqualByComparingTo(localNode.getId());
     assertThat(distributorNode.getUri()).isEqualTo(uri);
   }
 
   @Test
   public void testRemoveNodeFromDistributor() {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
-    distributor.add(local);
+    distributor.add(localNode);
 
     //Check the size
     DistributorStatus statusBefore = distributor.getStatus();
@@ -108,7 +108,7 @@ public class LocalDistributorTest {
     assertThat(nodesBefore.size()).isEqualTo(1);
 
     //Recheck the status--should be zero
-    distributor.remove(local.getId());
+    distributor.remove(localNode.getId());
     DistributorStatus statusAfter = distributor.getStatus();
     final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
     assertThat(nodesAfter.size()).isEqualTo(0);
@@ -117,8 +117,8 @@ public class LocalDistributorTest {
   @Test
   public void testAddSameNodeTwice() {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
-    distributor.add(local);
-    distributor.add(local);
+    distributor.add(localNode);
+    distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
     //Should only be one node after dupe check
@@ -159,6 +159,56 @@ public class LocalDistributorTest {
       .build();
     distributor.add(node);
 
+  @Test
+  public void testDrainNodeFromDistributor() {
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    distributor.add(localNode);
+    assertThat(localNode.isDraining()).isFalse();
+
+    //Check the size - there should be one node
+    DistributorStatus statusBefore = distributor.getStatus();
+    final Set<DistributorStatus.NodeSummary> nodesBefore = statusBefore.getNodes();
+    assertThat(nodesBefore.size()).isEqualTo(1);
+    DistributorStatus.NodeSummary nodeBefore = nodesBefore.iterator().next();
+    assertThat(nodeBefore.isDraining()).isFalse();
+
+    distributor.drain(localNode.getId());
+    assertThat(localNode.isDraining()).isTrue();
+
+    //Recheck the status - there should still be one node, but it's listed as draining
+    DistributorStatus statusAfter = distributor.getStatus();
+    final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
+    assertThat(nodesAfter.size()).isEqualTo(1);
+
+    //The node should be draining
+    DistributorStatus.NodeSummary nodeAfter = nodesAfter.iterator().next();
+    assertThat(nodeAfter.isDraining()).isTrue();
+  }
+
+  @Test
+  public void testDrainNodeFromNode() {
+    assertThat(localNode.isDraining()).isFalse();
+
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    distributor.add(localNode);
+
+    localNode.drain();
+    assertThat(localNode.isDraining()).isTrue();
+
+    DistributorStatus statusAfter = distributor.getStatus();
+    final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
+    assertThat(nodesAfter.size()).isEqualTo(1);
+
+    //The node should be draining
+    DistributorStatus.NodeSummary nodeAfter = nodesAfter.iterator().next();
+    assertThat(nodeAfter.isDraining()).isTrue();
+  }
+
+  //Build a few Host Buckets of different sizes
+  private Map<String, Set<Host>> buildBuckets(int...sizes) {
+    Map<String, Set<Host>> hostBuckets = new HashMap<>();
+    //The fact that it's re-using the same node doesn't matter--we're calculating "sameness"
+    // based purely on the number of hosts in the Set
     HttpRequest req = new HttpRequest(HttpMethod.POST, "/session")
       .setContent(Contents.asJson(ImmutableMap.of(
         "capabilities", ImmutableMap.of(

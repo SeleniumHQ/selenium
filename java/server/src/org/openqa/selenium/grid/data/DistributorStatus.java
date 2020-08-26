@@ -49,7 +49,7 @@ public class DistributorStatus {
 
   public boolean hasCapacity() {
     return getNodes().stream()
-        .map(summary -> summary.isUp() && summary.hasCapacity())
+        .map(summary -> summary.isUp() && summary.hasCapacity() && !summary.isDraining())
         .reduce(Boolean::logicalOr)
         .orElse(false);
   }
@@ -87,6 +87,7 @@ public class DistributorStatus {
     private final UUID nodeId;
     private final URI uri;
     private final boolean up;
+    private final boolean draining;
     private final int maxSessionCount;
     private final Map<Capabilities, Integer> stereotypes;
     private final Map<Capabilities, Integer> used;
@@ -96,6 +97,7 @@ public class DistributorStatus {
         UUID nodeId,
         URI uri,
         boolean up,
+        boolean draining,
         int maxSessionCount,
         Map<Capabilities, Integer> stereotypes,
         Map<Capabilities, Integer> usedStereotypes,
@@ -103,6 +105,7 @@ public class DistributorStatus {
       this.nodeId = Require.nonNull("Node id", nodeId);
       this.uri = Require.nonNull("URI", uri);
       this.up = up;
+      this.draining = draining;
       this.maxSessionCount = maxSessionCount;
       this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereoytpes", stereotypes));
       this.used = ImmutableMap.copyOf(Require.nonNull("User stereotypes", usedStereotypes));
@@ -120,6 +123,8 @@ public class DistributorStatus {
     public boolean isUp() {
       return up;
     }
+
+    public boolean isDraining() { return draining; }
 
     public int getMaxSessionCount() {
       return maxSessionCount;
@@ -154,6 +159,7 @@ public class DistributorStatus {
       builder.put("uri", getUri());
       builder.put("up", isUp());
       builder.put("maxSessionCount", getMaxSessionCount());
+      builder.put("draining", isDraining());
       builder.put("stereotypes", getStereotypes().entrySet().stream()
           .map(entry -> ImmutableMap.of(
               "capabilities", entry.getKey(),
@@ -172,6 +178,7 @@ public class DistributorStatus {
       UUID nodeId = null;
       URI uri = null;
       boolean up = false;
+      boolean draining = false;
       int maxSessionCount = 0;
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<Capabilities, Integer> used = new HashMap<>();
@@ -196,6 +203,10 @@ public class DistributorStatus {
             up = input.nextBoolean();
             break;
 
+          case "draining":
+            draining = input.nextBoolean();
+            break;
+
           case "uri":
             uri = input.read(URI.class);
             break;
@@ -212,7 +223,7 @@ public class DistributorStatus {
 
       input.endObject();
 
-      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used, activeSessions);
+      return new NodeSummary(nodeId, uri, up, draining, maxSessionCount, stereotypes, used);
     }
 
     private static Map<Capabilities, Integer> readCapabilityCounts(JsonInput input) {
