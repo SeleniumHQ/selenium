@@ -37,6 +37,9 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.SessionRequestQueue;
+import org.openqa.selenium.grid.sessionqueue.SessionRequestQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequestQueue;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.netty.server.NettyServer;
@@ -122,15 +125,12 @@ public class Hub extends TemplateGridCommand {
       handler,
       networkOptions.getHttpClientFactory(tracer));
 
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      sessions,
-      null);
-    handler.addHandler(distributor);
+    SessionRequestQueue sessionRequests = new LocalSessionRequestQueue(tracer, bus);
+    SessionRequestQueuer queuer = new SessionRequestQueuer(tracer, bus, sessionRequests);
+    handler.addHandler(queuer);
 
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, sessionRequests, null);
+    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
     HttpHandler readinessCheck = req -> {
       boolean ready = router.isReady() && bus.isReady();

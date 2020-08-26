@@ -1,11 +1,10 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 
 java_library(
-    name = "router",
+    name = "sessionqueue",
     srcs = glob(["*.java"]),
     visibility = [
-        "//java/server/src/org/openqa/selenium/grid/commands:__subpackages__",
-        "//java/server/src/org/openqa/selenium/grid/router:__subpackages__",
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     exports = [
@@ -15,12 +14,11 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/data",
-        "//java/server/src/org/openqa/selenium/grid/distributor",
-        "//java/server/src/org/openqa/selenium/grid/sessionmap",
-        "//java/server/src/org/openqa/selenium/grid/sessionqueue",
-        "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/status",
+        "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid/log",
         artifact("com.google.guava:guava"),
     ],
 )

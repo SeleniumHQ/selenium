@@ -40,6 +40,9 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.SessionRequestQueue;
+import org.openqa.selenium.grid.sessionqueue.SessionRequestQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequestQueue;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
@@ -137,10 +140,13 @@ public class Standalone extends TemplateGridCommand {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     combinedHandler.addHandler(sessions);
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
+    SessionRequestQueue sessionRequests = new LocalSessionRequestQueue(tracer, bus);
+    SessionRequestQueuer queuer = new SessionRequestQueuer(tracer, bus, sessionRequests);
+    combinedHandler.addHandler(queuer);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, sessionRequests, null);
     combinedHandler.addHandler(distributor);
 
-    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
       .with(networkOptions.getSpecComplianceChecks());
 
     HttpHandler readinessCheck = req -> {

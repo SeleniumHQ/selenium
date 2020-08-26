@@ -85,10 +85,10 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
     Json json = new Json();
     routes = Route.combine(
-      post("/session").to(() -> req -> {
-        CreateSessionResponse sessionResponse = newSession(req);
-        return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
-      }),
+//      post("/session").to(() -> req -> {
+//        CreateSessionResponse sessionResponse = newSession(req);
+//        return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
+//      }),
       post("/se/grid/distributor/session")
           .to(() -> new CreateSession(this)),
       post("/se/grid/distributor/node")

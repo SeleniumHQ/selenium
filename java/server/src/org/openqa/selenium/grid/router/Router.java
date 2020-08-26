@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionqueue.SessionRequestQueuer;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -41,35 +42,59 @@ public class Router implements HasReadyState, Routable {
 
   private final Routable routes;
   private final SessionMap sessions;
+  private SessionRequestQueuer sessionRequestQueuer;
   private final Distributor distributor;
 
+
   public Router(
-    Tracer tracer,
-    HttpClient.Factory clientFactory,
-    SessionMap sessions,
-    Distributor distributor) {
+      Tracer tracer,
+      HttpClient.Factory clientFactory,
+      SessionMap sessions,
+      Distributor distributor) {
     Require.nonNull("Tracer to use", tracer);
     Require.nonNull("HTTP client factory", clientFactory);
 
     this.sessions = Require.nonNull("Session map", sessions);
     this.distributor = Require.nonNull("Distributor", distributor);
 
-    routes =
-      combine(
+    routes = combine(
         get("/status")
-          .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
+            .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
         sessions.with(new SpanDecorator(tracer, req -> "session_map")),
         distributor.with(new SpanDecorator(tracer, req -> "distributor")),
         matching(req -> req.getUri().startsWith("/session/"))
-          .to(() -> new HandleSession(tracer, clientFactory, sessions)));
+            .to(() -> new HandleSession(tracer, clientFactory, sessions)));
+  }
+
+  public Router(
+      Tracer tracer,
+      HttpClient.Factory clientFactory,
+      SessionMap sessions,
+      SessionRequestQueuer sessionRequestQueuer,
+      Distributor distributor) {
+    Require.nonNull("Tracer to use", tracer);
+    Require.nonNull("HTTP client factory", clientFactory);
+
+    this.sessions = Require.nonNull("Session map", sessions);
+    this.sessionRequestQueuer = Require.nonNull("New Session Request Queuer", sessionRequestQueuer);
+    this.distributor = Require.nonNull("Distributor", distributor);
+
+    routes = combine(
+        get("/status")
+            .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
+        sessions.with(new SpanDecorator(tracer, req -> "session_map")),
+        sessionRequestQueuer.with(new SpanDecorator(tracer, req -> "newsession_queuer")),
+        distributor.with(new SpanDecorator(tracer, req -> "distributor")),
+        matching(req -> req.getUri().startsWith("/session/"))
+            .to(() -> new HandleSession(tracer, clientFactory, sessions)));
   }
 
   @Override
   public boolean isReady() {
     try {
-      return ImmutableSet.of(distributor, sessions).parallelStream()
-        .map(HasReadyState::isReady)
-        .reduce(true, Boolean::logicalAnd);
+      return ImmutableSet.of(distributor, sessions, sessionRequestQueuer).parallelStream()
+          .map(HasReadyState::isReady)
+          .reduce(true, Boolean::logicalAnd);
     } catch (RuntimeException e) {
       return false;
     }

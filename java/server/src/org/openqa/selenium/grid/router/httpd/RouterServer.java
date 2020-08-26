@@ -38,6 +38,8 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.grid.sessionqueue.SessionRequestQueue;
+import org.openqa.selenium.grid.sessionqueue.SessionRequestQueuer;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -102,6 +104,9 @@ public class RouterServer extends TemplateGridCommand {
 
     SessionMapOptions sessionsOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionsOptions.getSessionMap();
+
+//    SessionRequestQueue sessionRequests = new LocalSessionRequestQueue(tracer, bus);
+//    SessionRequestQueuer queuer = new SessionRequestQueuer(tracer, bus, sessionRequests);
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 

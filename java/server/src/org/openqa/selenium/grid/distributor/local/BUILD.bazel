@@ -23,6 +23,8 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/node/remote",
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/config",
         artifact("com.google.guava:guava"),
     ],
