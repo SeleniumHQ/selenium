@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -45,10 +46,10 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.DOWN;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.DRAINING;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
 
@@ -62,7 +63,7 @@ public class Host {
 
   // Used any time we need to read or modify the mutable state of this host
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private Status status;
+  private Availability status;
   private Set<Slot> slots;
   private int maxSessionCount;
 
@@ -72,16 +73,18 @@ public class Host {
     this.nodeId = node.getId();
     this.uri = node.getUri();
 
-    this.status = Status.DOWN;
+    this.status = DOWN;
     this.slots = ImmutableSet.of();
 
     HealthCheck healthCheck = node.getHealthCheck();
 
     this.performHealthCheck = () -> {
       HealthCheck.Result result = healthCheck.check();
-      Host.Status current = result.isAlive() ? UP : DOWN;
-      Host.Status previous = setHostStatus(current);
-      if (previous == DRAINING) {
+      Availability current = result.isAlive() ? UP : DOWN;
+      Availability previous = setHostStatus(current);
+
+      //If the node has been set to maintenance mode, set the status here as draining
+      if (node.isDraining() || previous == DRAINING) {
         // We want to continue to allow the node to drain.
         setHostStatus(DRAINING);
         return;
@@ -142,27 +145,49 @@ public class Host {
     return new DistributorStatus.NodeSummary(
       nodeId,
       uri,
-      getHostStatus() == UP,
+      getHostStatus(),
       maxSessionCount,
       stereotypes,
       used,
       activeSessions);
   }
 
-
-  public Status getHostStatus() {
+  public Availability getHostStatus() {
     return status;
   }
 
   /**
    * @return The previous status of the node.
    */
-  private Status setHostStatus(Status status) {
-    Status toReturn = this.status;
+  private Availability setHostStatus(Availability status) {
+    Availability toReturn = this.status;
     this.status = Require.nonNull("Status", status);
     return toReturn;
   }
 
+  /**
+   * @return The previous status of the node if it not able to drain else returning draining status.
+   */
+  public Availability drainHost() {
+    Availability prev = this.status;
+
+    // Drain the node
+    if (!node.isDraining()) {
+      node.drain();
+    }
+
+    // For some reason, it is still not draining then do not update the host status
+    if (!node.isDraining()) {
+      return prev;
+    } else {
+      this.status = DRAINING;
+      return DRAINING;
+    }
+  }
+
+  /**
+   * @return Whether or not the host has slots available for the requested capabilities.
+   */
   public boolean hasCapacity(Capabilities caps) {
     Lock read = lock.readLock();
     read.lock();
@@ -240,11 +265,5 @@ public class Host {
 
     Host that = (Host) obj;
     return this.node.equals(that.node);
-  }
-
-  public enum Status {
-    UP,
-    DRAINING,
-    DOWN,
   }
 }

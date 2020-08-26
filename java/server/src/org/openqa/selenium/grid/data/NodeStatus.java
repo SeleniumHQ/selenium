@@ -40,17 +40,20 @@ public class NodeStatus {
   private final int maxSessionCount;
   private final Set<Slot> slots;
   private final String registrationSecret;
+  private final boolean draining;
 
   public NodeStatus(
       NodeId nodeId,
       URI externalUri,
       int maxSessionCount,
       Set<Slot> slots,
+      boolean draining,
       String registrationSecret) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count", maxSessionCount);
     this.slots = ImmutableSet.copyOf(Require.nonNull("Slots", slots));
+    this.draining = draining;
     this.registrationSecret = registrationSecret;
 
     Map<Capabilities, Integer> stereotypes = new HashMap<>();
@@ -85,6 +88,10 @@ public class NodeStatus {
     return slots;
   }
 
+  public boolean isDraining() {
+    return draining;
+  }
+
   public String getRegistrationSecret() {
     return registrationSecret;
   }
@@ -100,6 +107,7 @@ public class NodeStatus {
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
            Objects.equals(this.slots, that.slots) &&
+           Objects.equals(this.draining, that.draining) &&
            Objects.equals(this.registrationSecret, that.registrationSecret);
   }
 
@@ -114,6 +122,7 @@ public class NodeStatus {
         .put("uri", externalUri)
         .put("maxSessions", maxSessionCount)
         .put("slots", slots)
+        .put("isDraining", draining)
         .put("registrationSecret", Optional.ofNullable(registrationSecret))
         .build();
   }
@@ -132,6 +141,7 @@ public class NodeStatus {
     int maxSessions = 0;
     String registrationSecret = null;
     Set<Slot> slots = null;
+    boolean draining = false;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -139,6 +149,10 @@ public class NodeStatus {
       switch (input.nextName()) {
         case "id":
           nodeId = input.read(NodeId.class);
+          break;
+
+        case "isDraining":
+          draining = input.nextBoolean();
           break;
 
         case "maxSessions":
@@ -169,6 +183,7 @@ public class NodeStatus {
       uri,
       maxSessions,
       slots,
+      draining,
       registrationSecret);
   }
 }

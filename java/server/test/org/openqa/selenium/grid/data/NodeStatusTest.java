@@ -39,8 +39,8 @@ public class NodeStatusTest {
     NodeId nodeId = new NodeId(UUID.randomUUID());
     NodeStatus status = new NodeStatus(
       nodeId,
-        new URI("http://localhost:23456"),
-        100,
+      new URI("http://localhost:23456"),
+      100,
       ImmutableSet.of(
         new Slot(
           new SlotId(nodeId, UUID.randomUUID()),
@@ -51,7 +51,8 @@ public class NodeStatusTest {
             new SessionId(UUID.randomUUID()),
             new ImmutableCapabilities("peas", "sausages"),
             Instant.now())))),
-        "cheese");
+      false,
+      "cheese");
 
     Json json = new Json();
     String source = json.toJson(status);

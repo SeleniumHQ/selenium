@@ -36,8 +36,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 
 public class DistributorStatus {
 
-  private static final Type SUMMARIES_TYPES = new TypeToken<Set<NodeSummary>>() {
-  }.getType();
+  private static final Type SUMMARIES_TYPES = new TypeToken<Set<NodeSummary>>() {}.getType();
 
   private final Set<NodeSummary> allNodes;
 
@@ -47,7 +46,7 @@ public class DistributorStatus {
 
   public boolean hasCapacity() {
     return getNodes().stream()
-        .map(summary -> summary.isUp() && summary.hasCapacity())
+        .map(summary -> summary.getHostAvailability().equals(Availability.UP) && summary.hasCapacity())
         .reduce(Boolean::logicalOr)
         .orElse(false);
   }
@@ -84,7 +83,7 @@ public class DistributorStatus {
 
     private final NodeId nodeId;
     private final URI uri;
-    private final boolean up;
+    private final Availability availability;
     private final int maxSessionCount;
     private final Map<Capabilities, Integer> stereotypes;
     private final Map<Capabilities, Integer> used;
@@ -93,14 +92,14 @@ public class DistributorStatus {
     public NodeSummary(
         NodeId nodeId,
         URI uri,
-        boolean up,
+        Availability availability,
         int maxSessionCount,
         Map<Capabilities, Integer> stereotypes,
         Map<Capabilities, Integer> usedStereotypes,
-        Set <Session> activeSessions) {
+        Set<Session> activeSessions) {
       this.nodeId = Require.nonNull("Node id", nodeId);
       this.uri = Require.nonNull("URI", uri);
-      this.up = up;
+      this.availability = availability;
       this.maxSessionCount = maxSessionCount;
       this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereoytpes", stereotypes));
       this.used = ImmutableMap.copyOf(Require.nonNull("User stereotypes", usedStereotypes));
@@ -115,8 +114,8 @@ public class DistributorStatus {
       return uri;
     }
 
-    public boolean isUp() {
-      return up;
+    public Availability getHostAvailability() {
+      return availability;
     }
 
     public int getMaxSessionCount() {
@@ -150,7 +149,7 @@ public class DistributorStatus {
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
       builder.put("nodeId", getNodeId());
       builder.put("uri", getUri());
-      builder.put("up", isUp());
+      builder.put("availability", getHostAvailability());
       builder.put("maxSessionCount", getMaxSessionCount());
       builder.put("stereotypes", getStereotypes().entrySet().stream()
           .map(entry -> ImmutableMap.of(
@@ -169,7 +168,7 @@ public class DistributorStatus {
     private static NodeSummary fromJson(JsonInput input) {
       NodeId nodeId = null;
       URI uri = null;
-      boolean up = false;
+      Availability availability = null;
       int maxSessionCount = 0;
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<Capabilities, Integer> used = new HashMap<>();
@@ -191,8 +190,8 @@ public class DistributorStatus {
             stereotypes = count.getCounts();
             break;
 
-          case "up":
-            up = input.nextBoolean();
+          case "availability":
+            availability = input.read(Availability.class);
             break;
 
           case "uri":
@@ -212,7 +211,7 @@ public class DistributorStatus {
 
       input.endObject();
 
-      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used, activeSessions);
+      return new NodeSummary(nodeId, uri, availability, maxSessionCount, stereotypes, used, activeSessions);
     }
   }
 }
