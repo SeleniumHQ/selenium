@@ -29,7 +29,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -43,11 +42,14 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import redis.embedded.RedisCluster;
 import redis.embedded.RedisServer;
 
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class RedisDistributorTest {
@@ -91,8 +93,8 @@ public class RedisDistributorTest {
     RedisDistributor redisDistributor = new RedisDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null, redisUri);
     redisDistributor.add(local);
 
-    String addedNodeUri = redisDistributor.getNodeUri(local.getId());
-    assertThat(addedNodeUri).isEqualTo(String.format("%s", local.getUri()));
+    UUID addedNodeUri = redisDistributor.getNodeUri(local.getId());
+    assertThat(addedNodeUri).isEqualTo(local.getId());
   }
 
   @Test
@@ -102,7 +104,7 @@ public class RedisDistributorTest {
 
     redisDistributor.remove(local.getId());
 
-    String removedNodeUri = redisDistributor.getNodeUri(local.getId());
+    UUID removedNodeUri = redisDistributor.getNodeUri(local.getId());
     assertThat(removedNodeUri).isEqualTo(null);
   }
   private class Handler extends Session implements HttpHandler {

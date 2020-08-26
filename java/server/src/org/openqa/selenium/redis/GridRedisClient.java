@@ -21,18 +21,29 @@ import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import org.openqa.selenium.grid.distributor.model.Host;
+import org.redisson.Redisson;
+import org.redisson.api.RSet;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 
 import java.io.Closeable;
 import java.net.URI;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GridRedisClient implements Closeable {
   private final RedisClient client;
+  private final RedissonClient redissonClient;
+  private final Config redissonConfig;
   private final StatefulRedisConnection<String, String> connection;
 
   public GridRedisClient(URI serverUri) {
     client = RedisClient.create(RedisURI.create(serverUri));
+
+    redissonConfig = new Config();
+    redissonConfig.useSingleServer().setAddress(serverUri.toString());
+
+    redissonClient = Redisson.create(redissonConfig);
     connection = client.connect();
   }
 
@@ -59,8 +70,27 @@ public class GridRedisClient implements Closeable {
     connection.sync().del(var1);
   }
 
+  public void addHost(Host host, String hostSetName) {
+    RSet<Host> hostSet = redissonClient.getSet(hostSetName);
+    hostSet.add(host);
+  }
+
+  public Set<Host> getHosts(String hostSetName) {
+    return redissonClient.getSet(hostSetName);
+  }
+
+  public void removeHost(UUID nodeId, String hostSetName) {
+    Set<Host> hostSet = getHosts(hostSetName);
+    for (Host host : hostSet) {
+      if (host.getId().equals(nodeId))
+        redissonClient.getSet(hostSetName).remove(host);
+    }
+  }
+
+
   @Override
   public void close() {
     client.shutdown();
+    redissonClient.shutdown();
   }
 }

@@ -1,0 +1,25 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/server/src/org/openqa/selenium/events",
+        "//java/client/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/distributor/redis:redis-distributor",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
+        "//java/server/test/org/openqa/selenium/grid/testing",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.lettuce:lettuce-core"),
+        artifact("junit:junit"),
+        artifact("it.ozimov:embedded-redis"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)
