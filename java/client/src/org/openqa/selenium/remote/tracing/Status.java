@@ -38,7 +38,6 @@ public class Status {
   public static final Status OUT_OF_RANGE = new Status(Kind.OUT_OF_RANGE, "");
   public static final Status UNIMPLEMENTED = new Status(Kind.UNIMPLEMENTED, "");
   public static final Status INTERNAL = new Status(Kind.INTERNAL, "");
-  public static final Status UNAVAILABLE = new Status(Kind.UNAVAILABLE, "");
   public static final Status UNAUTHENTICATED = new Status(Kind.UNAUTHENTICATED, "");
 
 
@@ -74,7 +73,6 @@ public class Status {
     OUT_OF_RANGE,
     UNIMPLEMENTED,
     INTERNAL,
-    UNAVAILABLE,
     UNAUTHENTICATED
   }
 
