@@ -38,6 +38,7 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
                                         UnknownMethodException,
+                                        TimeoutException,
                                         JavascriptException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.timeouts import Timeouts
@@ -748,16 +749,25 @@ class WebDriver(BaseWebDriver):
     def load_brython(self,
                      src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js",
                      stdlib="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js",
-                     verbose=False):
+                     timeout=None, verbose=False):
         """
-        Loads the neccessary Javascript files to run Brython code. You must
-        call this method **BEFORE** you use the 'execute_brython()' method.
+        Loads the neccessary Javascript files to run Brython code.
 
         :Args:
         - src: The source of the Brython.js file; by default it is version
             3.8.9. Local files **cannot** be used as the source.
         - stdlib: The source of the Brython stdlib file; by default it is
             brython_stdlib.js. Local files **cannot** be used as the source.
+        - timeout: The maximum number of seconds to load Brython. If Brython
+            is not loaded in the given time, then a TimeoutException error is
+            raised. By default timeout=None which means load_brython()
+            will wait indefiently until Brython is loaded.
+        - verbose: Whether or not to see print statements
+            about how long Brython took to long. By default
+            verbose=False
+
+        :Raises:
+        - TimeoutException - if Brython isn't loaded in the given time.
         """
         if not hasattr(self, 'loaded_brython'):
             self.loaded_brython = False
@@ -777,12 +787,16 @@ class WebDriver(BaseWebDriver):
         # This is a super janky way of determining
         # whether or not Brython is loaded
         while not brython_defined:
+            if timeout and (time.time() - start) > timeout:
+                raise TimeoutException('Brython was not successfully loaded in the given'
+                                        ' timeout of {} seconds'.format(timeout))
             try:
                 self.execute_brython('import turtle')
                 brython_defined = True
             except (JavascriptException, WebDriverException):
                 pass
         loading_time = time.time() - start
+        self.execute_script('console.clear()')
         if verbose:
             print(f"Brython took {loading_time} seconds to load")
 
