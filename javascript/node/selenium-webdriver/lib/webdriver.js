@@ -448,7 +448,7 @@ class IWebDriver {
    */
   wait(
     condition, // eslint-disable-line
-    timeout = undefined,// eslint-disable-line
+    timeout = undefined, // eslint-disable-line
     message = undefined, // eslint-disable-line
     pollTimeout = undefined // eslint-disable-line
   ) {}
@@ -1177,9 +1177,15 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000)
     }
 
-    if (sameSite && sameSite !== 'Strict' && sameSite !== 'Lax') {
+    if (sameSite && !['Strict', 'Lax', 'None'].includes(sameSite)) {
       throw new error.InvalidArgumentError(
-        `Invalid sameSite cookie value '${sameSite}'. It should be either "Lax" (or) "Strict" `
+        `Invalid sameSite cookie value '${sameSite}'. It should be one of "Lax", "Strict" or "None"`
+      )
+    }
+
+    if (sameSite === 'None' && !secure) {
+      throw new error.InvalidArgumentError(
+        `Invalid cookie configuration: SameSite=None must be Secure`
       )
     }
 
