@@ -32,7 +32,7 @@ _RUNTIME_DEPS = [
     "@npm//@tippyjs/react",
     "@npm//clsx",
     "@npm//@material-ui/core",
-    "@npm//@material-ui/icons"
+    "@npm//@material-ui/icons",
 ]
 
 copy_to_bin(
@@ -72,8 +72,8 @@ react_scripts(
 genrule(
     name = "react_jar",
     srcs = [
-        ":build"
+        ":build",
     ],
     outs = ["react.jar"],
-    cmd="jar cf $@ $(locations :build)"
+    cmd = "jar cf $@ $(locations :build)",
 )
