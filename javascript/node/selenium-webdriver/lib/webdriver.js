@@ -1455,10 +1455,10 @@ Options.Cookie.prototype.expiry
  * When the cookie applies to a SameSite policy.
  *
  * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
- * as a {@link string} object which is either 'Lax' or 'Strict'.
+ * as a {@link string} object which is one of 'Lax', 'Strict' or 'None'.
  *
  *
- * @type {(!Date|number|undefined)}
+ * @type {(string|undefined)}
  */
 Options.Cookie.prototype.sameSite
 
