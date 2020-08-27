@@ -313,10 +313,3 @@ class UnknownMethodException(WebDriverException):
     The requested command matched a known URL but did not match any methods for that URL.
     """
     pass
-
-
-class BrythonNotLoaded(WebDriverException):
-    """
-    The 'load_brython()' method was not called before using 'execute_brython()'.
-    """
-    pass

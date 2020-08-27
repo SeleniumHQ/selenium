@@ -24,6 +24,7 @@ from contextlib import (contextmanager, asynccontextmanager)
 import pkgutil
 import warnings
 import sys
+import time
 
 from .command import Command
 from .errorhandler import ErrorHandler
@@ -37,7 +38,7 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
                                         UnknownMethodException,
-                                        BrythonNotLoaded)
+                                        JavascriptException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
@@ -746,7 +747,8 @@ class WebDriver(BaseWebDriver):
 
     def load_brython(self,
                      src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js",
-                     stdlib="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js"):
+                     stdlib="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js",
+                     verbose=False):
         """
         Loads the neccessary Javascript files to run Brython code. You must
         call this method **BEFORE** you use the 'execute_brython()' method.
@@ -770,6 +772,20 @@ class WebDriver(BaseWebDriver):
                 self.execute_script(load_stdlib)
             self.loaded_brython = True
 
+        brython_defined = False
+        start = time.time()
+        # This is a super janky way of determining
+        # whether or not Brython is loaded
+        while not brython_defined:
+            try:
+                self.execute_brython('import turtle')
+                brython_defined = True
+            except (JavascriptException, WebDriverException):
+                pass
+        loading_time = time.time() - start
+        if verbose:
+            print(f"Brython took {loading_time} seconds to load")
+
     def execute_brython(self, script, *args):
         """
         Synchronously Executes Brython in the current window/frame.
@@ -787,7 +803,7 @@ class WebDriver(BaseWebDriver):
           The command's JSON response loaded into a dictionary object, if any.
         """
         if not hasattr(self, 'loaded_brython') or not self.loaded_brython:
-            raise BrythonNotLoaded("You cannot use 'execute_brython()' before you call 'load_brython()'.")
+            self.load_brython()
         _pkg = '.'.join(__name__.split('.')[:-1])
         running = pkgutil.get_data(_pkg, 'runBrython.js') \
                  .decode('UTF-8').format(repr(script))
