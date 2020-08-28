@@ -1185,7 +1185,7 @@ class Options {
 
     if (sameSite === 'None' && !secure) {
       throw new error.InvalidArgumentError(
-        `Invalid cookie configuration: SameSite=None must be Secure`
+        'Invalid cookie configuration: SameSite=None must be Secure'
       )
     }
 

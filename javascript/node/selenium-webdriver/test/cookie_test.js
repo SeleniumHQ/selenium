@@ -213,7 +213,7 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.IE, Browser.SAFARI)).it(
+    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
       'can add same site cookie property to `None` when cookie is Secure',
       async function () {
         let cookie = createSameSiteCookieSpec('None', {
@@ -228,7 +228,7 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.IE, Browser.SAFARI)).it(
+    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
       'throws an error if same site is set to `None` and the cookie is not Secure',
       async function () {
         let cookie = createSameSiteCookieSpec('None')
@@ -244,7 +244,7 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.IE, Browser.SAFARI)).it(
+    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
       'throws an error if same site cookie property is invalid',
       async function () {
         let cookie = createSameSiteCookieSpec('Foo')
