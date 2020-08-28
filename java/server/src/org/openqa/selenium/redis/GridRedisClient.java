@@ -21,8 +21,11 @@ import io.lettuce.core.KeyValue;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.resource.ClientResources;
+import io.lettuce.core.resource.DefaultClientResources;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.redisson.Redisson;
+import org.redisson.api.RBucket;
 import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -34,13 +37,13 @@ import java.util.*;
 public class GridRedisClient implements Closeable {
   private final RedisClient client;
   private final RedissonClient redissonClient;
-  private final Config redissonConfig;
   private final StatefulRedisConnection<String, String> connection;
 
   public GridRedisClient(URI serverUri) {
-    client = RedisClient.create(RedisURI.create(serverUri));
+    ClientResources sharedResources = DefaultClientResources.create();
+    client = RedisClient.create(sharedResources, RedisURI.create(serverUri));
 
-    redissonConfig = new Config();
+    Config redissonConfig = new Config();
     redissonConfig.useSingleServer().setAddress(serverUri.toString());
 
     redissonClient = Redisson.create(redissonConfig);

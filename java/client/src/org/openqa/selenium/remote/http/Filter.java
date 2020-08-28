@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.http;
 
 import org.openqa.selenium.internal.Require;
 
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.util.function.Function;
 
@@ -42,7 +43,7 @@ import java.util.function.Function;
  * each request, as well as short-circuit things if necessary.
  */
 @FunctionalInterface
-public interface Filter extends Function<HttpHandler, HttpHandler> {
+public interface Filter extends Function<HttpHandler, HttpHandler>, Serializable {
 
   default Filter andThen(Filter next) {
     Require.nonNull("Next filter", next);

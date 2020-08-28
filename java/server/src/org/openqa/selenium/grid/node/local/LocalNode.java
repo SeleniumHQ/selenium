@@ -56,6 +56,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;

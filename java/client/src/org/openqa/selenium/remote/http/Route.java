@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
 import org.openqa.selenium.internal.Require;
 
-public abstract class Route implements HttpHandler, Routable {
+public abstract class Route implements HttpHandler, Routable, Serializable {
 
   public HttpHandler fallbackTo(Supplier<HttpHandler> handler) {
     Require.nonNull("Handler", handler);

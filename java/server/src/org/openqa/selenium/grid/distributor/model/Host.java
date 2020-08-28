@@ -41,6 +41,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,7 +56,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-public class Host {
+public class Host implements Serializable {
 
   private static final Logger LOG = Logger.getLogger("Selenium Host");
   private final Node node;

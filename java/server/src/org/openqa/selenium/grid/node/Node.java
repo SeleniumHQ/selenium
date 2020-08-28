@@ -38,6 +38,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
@@ -98,7 +99,7 @@ import static org.openqa.selenium.remote.http.Route.post;
  * </tr>
  * </table>
  */
-public abstract class Node implements HasReadyState, Routable {
+public abstract class Node implements HasReadyState, Routable, Serializable {
 
   protected final Tracer tracer;
   private final UUID id;

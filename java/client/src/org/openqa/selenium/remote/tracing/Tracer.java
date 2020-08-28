@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.remote.tracing;
 
-public interface Tracer {
+import java.io.Serializable;
+
+public interface Tracer extends Serializable {
 
   TraceContext getCurrentContext();
 
