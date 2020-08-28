@@ -25,7 +25,6 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
@@ -85,19 +84,15 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
     Json json = new Json();
     routes = Route.combine(
-//      post("/session").to(() -> req -> {
-//        CreateSessionResponse sessionResponse = newSession(req);
-//        return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
-//      }),
-      post("/se/grid/distributor/session")
-          .to(() -> new CreateSession(this)),
-      post("/se/grid/distributor/node")
-          .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
-      delete("/se/grid/distributor/node/{nodeId}")
-          .to(params -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
-      get("/se/grid/distributor/status")
-          .to(() -> new GetDistributorStatus(this))
-          .with(new SpanDecorator(tracer, req -> "distributor.status")));
+        post("/se/grid/distributor/session")
+            .to(() -> new CreateSession(this)),
+        post("/se/grid/distributor/node")
+            .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
+        delete("/se/grid/distributor/node/{nodeId}")
+            .to(params -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
+        get("/se/grid/distributor/status")
+            .to(() -> new GetDistributorStatus(this))
+            .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
   public abstract CreateSessionResponse newSession(HttpRequest request)

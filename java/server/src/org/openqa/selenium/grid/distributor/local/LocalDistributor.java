@@ -28,6 +28,9 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NewSessionErrorResponse;
+import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
+import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeRejectedEvent;
@@ -87,7 +90,6 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.data.NewSessionRequestEvent.NEW_SESSION_REQUEST;
-import static org.openqa.selenium.grid.data.NewSessionResponseEvent.NEW_SESSION_RESPONSE;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -130,11 +132,26 @@ public class LocalDistributor extends Distributor {
     bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
     bus.addListener(NEW_SESSION_REQUEST, event -> {
       CreateSessionRequest sessionRequest = this.sessionRequests.poll();
-      LOG.info("Distributor picked the request up"+ sessionRequest.toString());
-      if(sessionRequest!=null) {
-        CreateSessionResponse sessionResponse = newSessionFromQueue(sessionRequest);
-        LOG.info(sessionResponse.getSession().getId().toString());
-        bus.fire(new NewSessionResponseEvent(sessionResponse));
+      UUID reqId = event.getData(UUID.class);
+      if (sessionRequest != null) {
+        try {
+          CreateSessionResponse sessionResponse = newSessionFromQueue(sessionRequest);
+          NewSessionResponse
+              newSessionResponse =
+              new NewSessionResponse(sessionResponse.getSession(),
+                                     sessionResponse.getDownstreamEncodedResponse(), reqId);
+          bus.fire(new NewSessionResponseEvent(newSessionResponse));
+        } catch (SessionNotCreatedException e) {
+          if (e.getMessage().startsWith("Unable to find provider")) {
+            if (!this.sessionRequests.offerFirst(sessionRequest, reqId)) {
+              bus.fire(
+                  new NewSessionRejectedEvent(new NewSessionErrorResponse(e.getMessage(), reqId)));
+            }
+          } else {
+            bus.fire(
+                new NewSessionRejectedEvent(new NewSessionErrorResponse(e.getMessage(), reqId)));
+          }
+        }
       }
     });
   }
@@ -162,19 +179,27 @@ public class LocalDistributor extends Distributor {
   }
 
   public CreateSessionResponse newSessionFromQueue(CreateSessionRequest request)
-      throws SessionNotCreatedException {
-
+  {
     Span span = tracer.getCurrentContext().createSpan("distributor.new_session");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
 
     try {
       Optional<Supplier<CreateSessionResponse>> selected;
+      boolean hasCapabilities;
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
         HostSelector hostSelector = new HostSelector();
+        hasCapabilities = hostSelector.supportsCapability(request.getCapabilities(), this.hosts);
+        if (!hasCapabilities) {
+          throw new SessionNotCreatedException(
+              "No host supports the capabilities required: " + request.getCapabilities()
+                  .toString());
+        }
         // Find a host that supports the capabilities present in the new session
-        Optional<Host> selectedHost = hostSelector.selectHost(request.getCapabilities(), this.hosts);
+        Optional<Host>
+            selectedHost =
+            hostSelector.selectHost(request.getCapabilities(), this.hosts);
         // Reserve some space for this session
         selected = selectedHost.map(host -> host.reserve(request));
       } finally {
@@ -184,18 +209,8 @@ public class LocalDistributor extends Distributor {
       CreateSessionResponse sessionResponse = selected
           .orElseThrow(
               () -> {
-                span.setAttribute("error", true);
-                SessionNotCreatedException
-                    exception =
-                    new SessionNotCreatedException(
-                        "Unable to find provider for session: " + request.getCapabilities().toString());
-                EXCEPTION.accept(attributeMap, exception);
-                attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                                 EventAttribute.setValue(
-                                     "Unable to find provider for session: "
-                                     + exception.getMessage()));
-                span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-                return exception;
+                throw new SessionNotCreatedException(
+                    "Unable to find provider for session: " + request.getCapabilities().toString());
               })
           .get();
 
@@ -222,7 +237,7 @@ public class LocalDistributor extends Distributor {
                        EventAttribute.setValue("Unable to create session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       throw e;
-    }  finally {
+    } finally {
       span.close();
     }
   }

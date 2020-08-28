@@ -60,6 +60,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
 import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
@@ -79,7 +80,7 @@ public class Hub extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE);
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, ROUTER_ROLE);
   }
 
   @Override
@@ -130,6 +131,8 @@ public class Hub extends TemplateGridCommand {
     handler.addHandler(queuer);
 
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, sessionRequests, null);
+    handler.addHandler(distributor);
+
     Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
     HttpHandler readinessCheck = req -> {

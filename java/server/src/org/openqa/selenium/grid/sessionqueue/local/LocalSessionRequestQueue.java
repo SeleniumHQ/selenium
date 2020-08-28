@@ -30,20 +30,29 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.util.Deque;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Logger;
 
 public class LocalSessionRequestQueue extends SessionRequestQueue {
 
+  private static final Logger LOG = Logger.getLogger(LocalSessionRequestQueue.class.getName());
   private final EventBus bus;
   private final Deque<CreateSessionRequest> sessionRequests = new ConcurrentLinkedDeque<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
+  private final ScheduledExecutorService executorService = Executors
+      .newSingleThreadScheduledExecutor();
+  private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
 
   public LocalSessionRequestQueue(Tracer tracer, EventBus bus) {
     super(tracer);
-
     this.bus = Require.nonNull("Event bus", bus);
+
+    Runtime.getRuntime().addShutdownHook(shutdownHook);
   }
 
   public static SessionRequestQueue create(Config config) {
@@ -53,25 +62,47 @@ public class LocalSessionRequestQueue extends SessionRequestQueue {
     return new LocalSessionRequestQueue(tracer, bus);
   }
 
-
   @Override
   public boolean isReady() {
     return bus.isReady();
   }
 
   @Override
-  public boolean offer(CreateSessionRequest request) {
+  public boolean offerLast(CreateSessionRequest request, UUID requestId) {
     Require.nonNull("New Session request", request);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
-    boolean added=false;
+    boolean added = false;
     try {
-      added = sessionRequests.offer(request);
+      added = sessionRequests.offerLast(request);
+      if (added) {
+        LOG.info("Added to the queue!!");
+      }
       return added;
     } finally {
       writeLock.unlock();
-      if(added) {
-        bus.fire(new NewSessionRequestEvent(UUID.randomUUID()));
+      if (added) {
+        bus.fire(new NewSessionRequestEvent(requestId));
+      }
+    }
+  }
+
+  @Override
+  public boolean offerFirst(CreateSessionRequest request, UUID requestId) {
+    Require.nonNull("New Session request", request);
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    boolean added = false;
+    try {
+      added = sessionRequests.offerFirst(request);
+      return added;
+    } finally {
+      writeLock.unlock();
+      if (added) {
+        executorService.schedule(() -> {
+          LOG.info("Adding request back to the queue");
+          bus.fire(new NewSessionRequestEvent(requestId));
+        }, 30, TimeUnit.SECONDS);
       }
     }
   }
@@ -85,5 +116,10 @@ public class LocalSessionRequestQueue extends SessionRequestQueue {
     } finally {
       writeLock.unlock();
     }
+  }
+
+  public void callExecutorShutdown() {
+    LOG.info("Shutting down session queue executor service");
+    executorService.shutdown();
   }
 }

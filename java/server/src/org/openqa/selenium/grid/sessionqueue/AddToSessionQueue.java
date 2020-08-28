@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static org.openqa.selenium.grid.data.NewSessionResponseEvent.NEW_SESSION_RESPONSE;
+import static org.openqa.selenium.grid.data.NewSessionRejectedEvent.NEW_SESSION_REJECTED;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
@@ -25,24 +27,26 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 
-import static org.openqa.selenium.grid.data.NewSessionResponseEvent.NEW_SESSION_RESPONSE;
-
-import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NewSessionErrorResponse;
+import org.openqa.selenium.grid.data.NewSessionRequest;
+import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 class AddToSessionQueue {
 
-  private static final Logger LOG = Logger.getLogger(SessionRequestQueuer.class.getName());
+  private static final Logger LOG = Logger.getLogger(AddToSessionQueue.class.getName());
   private final EventBus bus;
   private final Tracer tracer;
   public final SessionRequestQueue sessionRequests;
-  private HttpResponse response;
-  private final CountDownLatch latch = new CountDownLatch(1);
+  private final Map<UUID, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
 
   AddToSessionQueue(Tracer tracer, EventBus bus,
                     SessionRequestQueue sessionRequests) {
@@ -51,16 +55,49 @@ class AddToSessionQueue {
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
 
     this.bus.addListener(NEW_SESSION_RESPONSE, event -> {
-      response = new HttpResponse();
-      CreateSessionResponse sessionResponse = event.getData(CreateSessionResponse.class);
-      LOG.info("Listener picked the response up"+ sessionResponse.getSession().getId().toString());
-      response.setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
-      latch.countDown();
+      try {
+        NewSessionResponse sessionResponse = event.getData(NewSessionResponse.class);
+        this.setResponse(sessionResponse);
+      } catch (Exception ignore) {
+        // Ignore any exception. Do not want to block the eventbus thread.
+      }
+    });
+
+    this.bus.addListener(NEW_SESSION_REJECTED, event -> {
+      try {
+        NewSessionErrorResponse sessionResponse = event.getData(NewSessionErrorResponse.class);
+        this.setErrorResponse(sessionResponse);
+      } catch (Exception ignore) {
+        // Ignore any exception. Do not want to block the eventbus thread.
+      }
     });
   }
 
-  public HttpResponse add(CreateSessionRequest sessionRequest) {
-    if (!sessionRequests.offer(sessionRequest)) {
+  private void setResponse(NewSessionResponse sessionResponse) {
+    UUID id = sessionResponse.getRequestId();
+    NewSessionRequest sessionRequest = knownRequests.get(id);
+    sessionRequest.setSessionResponse(
+        new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse())));
+    sessionRequest.getLatch().countDown();
+  }
+
+  private void setErrorResponse(NewSessionErrorResponse sessionResponse) {
+    UUID id = sessionResponse.getRequestId();
+    NewSessionRequest sessionRequest = knownRequests.get(id);
+    sessionRequest
+        .setSessionResponse(new HttpResponse()
+                                .setContent(asJson(
+                                    ImmutableMap.of("message", sessionResponse.getMessage()))));
+  }
+
+  public HttpResponse add(CreateSessionRequest request) {
+    Require.nonNull("New Session request", request);
+    CountDownLatch latch = new CountDownLatch(1);
+    UUID requestId = UUID.randomUUID();
+    NewSessionRequest requestIdentifier = new NewSessionRequest(requestId, latch);
+    knownRequests.put(requestId, requestIdentifier);
+
+    if (!sessionRequests.offerLast(request, requestId)) {
       return new HttpResponse()
           .setContent(asJson(ImmutableMap.of("message",
                                              "Session request could not be created. Error while adding to the session queue.")));
@@ -68,14 +105,20 @@ class AddToSessionQueue {
 
     try {
       latch.await();
+      HttpResponse res = requestIdentifier.getSessionResponse();
+      removeRequest(requestId);
+      LOG.info("New session request response: " + res.toString());
+      return res;
     } catch (InterruptedException e) {
       LOG.warning(e.getMessage());
+      Thread.currentThread().interrupt();
       return new HttpResponse().setStatus(500)
           .setContent(asJson(ImmutableMap.of("message",
                                              "Session request could not be created. Error while processing the session request.")));
     }
+  }
 
-    LOG.info("New session request response" + response.toString());
-    return response;
+  private void removeRequest(UUID id) {
+    knownRequests.remove(id);
   }
 }

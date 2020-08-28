@@ -104,10 +104,7 @@ public class RouterServer extends TemplateGridCommand {
 
     SessionMapOptions sessionsOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionsOptions.getSessionMap();
-
-//    SessionRequestQueue sessionRequests = new LocalSessionRequestQueue(tracer, bus);
-//    SessionRequestQueuer queuer = new SessionRequestQueuer(tracer, bus, sessionRequests);
-
+    
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
     DistributorOptions distributorOptions = new DistributorOptions(config);

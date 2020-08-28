@@ -41,6 +41,17 @@ public class HostSelector {
   public HostSelector() {
   }
 
+  public boolean supportsCapability(Capabilities capabilities, Set<Host> hosts) {
+    long hostsWithCaps = hosts.stream()
+        .filter(host -> host.getHostStatus() == UP)
+        .filter(host -> host.hasCapability(capabilities)).count();
+
+    if (hostsWithCaps > 0) {
+      return true;
+    }
+
+    return false;
+  }
   public Optional<Host> selectHost(Capabilities capabilities, Set<Host> hosts) {
     Optional<Host> selected;
     Stream<Host> firstRound = hosts.stream()

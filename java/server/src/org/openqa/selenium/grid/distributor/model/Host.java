@@ -179,6 +179,20 @@ public class Host {
     return toReturn;
   }
 
+  public boolean hasCapability(Capabilities caps) {
+    Lock read = lock.readLock();
+    read.lock();
+    try {
+      long count = slots.stream()
+          .filter(slot -> slot.isSupporting(caps))
+          .count();
+
+      return count > 0;
+    } finally {
+      read.unlock();
+    }
+  }
+
   public boolean hasCapacity(Capabilities caps) {
     Lock read = lock.readLock();
     read.lock();

@@ -22,12 +22,12 @@ import org.openqa.selenium.events.Type;
 
 import java.util.UUID;
 
-public class NewSessionResponseEvent extends Event {
+public class NewSessionRejectedEvent extends Event {
 
-  public static final Type NEW_SESSION_RESPONSE = new Type("new-session-response");
+  public static final Type NEW_SESSION_REJECTED = new Type("new-session-rejected");
 
-  public NewSessionResponseEvent(NewSessionResponse sessionResponse)
+  public NewSessionRejectedEvent(NewSessionErrorResponse response)
   {
-    super(NEW_SESSION_RESPONSE, sessionResponse);
+    super(NEW_SESSION_REJECTED, response);
   }
 }

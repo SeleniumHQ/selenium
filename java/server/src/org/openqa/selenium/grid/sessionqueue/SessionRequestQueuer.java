@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
-import static org.openqa.selenium.grid.data.NewSessionResponseEvent.NEW_SESSION_RESPONSE;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
@@ -29,7 +26,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;

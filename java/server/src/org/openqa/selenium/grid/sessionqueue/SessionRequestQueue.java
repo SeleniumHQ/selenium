@@ -23,11 +23,15 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
+import java.util.UUID;
+
 public abstract class SessionRequestQueue implements HasReadyState {
 
   protected final Tracer tracer;
 
-  public abstract boolean offer(CreateSessionRequest request);
+  public abstract boolean offerLast(CreateSessionRequest request, UUID requestId);
+
+  public abstract boolean offerFirst(CreateSessionRequest request, UUID requestId);
 
   public abstract CreateSessionRequest poll();
 
