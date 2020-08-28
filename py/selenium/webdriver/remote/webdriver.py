@@ -761,7 +761,7 @@ class WebDriver(BaseWebDriver):
         - timeout: The maximum number of seconds to load Brython. If Brython
             is not loaded in the given time, then a TimeoutException error is
             raised. By default timeout=None which means load_brython()
-            will wait indefiently until Brython is loaded.
+            will wait indefinitely until Brython is loaded.
         - verbose: Whether or not to see print statements
             about how long Brython took to long. By default
             verbose=False
