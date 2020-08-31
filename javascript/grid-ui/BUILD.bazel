@@ -1,9 +1,7 @@
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin")
 load("@npm//react-scripts:index.bzl", "react_scripts")
-load("@rules_pkg//:pkg.bzl", "pkg_zip")
-
-package(default_visibility = ["//visibility:public"])
+load("//common:defs.bzl", "zip_file")
 
 _RUNTIME_DEPS = [
     "chdir.js",
@@ -69,11 +67,13 @@ react_scripts(
     output_dir = True,
 )
 
-genrule(
+zip_file(
     name = "react_jar",
+    extension = "jar",
     srcs = [
         ":build",
     ],
-    outs = ["react.jar"],
-    cmd = "jar cf $@ $(locations :build)",
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+    ]
 )
