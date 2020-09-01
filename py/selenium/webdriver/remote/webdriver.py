@@ -747,8 +747,8 @@ class WebDriver(BaseWebDriver):
             'args': converted_args})['value']
 
     def load_brython(self,
-                     src="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython.min.js",
-                     stdlib="https://cdn.jsdelivr.net/npm/brython@3.8.9/brython_stdlib.js",
+                     src="https://raw.githack.com/brython-dev/brython/master/www/src/brython.js",
+                     stdlib="https://raw.githack.com/brython-dev/brython/master/www/src/brython_stdlib.js",
                      timeout=None, verbose=False):
         """
         Loads the neccessary Javascript files to run Brython code.
