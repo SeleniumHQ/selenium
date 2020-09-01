@@ -50,6 +50,6 @@ class NewNodeSession implements HttpHandler {
     HashMap<String, Object> value = new HashMap<>();
     value.put("value", sessionResponse);
 
-    return new HttpResponse().setContent(asJson(value));
+    return new HttpResponse().setContent(asJson(value)).setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret());
   }
 }

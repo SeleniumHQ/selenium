@@ -32,6 +32,6 @@ class ForwardWebDriverCommand implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    return node.executeWebDriverCommand(req);
+    return node.executeWebDriverCommand(req).setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret());
   }
 }

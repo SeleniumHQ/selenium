@@ -37,6 +37,6 @@ class UploadFile implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return node.uploadFile(req, id);
+    return node.uploadFile(req, id).setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret());
   }
 }

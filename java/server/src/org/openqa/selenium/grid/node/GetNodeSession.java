@@ -43,6 +43,6 @@ class GetNodeSession implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     Session session = node.getSession(id);
 
-    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", session)));
+    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", session))).setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret());
   }
 }
