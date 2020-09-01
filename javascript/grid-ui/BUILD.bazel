@@ -38,6 +38,7 @@ copy_to_bin(
     srcs = glob(
         [
             "public/*",
+            "public/css/*",
             "src/**/*",
         ],
     ) + [
