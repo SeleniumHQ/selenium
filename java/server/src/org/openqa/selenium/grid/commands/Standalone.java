@@ -40,9 +40,11 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.SessionRequestQueue;
-import org.openqa.selenium.grid.sessionqueue.SessionRequestQueuer;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequestQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
@@ -68,6 +70,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
 import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
@@ -87,7 +90,7 @@ public class Standalone extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE);
+    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -121,7 +124,7 @@ public class Standalone extends TemplateGridCommand {
     }
 
     int port = config.getInt("server", "port")
-      .orElseThrow(() -> new IllegalArgumentException("No port to use configured"));
+        .orElseThrow(() -> new IllegalArgumentException("No port to use configured"));
     URI localhost;
     URL localhostURL;
     try {
@@ -134,48 +137,54 @@ public class Standalone extends TemplateGridCommand {
     NetworkOptions networkOptions = new NetworkOptions(config);
     CombinedHandler combinedHandler = new CombinedHandler();
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      localhostURL,
-      combinedHandler,
-      networkOptions.getHttpClientFactory(tracer));
+        localhostURL,
+        combinedHandler,
+        networkOptions.getHttpClientFactory(tracer));
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     combinedHandler.addHandler(sessions);
-    SessionRequestQueue sessionRequests = new LocalSessionRequestQueue(tracer, bus);
-    SessionRequestQueuer queuer = new SessionRequestQueuer(tracer, bus, sessionRequests);
+
+    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
+    NewSessionQueue sessionRequests = new LocalNewSessionQueue(tracer, bus, newSessionQueueOptions.getSessionRequestRetryInterval() );
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
     combinedHandler.addHandler(queuer);
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, sessionRequests, null);
+    Distributor
+        distributor =
+        new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null);
     combinedHandler.addHandler(distributor);
 
     Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
-      .with(networkOptions.getSpecComplianceChecks());
+        .with(networkOptions.getSpecComplianceChecks());
 
     HttpHandler readinessCheck = req -> {
       boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
       return new HttpResponse()
-        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
-        .setContent(Contents.utf8String("Standalone is " + ready));
+          .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+          .setContent(Contents.utf8String("Standalone is " + ready));
     };
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
     HttpHandler httpHandler = combine(
-      router,
-      Route.prefix("/wd/hub").to(combine(router)),
-      Route.post("/graphql").to(() -> graphqlHandler),
-      Route.get("/readyz").to(() -> readinessCheck));
+        router,
+        Route.prefix("/wd/hub").to(combine(router)),
+        Route.post("/graphql").to(() -> graphqlHandler),
+        Route.get("/readyz").to(() -> readinessCheck));
 
     Node node = LocalNodeFactory.create(config);
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    Server<?> server = new NettyServer(serverOptions, httpHandler, new ProxyNodeCdp(clientFactory, node));
+    Server<?>
+        server =
+        new NettyServer(serverOptions, httpHandler, new ProxyNodeCdp(clientFactory, node));
     server.start();
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(
-      "Started Selenium standalone %s (revision %s): %s",
-      info.getReleaseLabel(),
-      info.getBuildRevision(),
-      server.getUrl()));
+        "Started Selenium standalone %s (revision %s): %s",
+        info.getReleaseLabel(),
+        info.getBuildRevision(),
+        server.getUrl()));
   }
 }

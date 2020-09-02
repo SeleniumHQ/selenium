@@ -25,6 +25,8 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/node/local",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],

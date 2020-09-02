@@ -42,6 +42,11 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -138,7 +143,11 @@ public class EndToEndTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
+    NewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    handler.addHandler(queuer);
+
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, queuer,null);
     handler.addHandler(distributor);
 
     LocalNode node = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
@@ -147,7 +156,7 @@ public class EndToEndTest {
     handler.addHandler(node);
     distributor.add(node);
 
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
 
     Server<?> server = createServer(router);
     server.start();
@@ -173,11 +182,21 @@ public class EndToEndTest {
     HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
     SessionMap sessions = new RemoteSessionMap(tracer, client);
 
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
+    LocalNewSessionQueuer localNewSessionQueuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+
+    Server<?> newSessionServer = createServer(localNewSessionQueuer);
+    newSessionServer.start();
+
+    HttpClient remoteSessionQueuerclient = HttpClient.Factory.createDefault().createClient(newSessionServer.getUrl());
+    RemoteNewSessionQueuer newSessionQueuer = new RemoteNewSessionQueuer(tracer, remoteSessionQueuerclient);
+
     LocalDistributor localDistributor = new LocalDistributor(
         tracer,
         bus,
         clientFactory,
         sessions,
+        newSessionQueuer,
         null);
     Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
@@ -201,7 +220,7 @@ public class EndToEndTest {
 
     distributor.add(localNode);
 
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, newSessionQueuer, distributor);
     Server<?> routerServer = createServer(router);
     routerServer.start();
 
@@ -252,7 +271,7 @@ public class EndToEndTest {
 
     // The node is still open. Now create a second session. This should fail
     try {
-      WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
+      WebDriver disposable = new RemoteWebDriver(server.getUrl(), new ImmutableCapabilities("browserName", "mac"));
       disposable.quit();
       fail("Should not have been able to create driver");
     } catch (SessionNotCreatedException expected) {

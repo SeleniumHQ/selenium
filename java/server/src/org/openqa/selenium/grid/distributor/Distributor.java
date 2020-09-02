@@ -84,8 +84,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
     Json json = new Json();
     routes = Route.combine(
-        post("/se/grid/distributor/session")
-            .to(() -> new CreateSession(this)),
         post("/se/grid/distributor/node")
             .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
         delete("/se/grid/distributor/node/{nodeId}")
@@ -95,8 +93,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
             .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public abstract CreateSessionResponse newSession(HttpRequest request)
-    throws SessionNotCreatedException;
+//  public abstract CreateSessionResponse newSession(HttpRequest request)
+//    throws SessionNotCreatedException;
 
   public abstract Distributor add(Node node);
 

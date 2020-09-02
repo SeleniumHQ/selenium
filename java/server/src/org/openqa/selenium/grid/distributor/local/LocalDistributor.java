@@ -47,8 +47,8 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
-import org.openqa.selenium.grid.sessionqueue.SessionRequestQueue;
-import org.openqa.selenium.grid.sessionqueue.local.LocalSessionRequestQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -84,7 +84,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
@@ -111,14 +110,14 @@ public class LocalDistributor extends Distributor {
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
   private final String registrationSecret;
-  private final SessionRequestQueue sessionRequests;
+  private final NewSessionQueuer sessionRequests;
 
   public LocalDistributor(
       Tracer tracer,
       EventBus bus,
       HttpClient.Factory clientFactory,
       SessionMap sessions,
-      SessionRequestQueue sessionRequests,
+      NewSessionQueuer sessionRequests,
       String registrationSecret) {
     super(tracer, clientFactory);
     this.tracer = Require.nonNull("Tracer", tracer);
@@ -131,19 +130,21 @@ public class LocalDistributor extends Distributor {
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
     bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
     bus.addListener(NEW_SESSION_REQUEST, event -> {
-      CreateSessionRequest sessionRequest = this.sessionRequests.poll();
+      Optional<HttpRequest> sessionRequest = this.sessionRequests.remove();
       UUID reqId = event.getData(UUID.class);
-      if (sessionRequest != null) {
+      if (sessionRequest.isPresent()) {
+        HttpRequest httpRequest = sessionRequest.get();
         try {
-          CreateSessionResponse sessionResponse = newSessionFromQueue(sessionRequest);
+          CreateSessionResponse sessionResponse = newSession(httpRequest);
           NewSessionResponse
               newSessionResponse =
               new NewSessionResponse(sessionResponse.getSession(),
                                      sessionResponse.getDownstreamEncodedResponse(), reqId);
           bus.fire(new NewSessionResponseEvent(newSessionResponse));
         } catch (SessionNotCreatedException e) {
-          if (e.getMessage().startsWith("Unable to find provider")) {
-            if (!this.sessionRequests.offerFirst(sessionRequest, reqId)) {
+          if (e.getMessage().startsWith("Unable to find provider for session") ||
+              e.getMessage().startsWith("Unable to reserve a slot for session request")) {
+            if (!this.sessionRequests.retryAddToQueue(httpRequest, reqId)) {
               bus.fire(
                   new NewSessionRejectedEvent(new NewSessionErrorResponse(e.getMessage(), reqId)));
             }
@@ -152,6 +153,10 @@ public class LocalDistributor extends Distributor {
                 new NewSessionRejectedEvent(new NewSessionErrorResponse(e.getMessage(), reqId)));
           }
         }
+      } else {
+        bus.fire(
+            new NewSessionRejectedEvent(
+                new NewSessionErrorResponse("Distributor could not poll the queue", reqId)));
       }
     });
   }
@@ -161,7 +166,9 @@ public class LocalDistributor extends Distributor {
     EventBus bus = new EventBusOptions(config).getEventBus();
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
-    SessionRequestQueue sessionRequests = LocalSessionRequestQueue.create(config);
+    NewSessionQueuer sessionRequests =
+        new NewSessionQueuerOptions(config).getSessionQueuer(
+            "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer");
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
     return new LocalDistributor(tracer, bus, clientFactory, sessions, sessionRequests, serverOptions.getRegistrationSecret());
@@ -178,79 +185,13 @@ public class LocalDistributor extends Distributor {
     }
   }
 
-  public CreateSessionResponse newSessionFromQueue(CreateSessionRequest request)
-  {
-    Span span = tracer.getCurrentContext().createSpan("distributor.new_session");
-    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-
-    try {
-      Optional<Supplier<CreateSessionResponse>> selected;
-      boolean hasCapabilities;
-      Lock writeLock = this.lock.writeLock();
-      writeLock.lock();
-      try {
-        HostSelector hostSelector = new HostSelector();
-        hasCapabilities = hostSelector.supportsCapability(request.getCapabilities(), this.hosts);
-        if (!hasCapabilities) {
-          throw new SessionNotCreatedException(
-              "No host supports the capabilities required: " + request.getCapabilities()
-                  .toString());
-        }
-        // Find a host that supports the capabilities present in the new session
-        Optional<Host>
-            selectedHost =
-            hostSelector.selectHost(request.getCapabilities(), this.hosts);
-        // Reserve some space for this session
-        selected = selectedHost.map(host -> host.reserve(request));
-      } finally {
-        writeLock.unlock();
-      }
-
-      CreateSessionResponse sessionResponse = selected
-          .orElseThrow(
-              () -> {
-                throw new SessionNotCreatedException(
-                    "Unable to find provider for session: " + request.getCapabilities().toString());
-              })
-          .get();
-
-      sessions.add(sessionResponse.getSession());
-
-      SessionId sessionId = sessionResponse.getSession().getId();
-      Capabilities caps = sessionResponse.getSession().getCapabilities();
-      String sessionUri = sessionResponse.getSession().getUri().toString();
-      SESSION_ID.accept(span, sessionId);
-      CAPABILITIES.accept(span, caps);
-      SESSION_ID_EVENT.accept(attributeMap, sessionId);
-      CAPABILITIES_EVENT.accept(attributeMap, caps);
-      span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
-      attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
-
-      span.addEvent("Session created by the distributor", attributeMap);
-      return sessionResponse;
-    } catch (SessionNotCreatedException e) {
-      span.setAttribute("error", true);
-      span.setStatus(Status.ABORTED);
-
-      EXCEPTION.accept(attributeMap, e);
-      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                       EventAttribute.setValue("Unable to create session: " + e.getMessage()));
-      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-      throw e;
-    } finally {
-      span.close();
-    }
-  }
-
-  @Override
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    try (
-      Reader reader = reader(request);
-      NewSessionPayload payload = NewSessionPayload.create(reader)) {
+    try (Reader reader = reader(request);
+         NewSessionPayload payload = NewSessionPayload.create(reader)) {
       Objects.requireNonNull(payload, "Requests to process must be set.");
 
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
@@ -275,10 +216,17 @@ public class LocalDistributor extends Distributor {
           iterator.next(),
           ImmutableMap.of("span", span));
 
+      boolean hasCapabilities;
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
         HostSelector hostSelector = new HostSelector();
+        hasCapabilities = hostSelector.supportsCapability(firstRequest.getCapabilities(), this.hosts);
+        if (!hasCapabilities) {
+          throw new SessionNotCreatedException(
+              "No host supports the capabilities required: " + firstRequest.getCapabilities()
+                  .toString());
+        }
         // Find a host that supports the capabilities present in the new session
         Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), this.hosts);
         // Reserve some space for this session
@@ -286,23 +234,11 @@ public class LocalDistributor extends Distributor {
       } finally {
         writeLock.unlock();
       }
-
       CreateSessionResponse sessionResponse = selected
           .orElseThrow(
               () -> {
-                span.setAttribute("error", true);
-                SessionNotCreatedException
-                    exception =
-                    new SessionNotCreatedException(
-                        "Unable to find provider for session: " + payload.stream()
-                            .map(Capabilities::toString).collect(Collectors.joining(", ")));
-                EXCEPTION.accept(attributeMap, exception);
-                attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                                 EventAttribute.setValue(
-                                     "Unable to find provider for session: "
-                                     + exception.getMessage()));
-                span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-                return exception;
+                throw new SessionNotCreatedException(
+                    "Unable to find provider for session: " + firstRequest.getCapabilities().toString());
               })
           .get();
 

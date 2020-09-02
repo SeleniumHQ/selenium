@@ -18,14 +18,12 @@
 package org.openqa.selenium.grid.sessionqueue;
 
 import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.post;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -40,31 +38,33 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Logger;
 
-public class SessionRequestQueuer implements HasReadyState, Routable {
+public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
-  private static final Logger LOG = Logger.getLogger(SessionRequestQueuer.class.getName());
-  private final EventBus bus;
+  private static final Logger LOG = Logger.getLogger(NewSessionQueuer.class.getName());
   private final Route routes;
   protected final Tracer tracer;
-  public final SessionRequestQueue sessionRequests;
 
-  public SessionRequestQueuer(Tracer tracer, EventBus bus,
-                              SessionRequestQueue sessionRequests) {
-    this.bus = Require.nonNull("Event bus", bus);
+  protected NewSessionQueuer(Tracer tracer) {
     this.tracer = Require.nonNull("Tracer", tracer);
-    this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
-    routes = Route.post("/session")
-        .to(() -> req -> {
-          CreateSessionRequest sessionRequest = createSessionRequest(req);
-          AddToSessionQueue addToSessionQueue = new AddToSessionQueue(tracer, bus, sessionRequests);
-          return addToSessionQueue.add(sessionRequest);
-        });
+
+    routes = combine(
+        post("/session")
+            .to(() -> new AddToSessionQueue(this)),
+        post("/se/grid/newsessionqueuer/session")
+            .to(() -> new AddToSessionQueue(this)),
+        post("/se/grid/newsessionqueuer/session/retry/{requestId}")
+            .to(params -> new AddBackToSessionQueue(this,
+                                                    UUID.fromString(params.get("requestId")))),
+        Route.get("/se/grid/newsessionqueuer/session")
+            .to(() -> new RemoveFromSessionQueue(tracer, this)));
   }
 
-  private CreateSessionRequest createSessionRequest(HttpRequest request) {
-    try (Span span = newSpanAsChildOf(tracer, request, "local_sessionqueue.verifyrequest")) {
+  public void validateSessionRequest(HttpRequest request) {
+    try (Span span = newSpanAsChildOf(tracer, request, "sessionqueue.validaterequest")) {
       try (
           Reader reader = reader(request);
           NewSessionPayload payload = NewSessionPayload.create(reader)) {
@@ -74,16 +74,17 @@ public class SessionRequestQueuer implements HasReadyState, Routable {
         if (!iterator.hasNext()) {
           throw new SessionNotCreatedException("No capabilities found");
         }
-
-        return new CreateSessionRequest(
-            payload.getDownstreamDialects(),
-            iterator.next(),
-            ImmutableMap.of("span", span));
       } catch (IOException e) {
         throw new SessionNotCreatedException(e.getMessage(), e);
       }
     }
   }
+
+  public abstract HttpResponse addToQueue(HttpRequest request);
+
+  public abstract boolean retryAddToQueue(HttpRequest request, UUID reqId);
+
+  public abstract Optional<HttpRequest> remove();
 
   @Override
   public boolean matches(HttpRequest req) {
@@ -95,8 +96,4 @@ public class SessionRequestQueuer implements HasReadyState, Routable {
     return routes.execute(req);
   }
 
-  @Override
-  public boolean isReady() {
-    return bus.isReady();
-  }
 }

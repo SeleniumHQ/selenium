@@ -15,28 +15,32 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor;
+package org.openqa.selenium.grid.sessionqueue;
 
-import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpHandler;
+
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.status.HasReadyState;
 
-import static org.openqa.selenium.remote.http.Contents.asJson;
+import java.util.Optional;
+import java.util.UUID;
 
-class CreateSession implements HttpHandler {
+public abstract class NewSessionQueue implements HasReadyState {
 
-  private final Distributor distributor;
+  protected final Tracer tracer;
 
-  CreateSession(Distributor distributor) {
-    this.distributor = Require.nonNull("Distributor", distributor);
+  protected final int retryInterval;
+
+  public abstract boolean offerLast(HttpRequest request, UUID requestId);
+
+  public abstract boolean offerFirst(HttpRequest request, UUID requestId);
+
+  public abstract Optional<HttpRequest> poll();
+
+  public NewSessionQueue(Tracer tracer, int retryInterval) {
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
   }
 
-  @Override
-  public HttpResponse execute(HttpRequest req) {
-    CreateSessionResponse sessionResponse = distributor.newSession(req);
-    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", sessionResponse)));
-  }
 }

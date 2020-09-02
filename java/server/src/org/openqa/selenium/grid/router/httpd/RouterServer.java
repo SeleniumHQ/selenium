@@ -38,8 +38,9 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
-import org.openqa.selenium.grid.sessionqueue.SessionRequestQueue;
-import org.openqa.selenium.grid.sessionqueue.SessionRequestQueuer;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
+import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -56,6 +57,7 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUER_ROLE;
 import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Route.get;
 
@@ -76,7 +78,7 @@ public class RouterServer extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE);
+    return ImmutableSet.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE, SESSION_QUEUER_ROLE);
   }
 
   @Override
@@ -104,7 +106,7 @@ public class RouterServer extends TemplateGridCommand {
 
     SessionMapOptions sessionsOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionsOptions.getSessionMap();
-    
+
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
     DistributorOptions distributorOptions = new DistributorOptions(config);
@@ -115,10 +117,15 @@ public class RouterServer extends TemplateGridCommand {
         distributorUrl
     );
 
+    NewSessionQueuerOptions sessionQueuerOptions = new NewSessionQueuerOptions(config);
+    URL sessionQueuerUrl = fromUri(sessionQueuerOptions.getSessionQueuerUri());
+    NewSessionQueuer sessionQueuer = new RemoteNewSessionQueuer(
+        tracer, clientFactory.createClient(sessionQueuerUrl));
+    
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
 
     Route handler = Route.combine(
-      new Router(tracer, clientFactory, sessions, distributor).with(networkOptions.getSpecComplianceChecks()),
+      new Router(tracer, clientFactory, sessions, sessionQueuer, distributor).with(networkOptions.getSpecComplianceChecks()),
       Route.post("/graphql").to(() -> graphqlHandler),
       get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
 

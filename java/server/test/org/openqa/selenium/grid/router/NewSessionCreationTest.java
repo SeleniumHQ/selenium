@@ -38,6 +38,9 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.EnsureSpecCompliantHeaders;
 import org.openqa.selenium.netty.server.NettyServer;
@@ -81,8 +84,11 @@ public class NewSessionCreationTest {
     assumeThat(geckoDriverInfo.isAvailable()).isTrue();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, null);
-    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, events, 1);
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+
+    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, queuer, null);
+    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
     Server<?> server = new NettyServer(

@@ -15,28 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionqueue;
+package org.openqa.selenium.grid.sessionqueue.httpd;
 
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.internal.Require;
+    import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.remote.tracing.Tracer;
-import org.openqa.selenium.status.HasReadyState;
+    import org.openqa.selenium.grid.config.MapConfig;
 
-import java.util.UUID;
+class DefaultNewSessionQueuerConfig extends MapConfig {
 
-public abstract class SessionRequestQueue implements HasReadyState {
-
-  protected final Tracer tracer;
-
-  public abstract boolean offerLast(CreateSessionRequest request, UUID requestId);
-
-  public abstract boolean offerFirst(CreateSessionRequest request, UUID requestId);
-
-  public abstract CreateSessionRequest poll();
-
-  public SessionRequestQueue(Tracer tracer) {
-    this.tracer = Require.nonNull("Tracer", tracer);
+  DefaultNewSessionQueuerConfig() {
+    super(ImmutableMap.of(
+        "events", ImmutableMap.of(
+            "publish", "tcp://*:4442",
+            "subscribe", "tcp://*:4443"),
+        "server", ImmutableMap.of(
+            "port", 5559)));
   }
-
 }

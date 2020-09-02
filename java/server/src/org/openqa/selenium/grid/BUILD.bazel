@@ -69,6 +69,7 @@ java_export(
         "//java/server/src/org/openqa/selenium/grid/node/httpd",
         "//java/server/src/org/openqa/selenium/grid/router/httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/httpd"
     ],
     deps = [
         ":base-command",

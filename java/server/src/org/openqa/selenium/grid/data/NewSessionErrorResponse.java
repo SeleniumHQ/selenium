@@ -56,8 +56,8 @@ public class NewSessionErrorResponse {
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "session":
-          message = input.read(Session.class);
+        case "message":
+          message = input.read(String.class);
           break;
 
         case "requestId":

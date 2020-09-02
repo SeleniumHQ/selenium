@@ -80,7 +80,7 @@ public class Slot {
         CreateSessionResponse sessionResponse = node.newSession(sessionRequest)
             .orElseThrow(
                 () -> new SessionNotCreatedException(
-                    "Unable to create session for " + sessionRequest));
+                    "Unable to reserve a slot for session request " + sessionRequest));
         onStart(sessionResponse.getSession());
         return sessionResponse;
       } catch (Throwable t) {

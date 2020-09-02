@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
@@ -58,18 +56,6 @@ public class RemoteDistributor extends Distributor {
     } catch (Exception e) {
       return false;
     }
-  }
-
-  @Override
-  public CreateSessionResponse newSession(HttpRequest request)
-      throws SessionNotCreatedException {
-    HttpRequest upstream = new HttpRequest(POST, "/se/grid/distributor/session");
-    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    upstream.setContent(request.getContent());
-
-    HttpResponse response = client.execute(upstream);
-
-    return Values.get(response, CreateSessionResponse.class);
   }
 
   @Override

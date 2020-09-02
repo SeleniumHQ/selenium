@@ -17,21 +17,32 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-class AddToSessionQueue implements HttpHandler {
+import java.util.UUID;
+
+class AddBackToSessionQueue implements HttpHandler {
 
   private final NewSessionQueuer newSessionQueuer;
+  private final UUID id;
 
-  AddToSessionQueue(NewSessionQueuer newSessionQueuer) {
+  AddBackToSessionQueue(NewSessionQueuer newSessionQueuer, UUID id) {
     this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
+    this.id = id;
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    return newSessionQueuer.addToQueue(req);
+    boolean value = newSessionQueuer.retryAddToQueue(req, id);
+
+    return new HttpResponse().setContent(
+        asJson(ImmutableMap.of("value", value)));
   }
 }

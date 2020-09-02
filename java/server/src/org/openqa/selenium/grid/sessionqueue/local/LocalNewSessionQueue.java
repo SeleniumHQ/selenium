@@ -19,15 +19,17 @@ package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
-import org.openqa.selenium.grid.sessionqueue.SessionRequestQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Deque;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executors;
@@ -36,30 +38,30 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LocalSessionRequestQueue extends SessionRequestQueue {
+public class LocalNewSessionQueue extends NewSessionQueue {
 
-  private static final Logger LOG = Logger.getLogger(LocalSessionRequestQueue.class.getName());
+  private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());
   private final EventBus bus;
-  private final Deque<CreateSessionRequest> sessionRequests = new ConcurrentLinkedDeque<>();
+  private final Deque<HttpRequest> sessionRequests = new ConcurrentLinkedDeque<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
   private final ScheduledExecutorService executorService = Executors
       .newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
 
-  public LocalSessionRequestQueue(Tracer tracer, EventBus bus) {
-    super(tracer);
+  public LocalNewSessionQueue(Tracer tracer, EventBus bus, int retryInterval) {
+    super(tracer, retryInterval);
     this.bus = Require.nonNull("Event bus", bus);
-
     Runtime.getRuntime().addShutdownHook(shutdownHook);
   }
 
-  public static SessionRequestQueue create(Config config) {
+  public static NewSessionQueue create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
-
-    return new LocalSessionRequestQueue(tracer, bus);
+    int retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
+    return new LocalNewSessionQueue(tracer, bus, retryInterval);
   }
 
   @Override
@@ -68,7 +70,7 @@ public class LocalSessionRequestQueue extends SessionRequestQueue {
   }
 
   @Override
-  public boolean offerLast(CreateSessionRequest request, UUID requestId) {
+  public boolean offerLast(HttpRequest request, UUID requestId) {
     Require.nonNull("New Session request", request);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -76,7 +78,7 @@ public class LocalSessionRequestQueue extends SessionRequestQueue {
     try {
       added = sessionRequests.offerLast(request);
       if (added) {
-        LOG.info("Added to the queue!!");
+        LOG.log(Level.INFO, "Added to the session queue. Request: {0}", requestId.toString());
       }
       return added;
     } finally {
@@ -88,7 +90,7 @@ public class LocalSessionRequestQueue extends SessionRequestQueue {
   }
 
   @Override
-  public boolean offerFirst(CreateSessionRequest request, UUID requestId) {
+  public boolean offerFirst(HttpRequest request, UUID requestId) {
     Require.nonNull("New Session request", request);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -100,19 +102,20 @@ public class LocalSessionRequestQueue extends SessionRequestQueue {
       writeLock.unlock();
       if (added) {
         executorService.schedule(() -> {
-          LOG.info("Adding request back to the queue");
+          LOG.log(Level.INFO, "Adding request back to the queue. All slots are busy. Request: {0}",
+                  requestId);
           bus.fire(new NewSessionRequestEvent(requestId));
-        }, 30, TimeUnit.SECONDS);
+        }, super.retryInterval, TimeUnit.SECONDS);
       }
     }
   }
 
   @Override
-  public CreateSessionRequest poll() {
+  public Optional<HttpRequest> poll() {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      return sessionRequests.poll();
+      return Optional.ofNullable(sessionRequests.poll());
     } finally {
       writeLock.unlock();
     }
