@@ -138,4 +138,8 @@ public class RemoteDistributor extends Distributor {
   protected Supplier<CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request) {
     throw new UnsupportedOperationException("reserve is not required for remote sessions");
   }
+
+  public String getRegistrationSecret() {
+    return "";
+  }
 }

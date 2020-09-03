@@ -284,4 +284,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     return routes.execute(req);
   }
+
+  public abstract String getRegistrationSecret();
 }
