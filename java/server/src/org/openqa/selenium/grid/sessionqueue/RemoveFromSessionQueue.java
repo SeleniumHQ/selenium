@@ -1,5 +1,7 @@
 package org.openqa.selenium.grid.sessionqueue;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -24,6 +26,6 @@ public class RemoveFromSessionQueue implements HttpHandler {
     if (sessionRequest.isPresent()) {
       return new HttpResponse().setContent(sessionRequest.get().getContent());
     }
-    return new HttpResponse().setStatus(204);
+    return new HttpResponse().setStatus(HTTP_NO_CONTENT);
   }
 }

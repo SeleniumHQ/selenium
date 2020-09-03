@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue.remote;
 
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -82,7 +83,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   public Optional<HttpRequest> remove() {
     HttpResponse response =
         client.execute(new HttpRequest(GET, "/se/grid/newsessionqueuer/session"));
-    if(response.getStatus()==200) {
+    if(response.getStatus()==HTTP_OK) {
       return Optional.ofNullable(new HttpRequest(POST, "/session").setContent(response.getContent()));
     }
     return Optional.empty();

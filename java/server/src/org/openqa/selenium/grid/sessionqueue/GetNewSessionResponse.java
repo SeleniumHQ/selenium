@@ -21,6 +21,7 @@ import static org.openqa.selenium.grid.data.NewSessionResponseEvent.NEW_SESSION_
 import static org.openqa.selenium.grid.data.NewSessionRejectedEvent.NEW_SESSION_REJECTED;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.bytes;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -87,7 +88,7 @@ public class GetNewSessionResponse {
     NewSessionRequest sessionRequest = knownRequests.get(id);
     sessionRequest
         .setSessionResponse(new HttpResponse()
-                                .setStatus(500)
+                                .setStatus(HTTP_INTERNAL_ERROR)
                                 .setContent(asJson(
                                     ImmutableMap.of("message", sessionResponse.getMessage()))));
     sessionRequest.getLatch().countDown();
@@ -102,7 +103,7 @@ public class GetNewSessionResponse {
 
     if (!sessionRequests.offerLast(request, requestId)) {
       return new HttpResponse()
-          .setStatus(500)
+          .setStatus(HTTP_INTERNAL_ERROR)
           .setContent(asJson(ImmutableMap.of("message",
                                              "Session request could not be created. Error while adding to the session queue.")));
     }
@@ -117,7 +118,7 @@ public class GetNewSessionResponse {
       LOG.warning(e.getMessage());
       Thread.currentThread().interrupt();
       return new HttpResponse()
-          .setStatus(500)
+          .setStatus(HTTP_INTERNAL_ERROR)
           .setContent(asJson(ImmutableMap.of("message",
                                              "Session request could not be created. Error while processing the session request.")));
     }
