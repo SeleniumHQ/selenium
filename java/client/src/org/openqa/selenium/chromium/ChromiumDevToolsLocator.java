@@ -67,7 +67,7 @@ public class ChromiumDevToolsLocator {
       LOG.fine("URI found: " + uri);
       return Optional.of(uri);
     } catch (URISyntaxException e) {
-      LOG.warning("Unable to creeate URI from: " + raw);
+      LOG.warning("Unable to create URI from: " + raw);
       return Optional.empty();
     }
   }

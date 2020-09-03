@@ -30,7 +30,10 @@ java_library(
 java_export(
     name = "devtools",
     srcs = glob(
-        ["*.java", "events/*.java"],
+        [
+            "*.java",
+            "events/*.java",
+        ],
         exclude = PROTOTYPE_SOURCES + GENERATOR_SOURCES,
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,

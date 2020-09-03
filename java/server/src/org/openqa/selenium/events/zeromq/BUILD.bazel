@@ -13,6 +13,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",
         artifact("com.google.guava:guava"),
+        artifact("net.jodah:failsafe"),
         artifact("org.zeromq:jeromq:0.5.1"),
     ],
 )
