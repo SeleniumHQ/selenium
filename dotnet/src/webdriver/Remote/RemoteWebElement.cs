@@ -282,7 +282,7 @@ namespace OpenQA.Selenium.Remote
             }
 
             var fileNames = text.Split('\n');
-            if (fileNames.All(driver.FileDetector.IsFile))
+            if (fileNames.All(this.driver.FileDetector.IsFile))
             {
                 var uploadResults = new List<string>();
                 foreach (var fileName in fileNames)
