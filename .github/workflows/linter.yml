@@ -53,4 +53,5 @@ jobs:
           VALIDATE_PERL: false
           VALIDATE_TERRAFORM: false
           VALIDATE_DOTNET: false
+          VALIDATE_JAVASCRIPT: false
 

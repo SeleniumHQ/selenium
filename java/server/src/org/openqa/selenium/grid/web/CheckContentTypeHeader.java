@@ -50,7 +50,7 @@ public class CheckContentTypeHeader implements Filter {
     Require.nonNull("Next handler", httpHandler);
 
     return req -> {
-      if (skipChecksOn.contains(req.getUri())) {
+      if (skipChecksOn.stream().anyMatch(s -> req.getUri().matches(s))) {
         return httpHandler.execute(req);
       }
 
