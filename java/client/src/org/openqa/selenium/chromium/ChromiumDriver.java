@@ -18,7 +18,7 @@
 package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -50,7 +50,6 @@ import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -99,10 +98,12 @@ public class ChromiumDriver extends RemoteWebDriver
               "Unable to find version of CDP to use for %s. You may need to " +
                 "include a dependency on a specific version of the CDP using " +
                 "something similar to " +
-                "`org.seleniumhq.selenium:selenium-devtools:86` where the " +
-                "version matches the version of the chromium-based browser " +
-                "you're using.",
-              capabilities.getVersion()));
+                "`org.seleniumhq.selenium:selenium-devtools-v86:%s` where the " +
+                "version (\"v86\") matches the version of the chromium-based browser " +
+                "you're using and the version number of the artifact is the same " +
+                "as Selenium's.",
+              capabilities.getVersion(),
+              new BuildInfo().getReleaseLabel()));
           return new NoOpCdpInfo();
         });
 
