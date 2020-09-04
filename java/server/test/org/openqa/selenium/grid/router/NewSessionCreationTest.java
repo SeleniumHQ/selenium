@@ -87,7 +87,7 @@ public class NewSessionCreationTest {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, events, 1);
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
 
-    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, queuer, null);
+    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, queuer, null, 2);
     Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 

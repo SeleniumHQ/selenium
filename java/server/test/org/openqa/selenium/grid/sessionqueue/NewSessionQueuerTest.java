@@ -60,6 +60,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -80,7 +82,7 @@ public class NewSessionQueuerTest {
   private HttpRequest request;
   private static int count = 0;
   private static final Json JSON = new Json();
-
+  private static int sessionTimeout = 5;
 
   @Before
   public void setUp() {
@@ -156,7 +158,7 @@ public class NewSessionQueuerTest {
   public void shouldBeAbleToAddToQueueRemotely() {
 
     bus.addListener(NEW_SESSION_REQUEST, event -> {
-      Optional<HttpRequest> sessionRequest = this.local.remove();
+      Optional<HttpRequest> sessionRequest = this.remote.remove();
       assertTrue(sessionRequest.isPresent());
       UUID reqId = event.getData(UUID.class);
       bus.fire(
@@ -203,8 +205,9 @@ public class NewSessionQueuerTest {
   public void shouldBeAbleToRetryRequest() {
 
     bus.addListener(NEW_SESSION_REQUEST, event -> {
+      // Keep a count of event fired
       count++;
-      Optional<HttpRequest> sessionRequest = this.local.remove();
+      Optional<HttpRequest> sessionRequest = this.remote.remove();
       assertTrue(sessionRequest.isPresent());
       UUID reqId = event.getData(UUID.class);
 
@@ -212,6 +215,7 @@ public class NewSessionQueuerTest {
         assertTrue(remote.retryAddToQueue(sessionRequest.get(), reqId));
       }
 
+      // Only if it was retried after an interval, the count is 2
       if (count == 2) {
         ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
         try {
@@ -303,6 +307,32 @@ public class NewSessionQueuerTest {
     executor.shutdown();
   }
 
+  @Test
+  public void shouldBeAbleToTimeoutARequest() {
+
+    bus.addListener(NEW_SESSION_REQUEST, event -> {
+      Optional<HttpRequest> sessionRequest = this.remote.remove();
+      assertTrue(sessionRequest.isPresent());
+      UUID reqId = event.getData(UUID.class);
+
+      // Ensures that timestamp header is present
+      if(hasRequestTimedOut(sessionRequest.get())) {
+        // Reject the request once timeout occurs.
+        bus.fire(
+            new NewSessionRejectedEvent(new NewSessionErrorResponse("Error", reqId)));
+      }
+      else
+      {
+        // Keep adding to front of queue till the request times out
+        assertTrue(remote.retryAddToQueue(sessionRequest.get(), reqId));
+      }
+    });
+
+    HttpResponse httpResponse = remote.addToQueue(request);
+
+    assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
+  }
+
   private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {
     StringBuilder builder = new StringBuilder();
     try {
@@ -315,5 +345,14 @@ public class NewSessionQueuerTest {
     request.setContent(utf8String(builder.toString()));
 
     return request;
+  }
+
+  private boolean hasRequestTimedOut(HttpRequest request) {
+    String enqueTimestampStr = request.getHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER);
+    Instant enque = Instant.ofEpochSecond(Long.parseLong(enqueTimestampStr));
+    Instant deque = Instant.now();
+    Duration duration = Duration.between(enque, deque);
+
+    return duration.getSeconds() > sessionTimeout ;
   }
 }

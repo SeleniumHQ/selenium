@@ -136,7 +136,7 @@ public class NewSessionEndToEndTest {
 
     Distributor
         distributor =
-        new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null);
+        new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null, 2);
     handler.addHandler(distributor);
 
     LocalNode firstNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
@@ -198,7 +198,7 @@ public class NewSessionEndToEndTest {
         clientFactory,
         sessions,
         newSessionQueuer,
-        null);
+        null, 2);
     Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
 

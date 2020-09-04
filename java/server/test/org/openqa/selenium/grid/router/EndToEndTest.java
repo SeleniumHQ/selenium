@@ -147,7 +147,7 @@ public class EndToEndTest {
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     handler.addHandler(queuer);
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, queuer,null);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, queuer,null, 2);
     handler.addHandler(distributor);
 
     LocalNode node = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
@@ -197,7 +197,7 @@ public class EndToEndTest {
         clientFactory,
         sessions,
         newSessionQueuer,
-        null);
+        null, 2);
     Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
 
@@ -271,7 +271,7 @@ public class EndToEndTest {
 
     // The node is still open. Now create a second session. This should fail
     try {
-      WebDriver disposable = new RemoteWebDriver(server.getUrl(), new ImmutableCapabilities("browserName", "mac"));
+      WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
       disposable.quit();
       fail("Should not have been able to create driver");
     } catch (SessionNotCreatedException expected) {
@@ -296,6 +296,42 @@ public class EndToEndTest {
     // And now we're good to go.
     driver = new RemoteWebDriver(server.getUrl(), caps);
     driver.get("http://www.google.com");
+    driver.quit();
+  }
+
+  @Test
+  public void shouldRejectSessionRequestIfCapsDontExist() {
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    driver.get("http://www.google.com");
+
+    try {
+      WebDriver disposable = new RemoteWebDriver(server.getUrl(), new ImmutableCapabilities("browserName", "brie"));
+      disposable.quit();
+      fail("Should not have been able to create driver");
+    } catch (SessionNotCreatedException expected) {
+      // Fall through
+    }
+
+    driver.quit();
+  }
+
+  @Test
+  public void shouldRetryAndTimeOutSessionRequest() {
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    driver.get("http://www.google.com");
+
+    try {
+      // New session request will be added to the queue and retried.
+      // Request will timeout and return a response since node is still blocked.
+      WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
+      disposable.quit();
+      fail("Should not have been able to create driver");
+    } catch (SessionNotCreatedException expected) {
+      // Fall through
+    }
+
     driver.quit();
   }
 

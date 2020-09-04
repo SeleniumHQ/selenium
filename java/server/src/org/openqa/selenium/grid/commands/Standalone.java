@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
@@ -145,12 +146,16 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(sessions);
 
     NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
-    NewSessionQueue sessionRequests = new LocalNewSessionQueue(tracer, bus, newSessionQueueOptions.getSessionRequestRetryInterval() );
+    NewSessionQueue sessionRequests =
+        new LocalNewSessionQueue(tracer, bus,
+                                 newSessionQueueOptions.getSessionRequestRetryInterval());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
     combinedHandler.addHandler(queuer);
+
     Distributor
         distributor =
-        new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null);
+        new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null,
+                             newSessionQueueOptions.getSessionRequestTimeout());
     combinedHandler.addHandler(distributor);
 
     Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)

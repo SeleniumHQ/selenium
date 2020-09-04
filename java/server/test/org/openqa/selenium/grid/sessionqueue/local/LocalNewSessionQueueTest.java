@@ -82,6 +82,19 @@ public class LocalNewSessionQueueTest {
   }
 
   @Test
+  public void shouldAddTimestampHeader() {
+    boolean added = sessionQueue.offerLast(expectedRequest, requestId);
+    assertTrue(added);
+
+    Optional<HttpRequest> receivedRequest = sessionQueue.poll();
+
+    assertTrue(receivedRequest.isPresent());
+    HttpRequest request = receivedRequest.get();
+    assertEquals(expectedRequest, request);
+    assertTrue(request.getHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER)!=null);
+  }
+
+  @Test
   public void shouldBeAbleToAddToFrontOfQueue() {
     ImmutableCapabilities chromeCaps = new ImmutableCapabilities("browserName", "chrome");
     NewSessionPayload chromePayload = NewSessionPayload.create(chromeCaps);

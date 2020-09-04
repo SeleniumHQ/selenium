@@ -76,6 +76,8 @@ public class GetNewSessionResponse {
   }
 
   private void setResponse(NewSessionResponse sessionResponse) {
+    // Each thread will get its own CountDownLatch and it is stored in the Map using request id as the key.
+    // EventBus thread will retrieve the same request and set it's response and unblock waiting request thread.
     UUID id = sessionResponse.getRequestId();
     NewSessionRequest sessionRequest = knownRequests.get(id);
     sessionRequest.setSessionResponse(
@@ -96,6 +98,7 @@ public class GetNewSessionResponse {
 
   public HttpResponse add(HttpRequest request) {
     Require.nonNull("New Session request", request);
+
     CountDownLatch latch = new CountDownLatch(1);
     UUID requestId = UUID.randomUUID();
     NewSessionRequest requestIdentifier = new NewSessionRequest(requestId, latch);
@@ -109,6 +112,8 @@ public class GetNewSessionResponse {
     }
 
     try {
+      // Block until response is received.
+      // This will not wait indefinitely due to request timeout handled by the LocalDistributor.
       latch.await();
       HttpResponse res = requestIdentifier.getSessionResponse();
       removeRequest(requestId);

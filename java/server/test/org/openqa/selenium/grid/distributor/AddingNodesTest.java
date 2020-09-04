@@ -96,7 +96,7 @@ public class AddingNodesTest {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null);
+    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null, 2);
     handler.addHandler(local);
     distributor = new RemoteDistributor(tracer, clientFactory, externalUrl);
 

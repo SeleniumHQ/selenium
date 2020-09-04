@@ -38,12 +38,12 @@ public class NewSessionQueueFlags implements HasRoles {
       description = "Timeout in seconds. New incoming session request is added to the queue. "
                     + "Requests sitting in the queue for longer than the configured time will timeout.")
   @ConfigValue(section = "sessionqueue", name = "session-request-timeout", example = "5")
-  private int sessionRequestTimeout = 10;
+  private int sessionRequestTimeout = 30;
 
   @Parameter(
       names = {"--session-retry-interval"},
       description = "If all slots are busy, new session request will be retried after the given interval.")
-  @ConfigValue(section = "sessionqueue", name = "session-request-timeout", example = "5")
+  @ConfigValue(section = "sessionqueue", name = "session-retry-interval", example = "5")
   private int sessionRetryInterval = 5;
 
   @Override

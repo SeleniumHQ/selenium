@@ -124,16 +124,21 @@ public class Hub extends TemplateGridCommand {
 
     NetworkOptions networkOptions = new NetworkOptions(config);
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      externalUrl,
-      handler,
-      networkOptions.getHttpClientFactory(tracer));
+        externalUrl,
+        handler,
+        networkOptions.getHttpClientFactory(tracer));
 
     NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
-    NewSessionQueue sessionRequests = new LocalNewSessionQueue(tracer, bus, newSessionQueueOptions.getSessionRequestRetryInterval());
+    NewSessionQueue
+        sessionRequests =
+        new LocalNewSessionQueue(tracer, bus,
+                                 newSessionQueueOptions.getSessionRequestRetryInterval());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
     handler.addHandler(queuer);
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null);
+    Distributor distributor =
+        new LocalDistributor(tracer, bus, clientFactory, sessions, queuer, null,
+                             newSessionQueueOptions.getSessionRequestTimeout());
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
@@ -141,24 +146,26 @@ public class Hub extends TemplateGridCommand {
     HttpHandler readinessCheck = req -> {
       boolean ready = router.isReady() && bus.isReady();
       return new HttpResponse()
-        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
-        .setContent(Contents.utf8String("Router is " + ready));
+          .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+          .setContent(Contents.utf8String("Router is " + ready));
     };
 
     HttpHandler httpHandler = combine(
-      router.with(networkOptions.getSpecComplianceChecks()),
-      Route.prefix("/wd/hub").to(combine(router.with(networkOptions.getSpecComplianceChecks()))),
-      Route.post("/graphql").to(() -> graphqlHandler),
-      Route.get("/readyz").to(() -> readinessCheck));
+        router.with(networkOptions.getSpecComplianceChecks()),
+        Route.prefix("/wd/hub").to(combine(router.with(networkOptions.getSpecComplianceChecks()))),
+        Route.post("/graphql").to(() -> graphqlHandler),
+        Route.get("/readyz").to(() -> readinessCheck));
 
-    Server<?> server = new NettyServer(serverOptions, httpHandler, new ProxyCdpIntoGrid(clientFactory, sessions));
+    Server<?>
+        server =
+        new NettyServer(serverOptions, httpHandler, new ProxyCdpIntoGrid(clientFactory, sessions));
     server.start();
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(
-      "Started Selenium hub %s (revision %s): %s",
-      info.getReleaseLabel(),
-      info.getBuildRevision(),
-      server.getUrl()));
+        "Started Selenium hub %s (revision %s): %s",
+        info.getReleaseLabel(),
+        info.getBuildRevision(),
+        server.getUrl()));
   }
 }

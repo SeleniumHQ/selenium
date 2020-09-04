@@ -80,7 +80,7 @@ public class RouterTest {
     queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     handler.addHandler(queuer);
 
-    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, queuer,null);
+    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, queuer,null, 2);
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, queuer, distributor);

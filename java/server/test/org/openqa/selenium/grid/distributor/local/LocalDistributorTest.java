@@ -87,7 +87,7 @@ public class LocalDistributorTest {
   public void testAddNodeToDistributor() {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), queuer, null);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), queuer, null, 2);
     distributor.add(local);
     DistributorStatus status = distributor.getStatus();
 
@@ -105,7 +105,7 @@ public class LocalDistributorTest {
   public void testRemoveNodeFromDistributor() {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), queuer,null);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), queuer,null, 2);
     distributor.add(local);
 
     //Check the size
@@ -124,7 +124,7 @@ public class LocalDistributorTest {
   public void testAddSameNodeTwice() {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), queuer,null);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), queuer,null, 2);
     distributor.add(local);
     distributor.add(local);
     DistributorStatus status = distributor.getStatus();
@@ -144,7 +144,7 @@ public class LocalDistributorTest {
       clientFactory,
       new LocalSessionMap(tracer, bus),
       queuer,
-      null);
+      null, 2);
 
     // Add one node to ensure that everything is created in that.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");

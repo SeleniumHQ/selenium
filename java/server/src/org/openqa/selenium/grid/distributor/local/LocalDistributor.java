@@ -47,7 +47,9 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -67,6 +69,7 @@ import org.openqa.selenium.status.HasReadyState;
 import java.io.IOException;
 import java.io.Reader;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -111,6 +114,7 @@ public class LocalDistributor extends Distributor {
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
   private final String registrationSecret;
   private final NewSessionQueuer sessionRequests;
+  private final int sessionRequestTimeout;
 
   public LocalDistributor(
       Tracer tracer,
@@ -118,7 +122,7 @@ public class LocalDistributor extends Distributor {
       HttpClient.Factory clientFactory,
       SessionMap sessions,
       NewSessionQueuer sessionRequests,
-      String registrationSecret) {
+      String registrationSecret, int sessionRequestTimeout) {
     super(tracer, clientFactory);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -126,41 +130,64 @@ public class LocalDistributor extends Distributor {
     this.sessions = Require.nonNull("Session map", sessions);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
     this.registrationSecret = registrationSecret;
+    this.sessionRequestTimeout = sessionRequestTimeout;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
     bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
     bus.addListener(NEW_SESSION_REQUEST, event -> {
-      Optional<HttpRequest> sessionRequest = this.sessionRequests.remove();
       UUID reqId = event.getData(UUID.class);
-      if (sessionRequest.isPresent()) {
-        HttpRequest httpRequest = sessionRequest.get();
-        try {
-          CreateSessionResponse sessionResponse = newSession(httpRequest);
-          NewSessionResponse
-              newSessionResponse =
-              new NewSessionResponse(sessionResponse.getSession(),
-                                     sessionResponse.getDownstreamEncodedResponse(), reqId);
-          bus.fire(new NewSessionResponseEvent(newSessionResponse));
-        } catch (SessionNotCreatedException e) {
-          if (e.getMessage().startsWith("Unable to find provider for session") ||
-              e.getMessage().startsWith("Unable to reserve a slot for session request")) {
-            if (!this.sessionRequests.retryAddToQueue(httpRequest, reqId)) {
-              bus.fire(
-                  new NewSessionRejectedEvent(new NewSessionErrorResponse(e.getMessage(), reqId)));
-            }
-          } else {
-            bus.fire(
-                new NewSessionRejectedEvent(new NewSessionErrorResponse(e.getMessage(), reqId)));
-          }
-        }
-      } else {
-        bus.fire(
-            new NewSessionRejectedEvent(
-                new NewSessionErrorResponse("Distributor could not poll the queue", reqId)));
-      }
+      Optional<HttpRequest> sessionRequest = this.sessionRequests.remove();
+      handleNewSessionRequest(sessionRequest, reqId);
     });
   }
 
+  private void handleNewSessionRequest(Optional<HttpRequest> sessionRequest, UUID reqId) {
+    // Check if polling queue did not return null
+    if (sessionRequest.isPresent()) {
+      HttpRequest httpRequest = sessionRequest.get();
+
+      if (hasRequestTimedOut(httpRequest)) {
+        fireSessionRejectedEvent("New session request timed out", reqId);
+      } else {
+        try {
+          CreateSessionResponse sessionResponse = newSession(httpRequest);
+          NewSessionResponse newSessionResponse =
+              new NewSessionResponse(sessionResponse.getSession(),
+                                     sessionResponse.getDownstreamEncodedResponse(), reqId);
+
+          bus.fire(new NewSessionResponseEvent(newSessionResponse));
+        } catch (SessionNotCreatedException e) {
+          // If error is due to the slots being busy, adding to front of queue else reject the request
+          // If that fails, then just reject the request.
+          if (e.getMessage().startsWith("Unable to find provider for session") ||
+              e.getMessage().startsWith("Unable to reserve a slot for session request")) {
+            if (!this.sessionRequests.retryAddToQueue(httpRequest, reqId)) {
+              fireSessionRejectedEvent(e.getMessage(), reqId);
+            }
+          } else {
+            fireSessionRejectedEvent(e.getMessage(), reqId);
+          }
+        }
+      }
+    } else {
+      fireSessionRejectedEvent("Unable to poll request from the new session request queue.", reqId);
+    }
+  }
+
+  private boolean hasRequestTimedOut(HttpRequest request) {
+    String enqueTimestampStr = request.getHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER);
+    Instant enque = Instant.ofEpochSecond(Long.parseLong(enqueTimestampStr));
+    Instant deque = Instant.now();
+    Duration duration = Duration.between(enque, deque);
+
+    return duration.getSeconds() > sessionRequestTimeout;
+  }
+
+  private void fireSessionRejectedEvent(String message ,UUID reqId)
+  {
+    bus.fire(
+        new NewSessionRejectedEvent(new NewSessionErrorResponse(message, reqId)));
+  }
   public static Distributor create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
@@ -169,9 +196,11 @@ public class LocalDistributor extends Distributor {
     NewSessionQueuer sessionRequests =
         new NewSessionQueuerOptions(config).getSessionQueuer(
             "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer");
+    int requestTimeout = new NewSessionQueueOptions(config).getSessionRequestTimeout();
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-    return new LocalDistributor(tracer, bus, clientFactory, sessions, sessionRequests, serverOptions.getRegistrationSecret());
+    return new LocalDistributor(tracer, bus, clientFactory, sessions, sessionRequests,
+                                serverOptions.getRegistrationSecret(), requestTimeout);
   }
 
   @Override

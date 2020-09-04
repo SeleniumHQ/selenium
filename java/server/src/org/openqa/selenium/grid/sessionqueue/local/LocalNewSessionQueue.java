@@ -77,6 +77,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     boolean added = false;
     try {
       added = sessionRequests.offerLast(request);
+      addTimestampHeader(request);
       if (added) {
         LOG.log(Level.INFO, "Added to the session queue. Request: {0}", requestId.toString());
       }

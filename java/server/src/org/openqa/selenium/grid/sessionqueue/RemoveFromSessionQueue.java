@@ -23,9 +23,16 @@ public class RemoveFromSessionQueue implements HttpHandler {
   @Override
   public HttpResponse execute(HttpRequest req) {
     Optional<HttpRequest> sessionRequest = newSessionQueuer.remove();
+    HttpResponse response = new HttpResponse();
+
     if (sessionRequest.isPresent()) {
-      return new HttpResponse().setContent(sessionRequest.get().getContent());
+      HttpRequest request = sessionRequest.get();
+      response.setContent(request.getContent());
+      response.setHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER,
+                         request.getHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER));
+      return response;
     }
+
     return new HttpResponse().setStatus(HTTP_NO_CONTENT);
   }
 }

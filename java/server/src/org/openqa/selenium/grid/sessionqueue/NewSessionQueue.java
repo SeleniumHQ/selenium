@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,11 +33,18 @@ public abstract class NewSessionQueue implements HasReadyState {
 
   protected final int retryInterval;
 
+  public static String SESSIONREQUEST_TIMESTAMP_HEADER = "new-session-request-timestamp";
+
   public abstract boolean offerLast(HttpRequest request, UUID requestId);
 
   public abstract boolean offerFirst(HttpRequest request, UUID requestId);
 
   public abstract Optional<HttpRequest> poll();
+
+  public void addTimestampHeader(HttpRequest request) {
+    long timestamp = Instant.now().getEpochSecond();
+    request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
+  }
 
   public NewSessionQueue(Tracer tracer, int retryInterval) {
     this.tracer = Require.nonNull("Tracer", tracer);

@@ -99,7 +99,7 @@ public class DistributorTest {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions, queuer, null);
+    local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions, queuer, null, 2);
     caps = new ImmutableCapabilities("browserName", "cheese");
   }
 
@@ -131,7 +131,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(node),
         sessions,
         queuer,
-        null);
+        null, 2);
     distributor.add(node);
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
@@ -163,7 +163,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(node),
         sessions,
         queuer,
-        null);
+        null, 2);
     distributor.add(node);
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
@@ -195,7 +195,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(node),
         sessions,
         queuer,
-        null);
+        null, 2);
     Distributor distributor = new RemoteDistributor(
         tracer,
         new PassthroughHttpClient.Factory(local),
@@ -297,7 +297,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null)
+        null, 2)
         .add(heavy)
         .add(medium)
         .add(lightest)
@@ -327,7 +327,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null)
+        null, 2)
         .add(leastRecent);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       distributor.newSession(createRequest(payload));
@@ -398,7 +398,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null);
+        null, 2);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
 
@@ -427,7 +427,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null);
+        null, 2);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -459,7 +459,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null);
+        null, 2);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -511,7 +511,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null);
+        null, 2);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -548,7 +548,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null);
+        null, 2);
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -586,7 +586,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null);
+        null, 2);
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -642,7 +642,7 @@ public class DistributorTest {
         new PassthroughHttpClient.Factory(handler),
         sessions,
         queuer,
-        null);
+        null, 2);
     handler.addHandler(distributor);
 
     //Create all three Capability types

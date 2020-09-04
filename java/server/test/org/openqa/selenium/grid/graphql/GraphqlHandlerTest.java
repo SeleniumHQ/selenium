@@ -75,7 +75,7 @@ public class GraphqlHandlerTest {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(tracer, events, 1);
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
 
-    distributor = new LocalDistributor(tracer, events, clientFactory, sessions, queuer,null);
+    distributor = new LocalDistributor(tracer, events, clientFactory, sessions, queuer,null, 2);
   }
 
   @Test

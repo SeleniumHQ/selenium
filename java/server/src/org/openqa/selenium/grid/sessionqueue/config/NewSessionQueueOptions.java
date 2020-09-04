@@ -27,7 +27,7 @@ public class NewSessionQueueOptions {
       DEFAULT_NEWSESSION_QUEUE = "org.openqa.selenium.grid.sessionmap.remote.LocalNewSessionQueue";
 
   private final Config config;
-  private int DEFAULT_REQUEST_TIMEOUT = 10;
+  private int DEFAULT_REQUEST_TIMEOUT = 30;
   private int DEFAULT_RETRY_INTERVAL = 5;
 
   public NewSessionQueueOptions(Config config) {

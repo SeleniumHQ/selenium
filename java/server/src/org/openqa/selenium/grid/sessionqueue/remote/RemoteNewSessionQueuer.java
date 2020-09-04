@@ -18,12 +18,14 @@
 package org.openqa.selenium.grid.sessionqueue.remote;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.*;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.grid.web.Values;
@@ -44,6 +46,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
   private static final Logger LOG = Logger.getLogger(RemoteNewSessionQueuer.class.getName());
   private final HttpClient client;
+  private static final String timestampHeader= SESSIONREQUEST_TIMESTAMP_HEADER;
 
   public RemoteNewSessionQueuer(Tracer tracer, HttpClient client) {
     super(tracer);
@@ -75,6 +78,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
     HttpRequest upstream =
         new HttpRequest(POST, "/se/grid/newsessionqueuer/session/retry/" + reqId);
     upstream.setContent(request.getContent());
+    upstream.setHeader(timestampHeader, request.getHeader(timestampHeader));
     HttpResponse response = client.execute(upstream);
     return Values.get(response, Boolean.class);
   }
@@ -84,7 +88,10 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
     HttpResponse response =
         client.execute(new HttpRequest(GET, "/se/grid/newsessionqueuer/session"));
     if(response.getStatus()==HTTP_OK) {
-      return Optional.ofNullable(new HttpRequest(POST, "/session").setContent(response.getContent()));
+      HttpRequest httpRequest = new HttpRequest(POST, "/session");
+      httpRequest.setContent(response.getContent());
+      httpRequest.setHeader(timestampHeader, response.getHeader(timestampHeader));
+      return Optional.ofNullable(httpRequest);
     }
     return Optional.empty();
   }
