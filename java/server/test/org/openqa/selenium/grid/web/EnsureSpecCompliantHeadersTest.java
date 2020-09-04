@@ -25,6 +25,8 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.util.UUID;
+
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,6 +52,15 @@ public class EnsureSpecCompliantHeadersTest {
     HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of("/gouda"))
       .apply(alwaysOk)
       .execute(new HttpRequest(POST, "/gouda"));
+
+    assertThat(res.getStatus()).isEqualTo(HTTP_OK);
+  }
+
+  @Test
+  public void shouldAllowRequestsWithNoContentTypeWhenSkipCheckOnMatchesRegex() {
+    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of("\\/paipa\\/(.*)"))
+      .apply(alwaysOk)
+      .execute(new HttpRequest(POST, String.format("/paipa/%s", UUID.randomUUID().toString())));
 
     assertThat(res.getStatus()).isEqualTo(HTTP_OK);
   }

@@ -36,7 +36,8 @@ public class NetworkOptions {
 
   private final Config config;
   // These are commonly used by process which can't set various headers.
-  private final Set<String> SKIP_CHECKS_ON = ImmutableSet.of("/status", "/readyz");
+  // Checks are skipped when the session already exists
+  private final Set<String> SKIP_CHECKS_ON = ImmutableSet.of("/status", "/readyz", "\\/session\\/(.*)");
 
   public NetworkOptions(Config config) {
     this.config = Require.nonNull("Config", config);
