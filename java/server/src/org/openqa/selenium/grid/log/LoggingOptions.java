@@ -167,7 +167,7 @@ public class LoggingOptions {
             map.put("attributes", attributeMap);
             String jsonString = getJsonString(map);
             if (status.isOk()) {
-              LOG.log(Level.FINE, jsonString);
+              LOG.log(Level.INFO, jsonString);
             } else {
               LOG.log(Level.WARNING, jsonString);
             }
