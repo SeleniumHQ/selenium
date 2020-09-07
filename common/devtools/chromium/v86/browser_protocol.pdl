@@ -472,6 +472,8 @@ experimental domain Audits
     enum
       ExcludeSameSiteUnspecifiedTreatedAsLax
       ExcludeSameSiteNoneInsecure
+      ExcludeSameSiteLax
+      ExcludeSameSiteStrict
 
   type SameSiteCookieWarningReason extends string
     enum
@@ -574,7 +576,8 @@ experimental domain Audits
   type BlockedByResponseIssueDetails extends object
     properties
       AffectedRequest request
-      optional AffectedFrame frame
+      optional AffectedFrame parentFrame
+      optional AffectedFrame blockedFrame
       BlockedByResponseReason reason
 
   type HeavyAdResolutionStatus extends string
@@ -597,6 +600,31 @@ experimental domain Audits
       # The frame that was blocked.
       AffectedFrame frame
 
+  type ContentSecurityPolicyViolationType extends string
+    enum
+      kInlineViolation
+      kEvalViolation
+      kURLViolation
+      kTrustedTypesSinkViolation
+      kTrustedTypesPolicyViolation
+
+  type SourceCodeLocation extends object
+    properties
+      string url
+      integer lineNumber
+      integer columnNumber
+
+  type ContentSecurityPolicyIssueDetails extends object
+    properties
+      # The url not included in allowed sources.
+      optional string blockedURL
+      # Specific directive that is violated, causing the CSP issue.
+      string violatedDirective
+      ContentSecurityPolicyViolationType contentSecurityPolicyViolationType
+      optional AffectedFrame frameAncestor
+      optional SourceCodeLocation sourceCodeLocation
+      optional DOM.BackendNodeId violatingNodeId
+
   # A unique identifier for the type of issue. Each type may use one of the
   # optional fields in InspectorIssueDetails to convey more specific
   # information about the kind of issue.
@@ -606,6 +634,7 @@ experimental domain Audits
       MixedContentIssue
       BlockedByResponseIssue
       HeavyAdIssue
+      ContentSecurityPolicyIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -616,6 +645,7 @@ experimental domain Audits
       optional MixedContentIssueDetails mixedContentIssueDetails
       optional BlockedByResponseIssueDetails blockedByResponseIssueDetails
       optional HeavyAdIssueDetails heavyAdIssueDetails
+      optional ContentSecurityPolicyIssueDetails contentSecurityPolicyIssueDetails
 
   # An inspector issue reported from the back-end.
   type InspectorIssue extends object
@@ -1210,7 +1240,22 @@ experimental domain CSS
       # Amount of glyphs that were rendered with this font.
       number glyphCount
 
+  # Information about font variation axes for variable fonts
+  type FontVariationAxis extends object
+    properties
+      # The font-variation-setting tag (a.k.a. "axis tag").
+      string tag
+      # Human-readable variation name in the default language (normally, "en").
+      string name
+      # The minimum value (inclusive) the font supports for this tag.
+      number minValue
+      # The maximum value (inclusive) the font supports for this tag.
+      number maxValue
+      # The default value.
+      number defaultValue
+
   # Properties of a web font: https://www.w3.org/TR/2008/REC-CSS2-20080411/fonts.html#font-descriptions
+  # and additional information such as platformFontFamily and fontVariationAxes.
   type FontFace extends object
     properties
       # The font-family.
@@ -1229,6 +1274,8 @@ experimental domain CSS
       string src
       # The resolved platform font family
       string platformFontFamily
+      # Available variation settings (a.k.a. "axes").
+      optional array of FontVariationAxis fontVariationAxes
 
   # CSS keyframes rule representation.
   type CSSKeyframesRule extends object
@@ -1384,6 +1431,22 @@ experimental domain CSS
       # The stylesheet text.
       string text
 
+  # Starts tracking the given computed styles for updates. The specified array of properties
+  # replaces the one previously specified. Pass empty array to disable tracking.
+  # Use takeComputedStyleUpdates to retrieve the list of nodes that had properties modified.
+  # The changes to computed style properties are only tracked for nodes pushed to the front-end
+  # by the DOM agent. If no changes to the tracked properties occur after the node has been pushed
+  # to the front-end, no updates will be issued for the node.
+  experimental command trackComputedStyleUpdates
+    parameters
+      array of CSSComputedStyleProperty propertiesToTrack
+
+  # Polls the next batch of computed style updates.
+  experimental command takeComputedStyleUpdates
+    returns
+      # The list of node Ids that have their tracked computed styles updated
+      array of DOM.NodeId nodeIds
+
   # Find a rule with the given active property for the given node and set the new value for this
   # property
   command setEffectivePropertyValueForNode
@@ -1456,6 +1519,12 @@ experimental domain CSS
       array of RuleUsage coverage
       # Monotonically increasing time, in seconds.
       number timestamp
+
+  # Enables/disables rendering of local CSS fonts (enabled by default).
+  experimental command setLocalFontsEnabled
+    parameters
+      # Whether rendering of local fonts is enabled.
+      boolean enabled
 
   # Fires whenever a web font is updated.  A non-empty font parameter indicates a successfully loaded
   # web font
@@ -1819,6 +1888,13 @@ domain DOM
       # Rectangle height
       number height
 
+  type CSSComputedStyleProperty extends object
+    properties
+      # Computed style property name.
+      string name
+      # Computed style property value.
+      string value
+
   # Collects class names for the node with given id and all of it's child nodes.
   experimental command collectClassNamesFromSubtree
     parameters
@@ -1951,7 +2027,9 @@ domain DOM
       Node root
 
   # Returns the root DOM node (and optionally the subtree) to the caller.
-  command getFlattenedDocument
+  # Deprecated, as it is not designed to work well with the rest of the DOM agent.
+  # Use DOMSnapshot.captureSnapshot instead.
+  deprecated command getFlattenedDocument
     parameters
       # The maximum depth at which children should be retrieved, defaults to 1. Use -1 for the
       # entire subtree or provide an integer larger than 0.
@@ -1962,6 +2040,20 @@ domain DOM
     returns
       # Resulting node.
       array of Node nodes
+
+  # Finds nodes with a given computed style in a subtree.
+  experimental command getNodesForSubtreeByStyle
+    parameters
+      # Node ID pointing to the root of a subtree.
+      NodeId nodeId
+      # The style to filter nodes by (includes nodes if any of properties matches).
+      array of CSSComputedStyleProperty computedStyles
+      # Whether or not iframes and shadow roots in the same target should be traversed when returning the
+      # results (default is false).
+      optional boolean pierce
+    returns
+      # Resulting nodes.
+      array of NodeId nodeIds
 
   # Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
   # either returned or not.
@@ -2931,6 +3023,20 @@ domain Emulation
       # Orientation angle.
       integer angle
 
+  type DisplayFeature extends object
+    properties
+      # Orientation of a display feature in relation to screen
+      enum orientation
+        vertical
+        horizontal
+      # The offset from the screen origin in either the x (for vertical
+      # orientation) or y (for horizontal orientation) direction.
+      integer offset
+      # A display feature may mask content such that it is not physically
+      # displayed - this length along with the offset describes this area.
+      # A display feature that only splits content will have a 0 mask_length.
+      integer maskLength
+
   type MediaFeature extends object
     properties
       string name
@@ -3029,6 +3135,9 @@ domain Emulation
       # If set, the visible area of the page will be overridden to this viewport. This viewport
       # change is not observed by the page, e.g. viewport-relative elements do not change positions.
       experimental optional Page.Viewport viewport
+      # If set, the display feature of a multi-segment screen. If not set, multi-segment support
+      # is turned-off.
+      experimental optional DisplayFeature displayFeature
 
   experimental command setScrollbarsHidden
     parameters
@@ -3079,6 +3188,17 @@ domain Emulation
       optional number longitude
       # Mock accuracy
       optional number accuracy
+
+  # Overrides the Idle state.
+  experimental command setIdleOverride
+    parameters
+      # Mock isUserActive
+      boolean isUserActive
+      # Mock isScreenUnlocked
+      boolean isScreenUnlocked
+
+  # Clears Idle state overrides.
+  experimental command clearIdleOverride
 
   # Overrides value returned by the javascript navigator object.
   experimental deprecated command setNavigatorOverrides
@@ -4194,6 +4314,11 @@ domain Network
       High
       VeryHigh
 
+  # Post data entry for HTTP request
+  type PostDataEntry extends object
+    properties
+      optional binary bytes
+
   # HTTP request data.
   type Request extends object
     properties
@@ -4209,6 +4334,8 @@ domain Network
       optional string postData
       # True when the request has POST data. Note that postData might still be omitted when this flag is true when the data is too long.
       optional boolean hasPostData
+      # Request body elements. This will be converted from base64 to binary
+      experimental optional array of PostDataEntry postDataEntries
       # The mixed content type of the request.
       optional Security.MixedContentType mixedContentType
       # Priority of the resource request at the time request is sent.
@@ -4787,7 +4914,9 @@ domain Network
   # detailed cookie information in the `cookies` field.
   command getCookies
     parameters
-      # The list of URLs for which applicable cookies will be fetched
+      # The list of URLs for which applicable cookies will be fetched.
+      # If not specified, it's assumed to be set to the list containing
+      # the URLs of the page and all of its subframes.
       optional array of string urls
     returns
       # Array of cookie objects.
@@ -5204,11 +5333,52 @@ domain Network
       # available, such as in the case of HTTP/2 or QUIC.
       optional string headersText
 
+  experimental type CrossOriginOpenerPolicyValue extends string
+    enum
+      SameOrigin
+      SameOriginAllowPopups
+      UnsafeNone
+      SameOriginPlusCoep
+
+  experimental type CrossOriginOpenerPolicyStatus extends object
+    properties
+      CrossOriginOpenerPolicyValue value
+
+  experimental type CrossOriginEmbedderPolicyValue extends string
+    enum
+      None
+      RequireCorp
+
+  experimental type CrossOriginEmbedderPolicyStatus extends object
+    properties
+      CrossOriginEmbedderPolicyValue value
+
+  experimental type SecurityIsolationStatus extends object
+    properties
+      CrossOriginOpenerPolicyStatus coop
+      CrossOriginEmbedderPolicyStatus coep
+
+  # Returns information about the COEP/COOP isolation status.
+  experimental command getSecurityIsolationStatus
+    parameters
+      # If no frameId is provided, the status of the target is provided.
+      optional Page.FrameId frameId
+    returns
+      SecurityIsolationStatus status
+
 # This domain provides various functionality related to drawing atop the inspected page.
 experimental domain Overlay
   depends on DOM
   depends on Page
   depends on Runtime
+
+  # Configuration data for drawing the source order of an elements children.
+  type SourceOrderConfig extends object
+    properties
+      # the color to outline the givent element in.
+      DOM.RGBA parentOutlineColor
+      # the color to outline the child elements in.
+      DOM.RGBA childOutlineColor
 
   # Configuration data for the highlighting of Grid elements.
   type GridHighlightConfig extends object
@@ -5219,14 +5389,28 @@ experimental domain Overlay
       optional boolean showPositiveLineNumbers
       # Show Negative line number labels (default: false).
       optional boolean showNegativeLineNumbers
+      # Show area name labels (default: false).
+      optional boolean showAreaNames
+      # Show line name labels (default: false).
+      optional boolean showLineNames
+      # Show track size labels (default: false).
+      optional boolean showTrackSizes
       # The grid container border highlight color (default: transparent).
       optional DOM.RGBA gridBorderColor
-      # The cell border color (default: transparent).
-      optional DOM.RGBA cellBorderColor
+      # The cell border color (default: transparent). Deprecated, please use rowLineColor and columnLineColor instead.
+      deprecated optional DOM.RGBA cellBorderColor
+      # The row line color (default: transparent).
+      optional DOM.RGBA rowLineColor
+      # The column line color (default: transparent).
+      optional DOM.RGBA columnLineColor
       # Whether the grid border is dashed (default: false).
       optional boolean gridBorderDash
-      # Whether the cell border is dashed (default: false).
-      optional boolean cellBorderDash
+      # Whether the cell border is dashed (default: false). Deprecated, please us rowLineDash and columnLineDash instead.
+      deprecated optional boolean cellBorderDash
+      # Whether row lines are dashed (default: false).
+      optional boolean rowLineDash
+      # Whether column lines are dashed (default: false).
+      optional boolean columnLineDash
       # The row gap highlight fill color (default: transparent).
       optional DOM.RGBA rowGapColor
       # The row gap hatching fill color (default: transparent).
@@ -5235,6 +5419,8 @@ experimental domain Overlay
       optional DOM.RGBA columnGapColor
       # The column gap hatching fill color (default: transparent).
       optional DOM.RGBA columnHatchColor
+      # The named grid areas border color (Default: transparent).
+      optional DOM.RGBA areaBorderColor
 
   # Configuration data for the highlighting of page elements.
   type HighlightConfig extends object
@@ -5276,6 +5462,14 @@ experimental domain Overlay
       hsl
       hex
 
+  # Configurations for Persistent Grid Highlight
+  type GridNodeHighlightConfig extends object
+    properties
+      # A descriptor for the highlight appearance.
+      GridHighlightConfig gridHighlightConfig
+      # Identifier of the node to highlight.
+      DOM.NodeId nodeId
+
   # Configuration for dual screen hinge
   type HingeConfig extends object
     properties
@@ -5315,6 +5509,24 @@ experimental domain Overlay
       optional boolean showAccessibilityInfo
     returns
       # Highlight data for the node.
+      object highlight
+
+  # For Persistent Grid testing.
+  command getGridHighlightObjectsForTest
+    parameters
+      # Ids of the node to get highlight object for.
+      array of DOM.NodeId nodeIds
+    returns
+      # Grid Highlight data for the node ids provided.
+      object highlights
+
+  # For Source Order Viewer testing.
+  command getSourceOrderHighlightObjectForTest
+    parameters
+      # Id of the node to highlight.
+      DOM.NodeId nodeId
+    returns
+      # Source order highlight data for the node id provided.
       object highlight
 
   # Hides any highlight.
@@ -5371,6 +5583,19 @@ experimental domain Overlay
       # The highlight outline color (default: transparent).
       optional DOM.RGBA outlineColor
 
+  # Highlights the source order of the children of the DOM node with given id or with the given
+  # JavaScript object wrapper. Either nodeId or objectId must be specified.
+  command highlightSourceOrder
+    parameters
+      # A descriptor for the appearance of the overlay drawing.
+      SourceOrderConfig sourceOrderConfig
+      # Identifier of the node to highlight.
+      optional DOM.NodeId nodeId
+      # Identifier of the backend node to highlight.
+      optional DOM.BackendNodeId backendNodeId
+      # JavaScript object id of the node to be highlighted.
+      optional Runtime.RemoteObjectId objectId
+
   # Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
   # Backend then generates 'inspectNodeRequested' event upon element selection.
   command setInspectMode
@@ -5403,6 +5628,12 @@ experimental domain Overlay
     parameters
       # True for showing the FPS counter
       boolean show
+
+  # Highlight multiple elements with the CSS Grid overlay.
+  command setShowGridOverlays
+    parameters
+      # An array of node identifiers and descriptors for the highlight appearance.
+      array of GridNodeHighlightConfig gridNodeHighlightConfigs
 
   # Requests that backend shows paint rectangles
   command setShowPaintRects
@@ -5472,6 +5703,37 @@ domain Page
   # Unique frame identifier.
   type FrameId extends string
 
+  # Indicates whether a frame has been identified as an ad.
+  experimental type AdFrameType extends string
+    enum
+      none
+      # This frame is a subframe of an ad frame.
+      child
+      # This frame is the root of an ad frame.
+      root
+
+  # Indicates whether the frame is a secure context and why it is the case.
+  experimental type SecureContextType extends string
+    enum
+      # The origin is a secure context.
+      Secure
+      # The host is localhost and hence is considered secure.
+      SecureLocalhost
+      # The origin has an insecure scheme and is not localhost.
+      InsecureScheme
+      # One of the ancestor frames is not a secure context.
+      InsecureAncestor
+
+  # Indicates whether the frame is cross-origin isolated and why it is the case.
+  experimental type CrossOriginIsolatedContextType extends string
+    enum
+      # The origin is cross-origin isolated.
+      Isolated
+      # The origin is not cross-origin isolated.
+      NotIsolated
+      # The cross-origin isolation feature is disabled.
+      NotIsolatedFeatureDisabled
+
   # Information about the Frame on the page.
   type Frame extends object
     properties
@@ -5487,12 +5749,23 @@ domain Page
       string url
       # Frame document's URL fragment including the '#'.
       experimental optional string urlFragment
+      # Frame document's registered domain, taking the public suffixes list into account.
+      # Extracted from the Frame's url.
+      # Example URLs: http://www.google.com/file.html -> "google.com"
+      #               http://a.b.co.uk/file.html      -> "b.co.uk"
+      experimental string domainAndRegistry
       # Frame document's security origin.
       string securityOrigin
       # Frame document's mimeType as determined by the browser.
       string mimeType
       # If the frame failed to load, this contains the URL that could not be loaded. Note that unlike url above, this URL may contain a fragment.
       experimental optional string unreachableUrl
+      # Indicates whether this frame was tagged as an ad.
+      experimental optional AdFrameType adFrameType
+      # Indicates whether the main document is a secure context and explains why that is the case.
+      experimental SecureContextType secureContextType
+      # Indicates whether this is a cross origin isolated context.
+      experimental CrossOriginIsolatedContextType crossOriginIsolatedContextType
 
   # Information about the Resource on the page.
   experimental type FrameResource extends object
@@ -7056,6 +7329,8 @@ domain Target
       boolean attached
       # Opener target Id
       optional TargetID openerId
+      # Whether the opened window has access to the originating window.
+      experimental boolean canAccessOpener
       experimental optional Browser.BrowserContextID browserContextId
 
   experimental type RemoteLocation extends object
@@ -7531,7 +7806,7 @@ experimental domain Fetch
       # If set, the request method is overridden.
       optional string method
       # If set, overrides the post data in the request.
-      optional string postData
+      optional binary postData
       # If set, overrides the request headers.
       optional array of HeaderEntry headers
 
@@ -7929,6 +8204,13 @@ experimental domain WebAuthn
     parameters
       AuthenticatorId authenticatorId
       boolean isUserVerified
+
+  # Sets whether tests of user presence will succeed immediately (if true) or fail to resolve (if false) for an authenticator.
+  # The default is true.
+  command setAutomaticPresenceSimulation
+    parameters
+      AuthenticatorId authenticatorId
+      boolean enabled
 
 # This domain allows detailed inspection of media elements
 experimental domain Media

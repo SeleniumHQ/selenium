@@ -108,9 +108,17 @@ def java_test_suite(
                 **kwargs
             )
 
-    native.test_suite(
-        name = "%s-suite" % name,
-        tests = tests,
-        tags = ["manual"] + tags,
-        visibility = visibility,
-    )
+    if name in srcs:
+      native.test_suite(
+          name = "%s-suite" % name,
+          tests = tests,
+          tags = ["manual"] + tags,
+          visibility = visibility,
+      )
+    else:
+        native.test_suite(
+          name = name,
+          tests = tests,
+          tags = ["manual"] + tags,
+          visibility = visibility,
+        )
