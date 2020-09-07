@@ -102,6 +102,7 @@ public class JsonOutput implements Closeable {
   private String indent = "";
   private String lineSeparator = "\n";
   private String indentBy = "  ";
+  private boolean writeClassName = true;
 
   JsonOutput(Appendable appendable) {
     this.appendable = Require.nonNull("Underlying appendable", appendable);
@@ -130,7 +131,7 @@ public class JsonOutput implements Closeable {
     builder.put(File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()));
     builder.put(URI.class::isAssignableFrom, (obj, depth) -> append(asString((obj).toString())));
     builder.put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())));
-    builder.put(UUID.class::isAssignableFrom, (obj, depth) -> append(asString(((UUID) obj).toString())));
+    builder.put(UUID.class::isAssignableFrom, (obj, depth) -> append(asString(obj.toString())));
     builder.put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))));
     builder.put(
         GSON_ELEMENT,
@@ -206,6 +207,11 @@ public class JsonOutput implements Closeable {
   public JsonOutput setPrettyPrint(boolean enablePrettyPrinting) {
     this.lineSeparator = enablePrettyPrinting ? "\n" : "";
     this.indentBy = enablePrettyPrinting ? "  " : "";
+    return this;
+  }
+
+  public JsonOutput writeClassName(boolean writeClassName) {
+    this.writeClassName = writeClassName;
     return this;
   }
 
@@ -374,8 +380,15 @@ public class JsonOutput implements Closeable {
         continue;
       }
 
-      name(pd.getName());
-      write(pd.getReadMethod().apply(toConvert), maxDepth - 1);
+      if (!writeClassName && "class".equals(pd.getName())) {
+        continue;
+      }
+
+      Object value = pd.getReadMethod().apply(toConvert);
+      if (!Optional.empty().equals(value)) {
+        name(pd.getName());
+        write(value, maxDepth - 1);
+      }
     }
     endObject();
   }
