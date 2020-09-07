@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
-import static org.openqa.selenium.remote.http.Contents.reader;
-
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
-
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.GetNewSessionResponse;
@@ -31,7 +28,6 @@ import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Optional;
@@ -70,7 +66,6 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
 
   @Override
   public boolean retryAddToQueue(HttpRequest request, UUID reqId) {
-    LOG.log(Level.INFO,"Retry adding to the queue. Request id: {0}", reqId);
     return sessionRequests.offerFirst(request, reqId);
   }
 

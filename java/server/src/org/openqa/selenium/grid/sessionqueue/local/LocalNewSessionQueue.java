@@ -26,9 +26,15 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -74,18 +80,26 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     Require.nonNull("New Session request", request);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
-    boolean added = false;
-    try {
-      added = sessionRequests.offerLast(request);
-      addTimestampHeader(request);
-      if (added) {
-        LOG.log(Level.INFO, "Added to the session queue. Request: {0}", requestId.toString());
-      }
-      return added;
-    } finally {
-      writeLock.unlock();
-      if (added) {
-        bus.fire(new NewSessionRequestEvent(requestId));
+
+    try (Span span = tracer.getCurrentContext().createSpan("local_sessionqueue.add")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+                       EventAttribute.setValue(getClass().getName()));
+      boolean added = false;
+      try {
+        added = sessionRequests.offerLast(request);
+        addTimestampHeader(request);
+
+        attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
+        attributeMap.put("request.added", EventAttribute.setValue(added));
+        span.addEvent("Add new session request to the queue", attributeMap);
+
+        return added;
+      } finally {
+        writeLock.unlock();
+        if (added) {
+          bus.fire(new NewSessionRequestEvent(requestId));
+        }
       }
     }
   }
