@@ -102,6 +102,7 @@ public class JsonOutput implements Closeable {
   private String indent = "";
   private String lineSeparator = "\n";
   private String indentBy = "  ";
+  private boolean writeClassName = true;
 
   JsonOutput(Appendable appendable) {
     this.appendable = Require.nonNull("Underlying appendable", appendable);
@@ -206,6 +207,11 @@ public class JsonOutput implements Closeable {
   public JsonOutput setPrettyPrint(boolean enablePrettyPrinting) {
     this.lineSeparator = enablePrettyPrinting ? "\n" : "";
     this.indentBy = enablePrettyPrinting ? "  " : "";
+    return this;
+  }
+
+  public JsonOutput writeClassName(boolean writeClassName) {
+    this.writeClassName = writeClassName;
     return this;
   }
 
@@ -371,6 +377,10 @@ public class JsonOutput implements Closeable {
       // Only include methods not on java.lang.Object to stop things being super-noisy
       Function<Object, Object> readMethod = pd.getReadMethod();
       if (readMethod == null) {
+        continue;
+      }
+
+      if (!writeClassName && "class".equals(pd.getName())) {
         continue;
       }
 

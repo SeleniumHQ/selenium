@@ -671,6 +671,31 @@ public class JsonOutputTest {
     assertThat(obj.has("noValue")).describedAs(json).isFalse();
   }
 
+  @Test
+  public void onRequsetShouldNotWriteClassNamesIntoJson() {
+    class WithClassName {
+      public String getCheese() {
+        return "gouda";
+      }
+    }
+
+    String json = convert(new WithClassName());
+
+    JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+    assertThat(obj.has("class")).isTrue();
+    assertThat(obj.get("cheese").getAsString()).isEqualTo("gouda");
+
+    StringBuilder str = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(str).writeClassName(false)) {
+      out.write(new WithClassName());
+    }
+
+    json = str.toString();
+    obj = JsonParser.parseString(json).getAsJsonObject();
+    assertThat(obj.has("class")).isFalse();
+    assertThat(obj.get("cheese").getAsString()).isEqualTo("gouda");
+  }
+
   private String convert(Object toConvert) {
     try (Writer writer = new StringWriter();
          JsonOutput jsonOutput = new Json().newOutput(writer)) {
