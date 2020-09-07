@@ -3,7 +3,7 @@
     "@bazel/bazel": "^2.1.0",
     "@bazel/buildifier": "^0.22.0",
     "@bazel/ibazel": "^0.10.3",
-    "@bazel/jasmine": "^2.0.3",
+    "@bazel/jasmine": "^2.1.0",
     "@bazel/typescript": "^2.0.2",
     "eslint-plugin-node": "^11.1.0",
     "express": "^4.16.4",
