@@ -292,6 +292,11 @@ public class AddingNodesTest {
     }
 
     @Override
+    public String getRegistrationSecret() {
+      return "cheese";
+    }
+
+    @Override
     public NodeStatus getStatus() {
       Active active = null;
       if (running != null) {
