@@ -17,16 +17,22 @@
 
 package org.openqa.selenium.chromium;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.CdpInfo;
 import org.openqa.selenium.devtools.CdpVersionFinder;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.idealized.fetch.Fetch;
+import org.openqa.selenium.devtools.idealized.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
@@ -46,29 +52,41 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
  * This class is provided as a convenience for easily testing the Chromium browser. The control server
  * which each instance communicates with will live and die with the instance.
- *
+ * <p>
  * To avoid unnecessarily restarting the ChromiumDriver server with each instance, use a
  * {@link RemoteWebDriver} coupled with the desired WebDriverService, which is managed
  * separately.
- *
+ * <p>
  * Note that unlike ChromiumDriver, RemoteWebDriver doesn't directly implement
  * role interfaces such as {@link LocationContext} and {@link WebStorage}.
  * Therefore, to access that functionality, it needs to be
  * {@link org.openqa.selenium.remote.Augmenter augmented} and then cast
  * to the appropriate interface.
  */
-public class ChromiumDriver extends RemoteWebDriver
-    implements HasDevTools, HasLogEvents, HasTouchScreen, LocationContext, NetworkConnection, WebStorage {
+public class ChromiumDriver extends RemoteWebDriver implements
+  HasAuthentication,
+  HasDevTools,
+  HasLogEvents,
+  HasTouchScreen,
+  LocationContext,
+  NetworkConnection,
+  WebStorage {
 
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
   private final RemoteLocationContext locationContext;
@@ -77,6 +95,8 @@ public class ChromiumDriver extends RemoteWebDriver
   private final RemoteNetworkConnection networkConnection;
   private final Optional<Connection> connection;
   private final Optional<DevTools> devTools;
+  private final Map<Predicate<URI>, Supplier<Credentials>> allKnownCredentials = new LinkedHashMap<>();
+  private boolean authenticationInitialized = false;
 
   protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
@@ -87,25 +107,25 @@ public class ChromiumDriver extends RemoteWebDriver
 
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     connection = ChromiumDevToolsLocator.getChromeConnector(
-        factory,
-        getCapabilities(),
-        capabilityKey);
+      factory,
+      getCapabilities(),
+      capabilityKey);
 
     CdpInfo cdpInfo = new CdpVersionFinder().match(getCapabilities().getVersion())
       .orElseGet(() -> {
-          LOG.warning(
-            String.format(
-              "Unable to find version of CDP to use for %s. You may need to " +
-                "include a dependency on a specific version of the CDP using " +
-                "something similar to " +
-                "`org.seleniumhq.selenium:selenium-devtools-v86:%s` where the " +
-                "version (\"v86\") matches the version of the chromium-based browser " +
-                "you're using and the version number of the artifact is the same " +
-                "as Selenium's.",
-              capabilities.getVersion(),
-              new BuildInfo().getReleaseLabel()));
-          return new NoOpCdpInfo();
-        });
+        LOG.warning(
+          String.format(
+            "Unable to find version of CDP to use for %s. You may need to " +
+              "include a dependency on a specific version of the CDP using " +
+              "something similar to " +
+              "`org.seleniumhq.selenium:selenium-devtools-v86:%s` where the " +
+              "version (\"v86\") matches the version of the chromium-based browser " +
+              "you're using and the version number of the artifact is the same " +
+              "as Selenium's.",
+            capabilities.getVersion(),
+            new BuildInfo().getReleaseLabel()));
+        return new NoOpCdpInfo();
+      });
 
     devTools = connection.map(conn -> new DevTools(cdpInfo.getDomains(), conn));
   }
@@ -113,7 +133,7 @@ public class ChromiumDriver extends RemoteWebDriver
   @Override
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
-        "Setting the file detector only works on remote webdriver instances obtained " +
+      "Setting the file detector only works on remote webdriver instances obtained " +
         "via RemoteWebDriver");
   }
 
@@ -121,6 +141,56 @@ public class ChromiumDriver extends RemoteWebDriver
   public <X> void onLogEvent(EventType<X> kind) {
     Require.nonNull("Event type", kind);
     kind.initializeLogger(this);
+  }
+
+  @Override
+  public void register(Predicate<URI> whenThisMatches, Supplier<Credentials> useTheseCredentials) {
+    Require.nonNull("Check to use to see how we should authenticate", whenThisMatches);
+    Require.nonNull("Credentials to use when authenticating", useTheseCredentials);
+
+    allKnownCredentials.put(whenThisMatches, useTheseCredentials);
+
+    if (!authenticationInitialized) {
+      DevTools devTools = this.devTools.orElseThrow(() -> new DevToolsException("Unable to make devtools connection"));
+      devTools.createSessionIfThereIsNotOne();
+
+      RequestPattern pattern = new RequestPattern(Optional.of("*"), Optional.empty());
+
+      Fetch fetch = devTools.getDomains().fetch();
+
+      // TODO: This will fight with NetworkInterceptor...
+      devTools.addListener(
+        fetch.requestPaused(),
+        requestPaused -> {
+          Optional<HttpRequest> maybeRequest = requestPaused.getRequest();
+          if (!maybeRequest.isPresent()) {
+            devTools.send(fetch.continueRequest(requestPaused.getRequestId()));
+            return;
+          }
+          devTools.send(fetch.continueRequest(requestPaused.getRequestId()));
+        });
+      devTools.addListener(
+        fetch.authRequired(),
+        authRequest -> {
+          try {
+            URI uri = new URI(authRequest.getChallenge().getOrigin());
+            Optional<Credentials> maybeCredentials = allKnownCredentials.entrySet().stream()
+              .filter(entry -> entry.getKey().test(uri))
+              .map(entry -> entry.getValue().get())
+              .findFirst();
+
+            if (!maybeCredentials.isPresent()) {
+              devTools.send(fetch.cancelAuth(authRequest.getRequestId()));
+            } else {
+              devTools.send(fetch.authorize(authRequest.getRequestId(), maybeCredentials.get()));
+            }
+          } catch (URISyntaxException e) {
+            throw new DevToolsException(e);
+          }
+        }
+      );
+      devTools.send(fetch.enable(Optional.of(ImmutableList.of(pattern)), true));
+    }
   }
 
   @Override
@@ -179,8 +249,8 @@ public class ChromiumDriver extends RemoteWebDriver
 
     @SuppressWarnings("unchecked")
     Map<String, Object> toReturn = (Map<String, Object>) getExecuteMethod().execute(
-        ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
-        ImmutableMap.of("cmd", commandName, "params", parameters));
+      ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
+      ImmutableMap.of("cmd", commandName, "params", parameters));
 
     return ImmutableMap.copyOf(toReturn);
   }

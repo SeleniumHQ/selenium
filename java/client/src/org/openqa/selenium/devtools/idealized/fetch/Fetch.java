@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.devtools.idealized.fetch;
 
+import org.openqa.selenium.Credentials;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.idealized.fetch.model.AuthRequired;
 import org.openqa.selenium.devtools.idealized.fetch.model.RequestId;
 import org.openqa.selenium.devtools.idealized.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.idealized.fetch.model.RequestPaused;
@@ -33,7 +35,13 @@ public interface Fetch {
 
   Event<RequestPaused> requestPaused();
 
+  Event<AuthRequired> authRequired();
+
   Command<Void> fulfillRequest(RequestId requestId, HttpResponse response);
 
   Command<Void> continueRequest(RequestId requestId);
+
+  Command<Void> cancelAuth(RequestId requestId);
+
+  Command<Void> authorize(RequestId requestId, Credentials credentials);
 }

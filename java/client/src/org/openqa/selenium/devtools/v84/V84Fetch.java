@@ -17,12 +17,18 @@
 
 package org.openqa.selenium.devtools.v84;
 
+import org.openqa.selenium.Credentials;
+import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.devtools.Command;
+import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.idealized.fetch.model.AuthChallenge;
 import org.openqa.selenium.devtools.idealized.fetch.model.RequestId;
 import org.openqa.selenium.devtools.idealized.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.idealized.page.model.FrameId;
 import org.openqa.selenium.devtools.v84.fetch.Fetch;
+import org.openqa.selenium.devtools.v84.fetch.model.AuthChallengeResponse;
+import org.openqa.selenium.devtools.v84.fetch.model.AuthRequired;
 import org.openqa.selenium.devtools.v84.fetch.model.HeaderEntry;
 import org.openqa.selenium.devtools.v84.fetch.model.RequestPaused;
 import org.openqa.selenium.devtools.v84.network.model.Request;
@@ -81,7 +87,7 @@ public class V84Fetch implements org.openqa.selenium.devtools.idealized.fetch.Fe
 
           HttpMethod method;
           try {
-             method = HttpMethod.valueOf(cdpRequest.getMethod().toUpperCase());
+            method = HttpMethod.valueOf(cdpRequest.getMethod().toUpperCase());
           } catch (IllegalArgumentException e) {
             // Spam in a reasonable value
             method = HttpMethod.GET;
@@ -131,5 +137,43 @@ public class V84Fetch implements org.openqa.selenium.devtools.idealized.fetch.Fe
       Optional.empty(),
       Optional.empty(),
       Optional.empty());
+  }
+
+  @Override
+  public Event<org.openqa.selenium.devtools.idealized.fetch.model.AuthRequired> authRequired() {
+    return new Event<>(
+      Fetch.authRequired().getMethod(),
+      input -> {
+        AuthRequired auth = input.read(AuthRequired.class);
+        return new org.openqa.selenium.devtools.idealized.fetch.model.AuthRequired(
+          new RequestId(auth.getRequestId().toString()),
+          new AuthChallenge(
+            auth.getAuthChallenge().getScheme(),
+            auth.getAuthChallenge().getOrigin(),
+            auth.getAuthChallenge().getRealm()));
+      });
+  }
+
+  @Override
+  public Command<Void> cancelAuth(RequestId requestId) {
+    return Fetch.continueWithAuth(
+      new org.openqa.selenium.devtools.v84.fetch.model.RequestId(requestId.toString()),
+      new AuthChallengeResponse(AuthChallengeResponse.Response.CANCELAUTH, Optional.empty(), Optional.empty()));
+  }
+
+  @Override
+  public Command<Void> authorize(RequestId requestId, Credentials credentials) {
+    if (!(credentials instanceof UsernameAndPassword)) {
+      throw new DevToolsException("Can only authenticate using username and password: " + credentials);
+    }
+
+    UsernameAndPassword uap = (UsernameAndPassword) credentials;
+
+    return Fetch.continueWithAuth(
+      new org.openqa.selenium.devtools.v84.fetch.model.RequestId(requestId.toString()),
+      new AuthChallengeResponse(
+        AuthChallengeResponse.Response.PROVIDECREDENTIALS,
+        Optional.of(uap.username()),
+        Optional.ofNullable(uap.password())));
   }
 }
