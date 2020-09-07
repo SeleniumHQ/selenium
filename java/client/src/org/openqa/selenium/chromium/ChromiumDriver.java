@@ -111,7 +111,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
       getCapabilities(),
       capabilityKey);
 
-    CdpInfo cdpInfo = new CdpVersionFinder().match(getCapabilities().getVersion())
+    CdpInfo cdpInfo = new CdpVersionFinder().match(getCapabilities().getBrowserVersion())
       .orElseGet(() -> {
         LOG.warning(
           String.format(
@@ -122,7 +122,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
               "version (\"v86\") matches the version of the chromium-based browser " +
               "you're using and the version number of the artifact is the same " +
               "as Selenium's.",
-            capabilities.getVersion(),
+            capabilities.getBrowserVersion(),
             new BuildInfo().getReleaseLabel()));
         return new NoOpCdpInfo();
       });

@@ -35,7 +35,7 @@ import java.util.Comparator;
  * by...
  * <ol>
  *   <li>{@link Capabilities#getBrowserName() browser name},
- *   <li>{@link Capabilities#getVersion() browser version},
+ *   <li>{@link Capabilities#getBrowserVersion()} () browser version},
  *   <li>{@link Capabilities#is(String)} whether JavaScript is enabled},
  *   <li>and {@link Capabilities#getPlatform() platform}
  * </ol>
@@ -60,9 +60,9 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
         Comparator.comparingInt(c -> browserNameScorer.score(c.getBrowserName()));
 
     final CapabilityScorer<String> versionScorer =
-        new VersionScorer(desiredCapabilities.getVersion());
+        new VersionScorer(desiredCapabilities.getBrowserVersion());
     Comparator<Capabilities> byVersion =
-        Comparator.comparingInt(c -> versionScorer.score(c.getVersion()));
+        Comparator.comparingInt(c -> versionScorer.score(c.getBrowserVersion()));
 
     final CapabilityScorer<Boolean> jsScorer =
         new CapabilityScorer<>(desiredCapabilities.is(SUPPORTS_JAVASCRIPT));
