@@ -59,6 +59,10 @@ public class Slot {
     return lastStartedNanos;
   }
 
+  public Session getCurrentSession() {
+    return currentSession;
+  }
+
   public boolean isSupporting(Capabilities caps) {
     // Simple implementation --- only checks current values
     return registeredCapabilities.getCapabilityNames().stream()

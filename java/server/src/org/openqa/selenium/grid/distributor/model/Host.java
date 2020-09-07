@@ -36,12 +36,14 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -148,11 +150,13 @@ public class Host {
   public DistributorStatus.NodeSummary asSummary() {
     Map<Capabilities, Integer> stereotypes = new HashMap<>();
     Map<Capabilities, Integer> used = new HashMap<>();
+    Set<Session> activeSessions = new HashSet<>();
 
     slots.forEach(slot -> {
       stereotypes.compute(slot.getStereotype(), (key, curr) -> curr == null ? 1 : curr + 1);
       if (slot.getStatus() != AVAILABLE) {
         used.compute(slot.getStereotype(), (key, curr) -> curr == null ? 1 : curr + 1);
+        activeSessions.add(slot.getCurrentSession());
       }
     });
 
@@ -162,7 +166,8 @@ public class Host {
         getHostStatus() == UP,
         maxSessionCount,
         stereotypes,
-        used);
+        used,
+        activeSessions);
   }
 
 

@@ -46,6 +46,9 @@ java_export(
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    resource_jars = [
+        "//javascript/grid-ui:react_jar",
+    ],
     uses = [
         "org.openqa.selenium.WebDriverInfo",
         "org.openqa.selenium.cli.CliCommand",
