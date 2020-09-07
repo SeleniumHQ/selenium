@@ -4,7 +4,7 @@ load("@io_bazel_rules_docker//java:image.bzl", "java_image")
 load("@io_bazel_rules_docker//contrib:passwd.bzl", "passwd_entry", "passwd_file")
 load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_layer", "container_push")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
-load("//:copy_file.bzl", "copy_file")
+load("//common:defs.bzl", "copy_file")
 
 REGISTRY = "localhost:5000"
 

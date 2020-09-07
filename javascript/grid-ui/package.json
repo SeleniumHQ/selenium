@@ -35,7 +35,7 @@
 		"react-json-view": "^1.19.1",
 		"react-modal": "^3.11.2",
 		"react-router-dom": "^5.2.0",
-		"react-scripts": "3.4.1",
+		"react-scripts": "3.4.3",
 		"source-map-explorer": "^2.4.2",
 		"typescript": "^3.9.5"
 	},
@@ -49,6 +49,7 @@
 	"eslintConfig": {
 		"extends": "react-app"
 	},
+  "homepage": "/ui",
 	"browserslist": {
 		"production": [
 			">0.2%",

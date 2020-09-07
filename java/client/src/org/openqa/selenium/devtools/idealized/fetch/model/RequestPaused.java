@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.devtools.idealized.fetch.model;
 
-import org.openqa.selenium.devtools.idealized.network.model.ErrorReason;
 import org.openqa.selenium.devtools.idealized.page.model.FrameId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
