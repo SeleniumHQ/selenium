@@ -15,12 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.devtools.idealized.fetch.model;
 
-/**
- * Marker interface for credentials used for authenticating a browser to a
- * site, typically via {@link UsernameAndPassword} and Basic or Digest
- * authentication.
- */
-public interface Credentials {
+import org.openqa.selenium.internal.Require;
+
+public class AuthRequired {
+
+  private final RequestId requestId;
+  private final AuthChallenge challenge;
+
+  public AuthRequired(RequestId requestId, AuthChallenge challenge) {
+    this.requestId = Require.nonNull("Request ID", requestId);
+    this.challenge = Require.nonNull("Challenge", challenge);
+  }
+
+  public RequestId getRequestId() {
+    return requestId;
+  }
+
+  public AuthChallenge getChallenge() {
+    return challenge;
+  }
 }
