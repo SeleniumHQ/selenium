@@ -54,7 +54,15 @@ public interface Capabilities {
         .orElse(null);
   }
 
+  /**
+   * @deprecated Use {@link #getBrowserVersion()}
+   */
+  @Deprecated
   default String getVersion() {
+    return getBrowserVersion();
+  }
+
+  default String getBrowserVersion() {
     return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(
         Optional.ofNullable(getCapability("version")).orElse("")));
   }
