@@ -33,6 +33,7 @@ java_export(
         [
             "*.java",
             "events/*.java",
+            "idealized/**/*.java",
         ],
         exclude = PROTOTYPE_SOURCES + GENERATOR_SOURCES,
     ),
@@ -43,13 +44,11 @@ java_export(
     ],
     exports = [
         ":devtools-prototypes",
-        "//java/client/src/org/openqa/selenium/devtools/idealized",
     ],
     deps = [
         ":devtools-prototypes",
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/devtools/idealized",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),
