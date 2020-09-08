@@ -798,7 +798,7 @@ class WebDriver(BaseWebDriver):
         loading_time = time.time() - start
         self.execute_script('console.clear()')
         if verbose:
-            print(f"Brython took {loading_time} seconds to load")
+            print("Brython took {} seconds to load".format(loading_time))
 
     def execute_brython(self, script, *args):
         """
