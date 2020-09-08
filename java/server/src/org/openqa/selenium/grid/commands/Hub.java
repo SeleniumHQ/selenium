@@ -59,7 +59,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_MOVED_PERM;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
@@ -153,7 +153,7 @@ public class Hub extends TemplateGridCommand {
       ResourceHandler
           uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, "javascript/grid-ui/build"));
       ui = Route.combine(
-          get("/grid/console").to(() -> req -> new HttpResponse().setStatus(HTTP_MOVED_TEMP).addHeader("Location", "/ui/index.html")),
+          get("/grid/console").to(() -> req -> new HttpResponse().setStatus(HTTP_MOVED_PERM).addHeader("Location", "/ui/index.html")),
           Route.prefix("/ui/").to(Route.matching(req -> true).to(() -> uiHandler)));
     } else {
       Json json = new Json();
