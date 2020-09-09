@@ -17,36 +17,45 @@
 
 package org.openqa.selenium.devtools.v84;
 
+import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.idealized.Domains;
-import org.openqa.selenium.devtools.idealized.fetch.Fetch;
+import org.openqa.selenium.devtools.idealized.Events;
+import org.openqa.selenium.devtools.idealized.Javascript;
+import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.devtools.idealized.log.Log;
-import org.openqa.selenium.devtools.idealized.page.Page;
-import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
 import org.openqa.selenium.devtools.idealized.target.Target;
+import org.openqa.selenium.internal.Require;
 
 public class V84Domains implements Domains {
-  @Override
-  public Fetch fetch() {
-    return new V84Fetch();
+
+  private final DevTools devtools;
+
+  public V84Domains(DevTools devtools) {
+    this.devtools = Require.nonNull("DevTools", devtools);
   }
 
   @Override
-  public Log log() {
-    return new V84Log();
+  public Events<?> events() {
+    return new V84Events(devtools, javascript());
   }
 
   @Override
-  public Page page() {
-    throw new UnsupportedOperationException("page");
+  public Javascript<?, ?> javascript() {
+    return new V84Javascript(devtools);
   }
 
   @Override
-  public RuntimeDomain runtime() {
-    return new V84Runtime();
+  public Network<?, ?> network() {
+    return new V84Network(devtools);
   }
 
   @Override
   public Target target() {
     return new V84Target();
+  }
+
+  @Override
+  public Log log() {
+    return new V84Log();
   }
 }

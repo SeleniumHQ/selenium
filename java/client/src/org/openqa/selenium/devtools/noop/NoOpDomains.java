@@ -19,10 +19,10 @@ package org.openqa.selenium.devtools.noop;
 
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.idealized.Domains;
-import org.openqa.selenium.devtools.idealized.fetch.Fetch;
+import org.openqa.selenium.devtools.idealized.Events;
+import org.openqa.selenium.devtools.idealized.Javascript;
+import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.devtools.idealized.log.Log;
-import org.openqa.selenium.devtools.idealized.page.Page;
-import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
 import org.openqa.selenium.devtools.idealized.target.Target;
 
 public class NoOpDomains implements Domains {
@@ -36,27 +36,27 @@ public class NoOpDomains implements Domains {
     "`NN` matches the major version of the browser you're using.";
 
   @Override
-  public Fetch fetch() {
+  public Events<?> events() {
     throw new DevToolsException(WARNING);
   }
 
   @Override
-  public Log log() {
+  public Javascript<?, ?> javascript() {
     throw new DevToolsException(WARNING);
   }
 
   @Override
-  public Page page() {
-    throw new DevToolsException(WARNING);
-  }
-
-  @Override
-  public RuntimeDomain runtime() {
+  public Network<?, ?> network() {
     throw new DevToolsException(WARNING);
   }
 
   @Override
   public Target target() {
+    throw new DevToolsException(WARNING);
+  }
+
+  @Override
+  public Log log() {
     throw new DevToolsException(WARNING);
   }
 }

@@ -15,27 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized.fetch.model;
+package org.openqa.selenium.devtools.idealized;
 
 import org.openqa.selenium.internal.Require;
 
-import java.util.Optional;
+public class ScriptId {
 
-public class RequestPattern {
+  private final Object opaqueId;
 
-  private final Optional<String> urlPattern;
-  private final Optional<ResourceType> type;
-
-  public RequestPattern(Optional<String> urlPattern, Optional<ResourceType> type) {
-    this.urlPattern = Require.nonNull("URL pattern must be set but may be empty", urlPattern);
-    this.type = Require.nonNull("Resource type must be set but may be empty", type);
+  public ScriptId(Object opaqueId) {
+    this.opaqueId = Require.nonNull("Actual ID", opaqueId);
   }
 
-  public Optional<String> getUrlPattern() {
-    return urlPattern;
-  }
-
-  public Optional<ResourceType> getType() {
-    return type;
+  @SuppressWarnings("unchecked")
+  public <X> X getActualId() {
+    return (X) opaqueId;
   }
 }
