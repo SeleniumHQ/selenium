@@ -17,30 +17,23 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
-import static org.openqa.selenium.grid.data.NewSessionResponseEvent.NEW_SESSION_RESPONSE;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.grid.data.NewSessionRejectedEvent.NEW_SESSION_REJECTED;
+import static org.openqa.selenium.grid.data.NewSessionResponseEvent.NEW_SESSION_RESPONSE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.bytes;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.events.EventBus;
-
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRequest;
 import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
-import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,45 +103,31 @@ public class GetNewSessionResponse {
     NewSessionRequest requestIdentifier = new NewSessionRequest(requestId, latch);
     knownRequests.put(requestId, requestIdentifier);
 
-    try (Span span = tracer.getCurrentContext().createSpan("local_sessionqueuer.get_response")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                       EventAttribute.setValue(getClass().getName()));
-      attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
-
-      if (!sessionRequests.offerLast(request, requestId)) {
-
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(
-            "Error while adding to the session queue."));
-        span.addEvent("Session could not be created",attributeMap);
-
-        return new HttpResponse()
-            .setStatus(HTTP_INTERNAL_ERROR)
-            .setContent(asJson(ImmutableMap.of("message",
-                                               "Session request could not be created. Error while adding to the session queue.")));
-      }
-
-      try {
-        // Block until response is received.
-        // This will not wait indefinitely due to request timeout handled by the LocalDistributor.
-        latch.await();
-        HttpResponse res = requestIdentifier.getSessionResponse();
-        removeRequest(requestId);
-        return res;
-      } catch (InterruptedException e) {
-        EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Unable to create session: " + e.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-        Thread.currentThread().interrupt();
-
-        return new HttpResponse()
-            .setStatus(HTTP_INTERNAL_ERROR)
-            .setContent(asJson(ImmutableMap.of("message",
-                                               "Session request could not be created. Error while processing the session request.")));
-      }
+    if (!sessionRequests.offerLast(request, requestId)) {
+      return new HttpResponse()
+          .setStatus(HTTP_INTERNAL_ERROR)
+          .setContent(asJson(ImmutableMap.of("message",
+                                             "Session request could not be created. Error while adding to the session queue.")));
     }
-  }
+
+    try {
+      // Block until response is received.
+      // This will not wait indefinitely due to request timeout handled by the LocalDistributor.
+      latch.await();
+      HttpResponse res = requestIdentifier.getSessionResponse();
+      removeRequest(requestId);
+      return res;
+    } catch (InterruptedException e) {
+      LOG.log(Level.WARNING, "The thread waiting for new session response interrupted. {0}",
+              e.getMessage());
+      Thread.currentThread().interrupt();
+
+      return new HttpResponse()
+          .setStatus(HTTP_INTERNAL_ERROR)
+          .setContent(asJson(ImmutableMap.of("message",
+                                             "Session request could not be created. Error while processing the session request.")));
+    }
+}
 
   private void removeRequest(UUID id) {
     knownRequests.remove(id);

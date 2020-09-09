@@ -20,7 +20,7 @@ package org.openqa.selenium.grid.sessionqueue;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.post;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -30,13 +30,18 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,29 +58,57 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
     routes = combine(
         post("/session")
-            .to(() -> new AddToSessionQueue(this)),
+            .to(() -> req -> addToQueue(req)),
         post("/se/grid/newsessionqueuer/session")
-            .to(() -> new AddToSessionQueue(this)),
+            .to(() -> new AddToSessionQueue(tracer, this)),
         post("/se/grid/newsessionqueuer/session/retry/{requestId}")
-            .to(params -> new AddBackToSessionQueue(this,
+            .to(params -> new AddBackToSessionQueue(tracer, this,
                                                     UUID.fromString(params.get("requestId")))),
         Route.get("/se/grid/newsessionqueuer/session")
             .to(() -> new RemoveFromSessionQueue(tracer, this)));
   }
 
   public void validateSessionRequest(HttpRequest request) {
-    try (Span span = newSpanAsChildOf(tracer, request, "sessionqueue.validaterequest")) {
+    try (Span span = tracer.getCurrentContext().createSpan("newsession_queuer.validate")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       try (
           Reader reader = reader(request);
           NewSessionPayload payload = NewSessionPayload.create(reader)) {
         Objects.requireNonNull(payload, "Requests to process must be set.");
+        attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
 
         Iterator<Capabilities> iterator = payload.stream().iterator();
         if (!iterator.hasNext()) {
-          throw new SessionNotCreatedException("No capabilities found");
+          SessionNotCreatedException
+              exception =
+              new SessionNotCreatedException("No capabilities found");
+          EXCEPTION.accept(attributeMap, exception);
+          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                           EventAttribute.setValue(exception.getMessage()));
+          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+          throw exception;
+        } else {
+          Capabilities caps = iterator.next();
+          if (caps.getBrowserName().isEmpty()) {
+            SessionNotCreatedException
+                exception =
+                new SessionNotCreatedException("No browser name found in capabilities");
+            EXCEPTION.accept(attributeMap, exception);
+            attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                             EventAttribute.setValue(exception.getMessage()));
+            span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+            throw exception;
+          }
         }
       } catch (IOException e) {
-        throw new SessionNotCreatedException(e.getMessage(), e);
+        SessionNotCreatedException exception = new SessionNotCreatedException(e.getMessage(), e);
+        EXCEPTION.accept(attributeMap, exception);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                         EventAttribute.setValue(
+                             "IOException while reading the request payload. " + exception
+                                 .getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        throw exception;
       }
     }
   }

@@ -17,21 +17,38 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 class AddToSessionQueue implements HttpHandler {
 
+  private final Tracer tracer;
   private final NewSessionQueuer newSessionQueuer;
 
-  AddToSessionQueue(NewSessionQueuer newSessionQueuer) {
+  AddToSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer) {
+    this.tracer = Require.nonNull("Tracer", tracer);
     this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    return newSessionQueuer.addToQueue(req);
+    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.add")) {
+      HTTP_REQUEST.accept(span, req);
+
+      HttpResponse response = newSessionQueuer.addToQueue(req);
+
+      HTTP_RESPONSE.accept(span, response);
+
+      return response;
+    }
   }
 }
+

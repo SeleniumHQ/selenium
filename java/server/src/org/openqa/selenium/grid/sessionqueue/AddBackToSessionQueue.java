@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.sessionqueue;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -25,24 +27,35 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.UUID;
 
 class AddBackToSessionQueue implements HttpHandler {
 
+  private final Tracer tracer;
   private final NewSessionQueuer newSessionQueuer;
   private final UUID id;
 
-  AddBackToSessionQueue(NewSessionQueuer newSessionQueuer, UUID id) {
+  AddBackToSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer, UUID id) {
+    this.tracer = Require.nonNull("Tracer", tracer);
     this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
     this.id = id;
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    boolean value = newSessionQueuer.retryAddToQueue(req, id);
+    try (Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.retry")) {
+      HTTP_REQUEST.accept(span, req);
+      span.setAttribute(AttributeKey.REQUEST_ID.getKey(), id.toString());
 
-    return new HttpResponse().setContent(
-        asJson(ImmutableMap.of("value", value)));
+      boolean value = newSessionQueuer.retryAddToQueue(req, id);
+
+      return new HttpResponse().setContent(
+          asJson(ImmutableMap.of("value", value)));
+    }
   }
 }
+
