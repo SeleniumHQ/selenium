@@ -18,9 +18,6 @@
 
 package org.openqa.selenium.logging;
 
-import java.util.Set;
-import java.util.function.Consumer;
-
 public interface HasLogEvents {
 
   <X> void onLogEvent(EventType<X> kind);
