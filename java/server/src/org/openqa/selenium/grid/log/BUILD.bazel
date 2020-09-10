@@ -17,5 +17,7 @@ java_library(
         artifact("io.opentelemetry:opentelemetry-context-prop"),
         artifact("io.opentelemetry:opentelemetry-exporters-logging"),
         artifact("io.opentelemetry:opentelemetry-sdk"),
+        artifact("io.opentelemetry:opentelemetry-sdk-common"),
+        artifact("io.opentelemetry:opentelemetry-sdk-tracing"),
     ],
 )

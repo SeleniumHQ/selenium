@@ -21,6 +21,7 @@ import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.common.AttributeValue;
 import io.opentelemetry.common.Attributes;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
@@ -166,7 +167,7 @@ public class TracerTest {
     String event = "Test event";
     String attribute = "testBoolean";
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(attribute, AttributeValue.booleanAttributeValue(false));
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
@@ -190,7 +191,7 @@ public class TracerTest {
     String varArgsKey = "booleanVarArgs";
     Boolean[] booleanArray = new Boolean[]{true, false};
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(arrayKey, AttributeValue.arrayAttributeValue(booleanArray));
     attributes.setAttribute(varArgsKey, AttributeValue.arrayAttributeValue(true, false, true));
 
@@ -215,7 +216,7 @@ public class TracerTest {
     String attribute = "testDouble";
     Double attributeValue = 1.1;
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(attribute, AttributeValue.doubleAttributeValue(attributeValue));
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
@@ -239,7 +240,7 @@ public class TracerTest {
     String varArgsKey = "doubleVarArgs";
     Double[] doubleArray = new Double[]{4.5, 2.5};
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(arrayKey, AttributeValue.arrayAttributeValue(doubleArray));
     attributes.setAttribute(varArgsKey, AttributeValue.arrayAttributeValue(2.2, 5.3));
 
@@ -264,7 +265,7 @@ public class TracerTest {
     String attribute = "testLong";
     Long attributeValue = 500L;
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(attribute, AttributeValue.longAttributeValue(attributeValue));
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
@@ -288,7 +289,7 @@ public class TracerTest {
     String varArgsKey = "longVarArgs";
     Long[] longArray = new Long[]{400L, 200L};
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(arrayKey, AttributeValue.arrayAttributeValue(longArray));
     attributes.setAttribute(varArgsKey, AttributeValue.arrayAttributeValue(250L, 5L));
 
@@ -313,7 +314,7 @@ public class TracerTest {
     String attribute = "testString";
     String attributeValue = "attributeValue";
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(attribute, AttributeValue.stringAttributeValue(attributeValue));
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
@@ -337,7 +338,7 @@ public class TracerTest {
     String varArgsKey = "strVarArgs";
     String[] strArray = new String[]{"hey", "hello"};
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(arrayKey, AttributeValue.arrayAttributeValue(strArray));
     attributes.setAttribute(varArgsKey, AttributeValue.arrayAttributeValue("hi", "hola"));
 
@@ -362,7 +363,7 @@ public class TracerTest {
     String attribute = "testString";
     String attributeValue = "Hey";
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute(attribute, AttributeValue.stringAttributeValue(attributeValue));
     attributes.setAttribute(attribute, AttributeValue.stringAttributeValue(attributeValue));
 
@@ -389,7 +390,7 @@ public class TracerTest {
     Double[] doubleArray = new Double[]{4.5, 2.5};
     Boolean[] booleanArray = new Boolean[]{true, false};
 
-    Attributes.Builder attributes = new Attributes.Builder();
+    Attributes.Builder attributes = Attributes.newBuilder();
     attributes.setAttribute("testFloat", AttributeValue.doubleAttributeValue(5.5f));
     attributes.setAttribute("testInt", AttributeValue.longAttributeValue(10));
     attributes.setAttribute("testStringArray", AttributeValue.arrayAttributeValue(stringArray));
@@ -549,23 +550,24 @@ public class TracerTest {
     TracerSdkProvider provider = OpenTelemetrySdk.getTracerProvider();
     provider.addSpanProcessor(SimpleSpanProcessor.newBuilder(new SpanExporter() {
       @Override
-      public ResultCode export(Collection<SpanData> spans) {
+      public CompletableResultCode export(Collection<SpanData> spans) {
         exportTo.addAll(spans);
-        return ResultCode.SUCCESS;
+        return CompletableResultCode.ofSuccess();
       }
 
-      @Override public ResultCode flush() {
-        return ResultCode.SUCCESS;
+      @Override public CompletableResultCode flush() {
+        return CompletableResultCode.ofSuccess();
       }
 
       @Override
-      public void shutdown() {
+      public CompletableResultCode shutdown() {
+        return CompletableResultCode.ofSuccess();
       }
     }).build());
 
     io.opentelemetry.trace.Tracer otTracer = provider.get("get");
     return new OpenTelemetryTracer(
       otTracer,
-      OpenTelemetry.getPropagators().getHttpTextFormat());
+      OpenTelemetry.getPropagators().getTextMapPropagator());
   }
 }
