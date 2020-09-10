@@ -24,8 +24,7 @@ class ChromiumService(service.Service):
     """
 
     def __init__(self, executable_path, port=0, service_args=None,
-                 log_path=None, env=None, start_error_message=None,
-                 creationflags=0):
+                 log_path=None, env=None, start_error_message=None):
         """
         Creates a new instance of the Service
 
@@ -42,8 +41,7 @@ class ChromiumService(service.Service):
         if start_error_message is None:
             raise AttributeError("start_error_message should not be empty")
 
-        service.Service.__init__(self, executable_path, port=port, env=env, start_error_message=start_error_message,
-                                 creationflags=creationflags)
+        service.Service.__init__(self, executable_path, port=port, env=env, start_error_message=start_error_message)
 
     def command_line_args(self):
         return ["--port=%d" % self.port] + self.service_args
