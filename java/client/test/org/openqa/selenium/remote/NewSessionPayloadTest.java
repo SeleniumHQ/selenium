@@ -162,7 +162,7 @@ public class NewSessionPayloadTest {
         "desiredCapabilities", singletonMap(
             "platform", "linux")));
 
-    assertEquals(Platform.LINUX, capabilities.get(0).getPlatform());
+    assertEquals(Platform.LINUX, capabilities.get(0).getPlatformName());
     assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platform"));
     assertNull(capabilities.get(0).getCapability("platformName"));
   }
@@ -174,7 +174,7 @@ public class NewSessionPayloadTest {
             "alwaysMatch", singletonMap(
                 "platformName", "linux"))));
 
-    assertEquals(Platform.LINUX, capabilities.get(0).getPlatform());
+    assertEquals(Platform.LINUX, capabilities.get(0).getPlatformName());
     assertNull(capabilities.get(0).getCapability("platform"));
     assertEquals("linux", capabilities.get(0).getCapability("platformName"));
   }

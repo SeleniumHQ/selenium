@@ -113,7 +113,7 @@ public class RemoteWebDriverUnitTest {
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, capabilities);
 
-    assertThat(driver.getCapabilities().getPlatform().is(Platform.MOJAVE)).isTrue();
+    assertThat(driver.getCapabilities().getPlatformName().is(Platform.MOJAVE)).isTrue();
   }
 
   @Test
@@ -124,7 +124,7 @@ public class RemoteWebDriverUnitTest {
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, capabilities);
 
-    assertThat(driver.getCapabilities().getPlatform().is(Platform.MOJAVE)).isTrue();
+    assertThat(driver.getCapabilities().getPlatformName().is(Platform.MOJAVE)).isTrue();
   }
 
   @Test
@@ -135,7 +135,7 @@ public class RemoteWebDriverUnitTest {
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, capabilities);
 
-    assertThat(driver.getCapabilities().getPlatform().is(Platform.UNIX)).isTrue(); // fallback
+    assertThat(driver.getCapabilities().getPlatformName().is(Platform.UNIX)).isTrue(); // fallback
   }
 
   @Test

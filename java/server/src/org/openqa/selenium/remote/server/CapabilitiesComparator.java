@@ -37,7 +37,7 @@ import java.util.Comparator;
  *   <li>{@link Capabilities#getBrowserName() browser name},
  *   <li>{@link Capabilities#getBrowserVersion()} () browser version},
  *   <li>{@link Capabilities#is(String)} whether JavaScript is enabled},
- *   <li>and {@link Capabilities#getPlatform() platform}
+ *   <li>and {@link Capabilities#getPlatformName() platform name}
  * </ol>
  * For all comparisons, if the capability is missing, that particular criteria shall not factor
  * into the comparison.
@@ -69,7 +69,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     Comparator<Capabilities> byJavaScript =
         Comparator.comparingInt(c -> jsScorer.score(c.is(SUPPORTS_JAVASCRIPT)));
 
-    Platform desiredPlatform = desiredCapabilities.getPlatform();
+    Platform desiredPlatform = desiredCapabilities.getPlatformName();
     if (desiredPlatform == null) {
       desiredPlatform = Platform.ANY;
     }
@@ -77,17 +77,17 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     final CapabilityScorer<Platform> currentPlatformScorer =
         new CurrentPlatformScorer(currentPlatform, desiredPlatform);
     Comparator<Capabilities> byCurrentPlatform =
-        Comparator.comparingInt(c -> currentPlatformScorer.score(c.getPlatform()));
+        Comparator.comparingInt(c -> currentPlatformScorer.score(c.getPlatformName()));
 
     final CapabilityScorer<Platform> strictPlatformScorer =
         new CapabilityScorer<>(desiredPlatform);
     Comparator<Capabilities> byStrictPlatform =
-        Comparator.comparingInt(c -> strictPlatformScorer.score(c.getPlatform()));
+        Comparator.comparingInt(c -> strictPlatformScorer.score(c.getPlatformName()));
 
     final CapabilityScorer<Platform> fuzzyPlatformScorer =
         new FuzzyPlatformScorer(desiredPlatform);
     Comparator<Capabilities> byFuzzyPlatform =
-        Comparator.comparingInt(c -> fuzzyPlatformScorer.score(c.getPlatform()));
+        Comparator.comparingInt(c -> fuzzyPlatformScorer.score(c.getPlatformName()));
 
     compareWith = Ordering.compound(Arrays.asList(
         byBrowserName,
