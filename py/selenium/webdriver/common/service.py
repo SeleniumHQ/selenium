@@ -34,7 +34,7 @@ except ImportError:
 
 class Service(object):
 
-    def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message="", creationflags=0):
+    def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
         self.path = executable
 
         self.port = port
@@ -46,7 +46,7 @@ class Service(object):
 
         self.start_error_message = start_error_message
         self.log_file = log_file
-        self.creationflags = creationflags
+        self.creationflags = 0 # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.env = env or os.environ
 
     @property
