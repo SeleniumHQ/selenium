@@ -31,6 +31,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -41,9 +42,9 @@ public class DevTools implements Closeable {
   private final Connection connection;
   private SessionID cdpSession = null;
 
-  public DevTools(Domains protocol, Connection connection) {
-    this.protocol = Require.nonNull("CDP protocol", protocol);
+  public DevTools(Function<DevTools, Domains> protocol, Connection connection) {
     this.connection = Require.nonNull("WebSocket connection", connection);
+    this.protocol = Require.nonNull("CDP protocol", protocol).apply(this);
   }
 
   public Domains getDomains() {
