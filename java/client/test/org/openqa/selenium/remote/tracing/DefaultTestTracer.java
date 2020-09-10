@@ -25,6 +25,6 @@ public class DefaultTestTracer {
   public static Tracer createTracer() {
     return new OpenTelemetryTracer(
       OpenTelemetry.getTracerProvider().get("default"),
-      OpenTelemetry.getPropagators().getHttpTextFormat());
+      OpenTelemetry.getPropagators().getTextMapPropagator());
   }
 }
