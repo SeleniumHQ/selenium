@@ -271,7 +271,7 @@ export default function Console(props: {
 					.join("")
 					.replace(/}/g, "")
 					.split(":");
-				return { [data[0]]: data[1].trim(), slots: json[key] };
+				return { slots: json[key] };
 			});
 			let caps = (capabilities as unknown) as CapabilitiesType[];
 			const newnode: NodeType = { ...node, capabilities: caps };
