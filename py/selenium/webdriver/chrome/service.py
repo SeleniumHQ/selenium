@@ -40,5 +40,4 @@ class Service(service.ChromiumService):
             service_args,
             log_path,
             env,
-            "Please see https://chromedriver.chromium.org/home",
-            creationflags)
+            "Please see https://chromedriver.chromium.org/home")
