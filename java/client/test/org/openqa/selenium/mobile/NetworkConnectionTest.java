@@ -19,6 +19,7 @@ package org.openqa.selenium.mobile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 
 import org.junit.Assume;
 import org.junit.Before;
@@ -41,6 +42,7 @@ public class NetworkConnectionTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testToggleAirplaneMode() {
     NetworkConnection.ConnectionType current = networkConnectionDriver.getNetworkConnection();
     NetworkConnection.ConnectionType modified = null;
