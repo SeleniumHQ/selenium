@@ -34,6 +34,7 @@ java_export(
             "*.java",
             "events/*.java",
             "idealized/**/*.java",
+            "noop/*.java",
         ],
         exclude = PROTOTYPE_SOURCES + GENERATOR_SOURCES,
     ),
