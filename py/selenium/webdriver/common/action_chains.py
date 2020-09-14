@@ -358,7 +358,20 @@ class ActionChains(object):
         self.click(element)
         self.send_keys(*keys_to_send)
         return self
-
+    
+    def drag_by_offset_and_drop(self, xoffset, yoffset,target):
+        """
+        Holds down the left mouse button on the xoffset,yoffset coordinates, then moves to the target and releases the mouse button.
+        :Args:
+            - source xoffset: X offset to move to and mouse down.
+            - source yoffset: Y offset to move to and mouse down.
+            - target: The element to mouse up.
+        """
+            self.move_by_offset(xoffset, yoffset)
+            self.click_and_hold()
+            self.release(target)
+            return self
+        
     # Context manager so ActionChains can be used in a 'with .. as' statements.
     def __enter__(self):
         return self  # Return created instance of self.
