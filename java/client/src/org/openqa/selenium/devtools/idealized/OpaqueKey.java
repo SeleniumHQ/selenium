@@ -17,30 +17,15 @@
 
 package org.openqa.selenium.devtools.idealized;
 
-import org.openqa.selenium.devtools.idealized.log.Log;
-import org.openqa.selenium.devtools.idealized.target.Target;
+public class OpaqueKey {
+  private final Object value;
 
-/**
- * The idealized set of CDP domains that Selenium itself needs. Should you
- * need domains from a specific version of the CDP, then depend upon that
- * version of the CDP and use the domains directly.
- */
-public interface Domains {
+  public OpaqueKey(Object value) {
+    this.value = value;
+  }
 
-  Events<?> events();
-
-  Javascript<?, ?> javascript();
-
-  Network<?, ?> network();
-
-  Target target();
-
-  Log log();
-
-  default void disableAll() {
-    events().disable();
-    javascript().disable();
-    network().disable();
-    // Deliberately not disabling targets or log
+  @SuppressWarnings("unchecked")
+  public <T> T getValue() {
+    return (T) value;
   }
 }

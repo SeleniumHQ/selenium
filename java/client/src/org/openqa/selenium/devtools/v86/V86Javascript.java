@@ -40,8 +40,18 @@ public class V86Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
   }
 
   @Override
-  protected Command<Void> addJsBinding(String scriptName) {
+  protected Command<Void> disableRuntime() {
+    return Runtime.disable();
+  }
+
+  @Override
+  protected Command<Void> doAddJsBinding(String scriptName) {
     return Runtime.addBinding(scriptName, Optional.empty());
+  }
+
+  @Override
+  protected Command<Void> doRemoveJsBinding(String scriptName) {
+    return Runtime.removeBinding(scriptName);
   }
 
   @Override
@@ -50,8 +60,18 @@ public class V86Javascript extends Javascript<ScriptIdentifier, BindingCalled> {
   }
 
   @Override
+  protected Command<Void> disablePage() {
+    return Page.disable();
+  }
+
+  @Override
   protected Command<ScriptIdentifier> addScriptToEvaluateOnNewDocument(String script) {
     return Page.addScriptToEvaluateOnNewDocument(script, Optional.empty());
+  }
+
+  @Override
+  protected Command<Void> removeScriptToEvaluateOnNewDocument(ScriptIdentifier id) {
+    return Page.removeScriptToEvaluateOnNewDocument(id);
   }
 
   @Override

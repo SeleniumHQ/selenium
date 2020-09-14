@@ -50,6 +50,15 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     this.devTools = Require.nonNull("DevTools", devtools);
   }
 
+  public void disable() {
+    devTools.send(disableFetch());
+    devTools.send(enableNetworkCaching());
+
+    authHandlers.clear();
+    uriHandlers.clear();
+    interceptingTraffic = false;
+  }
+
   public void addAuthHandler(Predicate<URI> whenThisMatches, Supplier<Credentials> useTheseCredentials) {
     Require.nonNull("URI predicate", whenThisMatches);
     Require.nonNull("Credentials", useTheseCredentials);
@@ -59,19 +68,28 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     prepareToInterceptTraffic();
   }
 
-  public void addRequestHandler(Routable routable) {
+  public OpaqueKey addRequestHandler(Routable routable) {
     Require.nonNull("Routable", routable);
 
-    addRequestHandler(routable::matches, routable::execute);
+    return addRequestHandler(routable::matches, routable::execute);
   }
 
-  public void addRequestHandler(Predicate<HttpRequest> whenThisMatches, Function<HttpRequest, HttpResponse> returnThis) {
+  public OpaqueKey addRequestHandler(Predicate<HttpRequest> whenThisMatches, Function<HttpRequest, HttpResponse> returnThis) {
     Require.nonNull("Request predicate", whenThisMatches);
     Require.nonNull("Handler", returnThis);
 
     uriHandlers.put(whenThisMatches, returnThis);
 
     prepareToInterceptTraffic();
+
+    return new OpaqueKey(whenThisMatches);
+  }
+
+  @SuppressWarnings("SuspiciousMethodCalls")
+  public void removeRequestHandler(OpaqueKey key) {
+    Require.nonNull("Key", key);
+
+    uriHandlers.remove(key.getValue());
   }
 
   private void prepareToInterceptTraffic() {
@@ -181,9 +199,13 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     return req;
   }
 
+  protected abstract Command<Void> enableNetworkCaching();
+
   protected abstract Command<Void> disableNetworkCaching();
 
   protected abstract Command<Void> enableFetchForAllPatterns();
+
+  protected abstract Command<Void> disableFetch();
 
   protected abstract Event<AUTHREQUIRED> authRequiredEvent();
 

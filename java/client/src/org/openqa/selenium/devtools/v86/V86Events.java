@@ -34,13 +34,18 @@ import java.util.List;
 
 public class V86Events extends Events<ConsoleAPICalled> {
 
-  public V86Events(DevTools devtools, Javascript<?, ?> js) {
-    super(devtools, js);
+  public V86Events(DevTools devtools) {
+    super(devtools);
   }
 
   @Override
   protected Command<Void> enableRuntime() {
     return Runtime.enable();
+  }
+
+  @Override
+  protected Command<Void> disableRuntime() {
+    return Runtime.disable();
   }
 
   @Override

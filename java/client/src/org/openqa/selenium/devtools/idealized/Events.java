@@ -30,13 +30,11 @@ import java.util.function.Consumer;
 public abstract class Events<CONSOLEEVENT> {
 
   private final DevTools devtools;
-  private final Javascript js;
   private final List<Consumer<ConsoleEvent>> consoleListeners = new LinkedList<>();
   private boolean consoleListenersEnabled = false;
 
-  public Events(DevTools devtools, Javascript js) {
+  public Events(DevTools devtools) {
     this.devtools = Require.nonNull("DevTools", devtools);
-    this.js = Require.nonNull("Javascript", js);
   }
 
   public void addConsoleListener(Consumer<ConsoleEvent> listener) {
@@ -66,7 +64,15 @@ public abstract class Events<CONSOLEEVENT> {
     consoleListenersEnabled = true;
   }
 
+  public void disable() {
+    devtools.send(disableRuntime());
+    consoleListeners.clear();
+    consoleListenersEnabled = false;
+  }
+
   protected abstract Command<Void> enableRuntime();
+
+  protected abstract Command<Void> disableRuntime();
 
   protected abstract Event<CONSOLEEVENT> consoleEvent();
 

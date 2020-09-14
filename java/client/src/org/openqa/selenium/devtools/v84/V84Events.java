@@ -23,7 +23,6 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.devtools.idealized.Events;
-import org.openqa.selenium.devtools.idealized.Javascript;
 import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
 import org.openqa.selenium.devtools.v84.runtime.Runtime;
 import org.openqa.selenium.devtools.v84.runtime.model.ConsoleAPICalled;
@@ -34,8 +33,8 @@ import java.util.List;
 
 public class V84Events extends Events<ConsoleAPICalled> {
 
-  public V84Events(DevTools devtools, Javascript<?, ?> js) {
-    super(devtools, js);
+  public V84Events(DevTools devtools) {
+    super(devtools);
   }
 
   @Override
@@ -63,5 +62,10 @@ public class V84Events extends Events<ConsoleAPICalled> {
       event.getType().toString(),
       Instant.ofEpochMilli(ts),
       modifiedArgs);
+  }
+
+  @Override
+  protected Command<Void> disableRuntime() {
+    return Runtime.disable();
   }
 }

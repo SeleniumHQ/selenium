@@ -63,4 +63,9 @@ public class NoOpDomains implements Domains {
   public Log log() {
     throw new DevToolsException(WARNING);
   }
+
+  @Override
+  public void disableAll() {
+    throw new DevToolsException(WARNING);
+  }
 }

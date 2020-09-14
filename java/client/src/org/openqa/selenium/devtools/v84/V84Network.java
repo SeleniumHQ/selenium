@@ -46,6 +46,11 @@ public class V84Network extends Network<AuthRequired, RequestPaused> {
   }
 
   @Override
+  protected Command<Void> enableNetworkCaching() {
+    return org.openqa.selenium.devtools.v84.network.Network.setCacheDisabled(false);
+  }
+
+  @Override
   protected Command<Void> disableNetworkCaching() {
     return org.openqa.selenium.devtools.v84.network.Network.setCacheDisabled(true);
   }
@@ -55,6 +60,11 @@ public class V84Network extends Network<AuthRequired, RequestPaused> {
     return Fetch.enable(
       Optional.of(ImmutableList.of(new RequestPattern(Optional.of("*"), Optional.empty(), Optional.empty()))),
       Optional.of(true));
+  }
+
+  @Override
+  protected Command<Void> disableFetch() {
+    return Fetch.disable();
   }
 
   @Override
