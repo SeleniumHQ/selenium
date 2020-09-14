@@ -46,6 +46,15 @@ public class EnsureSpecCompliantHeadersTest {
   }
 
   @Test
+  public void shouldAllowRequestsWithNoContentTypeWhenSkipCheckOnMatches() {
+    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of("/gouda"))
+      .apply(alwaysOk)
+      .execute(new HttpRequest(POST, "/gouda"));
+
+    assertThat(res.getStatus()).isEqualTo(HTTP_OK);
+  }
+
+  @Test
   public void requestsWithAnOriginHeaderShouldBeBlocked() {
     HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of())
       .apply(alwaysOk)

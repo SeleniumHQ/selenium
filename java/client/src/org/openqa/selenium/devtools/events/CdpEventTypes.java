@@ -29,18 +29,14 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.EventType;
 import org.openqa.selenium.logging.HasLogEvents;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class CdpEventTypes {
 
-  private static final WeakHashMap<WebDriver, Set<String>> PINNED_SCRIPTS = new WeakHashMap<>();
   private static final Json JSON = new Json();
 
   private CdpEventTypes() {
@@ -56,18 +52,13 @@ public class CdpEventTypes {
       }
 
       @Override
-      public void initializeLogger(HasLogEvents loggable) {
+      public void initializeListener(HasLogEvents loggable) {
         Require.precondition(loggable instanceof HasDevTools, "Loggable must implement HasDevTools");
 
         DevTools tools = ((HasDevTools) loggable).getDevTools();
-        tools.createSession();
+        tools.createSessionIfThereIsNotOne();
 
-        tools.send(tools.getDomains().runtime().enable());
-        tools.addListener(
-          tools.getDomains().runtime().consoleAPICalled(),
-          event -> {
-            consume(new ConsoleEvent(event.getType(), event.getTimestamp(), event.getArgs()));
-          });
+        tools.getDomains().events().addConsoleListener(handler);
       }
     };
   }
@@ -120,33 +111,22 @@ public class CdpEventTypes {
       }
 
       @Override
-      public void initializeLogger(HasLogEvents loggable) {
+      public void initializeListener(HasLogEvents loggable) {
         Require.precondition(loggable instanceof WebDriver, "Loggable must be a WebDriver");
         Require.precondition(loggable instanceof HasDevTools, "Loggable must implement HasDevTools");
 
         DevTools tools = ((HasDevTools) loggable).getDevTools();
-        tools.createSession();
+        tools.createSessionIfThereIsNotOne();
+
+        tools.getDomains().javascript().pin("__webdriver_attribute", script);
 
         WebDriver driver = (WebDriver) loggable;
-        Set<String> scripts = PINNED_SCRIPTS.computeIfAbsent(driver, ignored -> new HashSet<>());
-        if (!scripts.contains(script)) {
-          // Pin the script
-          tools.send(tools.getDomains().runtime().enable());
-          tools.send(tools.getDomains().runtime().addBinding("__webdriver_attribute"));
+        // And add the script to the current page
+        ((JavascriptExecutor) driver).executeScript(script);
 
-          tools.send(tools.getDomains().page().enable());
-          tools.send(tools.getDomains().page().addScriptToEvaluateOnNewDocument(script));
-
-          // And add the script to the current page
-          ((JavascriptExecutor) driver).executeScript(script);
-
-          scripts.add(script);
-        }
-
-        tools.addListener(
-          tools.getDomains().runtime().bindingCalled(),
-          bindingCalled -> {
-            Map<String, Object> values = JSON.toType(bindingCalled.getPayload(), MAP_TYPE);
+        tools.getDomains().javascript().addBindingCalledListener(
+          (Consumer<String>) json -> {
+            Map<String, Object> values = JSON.toType(json, MAP_TYPE);
             String id = (String) values.get("target");
 
             List<WebElement> elements = driver.findElements(By.cssSelector(String.format("*[data-__webdriver_id='%s']", id)));
@@ -159,10 +139,8 @@ public class CdpEventTypes {
                 String.valueOf(values.get("oldValue")));
               handler.accept(event);
             }
-          }
-        );
+          });
       }
     };
   }
-
 }

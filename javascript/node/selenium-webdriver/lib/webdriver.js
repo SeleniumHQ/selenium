@@ -448,7 +448,7 @@ class IWebDriver {
    */
   wait(
     condition, // eslint-disable-line
-    timeout = undefined,// eslint-disable-line
+    timeout = undefined, // eslint-disable-line
     message = undefined, // eslint-disable-line
     pollTimeout = undefined // eslint-disable-line
   ) {}
@@ -1177,9 +1177,15 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000)
     }
 
-    if (sameSite && sameSite !== 'Strict' && sameSite !== 'Lax') {
+    if (sameSite && !['Strict', 'Lax', 'None'].includes(sameSite)) {
       throw new error.InvalidArgumentError(
-        `Invalid sameSite cookie value '${sameSite}'. It should be either "Lax" (or) "Strict" `
+        `Invalid sameSite cookie value '${sameSite}'. It should be one of "Lax", "Strict" or "None"`
+      )
+    }
+
+    if (sameSite === 'None' && !secure) {
+      throw new error.InvalidArgumentError(
+        'Invalid cookie configuration: SameSite=None must be Secure'
       )
     }
 
@@ -1449,10 +1455,10 @@ Options.Cookie.prototype.expiry
  * When the cookie applies to a SameSite policy.
  *
  * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
- * as a {@link string} object which is either 'Lax' or 'Strict'.
+ * as a {@link string} object which is one of 'Lax', 'Strict' or 'None'.
  *
  *
- * @type {(!Date|number|undefined)}
+ * @type {(string|undefined)}
  */
 Options.Cookie.prototype.sameSite
 

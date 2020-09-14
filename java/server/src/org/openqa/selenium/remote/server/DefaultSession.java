@@ -176,7 +176,7 @@ public class DefaultSession implements Session {
       Capabilities actualCapabilities = capabilities;
       if (rawDriver instanceof HasCapabilities) {
         actualCapabilities = ((HasCapabilities) rawDriver).getCapabilities();
-        isAndroid = actualCapabilities.getPlatform().is(Platform.ANDROID);
+        isAndroid = actualCapabilities.getPlatformName().is(Platform.ANDROID);
       }
       describedCapabilities = getDescription(rawDriver, actualCapabilities);
       if (rawDriver instanceof RemoteWebDriver) {

@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
 using System.Text;
@@ -279,19 +280,18 @@ namespace OpenQA.Selenium.Remote
             {
                 throw new ArgumentNullException("text", "text cannot be null");
             }
+
             var fileNames = text.Split('\n');
-            var amendedText = "";
-            foreach (var fileName in fileNames)
+            if (fileNames.All(this.driver.FileDetector.IsFile))
             {
-               if (this.driver.FileDetector.IsFile(fileName))
-               {
-                 amendedText += this.UploadFile(fileName) + "\n";
-               }
-               else
-               {
-                 amendedText = fileName + "\n";
-               }
+                var uploadResults = new List<string>();
+                foreach (var fileName in fileNames)
+                {
+                    uploadResults.Add(this.UploadFile(fileName));
+                }
+                text = string.Join("\n", uploadResults);
             }
+
             // N.B. The Java remote server expects a CharSequence as the value input to
             // SendKeys. In JSON, these are serialized as an array of strings, with a
             // single character to each element of the array. Thus, we must use ToCharArray()
@@ -300,8 +300,8 @@ namespace OpenQA.Selenium.Remote
             // appropriate one for spec compliance.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
-            parameters.Add("text", amendedText);
-            parameters.Add("value", amendedText.ToCharArray());
+            parameters.Add("text", text);
+            parameters.Add("value", text.ToCharArray());
 
             this.Execute(DriverCommand.SendKeysToElement, parameters);
         }

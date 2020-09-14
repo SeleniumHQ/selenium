@@ -1,19 +1,17 @@
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
-load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin", "nodejs_test")
-load("@npm//react-scripts:index.bzl", "react_scripts", "react_scripts_test")
-
-package(default_visibility = ["//visibility:public"])
+load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin")
+load("@npm//react-scripts:index.bzl", "react_scripts")
+load("//common:defs.bzl", "zip_file")
 
 _RUNTIME_DEPS = [
     "chdir.js",
-    "copy_static_files",
+    ":copy_static_files",
     "@npm//react",
     "@npm//react-dom",
     "@npm//react-modal",
     "@npm//react-apollo",
     "@npm//react-json-view",
     "@npm//react-router-dom",
-    "@npm//react-scripts",
     "@npm//apollo-cache-inmemory",
     "@npm//apollo-client",
     "@npm//apollo-link-http",
@@ -32,7 +30,7 @@ _RUNTIME_DEPS = [
     "@npm//@tippyjs/react",
     "@npm//clsx",
     "@npm//@material-ui/core",
-    "@npm//@material-ui/icons"
+    "@npm//@material-ui/icons",
 ]
 
 copy_to_bin(
@@ -40,6 +38,7 @@ copy_to_bin(
     srcs = glob(
         [
             "public/*",
+            "public/css/*",
             "src/**/*",
         ],
     ) + [
@@ -67,4 +66,15 @@ react_scripts(
         "@npm//@types",
     ],
     output_dir = True,
+)
+
+zip_file(
+    name = "react_jar",
+    extension = "jar",
+    srcs = [
+        ":build",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+    ]
 )

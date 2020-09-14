@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//:copy_file.bzl", "copy_file")
+load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_dist_zip", "java_export", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -46,6 +46,9 @@ java_export(
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    resource_jars = [
+        "//javascript/grid-ui:react_jar",
+    ],
     uses = [
         "org.openqa.selenium.WebDriverInfo",
         "org.openqa.selenium.cli.CliCommand",

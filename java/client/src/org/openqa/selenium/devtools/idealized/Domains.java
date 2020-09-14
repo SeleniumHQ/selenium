@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.devtools.idealized;
 
-import org.openqa.selenium.devtools.idealized.fetch.Fetch;
 import org.openqa.selenium.devtools.idealized.log.Log;
-import org.openqa.selenium.devtools.idealized.page.Page;
-import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
 import org.openqa.selenium.devtools.idealized.target.Target;
+
+import java.util.Map;
 
 /**
  * The idealized set of CDP domains that Selenium itself needs. Should you
@@ -30,13 +29,13 @@ import org.openqa.selenium.devtools.idealized.target.Target;
  */
 public interface Domains {
 
-  Fetch fetch();
+  Events<?> events();
 
-  Log log();
+  Javascript<?, ?> javascript();
 
-  Page page();
+  Network<?, ?> network();
 
   Target target();
 
-  RuntimeDomain runtime();
+  Log log();
 }

@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.graphql;
 
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
@@ -35,7 +36,6 @@ public class Grid {
   public Grid(Distributor distributor, URI uri) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
-
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
   }
 
@@ -49,8 +49,16 @@ public class Grid {
                                summary.getUri(),
                                summary.isUp(),
                                summary.getMaxSessionCount(),
-                               summary.getStereotypes()))
+                               summary.getStereotypes(),
+                               summary.getActiveSessions()))
       .collect(ImmutableList.toImmutableList());
+  }
+
+  public int getSessionCount() {
+    return distributorStatus.get().getNodes().stream()
+        .map(summary -> summary.getUsedStereotypes().values().stream().mapToInt(i -> i).sum())
+        .mapToInt(i -> i)
+        .sum();
   }
 
   public int getTotalSlots() {

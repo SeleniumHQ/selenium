@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//:copy_file.bzl", "copy_file")
+load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -30,7 +30,12 @@ java_library(
 java_export(
     name = "devtools",
     srcs = glob(
-        ["*.java", "events/*.java"],
+        [
+            "*.java",
+            "events/*.java",
+            "idealized/**/*.java",
+            "noop/*.java",
+        ],
         exclude = PROTOTYPE_SOURCES + GENERATOR_SOURCES,
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,
@@ -40,13 +45,11 @@ java_export(
     ],
     exports = [
         ":devtools-prototypes",
-        "//java/client/src/org/openqa/selenium/devtools/idealized",
     ],
     deps = [
         ":devtools-prototypes",
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/devtools/idealized",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         artifact("com.google.guava:guava"),

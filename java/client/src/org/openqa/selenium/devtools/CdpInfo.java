@@ -20,14 +20,14 @@ package org.openqa.selenium.devtools;
 import org.openqa.selenium.devtools.idealized.Domains;
 import org.openqa.selenium.internal.Require;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public abstract class CdpInfo implements Comparable<CdpInfo> {
 
   private final int majorVersion;
-  private final Supplier<Domains> domains;
+  private final Function<DevTools, Domains> domains;
 
-  public CdpInfo(int majorVersion, Supplier<Domains> domains) {
+  public CdpInfo(int majorVersion, Function<DevTools, Domains> domains) {
     this.majorVersion = majorVersion;
     this.domains = Require.nonNull("Domain supplier", domains);
   }
@@ -36,8 +36,9 @@ public abstract class CdpInfo implements Comparable<CdpInfo> {
     return majorVersion;
   }
 
-  public Domains getDomains() {
-    return domains.get();
+  public Domains getDomains(DevTools devTools) {
+    Require.nonNull("DevTools", devTools);
+    return domains.apply(devTools);
   }
 
   @Override
