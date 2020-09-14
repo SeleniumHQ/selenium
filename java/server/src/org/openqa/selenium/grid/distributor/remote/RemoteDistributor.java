@@ -23,6 +23,7 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.sessionmap.NullSessionMap;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -37,7 +38,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -49,7 +49,11 @@ public class RemoteDistributor extends Distributor {
   private final HttpHandler client;
 
   public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url) {
-    super(tracer, factory);
+    super(
+      tracer,
+      factory,
+      (caps, hosts) -> {throw new UnsupportedOperationException("host selection");},
+      new NullSessionMap(tracer));
     this.client = factory.createClient(url);
   }
 
