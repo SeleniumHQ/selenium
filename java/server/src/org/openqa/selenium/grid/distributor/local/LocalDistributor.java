@@ -97,6 +97,7 @@ public class LocalDistributor extends Distributor {
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Local)");
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
+  private final HostSelector hostSelector = new DefaultHostSelector();
   private final Set<Host> hosts = new HashSet<>();
   private final Tracer tracer;
   private final EventBus bus;
@@ -180,7 +181,6 @@ public class LocalDistributor extends Distributor {
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
-        HostSelector hostSelector = new DefaultHostSelector();
         // Find a host that supports the capabilities present in the new session
         Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), this.hosts);
         // Reserve some space for this session
