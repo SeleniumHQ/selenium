@@ -245,6 +245,12 @@ public class LocalDistributor extends Distributor {
 
   @Override
   protected Set<Host> getModel() {
-    return ImmutableSet.copyOf(hosts);
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
+    try {
+      return ImmutableSet.copyOf(hosts);
+    } finally {
+      readLock.unlock();
+    }
   }
 }
