@@ -21,6 +21,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
@@ -32,6 +33,7 @@ import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -106,5 +108,10 @@ public class RemoteDistributor extends Distributor {
     HttpResponse response = client.execute(request);
 
     return Values.get(response, DistributorStatus.class);
+  }
+
+  @Override
+  protected Set<Host> getModel() {
+    throw new UnsupportedOperationException("getModel is not required for remote sessions");
   }
 }

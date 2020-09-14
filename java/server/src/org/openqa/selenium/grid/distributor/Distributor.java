@@ -21,6 +21,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -34,6 +35,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.io.UncheckedIOException;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -122,4 +124,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     return routes.execute(req);
   }
+
+  protected abstract Set<Host> getModel();
 }

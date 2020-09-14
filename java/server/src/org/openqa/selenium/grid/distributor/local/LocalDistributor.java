@@ -182,7 +182,7 @@ public class LocalDistributor extends Distributor {
       writeLock.lock();
       try {
         // Find a host that supports the capabilities present in the new session
-        Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), this.hosts);
+        Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), getModel());
         // Reserve some space for this session
         selected = selectedHost.map(host -> host.reserve(firstRequest));
       } finally {
@@ -371,5 +371,10 @@ public class LocalDistributor extends Distributor {
     } finally {
       writeLock.unlock();
     }
+  }
+
+  @Override
+  protected Set<Host> getModel() {
+    return ImmutableSet.copyOf(hosts);
   }
 }
