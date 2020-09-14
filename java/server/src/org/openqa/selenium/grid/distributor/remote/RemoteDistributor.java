@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor.remote;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
@@ -35,7 +36,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
 import java.util.Set;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -94,7 +94,7 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public void remove(UUID nodeId) {
+  public void remove(NodeId nodeId) {
     Require.nonNull("Node ID", nodeId);
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);

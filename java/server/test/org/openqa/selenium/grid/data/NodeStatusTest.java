@@ -37,7 +37,7 @@ public class NodeStatusTest {
   public void ensureRoundTripWorks() throws URISyntaxException {
     ImmutableCapabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     NodeStatus status = new NodeStatus(
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         new URI("http://localhost:23456"),
         100,
         ImmutableMap.of(stereotype, 1),

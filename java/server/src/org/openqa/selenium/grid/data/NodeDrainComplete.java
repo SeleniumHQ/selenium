@@ -25,7 +25,7 @@ import java.util.UUID;
 public class NodeDrainComplete extends Event {
   public static final Type NODE_DRAIN_COMPLETE = new Type("node-drain-complete");
 
-  public NodeDrainComplete(UUID id) {
+  public NodeDrainComplete(NodeId id) {
     super(NODE_DRAIN_COMPLETE, id);
   }
 }

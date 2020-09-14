@@ -23,6 +23,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.HostSelector;
@@ -135,7 +136,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       post("/se/grid/distributor/node")
           .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
       delete("/se/grid/distributor/node/{nodeId}")
-          .to(params -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
+          .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
       get("/se/grid/distributor/status")
           .to(() -> new GetDistributorStatus(this))
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
@@ -179,6 +180,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         // Find a host that supports the capabilities present in the new session
         Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), getModel());
         // Reserve some space for this session
+
         selected = selectedHost.map(host -> host.reserve(firstRequest));
       } finally {
         writeLock.unlock();
@@ -244,7 +246,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
   public abstract Distributor add(Node node);
 
-  public abstract void remove(UUID nodeId);
+  public abstract void remove(NodeId nodeId);
 
   public abstract DistributorStatus getStatus();
 

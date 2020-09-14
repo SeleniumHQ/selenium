@@ -26,6 +26,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -120,7 +121,7 @@ public class AddingNodesTest {
     URI sessionUri = new URI("http://example:1234");
     Node node = new CustomNode(
         bus,
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         externalUrl.toURI(),
         c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c));
     handler.addHandler(node);
@@ -212,7 +213,7 @@ public class AddingNodesTest {
 
     protected CustomNode(
         EventBus bus,
-        UUID nodeId,
+        NodeId nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
       super(DefaultTestTracer.createTracer(), nodeId, uri);

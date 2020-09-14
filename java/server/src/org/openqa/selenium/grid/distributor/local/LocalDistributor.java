@@ -24,6 +24,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -76,7 +77,7 @@ public class LocalDistributor extends Distributor {
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
-  private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
+  private final Map<NodeId, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
   private final String registrationSecret;
 
   public LocalDistributor(
@@ -93,7 +94,7 @@ public class LocalDistributor extends Distributor {
     this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
-    bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
+    bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(NodeId.class)));
   }
 
   public static Distributor create(Config config) {
@@ -205,7 +206,7 @@ public class LocalDistributor extends Distributor {
   }
 
   @Override
-  public void remove(UUID nodeId) {
+  public void remove(NodeId nodeId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
