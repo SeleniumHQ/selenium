@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools.v84;
 
 import com.google.common.collect.ImmutableList;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
@@ -26,12 +27,16 @@ import org.openqa.selenium.devtools.idealized.Events;
 import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
 import org.openqa.selenium.devtools.v84.runtime.Runtime;
 import org.openqa.selenium.devtools.v84.runtime.model.ConsoleAPICalled;
+import org.openqa.selenium.devtools.v84.runtime.model.ExceptionDetails;
+import org.openqa.selenium.devtools.v84.runtime.model.ExceptionThrown;
+import org.openqa.selenium.devtools.v84.runtime.model.StackTrace;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
-public class V84Events extends Events<ConsoleAPICalled> {
+public class V84Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
   public V84Events(DevTools devtools) {
     super(devtools);
@@ -43,8 +48,18 @@ public class V84Events extends Events<ConsoleAPICalled> {
   }
 
   @Override
+  protected Command<Void> disableRuntime() {
+    return Runtime.disable();
+  }
+
+  @Override
   protected Event<ConsoleAPICalled> consoleEvent() {
     return Runtime.consoleAPICalled();
+  }
+
+  @Override
+  protected Event<ExceptionThrown> exceptionThrownEvent() {
+    return Runtime.exceptionThrown();
   }
 
   @Override
@@ -65,7 +80,32 @@ public class V84Events extends Events<ConsoleAPICalled> {
   }
 
   @Override
-  protected Command<Void> disableRuntime() {
-    return Runtime.disable();
+  protected JavascriptException toJsException(ExceptionThrown event) {
+    ExceptionDetails details = event.getExceptionDetails();
+    Optional<StackTrace> maybeTrace = details.getStackTrace();
+
+    JavascriptException exception = new JavascriptException(event.getExceptionDetails().getText());
+
+    if (!maybeTrace.isPresent()) {
+      StackTraceElement element = new StackTraceElement(
+        "unknown",
+        "unknown",
+        details.getUrl().orElse("unknown"),
+        details.getLineNumber());
+      exception.setStackTrace(new StackTraceElement[]{element});
+      return exception;
+    }
+
+    StackTrace trace = maybeTrace.get();
+
+    exception.setStackTrace(trace.getCallFrames().stream()
+      .map(frame -> new StackTraceElement(
+        "",
+        frame.getFunctionName(),
+        frame.getUrl(),
+        frame.getLineNumber()))
+      .toArray(StackTraceElement[]::new));
+
+    return exception;
   }
 }

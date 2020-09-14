@@ -40,7 +40,7 @@ public class NoOpDomains implements Domains {
     INFO.getReleaseLabel());
 
   @Override
-  public Events<?> events() {
+  public Events<?, ?> events() {
     throw new DevToolsException(WARNING);
   }
 

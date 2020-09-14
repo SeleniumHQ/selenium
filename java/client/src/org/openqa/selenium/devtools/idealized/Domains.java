@@ -27,7 +27,7 @@ import org.openqa.selenium.devtools.idealized.target.Target;
  */
 public interface Domains {
 
-  Events<?> events();
+  Events<?, ?> events();
 
   Javascript<?, ?> javascript();
 

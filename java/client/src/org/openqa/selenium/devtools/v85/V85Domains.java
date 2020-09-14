@@ -45,7 +45,7 @@ public class V85Domains implements Domains {
   }
 
   @Override
-  public Events<?> events() {
+  public Events<?, ?> events() {
     return events;
   }
 
