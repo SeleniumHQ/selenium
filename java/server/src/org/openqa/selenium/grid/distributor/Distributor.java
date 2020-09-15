@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -64,6 +65,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -178,7 +181,10 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       writeLock.lock();
       try {
         // Find a host that supports the capabilities present in the new session
-        Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), getModel());
+        ImmutableSet<Host> availableHosts = getModel().stream()
+          .filter(host -> UP.equals(host.getHostStatus()))
+          .collect(toImmutableSet());
+        Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), availableHosts);
         // Reserve some space for this session
 
         selected = selectedHost.map(host -> host.reserve(firstRequest));
