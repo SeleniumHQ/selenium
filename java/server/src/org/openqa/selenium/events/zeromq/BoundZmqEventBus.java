@@ -24,7 +24,9 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import zmq.io.mechanism.curve.Curve;
 
+import javax.swing.plaf.ColorUIResource;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -42,10 +44,15 @@ class BoundZmqEventBus implements EventBus {
   private final ZMQ.Socket xsub;
   private final ExecutorService executor;
 
+
   BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection) {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
+
+    Curve curve = new Curve();
+    String[] serverKeys = curve.keypairZ85();
+    String[] clientKeys = curve.keypairZ85();
 
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
@@ -53,11 +60,16 @@ class BoundZmqEventBus implements EventBus {
     xpub.setIPv6(xpubAddr.isIPv6);
     xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
+    xpub.setCurvePublicKey(serverKeys[0].getBytes());
+    xpub.setCurveSecretKey(serverKeys[1].getBytes());
 
     xsub = context.createSocket(SocketType.XSUB);
     xsub.setIPv6(xsubAddr.isIPv6);
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
+    xsub.setCurvePublicKey(clientKeys[0].getBytes());
+    xsub.setCurveSecretKey(clientKeys[1].getBytes());
+    xsub.setCurveServerKey(serverKeys[0].getBytes());
 
     executor = Executors.newCachedThreadPool(r -> {
       Thread thread = new Thread(r, "Message Bus Proxy");
