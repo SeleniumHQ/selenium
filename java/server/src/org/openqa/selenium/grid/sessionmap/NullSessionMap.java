@@ -15,16 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.data;
+package org.openqa.selenium.grid.sessionmap;
 
-import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-public class NodeAddedEvent extends Event {
+public class NullSessionMap extends SessionMap {
 
-  public static final Type NODE_ADDED = new Type("node-added");
+  public NullSessionMap(Tracer tracer) {
+    super(tracer);
+  }
 
-  public NodeAddedEvent(NodeId nodeId) {
-    super(NODE_ADDED, nodeId);
+  @Override
+  public boolean add(Session session) {
+    return false;
+  }
+
+  @Override
+  public Session get(SessionId id) throws NoSuchSessionException {
+    throw new NoSuchSessionException("No session found for " + id);
+  }
+
+  @Override
+  public void remove(SessionId id) {
+    // no-op
+  }
+
+  @Override
+  public boolean isReady() {
+    return true;
   }
 }

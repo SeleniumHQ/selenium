@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 
 public class Slot {
 
+  private final SlotId id;
   private final Node node;
   private final Capabilities registeredCapabilities;
   private Status currentStatus;
@@ -43,8 +44,13 @@ public class Slot {
 
   public Slot(Node node, Capabilities capabilities, Status status) {
     this.node = Require.nonNull("Node", node);
+    this.id = new SlotId(node.getId());
     this.registeredCapabilities = Require.nonNull("Capabilities", capabilities);
     this.currentStatus = Require.nonNull("Status", status);
+  }
+
+  public SlotId getId() {
+    return id;
   }
 
   public Capabilities getStereotype() {
