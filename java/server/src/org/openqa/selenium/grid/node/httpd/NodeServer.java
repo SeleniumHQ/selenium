@@ -26,7 +26,7 @@ import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeStatusEvent;

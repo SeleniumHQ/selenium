@@ -69,9 +69,9 @@ export default function Hubpage() {
 		const sum = Object.values(countHash).reduce((a, b) => a + b, 0);
 		// Initialize the 4 rings
 		LABELS.forEach((l, i) => {
-			const percent = Math.round((countHash[l] / sum) * 100);
-			addRing(percent, i);
-		});
+      const percent = Math.round((countHash[l] / sum) * 100);
+      addRing(percent, i);
+    });
 
 		setDataAvailable(gridInfo.grid.nodes);
 		setSlots({
@@ -134,7 +134,8 @@ export default function Hubpage() {
 		bar.text.style.fontSize = "2rem";
 
 		// usedSlots/TotalSlots
-		bar.animate(slots.usedSlots / slots.totalSlots); // Number from 0.0 to 1.0
+    // need to fix thjis animation
+		//bar.animate(slots.usedSlots / slots.totalSlots); // Number from 0.0 to 1.0
 		_setRenderedLoad(true);
 	}, [dataAvailable, slots, _renderedLoad]);
 

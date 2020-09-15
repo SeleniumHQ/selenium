@@ -20,6 +20,8 @@ package org.openqa.selenium.support.devtools;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
+import org.openqa.selenium.devtools.idealized.Network;
+import org.openqa.selenium.devtools.idealized.OpaqueKey;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
@@ -52,6 +54,9 @@ public class NetworkInterceptor implements Closeable {
     .addHeader("Selenium-Interceptor", "Continue")
     .setContent(utf8String("Original request should proceed"));
 
+  private final OpaqueKey key;
+  private final Network<?, ?> network;
+
   public NetworkInterceptor(WebDriver driver, Route route) {
     if (!(driver instanceof HasDevTools)) {
       throw new IllegalArgumentException("WebDriver instance must implement HasDevTools");
@@ -61,10 +66,13 @@ public class NetworkInterceptor implements Closeable {
     DevTools devTools = ((HasDevTools) driver).getDevTools();
     devTools.createSessionIfThereIsNotOne();
 
-    devTools.getDomains().network().addRequestHandler(route);
+    network = devTools.getDomains().network();
+
+    key = network.addRequestHandler(route);
   }
 
   @Override
   public void close() {
+    network.removeRequestHandler(key);
   }
 }

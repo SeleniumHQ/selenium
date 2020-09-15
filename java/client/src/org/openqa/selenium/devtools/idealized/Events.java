@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.devtools.idealized;
 
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
@@ -27,22 +28,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class Events<CONSOLEEVENT> {
+public abstract class Events<CONSOLEEVENT, EXCEPTIONTHROWN> {
 
   private final DevTools devtools;
-  private final Javascript js;
   private final List<Consumer<ConsoleEvent>> consoleListeners = new LinkedList<>();
+  private final List<Consumer<JavascriptException>> exceptionListeners = new LinkedList<>();
   private boolean consoleListenersEnabled = false;
 
-  public Events(DevTools devtools, Javascript js) {
+  public Events(DevTools devtools) {
     this.devtools = Require.nonNull("DevTools", devtools);
-    this.js = Require.nonNull("Javascript", js);
   }
 
   public void addConsoleListener(Consumer<ConsoleEvent> listener) {
     Require.nonNull("Event handler", listener);
 
     consoleListeners.add(listener);
+
+    initializeConsoleListeners();
+  }
+
+  public void addJavascriptExceptionListener(Consumer<JavascriptException> listener) {
+    Require.nonNull("Listener", listener);
+
+    exceptionListeners.add(listener);
 
     initializeConsoleListeners();
   }
@@ -63,12 +71,33 @@ public abstract class Events<CONSOLEEVENT> {
       }
     );
 
+    devtools.addListener(
+      exceptionThrownEvent(),
+      event -> {
+        JavascriptException exception = toJsException(event);
+
+        exceptionListeners.forEach(l -> l.accept(exception));
+      }
+    );
+
     consoleListenersEnabled = true;
+  }
+
+  public void disable() {
+    devtools.send(disableRuntime());
+    consoleListeners.clear();
+    consoleListenersEnabled = false;
   }
 
   protected abstract Command<Void> enableRuntime();
 
+  protected abstract Command<Void> disableRuntime();
+
   protected abstract Event<CONSOLEEVENT> consoleEvent();
 
+  protected abstract Event<EXCEPTIONTHROWN> exceptionThrownEvent();
+
   protected abstract ConsoleEvent toConsoleEvent(CONSOLEEVENT event);
+
+  protected abstract JavascriptException toJsException(EXCEPTIONTHROWN event);
 }

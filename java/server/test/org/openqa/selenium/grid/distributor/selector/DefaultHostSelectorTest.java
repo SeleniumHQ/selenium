@@ -50,7 +50,7 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class HostSelectorTest {
+public class DefaultHostSelectorTest {
 
   private Tracer tracer;
   private EventBus bus;
@@ -76,7 +76,7 @@ public class HostSelectorTest {
                                       hosts.add(createHost("chrome", "firefox"))
     );
 
-    HostSelector selector = new HostSelector();
+    DefaultHostSelector selector = new DefaultHostSelector();
 
     //When you prioritize for Edge, you should only have 1 possibility
     Stream<Host>
@@ -101,7 +101,7 @@ public class HostSelectorTest {
   public void testAllBucketsSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
 
-    HostSelector selector = new HostSelector();
+    DefaultHostSelector selector = new DefaultHostSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
   }
 
@@ -109,7 +109,7 @@ public class HostSelectorTest {
   public void testAllBucketsNotSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(3, 5, 8 );
 
-     HostSelector selector = new HostSelector();
+    DefaultHostSelector selector = new DefaultHostSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
   }
 
@@ -117,7 +117,7 @@ public class HostSelectorTest {
   public void testOneBucketStillConsideredSameSize() {
     Map<String, Set<Host>> hostBuckets = buildBuckets(3 );
 
-    HostSelector selector = new HostSelector();
+    DefaultHostSelector selector = new DefaultHostSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
   }
 
@@ -126,7 +126,7 @@ public class HostSelectorTest {
     //Make sure the numbers don't just average out to the same size
     Map<String, Set<Host>> hostBuckets = buildBuckets(4, 5, 6 );
 
-    HostSelector selector = new HostSelector();
+    DefaultHostSelector selector = new DefaultHostSelector();
     assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
   }
 
