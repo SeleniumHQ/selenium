@@ -35,7 +35,9 @@ py_library(
         exclude = ["generate.py"],
     ),
     data = [
-        ":create-cdp-srcs",
+        ":create-cdp-srcs-84",
+        ":create-cdp-srcs-85",
+        ":create-cdp-srcs-86",
         ":find-elements",
         ":firefox-driver-prefs",
         ":get-attribute",
@@ -125,28 +127,42 @@ py_binary(
 )
 
 genrule(
-    name = "create-cdp-srcs",
+    name = "create-cdp-srcs-84",
     srcs = [
-        ":browser_protocol",
-        ":js_protocol",
+        "//common/devtools/chromium/v84:browser_protocol",
+        "//common/devtools/chromium/v84:js_protocol",
     ],
-    outs = ["selenium/webdriver/common/devtools"],
-    cmd = "python3 $(location :generate) $(location :browser_protocol) $(location :js_protocol) $@",
+    outs = ["selenium/webdriver/common/devtools/v84"],
+    cmd="python3 $(location :generate) $(location //common/devtools/chromium/v84:browser_protocol) $(location //common/devtools/chromium/v84:js_protocol) $@",
     tools = [
         ":generate",
     ],
 )
 
-copy_file(
-    name = "browser_protocol",
-    src = "//common/devtools:browser_protocol.json",
-    out = "browser_protocol.json",
+genrule(
+    name="create-cdp-srcs-85",
+    srcs=[
+        "//common/devtools/chromium/v85:browser_protocol",
+        "//common/devtools/chromium/v85:js_protocol",
+    ],
+    outs=["selenium/webdriver/common/devtools/v85"],
+    cmd="python3 $(location :generate) $(location //common/devtools/chromium/v85:browser_protocol) $(location //common/devtools/chromium/v85:js_protocol) $@",
+    tools=[
+        ":generate",
+    ],
 )
 
-copy_file(
-    name = "js_protocol",
-    src = "//common/devtools:js_protocol.json",
-    out = "js_protocol.json",
+genrule(
+    name="create-cdp-srcs-86",
+    srcs=[
+        "//common/devtools/chromium/v86:browser_protocol",
+        "//common/devtools/chromium/v86:js_protocol",
+    ],
+    outs=["selenium/webdriver/common/devtools/v86"],
+    cmd="python3 $(location :generate) $(location //common/devtools/chromium/v86:browser_protocol) $(location //common/devtools/chromium/v86:js_protocol) $@",
+    tools=[
+        ":generate",
+    ],
 )
 
 py_test_suite(
