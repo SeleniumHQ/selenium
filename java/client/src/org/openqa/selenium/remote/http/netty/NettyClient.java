@@ -32,10 +32,14 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import java.io.IOException;
 import java.util.function.BiFunction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NettyClient implements HttpClient {
 
+  private static final Logger log = Logger.getLogger(NettyClient.class.getName());
   private static final AsyncHttpClient httpClient = Dsl.asyncHttpClient(
     new DefaultAsyncHttpClientConfig.Builder()
       .setUseInsecureTrustManager(true)
@@ -85,6 +89,15 @@ public class NettyClient implements HttpClient {
       }
 
       return new NettyClient(new NettyHttpHandler(config, httpClient).with(config.filter()), NettyWebSocket.create(config, httpClient));
+    }
+
+    @Override
+    public void cleanupIdleClients() {
+      try {
+        httpClient.close();
+      } catch (IOException e) {
+        log.log(Level.INFO,"failed to close http client", e);
+      }
     }
   }
 }
