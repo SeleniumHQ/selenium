@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.log;
 import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.common.Attributes;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
@@ -28,7 +29,6 @@ import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.trace.Status;
-
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -112,7 +112,7 @@ public class LoggingOptions {
     List<SpanProcessor> exporters = new LinkedList<>();
     exporters.add(SimpleSpanProcessor.newBuilder(new SpanExporter() {
       @Override
-      public ResultCode export(Collection<SpanData> spans) {
+      public CompletableResultCode export(Collection<SpanData> spans) {
 
         spans.forEach(span -> {
           LOG.fine(String.valueOf(span));
@@ -132,7 +132,7 @@ public class LoggingOptions {
             Attributes attributes = event.getAttributes();
             Map<String, Object> attributeMap = new HashMap<>();
             attributes.forEach((key, value) -> {
-              Object attributeValue = null;
+              Object attributeValue;
               switch (value.getType()) {
                 case LONG:
                   attributeValue = value.getLongValue();
@@ -173,17 +173,18 @@ public class LoggingOptions {
             }
           });
         });
-        return ResultCode.SUCCESS;
+        return CompletableResultCode.ofSuccess();
       }
 
       @Override
-      public ResultCode flush() {
-        return ResultCode.SUCCESS;
+      public CompletableResultCode flush() {
+        return CompletableResultCode.ofSuccess();
       }
 
       @Override
-      public void shutdown() {
+      public CompletableResultCode shutdown() {
         // no-op
+        return CompletableResultCode.ofSuccess();
       }
     }).build());
 
@@ -197,7 +198,7 @@ public class LoggingOptions {
 
     return new OpenTelemetryTracer(
       tracerFactory.get("default"),
-      OpenTelemetry.getPropagators().getHttpTextFormat());
+      OpenTelemetry.getPropagators().getTextMapPropagator());
   }
 
   public void configureLogging() {

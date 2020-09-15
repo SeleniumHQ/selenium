@@ -34,7 +34,14 @@ public interface Capabilities {
     return String.valueOf(Optional.ofNullable(getCapability("browserName")).orElse(""));
   }
 
+  /**
+   * @deprecated  Use {@link #getPlatformName()}
+   */
   default Platform getPlatform() {
+    return getPlatformName();
+  }
+
+  default Platform getPlatformName() {
     return Stream.of("platform", "platformName")
         .map(this::getCapability)
         .filter(Objects::nonNull)
@@ -54,7 +61,15 @@ public interface Capabilities {
         .orElse(null);
   }
 
+  /**
+   * @deprecated Use {@link #getBrowserVersion()}
+   */
+  @Deprecated
   default String getVersion() {
+    return getBrowserVersion();
+  }
+
+  default String getBrowserVersion() {
     return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(
         Optional.ofNullable(getCapability("version")).orElse("")));
   }

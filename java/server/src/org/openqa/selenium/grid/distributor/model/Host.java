@@ -17,6 +17,34 @@
 
 package org.openqa.selenium.grid.distributor.model;
 
+import com.google.common.collect.ImmutableList;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.node.HealthCheck;
+import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.SessionId;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
+
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
@@ -26,38 +54,11 @@ import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
 
-import com.google.common.collect.ImmutableList;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.SessionId;
-
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
-import java.util.logging.Logger;
-
 public class Host {
 
   private static final Logger LOG = Logger.getLogger("Selenium Host");
   private final Node node;
-  private final UUID nodeId;
+  private final NodeId nodeId;
   private final URI uri;
   private final Runnable performHealthCheck;
 
@@ -141,28 +142,31 @@ public class Host {
     }
   }
 
-  public UUID getId() {
+  public NodeId getId() {
     return nodeId;
   }
 
   public DistributorStatus.NodeSummary asSummary() {
     Map<Capabilities, Integer> stereotypes = new HashMap<>();
     Map<Capabilities, Integer> used = new HashMap<>();
+    Set<Session> activeSessions = new HashSet<>();
 
     slots.forEach(slot -> {
       stereotypes.compute(slot.getStereotype(), (key, curr) -> curr == null ? 1 : curr + 1);
       if (slot.getStatus() != AVAILABLE) {
         used.compute(slot.getStereotype(), (key, curr) -> curr == null ? 1 : curr + 1);
+        activeSessions.add(slot.getCurrentSession());
       }
     });
 
     return new DistributorStatus.NodeSummary(
-        nodeId,
-        uri,
-        getHostStatus() == UP,
-        maxSessionCount,
-        stereotypes,
-        used);
+      nodeId,
+      uri,
+      getHostStatus() == UP,
+      maxSessionCount,
+      stereotypes,
+      used,
+      activeSessions);
   }
 
 

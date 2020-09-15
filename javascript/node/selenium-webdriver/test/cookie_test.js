@@ -212,6 +212,53 @@ suite(function (env) {
         assert.equal(actualCookie.sameSite, 'Lax')
       }
     )
+
+    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
+      'can add same site cookie property to `None` when cookie is Secure',
+      async function () {
+        let cookie = createSameSiteCookieSpec('None', {
+          secure: true,
+        })
+        let childUrl = fileserver.whereIs('child/childPage.html')
+        await driver.get(childUrl)
+        await driver.manage().addCookie(cookie)
+        await assert.doesNotReject(
+          async () => await driver.manage().addCookie(cookie)
+        )
+      }
+    )
+
+    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
+      'throws an error if same site is set to `None` and the cookie is not Secure',
+      async function () {
+        let cookie = createSameSiteCookieSpec('None')
+        let childUrl = fileserver.whereIs('child/childPage.html')
+        await driver.get(childUrl)
+        await assert.rejects(
+          async () => await driver.manage().addCookie(cookie),
+          {
+            name: 'InvalidArgumentError',
+            message: `Invalid cookie configuration: SameSite=None must be Secure`,
+          }
+        )
+      }
+    )
+
+    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
+      'throws an error if same site cookie property is invalid',
+      async function () {
+        let cookie = createSameSiteCookieSpec('Foo')
+        let childUrl = fileserver.whereIs('child/childPage.html')
+        await driver.get(childUrl)
+        await assert.rejects(
+          async () => await driver.manage().addCookie(cookie),
+          {
+            name: 'InvalidArgumentError',
+            message: `Invalid sameSite cookie value 'Foo'. It should be one of "Lax", "Strict" or "None"`,
+          }
+        )
+      }
+    )
   })
 
   function createCookieSpec(opt_options) {
@@ -225,11 +272,12 @@ suite(function (env) {
     return spec
   }
 
-  function createSameSiteCookieSpec(sameSiteVal) {
+  function createSameSiteCookieSpec(sameSiteVal, extraProps) {
     return {
       name: getRandomString(),
       value: getRandomString(),
       sameSite: sameSiteVal,
+      ...extraProps,
     }
   }
 

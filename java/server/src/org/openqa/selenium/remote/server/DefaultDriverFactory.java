@@ -137,8 +137,8 @@ public class DefaultDriverFactory implements DriverFactory {
   }
 
   private boolean platformMatches(Platform current, Capabilities caps) {
-    return caps.getPlatform() == null
-           || caps.getPlatform() == ANY
-           || current.is(caps.getPlatform());
+    return caps.getPlatformName() == null
+           || caps.getPlatformName() == ANY
+           || current.is(caps.getPlatformName());
   }
 }

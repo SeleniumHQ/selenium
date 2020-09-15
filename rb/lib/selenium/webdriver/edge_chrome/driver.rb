@@ -36,6 +36,12 @@ module Selenium
         def bridge_class
           Bridge
         end
+
+        private
+
+        def debugger_address
+          capabilities['ms:edgeOptions']['debuggerAddress']
+        end
       end # Driver
     end # EdgeChrome
   end # WebDriver

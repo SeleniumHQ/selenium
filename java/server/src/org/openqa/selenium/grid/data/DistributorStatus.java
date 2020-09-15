@@ -17,12 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
@@ -31,9 +28,11 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 public class DistributorStatus {
 
@@ -83,29 +82,32 @@ public class DistributorStatus {
 
   public static class NodeSummary {
 
-    private final UUID nodeId;
+    private final NodeId nodeId;
     private final URI uri;
     private final boolean up;
     private final int maxSessionCount;
     private final Map<Capabilities, Integer> stereotypes;
     private final Map<Capabilities, Integer> used;
+    private final Set<Session> activeSessions;
 
     public NodeSummary(
-        UUID nodeId,
+        NodeId nodeId,
         URI uri,
         boolean up,
         int maxSessionCount,
         Map<Capabilities, Integer> stereotypes,
-        Map<Capabilities, Integer> usedStereotypes) {
+        Map<Capabilities, Integer> usedStereotypes,
+        Set <Session> activeSessions) {
       this.nodeId = Require.nonNull("Node id", nodeId);
       this.uri = Require.nonNull("URI", uri);
       this.up = up;
       this.maxSessionCount = maxSessionCount;
       this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereoytpes", stereotypes));
       this.used = ImmutableMap.copyOf(Require.nonNull("User stereotypes", usedStereotypes));
+      this.activeSessions = activeSessions;
     }
 
-    public UUID getNodeId() {
+    public NodeId getNodeId() {
       return nodeId;
     }
 
@@ -127,6 +129,10 @@ public class DistributorStatus {
 
     public Map<Capabilities, Integer> getUsedStereotypes() {
       return used;
+    }
+
+    public Set<Session> getActiveSessions() {
+      return activeSessions;
     }
 
     public boolean hasCapacity() {
@@ -161,12 +167,13 @@ public class DistributorStatus {
     }
 
     private static NodeSummary fromJson(JsonInput input) {
-      UUID nodeId = null;
+      NodeId nodeId = null;
       URI uri = null;
       boolean up = false;
       int maxSessionCount = 0;
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<Capabilities, Integer> used = new HashMap<>();
+      Set<Session> activeSessions = new HashSet<>();
 
       input.beginObject();
       while (input.hasNext()) {
@@ -176,11 +183,12 @@ public class DistributorStatus {
             break;
 
           case "nodeId":
-            nodeId = input.read(UUID.class);
+            nodeId = input.read(NodeId.class);
             break;
 
           case "stereotypes":
-            stereotypes = readCapabilityCounts(input);
+            CapabilityCount count = input.read(CapabilityCount.class);
+            stereotypes = count.getCounts();
             break;
 
           case "up":
@@ -192,7 +200,8 @@ public class DistributorStatus {
             break;
 
           case "usedStereotypes":
-            used = readCapabilityCounts(input);
+            CapabilityCount usedCount = input.read(CapabilityCount.class);
+            used = usedCount.getCounts();
             break;
 
           default:
@@ -203,39 +212,7 @@ public class DistributorStatus {
 
       input.endObject();
 
-      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used);
-    }
-
-    private static Map<Capabilities, Integer> readCapabilityCounts(JsonInput input) {
-      Map<Capabilities, Integer> toReturn = new HashMap<>();
-
-      input.beginArray();
-      while (input.hasNext()) {
-        Capabilities caps = null;
-        int count = 0;
-        input.beginObject();
-        while (input.hasNext()) {
-          switch (input.nextName()) {
-            case "capabilities":
-              caps = input.read(Capabilities.class);
-              break;
-
-            case "count":
-              count = input.nextNumber().intValue();
-              break;
-
-            default:
-              input.skipValue();
-              break;
-          }
-        }
-        input.endObject();
-
-        toReturn.put(caps, count);
-      }
-      input.endArray();
-
-      return toReturn;
+      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used, activeSessions);
     }
   }
 }

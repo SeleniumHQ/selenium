@@ -20,13 +20,11 @@ package org.openqa.selenium.grid.data;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.Type;
 
-import java.util.UUID;
-
 public class NodeAddedEvent extends Event {
 
   public static final Type NODE_ADDED = new Type("node-added");
 
-  public NodeAddedEvent(UUID nodeId) {
+  public NodeAddedEvent(NodeId nodeId) {
     super(NODE_ADDED, nodeId);
   }
 }

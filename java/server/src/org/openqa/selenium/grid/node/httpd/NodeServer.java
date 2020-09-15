@@ -26,7 +26,7 @@ import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
@@ -175,7 +175,7 @@ public class NodeServer extends TemplateGridCommand {
     RetryPolicy<Object> registrationPolicy =  new RetryPolicy<>()
       .withMaxAttempts(-1)
       .handleResultIf(result -> true)
-    .withBackoff(Duration.ofSeconds(5).getSeconds(), Duration.ofMinutes(5).getSeconds(), ChronoUnit.SECONDS, 1.0005);
+      .withBackoff(Duration.ofSeconds(5).getSeconds(), Duration.ofMinutes(5).getSeconds(), ChronoUnit.SECONDS, 1.0005);
 
     LOG.info("Starting registration process for node id " + node.getId());
     Executors.newSingleThreadExecutor().submit(() -> {
