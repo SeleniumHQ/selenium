@@ -20,21 +20,38 @@ package org.openqa.selenium.devtools.idealized;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.events.DomMutationEvent;
 import org.openqa.selenium.internal.Require;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
 
   private final DevTools devtools;
   private final Map<String, ScriptId> pinnedScripts = new HashMap<>();
+  private final Set<String> bindings = new HashSet<>();
 
   public Javascript(DevTools devtools) {
     this.devtools = Require.nonNull("DevTools", devtools);
   }
+
+  public void disable() {
+    devtools.send(disableRuntime());
+    devtools.send(disablePage());
+
+    pinnedScripts.values().forEach(id -> {
+      removeScriptToEvaluateOnNewDocument(id.getActualId());
+    });
+
+    pinnedScripts.clear();
+  }
+
+  protected abstract Command<Void> disablePage();
+
+  protected abstract Command<Void> disableRuntime();
 
   public ScriptId pin(String exposeScriptAs, String script) {
     Require.nonNull("Script name", exposeScriptAs);
@@ -46,7 +63,7 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
 
     devtools.send(enableRuntime());
 
-    devtools.send(addJsBinding(exposeScriptAs));
+    devtools.send(doAddJsBinding(exposeScriptAs));
 
     devtools.send(enablePage());
 
@@ -72,13 +89,29 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
     );
   }
 
+  public void addJsBinding(String scriptName) {
+    Require.nonNull("Script name", scriptName);
+    bindings.add(scriptName);
+    doAddJsBinding(scriptName);
+  }
+
+  public void removeJsBinding(String scriptName) {
+    Require.nonNull("Script name", scriptName);
+    bindings.remove(scriptName);
+    doRemoveJsBinding(scriptName);
+  }
+
   protected abstract Command<Void> enableRuntime();
 
-  protected abstract Command<Void> addJsBinding(String scriptName);
+  protected abstract Command<Void> doAddJsBinding(String scriptName);
+
+  protected abstract Command<Void> doRemoveJsBinding(String scriptName);
 
   protected abstract Command<Void> enablePage();
 
   protected abstract Command<SCRIPTID> addScriptToEvaluateOnNewDocument(String script);
+
+  protected abstract Command<Void> removeScriptToEvaluateOnNewDocument(SCRIPTID id);
 
   protected abstract Event<BINDINGCALLED> bindingCalledEvent();
 

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.component;
+package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.internal.Require;
 
@@ -30,9 +30,7 @@ public interface HealthCheck {
     private final String registrationSecret;
 
     public Result(boolean isAlive, String message) {
-      this.isAlive = isAlive;
-      this.message = Require.nonNull("Message", message);
-      this.registrationSecret = null;
+      this(isAlive, message, null);
     }
 
     public Result(boolean isAlive, String message, String registrationSecret) {

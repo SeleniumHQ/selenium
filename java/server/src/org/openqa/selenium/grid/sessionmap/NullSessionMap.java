@@ -15,32 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.idealized;
+package org.openqa.selenium.grid.sessionmap;
 
-import org.openqa.selenium.devtools.idealized.log.Log;
-import org.openqa.selenium.devtools.idealized.target.Target;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-/**
- * The idealized set of CDP domains that Selenium itself needs. Should you
- * need domains from a specific version of the CDP, then depend upon that
- * version of the CDP and use the domains directly.
- */
-public interface Domains {
+public class NullSessionMap extends SessionMap {
 
-  Events<?, ?> events();
+  public NullSessionMap(Tracer tracer) {
+    super(tracer);
+  }
 
-  Javascript<?, ?> javascript();
+  @Override
+  public boolean add(Session session) {
+    return false;
+  }
 
-  Network<?, ?> network();
+  @Override
+  public Session get(SessionId id) throws NoSuchSessionException {
+    throw new NoSuchSessionException("No session found for " + id);
+  }
 
-  Target target();
+  @Override
+  public void remove(SessionId id) {
+    // no-op
+  }
 
-  Log log();
-
-  default void disableAll() {
-    events().disable();
-    javascript().disable();
-    network().disable();
-    // Deliberately not disabling targets or log
+  @Override
+  public boolean isReady() {
+    return true;
   }
 }

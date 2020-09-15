@@ -17,16 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-Dir["#{__dir__}/devtools/*"].sort.each { |f| require f }
-
 module Selenium
   module WebDriver
     class DevTools
+      SUPPORTED_VERSIONS = [84, 85, 86].freeze
 
-      def initialize(url)
+      def initialize(url:, version:)
         @messages = []
         @uri = URI("http://#{url}")
 
+        load_devtools_version(version)
         process_handshake
         attach_socket_listener
 
@@ -55,6 +55,14 @@ module Selenium
       end
 
       private
+
+      def load_devtools_version(version)
+        closest_version = SUPPORTED_VERSIONS.min_by { |v| (version - v).abs }
+        WebDriver.logger.info("Loading DevTools::V#{closest_version} for #{version}.")
+        Dir["#{__dir__}/devtools/v#{closest_version}/*"].sort.each do |f|
+          require f
+        end
+      end
 
       def process_handshake
         socket.print(ws.to_s)

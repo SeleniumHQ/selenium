@@ -20,13 +20,11 @@ package org.openqa.selenium.grid.data;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.Type;
 
-import java.util.UUID;
-
 public class NodeRemovedEvent extends Event {
 
   public static final Type NODE_REMOVED = new Type("node-removed");
 
-  public NodeRemovedEvent(UUID nodeId) {
+  public NodeRemovedEvent(NodeId nodeId) {
     super(NODE_REMOVED, nodeId);
   }
 }

@@ -17,14 +17,49 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.internal.Require;
 
-public class NodeAddedEvent extends Event {
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.UUID;
 
-  public static final Type NODE_ADDED = new Type("node-added");
+public class NodeId implements Comparable<NodeId> {
 
-  public NodeAddedEvent(NodeId nodeId) {
-    super(NODE_ADDED, nodeId);
+  private final UUID uuid;
+
+  public NodeId(UUID uuid) {
+    this.uuid = Require.nonNull("Actual id", uuid);
+  }
+
+  public UUID toUuid() {
+    return uuid;
+  }
+
+  @Override
+  public int compareTo(NodeId that) {
+    return Comparator.comparing(NodeId::toUuid).compare(this, that);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof NodeId)) {
+      return false;
+    }
+
+    NodeId that = (NodeId) o;
+    return Objects.equals(this.uuid, that.uuid);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(uuid);
+  }
+
+  private Object toJson() {
+    return uuid;
+  }
+
+  private static NodeId fromJson(UUID id) {
+    return new NodeId(id);
   }
 }

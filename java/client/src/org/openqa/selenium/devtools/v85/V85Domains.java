@@ -28,35 +28,45 @@ import org.openqa.selenium.internal.Require;
 
 public class V85Domains implements Domains {
 
-  private final DevTools devtools;
+  private final V85Events events;
+  private final V85Javascript js;
+  private final V85Target target;
+  private final V85Network network;
+  private final V85Log log;
 
   public V85Domains(DevTools devtools) {
-    this.devtools = Require.nonNull("DevTools", devtools);
+    Require.nonNull("DevTools", devtools);
+
+    events = new V85Events(devtools);
+    js = new V85Javascript(devtools);
+    log = new V85Log();
+    network = new V85Network(devtools);
+    target = new V85Target();
   }
 
   @Override
-  public Events<?> events() {
-    return new V85Events(devtools, javascript());
+  public Events<?, ?> events() {
+    return events;
   }
 
   @Override
   public Javascript<?, ?> javascript() {
-    return new V85Javascript(devtools);
+    return js;
   }
 
   @Override
   public Network<?, ?> network() {
-    return new V85Network(devtools);
+    return network;
   }
 
   @Override
   public Target target() {
-    return new V85Target();
+    return target;
   }
 
   @Override
   public Log log() {
-    return new V85Log();
+    return log;
   }
 
 }
