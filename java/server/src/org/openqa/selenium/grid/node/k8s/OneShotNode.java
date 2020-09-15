@@ -326,7 +326,13 @@ public class OneShotNode extends Node {
       driver == null ?
         Collections.emptySet() :
         Collections.singleton(new NodeStatus.Active(stereotype, sessionId, capabilities)),
+      draining,
       registrationSecret);
+  }
+
+  @Override
+  public void drain() {
+    draining = true;
   }
 
   @Override

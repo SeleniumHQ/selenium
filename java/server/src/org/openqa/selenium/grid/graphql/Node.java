@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Status;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
@@ -36,7 +37,7 @@ public class Node {
 
   private final UUID id;
   private final URI uri;
-  private final boolean isUp;
+  private final Status status;
   private final int maxSession;
   private final Map<Capabilities, Integer> capabilities;
   private static final Json JSON = new Json();
@@ -45,13 +46,13 @@ public class Node {
 
   public Node(UUID id,
               URI uri,
-              boolean isUp,
+              Status status,
               int maxSession,
               Map<Capabilities, Integer> capabilities,
               Set<Session> activeSessions) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
-    this.isUp = isUp;
+    this.status = status;
     this.maxSession = maxSession;
     this.capabilities = Require.nonNull("Node capabilities", capabilities);
     this.activeSessions = Require.nonNull("Active sessions", activeSessions);
@@ -95,7 +96,7 @@ public class Node {
     return JSON.toJson(toReturn);
   }
 
-  public String getStatus() {
-    return isUp ? "UP" : "UNAVAILABLE";
+  public Status getStatus() {
+    return status;
   }
 }

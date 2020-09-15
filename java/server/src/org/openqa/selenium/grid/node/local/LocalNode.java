@@ -36,7 +36,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.NodeDrainingStartedEvent;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -427,7 +427,6 @@ public class LocalNode extends Node {
   @Override
   public void drain() {
     draining = true;
-    bus.fire(new NodeDrainingStartedEvent(this.getId()));
   }
 
   private Map<String, Object> toJson() {

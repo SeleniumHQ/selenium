@@ -20,11 +20,12 @@ package org.openqa.selenium.grid.distributor.model;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.DOWN;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.DRAINING;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
+import static org.openqa.selenium.grid.data.Status.DOWN;
+import static org.openqa.selenium.grid.data.Status.DRAINING;
+import static org.openqa.selenium.grid.data.Status.UP;
+
 
 import com.google.common.collect.ImmutableList;
 
@@ -37,6 +38,7 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Status;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -75,15 +77,15 @@ public class Host {
     this.nodeId = node.getId();
     this.uri = node.getUri();
 
-    this.status = Status.DOWN;
+    this.status = DOWN;
     this.slots = ImmutableList.of();
 
     HealthCheck healthCheck = node.getHealthCheck();
 
     this.performHealthCheck = () -> {
       HealthCheck.Result result = healthCheck.check();
-      Host.Status current = result.isAlive() ? UP : DOWN;
-      Host.Status previous = setHostStatus(current);
+      Status current = result.isAlive() ? UP : DOWN;
+      Status previous = setHostStatus(current);
 
       //If the node has been set to maintenance mode, set the status here as draining
       if (node.isDraining() || previous == DRAINING) {
@@ -165,7 +167,7 @@ public class Host {
     return new DistributorStatus.NodeSummary(
         nodeId,
         uri,
-        node.isDraining(),
+        status,
         maxSessionCount,
         stereotypes,
         used,
@@ -179,13 +181,30 @@ public class Host {
   /**
    * @return The previous status of the node.
    */
-  Status setHostStatus(Status status) {
+    private Status setHostStatus(Status status) {
     Status toReturn = this.status;
     this.status = Require.nonNull("Status", status);
-    if (status.equals(DRAINING) && !node.isDraining()) {
+    return toReturn;
+  }
+
+  /**
+   * @return The previous status of the node if it not able to drain else returning draining status.
+   */
+  public Status drainHost() {
+    Status prev = this.status;
+
+    // Drain the node
+    if (!node.isDraining()) {
       node.drain();
     }
-    return toReturn;
+
+    // For some reason, it is still not draining then do not update the host status
+    if (!node.isDraining()) {
+      return prev;
+    } else {
+      this.status = DRAINING;
+      return DRAINING;
+    }
   }
 
   /**
@@ -270,12 +289,5 @@ public class Host {
 
     Host that = (Host) obj;
     return this.node.equals(that.node);
-  }
-
-
-  public enum Status {
-    UP,
-    DRAINING,
-    DOWN,
   }
 }

@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -57,6 +58,10 @@ import java.util.concurrent.Future;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.Status.DRAINING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class LocalDistributorTest {
@@ -153,68 +158,17 @@ public class LocalDistributorTest {
 
     // Only use one node.
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-      .add(caps, new TestSessionFactory(VerifyingHandler::new))
-      .add(caps, new TestSessionFactory(VerifyingHandler::new))
-      .add(caps, new TestSessionFactory(VerifyingHandler::new))
-      .build();
+        .add(caps, new TestSessionFactory(VerifyingHandler::new))
+        .add(caps, new TestSessionFactory(VerifyingHandler::new))
+        .add(caps, new TestSessionFactory(VerifyingHandler::new))
+        .build();
     distributor.add(node);
 
-  @Test
-  public void testDrainNodeFromDistributor() {
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
-    distributor.add(localNode);
-    assertThat(localNode.isDraining()).isFalse();
-
-    //Check the size - there should be one node
-    DistributorStatus statusBefore = distributor.getStatus();
-    final Set<DistributorStatus.NodeSummary> nodesBefore = statusBefore.getNodes();
-    assertThat(nodesBefore.size()).isEqualTo(1);
-    DistributorStatus.NodeSummary nodeBefore = nodesBefore.iterator().next();
-    assertThat(nodeBefore.isDraining()).isFalse();
-
-    distributor.drain(localNode.getId());
-    assertThat(localNode.isDraining()).isTrue();
-
-    //Recheck the status - there should still be one node, but it's listed as draining
-    DistributorStatus statusAfter = distributor.getStatus();
-    final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
-    assertThat(nodesAfter.size()).isEqualTo(1);
-
-    //The node should be draining
-    DistributorStatus.NodeSummary nodeAfter = nodesAfter.iterator().next();
-    assertThat(nodeAfter.isDraining()).isTrue();
-  }
-
-  @Test
-  public void testDrainNodeFromNode() {
-    assertThat(localNode.isDraining()).isFalse();
-
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
-    distributor.add(localNode);
-
-    localNode.drain();
-    assertThat(localNode.isDraining()).isTrue();
-
-    DistributorStatus statusAfter = distributor.getStatus();
-    final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
-    assertThat(nodesAfter.size()).isEqualTo(1);
-
-    //The node should be draining
-    DistributorStatus.NodeSummary nodeAfter = nodesAfter.iterator().next();
-    assertThat(nodeAfter.isDraining()).isTrue();
-  }
-
-  //Build a few Host Buckets of different sizes
-  private Map<String, Set<Host>> buildBuckets(int...sizes) {
-    Map<String, Set<Host>> hostBuckets = new HashMap<>();
-    //The fact that it's re-using the same node doesn't matter--we're calculating "sameness"
-    // based purely on the number of hosts in the Set
     HttpRequest req = new HttpRequest(HttpMethod.POST, "/session")
-      .setContent(Contents.asJson(ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", ImmutableMap.of(
-            "browserName", "cheese")))));
-
+        .setContent(Contents.asJson(ImmutableMap.of(
+            "capabilities", ImmutableMap.of(
+                "alwaysMatch", ImmutableMap.of(
+                    "browserName", "cheese")))));
 
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
@@ -236,7 +190,51 @@ public class LocalDistributorTest {
     }
   }
 
+
+  @Test
+  public void testDrainNodeFromDistributor() {
+    Distributor
+        distributor =
+        new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    distributor.add(localNode);
+    assertThat(localNode.isDraining()).isFalse();
+
+    //Check the size - there should be one node
+    DistributorStatus statusBefore = distributor.getStatus();
+    final Set<DistributorStatus.NodeSummary> nodesBefore = statusBefore.getNodes();
+    assertThat(nodesBefore.size()).isEqualTo(1);
+    DistributorStatus.NodeSummary nodeBefore = nodesBefore.iterator().next();
+    assertFalse(nodeBefore.getHostStatus().equals(DRAINING));
+
+    distributor.drain(localNode.getId());
+    assertThat(localNode.isDraining()).isTrue();
+
+    //Recheck the status - there should still be one node, but it's listed as draining
+    DistributorStatus statusAfter = distributor.getStatus();
+    final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
+    assertThat(nodesAfter.size()).isEqualTo(1);
+
+    //The node should be draining
+    DistributorStatus.NodeSummary nodeAfter = nodesAfter.iterator().next();
+    assertTrue(nodeAfter.getHostStatus().equals(DRAINING));
+  }
+
+  @Test
+  public void testDrainNodeFromNode() {
+    assertThat(localNode.isDraining()).isFalse();
+
+    Distributor
+        distributor =
+        new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    distributor.add(localNode);
+
+    localNode.drain();
+    assertThat(localNode.isDraining()).isTrue();
+  }
+
+
   private class Handler extends Session implements HttpHandler {
+
     private Handler(Capabilities capabilities) {
       super(new SessionId(UUID.randomUUID()), uri, capabilities);
     }

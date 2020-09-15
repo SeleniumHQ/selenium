@@ -155,7 +155,6 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
       .put(Status.Kind.OUT_OF_RANGE,io.opentelemetry.trace.Status.OUT_OF_RANGE)
       .put(Status.Kind.UNIMPLEMENTED,io.opentelemetry.trace.Status.UNIMPLEMENTED)
       .put(Status.Kind.INTERNAL,io.opentelemetry.trace.Status.INTERNAL)
-      .put(Status.Kind.UNAVAILABLE,io.opentelemetry.trace.Status.UNAVAILABLE)
       .put(Status.Kind.UNAUTHENTICATED,io.opentelemetry.trace.Status.UNAUTHENTICATED)
       .build();
 

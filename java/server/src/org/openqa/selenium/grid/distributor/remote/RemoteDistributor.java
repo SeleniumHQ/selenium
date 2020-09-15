@@ -88,7 +88,7 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public void drain(UUID nodeId) {
+  public boolean drain(UUID nodeId) {
     Objects.requireNonNull(nodeId, "Node ID must be set");
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node/" + nodeId + "/drain");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
@@ -96,7 +96,7 @@ public class RemoteDistributor extends Distributor {
 
     HttpResponse response = client.execute(request);
 
-    Values.get(response, Void.class);
+    return Values.get(response, Boolean.class);
   }
 
   @Override

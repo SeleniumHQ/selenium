@@ -17,15 +17,8 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
-
-import java.util.UUID;
-
-public class NodeDrainingStartedEvent extends Event {
-  public static final Type NODE_DRAINING_STARTED = new Type("node-draining");
-
-  public NodeDrainingStartedEvent(UUID nodeId) {
-    super(NODE_DRAINING_STARTED, nodeId);
-  }
+public enum Status {
+  UP,
+  DRAINING,
+  DOWN
 }

@@ -105,7 +105,7 @@ public abstract class Node implements HasReadyState, Routable {
   private final URI uri;
   private final Route routes;
 
-  protected boolean draining = false;
+  protected boolean draining;
 
   protected Node(Tracer tracer, UUID id, URI uri) {
     this.tracer = Require.nonNull("Tracer", tracer);
@@ -139,7 +139,7 @@ public abstract class Node implements HasReadyState, Routable {
             .with(spanDecorator("node.new_session")),
         post("/se/grid/node/drain")
             .to(() -> new Drain(this, json))
-            .with(new SpanDecorator(tracer, req -> "node.drain")),
+            .with(spanDecorator("node.drain")),
         get("/se/grid/node/status")
             .to(() -> req -> new HttpResponse().setContent(asJson(getStatus())))
             .with(spanDecorator("node.node_status")),

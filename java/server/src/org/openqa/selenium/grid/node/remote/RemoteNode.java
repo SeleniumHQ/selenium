@@ -50,6 +50,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.reader;
@@ -65,7 +66,6 @@ public class RemoteNode extends Node {
   private final URI externalUri;
   private final Set<Capabilities> capabilities;
   private final HealthCheck healthCheck;
-  private boolean draining = false;
 
   public RemoteNode(
       Tracer tracer,
@@ -203,7 +203,14 @@ public class RemoteNode extends Node {
 
   @Override
   public void drain() {
-    draining = true;
+    HttpRequest req = new HttpRequest(POST, "/se/grid/node/drain");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
+
+    HttpResponse res = client.execute(req);
+
+    if(res.getStatus()== HTTP_OK) {
+      draining = true;
+    }
   }
 
   private Map<String, Object> toJson() {

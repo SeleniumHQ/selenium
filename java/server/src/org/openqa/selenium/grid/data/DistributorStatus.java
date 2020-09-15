@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
@@ -50,7 +49,7 @@ public class DistributorStatus {
 
   public boolean hasCapacity() {
     return getNodes().stream()
-        .map(summary -> summary.getHostStatus().toString().equals("UP") && summary.hasCapacity())
+        .map(summary -> summary.getHostStatus().equals(Status.UP) && summary.hasCapacity())
         .reduce(Boolean::logicalOr)
         .orElse(false);
   }
@@ -87,7 +86,7 @@ public class DistributorStatus {
 
     private final UUID nodeId;
     private final URI uri;
-    private final Host.Status status ;
+    private final Status status ;
     private final int maxSessionCount;
     private final Map<Capabilities, Integer> stereotypes;
     private final Map<Capabilities, Integer> used;
@@ -96,7 +95,7 @@ public class DistributorStatus {
     public NodeSummary(
         UUID nodeId,
         URI uri,
-        Host.Status status,
+        Status status,
         int maxSessionCount,
         Map<Capabilities, Integer> stereotypes,
         Map<Capabilities, Integer> usedStereotypes,
@@ -118,7 +117,7 @@ public class DistributorStatus {
       return uri;
     }
 
-    public Host.Status getHostStatus() {
+    public Status getHostStatus() {
       return status;
     }
 
@@ -153,7 +152,7 @@ public class DistributorStatus {
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
       builder.put("nodeId", getNodeId());
       builder.put("uri", getUri());
-      builder.put("status", status.toString());
+      builder.put("status", getHostStatus());
       builder.put("maxSessionCount", getMaxSessionCount());
       builder.put("stereotypes", getStereotypes().entrySet().stream()
           .map(entry -> ImmutableMap.of(
@@ -172,7 +171,7 @@ public class DistributorStatus {
     private static NodeSummary fromJson(JsonInput input) {
       UUID nodeId = null;
       URI uri = null;
-      Host.Status status = null;
+      Status status = null;
       int maxSessionCount = 0;
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<Capabilities, Integer> used = new HashMap<>();
@@ -193,12 +192,8 @@ public class DistributorStatus {
             stereotypes = readCapabilityCounts(input);
             break;
 
-          case "UP":
-            status = Host.Status.UP;
-            break;
-
-          case "draining":
-            status = Host.Status.DRAINING;
+          case "status":
+            status = input.read(Status.class);
             break;
 
           case "uri":

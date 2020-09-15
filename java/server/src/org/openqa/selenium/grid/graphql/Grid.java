@@ -47,7 +47,7 @@ public class Grid {
     return distributorStatus.get().getNodes().stream()
       .map(summary -> new Node(summary.getNodeId(),
                                summary.getUri(),
-                               summary.isUp(),
+                               summary.getHostStatus(),
                                summary.getMaxSessionCount(),
                                summary.getStereotypes(),
                                summary.getActiveSessions()))
