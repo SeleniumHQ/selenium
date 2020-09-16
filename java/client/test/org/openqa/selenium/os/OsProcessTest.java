@@ -30,8 +30,7 @@ import java.io.ByteArrayOutputStream;
 
 public class OsProcessTest {
 
-  // ping can be found on every platform we support.
-  private static String testExecutable = "ping";
+  private static String testExecutable = "java/client/test/org/openqa/selenium/os/echo";
 
   private OsProcess process = new OsProcess(testExecutable);
 
@@ -71,6 +70,7 @@ public class OsProcessTest {
 
   @Test
   public void canHandleOutput() throws InterruptedException {
+    process = new OsProcess(testExecutable, "ping");
     process.executeAsync();
     process.waitFor();
     assertThat(process.getStdOut()).isNotEmpty().contains("ping");
@@ -78,6 +78,7 @@ public class OsProcessTest {
 
   @Test
   public void canCopyOutput() throws InterruptedException {
+    process = new OsProcess(testExecutable, "Who", "else", "likes", "cheese?");
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     process.copyOutputTo(buffer);
     process.executeAsync();
