@@ -15,29 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node;
+package org.openqa.selenium.os;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpHandler;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-import java.net.URI;
-import java.time.Instant;
+public class Echo {
 
-public interface ActiveSession extends HttpHandler {
+  public static void main(String[] args) {
+    if (args.length == 0) {
+      System.exit(1);
+    }
 
-  SessionId getId();
+    String message = Arrays.stream(args).collect(Collectors.joining(" "));
+    System.out.println(message);
+  }
 
-  Capabilities getCapabilities();
-
-  Instant getStartTime();
-
-  URI getUri();
-
-  Dialect getUpstreamDialect();
-
-  Dialect getDownstreamDialect();
-
-  void stop();
 }

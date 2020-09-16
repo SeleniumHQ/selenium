@@ -58,6 +58,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -196,7 +197,7 @@ public class AddingNodesTest {
         status.getUri(),
         status.getMaxSessionCount(),
         status.getStereotypes(),
-        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)),
+        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS, Instant.now())),
         false,
         null);
 
@@ -284,7 +285,7 @@ public class AddingNodesTest {
     public NodeStatus getStatus() {
       Set<NodeStatus.Active> actives = new HashSet<>();
       if (running != null) {
-        actives.add(new NodeStatus.Active(CAPS, running.getId(), running.getCapabilities()));
+        actives.add(new NodeStatus.Active(CAPS, running.getId(), running.getCapabilities(), Instant.now()));
       }
 
       return new NodeStatus(

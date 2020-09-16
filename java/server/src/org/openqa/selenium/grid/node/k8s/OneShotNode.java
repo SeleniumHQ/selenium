@@ -53,6 +53,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -326,9 +327,9 @@ public class OneShotNode extends Node {
       ImmutableMap.of(stereotype, 1),
       driver == null ?
         Collections.emptySet() :
-        Collections.singleton(new NodeStatus.Active(stereotype, sessionId, capabilities)),
-      draining,
-      registrationSecret);
+        Collections.singleton(new NodeStatus.Active(stereotype, sessionId, capabilities, Instant.now())),
+        draining,
+        registrationSecret);
   }
 
   @Override

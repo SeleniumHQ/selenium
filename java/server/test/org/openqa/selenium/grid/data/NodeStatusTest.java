@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.UUID;
 
 public class NodeStatusTest {
@@ -41,9 +42,14 @@ public class NodeStatusTest {
         new URI("http://localhost:23456"),
         100,
         ImmutableMap.of(stereotype, 1),
-        ImmutableSet.of(new NodeStatus.Active(stereotype, new SessionId(UUID.randomUUID()), new ImmutableCapabilities("peas", "sausages"))),
-        false,
-        "cheese");
+        ImmutableSet.of(
+          new NodeStatus.Active(
+            stereotype,
+            new SessionId(UUID.randomUUID()),
+            new ImmutableCapabilities("peas", "sausages"),
+            Instant.now())),
+            false,
+           "cheese");
 
     Json json = new Json();
     String source = json.toJson(status);

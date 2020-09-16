@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.docker;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -82,7 +83,9 @@ public class BootstrapTest {
   }
 
   @Test
-  public void foo() throws URISyntaxException {
+  @Ignore("Need to check that the docker daemon is running without using our http stack")
+  public void shouldBeAbleToConnectToRunningDockerServer() throws URISyntaxException {
+    // It's not enough for the socket to exist. We must be able to connect to it
     assumeThat(Paths.get("/var/run/docker.sock")).exists();
 
     HttpClient client = HttpClient.Factory.create("reactor").createClient(ClientConfig.defaultConfig().baseUri(new URI("unix:///var/run/docker.sock")));

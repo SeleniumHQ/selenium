@@ -415,9 +415,10 @@ public class LocalNode extends Node {
 
     ImmutableSet<NodeStatus.Active> activeSessions = currentSessions.asMap().values().stream()
       .map(slot -> new NodeStatus.Active(
-          slot.getStereotype(),
-          slot.getSession().getId(),
-          slot.getSession().getCapabilities()))
+        slot.getStereotype(),
+        slot.getSession().getId(),
+        slot.getSession().getCapabilities(),
+        slot.getSession().getStartTime()))
       .collect(toImmutableSet());
 
     return new NodeStatus(
