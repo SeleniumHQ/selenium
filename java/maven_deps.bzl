@@ -2,7 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    jetty_version = "9.4.28.v20200408"
+    jetty_version = "9.4.31.v20200723"
     netty_version = "4.1.52.Final"
     opentelemetry_version = "0.8.0"
 
