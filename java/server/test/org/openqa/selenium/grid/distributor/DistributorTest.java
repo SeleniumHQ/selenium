@@ -30,7 +30,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;

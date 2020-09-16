@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.graphql;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Status;
 import org.openqa.selenium.internal.Require;
@@ -35,7 +36,7 @@ import java.util.UUID;
 
 public class Node {
 
-  private final UUID id;
+  private final NodeId id;
   private final URI uri;
   private final Status status;
   private final int maxSession;
@@ -44,7 +45,7 @@ public class Node {
   private final Set<Session> activeSessions;
 
 
-  public Node(UUID id,
+  public Node(NodeId id,
               URI uri,
               Status status,
               int maxSession,
@@ -66,7 +67,7 @@ public class Node {
         .collect(ImmutableList.toImmutableList());
   }
 
-  public UUID getId() {
+  public NodeId getId() {
     return id;
   }
 

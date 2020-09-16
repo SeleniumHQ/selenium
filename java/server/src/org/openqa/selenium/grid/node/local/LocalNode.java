@@ -33,13 +33,14 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
@@ -113,7 +114,7 @@ public class LocalNode extends Node {
     Duration sessionTimeout,
     List<SessionSlot> factories,
     String registrationSecret) {
-    super(tracer, UUID.randomUUID(), uri);
+    super(tracer, new NodeId(UUID.randomUUID()), uri);
 
     this.bus = Require.nonNull("Event bus", bus);
 

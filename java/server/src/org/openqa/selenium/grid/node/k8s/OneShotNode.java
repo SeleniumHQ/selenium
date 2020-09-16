@@ -25,16 +25,17 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -91,7 +92,7 @@ public class OneShotNode extends Node {
     Tracer tracer,
     EventBus events,
     String registrationSecret,
-    UUID id,
+    NodeId id,
     URI uri,
     URI gridUri,
     Capabilities stereotype,
@@ -135,7 +136,7 @@ public class OneShotNode extends Node {
       loggingOptions.getTracer(),
       eventOptions.getEventBus(),
       serverOptions.getRegistrationSecret(),
-      UUID.randomUUID(),
+      new NodeId(UUID.randomUUID()),
       serverOptions.getExternalUri(),
       nodeOptions.getPublicGridUri().orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
       stereotype,

@@ -29,6 +29,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -118,7 +119,7 @@ public class NodeTest {
     node = new RemoteNode(
         tracer,
         new PassthroughHttpClient.Factory(local),
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         uri,
         ImmutableSet.of(caps));
   }
@@ -127,7 +128,7 @@ public class NodeTest {
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
     Node local = LocalNode.builder(tracer, bus, uri, uri, null).build();
     HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
-    Node node = new RemoteNode(tracer, clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
+    Node node = new RemoteNode(tracer, clientFactory, new NodeId(UUID.randomUUID()), uri, ImmutableSet.of());
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
@@ -244,7 +245,7 @@ public class NodeTest {
     Node remote = new RemoteNode(
         tracer,
         new PassthroughHttpClient.Factory(local),
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         uri,
         ImmutableSet.of(caps));
 
