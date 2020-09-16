@@ -36,7 +36,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -96,9 +95,9 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public boolean drain(UUID nodeId) {
-    Objects.requireNonNull(nodeId, "Node ID must be set");
-    HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node/" + nodeId + "/drain");
+  public boolean drain(NodeId nodeId) {
+    Require.nonNull("Node ID", nodeId);
+    HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node/" + nodeId.toUuid() + "/drain");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
     request.setContent(asJson(nodeId));
 
@@ -110,7 +109,7 @@ public class RemoteDistributor extends Distributor {
   @Override
   public void remove(NodeId nodeId) {
     Require.nonNull("Node ID", nodeId);
-    HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
+    HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId.toUuid());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
 
     HttpResponse response = client.execute(request);

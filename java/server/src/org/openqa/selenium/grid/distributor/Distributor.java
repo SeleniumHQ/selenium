@@ -66,7 +66,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
+import static org.openqa.selenium.grid.data.Status.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -140,20 +140,18 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         post("/se/grid/distributor/node")
             .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
         post("/node/{nodeId}/drain")
-            .to((params) -> new DrainNode(this, UUID.fromString(params.get("nodeId")))),
+            .to((params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
         post("/se/grid/distributor/node/{nodeId}/drain")
-            .to((params) -> new DrainNode(this, UUID.fromString(params.get("nodeId")))),
+            .to((params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
         delete("/se/grid/distributor/node/{nodeId}")
-            .to(params -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
+            .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
         get("/se/grid/distributor/status")
             .to(() -> new GetDistributorStatus(this))
             .with(new SpanDecorator(tracer, req -> "distributor.status")));
-    }
-
   }
 
   public CreateSessionResponse newSession(HttpRequest request)
-    throws SessionNotCreatedException {
+      throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -261,7 +259,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
   public abstract void remove(NodeId nodeId);
 
-  public abstract boolean drain(UUID nodeId);
+  public abstract boolean drain(NodeId nodeId);
 
   public abstract DistributorStatus getStatus();
 

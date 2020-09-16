@@ -60,9 +60,10 @@ import java.util.logging.Logger;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.DOWN;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.DRAINING;
-import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
+import static org.openqa.selenium.grid.data.Status.UP;
+import static org.openqa.selenium.grid.data.Status.DOWN;
+import static org.openqa.selenium.grid.data.Status.DRAINING;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
 

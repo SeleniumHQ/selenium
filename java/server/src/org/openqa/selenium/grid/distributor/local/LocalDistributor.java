@@ -54,7 +54,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -187,7 +186,7 @@ public class LocalDistributor extends Distributor {
       LOG.fine("Adding host: " + host.asSummary());
       hosts.add(host);
 
-      LOG.info(String.format("Added node %s.", node.getId()));
+      LOG.info(String.format("Added node %s.", node.getId().toUuid()));
       host.runHealthCheck();
 
       Runnable runnable = host::runHealthCheck;
@@ -206,7 +205,7 @@ public class LocalDistributor extends Distributor {
   }
 
   @Override
-  public boolean drain(UUID nodeId) {
+  public boolean drain(NodeId nodeId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {

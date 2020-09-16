@@ -4,6 +4,7 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -15,9 +16,9 @@ import java.util.UUID;
 public class DrainNode implements HttpHandler {
 
   private final Distributor distributor;
-  private final UUID nodeId;
+  private final NodeId nodeId;
 
-  public DrainNode(Distributor distributor, UUID nodeId) {
+  public DrainNode(Distributor distributor, NodeId nodeId) {
     this.distributor = Objects.requireNonNull(distributor);
     this.nodeId = Objects.requireNonNull(nodeId);
   }

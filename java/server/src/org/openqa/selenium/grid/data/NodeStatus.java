@@ -145,6 +145,7 @@ public class NodeStatus {
     int maxSessions = 0;
     Map<Capabilities, Integer> stereotypes = null;
     String registrationSecret = null;
+    boolean draining = false;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -175,6 +176,10 @@ public class NodeStatus {
           uri = input.read(URI.class);
           break;
 
+        case "draining":
+          draining = input.read(Boolean.class);
+          break;
+
         default:
           input.skipValue();
           break;
@@ -188,6 +193,7 @@ public class NodeStatus {
       maxSessions,
       stereotypes,
       sessions,
+      draining,
       registrationSecret);
   }
 
