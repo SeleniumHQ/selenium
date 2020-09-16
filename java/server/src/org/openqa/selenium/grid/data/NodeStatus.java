@@ -28,6 +28,7 @@ import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -189,12 +190,18 @@ public class NodeStatus {
     private final Capabilities stereotype;
     private final SessionId id;
     private final Capabilities currentCapabilities;
+    private final Instant startTime;
 
-    public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities) {
+    public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities, Instant startTime) {
       this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
       this.id = Require.nonNull("Session id", id);
       this.currentCapabilities =
           ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", currentCapabilities));
+      this.startTime = Require.nonNull("Start time", startTime);
+    }
+
+    public SessionId getId() {
+      return id;
     }
 
     public Capabilities getStereotype() {
@@ -209,6 +216,10 @@ public class NodeStatus {
       return currentCapabilities;
     }
 
+    public Instant getStartTime() {
+      return startTime;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (!(o instanceof Active)) {
@@ -217,27 +228,52 @@ public class NodeStatus {
       Active that = (Active) o;
       return Objects.equals(this.getStereotype(), that.getStereotype()) &&
              Objects.equals(this.id, that.id) &&
-             Objects.equals(this.getCurrentCapabilities(), that.getCurrentCapabilities());
+             Objects.equals(this.getCurrentCapabilities(), that.getCurrentCapabilities()) &&
+             Objects.equals(this.getStartTime(), that.getStartTime());
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(getStereotype(), id, getCurrentCapabilities());
+      return Objects.hash(getStereotype(), getSessionId(), getCurrentCapabilities(), getStartTime());
     }
 
     private Map<String, Object> toJson() {
       return ImmutableMap.of(
-          "sessionId", getSessionId(),
-          "stereotype", getStereotype(),
-          "currentCapabilities", getCurrentCapabilities());
+        "sessionId", getSessionId(),
+        "stereotype", getStereotype(),
+        "currentCapabilities", getCurrentCapabilities(),
+        "startTime", getStartTime());
     }
 
-    private static Active fromJson(Map<String, Object> raw) {
-      SessionId id = new SessionId((String) raw.get("sessionId"));
-      Capabilities stereotype = new ImmutableCapabilities((Map<?, ?>) raw.get("stereotype"));
-      Capabilities current = new ImmutableCapabilities((Map<?, ?>) raw.get("currentCapabilities"));
+    private static Active fromJson(JsonInput input) {
+      SessionId id = null;
+      Capabilities stereotype = null;
+      Capabilities current = null;
+      Instant startTime = null;
 
-      return new Active(stereotype, id, current);
+      input.beginObject();
+      while (input.hasNext()) {
+        switch (input.nextName()) {
+          case "currentCapabilities":
+            current = input.read(Capabilities.class);
+            break;
+
+          case "sessionId":
+            id = input.read(SessionId.class);
+            break;
+
+          case "startTime":
+            startTime = input.read(Instant.class);
+            break;
+
+          case "stereotype":
+            stereotype = input.read(Capabilities.class);
+            break;
+        }
+      }
+      input.endObject();
+
+      return new Active(stereotype, id, current, startTime);
     }
   }
 }

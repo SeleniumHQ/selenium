@@ -53,6 +53,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -179,14 +180,15 @@ public class DockerSessionFactory implements SessionFactory {
           capabilities,
           container.getId()));
       return Optional.of(new DockerSession(
-          container,
-          tracer,
-          client,
-          id,
-          remoteAddress,
-          capabilities,
-          downstream,
-          result.getDialect()));
+        container,
+        tracer,
+        client,
+        id,
+        remoteAddress,
+        capabilities,
+        downstream,
+        result.getDialect(),
+        Instant.now()));
     }
   }
 

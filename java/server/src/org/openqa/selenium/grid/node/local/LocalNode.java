@@ -401,7 +401,8 @@ public class LocalNode extends Node {
       .map(slot -> new NodeStatus.Active(
         slot.getStereotype(),
         slot.getSession().getId(),
-        slot.getSession().getCapabilities()))
+        slot.getSession().getCapabilities(),
+        slot.getSession().getStartTime()))
       .collect(toImmutableSet());
 
     return new NodeStatus(
