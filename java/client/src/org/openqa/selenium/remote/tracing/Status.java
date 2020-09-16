@@ -64,7 +64,6 @@ public class Status {
     CANCELLED,
     NOT_FOUND,
     RESOURCE_EXHAUSTED,
-    UNAVAILABLE,
     UNKNOWN,
     INVALID_ARGUMENT,
     DEADLINE_EXCEEDED,
@@ -73,6 +72,7 @@ public class Status {
     OUT_OF_RANGE,
     UNIMPLEMENTED,
     INTERNAL,
+    UNAVAILABLE,
     UNAUTHENTICATED
   }
 
