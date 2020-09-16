@@ -30,6 +30,8 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -79,6 +81,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.NodeRemovedEvent.NODE_REMOVED;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -199,7 +202,7 @@ public class DistributorTest {
     }
   }
 
-  @Test
+  @Test(expected = SessionNotCreatedException.class)
   public void testDrainingNodeDoesNotAcceptNewSessions() throws URISyntaxException {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
@@ -218,12 +221,116 @@ public class DistributorTest {
     distributor.add(node);
     distributor.drain(node.getId());
 
+    assertTrue(node.isDraining());
 
+    NewSessionPayload payload = NewSessionPayload.create(caps);
+    distributor.newSession(createRequest(payload)).getSession();
   }
 
   @Test
-  public void testDrainedNodeShutsDownOnceEmpty() {
+  public void testDrainedNodeShutsDownOnceEmpty() throws URISyntaxException, InterruptedException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
 
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
+        .build();
+
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NODE_REMOVED, e -> latch.countDown());
+
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory(node),
+        sessions,
+        null);
+    distributor.add(node);
+    distributor.drain(node.getId());
+
+    latch.await(5, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(0);
+
+    assertThat(distributor.getModel().size()).isEqualTo(0);
+
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
+      assertThatExceptionOfType(SessionNotCreatedException.class)
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
+    }
+  }
+
+  @Test
+  public void drainedNodeDoesNotShutDownIfNotEmpty() throws URISyntaxException, InterruptedException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
+
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
+        .build();
+
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NODE_REMOVED, e -> latch.countDown());
+
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory(node),
+        sessions,
+        null);
+    distributor.add(node);
+
+    NewSessionPayload payload = NewSessionPayload.create(caps);
+    distributor.newSession(createRequest(payload));
+
+    distributor.drain(node.getId());
+
+    latch.await(5, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(1);
+
+    assertThat(distributor.getModel().size()).isEqualTo(1);
+  }
+
+  @Test
+  public void drainedNodeShutsDownAfterSessionsFinish() throws URISyntaxException, InterruptedException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
+
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
+        .build();
+
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NODE_REMOVED, e -> latch.countDown());
+
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory(node),
+        sessions,
+        null);
+    distributor.add(node);
+
+    NewSessionPayload payload = NewSessionPayload.create(caps);
+    CreateSessionResponse firstResponse = distributor.newSession(createRequest(payload));
+    CreateSessionResponse secondResponse = distributor.newSession(createRequest(payload));
+
+    distributor.drain(node.getId());
+
+    assertThat(distributor.getModel().size()).isEqualTo(1);
+
+    node.stop(firstResponse.getSession().getId());
+    node.stop(secondResponse.getSession().getId());
+
+    latch.await(5, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(0);
+    assertThat(distributor.getModel().size()).isEqualTo(0);
   }
 
   @Test

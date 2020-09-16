@@ -107,7 +107,7 @@ public class Host {
       if (current != previous) {
         LOG.info(String.format(
             "Changing status of node %s from %s to %s. Reason: %s",
-            node.getId(),
+            node.getId().toUuid(),
             previous,
             current,
             result.getMessage()));

@@ -71,6 +71,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -87,6 +88,7 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class LocalNode extends Node {
 
@@ -102,6 +104,7 @@ public class LocalNode extends Node {
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
   private final String registrationSecret;
+  private AtomicInteger pendingSessions = new AtomicInteger();
 
   private LocalNode(
     Tracer tracer,
@@ -156,6 +159,13 @@ public class LocalNode extends Node {
       try {
         this.stop(event.getData(SessionId.class));
       } catch (NoSuchSessionException ignore) {
+      }
+      if (this.isDraining()) {
+        int done = pendingSessions.decrementAndGet();
+        if (done <= 0) {
+          LOG.info("Firing node drain complete message");
+          bus.fire(new NodeDrainComplete(this.getId()));
+        }
       }
     });
   }
@@ -390,7 +400,7 @@ public class LocalNode extends Node {
     }
   }
 
-  private void killSession(SessionSlot slot) {
+  private void  killSession(SessionSlot slot) {
     currentSessions.invalidate(slot.getSession().getId());
     // Attempt to stop the session
     if (!slot.isAvailable()) {
@@ -428,6 +438,14 @@ public class LocalNode extends Node {
   @Override
   public void drain() {
     draining = true;
+    int currentSessionCount = getCurrentSessionCount();
+    if(currentSessionCount==0) {
+      LOG.info("Firing node drain complete message");
+      bus.fire(new NodeDrainComplete(this.getId()));
+    }
+    else {
+      pendingSessions.set(currentSessionCount);
+    }
   }
 
   private Map<String, Object> toJson() {

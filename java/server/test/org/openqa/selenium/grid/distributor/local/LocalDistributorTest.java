@@ -209,14 +209,10 @@ public class LocalDistributorTest {
     distributor.drain(localNode.getId());
     assertThat(localNode.isDraining()).isTrue();
 
-    //Recheck the status - there should still be one node, but it's listed as draining
+    //Recheck the status - there should still be no node, it is removed
     DistributorStatus statusAfter = distributor.getStatus();
     final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
-    assertThat(nodesAfter.size()).isEqualTo(1);
-
-    //The node should be draining
-    DistributorStatus.NodeSummary nodeAfter = nodesAfter.iterator().next();
-    assertTrue(nodeAfter.getHostStatus().equals(DRAINING));
+    assertThat(nodesAfter.size()).isEqualTo(0);
   }
 
   @Test
