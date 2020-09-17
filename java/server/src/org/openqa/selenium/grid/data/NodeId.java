@@ -68,9 +68,5 @@ public class NodeId implements Comparable<NodeId> {
     return new NodeId(id);
   }
 
-  @Override
-  public String toString() {
-    return uuid.toString();
-  }
 }
 
