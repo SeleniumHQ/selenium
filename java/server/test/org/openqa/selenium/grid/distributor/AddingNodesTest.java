@@ -26,11 +26,11 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.data.NodeId;
-import org.openqa.selenium.grid.node.HealthCheck;
+import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
@@ -38,6 +38,7 @@ import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -197,7 +198,7 @@ public class AddingNodesTest {
         status.getUri(),
         status.getMaxSessionCount(),
         status.getStereotypes(),
-        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS, Instant.now())),
+        ImmutableSet.of(new Active(CAPS, new SessionId(UUID.randomUUID()), CAPS, Instant.now())),
         null);
 
     bus.fire(new NodeStatusEvent(crafted));
@@ -282,9 +283,9 @@ public class AddingNodesTest {
 
     @Override
     public NodeStatus getStatus() {
-      Set<NodeStatus.Active> actives = new HashSet<>();
+      Set<Active> actives = new HashSet<>();
       if (running != null) {
-        actives.add(new NodeStatus.Active(CAPS, running.getId(), running.getCapabilities(), Instant.now()));
+        actives.add(new Active(CAPS, running.getId(), running.getCapabilities(), Instant.now()));
       }
 
       return new NodeStatus(

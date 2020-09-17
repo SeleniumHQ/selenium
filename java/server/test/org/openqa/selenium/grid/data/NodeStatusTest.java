@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.grid.data;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.json.Json;
@@ -31,6 +28,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NodeStatusTest {
 
@@ -43,7 +42,7 @@ public class NodeStatusTest {
         100,
         ImmutableMap.of(stereotype, 1),
         ImmutableSet.of(
-          new NodeStatus.Active(
+          new Active(
             stereotype,
             new SessionId(UUID.randomUUID()),
             new ImmutableCapabilities("peas", "sausages"),
@@ -52,8 +51,6 @@ public class NodeStatusTest {
 
     Json json = new Json();
     String source = json.toJson(status);
-
-    System.out.println(source);
 
     Object seen = json.toType(source, NodeStatus.class);
 

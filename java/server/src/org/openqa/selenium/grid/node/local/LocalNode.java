@@ -32,6 +32,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
@@ -397,8 +398,8 @@ public class LocalNode extends Node {
     Map<Capabilities, Integer> stereotypes = factories.stream()
       .collect(groupingBy(SessionSlot::getStereotype, summingInt(caps -> 1)));
 
-    ImmutableSet<NodeStatus.Active> activeSessions = currentSessions.asMap().values().stream()
-      .map(slot -> new NodeStatus.Active(
+    ImmutableSet<Active> activeSessions = currentSessions.asMap().values().stream()
+      .map(slot -> new Active(
         slot.getStereotype(),
         slot.getSession().getId(),
         slot.getSession().getCapabilities(),
