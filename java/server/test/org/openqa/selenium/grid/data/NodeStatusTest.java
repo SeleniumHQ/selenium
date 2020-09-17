@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -27,6 +26,7 @@ import org.openqa.selenium.remote.SessionId;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,17 +36,21 @@ public class NodeStatusTest {
   @Test
   public void ensureRoundTripWorks() throws URISyntaxException {
     ImmutableCapabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    NodeId nodeId = new NodeId(UUID.randomUUID());
     NodeStatus status = new NodeStatus(
-        new NodeId(UUID.randomUUID()),
+      nodeId,
         new URI("http://localhost:23456"),
         100,
-        ImmutableMap.of(stereotype, 1),
-        ImmutableSet.of(
-          new Active(
+      ImmutableSet.of(
+        new Slot(
+          new SlotId(nodeId, UUID.randomUUID()),
+          stereotype,
+          Instant.EPOCH,
+          Optional.of(new Active(
             stereotype,
             new SessionId(UUID.randomUUID()),
             new ImmutableCapabilities("peas", "sausages"),
-            Instant.now())),
+            Instant.now())))),
         "cheese");
 
     Json json = new Json();

@@ -72,12 +72,12 @@ public class Active {
     return Objects.equals(this.getStereotype(), that.getStereotype()) &&
       Objects.equals(this.id, that.id) &&
       Objects.equals(this.getCurrentCapabilities(), that.getCurrentCapabilities()) &&
-      Objects.equals(this.getStartTime(), that.getStartTime());
+      Objects.equals(this.getStartTime().toEpochMilli(), that.getStartTime().toEpochMilli());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getStereotype(), getSessionId(), getCurrentCapabilities(), getStartTime());
+    return Objects.hash(getStereotype(), getSessionId(), getCurrentCapabilities(), getStartTime().toEpochMilli());
   }
 
   private Map<String, Object> toJson() {

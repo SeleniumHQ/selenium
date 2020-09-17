@@ -26,16 +26,18 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class Slot {
 
-  private final SlotId id;
+  private final org.openqa.selenium.grid.data.SlotId id;
   private final Node node;
   private final Capabilities registeredCapabilities;
   private Status currentStatus;
@@ -44,7 +46,7 @@ public class Slot {
 
   public Slot(Node node, Capabilities capabilities, Status status) {
     this.node = Require.nonNull("Node", node);
-    this.id = new SlotId(node.getId());
+    this.id = new org.openqa.selenium.grid.data.SlotId(node.getId(), UUID.randomUUID());
     this.registeredCapabilities = Require.nonNull("Capabilities", capabilities);
     this.currentStatus = Require.nonNull("Status", status);
   }

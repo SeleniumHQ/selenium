@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.node.k8s;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -35,6 +36,8 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -55,7 +58,6 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -85,6 +87,7 @@ public class OneShotNode extends Node {
   private final Capabilities stereotype;
   private final String registrationSecret;
   private final URI gridUri;
+  private final UUID slotId = UUID.randomUUID();
   private RemoteWebDriver driver;
   private SessionId sessionId;
   private HttpClient client;
@@ -321,14 +324,20 @@ public class OneShotNode extends Node {
 
   @Override
   public NodeStatus getStatus() {
+
+
     return new NodeStatus(
       getId(),
       getUri(),
       1,
-      ImmutableMap.of(stereotype, 1),
-      driver == null ?
-        Collections.emptySet() :
-        Collections.singleton(new Active(stereotype, sessionId, capabilities, Instant.now())),
+      ImmutableSet.of(
+        new Slot(
+          new SlotId(getId(), slotId),
+          stereotype,
+          Instant.EPOCH,
+          driver == null ?
+            Optional.empty() :
+            Optional.of(new Active(stereotype, sessionId, capabilities, Instant.now())))),
       registrationSecret);
   }
 

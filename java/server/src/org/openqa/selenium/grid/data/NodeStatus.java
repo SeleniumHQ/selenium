@@ -26,7 +26,7 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 import java.net.URI;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,24 +38,36 @@ public class NodeStatus {
   private final NodeId nodeId;
   private final URI externalUri;
   private final int maxSessionCount;
-  private final Map<Capabilities, Integer> stereotypes;
-  private final Set<Active> snapshot;
+  private final Set<Slot> slots;
   private final String registrationSecret;
+  private final ImmutableMap<Capabilities, Integer> stereotypes;
+  private final Set<Active> snapshot;
 
   public NodeStatus(
       NodeId nodeId,
       URI externalUri,
       int maxSessionCount,
-      Map<Capabilities, Integer> stereotypes,
-      Collection<Active> snapshot,
+      Set<Slot> slots,
       String registrationSecret) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count", maxSessionCount);
-
-    this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereotypes", stereotypes));
-    this.snapshot = ImmutableSet.copyOf(Require.nonNull("Snapshot", snapshot));
+    this.slots = ImmutableSet.copyOf(Require.nonNull("Slots", slots));
     this.registrationSecret = registrationSecret;
+
+    Map<Capabilities, Integer> stereotypes = new HashMap<>();
+    ImmutableSet.Builder<Active> sessions = ImmutableSet.builder();
+
+    for (Slot slot : slots) {
+      int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
+      count++;
+      stereotypes.put(slot.getStereotype(), count);
+
+      slot.getSession().ifPresent(sessions::add);
+    }
+
+    this.stereotypes = ImmutableMap.copyOf(stereotypes);
+    this.snapshot = sessions.build();
   }
 
   public boolean hasCapacity() {
@@ -76,6 +88,10 @@ public class NodeStatus {
 
   public int getMaxSessionCount() {
     return maxSessionCount;
+  }
+
+  public Set<Slot> getSlots() {
+    return slots;
   }
 
   public Map<Capabilities, Integer> getStereotypes() {
@@ -100,14 +116,13 @@ public class NodeStatus {
     return Objects.equals(this.nodeId, that.nodeId) &&
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
-           Objects.equals(this.stereotypes, that.stereotypes) &&
-           Objects.equals(this.snapshot, that.snapshot) &&
+           Objects.equals(this.slots, that.slots) &&
            Objects.equals(this.registrationSecret, that.registrationSecret);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nodeId, externalUri, maxSessionCount, stereotypes, snapshot);
+    return Objects.hash(nodeId, externalUri, maxSessionCount, slots);
   }
 
   private Map<String, Object> toJson() {
@@ -115,8 +130,7 @@ public class NodeStatus {
         .put("id", nodeId)
         .put("uri", externalUri)
         .put("maxSessions", maxSessionCount)
-        .put("stereotypes", asCapacity(stereotypes))
-        .put("sessions", snapshot)
+        .put("slots", slots)
         .put("registrationSecret", Optional.ofNullable(registrationSecret))
         .build();
   }
@@ -130,12 +144,11 @@ public class NodeStatus {
   }
 
   public static NodeStatus fromJson(JsonInput input) {
-    List<Active> sessions = null;
     NodeId nodeId = null;
     URI uri = null;
     int maxSessions = 0;
-    Map<Capabilities, Integer> stereotypes = null;
     String registrationSecret = null;
+    Set<Slot> slots = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -153,13 +166,8 @@ public class NodeStatus {
           registrationSecret = input.nextString();
           break;
 
-        case "sessions":
-          sessions = input.read(new TypeToken<List<Active>>(){}.getType());
-          break;
-
-        case "stereotypes":
-          CapabilityCount count = input.read(CapabilityCount.class);
-          stereotypes = count.getCounts();
+        case "slots":
+          slots = input.read(new TypeToken<Set<Slot>>(){}.getType());
           break;
 
         case "uri":
@@ -177,8 +185,7 @@ public class NodeStatus {
       nodeId,
       uri,
       maxSessions,
-      stereotypes,
-      sessions,
+      slots,
       registrationSecret);
   }
 }
