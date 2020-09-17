@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.DefaultHostSelector;
@@ -61,6 +62,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
@@ -160,7 +162,7 @@ public class LocalDistributor extends Distributor {
             clientFactory,
             status.getNodeId(),
             status.getUri(),
-            status.getStereotypes().keySet());
+            status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
         add(node, status);
       }
     } finally {

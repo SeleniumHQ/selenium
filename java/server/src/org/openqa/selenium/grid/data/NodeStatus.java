@@ -40,8 +40,6 @@ public class NodeStatus {
   private final int maxSessionCount;
   private final Set<Slot> slots;
   private final String registrationSecret;
-  private final ImmutableMap<Capabilities, Integer> stereotypes;
-  private final Set<Active> snapshot;
 
   public NodeStatus(
       NodeId nodeId,
@@ -65,17 +63,10 @@ public class NodeStatus {
 
       slot.getSession().ifPresent(sessions::add);
     }
-
-    this.stereotypes = ImmutableMap.copyOf(stereotypes);
-    this.snapshot = sessions.build();
   }
 
   public boolean hasCapacity() {
-    return !stereotypes.isEmpty();
-  }
-
-  public boolean hasCapacity(Capabilities caps) {
-    return stereotypes.getOrDefault(caps, 0) > 0;
+    return slots.stream().anyMatch(slot -> slot.getSession().isPresent());
   }
 
   public NodeId getNodeId() {
@@ -92,14 +83,6 @@ public class NodeStatus {
 
   public Set<Slot> getSlots() {
     return slots;
-  }
-
-  public Map<Capabilities, Integer> getStereotypes() {
-    return stereotypes;
-  }
-
-  public Set<Active> getCurrentSessions() {
-    return snapshot;
   }
 
   public String getRegistrationSecret() {

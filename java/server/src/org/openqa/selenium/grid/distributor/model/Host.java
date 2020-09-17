@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.grid.distributor.model;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -36,7 +35,6 @@ import org.openqa.selenium.remote.SessionId;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -46,8 +44,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.summingInt;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.distributor.model.Host.Status.DOWN;
 import static org.openqa.selenium.grid.distributor.model.Host.Status.DRAINING;
@@ -66,7 +63,7 @@ public class Host {
   // Used any time we need to read or modify the mutable state of this host
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private Status status;
-  private List<Slot> slots;
+  private Set<Slot> slots;
   private int maxSessionCount;
 
   public Host(EventBus bus, Node node) {
@@ -76,7 +73,7 @@ public class Host {
     this.uri = node.getUri();
 
     this.status = Status.DOWN;
-    this.slots = ImmutableList.of();
+    this.slots = ImmutableSet.of();
 
     HealthCheck healthCheck = node.getHealthCheck();
 
@@ -114,27 +111,9 @@ public class Host {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      // This is grossly inefficient. But we're on a modern processor and we're expecting 10s to 100s
-      // of nodes, so this is probably ok.
-      Set<Active> sessions = status.getCurrentSessions();
-      Map<Capabilities, Integer> actives = sessions.parallelStream().collect(
-          groupingBy(Active::getStereotype, summingInt(active -> 1)));
-
-      ImmutableList.Builder<Slot> slots = ImmutableList.builder();
-      status.getStereotypes().forEach((caps, count) -> {
-        if (actives.containsKey(caps)) {
-          Integer activeCount = actives.get(caps);
-          for (int i = 0; i < activeCount; i++) {
-            slots.add(new Slot(node, caps, ACTIVE));
-          }
-          count -= activeCount;
-        }
-
-        for (int i = 0; i < count; i++) {
-          slots.add(new Slot(node, caps, AVAILABLE));
-        }
-      });
-      this.slots = slots.build();
+      this.slots = status.getSlots().stream()
+        .map(slot -> new Slot(node, slot.getStereotype(), slot.getSession().isPresent() ? ACTIVE : AVAILABLE))
+        .collect(toImmutableSet());
 
       // By definition, we can never have more sessions than we have slots available
       this.maxSessionCount = Math.min(this.slots.size(), status.getMaxSessionCount());
