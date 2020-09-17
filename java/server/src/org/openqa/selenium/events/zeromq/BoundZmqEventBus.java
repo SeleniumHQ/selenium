@@ -26,7 +26,6 @@ import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import zmq.io.mechanism.curve.Curve;
 
-import javax.swing.plaf.ColorUIResource;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
