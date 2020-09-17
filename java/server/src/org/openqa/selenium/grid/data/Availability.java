@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.data;
 
-public enum Status {
+public enum Availability {
   UP,
   DRAINING,
   DOWN

@@ -440,11 +440,10 @@ public class LocalNode extends Node {
   public void drain() {
     draining = true;
     int currentSessionCount = getCurrentSessionCount();
-    if(currentSessionCount==0) {
+    if (currentSessionCount == 0) {
       LOG.info("Firing node drain complete message");
       bus.fire(new NodeDrainComplete(this.getId()));
-    }
-    else {
+    } else {
       pendingSessions.set(currentSessionCount);
     }
   }

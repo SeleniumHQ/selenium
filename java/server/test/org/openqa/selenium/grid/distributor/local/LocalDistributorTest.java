@@ -61,7 +61,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.data.Status.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class LocalDistributorTest {
@@ -204,7 +204,7 @@ public class LocalDistributorTest {
     final Set<DistributorStatus.NodeSummary> nodesBefore = statusBefore.getNodes();
     assertThat(nodesBefore.size()).isEqualTo(1);
     DistributorStatus.NodeSummary nodeBefore = nodesBefore.iterator().next();
-    assertFalse(nodeBefore.getHostStatus().equals(DRAINING));
+    assertFalse(nodeBefore.getHostAvailability().equals(DRAINING));
 
     distributor.drain(localNode.getId());
     assertThat(localNode.isDraining()).isTrue();

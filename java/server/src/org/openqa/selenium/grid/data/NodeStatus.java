@@ -202,7 +202,6 @@ public class NodeStatus {
 
     private final Capabilities stereotype;
     private final SessionId id;
-    private final boolean isDraining = true;
     private final Capabilities currentCapabilities;
     private final Instant startTime;
 

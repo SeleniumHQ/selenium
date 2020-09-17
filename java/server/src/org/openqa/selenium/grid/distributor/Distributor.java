@@ -66,7 +66,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Status.UP;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -139,8 +139,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
             .to(() -> new CreateSession(this)),
         post("/se/grid/distributor/node")
             .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
-        post("/node/{nodeId}/drain")
-            .to((params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
         post("/se/grid/distributor/node/{nodeId}/drain")
             .to((params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
         delete("/se/grid/distributor/node/{nodeId}")

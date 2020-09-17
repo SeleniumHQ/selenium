@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.data.Status;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
@@ -32,13 +32,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 public class Node {
 
   private final NodeId id;
   private final URI uri;
-  private final Status status;
+  private final Availability status;
   private final int maxSession;
   private final Map<Capabilities, Integer> capabilities;
   private static final Json JSON = new Json();
@@ -47,7 +46,7 @@ public class Node {
 
   public Node(NodeId id,
               URI uri,
-              Status status,
+              Availability status,
               int maxSession,
               Map<Capabilities, Integer> capabilities,
               Set<Session> activeSessions) {
@@ -97,7 +96,7 @@ public class Node {
     return JSON.toJson(toReturn);
   }
 
-  public Status getStatus() {
+  public Availability getStatus() {
     return status;
   }
 }

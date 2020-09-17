@@ -29,6 +29,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
@@ -65,14 +66,18 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.time.Duration.ofSeconds;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
+import static org.openqa.selenium.grid.data.NodeRemovedEvent.NODE_REMOVED;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -407,6 +412,87 @@ public class NodeTest {
     assertThat(baseDir).doesNotExist();
   }
 
+  @Test
+  public void shouldNotCreateSessionIfDraining() {
+    node.drain();
+    assertThat(local.isDraining()).isTrue();
+    assertThat(node.isDraining()).isTrue();
+
+    Optional<CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(caps));
+
+    assertThat(sessionResponse.isPresent()).isFalse();
+  }
+
+  @Test
+  public void shouldNotShutdownDuringOngoingSessionsIfDraining() throws InterruptedException {
+    Optional<Session> firstSession =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+    Optional<Session> secondSession =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NODE_DRAIN_COMPLETE, e -> latch.countDown());
+
+    node.drain();
+    assertThat(local.isDraining()).isTrue();
+    assertThat(node.isDraining()).isTrue();
+
+    Optional<CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(caps));
+    assertThat(sessionResponse.isPresent()).isFalse();
+
+    assertThat(firstSession.isPresent()).isTrue();
+    assertThat(secondSession.isPresent()).isTrue();
+
+    assertThat(local.getCurrentSessionCount()).isEqualTo(2);
+
+    latch.await(1, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(1);
+  }
+
+  @Test
+  public void shouldShutdownAfterSessionsCompleteIfDraining() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NODE_DRAIN_COMPLETE, e -> latch.countDown());
+
+    Optional<Session> firstSession =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+    Optional<Session> secondSession =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+
+    node.drain();
+
+    assertThat(firstSession.isPresent()).isTrue();
+    assertThat(secondSession.isPresent()).isTrue();
+
+    node.stop(firstSession.get().getId());
+    node.stop(secondSession.get().getId());
+
+    latch.await(5, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(0);
+  }
+
+  @Test
+  public void shouldAllowsWebDriverCommandsForOngoingSessionIfDraining() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NODE_DRAIN_COMPLETE, e -> latch.countDown());
+
+    Optional<Session> session =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+
+    node.drain();
+
+    SessionId sessionId = session.get().getId();
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", sessionId));
+
+    HttpResponse response = node.execute(req);
+
+    assertThat(response.getStatus()).isEqualTo(200);
+
+    assertThat(latch.getCount()).isEqualTo(1);
+  }
+
   private File createTmpFile(String content) {
     try {
       File f = File.createTempFile("webdriver", "tmp");
@@ -424,17 +510,6 @@ public class NodeTest {
     tempFS.deleteTempDir(tmp);
     return baseDir;
   }
-
-  //Test that the draining command sets Host status to DRAINING
-  @Test
-  public void drainingNodeStatusDraining() {
-
-  }
-
-  //Test that a draining node doesn't accept new sessions by any means
-  //Test that a draining node continues to run its sessions and accept new WebDriver commands
-  //Test that a node will shut down once all sessions are finished
-  //Test that RemoteNode will post the correct command oto the LocalNode
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
     return new CreateSessionRequest(

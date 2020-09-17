@@ -22,9 +22,9 @@ import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
-import static org.openqa.selenium.grid.data.Status.DOWN;
-import static org.openqa.selenium.grid.data.Status.DRAINING;
-import static org.openqa.selenium.grid.data.Status.UP;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
@@ -37,7 +37,7 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 
-import org.openqa.selenium.grid.data.Status;
+import org.openqa.selenium.grid.data.Availability;
 
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -58,14 +58,6 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.summingInt;
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.data.Status.UP;
-import static org.openqa.selenium.grid.data.Status.DOWN;
-import static org.openqa.selenium.grid.data.Status.DRAINING;
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
-import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
 
 public class Host {
 
@@ -77,7 +69,7 @@ public class Host {
 
   // Used any time we need to read or modify the mutable state of this host
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private Status status;
+  private Availability status;
   private List<Slot> slots;
   private int maxSessionCount;
 
@@ -94,8 +86,8 @@ public class Host {
 
     this.performHealthCheck = () -> {
       HealthCheck.Result result = healthCheck.check();
-      Status current = result.isAlive() ? UP : DOWN;
-      Status previous = setHostStatus(current);
+      Availability current = result.isAlive() ? UP : DOWN;
+      Availability previous = setHostStatus(current);
 
       //If the node has been set to maintenance mode, set the status here as draining
       if (node.isDraining() || previous == DRAINING) {
@@ -107,7 +99,7 @@ public class Host {
       if (current != previous) {
         LOG.info(String.format(
             "Changing status of node %s from %s to %s. Reason: %s",
-            node.getId().toUuid(),
+            node.getId().toString(),
             previous,
             current,
             result.getMessage()));
@@ -184,15 +176,15 @@ public class Host {
         activeSessions);
   }
 
-  public Status getHostStatus() {
+  public Availability getHostStatus() {
     return status;
   }
 
   /**
    * @return The previous status of the node.
    */
-    private Status setHostStatus(Status status) {
-    Status toReturn = this.status;
+  private Availability setHostStatus(Availability status) {
+    Availability toReturn = this.status;
     this.status = Require.nonNull("Status", status);
     return toReturn;
   }
@@ -200,8 +192,8 @@ public class Host {
   /**
    * @return The previous status of the node if it not able to drain else returning draining status.
    */
-  public Status drainHost() {
-    Status prev = this.status;
+  public Availability drainHost() {
+    Availability prev = this.status;
 
     // Drain the node
     if (!node.isDraining()) {
@@ -218,9 +210,7 @@ public class Host {
   }
 
   /**
-   * Whether or not the number of sessions is less than maxSessions
-   * @param caps
-   * @return
+   * @return Whether or not the host has slots available for the requested capabilities.
    */
   public boolean hasCapacity(Capabilities caps) {
     Lock read = lock.readLock();

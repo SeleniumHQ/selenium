@@ -22,6 +22,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeId;
@@ -62,6 +63,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
@@ -186,7 +188,7 @@ public class LocalDistributor extends Distributor {
       LOG.fine("Adding host: " + host.asSummary());
       hosts.add(host);
 
-      LOG.info(String.format("Added node %s.", node.getId().toUuid()));
+      LOG.info(String.format("Added node %s.", node.getId().toString()));
       host.runHealthCheck();
 
       Runnable runnable = host::runHealthCheck;
@@ -210,23 +212,17 @@ public class LocalDistributor extends Distributor {
     writeLock.lock();
     try {
       Optional<Host> host = hosts.stream().filter(node -> nodeId.equals(node.getId())).findFirst();
-      if(host.isPresent())
-      {
-        org.openqa.selenium.grid.data.Status status = host.get().drainHost();
-
-        return status == org.openqa.selenium.grid.data.Status.DRAINING;
-      }
-      else
-      {
-        LOG.log(Level.WARNING,"Unable to drain the host. Host not found. Node id: {0}", nodeId);
+      if (host.isPresent()) {
+        Availability status = host.get().drainHost();
+        return DRAINING == status;
+      } else {
+        LOG.log(Level.WARNING, "Unable to drain the host. Host not found. Node id: {0}", nodeId);
         return false;
       }
-
     } finally {
       writeLock.unlock();
     }
   }
-
 
   public void remove(NodeId nodeId) {
     Lock writeLock = lock.writeLock();

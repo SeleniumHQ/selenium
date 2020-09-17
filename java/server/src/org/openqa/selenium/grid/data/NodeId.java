@@ -62,4 +62,10 @@ public class NodeId implements Comparable<NodeId> {
   private static NodeId fromJson(UUID id) {
     return new NodeId(id);
   }
+
+  @Override
+  public String toString() {
+    return uuid.toString();
+  }
 }
+
