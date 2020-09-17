@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -30,16 +31,21 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -61,9 +67,13 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -347,29 +357,37 @@ public class NodeTest {
     HttpRequest req = new HttpRequest(GET, "/status");
     HttpResponse res = node.execute(req);
     assertThat(res.getStatus()).isEqualTo(200);
-    Map<String, Object> status = new Json().toType(string(res), MAP_TYPE);
-    assertThat(status).containsOnlyKeys("value");
-    assertThat(status).extracting("value").asInstanceOf(MAP)
-        .containsEntry("ready", true)
-        .containsEntry("message", "Ready")
-        .containsKey("node");
-    assertThat(status).extracting("value.node").asInstanceOf(MAP)
-        .containsKey("id")
-        .containsEntry("uri", "http://localhost:1234")
-        .containsEntry("maxSessions", (long) 2)
-        .containsKey("stereotypes")
-        .containsKey("sessions");
-    assertThat(status).extracting("value.node.stereotypes").asInstanceOf(LIST)
-        .hasSize(1)
-        .element(0).asInstanceOf(MAP)
-        .containsEntry("capabilities", Collections.singletonMap("browserName", "cheese"))
-        .containsEntry("count", (long) 3);
-    assertThat(status).extracting("value.node.sessions").asInstanceOf(LIST)
-        .hasSize(1)
-        .element(0).asInstanceOf(MAP)
-        .containsEntry("currentCapabilities", Collections.singletonMap("browserName", "cheese"))
-        .containsEntry("stereotype", Collections.singletonMap("browserName", "cheese"))
-        .containsKey("sessionId");
+
+    NodeStatus seen = null;
+    try (JsonInput input = new Json().newInput(Contents.reader(res))) {
+      input.beginObject();
+      while (input.hasNext()) {
+        switch (input.nextName()) {
+          case "value":
+            input.beginObject();
+            while (input.hasNext()) {
+              switch (input.nextName()) {
+                case "node":
+                  seen = input.read(NodeStatus.class);
+                  break;
+
+                default:
+                  input.skipValue();
+              }
+            }
+            input.endObject();
+            break;
+
+          default:
+            input.skipValue();
+            break;
+        }
+      }
+    }
+
+    NodeStatus expected = node.getStatus();
+
+    assertThat(seen).isEqualTo(expected);
   }
 
   @Test
