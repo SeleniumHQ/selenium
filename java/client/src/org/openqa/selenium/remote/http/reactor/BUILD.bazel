@@ -26,5 +26,6 @@ java_library(
         artifact("io.netty:netty-transport-native-unix-common"),
         artifact("io.projectreactor:reactor-core"),
         artifact("io.projectreactor.netty:reactor-netty"),
+        artifact("io.projectreactor.netty:reactor-netty-http"),
     ],
 )

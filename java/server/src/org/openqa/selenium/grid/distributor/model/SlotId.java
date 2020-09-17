@@ -40,6 +40,11 @@ public class SlotId {
   }
 
   @Override
+  public String toString() {
+    return "SlotId{nodeId=" + nodeId + ", id=" + uuid + '}';
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof SlotId)) {
       return false;

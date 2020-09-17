@@ -2,7 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    jetty_version = "9.4.28.v20200408"
+    jetty_version = "9.4.31.v20200723"
     netty_version = "4.1.52.Final"
     opentelemetry_version = "0.8.0"
 
@@ -41,8 +41,9 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-sdk-tracing:%s" % opentelemetry_version,
             "io.ous:jtoml:2.0.0",
             "it.ozimov:embedded-redis:0.7.3",
-            "io.projectreactor:reactor-core:3.4.0-M1",
-            "io.projectreactor.netty:reactor-netty:1.0.0-M1",
+            "io.projectreactor:reactor-core:3.4.0-RC1",
+            "io.projectreactor.netty:reactor-netty:1.0.0-RC1",
+            "io.projectreactor.netty:reactor-netty-http:1.0.0-RC1",
             "javax.servlet:javax.servlet-api:4.0.1",
             maven.artifact(
                 group = "junit",

@@ -41,6 +41,11 @@ public class NodeId implements Comparable<NodeId> {
   }
 
   @Override
+  public String toString() {
+    return uuid.toString();
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof NodeId)) {
       return false;
