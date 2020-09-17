@@ -30,6 +30,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -64,6 +65,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -340,9 +342,9 @@ public class DistributorTest {
     }
 
     // All the nodes should be equally loaded.
-    Map<Capabilities, Integer> expected = mostRecent.getStatus().getStereotypes();
-    assertThat(leastRecent.getStatus().getStereotypes()).isEqualTo(expected);
-    assertThat(middle.getStatus().getStereotypes()).isEqualTo(expected);
+    Map<Capabilities, Integer> expected = getFreeStereotypeCounts(mostRecent.getStatus());
+    assertThat(getFreeStereotypeCounts(leastRecent.getStatus())).isEqualTo(expected);
+    assertThat(getFreeStereotypeCounts(middle.getStatus())).isEqualTo(expected);
 
     // All nodes are now equally loaded. We should be going in time order now
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
@@ -350,6 +352,16 @@ public class DistributorTest {
 
       assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getUri());
     }
+  }
+
+  private Map<Capabilities, Integer> getFreeStereotypeCounts(NodeStatus status) {
+    Map<Capabilities, Integer> toReturn = new HashMap<>();
+    for (Slot slot : status.getSlots()) {
+      int count = toReturn.getOrDefault(slot.getStereotype(), 0);
+      count++;
+      toReturn.put(slot.getStereotype(), count);
+    }
+    return toReturn;
   }
 
   @Test
