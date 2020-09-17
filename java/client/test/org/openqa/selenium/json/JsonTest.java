@@ -17,22 +17,8 @@
 
 package org.openqa.selenium.json;
 
-import static java.util.logging.Level.ALL;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.OFF;
-import static java.util.logging.Level.WARNING;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.byLessThan;
-import static org.openqa.selenium.Proxy.ProxyType.PAC;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
-
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -50,12 +36,26 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 
 import java.io.StringReader;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.logging.Level.ALL;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.OFF;
+import static java.util.logging.Level.WARNING;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.byLessThan;
+import static org.openqa.selenium.Proxy.ProxyType.PAC;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
 
 public class JsonTest {
 
@@ -214,6 +214,17 @@ public class JsonTest {
     Map<?,?> map = new Json().toType(raw, Map.class);
 
     assertThat(map.get("magicNumber")).isEqualTo(3L);
+  }
+
+  @Test
+  public void shouldBeAbleToReadAnInstant() {
+    // We will lose the nanoseconds
+    Instant now = Instant.ofEpochMilli(System.currentTimeMillis());
+    String raw = String.valueOf(now.toEpochMilli());
+
+    Instant instant = new Json().toType(raw, Instant.class);
+
+    assertThat(instant).isEqualTo(now);
   }
 
   @Test

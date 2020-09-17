@@ -26,7 +26,8 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -57,6 +58,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -120,7 +122,7 @@ public class AddingNodesTest {
     URI sessionUri = new URI("http://example:1234");
     Node node = new CustomNode(
         bus,
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         externalUrl.toURI(),
         c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c));
     handler.addHandler(node);
@@ -195,7 +197,7 @@ public class AddingNodesTest {
         status.getUri(),
         status.getMaxSessionCount(),
         status.getStereotypes(),
-        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)),
+        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS, Instant.now())),
         null);
 
     bus.fire(new NodeStatusEvent(crafted));
@@ -212,7 +214,7 @@ public class AddingNodesTest {
 
     protected CustomNode(
         EventBus bus,
-        UUID nodeId,
+        NodeId nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
       super(DefaultTestTracer.createTracer(), nodeId, uri);
@@ -282,7 +284,7 @@ public class AddingNodesTest {
     public NodeStatus getStatus() {
       Set<NodeStatus.Active> actives = new HashSet<>();
       if (running != null) {
-        actives.add(new NodeStatus.Active(CAPS, running.getId(), running.getCapabilities()));
+        actives.add(new NodeStatus.Active(CAPS, running.getId(), running.getCapabilities(), Instant.now()));
       }
 
       return new NodeStatus(

@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe DevTools, only: {driver: :chrome} do
+    describe DevTools, only: {driver: %i[chrome edge]} do
       after do
         quit_driver
       end

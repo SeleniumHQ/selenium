@@ -32,10 +32,10 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "bazel_toolchains",
-    sha256 = "882fecfc88d3dc528f5c5681d95d730e213e39099abff2e637688a91a9619395",
-    strip_prefix = "bazel-toolchains-3.4.0",
+    sha256 = "89a053218639b1c5e3589a859bb310e0a402dedbe4ee369560e66026ae5ef1f2",
+    strip_prefix = "bazel-toolchains-3.5.0",
     urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/releases/download/3.4.0/bazel-toolchains-3.4.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/3.5.0/bazel-toolchains-3.5.0.tar.gz",
     ],
 )
 
@@ -45,9 +45,9 @@ rbe_autoconfig(name = "rbe_default")
 
 http_archive(
     name = "rules_jvm_external",
-    sha256 = "82262ff4223c5fda6fb7ff8bd63db8131b51b413d26eb49e3131037e79e324af",
-    strip_prefix = "rules_jvm_external-3.2",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.2.zip",
+    sha256 = "d85951a92c0908c80bd8551002d66cb23c3434409c814179c0ff026b53544dab",
+    strip_prefix = "rules_jvm_external-3.3",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.3.zip",
 )
 
 load("//java:maven_deps.bzl", "selenium_java_deps")
@@ -86,8 +86,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "10fffa29f687aa4d8eb6dfe8731ab5beb63811ab00981fc84a93899641fd4af1",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.0.3/rules_nodejs-2.0.3.tar.gz"],
+    sha256 = "4952ef879704ab4ad6729a29007e7094aef213ea79e9f2e94cbe1c9a753e63ef",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.0/rules_nodejs-2.2.0.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")

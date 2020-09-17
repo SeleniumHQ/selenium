@@ -90,7 +90,7 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
   public Span addEvent(String name, Map<String, EventAttributeValue> attributeMap) {
     Require.nonNull("Name", name);
     Require.nonNull("Event Attribute Map", attributeMap);
-    Attributes.Builder otAttributes = new Attributes.Builder();
+    Attributes.Builder otAttributes = Attributes.newBuilder();
 
     attributeMap.forEach(
         (key, value) -> {

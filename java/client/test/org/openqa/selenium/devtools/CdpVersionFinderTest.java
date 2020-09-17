@@ -61,8 +61,8 @@ public class CdpVersionFinderTest {
 
   @Test
   public void shouldReturnAnExactMatchIfFound() {
-    CdpInfo v84 = new CdpInfo(84, () -> null){};
-    CdpInfo v85 = new CdpInfo(85, () -> null){};
+    CdpInfo v84 = new CdpInfo(84, dt -> null){};
+    CdpInfo v85 = new CdpInfo(85, dt -> null){};
 
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84, v85));
 
@@ -75,7 +75,7 @@ public class CdpVersionFinderTest {
 
   @Test
   public void shouldReturnThePreviousLowestMatchIfNoExactMatchFoundWithinFuzzFactor() {
-    CdpInfo v84 = new CdpInfo(84, () -> null){};
+    CdpInfo v84 = new CdpInfo(84, dt -> null){};
 
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84));
 
@@ -85,7 +85,7 @@ public class CdpVersionFinderTest {
 
   @Test
   public void shouldReturnEmptyIfNothingIsFoundThatMatches() {
-    CdpInfo v90 = new CdpInfo(90, () -> null){};
+    CdpInfo v90 = new CdpInfo(90, dt -> null){};
 
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v90));
 
@@ -98,8 +98,8 @@ public class CdpVersionFinderTest {
     String chromeVersion = "85.0.4183.69";
     String edgeVersion = "84.0.522.59";
 
-    CdpInfo v84 = new CdpInfo(84, () -> null){};
-    CdpInfo v85 = new CdpInfo(85, () -> null){};
+    CdpInfo v84 = new CdpInfo(84, dt -> null){};
+    CdpInfo v85 = new CdpInfo(85, dt -> null){};
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84, v85));
 
     Optional<CdpInfo> info = finder.match(chromeVersion);

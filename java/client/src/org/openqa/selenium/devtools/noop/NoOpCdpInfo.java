@@ -22,7 +22,7 @@ import org.openqa.selenium.devtools.CdpInfo;
 public class NoOpCdpInfo extends CdpInfo {
 
   public NoOpCdpInfo() {
-    super(1, NoOpDomains::new);
+    super(1, dt -> new NoOpDomains());
   }
 
 }

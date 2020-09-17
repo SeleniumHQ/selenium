@@ -1,8 +1,8 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 load("@rules_python//experimental/python:wheel.bzl", "py_package", "py_wheel")
 load("@dev_requirements//:requirements.bzl", "requirement")
+load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
-load("//:copy_file.bzl", "copy_file")
 
 copy_file(
     name = "get-attribute",

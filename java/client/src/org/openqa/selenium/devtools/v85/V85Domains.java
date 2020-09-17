@@ -17,36 +17,56 @@
 
 package org.openqa.selenium.devtools.v85;
 
+import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.idealized.Domains;
-import org.openqa.selenium.devtools.idealized.fetch.Fetch;
+import org.openqa.selenium.devtools.idealized.Events;
+import org.openqa.selenium.devtools.idealized.Javascript;
+import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.devtools.idealized.log.Log;
-import org.openqa.selenium.devtools.idealized.page.Page;
-import org.openqa.selenium.devtools.idealized.runtime.RuntimeDomain;
 import org.openqa.selenium.devtools.idealized.target.Target;
+import org.openqa.selenium.internal.Require;
 
 public class V85Domains implements Domains {
-  @Override
-  public Fetch fetch() {
-    return new V85Fetch();
+
+  private final V85Events events;
+  private final V85Javascript js;
+  private final V85Target target;
+  private final V85Network network;
+  private final V85Log log;
+
+  public V85Domains(DevTools devtools) {
+    Require.nonNull("DevTools", devtools);
+
+    events = new V85Events(devtools);
+    js = new V85Javascript(devtools);
+    log = new V85Log();
+    network = new V85Network(devtools);
+    target = new V85Target();
   }
 
   @Override
-  public Log log() {
-    return new V85Log();
+  public Events<?, ?> events() {
+    return events;
   }
 
   @Override
-  public Page page() {
-    return new V85Page();
+  public Javascript<?, ?> javascript() {
+    return js;
   }
 
   @Override
-  public RuntimeDomain runtime() {
-    return new V85Runtime();
+  public Network<?, ?> network() {
+    return network;
   }
 
   @Override
   public Target target() {
-    return new V85Target();
+    return target;
   }
+
+  @Override
+  public Log log() {
+    return log;
+  }
+
 }

@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.http.Message;
 import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.CertificateException;
@@ -134,6 +135,7 @@ public class NettyServer implements Server<NettyServer> {
     }
   }
 
+  @SuppressWarnings("ConstantConditions")
   public NettyServer start() {
     ServerBootstrap b = new ServerBootstrap();
 
@@ -147,6 +149,11 @@ public class NettyServer implements Server<NettyServer> {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new UncheckedIOException(new IOException("Start up interrupted", e));
+    } catch (Exception e) {
+      if (e instanceof BindException) {
+        throw new UncheckedIOException(new IOException(String.format("Port %s already in use", port), e));
+      }
+      throw e;
     }
 
     return this;

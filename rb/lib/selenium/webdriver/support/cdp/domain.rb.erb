@@ -22,45 +22,47 @@ module Selenium
   module WebDriver
     class DevTools
       def <%= h.snake_case(domain[:domain]) %>
-        @<%= h.snake_case(domain[:domain]) %> ||= <%= domain[:domain] %>.new(self)
+        @<%= h.snake_case(domain[:domain]) %> ||= <%= version %>::<%= domain[:domain] %>.new(self)
       end
 
-      class <%= domain[:domain] %>
-        <% if domain[:events] %>
-        EVENTS = {
-          <% domain[:events].each do |event| %>
-          <%= h.snake_case(event[:name]) %>: '<%= event[:name] %>',
-          <% end %>
-        }
-        <% end %>
-
-        def initialize(devtools)
-          @devtools = devtools
-        end
-
-        def on(event, &block)
-          event = EVENTS[event] if event.is_a?(Symbol)
-          @devtools.callbacks["<%= domain[:domain] %>.#{event}"] << block
-        end
-
-        <% domain[:commands].each do |command| %>
-        <% if command[:parameters] %>
-        def <%= h.snake_case(command[:name]) %>(<%= h.kwargs(command[:parameters]) %>)
-        <% else %>
-        def <%= h.snake_case(command[:name]) %>
-        <% end %>
-          <% if command[:parameters] %>
-          @devtools.send_cmd('<%= domain[:domain] %>.<%= command[:name] %>',
-            <% until command[:parameters].empty? %>
-              <% parameter = command[:parameters].shift %>
-                             <%= parameter[:name] %>: <%= h.snake_case(parameter[:name]) %><%= command[:parameters].empty? ? ')' : ',' %>
+      module <%= version %>
+        class <%= domain[:domain] %>
+          <% if domain[:events] %>
+          EVENTS = {
+            <% domain[:events].each do |event| %>
+            <%= h.snake_case(event[:name]) %>: '<%= event[:name] %>',
             <% end %>
-          <% else %>
-          @devtools.send_cmd('<%= domain[:domain] %>.<%= command[:name] %>')
+          }.freeze
           <% end %>
-        end
 
-        <% end %>
+          def initialize(devtools)
+            @devtools = devtools
+          end
+
+          def on(event, &block)
+            event = EVENTS[event] if event.is_a?(Symbol)
+            @devtools.callbacks["<%= domain[:domain] %>.#{event}"] << block
+          end
+
+          <% domain[:commands].each do |command| %>
+          <% if command[:parameters] %>
+          def <%= h.snake_case(command[:name]) %>(<%= h.kwargs(command[:parameters]) %>)
+          <% else %>
+          def <%= h.snake_case(command[:name]) %>
+          <% end %>
+            <% if command[:parameters] %>
+            @devtools.send_cmd('<%= domain[:domain] %>.<%= command[:name] %>',
+              <% until command[:parameters].empty? %>
+                <% parameter = command[:parameters].shift %>
+                               <%= parameter[:name] %>: <%= h.snake_case(parameter[:name]) %><%= command[:parameters].empty? ? ')' : ',' %>
+              <% end %>
+            <% else %>
+            @devtools.send_cmd('<%= domain[:domain] %>.<%= command[:name] %>')
+            <% end %>
+          end
+
+          <% end %>
+        end # <%= version %>
       end # <%= domain[:domain] %>
     end # DevTools
   end # WebDriver

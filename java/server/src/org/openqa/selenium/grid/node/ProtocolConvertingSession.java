@@ -30,6 +30,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
+import java.time.Instant;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -41,14 +42,15 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
   private final String killUrl;
 
   protected ProtocolConvertingSession(
-      Tracer tracer,
-      HttpClient client,
-      SessionId id,
-      URL url,
-      Dialect downstream,
-      Dialect upstream,
-      Capabilities capabilities) {
-    super(id, url, downstream, upstream, capabilities);
+    Tracer tracer,
+    HttpClient client,
+    SessionId id,
+    URL url,
+    Dialect downstream,
+    Dialect upstream,
+    Capabilities capabilities,
+    Instant startTime) {
+    super(id, url, downstream, upstream, capabilities, startTime);
 
     Require.nonNull("HTTP client", client);
 

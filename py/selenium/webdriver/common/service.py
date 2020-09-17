@@ -46,6 +46,7 @@ class Service(object):
 
         self.start_error_message = start_error_message
         self.log_file = log_file
+        self.creationflags = 0 # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.env = env or os.environ
 
     @property
@@ -73,7 +74,8 @@ class Service(object):
                                             close_fds=platform.system() != 'Windows',
                                             stdout=self.log_file,
                                             stderr=self.log_file,
-                                            stdin=PIPE)
+                                            stdin=PIPE,
+                                            creationflags=self.creationflags)
         except TypeError:
             raise
         except OSError as err:

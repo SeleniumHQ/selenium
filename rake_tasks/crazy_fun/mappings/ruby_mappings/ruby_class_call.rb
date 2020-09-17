@@ -12,7 +12,7 @@ module CrazyFun
             copy_resources dir, args[:resources], build_dir if args[:resources]
             require_source build_dir, args[:require]
             create_output_dir build_dir, args[:output_dir]
-            call_class args[:klass]
+            Dir.chdir(build_dir) { call_class(args[:klass], args) }
             remove_sources args[:srcs]
           end
 
@@ -28,8 +28,8 @@ module CrazyFun
           mkdir_p File.join(root_dir, output_dir)
         end
 
-        def call_class(klass)
-          Object.const_get(klass).new.call
+        def call_class(klass, **args)
+          Object.const_get(klass).new.call(args)
         end
 
         def remove_sources(globs)

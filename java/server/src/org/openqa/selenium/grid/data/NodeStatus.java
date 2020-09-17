@@ -17,31 +17,28 @@
 
 package org.openqa.selenium.grid.data;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 public class NodeStatus {
 
-  private final UUID nodeId;
+  private final NodeId nodeId;
   private final URI externalUri;
   private final int maxSessionCount;
   private final Map<Capabilities, Integer> stereotypes;
@@ -49,7 +46,7 @@ public class NodeStatus {
   private final String registrationSecret;
 
   public NodeStatus(
-      UUID nodeId,
+      NodeId nodeId,
       URI externalUri,
       int maxSessionCount,
       Map<Capabilities, Integer> stereotypes,
@@ -72,7 +69,7 @@ public class NodeStatus {
     return stereotypes.getOrDefault(caps, 0) > 0;
   }
 
-  public UUID getNodeId() {
+  public NodeId getNodeId() {
     return nodeId;
   }
 
@@ -135,41 +132,57 @@ public class NodeStatus {
     return toReturn.build();
   }
 
-  public static NodeStatus fromJson(Map<String, Object> raw) {
-    List<Active> sessions = ((Collection<?>) raw.get("sessions")).stream()
-        .map(item -> {
-          @SuppressWarnings("unchecked")
-          Map<String, Object> converted = (Map<String, Object>) item;
-          return converted;
-        })
-        .map(Active::fromJson)
-        .collect(toImmutableList());
+  public static NodeStatus fromJson(JsonInput input) {
+    List<Active> sessions = null;
+    NodeId nodeId = null;
+    URI uri = null;
+    int maxSessions = 0;
+    Map<Capabilities, Integer> stereotypes = null;
+    String registrationSecret = null;
 
-    try {
-      return new NodeStatus(
-          UUID.fromString((String) raw.get("id")),
-          new URI((String) raw.get("uri")),
-          ((Number) raw.get("maxSessions")).intValue(),
-          readCapacityNamed(raw, "stereotypes"),
-          sessions,
-          ((String) raw.get("registrationSecret")));
-    } catch (URISyntaxException e) {
-      throw new JsonException(e);
+    input.beginObject();
+    while (input.hasNext()) {
+
+      switch (input.nextName()) {
+        case "id":
+          nodeId = input.read(NodeId.class);
+          break;
+
+        case "maxSessions":
+          maxSessions = input.read(Integer.class);
+          break;
+
+        case "registrationSecret":
+          registrationSecret = input.nextString();
+          break;
+
+        case "sessions":
+          sessions = input.read(new TypeToken<List<Active>>(){}.getType());
+          break;
+
+        case "stereotypes":
+          CapabilityCount count = input.read(CapabilityCount.class);
+          stereotypes = count.getCounts();
+          break;
+
+        case "uri":
+          uri = input.read(URI.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
     }
-  }
+    input.endObject();
 
-  private static Map<Capabilities, Integer> readCapacityNamed(
-      Map<String, Object> raw,
-      String name) {
-    ImmutableMap.Builder<Capabilities, Integer> capacity = ImmutableMap.builder();
-    ((Collection<?>) raw.get(name)).forEach(obj -> {
-      Map<?, ?> cap = (Map<?, ?>) obj;
-      capacity.put(
-          new ImmutableCapabilities((Map<?, ?>) cap.get("capabilities")),
-          ((Number) cap.get("count")).intValue());
-    });
-
-    return capacity.build();
+    return new NodeStatus(
+      nodeId,
+      uri,
+      maxSessions,
+      stereotypes,
+      sessions,
+      registrationSecret);
   }
 
   public static class Active {
@@ -177,12 +190,18 @@ public class NodeStatus {
     private final Capabilities stereotype;
     private final SessionId id;
     private final Capabilities currentCapabilities;
+    private final Instant startTime;
 
-    public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities) {
+    public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities, Instant startTime) {
       this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
       this.id = Require.nonNull("Session id", id);
       this.currentCapabilities =
           ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", currentCapabilities));
+      this.startTime = Require.nonNull("Start time", startTime);
+    }
+
+    public SessionId getId() {
+      return id;
     }
 
     public Capabilities getStereotype() {
@@ -197,6 +216,10 @@ public class NodeStatus {
       return currentCapabilities;
     }
 
+    public Instant getStartTime() {
+      return startTime;
+    }
+
     @Override
     public boolean equals(Object o) {
       if (!(o instanceof Active)) {
@@ -205,27 +228,52 @@ public class NodeStatus {
       Active that = (Active) o;
       return Objects.equals(this.getStereotype(), that.getStereotype()) &&
              Objects.equals(this.id, that.id) &&
-             Objects.equals(this.getCurrentCapabilities(), that.getCurrentCapabilities());
+             Objects.equals(this.getCurrentCapabilities(), that.getCurrentCapabilities()) &&
+             Objects.equals(this.getStartTime(), that.getStartTime());
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(getStereotype(), id, getCurrentCapabilities());
+      return Objects.hash(getStereotype(), getSessionId(), getCurrentCapabilities(), getStartTime());
     }
 
     private Map<String, Object> toJson() {
       return ImmutableMap.of(
-          "sessionId", getSessionId(),
-          "stereotype", getStereotype(),
-          "currentCapabilities", getCurrentCapabilities());
+        "sessionId", getSessionId(),
+        "stereotype", getStereotype(),
+        "currentCapabilities", getCurrentCapabilities(),
+        "startTime", getStartTime());
     }
 
-    private static Active fromJson(Map<String, Object> raw) {
-      SessionId id = new SessionId((String) raw.get("sessionId"));
-      Capabilities stereotype = new ImmutableCapabilities((Map<?, ?>) raw.get("stereotype"));
-      Capabilities current = new ImmutableCapabilities((Map<?, ?>) raw.get("currentCapabilities"));
+    private static Active fromJson(JsonInput input) {
+      SessionId id = null;
+      Capabilities stereotype = null;
+      Capabilities current = null;
+      Instant startTime = null;
 
-      return new Active(stereotype, id, current);
+      input.beginObject();
+      while (input.hasNext()) {
+        switch (input.nextName()) {
+          case "currentCapabilities":
+            current = input.read(Capabilities.class);
+            break;
+
+          case "sessionId":
+            id = input.read(SessionId.class);
+            break;
+
+          case "startTime":
+            startTime = input.read(Instant.class);
+            break;
+
+          case "stereotype":
+            stereotype = input.read(Capabilities.class);
+            break;
+        }
+      }
+      input.endObject();
+
+      return new Active(stereotype, id, current, startTime);
     }
   }
 }
