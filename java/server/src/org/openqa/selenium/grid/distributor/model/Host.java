@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -115,9 +116,9 @@ public class Host {
     try {
       // This is grossly inefficient. But we're on a modern processor and we're expecting 10s to 100s
       // of nodes, so this is probably ok.
-      Set<NodeStatus.Active> sessions = status.getCurrentSessions();
+      Set<Active> sessions = status.getCurrentSessions();
       Map<Capabilities, Integer> actives = sessions.parallelStream().collect(
-          groupingBy(NodeStatus.Active::getStereotype, summingInt(active -> 1)));
+          groupingBy(Active::getStereotype, summingInt(active -> 1)));
 
       ImmutableList.Builder<Slot> slots = ImmutableList.builder();
       status.getStereotypes().forEach((caps, count) -> {

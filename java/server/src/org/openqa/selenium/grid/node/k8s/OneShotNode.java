@@ -27,6 +27,7 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
@@ -327,7 +328,7 @@ public class OneShotNode extends Node {
       ImmutableMap.of(stereotype, 1),
       driver == null ?
         Collections.emptySet() :
-        Collections.singleton(new NodeStatus.Active(stereotype, sessionId, capabilities, Instant.now())),
+        Collections.singleton(new Active(stereotype, sessionId, capabilities, Instant.now())),
       registrationSecret);
   }
 
