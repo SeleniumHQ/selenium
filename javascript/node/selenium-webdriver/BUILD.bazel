@@ -119,41 +119,19 @@ nodejs_binary(
     entry_point = "devtools/generator/protocol-dts-generator.js",
 )
 
-copy_file(
-    name = "browser_protocol_v84",
-    src = "//common/devtools/chromium/v84:browser_protocol.json",
-    out = "devtools/generator/v84/browser_protocol.json",
-)
+[copy_file(
+    name = "browser_protocol_" + n,
+    src = "//common/devtools/chromium/" + n + ":browser_protocol.json",
+    out = "devtools/generator/" + n + "/browser_protocol.json") for n in [
+    "v84", "v85", "v86",
+]]
 
-copy_file(
-    name = "js_protocol_v84",
-    src = "//common/devtools/chromium/v84:js_protocol.json",
-    out = "devtools/generator/v84/js_protocol.json",
-)
-
-copy_file(
-    name = "browser_protocol_v85",
-    src = "//common/devtools/chromium/v85:browser_protocol.json",
-    out = "devtools/generator/v85/browser_protocol.json",
-)
-
-copy_file(
-    name = "js_protocol_v85",
-    src = "//common/devtools/chromium/v85:js_protocol.json",
-    out = "devtools/generator/v85/js_protocol.json",
-)
-
-copy_file(
-    name = "browser_protocol_v86",
-    src = "//common/devtools/chromium/v86:browser_protocol.json",
-    out = "devtools/generator/v86/browser_protocol.json",
-)
-
-copy_file(
-    name = "js_protocol_v86",
-    src = "//common/devtools/chromium/v86:js_protocol.json",
-    out = "devtools/generator/v86/js_protocol.json",
-)
+[copy_file(
+    name = "js_protocol_" + n,
+    src = "//common/devtools/chromium/" + n + ":js_protocol.json",
+    out = "devtools/generator/" + n + "/js_protocol.json") for n in [
+    "v84", "v85", "v86",
+]]
 
 genrule(
     name = "create-cdp-srcs-v84",
