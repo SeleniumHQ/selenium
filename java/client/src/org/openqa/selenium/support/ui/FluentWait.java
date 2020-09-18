@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -64,6 +65,16 @@ import java.util.function.Supplier;
  * </pre>
  *
  * <p>
+ * If you are running multiple web driver sessions in a custom thread pool, you will need to
+ * include a {@Link #withExecutor(java.util.concurrent.ExecutorService)} call in your build
+ * chain passing in your executor instance.
+ * <pre>
+ *     Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
+ *       .withTimeout(30, SECONDS)
+ *       .withExecutor(myExecutor);
+ * </pre>
+ *
+ * <p>
  * <em>This class makes no thread safety guarantees.</em>
  *
  * @param <T> The input type for each condition used with this instance.
@@ -81,6 +92,7 @@ public class FluentWait<T> implements Wait<T> {
   private Duration timeout = DEFAULT_WAIT_DURATION;
   private Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
+  private Supplier<ExecutorService> executorSupplier = () -> null;
 
   private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
@@ -133,6 +145,27 @@ public class FluentWait<T> implements Wait<T> {
    */
   public FluentWait<T> withMessage(Supplier<String> messageSupplier) {
     this.messageSupplier = messageSupplier;
+    return this;
+  }
+
+  /**
+   * Sets the executor to be used for asynchronous wait.
+   *
+   * @param executor the executor to use
+   * @return A self reference.
+   */
+  public FluentWait<T> withExecutor(ExecutorService executor) {
+    return withExecutor(() -> executor);
+  }
+
+  /**
+   * Sets the supplier of the executor to be used for asynchronous wait.
+   *
+   * @param executorSupplier supplier of the executor to be used
+   * @return A self reference.
+   */
+  public FluentWait<T> withExecutor(Supplier<ExecutorService> executorSupplier) {
+    this.executorSupplier = executorSupplier;
     return this;
   }
 
@@ -204,8 +237,11 @@ public class FluentWait<T> implements Wait<T> {
   @Override
   public <V> V until(Function<? super T, V> isTrue) {
     try {
-      return CompletableFuture.supplyAsync(checkConditionInLoop(isTrue))
-          .get(deriveSafeTimeout(), TimeUnit.MILLISECONDS);
+      ExecutorService executor = executorSupplier != null ? executorSupplier.get() : null;
+      CompletableFuture<V> completable = executor != null
+              ? CompletableFuture.supplyAsync(checkConditionInLoop(isTrue), executor)
+              : CompletableFuture.supplyAsync(checkConditionInLoop(isTrue));
+      return completable.get(deriveSafeTimeout(), TimeUnit.MILLISECONDS);
     } catch (ExecutionException cause) {
       if (cause.getCause() instanceof RuntimeException) {
         throw (RuntimeException) cause.getCause().fillInStackTrace();

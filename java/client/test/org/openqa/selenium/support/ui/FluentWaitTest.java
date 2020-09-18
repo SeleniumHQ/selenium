@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -35,7 +36,15 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 public class FluentWaitTest {
 
@@ -273,6 +282,59 @@ public class FluentWaitTest {
     assertThatExceptionOfType(org.openqa.selenium.TimeoutException.class)
         .isThrownBy(() -> wait.until(mockCondition))
         .satisfies(actual -> assertThat(actual.getMessage()).startsWith("Supplied function might have stalled"));
+  }
+
+  @Test
+  public void shouldWaitUntilABooleanResultIsTrueForMultipleThreadsWithExecutor() throws Exception {
+
+    int noOfProcessors = Runtime.getRuntime().availableProcessors();
+    int noOfThreads = noOfProcessors / 2;
+    int noOfTasks = noOfProcessors * 2;
+    ExecutorService executor = Executors.newWorkStealingPool(noOfThreads);
+    Supplier<ExecutorService> mockExecutorSupplier = Mockito.mock(Supplier.class);
+
+    List<Sleeper> mockSleepers = new LinkedList<>();
+    List<Callable<Boolean>> waits = new LinkedList<>();
+
+    IntStream.range(0, noOfTasks).forEach(n -> {
+
+      WebDriver mockDriver = Mockito.mock(WebDriver.class);
+      java.time.Clock mockClock = Mockito.mock(java.time.Clock.class);
+      Sleeper mockSleeper = Mockito.mock(Sleeper.class);
+      mockSleepers.add(mockSleeper);
+      ExpectedCondition mockCondition = Mockito.mock(ExpectedCondition.class);
+
+      FluentWait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
+          .withTimeout(Duration.ofMillis(0))
+          .pollingEvery(Duration.ofSeconds(2))
+          .ignoring(NoSuchElementException.class, NoSuchFrameException.class)
+          .withExecutor(mockExecutorSupplier);
+      waits.add(() -> (Boolean) Mockito.spy(wait).until(mockCondition));
+
+      when(mockClock.instant()).thenReturn(EPOCH);
+      when(mockCondition.apply(mockDriver)).thenReturn(false, false, true);
+
+    });
+
+    when(mockExecutorSupplier.get()).thenReturn(executor);
+
+    List<Future<Boolean>> results = executor.invokeAll(waits);
+    assertThat(results.size()).isGreaterThan(0);
+    assertThat(results.size()).isEqualTo(noOfProcessors * 2);
+    for (Future<Boolean> result: results) {
+        assertThat(result.get()).isEqualTo(true);
+    }
+    IntStream.range(0, noOfTasks).forEach(n -> {
+      try {
+        verify(mockSleepers.get(n), times(2)).sleep(Duration.ofSeconds(2));
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    });
+
+    verify(mockExecutorSupplier, times(noOfTasks)).get();
+    assertThat(mockExecutorSupplier.get()).isEqualTo(executor);
+
   }
 
   private static class TestException extends RuntimeException {
