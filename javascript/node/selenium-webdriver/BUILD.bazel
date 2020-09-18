@@ -93,39 +93,115 @@ genrule(
 )
 
 nodejs_binary(
-    name = "cdp-srcs-generator",
+    name = "cdp-srcs-generator-v84",
     data = [
-        ":browser_protocol",
-        ":js_protocol",
+        ":browser_protocol_v84",
+        ":js_protocol_v84",
+    ],
+    entry_point = "devtools/generator/protocol-dts-generator.js",
+)
+
+nodejs_binary(
+    name = "cdp-srcs-generator-v85",
+    data = [
+        ":browser_protocol_v85",
+        ":js_protocol_v85",
+    ],
+    entry_point = "devtools/generator/protocol-dts-generator.js",
+)
+
+nodejs_binary(
+    name = "cdp-srcs-generator-v86",
+    data = [
+        ":browser_protocol_v86",
+        ":js_protocol_v86",
     ],
     entry_point = "devtools/generator/protocol-dts-generator.js",
 )
 
 copy_file(
-    name = "browser_protocol",
-    src = "//common/devtools:browser_protocol.json",
-    out = "devtools/generator/browser_protocol.json",
+    name = "browser_protocol_v84",
+    src = "//common/devtools/chromium/v84:browser_protocol.json",
+    out = "devtools/generator/v84/browser_protocol.json",
 )
 
 copy_file(
-    name = "js_protocol",
-    src = "//common/devtools:js_protocol.json",
-    out = "devtools/generator/js_protocol.json",
+    name = "js_protocol_v84",
+    src = "//common/devtools/chromium/v84:js_protocol.json",
+    out = "devtools/generator/v84/js_protocol.json",
+)
+
+copy_file(
+    name = "browser_protocol_v85",
+    src = "//common/devtools/chromium/v85:browser_protocol.json",
+    out = "devtools/generator/v85/browser_protocol.json",
+)
+
+copy_file(
+    name = "js_protocol_v85",
+    src = "//common/devtools/chromium/v85:js_protocol.json",
+    out = "devtools/generator/v85/js_protocol.json",
+)
+
+copy_file(
+    name = "browser_protocol_v86",
+    src = "//common/devtools/chromium/v86:browser_protocol.json",
+    out = "devtools/generator/v86/browser_protocol.json",
+)
+
+copy_file(
+    name = "js_protocol_v86",
+    src = "//common/devtools/chromium/v86:js_protocol.json",
+    out = "devtools/generator/v86/js_protocol.json",
 )
 
 genrule(
-    name = "create-cdp-srcs",
+    name = "create-cdp-srcs-v84",
     srcs = [
-        ":browser_protocol",
-        ":js_protocol",
+        ":browser_protocol_v84",
+        ":js_protocol_v84",
     ],
     outs = [
-        "devtools/generator/protocol.d.js",
-        "devtools/generator/protocol-mapping.d.js",
-        "devtools/generator/protocol-proxy-api.d.js",
+        "devtools/generator/v84/protocol.d.js",
+        "devtools/generator/v84/protocol-mapping.d.js",
+        "devtools/generator/v84/protocol-proxy-api.d.js",
     ],
-    cmd = "$(location :cdp-srcs-generator) $(location :browser_protocol) $(location :js_protocol) $(OUTS)",
+    cmd = "$(location :cdp-srcs-generator-v84) $(location :browser_protocol_v84) $(location :js_protocol_v84) $(OUTS)",
     tools = [
-        ":cdp-srcs-generator",
+        ":cdp-srcs-generator-v84",
+    ],
+)
+
+genrule(
+    name = "create-cdp-srcs-v85",
+    srcs = [
+        ":browser_protocol_v85",
+        ":js_protocol_v85",
+    ],
+    outs = [
+        "devtools/generator/v85/protocol.d.js",
+        "devtools/generator/v85/protocol-mapping.d.js",
+        "devtools/generator/v85/protocol-proxy-api.d.js",
+    ],
+    cmd = "$(location :cdp-srcs-generator-v85) $(location :browser_protocol_v85) $(location :js_protocol_v85) $(OUTS)",
+    tools = [
+        ":cdp-srcs-generator-v85",
+    ],
+)
+
+genrule(
+    name = "create-cdp-srcs-v86",
+    srcs = [
+        ":browser_protocol_v86",
+        ":js_protocol_v86",
+    ],
+    outs = [
+        "devtools/generator/v86/protocol.d.js",
+        "devtools/generator/v86/protocol-mapping.d.js",
+        "devtools/generator/v86/protocol-proxy-api.d.js",
+    ],
+    cmd = "$(location :cdp-srcs-generator-v86) $(location :browser_protocol_v86) $(location :js_protocol_v86) $(OUTS)",
+    tools = [
+        ":cdp-srcs-generator-v86",
     ],
 )
