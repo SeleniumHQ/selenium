@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.openqa.selenium.grid.distributor.model.Host.Status.UP;
+import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class DefaultHostSelector implements HostSelector {
 

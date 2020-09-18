@@ -22,12 +22,14 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.DefaultHostSelector;
@@ -54,15 +56,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
@@ -160,7 +163,7 @@ public class LocalDistributor extends Distributor {
             clientFactory,
             status.getNodeId(),
             status.getUri(),
-            status.getStereotypes().keySet());
+            status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
         add(node, status);
       }
     } finally {
@@ -206,6 +209,23 @@ public class LocalDistributor extends Distributor {
   }
 
   @Override
+  public boolean drain(NodeId nodeId) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Optional<Host> host = hosts.stream().filter(node -> nodeId.equals(node.getId())).findFirst();
+      if (host.isPresent()) {
+        Availability status = host.get().drainHost();
+        return DRAINING == status;
+      } else {
+        LOG.log(Level.WARNING, "Unable to drain the host. Host not found. Node id: {0}", nodeId);
+        return false;
+      }
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
   public void remove(NodeId nodeId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();

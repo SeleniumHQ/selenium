@@ -109,26 +109,49 @@ public class LocalNodeTest {
   }
 
   @Test
+  public void cannotAcceptNewSessionsWhileDraining() {
+    node.drain();
+    assertThat(node.isDraining()).isTrue();
+    node.stop(session.getId()); //stop the default session
+
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    Optional<CreateSessionResponse> sessionResponse = node.newSession(
+        new CreateSessionRequest(
+            ImmutableSet.of(W3C),
+            stereotype,
+            ImmutableMap.of()));
+    assertThat(sessionResponse).isEmpty();
+  }
+
+  @Test
   public void canReturnStatusInfo() {
     NodeStatus status = node.getStatus();
-    assertThat(status.getCurrentSessions().stream()
-        .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+    assertThat(status.getSlots().stream()
+      .filter(slot -> slot.getSession().isPresent())
+      .map(slot -> slot.getSession().get())
+      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     status = node.getStatus();
-    assertThat(status.getCurrentSessions().stream()
-        .filter(s -> s.getSessionId().equals(session.getId()))).isEmpty();
+    assertThat(status.getSlots().stream()
+      .filter(slot -> slot.getSession().isPresent())
+      .map(slot -> slot.getSession().get())
+      .filter(s -> s.getSessionId().equals(session.getId()))).isEmpty();
   }
 
   @Test
   public void nodeStatusInfoIsImmutable() {
     NodeStatus status = node.getStatus();
-    assertThat(status.getCurrentSessions().stream()
-        .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+    assertThat(status.getSlots().stream()
+      .filter(slot -> slot.getSession().isPresent())
+      .map(slot -> slot.getSession().get())
+      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
-    assertThat(status.getCurrentSessions().stream()
-        .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+    assertThat(status.getSlots().stream()
+      .filter(slot -> slot.getSession().isPresent())
+      .map(slot -> slot.getSession().get())
+      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
   }
 
   @Test
