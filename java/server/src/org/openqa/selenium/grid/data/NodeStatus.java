@@ -21,15 +21,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
-import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
-import java.time.Instant;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,32 +38,38 @@ public class NodeStatus {
   private final NodeId nodeId;
   private final URI externalUri;
   private final int maxSessionCount;
-  private final Map<Capabilities, Integer> stereotypes;
-  private final Set<Active> snapshot;
+  private final Set<Slot> slots;
   private final String registrationSecret;
+  private final boolean draining;
 
   public NodeStatus(
       NodeId nodeId,
       URI externalUri,
       int maxSessionCount,
-      Map<Capabilities, Integer> stereotypes,
-      Collection<Active> snapshot,
+      Set<Slot> slots,
+      boolean draining,
       String registrationSecret) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count", maxSessionCount);
-
-    this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereotypes", stereotypes));
-    this.snapshot = ImmutableSet.copyOf(Require.nonNull("Snapshot", snapshot));
+    this.slots = ImmutableSet.copyOf(Require.nonNull("Slots", slots));
+    this.draining = draining;
     this.registrationSecret = registrationSecret;
+
+    Map<Capabilities, Integer> stereotypes = new HashMap<>();
+    ImmutableSet.Builder<Active> sessions = ImmutableSet.builder();
+
+    for (Slot slot : slots) {
+      int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
+      count++;
+      stereotypes.put(slot.getStereotype(), count);
+
+      slot.getSession().ifPresent(sessions::add);
+    }
   }
 
   public boolean hasCapacity() {
-    return !stereotypes.isEmpty();
-  }
-
-  public boolean hasCapacity(Capabilities caps) {
-    return stereotypes.getOrDefault(caps, 0) > 0;
+    return slots.stream().anyMatch(slot -> slot.getSession().isPresent());
   }
 
   public NodeId getNodeId() {
@@ -81,12 +84,12 @@ public class NodeStatus {
     return maxSessionCount;
   }
 
-  public Map<Capabilities, Integer> getStereotypes() {
-    return stereotypes;
+  public Set<Slot> getSlots() {
+    return slots;
   }
 
-  public Set<Active> getCurrentSessions() {
-    return snapshot;
+  public boolean isDraining() {
+    return draining;
   }
 
   public String getRegistrationSecret() {
@@ -103,14 +106,14 @@ public class NodeStatus {
     return Objects.equals(this.nodeId, that.nodeId) &&
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
-           Objects.equals(this.stereotypes, that.stereotypes) &&
-           Objects.equals(this.snapshot, that.snapshot) &&
+           Objects.equals(this.slots, that.slots) &&
+           Objects.equals(this.draining, that.draining) &&
            Objects.equals(this.registrationSecret, that.registrationSecret);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nodeId, externalUri, maxSessionCount, stereotypes, snapshot);
+    return Objects.hash(nodeId, externalUri, maxSessionCount, slots);
   }
 
   private Map<String, Object> toJson() {
@@ -118,8 +121,8 @@ public class NodeStatus {
         .put("id", nodeId)
         .put("uri", externalUri)
         .put("maxSessions", maxSessionCount)
-        .put("stereotypes", asCapacity(stereotypes))
-        .put("sessions", snapshot)
+        .put("slots", slots)
+        .put("isDraining", draining)
         .put("registrationSecret", Optional.ofNullable(registrationSecret))
         .build();
   }
@@ -133,12 +136,12 @@ public class NodeStatus {
   }
 
   public static NodeStatus fromJson(JsonInput input) {
-    List<Active> sessions = null;
     NodeId nodeId = null;
     URI uri = null;
     int maxSessions = 0;
-    Map<Capabilities, Integer> stereotypes = null;
     String registrationSecret = null;
+    Set<Slot> slots = null;
+    boolean draining = false;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -146,6 +149,10 @@ public class NodeStatus {
       switch (input.nextName()) {
         case "id":
           nodeId = input.read(NodeId.class);
+          break;
+
+        case "isDraining":
+          draining = input.nextBoolean();
           break;
 
         case "maxSessions":
@@ -156,13 +163,8 @@ public class NodeStatus {
           registrationSecret = input.nextString();
           break;
 
-        case "sessions":
-          sessions = input.read(new TypeToken<List<Active>>(){}.getType());
-          break;
-
-        case "stereotypes":
-          CapabilityCount count = input.read(CapabilityCount.class);
-          stereotypes = count.getCounts();
+        case "slots":
+          slots = input.read(new TypeToken<Set<Slot>>(){}.getType());
           break;
 
         case "uri":
@@ -180,100 +182,8 @@ public class NodeStatus {
       nodeId,
       uri,
       maxSessions,
-      stereotypes,
-      sessions,
+      slots,
+      draining,
       registrationSecret);
-  }
-
-  public static class Active {
-
-    private final Capabilities stereotype;
-    private final SessionId id;
-    private final Capabilities currentCapabilities;
-    private final Instant startTime;
-
-    public Active(Capabilities stereotype, SessionId id, Capabilities currentCapabilities, Instant startTime) {
-      this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
-      this.id = Require.nonNull("Session id", id);
-      this.currentCapabilities =
-          ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", currentCapabilities));
-      this.startTime = Require.nonNull("Start time", startTime);
-    }
-
-    public SessionId getId() {
-      return id;
-    }
-
-    public Capabilities getStereotype() {
-      return stereotype;
-    }
-
-    public SessionId getSessionId() {
-      return id;
-    }
-
-    public Capabilities getCurrentCapabilities() {
-      return currentCapabilities;
-    }
-
-    public Instant getStartTime() {
-      return startTime;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (!(o instanceof Active)) {
-        return false;
-      }
-      Active that = (Active) o;
-      return Objects.equals(this.getStereotype(), that.getStereotype()) &&
-             Objects.equals(this.id, that.id) &&
-             Objects.equals(this.getCurrentCapabilities(), that.getCurrentCapabilities()) &&
-             Objects.equals(this.getStartTime(), that.getStartTime());
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(getStereotype(), getSessionId(), getCurrentCapabilities(), getStartTime());
-    }
-
-    private Map<String, Object> toJson() {
-      return ImmutableMap.of(
-        "sessionId", getSessionId(),
-        "stereotype", getStereotype(),
-        "currentCapabilities", getCurrentCapabilities(),
-        "startTime", getStartTime());
-    }
-
-    private static Active fromJson(JsonInput input) {
-      SessionId id = null;
-      Capabilities stereotype = null;
-      Capabilities current = null;
-      Instant startTime = null;
-
-      input.beginObject();
-      while (input.hasNext()) {
-        switch (input.nextName()) {
-          case "currentCapabilities":
-            current = input.read(Capabilities.class);
-            break;
-
-          case "sessionId":
-            id = input.read(SessionId.class);
-            break;
-
-          case "startTime":
-            startTime = input.read(Instant.class);
-            break;
-
-          case "stereotype":
-            stereotype = input.read(Capabilities.class);
-            break;
-        }
-      }
-      input.endObject();
-
-      return new Active(stereotype, id, current, startTime);
-    }
   }
 }

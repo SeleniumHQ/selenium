@@ -15,10 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor.model;
+package org.openqa.selenium.grid.data;
 
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
@@ -30,11 +29,7 @@ public class SlotId {
   private final NodeId nodeId;
   private final UUID uuid;
 
-  public SlotId(NodeId host) {
-    this(host, UUID.randomUUID());
-  }
-
-  private SlotId(NodeId host, UUID uuid) {
+  public SlotId(NodeId host, UUID uuid) {
     this.nodeId = Require.nonNull("Host id", host);
     this.uuid = Require.nonNull("Actual id", uuid);
   }

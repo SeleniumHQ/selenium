@@ -94,6 +94,18 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
+  public boolean drain(NodeId nodeId) {
+    Require.nonNull("Node ID", nodeId);
+    HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node/" + nodeId + "/drain");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
+    request.setContent(asJson(nodeId));
+
+    HttpResponse response = client.execute(request);
+
+    return Values.get(response, Boolean.class);
+  }
+
+  @Override
   public void remove(NodeId nodeId) {
     Require.nonNull("Node ID", nodeId);
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
