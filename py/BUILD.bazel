@@ -112,6 +112,7 @@ py_library(
     ],
     data = [
         "setup.cfg",
+        "pytest.ini",
     ],
     imports = ["."],
     deps = [
@@ -214,7 +215,23 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement('async_generator'),
+        requirement("attrs"),
+        requirement('idna'),
+        requirement('iniconfig'),
+        requirement('h11'),
+        requirement('more_itertools'),
+        requirement('multidict'),
+        requirement('outcome'),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement('pytest-instafail'),
+        requirement('pytest-trio'),
+        requirement('sortedcontainers'),
+        requirement('sniffio'),
+        requirement('trio'),
+        requirement('trio_websocket')
     ],
 )
 
