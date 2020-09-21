@@ -132,7 +132,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
     Require.nonNull("HTTP client factory", httpClientFactory);
-    this.slotSelector = Require.nonNull("Host selector", slotSelector);
+    this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.sessions = Require.nonNull("Session map", sessions);
 
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
