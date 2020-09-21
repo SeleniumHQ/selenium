@@ -40,6 +40,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.security.Secret;
@@ -56,10 +57,13 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -69,6 +73,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
@@ -199,9 +204,9 @@ public class LocalDistributor extends Distributor {
       hosts.add(host);
 
       LOG.info(String.format("Added node %s.", node.getId()));
-      host.runHealthCheck();
 
-      Runnable runnable = host::runHealthCheck;
+
+      Runnable runnable = asRunnableHealthCheck(node.getId(), node.getHealthCheck());
       allChecks.put(node.getId(), runnable);
       hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
     } catch (Throwable t) {
@@ -212,6 +217,32 @@ public class LocalDistributor extends Distributor {
     }
 
     return this;
+  }
+
+  private Runnable asRunnableHealthCheck(NodeId id, HealthCheck healthCheck) {
+    Require.nonNull("Node ID", id);
+    Require.nonNull("Health check", healthCheck);
+    AtomicReference<Availability> previous = new AtomicReference<>(DOWN);
+
+    return () -> {
+      HealthCheck.Result result = healthCheck.check();
+      Availability current = result.getAvailability();
+
+      if (!previous.get().equals(current)) {
+        LOG.info(String.format(
+          "Changing status of node %s from %s to %s. Reason: %s",
+          id,
+          previous.get(),
+          current,
+          result.getMessage()));
+      }
+
+      hosts.stream()
+        .filter(host -> id.equals(host.getId()))
+        .forEach(host -> host.setHostStatus(current));
+
+      previous.set(current);
+    };
   }
 
   @Override
@@ -262,13 +293,17 @@ public class LocalDistributor extends Distributor {
 
   @Beta
   public void refresh() {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
+    List<Runnable> allHealthChecks = new ArrayList<>();
+
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
     try {
-      hosts.forEach(Host::runHealthCheck);
+      allHealthChecks.addAll(allChecks.values());
     } finally {
-      writeLock.unlock();
+      readLock.unlock();
     }
+
+    allHealthChecks.parallelStream().forEach(Runnable::run);
   }
 
   @Override

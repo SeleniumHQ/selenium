@@ -27,7 +27,6 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.SlotId;
-import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
@@ -43,7 +42,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
@@ -54,12 +52,10 @@ import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
 
 public class Host {
 
-  private static final Logger LOG = Logger.getLogger("Selenium Host");
   private final Node node;
   private final Secret registrationSecret;
   private final NodeId nodeId;
   private final URI uri;
-  private final Runnable performHealthCheck;
 
   // Used any time we need to read or modify the mutable state of this host
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
@@ -78,30 +74,6 @@ public class Host {
 
     this.status = DOWN;
     this.slots = ImmutableSet.of();
-
-    HealthCheck healthCheck = node.getHealthCheck();
-
-    this.performHealthCheck = () -> {
-      HealthCheck.Result result = healthCheck.check();
-      Availability current = result.getAvailability();
-      Availability previous = setHostStatus(current);
-
-      //If the node has been set to maintenance mode, set the status here as draining
-      if (node.isDraining() || previous == DRAINING) {
-        // We want to continue to allow the node to drain.
-        setHostStatus(DRAINING);
-        return;
-      }
-
-      if (current != previous) {
-        LOG.info(String.format(
-            "Changing status of node %s from %s to %s. Reason: %s",
-            node.getId(),
-            previous,
-            current,
-            result.getMessage()));
-      }
-    };
 
     bus.addListener(SESSION_CLOSED, event -> {
       SessionId id = event.getData(SessionId.class);
@@ -157,7 +129,7 @@ public class Host {
   /**
    * @return The previous status of the node.
    */
-  private Availability setHostStatus(Availability status) {
+  public Availability setHostStatus(Availability status) {
     Availability toReturn = this.status;
     this.status = Require.nonNull("Status", status);
     return toReturn;
@@ -244,10 +216,6 @@ public class Host {
     } finally {
       write.unlock();
     }
-  }
-
-  public void runHealthCheck() {
-    performHealthCheck.run();
   }
 
   @Override
