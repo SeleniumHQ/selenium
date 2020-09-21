@@ -230,11 +230,19 @@ public class RemoteNode extends Node {
       try {
         NodeStatus status = getStatus();
 
-        if (status.isDraining()) {
-          return new Result(DRAINING, externalUri + " is draining");
-        }
+        switch (status.getAvailability()) {
+          case DOWN:
+            return new Result(DOWN, externalUri + " is down");
 
-        return new Result(UP, externalUri + " is ok");
+          case DRAINING:
+            return new Result(DRAINING, externalUri + " is draining");
+
+          case UP:
+            return new Result(UP, externalUri + " is ok");
+
+          default:
+            throw new IllegalStateException("Unknown node availability: " + status.getAvailability());
+        }
       } catch (RuntimeException e) {
         return new Result(
             DOWN,

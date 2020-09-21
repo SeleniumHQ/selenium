@@ -154,7 +154,7 @@ public class LocalDistributor extends Distributor {
         existingByNodeId.get().update(status);
       } else {
         Optional<Host> existingByUri = hosts.stream()
-          .filter(host -> host.asSummary().getUri().equals(status.getUri()))
+          .filter(host -> host.asNodeStatus().getUri().equals(status.getUri()))
           .findFirst();
         // There is a URI match, probably means a node was restarted. We need to remove
         // the previous one so we add the new request.
@@ -195,7 +195,7 @@ public class LocalDistributor extends Distributor {
       Host host = new Host(bus, node, registrationSecret);
       host.update(status);
 
-      LOG.fine("Adding host: " + host.asSummary());
+      LOG.fine(String.format("Adding host: %s with id %s", host.asNodeStatus().getUri(), host.getId()));
       hosts.add(host);
 
       LOG.info(String.format("Added node %s.", node.getId()));
@@ -250,8 +250,8 @@ public class LocalDistributor extends Distributor {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      ImmutableSet<DistributorStatus.NodeSummary> summaries = this.hosts.stream()
-          .map(Host::asSummary)
+      ImmutableSet<NodeStatus> summaries = this.hosts.stream()
+          .map(Host::asNodeStatus)
           .collect(toImmutableSet());
 
       return new DistributorStatus(summaries);

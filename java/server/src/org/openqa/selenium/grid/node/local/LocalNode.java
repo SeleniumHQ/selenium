@@ -445,7 +445,7 @@ public class LocalNode extends Node {
       externalUri,
       maxSessionCount,
       slots,
-      isDraining(),
+      isDraining() ? DRAINING : UP,
       registrationSecret);
   }
 

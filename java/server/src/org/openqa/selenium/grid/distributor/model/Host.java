@@ -24,10 +24,8 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -37,9 +35,6 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -137,29 +132,6 @@ public class Host {
     return nodeId;
   }
 
-  public DistributorStatus.NodeSummary asSummary() {
-    Map<Capabilities, Integer> stereotypes = new HashMap<>();
-    Map<Capabilities, Integer> used = new HashMap<>();
-    Set<Session> activeSessions = new HashSet<>();
-
-    slots.forEach(slot -> {
-      stereotypes.compute(slot.getStereotype(), (key, curr) -> curr == null ? 1 : curr + 1);
-      if (slot.getStatus() != AVAILABLE) {
-        used.compute(slot.getStereotype(), (key, curr) -> curr == null ? 1 : curr + 1);
-        activeSessions.add(slot.getCurrentSession());
-      }
-    });
-
-    return new DistributorStatus.NodeSummary(
-      nodeId,
-      uri,
-      getHostStatus(),
-      maxSessionCount,
-      stereotypes,
-      used,
-      activeSessions);
-  }
-
   public NodeStatus asNodeStatus() {
     ImmutableSet<org.openqa.selenium.grid.data.Slot> slots = this.slots.stream()
       .map(slot -> new org.openqa.selenium.grid.data.Slot(
@@ -174,7 +146,7 @@ public class Host {
       uri,
       maxSessionCount,
       slots,
-      DRAINING.equals(status),
+      status,
       registrationSecret);
   }
 

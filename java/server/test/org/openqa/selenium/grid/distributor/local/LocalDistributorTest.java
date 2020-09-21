@@ -26,6 +26,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
@@ -58,7 +59,6 @@ import java.util.concurrent.Future;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -91,12 +91,12 @@ public class LocalDistributorTest {
     DistributorStatus status = distributor.getStatus();
 
     //Check the size
-    final Set<DistributorStatus.NodeSummary> nodes = status.getNodes();
+    final Set<NodeStatus> nodes = status.getNodes();
     assertThat(nodes.size()).isEqualTo(1);
 
     //Check a couple attributes
-    final DistributorStatus.NodeSummary distributorNode = nodes.iterator().next();
-    assertThat(distributorNode.getNodeId()).isEqualByComparingTo(localNode.getId());
+    NodeStatus distributorNode = nodes.iterator().next();
+    assertThat(distributorNode.getId()).isEqualByComparingTo(localNode.getId());
     assertThat(distributorNode.getUri()).isEqualTo(uri);
   }
 
@@ -107,13 +107,13 @@ public class LocalDistributorTest {
 
     //Check the size
     DistributorStatus statusBefore = distributor.getStatus();
-    final Set<DistributorStatus.NodeSummary> nodesBefore = statusBefore.getNodes();
+    final Set<NodeStatus> nodesBefore = statusBefore.getNodes();
     assertThat(nodesBefore.size()).isEqualTo(1);
 
     //Recheck the status--should be zero
     distributor.remove(localNode.getId());
     DistributorStatus statusAfter = distributor.getStatus();
-    final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
+    final Set<NodeStatus> nodesAfter = statusAfter.getNodes();
     assertThat(nodesAfter.size()).isEqualTo(0);
   }
 
@@ -125,7 +125,7 @@ public class LocalDistributorTest {
     DistributorStatus status = distributor.getStatus();
 
     //Should only be one node after dupe check
-    final Set<DistributorStatus.NodeSummary> nodes = status.getNodes();
+    final Set<NodeStatus> nodes = status.getNodes();
     assertThat(nodes.size()).isEqualTo(1);
   }
 
@@ -191,25 +191,28 @@ public class LocalDistributorTest {
 
   @Test
   public void testDrainNodeFromDistributor() {
-    Distributor
-        distributor =
-        new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      null);
     distributor.add(localNode);
     assertThat(localNode.isDraining()).isFalse();
 
     //Check the size - there should be one node
     DistributorStatus statusBefore = distributor.getStatus();
-    final Set<DistributorStatus.NodeSummary> nodesBefore = statusBefore.getNodes();
+    Set<NodeStatus> nodesBefore = statusBefore.getNodes();
     assertThat(nodesBefore.size()).isEqualTo(1);
-    DistributorStatus.NodeSummary nodeBefore = nodesBefore.iterator().next();
-    assertFalse(nodeBefore.getHostAvailability().equals(DRAINING));
+    NodeStatus nodeBefore = nodesBefore.iterator().next();
+    assertThat(nodeBefore.getAvailability()).isNotEqualTo(DRAINING);
 
     distributor.drain(localNode.getId());
     assertThat(localNode.isDraining()).isTrue();
 
     //Recheck the status - there should still be no node, it is removed
     DistributorStatus statusAfter = distributor.getStatus();
-    final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
+    Set<NodeStatus> nodesAfter = statusAfter.getNodes();
     assertThat(nodesAfter.size()).isEqualTo(0);
   }
 

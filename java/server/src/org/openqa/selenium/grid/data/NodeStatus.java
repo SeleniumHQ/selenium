@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
@@ -29,7 +28,6 @@ import org.openqa.selenium.json.TypeToken;
 import java.net.URI;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,20 +40,20 @@ public class NodeStatus {
   private final int maxSessionCount;
   private final Set<Slot> slots;
   private final Secret registrationSecret;
-  private final boolean draining;
+  private final Availability availability;
 
   public NodeStatus(
       NodeId nodeId,
       URI externalUri,
       int maxSessionCount,
       Set<Slot> slots,
-      boolean draining,
+      Availability availability,
       Secret registrationSecret) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count", maxSessionCount);
     this.slots = ImmutableSet.copyOf(Require.nonNull("Slots", slots));
-    this.draining = draining;
+    this.availability = Require.nonNull("Availability", availability);
     this.registrationSecret = registrationSecret;
 
     Map<Capabilities, Integer> stereotypes = new HashMap<>();
@@ -99,8 +97,8 @@ public class NodeStatus {
     return slots;
   }
 
-  public boolean isDraining() {
-    return draining;
+  public Availability getAvailability() {
+    return availability;
   }
 
   public float getLoad() {
@@ -135,7 +133,7 @@ public class NodeStatus {
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
            Objects.equals(this.slots, that.slots) &&
-           Objects.equals(this.draining, that.draining) &&
+           Objects.equals(this.availability, that.availability) &&
            Objects.equals(this.registrationSecret, that.registrationSecret);
   }
 
@@ -150,17 +148,9 @@ public class NodeStatus {
         .put("uri", externalUri)
         .put("maxSessions", maxSessionCount)
         .put("slots", slots)
-        .put("isDraining", draining)
+        .put("availability", availability)
         .put("registrationSecret", Optional.ofNullable(registrationSecret))
         .build();
-  }
-
-  private List<Map<String, Object>> asCapacity(Map<Capabilities, Integer> toConvert) {
-    ImmutableList.Builder<Map<String, Object>> toReturn = ImmutableList.builder();
-    toConvert.forEach((caps, count) -> toReturn.add(ImmutableMap.of(
-        "capabilities", caps,
-        "count", count)));
-    return toReturn.build();
   }
 
   public static NodeStatus fromJson(JsonInput input) {
@@ -169,18 +159,18 @@ public class NodeStatus {
     int maxSessions = 0;
     Secret registrationSecret = null;
     Set<Slot> slots = null;
-    boolean draining = false;
+    Availability availability = null;
 
     input.beginObject();
     while (input.hasNext()) {
 
       switch (input.nextName()) {
-        case "id":
-          nodeId = input.read(NodeId.class);
+        case "availability":
+          availability = input.read(Availability.class);
           break;
 
-        case "isDraining":
-          draining = input.nextBoolean();
+        case "id":
+          nodeId = input.read(NodeId.class);
           break;
 
         case "maxSessions":
@@ -211,7 +201,7 @@ public class NodeStatus {
       uri,
       maxSessions,
       slots,
-      draining,
+      availability,
       registrationSecret);
   }
 }

@@ -342,7 +342,7 @@ public class OneShotNode extends Node {
           driver == null ?
             Optional.empty() :
             Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
-      draining,
+      isDraining() ? DRAINING : UP,
       registrationSecret);
   }
 

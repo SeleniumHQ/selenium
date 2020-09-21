@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,6 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
@@ -46,7 +46,6 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -62,6 +61,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -120,8 +121,8 @@ public class AddingNodesTest {
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+    NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
   }
 
   @Test
@@ -134,16 +135,12 @@ public class AddingNodesTest {
         c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, stereotype, c, Instant.now()));
     handler.addHandler(node);
 
-    Json json = new Json();
-    String status = json.toJson(node.getStatus());
-    NodeStatus revivified = json.toType(status, NodeStatus.class);
-
     distributor.add(node);
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+    NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
   }
 
   @Test
@@ -158,8 +155,8 @@ public class AddingNodesTest {
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+    NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
   }
 
   @Test
@@ -179,7 +176,7 @@ public class AddingNodesTest {
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Set<DistributorStatus.NodeSummary> nodes = distributor.getStatus().getNodes();
+    Set<NodeStatus> nodes = distributor.getStatus().getNodes();
 
     assertEquals(1, nodes.size());
   }
@@ -198,8 +195,8 @@ public class AddingNodesTest {
     // Start empty
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+    NodeStatus nodeStatus = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, getStereotypes(nodeStatus).get(CAPS).intValue());
 
     // Craft a status that makes it look like the node is busy, and post it on the bus.
     NodeStatus status = node.getStatus();
@@ -213,13 +210,25 @@ public class AddingNodesTest {
           CAPS,
           Instant.now(),
           Optional.of(new Session(new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
-      false,
+      UP,
       null);
 
     bus.fire(new NodeStatusEvent(crafted));
 
     // We claimed the only slot is filled. Life is good.
     wait.until(obj -> !distributor.getStatus().hasCapacity());
+  }
+
+  private Map<Capabilities, Integer> getStereotypes(NodeStatus status) {
+    Map<Capabilities, Integer> stereotypes = new HashMap<>();
+
+    for (Slot slot : status.getSlots()) {
+      int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
+      count++;
+      stereotypes.put(slot.getStereotype(), count);
+    }
+
+    return ImmutableMap.copyOf(stereotypes);
   }
 
   static class CustomNode extends Node {
@@ -317,7 +326,7 @@ public class AddingNodesTest {
             CAPS,
             Instant.now(),
             Optional.ofNullable(sess))),
-        false,
+        UP,
         new Secret("cheese"));
     }
 

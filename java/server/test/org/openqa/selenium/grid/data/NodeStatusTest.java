@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class NodeStatusTest {
 
@@ -53,7 +54,7 @@ public class NodeStatusTest {
             stereotype,
             new ImmutableCapabilities("peas", "sausages"),
             Instant.now())))),
-      false,
+      UP,
       new Secret("cheese"));
 
     Json json = new Json();
