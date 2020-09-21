@@ -70,6 +70,7 @@ import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
@@ -269,11 +270,14 @@ public class LocalDistributor extends Distributor {
   }
 
   @Override
-  protected Set<Host> getModel() {
+  protected Set<NodeStatus> getAvailableNodes() {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      return ImmutableSet.copyOf(hosts);
+      return hosts.stream()
+        .filter(host -> UP.equals(host.getHostStatus()))
+        .map(Host::asNodeStatus)
+        .collect(toImmutableSet());
     } finally {
       readLock.unlock();
     }

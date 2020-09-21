@@ -264,7 +264,7 @@ public class DistributorTest {
 
     assertThat(latch.getCount()).isEqualTo(0);
 
-    assertThat(distributor.getModel().size()).isEqualTo(0);
+    assertThat(distributor.getAvailableNodes().size()).isEqualTo(0);
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
@@ -302,7 +302,7 @@ public class DistributorTest {
 
     assertThat(latch.getCount()).isEqualTo(1);
 
-    assertThat(distributor.getModel().size()).isEqualTo(1);
+    assertThat(distributor.getAvailableNodes().size()).isEqualTo(1);
   }
 
   @Test
@@ -333,7 +333,7 @@ public class DistributorTest {
 
     distributor.drain(node.getId());
 
-    assertThat(distributor.getModel().size()).isEqualTo(1);
+    assertThat(distributor.getAvailableNodes().size()).isEqualTo(1);
 
     node.stop(firstResponse.getSession().getId());
     node.stop(secondResponse.getSession().getId());
@@ -341,7 +341,7 @@ public class DistributorTest {
     latch.await(5, SECONDS);
 
     assertThat(latch.getCount()).isEqualTo(0);
-    assertThat(distributor.getModel().size()).isEqualTo(0);
+    assertThat(distributor.getAvailableNodes().size()).isEqualTo(0);
   }
 
   @Test

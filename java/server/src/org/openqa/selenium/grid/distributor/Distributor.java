@@ -28,7 +28,6 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SlotId;
-import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
@@ -69,8 +68,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -198,16 +195,10 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
-        Set<Host> model = getModel();
-
-        // Remove nodes that can't possibly help us
-        ImmutableSet<NodeStatus> availableHosts = model.stream()
-          .filter(host -> UP.equals(host.getHostStatus()))
-          .map(Host::asNodeStatus)
-          .collect(toImmutableSet());
+        Set<NodeStatus> model = ImmutableSet.copyOf(getAvailableNodes());
 
         // Find a host that supports the capabilities present in the new session
-        Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getCapabilities(), availableHosts);
+        Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getCapabilities(), model);
         if (!slotIds.isEmpty()) {
           selected = Optional.of(reserve(slotIds.iterator().next(), firstRequest));
         } else {
@@ -283,7 +274,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
   public abstract DistributorStatus getStatus();
 
-  protected abstract Set<Host> getModel();
+  protected abstract Set<NodeStatus> getAvailableNodes();
 
   protected abstract Supplier<CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request);
 
