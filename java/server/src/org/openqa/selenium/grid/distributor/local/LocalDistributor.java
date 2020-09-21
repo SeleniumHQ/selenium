@@ -23,6 +23,8 @@ import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Availability;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeId;
@@ -60,6 +62,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -273,5 +276,13 @@ public class LocalDistributor extends Distributor {
     } finally {
       readLock.unlock();
     }
+  }
+
+  @Override
+  protected Supplier<CreateSessionResponse> reserve(Host host, CreateSessionRequest request) {
+    Require.nonNull("Host", host);
+    Require.nonNull("New Session request", request);
+
+    return host.reserve(request);
   }
 }

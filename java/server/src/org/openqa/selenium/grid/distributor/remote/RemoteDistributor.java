@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.remote;
 
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
@@ -36,6 +37,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -129,5 +131,10 @@ public class RemoteDistributor extends Distributor {
   @Override
   protected Set<Host> getModel() {
     throw new UnsupportedOperationException("getModel is not required for remote sessions");
+  }
+
+  @Override
+  protected Supplier<CreateSessionResponse> reserve(Host host, CreateSessionRequest request) {
+    throw new UnsupportedOperationException("reserve is not required for remote sessions");
   }
 }

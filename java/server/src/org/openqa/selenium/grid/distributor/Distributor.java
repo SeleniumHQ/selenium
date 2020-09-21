@@ -189,7 +189,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), availableHosts);
         // Reserve some space for this session
 
-        selected = selectedHost.map(host -> host.reserve(firstRequest));
+        selected = selectedHost.map(host -> reserve(host, firstRequest));
       } finally {
         writeLock.unlock();
       }
@@ -261,6 +261,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   public abstract DistributorStatus getStatus();
 
   protected abstract Set<Host> getModel();
+
+  protected abstract Supplier<CreateSessionResponse> reserve(Host host, CreateSessionRequest request);
 
   @Override
   public boolean test(HttpRequest httpRequest) {
