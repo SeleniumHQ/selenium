@@ -83,7 +83,7 @@ public class NodeStatus {
     return count > 0;
   }
 
-  public NodeId getNodeId() {
+  public NodeId getId() {
     return nodeId;
   }
 

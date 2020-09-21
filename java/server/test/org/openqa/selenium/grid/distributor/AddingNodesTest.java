@@ -204,12 +204,12 @@ public class AddingNodesTest {
     // Craft a status that makes it look like the node is busy, and post it on the bus.
     NodeStatus status = node.getStatus();
     NodeStatus crafted = new NodeStatus(
-      status.getNodeId(),
+      status.getId(),
       status.getUri(),
       status.getMaxSessionCount(),
       ImmutableSet.of(
         new Slot(
-          new SlotId(status.getNodeId(), UUID.randomUUID()),
+          new SlotId(status.getId(), UUID.randomUUID()),
           CAPS,
           Instant.now(),
           Optional.of(new Session(new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),

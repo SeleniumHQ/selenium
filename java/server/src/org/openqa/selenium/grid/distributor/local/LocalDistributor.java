@@ -145,7 +145,7 @@ public class LocalDistributor extends Distributor {
     writeLock.lock();
     try {
       Optional<Host> existingByNodeId = hosts.stream()
-          .filter(host -> host.getId().equals(status.getNodeId()))
+          .filter(host -> host.getId().equals(status.getId()))
           .findFirst();
 
       if (existingByNodeId.isPresent()) {
@@ -168,7 +168,7 @@ public class LocalDistributor extends Distributor {
         Node node = new RemoteNode(
             tracer,
             clientFactory,
-            status.getNodeId(),
+            status.getId(),
             status.getUri(),
             registrationSecret,
             status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));

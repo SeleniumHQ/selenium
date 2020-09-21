@@ -62,7 +62,7 @@ class AddNode implements HttpHandler {
     Node node = new RemoteNode(
         tracer,
         httpFactory,
-        status.getNodeId(),
+        status.getId(),
         status.getUri(),
         registrationSecret,
         status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));

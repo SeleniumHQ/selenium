@@ -58,7 +58,7 @@ public class DefaultSlotSelector implements SlotSelector {
           // Then last session created (oldest first), so natural ordering again
           .thenComparingLong(NodeStatus::getLastSessionCreated)
           // And use the node id as a tie-breaker.
-          .thenComparing(NodeStatus::getNodeId))
+          .thenComparing(NodeStatus::getId))
       .flatMap(node -> node.getSlots().stream()
         .filter(slot -> !slot.getSession().isPresent())
         .filter(slot -> slot.isSupporting(capabilities))
