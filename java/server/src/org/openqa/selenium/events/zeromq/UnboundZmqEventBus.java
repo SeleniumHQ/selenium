@@ -28,6 +28,7 @@ import org.openqa.selenium.json.Json;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import zmq.io.mechanism.curve.Curve;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -69,6 +70,10 @@ class UnboundZmqEventBus implements EventBus {
       return thread;
     });
 
+    Curve curve = new Curve();
+    String[] serverKeys = curve.keypairZ85();
+    String[] clientKeys = curve.keypairZ85();
+
     String connectionMessage = String.format("Connecting to %s and %s", publishConnection, subscribeConnection);
     LOG.info(connectionMessage);
 
@@ -85,10 +90,15 @@ class UnboundZmqEventBus implements EventBus {
         sub.setIPv6(isSubAddressIPv6(publishConnection));
         sub.connect(publishConnection);
         sub.subscribe(new byte[0]);
+        sub.setCurvePublicKey(clientKeys[0].getBytes());
+        sub.setCurveSecretKey(clientKeys[1].getBytes());
+        sub.setCurveServerKey(serverKeys[0].getBytes());
 
         pub = context.createSocket(SocketType.PUB);
         pub.setIPv6(isSubAddressIPv6(subscribeConnection));
         pub.connect(subscribeConnection);
+        pub.setCurvePublicKey(serverKeys[0].getBytes());
+        pub.setCurveSecretKey(serverKeys[1].getBytes());
       }
     );
     // Connections are already established
