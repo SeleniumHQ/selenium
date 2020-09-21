@@ -26,6 +26,7 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,15 @@ public class NodeStatus {
     return slots.stream().anyMatch(slot -> slot.getSession().isPresent());
   }
 
+  public boolean hasCapacity(Capabilities caps) {
+    long count = slots.stream()
+      .filter(slot -> !slot.getSession().isPresent())
+      .filter(slot -> slot.isSupporting(caps))
+      .count();
+
+    return count > 0;
+  }
+
   public NodeId getNodeId() {
     return nodeId;
   }
@@ -91,6 +101,23 @@ public class NodeStatus {
   public boolean isDraining() {
     return draining;
   }
+
+  public float getLoad() {
+    float inUse = slots.parallelStream()
+      .filter(slot -> !slot.getSession().isPresent())
+      .count();
+
+    return (inUse / (float) maxSessionCount) * 100f;
+  }
+
+  public long getLastSessionCreated() {
+      return slots.parallelStream()
+        .map(Slot::getLastStarted)
+        .mapToLong(Instant::toEpochMilli)
+        .max()
+        .orElse(0);
+  }
+
 
   public String getRegistrationSecret() {
     return registrationSecret;
