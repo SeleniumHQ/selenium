@@ -80,6 +80,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
@@ -124,10 +126,15 @@ public class LocalNode extends Node {
 
     this.externalUri = Require.nonNull("Remote node URI", uri);
     this.gridUri = Require.nonNull("Grid URI", gridUri);
-    this.healthCheck = Require.nonNull("Health checker", healthCheck);
     this.maxSessionCount = Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.factories = ImmutableList.copyOf(factories);
     this.registrationSecret = registrationSecret;
+
+    this.healthCheck = healthCheck == null ?
+      () -> new HealthCheck.Result(
+        isDraining() ? DRAINING : UP,
+        String.format("%s is %s", uri, isDraining() ? "draining" : "up")) :
+      healthCheck;
 
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
@@ -527,17 +534,12 @@ public class LocalNode extends Node {
     }
 
     public LocalNode build() {
-      HealthCheck check =
-        healthCheck == null ?
-          () -> new HealthCheck.Result(true, uri + " is ok", registrationSecret) :
-          healthCheck;
-
       return new LocalNode(
         tracer,
         bus,
         uri,
         gridUri,
-        check,
+        healthCheck,
         maxCount,
         ticker,
         sessionTimeout,

@@ -53,7 +53,6 @@ import java.util.logging.Logger;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.model.Slot.Status.AVAILABLE;
@@ -89,7 +88,7 @@ public class Host {
 
     this.performHealthCheck = () -> {
       HealthCheck.Result result = healthCheck.check();
-      Availability current = result.isAlive() ? UP : DOWN;
+      Availability current = result.getAvailability();
       Availability previous = setHostStatus(current);
 
       //If the node has been set to maintenance mode, set the status here as draining

@@ -30,6 +30,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -74,7 +75,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.data.NodeRemovedEvent.NODE_REMOVED;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -513,14 +516,14 @@ public class DistributorTest {
     Node alwaysDown = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .advanced()
-        .healthCheck(() -> new HealthCheck.Result(false, "Boo!"))
+        .healthCheck(() -> new HealthCheck.Result(DOWN, "Boo!"))
         .build();
     handler.addHandler(alwaysDown);
 
     Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .advanced()
-        .healthCheck(() -> new HealthCheck.Result(true, "Yay!"))
+        .healthCheck(() -> new HealthCheck.Result(UP, "Yay!"))
         .build();
     handler.addHandler(alwaysUp);
 
@@ -686,7 +689,7 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    AtomicBoolean isUp = new AtomicBoolean(false);
+    AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
@@ -712,7 +715,7 @@ public class DistributorTest {
     }
 
     // Mark the node as being up
-    isUp.set(true);
+    isUp.set(UP);
     // Kick the machinery to ensure that everything is fine.
     distributor.refresh();
 
@@ -840,7 +843,7 @@ public class DistributorTest {
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .advanced()
-        .healthCheck(() -> new HealthCheck.Result(false, "TL;DR"))
+        .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
         .build();
 
     local.add(node);
@@ -858,7 +861,7 @@ public class DistributorTest {
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .advanced()
-        .healthCheck(() -> new HealthCheck.Result(false, "TL;DR"))
+        .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
         .build();
 
     local.add(node);

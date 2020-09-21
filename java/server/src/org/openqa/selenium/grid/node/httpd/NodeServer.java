@@ -60,6 +60,7 @@ import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.NodeAddedEvent.NODE_ADDED;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -185,7 +186,7 @@ public class NodeServer extends TemplateGridCommand {
         () -> {
           LOG.fine("Sending registration event");
           HealthCheck.Result check = node.getHealthCheck().check();
-          if (!check.isAlive()) {
+          if (DOWN.equals(check.getAvailability())) {
             LOG.severe("Node is not alive: " + check.getMessage());
             // Throw an exception to force another check sooner.
             throw new UnsupportedOperationException("Node cannot be registered");

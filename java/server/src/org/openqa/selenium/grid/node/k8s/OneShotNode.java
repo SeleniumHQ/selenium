@@ -69,6 +69,8 @@ import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
@@ -352,7 +354,7 @@ public class OneShotNode extends Node {
 
   @Override
   public HealthCheck getHealthCheck() {
-    return () -> new HealthCheck.Result(true, "Everything is fine", registrationSecret);
+    return () -> new HealthCheck.Result(isDraining() ? DRAINING : UP, "Everything is fine");
   }
 
   @Override

@@ -70,6 +70,7 @@ import java.util.function.Function;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
 public class AddingNodesTest {
@@ -322,7 +323,7 @@ public class AddingNodesTest {
 
     @Override
     public HealthCheck getHealthCheck() {
-      return () -> new HealthCheck.Result(true, "tl;dr");
+      return () -> new HealthCheck.Result(UP, "tl;dr");
     }
 
     @Override
