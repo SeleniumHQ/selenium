@@ -77,9 +77,8 @@ import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 public class LocalDistributor extends Distributor {
 
   private static final Json JSON = new Json();
-  private static final Logger LOG = Logger.getLogger("Selenium Distributor (Local)");
-  private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final Set<Host> hosts = new HashSet<>();
+  private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
+
   private final Tracer tracer;
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
@@ -87,6 +86,9 @@ public class LocalDistributor extends Distributor {
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Multimap<NodeId, Runnable> allChecks = HashMultimap.create();
   private final Secret registrationSecret;
+
+  private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
+  private final Set<Host> hosts = new HashSet<>();
 
   public LocalDistributor(
       Tracer tracer,
