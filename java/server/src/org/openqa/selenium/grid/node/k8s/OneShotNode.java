@@ -179,6 +179,8 @@ public class OneShotNode extends Node {
         "sessionId", sessionId,
         "capabilities", capabilities))));
 
+    events.fire(new NodeDrainStarted(getId()));
+
     return Optional.of(
       new CreateSessionResponse(
         getSession(sessionId),
