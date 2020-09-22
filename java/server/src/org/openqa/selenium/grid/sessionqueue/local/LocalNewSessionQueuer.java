@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.GetNewSessionResponse;
@@ -32,7 +33,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LocalNewSessionQueuer extends NewSessionQueuer {
@@ -65,7 +65,7 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public boolean retryAddToQueue(HttpRequest request, UUID reqId) {
+  public boolean retryAddToQueue(HttpRequest request, RequestId reqId) {
     return sessionRequests.offerFirst(request, reqId);
   }
 
@@ -75,8 +75,14 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
+  public int clearQueue() {
+    return sessionRequests.clear();
+  }
+
+  @Override
   public boolean isReady() {
     return bus.isReady();
   }
 
 }
+

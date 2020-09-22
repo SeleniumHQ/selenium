@@ -29,12 +29,14 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRequest;
 import org.openqa.selenium.grid.data.NewSessionResponse;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -46,8 +48,8 @@ public class GetNewSessionResponse {
   private static final Logger LOG = Logger.getLogger(GetNewSessionResponse.class.getName());
   private final EventBus bus;
   private final Tracer tracer;
-  public final NewSessionQueue sessionRequests;
-  private final Map<UUID, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
+  private final NewSessionQueue sessionRequests;
+  private final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
 
   public GetNewSessionResponse(Tracer tracer, EventBus bus,
                                NewSessionQueue sessionRequests) {
@@ -77,29 +79,44 @@ public class GetNewSessionResponse {
   private void setResponse(NewSessionResponse sessionResponse) {
     // Each thread will get its own CountDownLatch and it is stored in the Map using request id as the key.
     // EventBus thread will retrieve the same request and set it's response and unblock waiting request thread.
-    UUID id = sessionResponse.getRequestId();
-    NewSessionRequest sessionRequest = knownRequests.get(id);
-    sessionRequest.setSessionResponse(
-        new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse())));
-    sessionRequest.getLatch().countDown();
+    RequestId id = sessionResponse.getRequestId();
+    Optional<NewSessionRequest> sessionRequest = Optional.ofNullable(knownRequests.get(id));
+
+    if (sessionRequest.isPresent()) {
+      NewSessionRequest request = sessionRequest.get();
+      request.setSessionResponse(
+          new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse())));
+      request.getLatch().countDown();
+    }
   }
 
   private void setErrorResponse(NewSessionErrorResponse sessionResponse) {
-    UUID id = sessionResponse.getRequestId();
-    NewSessionRequest sessionRequest = knownRequests.get(id);
-    sessionRequest
-        .setSessionResponse(new HttpResponse()
-                                .setStatus(HTTP_INTERNAL_ERROR)
-                                .setContent(asJson(
-                                    ImmutableMap.of("message", sessionResponse.getMessage()))));
-    sessionRequest.getLatch().countDown();
+    RequestId id = sessionResponse.getRequestId();
+    Optional<NewSessionRequest> sessionRequest = Optional.ofNullable(knownRequests.get(id));
+
+    // There could be a situation where the session request in the queue is scheduled for retry.
+    // Meanwhile the request queue is cleared.
+    // This will fire a error response event and remove the request id from the knownRequests map.
+    // Another error response event will be fired by the Distributor when the request is retried.
+    // Since a response is already provided for the request, the event listener should not take any action.
+
+    if (sessionRequest.isPresent()) {
+      NewSessionRequest request = sessionRequest.get();
+      request
+          .setSessionResponse(new HttpResponse()
+                                  .setStatus(HTTP_INTERNAL_ERROR)
+                                  .setContent(asJson(
+                                      ImmutableMap.of("message", sessionResponse.getMessage()))));
+      request.getLatch().countDown();
+    }
   }
 
   public HttpResponse add(HttpRequest request) {
     Require.nonNull("New Session request", request);
 
     CountDownLatch latch = new CountDownLatch(1);
-    UUID requestId = UUID.randomUUID();
+    UUID uuid = UUID.randomUUID();
+    RequestId requestId = new RequestId(uuid);
     NewSessionRequest requestIdentifier = new NewSessionRequest(requestId, latch);
     knownRequests.put(requestId, requestIdentifier);
 
@@ -115,7 +132,6 @@ public class GetNewSessionResponse {
       // This will not wait indefinitely due to request timeout handled by the LocalDistributor.
       latch.await();
       HttpResponse res = requestIdentifier.getSessionResponse();
-      removeRequest(requestId);
       return res;
     } catch (InterruptedException e) {
       LOG.log(Level.WARNING, "The thread waiting for new session response interrupted. {0}",
@@ -126,10 +142,12 @@ public class GetNewSessionResponse {
           .setStatus(HTTP_INTERNAL_ERROR)
           .setContent(asJson(ImmutableMap.of("message",
                                              "Session request could not be created. Error while processing the session request.")));
+    } finally {
+      removeRequest(requestId);
     }
-}
+  }
 
-  private void removeRequest(UUID id) {
+  private void removeRequest(RequestId id) {
     knownRequests.remove(id);
   }
 }

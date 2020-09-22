@@ -17,17 +17,49 @@
 
 package org.openqa.selenium.grid.data;
 
-import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
-import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.internal.Require;
 
+import java.util.Objects;
 import java.util.UUID;
 
-public class NewSessionRequestEvent extends Event {
+public class RequestId {
 
-  public static final Type NEW_SESSION_REQUEST = new Type("new-session-request");
+  private final UUID uuid;
 
-  public NewSessionRequestEvent(RequestId requestId) {
-    super(NEW_SESSION_REQUEST, requestId);
+  public RequestId(UUID uuid) {
+    this.uuid = Require.nonNull("Request id", uuid);
   }
+
+  public UUID toUuid() {
+    return uuid;
+  }
+
+  @Override
+  public String toString() {
+    return uuid.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof RequestId)) {
+      return false;
+    }
+
+    RequestId that = (RequestId) o;
+    return Objects.equals(this.uuid, that.uuid);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(uuid);
+  }
+
+  private Object toJson() {
+    return uuid;
+  }
+
+  private static RequestId fromJson(UUID id) {
+    return new RequestId(id);
+  }
+
 }

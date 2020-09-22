@@ -26,8 +26,7 @@ public class NewSessionResponseEvent extends Event {
 
   public static final Type NEW_SESSION_RESPONSE = new Type("new-session-response");
 
-  public NewSessionResponseEvent(NewSessionResponse sessionResponse)
-  {
+  public NewSessionResponseEvent(NewSessionResponse sessionResponse) {
     super(NEW_SESSION_RESPONSE, sessionResponse);
   }
 }

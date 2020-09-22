@@ -19,11 +19,13 @@ package org.openqa.selenium.grid.sessionqueue;
 
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.post;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -58,14 +60,17 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
     routes = combine(
         post("/session")
-            .to(() -> req -> addToQueue(req)),
+            .to(() -> this::addToQueue),
         post("/se/grid/newsessionqueuer/session")
             .to(() -> new AddToSessionQueue(tracer, this)),
         post("/se/grid/newsessionqueuer/session/retry/{requestId}")
             .to(params -> new AddBackToSessionQueue(tracer, this,
-                                                    UUID.fromString(params.get("requestId")))),
+                                                    new RequestId(
+                                                        UUID.fromString(params.get("requestId"))))),
         Route.get("/se/grid/newsessionqueuer/session")
-            .to(() -> new RemoveFromSessionQueue(tracer, this)));
+            .to(() -> new RemoveFromSessionQueue(tracer, this)),
+        delete("/se/grid/newsessionqueuer/queue")
+            .to(() -> new ClearSessionQueue(tracer, this)));
   }
 
   public void validateSessionRequest(HttpRequest request) {
@@ -87,18 +92,6 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
                            EventAttribute.setValue(exception.getMessage()));
           span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
           throw exception;
-        } else {
-          Capabilities caps = iterator.next();
-          if (caps.getBrowserName().isEmpty()) {
-            SessionNotCreatedException
-                exception =
-                new SessionNotCreatedException("No browser name found in capabilities");
-            EXCEPTION.accept(attributeMap, exception);
-            attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                             EventAttribute.setValue(exception.getMessage()));
-            span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-            throw exception;
-          }
         }
       } catch (IOException e) {
         SessionNotCreatedException exception = new SessionNotCreatedException(e.getMessage(), e);
@@ -115,9 +108,11 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
   public abstract HttpResponse addToQueue(HttpRequest request);
 
-  public abstract boolean retryAddToQueue(HttpRequest request, UUID reqId);
+  public abstract boolean retryAddToQueue(HttpRequest request, RequestId reqId);
 
   public abstract Optional<HttpRequest> remove();
+
+  public abstract int clearQueue();
 
   @Override
   public boolean matches(HttpRequest req) {
@@ -130,3 +125,4 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
   }
 
 }
+

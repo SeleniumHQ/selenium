@@ -19,7 +19,10 @@ package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.NewSessionErrorResponse;
+import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
@@ -76,36 +79,37 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
-  public boolean offerLast(HttpRequest request, UUID requestId) {
+  public boolean offerLast(HttpRequest request, RequestId requestId) {
     Require.nonNull("New Session request", request);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
 
-    try (Span span = tracer.getCurrentContext().createSpan("local_sessionqueue.add")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                       EventAttribute.setValue(getClass().getName()));
-      boolean added = false;
-      try {
-        added = sessionRequests.offerLast(request);
-        addTimestampHeader(request);
+    Span span = tracer.getCurrentContext().createSpan("local_sessionqueue.add");
+    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+                     EventAttribute.setValue(getClass().getName()));
+    boolean added = false;
+    try {
+      added = sessionRequests.offerLast(request);
+      addRequestHeaders(request, requestId);
 
-        attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
-        attributeMap.put("request.added", EventAttribute.setValue(added));
-        span.addEvent("Add new session request to the queue", attributeMap);
+      attributeMap
+          .put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
+      attributeMap.put("request.added", EventAttribute.setValue(added));
+      span.addEvent("Add new session request to the queue", attributeMap);
 
-        return added;
-      } finally {
-        writeLock.unlock();
-        if (added) {
-          bus.fire(new NewSessionRequestEvent(requestId));
-        }
+      return added;
+    } finally {
+      writeLock.unlock();
+      span.close();
+      if (added) {
+        bus.fire(new NewSessionRequestEvent(requestId));
       }
     }
   }
 
   @Override
-  public boolean offerFirst(HttpRequest request, UUID requestId) {
+  public boolean offerFirst(HttpRequest request, RequestId requestId) {
     Require.nonNull("New Session request", request);
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -136,8 +140,31 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     }
   }
 
+  @Override
+  public int clear() {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      int count = 0;
+      LOG.info("Clearing new session request queue");
+      for (HttpRequest request = sessionRequests.poll(); request != null;
+           request = sessionRequests.poll()) {
+        count++;
+        UUID reqId = UUID.fromString(request.getHeader(SESSIONREQUEST_ID_HEADER));
+        NewSessionErrorResponse errorResponse =
+            new NewSessionErrorResponse(new RequestId(reqId), "New session request cancelled.");
+
+        bus.fire(new NewSessionRejectedEvent(errorResponse));
+      }
+      return count;
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
   public void callExecutorShutdown() {
     LOG.info("Shutting down session queue executor service");
     executorService.shutdown();
   }
 }
+

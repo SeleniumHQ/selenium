@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -37,9 +38,9 @@ class AddBackToSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
   private final NewSessionQueuer newSessionQueuer;
-  private final UUID id;
+  private final RequestId id;
 
-  AddBackToSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer, UUID id) {
+  AddBackToSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer, RequestId id) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
     this.id = id;

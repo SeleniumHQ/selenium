@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -25,7 +26,6 @@ import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
 public abstract class NewSessionQueue implements HasReadyState {
 
@@ -33,17 +33,23 @@ public abstract class NewSessionQueue implements HasReadyState {
 
   protected final int retryInterval;
 
-  public static String SESSIONREQUEST_TIMESTAMP_HEADER = "new-session-request-timestamp";
+  public static final String SESSIONREQUEST_TIMESTAMP_HEADER = "new-session-request-timestamp";
 
-  public abstract boolean offerLast(HttpRequest request, UUID requestId);
+  public static final String SESSIONREQUEST_ID_HEADER = "request-id";
 
-  public abstract boolean offerFirst(HttpRequest request, UUID requestId);
+  public abstract boolean offerLast(HttpRequest request, RequestId requestId);
+
+  public abstract boolean offerFirst(HttpRequest request, RequestId requestId);
 
   public abstract Optional<HttpRequest> poll();
 
-  public void addTimestampHeader(HttpRequest request) {
+  public abstract int clear();
+
+  public void addRequestHeaders(HttpRequest request, RequestId reqId) {
     long timestamp = Instant.now().getEpochSecond();
     request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
+
+    request.addHeader(SESSIONREQUEST_ID_HEADER, reqId.toString());
   }
 
   public NewSessionQueue(Tracer tracer, int retryInterval) {

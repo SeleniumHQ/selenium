@@ -24,27 +24,27 @@ import org.openqa.selenium.json.JsonInput;
 
 import java.util.Base64;
 import java.util.Map;
-import java.util.UUID;
 
 public class NewSessionResponse {
 
+  private final RequestId requestId;
   private final Session session;
   private final byte[] downstreamEncodedResponse;
-  private final UUID requestId;
 
-  public NewSessionResponse(Session session, byte[] downstreamEncodedResponse, UUID requestId) {
-    this.session = Require.nonNull("Session", session);
-    this.downstreamEncodedResponse = Require
-        .nonNull("Downstream encoded response", downstreamEncodedResponse);
+  public NewSessionResponse(RequestId requestId, Session session,
+                            byte[] downstreamEncodedResponse) {
     this.requestId = Require.nonNull("Request Id", requestId);
+    this.session = Require.nonNull("Session", session);
+    this.downstreamEncodedResponse = Require.nonNull
+        ("Downstream encoded response", downstreamEncodedResponse);
+  }
+
+  public RequestId getRequestId() {
+    return requestId;
   }
 
   public Session getSession() {
     return session;
-  }
-
-  public UUID getRequestId() {
-    return requestId;
   }
 
   public byte[] getDownstreamEncodedResponse() {
@@ -53,29 +53,30 @@ public class NewSessionResponse {
 
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
-        "downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse),
+        "requestId", requestId,
         "session", session,
-        "requestId", requestId);
+        "downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse)
+    );
   }
 
   private static NewSessionResponse fromJson(JsonInput input) {
+    RequestId requestId = null;
     Session session = null;
     byte[] downstreamResponse = null;
-    UUID requestId = null;
 
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "downstreamEncodedResponse":
-          downstreamResponse = Base64.getDecoder().decode(input.nextString());
+        case "requestId":
+          requestId = input.read(RequestId.class);
           break;
 
         case "session":
           session = input.read(Session.class);
           break;
 
-        case "requestId":
-          requestId = input.read(UUID.class);
+        case "downstreamEncodedResponse":
+          downstreamResponse = Base64.getDecoder().decode(input.nextString());
           break;
 
         default:
@@ -85,7 +86,7 @@ public class NewSessionResponse {
     }
     input.endObject();
 
-    return new NewSessionResponse(session, downstreamResponse, requestId);
+    return new NewSessionResponse(requestId, session, downstreamResponse);
   }
 
 }

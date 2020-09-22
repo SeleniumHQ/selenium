@@ -7,11 +7,11 @@ import java.util.concurrent.CountDownLatch;
 
 public class NewSessionRequest {
 
-  private final UUID requestId;
+  private final RequestId requestId;
   private final CountDownLatch latch;
   private HttpResponse sessionResponse;
 
-  public NewSessionRequest(UUID requestId, CountDownLatch latch) {
+  public NewSessionRequest(RequestId requestId, CountDownLatch latch) {
     this.requestId = requestId;
     this.latch = latch;
   }
