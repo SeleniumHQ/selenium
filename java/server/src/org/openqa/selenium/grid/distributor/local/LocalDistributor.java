@@ -19,10 +19,13 @@ package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Availability;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeId;
@@ -30,9 +33,10 @@ import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
-import org.openqa.selenium.grid.distributor.selector.DefaultHostSelector;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -60,6 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -89,7 +94,7 @@ public class LocalDistributor extends Distributor {
       HttpClient.Factory clientFactory,
       SessionMap sessions,
       String registrationSecret) {
-    super(tracer, clientFactory, new DefaultHostSelector(), sessions);
+    super(tracer, clientFactory, new DefaultSlotSelector(), sessions);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
@@ -184,7 +189,7 @@ public class LocalDistributor extends Distributor {
     try (JsonOutput out = JSON.newOutput(sb)) {
       out.setPrettyPrint(false).write(node);
 
-      Host host = new Host(bus, node);
+      Host host = new Host(bus, node, registrationSecret);
       host.update(status);
 
       LOG.fine("Adding host: " + host.asSummary());
@@ -272,6 +277,24 @@ public class LocalDistributor extends Distributor {
       return ImmutableSet.copyOf(hosts);
     } finally {
       readLock.unlock();
+    }
+  }
+
+  @Override
+  protected Supplier<CreateSessionResponse> reserve(SlotId slotId, CreateSessionRequest request) {
+    Require.nonNull("Slot ID", slotId);
+    Require.nonNull("New Session request", request);
+
+    Lock writeLock = this.lock.writeLock();
+    writeLock.lock();
+    try {
+      return hosts.stream()
+        .filter(host -> slotId.getOwningNodeId().equals(host.getId()))
+        .findFirst()
+        .orElseThrow(() -> new SessionNotCreatedException("Unable to find host with ID " + slotId.getOwningNodeId()))
+        .reserve(request);
+    } finally {
+      writeLock.unlock();
     }
   }
 }

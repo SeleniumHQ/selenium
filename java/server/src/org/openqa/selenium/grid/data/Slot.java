@@ -56,6 +56,18 @@ public class Slot {
     return session;
   }
 
+  public boolean isSupporting(Capabilities caps) {
+    // Simple implementation --- only checks current values
+    Capabilities stereotype = getStereotype();
+
+    return stereotype.getCapabilityNames().stream()
+      .map(name -> Objects.equals(
+        stereotype.getCapability(name),
+        caps.getCapability(name)))
+      .reduce(Boolean::logicalAnd)
+      .orElse(false);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof Slot)) {

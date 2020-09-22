@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -28,17 +29,21 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -57,6 +62,7 @@ public class Host {
 
   private static final Logger LOG = Logger.getLogger("Selenium Host");
   private final Node node;
+  private final String registrationSecret;
   private final NodeId nodeId;
   private final URI uri;
   private final Runnable performHealthCheck;
@@ -67,8 +73,11 @@ public class Host {
   private Set<Slot> slots;
   private int maxSessionCount;
 
-  public Host(EventBus bus, Node node) {
+  public Host(EventBus bus, Node node, String registrationSecret) {
     this.node = Require.nonNull("Node", node);
+    Require.nonNull("Event bus", bus);
+
+    this.registrationSecret = registrationSecret;
 
     this.nodeId = node.getId();
     this.uri = node.getUri();
@@ -150,6 +159,30 @@ public class Host {
       stereotypes,
       used,
       activeSessions);
+  }
+
+  public NodeStatus asNodeStatus() {
+    ImmutableSet<org.openqa.selenium.grid.data.Slot> slots = this.slots.stream()
+      .map(slot -> new org.openqa.selenium.grid.data.Slot(
+        new SlotId(nodeId, UUID.randomUUID()),
+        slot.getStereotype(),
+        Instant.ofEpochMilli(slot.getLastSessionCreated()),
+        ACTIVE.equals(slot.getStatus()) ?
+          Optional.of(new Active(
+            slot.getStereotype(),
+            slot.getCurrentSession().getId(),
+            slot.getCurrentSession().getCapabilities(),
+            Instant.ofEpochMilli(slot.getLastSessionCreated()))) :
+          Optional.empty()))
+      .collect(toImmutableSet());
+
+    return new NodeStatus(
+      nodeId,
+      uri,
+      maxSessionCount,
+      slots,
+      DRAINING.equals(status),
+      registrationSecret);
   }
 
   public Availability getHostStatus() {

@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -324,8 +325,6 @@ public class OneShotNode extends Node {
 
   @Override
   public NodeStatus getStatus() {
-
-
     return new NodeStatus(
       getId(),
       getUri(),
@@ -344,6 +343,7 @@ public class OneShotNode extends Node {
 
   @Override
   public void drain() {
+    events.fire(new NodeDrainStarted(getId()));
     draining = true;
   }
 
