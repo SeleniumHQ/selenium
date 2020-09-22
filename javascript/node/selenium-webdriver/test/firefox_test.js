@@ -34,6 +34,10 @@ const WEBEXTENSION_EXTENSION_ZIP = path.join(
   __dirname,
   '../lib/test/data/firefox/webextension.zip'
 )
+const WEBEXTENSION_EXTENSION_UNPACKED = path.join(
+  __dirname,
+  '../lib/test/data/firefox/webextension'
+)
 
 const WEBEXTENSION_EXTENSION_ID =
   'webextensions-selenium-example@example.com.xpi'
@@ -212,21 +216,14 @@ suite(
         })
       })
 
-      it('addons can be installed and uninstalled at runtime', async function () {
-        driver = env.builder().build()
+      describe('installAddon/uninstallAddon', function () {
+        it('XPI can be installed and uninstalled', async function () {
+          await testInstallAddon(WEBEXTENSION_EXTENSION_XPI)
+        })
 
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionNotInstalled()
-
-        let id = await driver.installAddon(WEBEXTENSION_EXTENSION_XPI)
-        await driver.sleep(1000) // Give extension time to install (yuck).
-
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionWasInstalled()
-
-        await driver.uninstallAddon(id)
-        await driver.get(Pages.echoPage)
-        await verifyWebExtensionNotInstalled()
+        xit('unpacked extension can be installed and uninstalled', async function () {
+          await testInstallAddon(WEBEXTENSION_EXTENSION_UNPACKED)
+        })
       })
 
       async function verifyUserAgentWasChanged() {
@@ -244,11 +241,25 @@ suite(
       }
 
       async function verifyWebExtensionWasInstalled() {
-        let footer = await driver.findElement({
+        let footer = driver.findElement({
           id: 'webextensions-selenium-example',
         })
         let text = await footer.getText()
         assert.equal(text, 'Content injected by webextensions-selenium-example')
+      }
+
+      async function testInstallAddon(path) {
+        driver = env.builder().build()
+
+        let id = await driver.installAddon(path)
+        await driver.sleep(1000) // Give extension time to install (yuck).
+
+        await driver.get(Pages.echoPage)
+        await verifyWebExtensionWasInstalled()
+
+        await driver.uninstallAddon(id)
+        await driver.get(Pages.echoPage)
+        await verifyWebExtensionNotInstalled()
       }
     })
   },

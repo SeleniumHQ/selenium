@@ -117,6 +117,7 @@
 'use strict'
 
 const path = require('path')
+const fs = require('fs')
 const Symbols = require('./lib/symbols')
 const command = require('./lib/command')
 const http = require('./http')
@@ -632,21 +633,28 @@ class Driver extends webdriver.WebDriver {
    * addon.
    *
    *
-   * @param {string} path Path on the local filesystem to the web extension to
-   *     install.
+   * @param {string} filename Path on the local filesystem to the web extension
+   *     package or unpacked extension to install.
    * @param {boolean} temporary Flag indicating whether the extension should be
-   *     installed temporarily - gets removed on restart
+   *     installed temporarily - gets removed on restart. Defaults to false for
+   *     packaged extensions, and is ignored for unpacked extensions (as they
+   *     can only be installed temporary).
    * @return {!Promise<string>} A promise that will resolve to an ID for the
    *     newly installed addon.
    * @see #uninstallAddon
    */
-  async installAddon(path, temporary = false) {
-    let buf = await io.read(path)
-    return this.execute(
-      new command.Command(ExtensionCommand.INSTALL_ADDON)
-        .setParameter('addon', buf.toString('base64'))
-        .setParameter('temporary', temporary)
-    )
+  async installAddon(filename, temporary = false) {
+    let stat = await fs.promises.stat(filename)
+    let cmd = new command.Command(ExtensionCommand.INSTALL_ADDON)
+    if (stat.isDirectory()) {
+      cmd.setParameter('path', path.resolve(filename))
+      temporary = true
+    } else {
+      let buf = await io.read(filename)
+      cmd.setParameter('addon', buf.toString('base64'))
+    }
+    cmd.setParameter('temporary', temporary)
+    return this.execute(cmd)
   }
 
   /**
