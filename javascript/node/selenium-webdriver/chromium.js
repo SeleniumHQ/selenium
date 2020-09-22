@@ -728,6 +728,25 @@ class Driver extends webdriver.WebDriver {
     url = JSON.parse(response.body)['webSocketDebuggerUrl']
     return url
   }
+
+  /**
+  */
+  async register(username, password) {
+    await this.sendDevToolsCommand('Fetch.enable', {
+      handleAuthRequests: true
+    })
+
+    this._wsConnection.on('Fetch.authRequired', (params) => {
+      await this.sendDevToolsCommand('Fetch.continueWithAuth', {
+        requestId: params['requestId'],
+        authChallengeResponse: {
+          response: 'ProvideCredentials',
+          username: username,
+          password: password
+        }
+      });
+    });
+  }
   /**
    * Set a permission state to the given value.
    *
