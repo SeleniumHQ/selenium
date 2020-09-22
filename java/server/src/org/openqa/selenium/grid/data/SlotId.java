@@ -34,6 +34,10 @@ public class SlotId {
     this.uuid = Require.nonNull("Actual id", uuid);
   }
 
+  public NodeId getOwningNodeId() {
+    return nodeId;
+  }
+
   @Override
   public String toString() {
     return "SlotId{nodeId=" + nodeId + ", id=" + uuid + '}';

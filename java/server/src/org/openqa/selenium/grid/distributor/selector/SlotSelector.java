@@ -18,7 +18,8 @@
 package org.openqa.selenium.grid.distributor.selector;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.distributor.model.Host;
+import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.SlotId;
 
 import java.util.Optional;
 import java.util.Set;
@@ -27,6 +28,6 @@ import java.util.Set;
  * send a particular New Session request to.
  */
 @FunctionalInterface
-public interface HostSelector {
-  Optional<Host> selectHost(Capabilities capabilities, Set<Host> hosts);
+public interface SlotSelector {
+  Optional<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes);
 }

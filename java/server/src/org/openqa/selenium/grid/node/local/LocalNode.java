@@ -35,6 +35,7 @@ import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -447,11 +448,12 @@ public class LocalNode extends Node {
 
   @Override
   public void drain() {
+    bus.fire(new NodeDrainStarted(getId()));
     draining = true;
     int currentSessionCount = getCurrentSessionCount();
     if (currentSessionCount == 0) {
       LOG.info("Firing node drain complete message");
-      bus.fire(new NodeDrainComplete(this.getId()));
+      bus.fire(new NodeDrainComplete(getId()));
     } else {
       pendingSessions.set(currentSessionCount);
     }

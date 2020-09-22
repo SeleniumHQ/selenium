@@ -25,9 +25,11 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.model.Host;
-import org.openqa.selenium.grid.distributor.selector.HostSelector;
+import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
@@ -114,18 +116,18 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
   private final Route routes;
   protected final Tracer tracer;
-  private final HostSelector hostSelector;
+  private final SlotSelector slotSelector;
   private final SessionMap sessions;
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
   protected Distributor(
     Tracer tracer,
     HttpClient.Factory httpClientFactory,
-    HostSelector hostSelector,
+    SlotSelector slotSelector,
     SessionMap sessions) {
     this.tracer = Require.nonNull("Tracer", tracer);
     Require.nonNull("HTTP client factory", httpClientFactory);
-    this.hostSelector = Require.nonNull("Host selector", hostSelector);
+    this.slotSelector = Require.nonNull("Host selector", slotSelector);
     this.sessions = Require.nonNull("Session map", sessions);
 
     Json json = new Json();
@@ -182,14 +184,18 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
       try {
-        // Find a host that supports the capabilities present in the new session
-        ImmutableSet<Host> availableHosts = getModel().stream()
-          .filter(host -> UP.equals(host.getHostStatus()))
-          .collect(toImmutableSet());
-        Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), availableHosts);
-        // Reserve some space for this session
+        Set<Host> model = getModel();
 
-        selected = selectedHost.map(host -> host.reserve(firstRequest));
+        // Remove nodes that can't possibly help us
+        ImmutableSet<NodeStatus> availableHosts = model.stream()
+          .filter(host -> UP.equals(host.getHostStatus()))
+          .map(Host::asNodeStatus)
+          .collect(toImmutableSet());
+
+        // Find a host that supports the capabilities present in the new session
+        selected = slotSelector.selectSlot(firstRequest.getCapabilities(), availableHosts)
+          // Reserve some space for this session
+          .map(id -> reserve(id, firstRequest));
       } finally {
         writeLock.unlock();
       }
@@ -261,6 +267,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   public abstract DistributorStatus getStatus();
 
   protected abstract Set<Host> getModel();
+
+  protected abstract Supplier<CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request);
 
   @Override
   public boolean test(HttpRequest httpRequest) {
