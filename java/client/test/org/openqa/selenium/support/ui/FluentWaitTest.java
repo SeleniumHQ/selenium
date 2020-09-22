@@ -39,8 +39,9 @@ import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -291,7 +292,7 @@ public class FluentWaitTest {
     int noOfThreads = noOfProcessors / 2;
     int noOfTasks = noOfProcessors * 2;
     ExecutorService executor = Executors.newWorkStealingPool(noOfThreads);
-    Supplier<ExecutorService> mockExecutorSupplier = Mockito.mock(Supplier.class);
+    Supplier<Executor> mockExecutorSupplier = Mockito.mock(Supplier.class);
 
     List<Sleeper> mockSleepers = new LinkedList<>();
     List<Callable<Boolean>> waits = new LinkedList<>();
@@ -309,7 +310,7 @@ public class FluentWaitTest {
           .pollingEvery(Duration.ofSeconds(2))
           .ignoring(NoSuchElementException.class, NoSuchFrameException.class)
           .withExecutor(mockExecutorSupplier);
-      waits.add(() -> (Boolean) Mockito.spy(wait).until(mockCondition));
+      waits.add(() -> (Boolean) wait.until(mockCondition));
 
       when(mockClock.instant()).thenReturn(EPOCH);
       when(mockCondition.apply(mockDriver)).thenReturn(false, false, true);

@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -66,7 +66,7 @@ import java.util.function.Supplier;
  *
  * <p>
  * If you are running multiple web driver sessions in a custom thread pool, you will need to
- * include a {@Link #withExecutor(java.util.concurrent.ExecutorService)} call in your build
+ * include a {@Link #withExecutor(java.util.concurrent.Executor)} call in your build
  * chain passing in your executor instance.
  * <pre>
  *     Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
@@ -92,7 +92,7 @@ public class FluentWait<T> implements Wait<T> {
   private Duration timeout = DEFAULT_WAIT_DURATION;
   private Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
-  private Supplier<ExecutorService> executorSupplier = () -> null;
+  private Supplier<Executor> executorSupplier = () -> null;
 
   private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
@@ -154,7 +154,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param executor the executor to use
    * @return A self reference.
    */
-  public FluentWait<T> withExecutor(ExecutorService executor) {
+  public FluentWait<T> withExecutor(Executor executor) {
     return withExecutor(() -> executor);
   }
 
@@ -164,7 +164,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param executorSupplier supplier of the executor to be used
    * @return A self reference.
    */
-  public FluentWait<T> withExecutor(Supplier<ExecutorService> executorSupplier) {
+  public FluentWait<T> withExecutor(Supplier<Executor> executorSupplier) {
     this.executorSupplier = executorSupplier;
     return this;
   }
@@ -237,7 +237,7 @@ public class FluentWait<T> implements Wait<T> {
   @Override
   public <V> V until(Function<? super T, V> isTrue) {
     try {
-      ExecutorService executor = executorSupplier != null ? executorSupplier.get() : null;
+      Executor executor = executorSupplier != null ? executorSupplier.get() : null;
       CompletableFuture<V> completable = executor != null
               ? CompletableFuture.supplyAsync(checkConditionInLoop(isTrue), executor)
               : CompletableFuture.supplyAsync(checkConditionInLoop(isTrue));
