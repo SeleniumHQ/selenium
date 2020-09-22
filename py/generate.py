@@ -55,7 +55,7 @@ MODULE_HEADER = '''{}
 #
 # CDP domain: {{}}{{}}
 from __future__ import annotations
-from ..devtools.util import event_class, T_JSON_DICT
+from ..util import event_class, T_JSON_DICT
 from dataclasses import dataclass
 import enum
 import typing
@@ -245,7 +245,7 @@ class CdpProperty:
             code += ' = None'
         return code
 
-    def generate_to_json(self, dict_, use_self = True):
+    def generate_to_json(self, dict_, use_self=True):
         ''' Generate the code that exports this property to the specified JSON
         dict. '''
         self_ref = 'self.' if use_self else ''
@@ -830,7 +830,7 @@ class CdpDomain:
                 continue
             if domain != self.domain:
                 dependencies.add(snake_case(domain))
-        code = '\n'.join(f'from ..devtools import {d}' for d in sorted(dependencies))
+        code = '\n'.join(f'from .. import {d}' for d in sorted(dependencies))
 
         return code
 
@@ -926,9 +926,9 @@ def generate_init(init_path, domains):
     '''
     with open(init_path, "w") as init_file:
         init_file.write(INIT_HEADER)
-        init_file.write('from ..devtools import util\n\n')
         for domain in domains:
-            init_file.write('from ..devtools import {}\n'.format(domain.module))
+            init_file.write('from . import {}\n'.format(domain.module))
+        init_file.write('from .. import util\n\n')
 
 
 def generate_docs(docs_path, domains):
