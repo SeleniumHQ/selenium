@@ -1425,15 +1425,33 @@ class WebDriver(BaseWebDriver):
     async def get_devtools_connection(self):
         assert sys.version_info >= (3, 6)
 
-        from selenium.webdriver.support import cdp
         ws_url = None
         if self.capabilities.get("se:options"):
             ws_url = self.capabilities.get("se:options").get("cdp")
         else:
-            ws_url = self.capabilities.get(self.vendor_prefix["debuggerAddress"])
+            version, ws_url = self._get_cdp_details()
 
         if ws_url is None:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
+        from selenium.webdriver.support import cdp
+        cdp.import_devtools(version)
         async with cdp.open_cdp(ws_url) as conn:
             yield conn
+
+    def _get_cdp_details(self):
+        import json
+        import urllib3
+
+        http = urllib3.PoolManager()
+        debugger_address = self.capabilities.get("{0}:chromeOptions".format(self.vendor_prefix)).get("debuggerAddress")
+        res = http.request('GET', "http://{0}/json/version".format(debugger_address))
+        data = json.loads(res.data)
+
+        browser_version = data.get("Browser")
+        websocket_url = data.get("webSocketDebuggerUrl")
+
+        import re
+        version = re.search(r".*/(\d+)\.", browser_version).group(1)
+
+        return version, websocket_url
