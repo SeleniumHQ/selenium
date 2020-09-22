@@ -20,8 +20,6 @@ package org.openqa.selenium.devtools.idealized;
 import org.openqa.selenium.devtools.idealized.log.Log;
 import org.openqa.selenium.devtools.idealized.target.Target;
 
-import java.util.Map;
-
 /**
  * The idealized set of CDP domains that Selenium itself needs. Should you
  * need domains from a specific version of the CDP, then depend upon that
@@ -29,7 +27,7 @@ import java.util.Map;
  */
 public interface Domains {
 
-  Events<?> events();
+  Events<?, ?> events();
 
   Javascript<?, ?> javascript();
 
@@ -38,4 +36,11 @@ public interface Domains {
   Target target();
 
   Log log();
+
+  default void disableAll() {
+    events().disable();
+    javascript().disable();
+    network().disable();
+    // Deliberately not disabling targets or log
+  }
 }

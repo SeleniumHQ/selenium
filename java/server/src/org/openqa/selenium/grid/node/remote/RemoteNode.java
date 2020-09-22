@@ -21,11 +21,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
@@ -48,8 +49,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.reader;
@@ -69,7 +70,7 @@ public class RemoteNode extends Node {
   public RemoteNode(
       Tracer tracer,
       HttpClient.Factory clientFactory,
-      UUID id,
+      NodeId id,
       URI externalUri,
       Collection<Capabilities> capabilities) {
     super(tracer, id, externalUri);
@@ -198,6 +199,18 @@ public class RemoteNode extends Node {
   @Override
   public HealthCheck getHealthCheck() {
     return healthCheck;
+  }
+
+  @Override
+  public void drain() {
+    HttpRequest req = new HttpRequest(POST, "/se/grid/node/drain");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
+
+    HttpResponse res = client.execute(req);
+
+    if(res.getStatus()== HTTP_OK) {
+      draining = true;
+    }
   }
 
   private Map<String, Object> toJson() {

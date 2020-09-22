@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
@@ -86,6 +87,14 @@ public class WebDriverWaitTest {
 
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(() -> wait.until(d -> false));
+  }
+
+  @Test
+  public void shouldThrowAnExceptionFromCorrectThreadIfTheTimerRunsOut() {
+    WebDriverWait wait = new WebDriverWait(mockDriver, Duration.ofSeconds(1));
+    assertThatExceptionOfType(TimeoutException.class)
+      .isThrownBy(() -> wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".doesntexist"))))
+      .withStackTraceContaining(this.getClass().getName());
   }
 
   @SuppressWarnings("unchecked")

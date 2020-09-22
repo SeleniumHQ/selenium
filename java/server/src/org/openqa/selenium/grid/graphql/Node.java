@@ -20,7 +20,9 @@ package org.openqa.selenium.grid.graphql;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
@@ -30,28 +32,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 public class Node {
 
-  private final UUID id;
+  private final NodeId id;
   private final URI uri;
-  private final boolean isUp;
+  private final Availability status;
   private final int maxSession;
   private final Map<Capabilities, Integer> capabilities;
   private static final Json JSON = new Json();
   private final Set<Session> activeSessions;
 
 
-  public Node(UUID id,
+  public Node(NodeId id,
               URI uri,
-              boolean isUp,
+              Availability status,
               int maxSession,
               Map<Capabilities, Integer> capabilities,
               Set<Session> activeSessions) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
-    this.isUp = isUp;
+    this.status = status;
     this.maxSession = maxSession;
     this.capabilities = Require.nonNull("Node capabilities", capabilities);
     this.activeSessions = Require.nonNull("Active sessions", activeSessions);
@@ -65,7 +66,7 @@ public class Node {
         .collect(ImmutableList.toImmutableList());
   }
 
-  public UUID getId() {
+  public NodeId getId() {
     return id;
   }
 
@@ -95,7 +96,7 @@ public class Node {
     return JSON.toJson(toReturn);
   }
 
-  public String getStatus() {
-    return isUp ? "UP" : "UNAVAILABLE";
+  public Availability getStatus() {
+    return status;
   }
 }

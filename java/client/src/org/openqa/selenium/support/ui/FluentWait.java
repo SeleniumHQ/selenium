@@ -208,7 +208,7 @@ public class FluentWait<T> implements Wait<T> {
           .get(deriveSafeTimeout(), TimeUnit.MILLISECONDS);
     } catch (ExecutionException cause) {
       if (cause.getCause() instanceof RuntimeException) {
-        throw (RuntimeException) cause.getCause();
+        throw (RuntimeException) cause.getCause().fillInStackTrace();
       } else if (cause.getCause() instanceof Error) {
         throw (Error) cause.getCause();
       }

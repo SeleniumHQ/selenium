@@ -128,7 +128,7 @@ public class EndToEndTest {
         "inproc://end-to-end-sub",
         true);
 
-    URI nodeUri = new URI("http://localhost:4444");
+    URI nodeUri = new URI("http://localhost:" + PortProber.findFreePort());
     CombinedHandler handler = new CombinedHandler();
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
         nodeUri.toURL(),

@@ -17,12 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.TypeToken;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
@@ -34,12 +31,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 public class DistributorStatus {
 
-  private static final Type SUMMARIES_TYPES = new TypeToken<Set<NodeSummary>>() {
-  }.getType();
+  private static final Type SUMMARIES_TYPES = new TypeToken<Set<NodeSummary>>() {}.getType();
 
   private final Set<NodeSummary> allNodes;
 
@@ -49,7 +46,7 @@ public class DistributorStatus {
 
   public boolean hasCapacity() {
     return getNodes().stream()
-        .map(summary -> summary.isUp() && summary.hasCapacity())
+        .map(summary -> summary.getHostAvailability().equals(Availability.UP) && summary.hasCapacity())
         .reduce(Boolean::logicalOr)
         .orElse(false);
   }
@@ -84,32 +81,32 @@ public class DistributorStatus {
 
   public static class NodeSummary {
 
-    private final UUID nodeId;
+    private final NodeId nodeId;
     private final URI uri;
-    private final boolean up;
+    private final Availability availability;
     private final int maxSessionCount;
     private final Map<Capabilities, Integer> stereotypes;
     private final Map<Capabilities, Integer> used;
     private final Set<Session> activeSessions;
 
     public NodeSummary(
-        UUID nodeId,
+        NodeId nodeId,
         URI uri,
-        boolean up,
+        Availability availability,
         int maxSessionCount,
         Map<Capabilities, Integer> stereotypes,
         Map<Capabilities, Integer> usedStereotypes,
-        Set <Session> activeSessions) {
+        Set<Session> activeSessions) {
       this.nodeId = Require.nonNull("Node id", nodeId);
       this.uri = Require.nonNull("URI", uri);
-      this.up = up;
+      this.availability = availability;
       this.maxSessionCount = maxSessionCount;
       this.stereotypes = ImmutableMap.copyOf(Require.nonNull("Stereoytpes", stereotypes));
       this.used = ImmutableMap.copyOf(Require.nonNull("User stereotypes", usedStereotypes));
       this.activeSessions = activeSessions;
     }
 
-    public UUID getNodeId() {
+    public NodeId getNodeId() {
       return nodeId;
     }
 
@@ -117,8 +114,8 @@ public class DistributorStatus {
       return uri;
     }
 
-    public boolean isUp() {
-      return up;
+    public Availability getHostAvailability() {
+      return availability;
     }
 
     public int getMaxSessionCount() {
@@ -152,7 +149,7 @@ public class DistributorStatus {
       ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
       builder.put("nodeId", getNodeId());
       builder.put("uri", getUri());
-      builder.put("up", isUp());
+      builder.put("availability", getHostAvailability());
       builder.put("maxSessionCount", getMaxSessionCount());
       builder.put("stereotypes", getStereotypes().entrySet().stream()
           .map(entry -> ImmutableMap.of(
@@ -169,9 +166,9 @@ public class DistributorStatus {
     }
 
     private static NodeSummary fromJson(JsonInput input) {
-      UUID nodeId = null;
+      NodeId nodeId = null;
       URI uri = null;
-      boolean up = false;
+      Availability availability = null;
       int maxSessionCount = 0;
       Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<Capabilities, Integer> used = new HashMap<>();
@@ -185,15 +182,16 @@ public class DistributorStatus {
             break;
 
           case "nodeId":
-            nodeId = input.read(UUID.class);
+            nodeId = input.read(NodeId.class);
             break;
 
           case "stereotypes":
-            stereotypes = readCapabilityCounts(input);
+            CapabilityCount count = input.read(CapabilityCount.class);
+            stereotypes = count.getCounts();
             break;
 
-          case "up":
-            up = input.nextBoolean();
+          case "availability":
+            availability = input.read(Availability.class);
             break;
 
           case "uri":
@@ -201,7 +199,8 @@ public class DistributorStatus {
             break;
 
           case "usedStereotypes":
-            used = readCapabilityCounts(input);
+            CapabilityCount usedCount = input.read(CapabilityCount.class);
+            used = usedCount.getCounts();
             break;
 
           default:
@@ -212,39 +211,7 @@ public class DistributorStatus {
 
       input.endObject();
 
-      return new NodeSummary(nodeId, uri, up, maxSessionCount, stereotypes, used, activeSessions);
-    }
-
-    private static Map<Capabilities, Integer> readCapabilityCounts(JsonInput input) {
-      Map<Capabilities, Integer> toReturn = new HashMap<>();
-
-      input.beginArray();
-      while (input.hasNext()) {
-        Capabilities caps = null;
-        int count = 0;
-        input.beginObject();
-        while (input.hasNext()) {
-          switch (input.nextName()) {
-            case "capabilities":
-              caps = input.read(Capabilities.class);
-              break;
-
-            case "count":
-              count = input.nextNumber().intValue();
-              break;
-
-            default:
-              input.skipValue();
-              break;
-          }
-        }
-        input.endObject();
-
-        toReturn.put(caps, count);
-      }
-      input.endArray();
-
-      return toReturn;
+      return new NodeSummary(nodeId, uri, availability, maxSessionCount, stereotypes, used, activeSessions);
     }
   }
 }

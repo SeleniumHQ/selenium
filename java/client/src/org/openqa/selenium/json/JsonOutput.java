@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +50,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
-  private static final int MAX_DEPTH = 5;
+  private static final int MAX_DEPTH = 10;
 
   private static final Predicate<Class<?>> GSON_ELEMENT;
   static {
@@ -127,6 +130,7 @@ public class JsonOutput implements Closeable {
     builder.put(Number.class::isAssignableFrom, (obj, depth) -> append(obj.toString()));
     builder.put(Boolean.class::isAssignableFrom, (obj, depth) -> append((Boolean) obj ? "true" : "false"));
     builder.put(Date.class::isAssignableFrom, (obj, depth) -> append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
+    builder.put(Instant.class::isAssignableFrom, (obj, depth) -> append(asString(DateTimeFormatter.ISO_INSTANT.format((Instant) obj))));
     builder.put(Enum.class::isAssignableFrom, (obj, depth) -> append(asString(obj)));
     builder.put(File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()));
     builder.put(URI.class::isAssignableFrom, (obj, depth) -> append(asString((obj).toString())));

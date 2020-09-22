@@ -17,16 +17,14 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
@@ -50,7 +48,9 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class HostSelectorTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class DefaultSlotSelectorTest {
 
   private Tracer tracer;
   private EventBus bus;
@@ -64,74 +64,74 @@ public class HostSelectorTest {
   }
 
   @Test
-  public void testGetPrioritizedHostBuckets() {
-    //build a bunch of hosts, using real values
-    Set<Host> hosts = new HashSet<>();
+  public void testGetPrioritizedNodeBuckets() {
+    //build a bunch of nodes, using real values
+    Set<NodeStatus> nodes = new HashSet<>();
 
     //Create 1 node that has edge, chrome, and firefox
-    hosts.add(createHost("edge", "firefox", "chrome"));
+    nodes.add(createNode("edge", "firefox", "chrome"));
 
     //Create 5 nodes that only have Chrome and Firefox
-    IntStream.range(0, 4).forEach(ignore ->
-                                      hosts.add(createHost("chrome", "firefox"))
-    );
+    IntStream.range(0, 4).forEach(ignore -> nodes.add(createNode("chrome", "firefox")));
 
-    HostSelector selector = new HostSelector();
+    DefaultSlotSelector selector = new DefaultSlotSelector();
 
     //When you prioritize for Edge, you should only have 1 possibility
-    Stream<Host>
-        edgeHosts = hosts.stream().filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "edge")));
-    final Stream<Host> edgeStream = selector.getPrioritizedHostStream(edgeHosts, new ImmutableCapabilities("browserName", "edge"))
+    Stream<NodeStatus> edgeNodes = nodes.stream()
+      .filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "edge")));
+    Stream<NodeStatus> edgeStream = selector.getPrioritizedNodeStream(edgeNodes, new ImmutableCapabilities("browserName", "edge"))
         .filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "edge")));
     assertThat(edgeStream.count()).isEqualTo(1);
 
     //When you prioritize for Chrome or Firefox, the Edge node will be removed, leaving 4
-    Stream<Host> chromeHosts = hosts.stream().filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "chrome")));
-    final Stream<Host> chromeStream = selector.getPrioritizedHostStream(chromeHosts, new ImmutableCapabilities("browserName", "chrome"))
+    Stream<NodeStatus> chromeNodes = nodes.stream()
+      .filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "chrome")));
+    Stream<NodeStatus> chromeStream = selector.getPrioritizedNodeStream(chromeNodes, new ImmutableCapabilities("browserName", "chrome"))
         .filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "chrome")));
     assertThat(chromeStream.count()).isEqualTo(4);
 
-    Stream<Host> firefoxHosts = hosts.stream().filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "firefox")));
-    final Stream<Host> firefoxStream = selector.getPrioritizedHostStream(firefoxHosts, new ImmutableCapabilities("browserName", "firefox"))
+    Stream<NodeStatus> firefoxNodes = nodes.stream()
+      .filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "firefox")));
+    Stream<NodeStatus> firefoxStream = selector.getPrioritizedNodeStream(firefoxNodes, new ImmutableCapabilities("browserName", "firefox"))
         .filter(host -> host.hasCapacity(new ImmutableCapabilities("browserName", "firefox")));
     assertThat(firefoxStream.count()).isEqualTo(4);
   }
 
   @Test
   public void testAllBucketsSameSize() {
-    Map<String, Set<Host>> hostBuckets = buildBuckets(5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
+    Map<String, Set<NodeStatus>> buckets = buildBuckets(5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
 
-    HostSelector selector = new HostSelector();
-    assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
+    DefaultSlotSelector selector = new DefaultSlotSelector();
+    assertThat(selector.allBucketsSameSize(buckets)).isTrue();
   }
 
   @Test
   public void testAllBucketsNotSameSize() {
-    Map<String, Set<Host>> hostBuckets = buildBuckets(3, 5, 8 );
+    Map<String, Set<NodeStatus>> buckets = buildBuckets(3, 5, 8 );
 
-     HostSelector selector = new HostSelector();
-    assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
+    DefaultSlotSelector selector = new DefaultSlotSelector();
+    assertThat(selector.allBucketsSameSize(buckets)).isFalse();
   }
 
   @Test
   public void testOneBucketStillConsideredSameSize() {
-    Map<String, Set<Host>> hostBuckets = buildBuckets(3 );
+    Map<String, Set<NodeStatus>> buckets = buildBuckets(3 );
 
-    HostSelector selector = new HostSelector();
-    assertThat(selector.allBucketsSameSize(hostBuckets)).isTrue();
+    DefaultSlotSelector selector = new DefaultSlotSelector();
+    assertThat(selector.allBucketsSameSize(buckets)).isTrue();
   }
 
   @Test
   public void testAllBucketsNotSameSizeProveNotUsingAverage() {
     //Make sure the numbers don't just average out to the same size
-    Map<String, Set<Host>> hostBuckets = buildBuckets(4, 5, 6 );
+    Map<String, Set<NodeStatus>> buckets = buildBuckets(4, 5, 6 );
 
-    HostSelector selector = new HostSelector();
-    assertThat(selector.allBucketsSameSize(hostBuckets)).isFalse();
+    DefaultSlotSelector selector = new DefaultSlotSelector();
+    assertThat(selector.allBucketsSameSize(buckets)).isFalse();
   }
 
-  //Create a single host with the given browserName
-  private Host createHost(String...browsers) {
+  //Create a single node with the given browserName
+  private NodeStatus createNode(String...browsers) {
     URI uri = createUri();
     LocalNode.Builder nodeBuilder = LocalNode.builder(tracer, bus, uri, uri, null);
     nodeBuilder.maximumConcurrentSessions(browsers.length);
@@ -142,23 +142,23 @@ public class HostSelectorTest {
     });
 
     Node myNode = nodeBuilder.build();
-    return new Host(bus, myNode);
+    return myNode.getStatus();
   }
 
-  //Build a few Host Buckets of different sizes
-  private Map<String, Set<Host>> buildBuckets(int...sizes) {
-    Map<String, Set<Host>> hostBuckets = new HashMap<>();
+  //Build a few node Buckets of different sizes
+  private Map<String, Set<NodeStatus>> buildBuckets(int...sizes) {
+    Map<String, Set<NodeStatus>> buckets = new HashMap<>();
     //The fact that it's re-using the same node doesn't matter--we're calculating "sameness"
-    // based purely on the number of hosts in the Set
+    // based purely on the number of nodes in the Set
 
     IntStream.of(sizes).forEach(count -> {
-      Set<Host> hostSet = new HashSet<>();
+      Set<NodeStatus> nodes = new HashSet<>();
       for (int i=0; i<count; i++) {
-        hostSet.add(createHost(UUID.randomUUID().toString()));
+        nodes.add(createNode(UUID.randomUUID().toString()));
       }
-      hostBuckets.put(UUID.randomUUID().toString(), hostSet);
+      buckets.put(UUID.randomUUID().toString(), nodes);
     });
-    return hostBuckets;
+    return buckets;
   }
 
   private URI createUri() {

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,23 +25,28 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -57,7 +61,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashSet;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -120,10 +124,14 @@ public class AddingNodesTest {
     URI sessionUri = new URI("http://example:1234");
     Node node = new CustomNode(
         bus,
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         externalUrl.toURI(),
         c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c));
     handler.addHandler(node);
+
+    Json json = new Json();
+    String status = json.toJson(node.getStatus());
+    NodeStatus revivified = json.toType(status, NodeStatus.class);
 
     distributor.add(node);
 
@@ -191,12 +199,17 @@ public class AddingNodesTest {
     // Craft a status that makes it look like the node is busy, and post it on the bus.
     NodeStatus status = node.getStatus();
     NodeStatus crafted = new NodeStatus(
-        status.getNodeId(),
-        status.getUri(),
-        status.getMaxSessionCount(),
-        status.getStereotypes(),
-        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)),
-        null);
+      status.getNodeId(),
+      status.getUri(),
+      status.getMaxSessionCount(),
+      ImmutableSet.of(
+        new Slot(
+          new SlotId(status.getNodeId(), UUID.randomUUID()),
+          CAPS,
+          Instant.now(),
+          Optional.of(new Active(CAPS, new SessionId(UUID.randomUUID()), CAPS, Instant.now())))),
+      false,
+      null);
 
     bus.fire(new NodeStatusEvent(crafted));
 
@@ -212,7 +225,7 @@ public class AddingNodesTest {
 
     protected CustomNode(
         EventBus bus,
-        UUID nodeId,
+        NodeId nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
       super(DefaultTestTracer.createTracer(), nodeId, uri);
@@ -280,23 +293,32 @@ public class AddingNodesTest {
 
     @Override
     public NodeStatus getStatus() {
-      Set<NodeStatus.Active> actives = new HashSet<>();
+      Active active = null;
       if (running != null) {
-        actives.add(new NodeStatus.Active(CAPS, running.getId(), running.getCapabilities()));
+        active = new Active(CAPS, running.getId(), running.getCapabilities(), Instant.now());
       }
 
       return new NodeStatus(
-          getId(),
-          getUri(),
-          1,
-          ImmutableMap.of(CAPS, 1),
-          actives,
-          "cheese");
+        getId(),
+        getUri(),
+        1,
+        ImmutableSet.of(
+          new Slot(
+            new SlotId(getId(), UUID.randomUUID()),
+            CAPS,
+            Instant.now(),
+            Optional.ofNullable(active))),
+        false,
+        "cheese");
     }
 
     @Override
     public HealthCheck getHealthCheck() {
       return () -> new HealthCheck.Result(true, "tl;dr");
+    }
+
+    @Override
+    public void drain() {
     }
   }
 

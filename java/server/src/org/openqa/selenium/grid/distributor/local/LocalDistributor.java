@@ -17,24 +17,26 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
-import org.openqa.selenium.grid.distributor.selector.HostSelector;
+import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -46,31 +48,18 @@ import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.NewSessionPayload;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.tracing.AttributeKey;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
-import org.openqa.selenium.remote.tracing.Span;
-import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -81,15 +70,9 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class LocalDistributor extends Distributor {
 
@@ -102,7 +85,7 @@ public class LocalDistributor extends Distributor {
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
-  private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
+  private final Map<NodeId, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
   private final String registrationSecret;
 
   public LocalDistributor(
@@ -111,7 +94,7 @@ public class LocalDistributor extends Distributor {
       HttpClient.Factory clientFactory,
       SessionMap sessions,
       String registrationSecret) {
-    super(tracer, clientFactory);
+    super(tracer, clientFactory, new DefaultSlotSelector(), sessions);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
@@ -119,7 +102,7 @@ public class LocalDistributor extends Distributor {
     this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
-    bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(UUID.class)));
+    bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(NodeId.class)));
   }
 
   public static Distributor create(Config config) {
@@ -140,109 +123,6 @@ public class LocalDistributor extends Distributor {
         .reduce(true, Boolean::logicalAnd);
     } catch (RuntimeException e) {
       return false;
-    }
-  }
-
-  @Override
-  public CreateSessionResponse newSession(HttpRequest request)
-      throws SessionNotCreatedException {
-
-    Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
-    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    try (
-      Reader reader = reader(request);
-      NewSessionPayload payload = NewSessionPayload.create(reader)) {
-      Objects.requireNonNull(payload, "Requests to process must be set.");
-
-      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                       EventAttribute.setValue(getClass().getName()));
-
-      Iterator<Capabilities> iterator = payload.stream().iterator();
-      attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
-
-      if (!iterator.hasNext()) {
-        SessionNotCreatedException exception = new SessionNotCreatedException("No capabilities found");
-        EXCEPTION.accept(attributeMap, exception);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Unable to create session. No capabilities found: "
-                                                 + exception.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-        throw exception;
-      }
-
-      Optional<Supplier<CreateSessionResponse>> selected;
-      CreateSessionRequest firstRequest = new CreateSessionRequest(
-          payload.getDownstreamDialects(),
-          iterator.next(),
-          ImmutableMap.of("span", span));
-
-      Lock writeLock = this.lock.writeLock();
-      writeLock.lock();
-      try {
-        HostSelector hostSelector = new HostSelector();
-        // Find a host that supports the capabilities present in the new session
-        Optional<Host> selectedHost = hostSelector.selectHost(firstRequest.getCapabilities(), this.hosts);
-        // Reserve some space for this session
-        selected = selectedHost.map(host -> host.reserve(firstRequest));
-      } finally {
-        writeLock.unlock();
-      }
-
-      CreateSessionResponse sessionResponse = selected
-          .orElseThrow(
-              () -> {
-                span.setAttribute("error", true);
-                SessionNotCreatedException
-                    exception =
-                    new SessionNotCreatedException(
-                        "Unable to find provider for session: " + payload.stream()
-                            .map(Capabilities::toString).collect(Collectors.joining(", ")));
-                EXCEPTION.accept(attributeMap, exception);
-                attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                                 EventAttribute.setValue(
-                                     "Unable to find provider for session: "
-                                     + exception.getMessage()));
-                span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-                return exception;
-              })
-          .get();
-
-      sessions.add(sessionResponse.getSession());
-
-      SessionId sessionId = sessionResponse.getSession().getId();
-      Capabilities caps = sessionResponse.getSession().getCapabilities();
-      String sessionUri = sessionResponse.getSession().getUri().toString();
-      SESSION_ID.accept(span, sessionId);
-      CAPABILITIES.accept(span, caps);
-      SESSION_ID_EVENT.accept(attributeMap, sessionId);
-      CAPABILITIES_EVENT.accept(attributeMap, caps);
-      span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
-      attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
-
-      span.addEvent("Session created by the distributor", attributeMap);
-      return sessionResponse;
-    } catch (SessionNotCreatedException e) {
-      span.setAttribute("error", true);
-      span.setStatus(Status.ABORTED);
-
-      EXCEPTION.accept(attributeMap, e);
-      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                       EventAttribute.setValue("Unable to create session: " + e.getMessage()));
-      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-
-      throw e;
-    } catch (IOException e) {
-      span.setAttribute("error", true);
-      span.setStatus(Status.UNKNOWN);
-
-      EXCEPTION.accept(attributeMap, e);
-      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                       EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
-      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-
-      throw new SessionNotCreatedException(e.getMessage(), e);
-    } finally {
-      span.close();
     }
   }
 
@@ -288,7 +168,7 @@ public class LocalDistributor extends Distributor {
             clientFactory,
             status.getNodeId(),
             status.getUri(),
-            status.getStereotypes().keySet());
+            status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
         add(node, status);
       }
     } finally {
@@ -309,7 +189,7 @@ public class LocalDistributor extends Distributor {
     try (JsonOutput out = JSON.newOutput(sb)) {
       out.setPrettyPrint(false).write(node);
 
-      Host host = new Host(bus, node);
+      Host host = new Host(bus, node, registrationSecret);
       host.update(status);
 
       LOG.fine("Adding host: " + host.asSummary());
@@ -334,7 +214,24 @@ public class LocalDistributor extends Distributor {
   }
 
   @Override
-  public void remove(UUID nodeId) {
+  public boolean drain(NodeId nodeId) {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Optional<Host> host = hosts.stream().filter(node -> nodeId.equals(node.getId())).findFirst();
+      if (host.isPresent()) {
+        Availability status = host.get().drainHost();
+        return DRAINING == status;
+      } else {
+        LOG.log(Level.WARNING, "Unable to drain the host. Host not found. Node id: {0}", nodeId);
+        return false;
+      }
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  public void remove(NodeId nodeId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
@@ -367,6 +264,35 @@ public class LocalDistributor extends Distributor {
     writeLock.lock();
     try {
       hosts.forEach(Host::runHealthCheck);
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  @Override
+  protected Set<Host> getModel() {
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
+    try {
+      return ImmutableSet.copyOf(hosts);
+    } finally {
+      readLock.unlock();
+    }
+  }
+
+  @Override
+  protected Supplier<CreateSessionResponse> reserve(SlotId slotId, CreateSessionRequest request) {
+    Require.nonNull("Slot ID", slotId);
+    Require.nonNull("New Session request", request);
+
+    Lock writeLock = this.lock.writeLock();
+    writeLock.lock();
+    try {
+      return hosts.stream()
+        .filter(host -> slotId.getOwningNodeId().equals(host.getId()))
+        .findFirst()
+        .orElseThrow(() -> new SessionNotCreatedException("Unable to find host with ID " + slotId.getOwningNodeId()))
+        .reserve(request);
     } finally {
       writeLock.unlock();
     }

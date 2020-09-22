@@ -15,38 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.component;
+package org.openqa.selenium.os;
 
-import org.openqa.selenium.internal.Require;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-@FunctionalInterface
-public interface HealthCheck {
+public class Echo {
 
-  Result check();
-
-  class Result {
-    private final boolean isAlive;
-    private final String message;
-    private final String registrationSecret;
-
-    public Result(boolean isAlive, String message) {
-      this.isAlive = isAlive;
-      this.message = Require.nonNull("Message", message);
-      this.registrationSecret = null;
+  public static void main(String[] args) {
+    if (args.length == 0) {
+      System.exit(1);
     }
 
-    public Result(boolean isAlive, String message, String registrationSecret) {
-      this.isAlive = isAlive;
-      this.message = Require.nonNull("Message", message);
-      this.registrationSecret = registrationSecret;
-    }
-
-    public boolean isAlive() {
-      return isAlive;
-    }
-
-    public String getMessage() {
-      return message;
-    }
+    String message = Arrays.stream(args).collect(Collectors.joining(" "));
+    System.out.println(message);
   }
+
 }

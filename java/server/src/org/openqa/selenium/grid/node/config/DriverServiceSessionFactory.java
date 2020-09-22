@@ -44,6 +44,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URL;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -143,7 +144,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
             service.getUrl(),
             downstream,
             upstream,
-            caps) {
+            caps,
+            Instant.now()) {
             @Override
             public void stop() {
               service.stop();

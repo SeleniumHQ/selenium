@@ -89,6 +89,7 @@ class JsonTypeCoercer {
     builder.add(new UriCoercer());
     builder.add(new UrlCoercer());
     builder.add(new UuidCoercer());
+    builder.add(new InstantCoercer());
 
     // From Selenium
     builder.add(new MapCoercer<>(

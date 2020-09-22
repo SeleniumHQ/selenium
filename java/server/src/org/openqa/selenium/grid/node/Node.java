@@ -19,16 +19,15 @@ package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
@@ -41,7 +40,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -101,11 +99,12 @@ import static org.openqa.selenium.remote.http.Route.post;
 public abstract class Node implements HasReadyState, Routable {
 
   protected final Tracer tracer;
-  private final UUID id;
+  private final NodeId id;
   private final URI uri;
   private final Route routes;
+  protected boolean draining;
 
-  protected Node(Tracer tracer, UUID id, URI uri) {
+  protected Node(Tracer tracer, NodeId id, URI uri) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("URI", uri);
@@ -113,7 +112,7 @@ public abstract class Node implements HasReadyState, Routable {
     Json json = new Json();
     routes = combine(
         // "getSessionId" is aggressive about finding session ids, so this needs to be the last
-        // route the is checked.
+        // route that is checked.
         matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
             .to(() -> new ForwardWebDriverCommand(this))
             .with(spanDecorator("node.forward_command")),
@@ -135,6 +134,9 @@ public abstract class Node implements HasReadyState, Routable {
         post("/se/grid/node/session")
             .to(() -> new NewNodeSession(this, json))
             .with(spanDecorator("node.new_session")),
+        post("/se/grid/node/drain")
+            .to(() -> new Drain(this, json))
+            .with(spanDecorator("node.drain")),
         get("/se/grid/node/status")
             .to(() -> req -> new HttpResponse().setContent(asJson(getStatus())))
             .with(spanDecorator("node.node_status")),
@@ -151,7 +153,7 @@ public abstract class Node implements HasReadyState, Routable {
     return new SpanDecorator(tracer, req -> name);
   }
 
-  public UUID getId() {
+  public NodeId getId() {
     return id;
   }
 
@@ -180,6 +182,10 @@ public abstract class Node implements HasReadyState, Routable {
   public abstract NodeStatus getStatus();
 
   public abstract HealthCheck getHealthCheck();
+
+  public boolean isDraining() { return draining; }
+
+  public abstract void drain();
 
   @Override
   public boolean matches(HttpRequest req) {
