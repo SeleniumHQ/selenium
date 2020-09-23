@@ -738,20 +738,28 @@ class Driver extends webdriver.WebDriver {
   * Doesn't return anything, sets the listener and goes off.
   */
   async register(username, password) {
-    this.sendDevToolsCommand('Fetch.enable', {
+    await this.sendDevToolsCommand('Fetch.enable', {
       handleAuthRequests: true
     })
 
-    this._wsConnection.on('Fetch.authRequired', (params) => {
-      this.sendDevToolsCommand('Fetch.continueWithAuth', {
-        requestId: params['requestId'],
-        authChallengeResponse: {
-          response: 'ProvideCredentials',
-          username: username,
-          password: password
-        }
-      });
+    this._wsConnection.on('message', (message) => {
+      console.log(message);
+      const params = JSON.parse(message.data);
+
+      if (params.method == 'Fetch.authRequired') {
+        const requestParams = params['params'];
+        this.sendDevToolsCommand('Fetch.continueWithAuth', {
+          requestId: requestParams['requestId'],
+          authChallengeResponse: {
+            response: 'ProvideCredentials',
+            username: username,
+            password: password
+          }
+        });
+      }
     });
+
+    return;
   }
   /**
    * Set a permission state to the given value.
