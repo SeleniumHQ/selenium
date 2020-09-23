@@ -37,21 +37,23 @@ public class ClearSessionQueue implements HttpHandler {
       HttpResponse response = new HttpResponse();
       if (value != 0) {
         response.setContent(
-            asJson(ImmutableMap.of("value", value, "message",
-                                   "Cleared the new session request queue", "cleared_requests",
-                                   value)));
+            asJson(ImmutableMap.of("value", value,
+                                   "message", "Cleared the new session request queue",
+                                   "cleared_requests", value)));
       } else {
         response.setContent(
-            asJson(ImmutableMap.of("value", value, "message",
+            asJson(ImmutableMap.of("value", value,
+                                   "message",
                                    "New session request queue empty. Nothing to clear.")));
       }
 
-      span.setAttribute("requets.cleared", value);
+      span.setAttribute("requests.cleared", value);
       HTTP_RESPONSE.accept(span, response);
       return response;
     } catch (Exception e) {
       HttpResponse response = new HttpResponse().setStatus((HTTP_INTERNAL_ERROR)).setContent(
-          asJson(ImmutableMap.of("value", 0, "message",
+          asJson(ImmutableMap.of("value", 0,
+                                 "message",
                                  "Error while clearing the queue. Full queue may not have been cleared.")));
 
       HTTP_RESPONSE.accept(span, response);
