@@ -4,56 +4,56 @@ load("@dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
 
+
+BROWSER_VERSIONS = ['v84', 'v85', 'v86']
+
 copy_file(
-    name = "get-attribute",
-    src = "//javascript/webdriver/atoms:get-attribute.js",
-    out = "selenium/webdriver/remote/getAttribute.js",
+    name="get-attribute",
+    src="//javascript/webdriver/atoms:get-attribute.js",
+    out="selenium/webdriver/remote/getAttribute.js",
 )
 
 copy_file(
-    name = "is-displayed",
-    src = "//javascript/atoms/fragments:is-displayed.js",
-    out = "selenium/webdriver/remote/isDisplayed.js",
+    name="is-displayed",
+    src="//javascript/atoms/fragments:is-displayed.js",
+    out="selenium/webdriver/remote/isDisplayed.js",
 )
 
 copy_file(
-    name = "find-elements",
-    src = "//javascript/atoms/fragments:find-elements.js",
-    out = "selenium/webdriver/remote/findElements.js",
+    name="find-elements",
+    src="//javascript/atoms/fragments:find-elements.js",
+    out="selenium/webdriver/remote/findElements.js",
 )
 
 copy_file(
-    name = "firefox-driver-prefs",
-    src = "//third_party/js/selenium:webdriver_json",
-    out = "selenium/webdriver/firefox/webdriver_prefs.json",
+    name="firefox-driver-prefs",
+    src="//third_party/js/selenium:webdriver_json",
+    out="selenium/webdriver/firefox/webdriver_prefs.json",
 )
 
 py_library(
-    name = "selenium",
-    srcs = glob(
+    name="selenium",
+    srcs=glob(
         ["selenium/**/*.py"],
-        exclude = ["generate.py"],
+        exclude=["generate.py"],
     ),
-    data = [
-        ":create-cdp-srcs-84",
-        ":create-cdp-srcs-85",
-        ":create-cdp-srcs-86",
+    data=[
         ":find-elements",
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
-    ],
-    imports = ["."],
-    visibility = ["//visibility:public"],
-    deps = [
+    ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
+    imports=["."],
+    visibility=["//visibility:public"],
+    deps=[
         "//third_party/py:certifi",
         "//third_party/py:urllib3",
     ],
 )
 
 py_package(
-    name = "selenium-pkg",
-    packages = [
+    name="selenium-pkg",
+    packages=[
         "py.selenium",
         "py.selenium.common",
         "py.selenium.webdriver",
@@ -66,33 +66,33 @@ py_package(
         "py.selenium.webdriver.remote",
         "py.selenium.webdriver.safari",
     ],
-    deps = [":selenium"],
+    deps=[":selenium"],
 )
 
 py_wheel(
-    name = "selenium-wheel",
-    distribution = "selenium",
-    python_tag = [
+    name="selenium-wheel",
+    distribution="selenium",
+    python_tag=[
         "py2",
         "py3",
     ],
-    requires = [
+    requires=[
         "urllib3[secure]",
     ],
-    strip_path_prefixes = [
+    strip_path_prefixes=[
         "py",
     ],
-    version = "4.0.0.a6",
-    visibility = ["//visibility:public"],
-    deps = [
+    version="4.0.0.a6",
+    visibility=["//visibility:public"],
+    deps=[
         ":selenium-pkg",
     ],
 )
 
 py_library(
-    name = "init-tree",
-    testonly = True,
-    srcs = [
+    name="init-tree",
+    testonly=True,
+    srcs=[
         "conftest.py",
         "test/__init__.py",
         "test/selenium/__init__.py",
@@ -110,73 +110,47 @@ py_library(
         "test/selenium/webdriver/support/__init__.py",
         "test/selenium/webdriver/support/conftest.py",
     ],
-    data = [
+    data=[
         "setup.cfg",
         "pytest.ini",
     ],
-    imports = ["."],
-    deps = [
+    imports=["."],
+    deps=[
         ":webserver",
     ],
 )
 
 py_binary(
-    name = "generate",
-    srcs = ["generate.py"],
-    srcs_version = "PY3",
-    deps = [requirement("inflection")],
+    name="generate",
+    srcs=["generate.py"],
+    srcs_version="PY3",
+    deps=[requirement("inflection")],
 )
 
-genrule(
-    name = "create-cdp-srcs-84",
-    srcs = [
-        "//common/devtools/chromium/v84:browser_protocol",
-        "//common/devtools/chromium/v84:js_protocol",
-    ],
-    outs = ["selenium/webdriver/common/devtools/v84"],
-    cmd="python3 $(location :generate) $(location //common/devtools/chromium/v84:browser_protocol) $(location //common/devtools/chromium/v84:js_protocol) $@",
-    tools = [
-        ":generate",
-    ],
-)
-
-genrule(
-    name="create-cdp-srcs-85",
+[genrule(
+    name="create-cdp-srcs-" + n,
     srcs=[
-        "//common/devtools/chromium/v85:browser_protocol",
-        "//common/devtools/chromium/v85:js_protocol",
+        "//common/devtools/chromium/" + n + ":browser_protocol",
+        "//common/devtools/chromium/" + n + ":js_protocol",
     ],
-    outs=["selenium/webdriver/common/devtools/v85"],
-    cmd="python3 $(location :generate) $(location //common/devtools/chromium/v85:browser_protocol) $(location //common/devtools/chromium/v85:js_protocol) $@",
+    outs=["selenium/webdriver/common/devtools/" + n],
+    cmd="python3 $(location :generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $@",
     tools=[
         ":generate",
     ],
-)
-
-genrule(
-    name="create-cdp-srcs-86",
-    srcs=[
-        "//common/devtools/chromium/v86:browser_protocol",
-        "//common/devtools/chromium/v86:js_protocol",
-    ],
-    outs=["selenium/webdriver/common/devtools/v86"],
-    cmd="python3 $(location :generate) $(location //common/devtools/chromium/v86:browser_protocol) $(location //common/devtools/chromium/v86:js_protocol) $@",
-    tools=[
-        ":generate",
-    ],
-)
+) for n in BROWSER_VERSIONS]
 
 py_test_suite(
-    name = "unit",
-    size = "small",
-    srcs = glob([
+    name="unit",
+    size="small",
+    srcs=glob([
         "test/unit/**/*.py",
     ]),
-    args = [
+    args=[
         "-n=auto",
         "--instafail",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         "//third_party/py:pytest",
@@ -184,34 +158,34 @@ py_test_suite(
 )
 
 py_library(
-    name = "webserver",
-    testonly = True,
-    srcs = [
+    name="webserver",
+    testonly=True,
+    srcs=[
         "test/selenium/webdriver/common/network.py",
         "test/selenium/webdriver/common/webserver.py",
     ],
-    data = [
+    data=[
         "//common/src/web",
     ],
-    deps = [],
+    deps=[],
 )
 
 py_test_suite(
-    name = "test-chrome",
-    size = "large",
-    srcs = glob([
+    name="test-chrome",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/chrome/**/*.py",
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=Chrome",
     ],
-    tags = [
+    tags=[
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",
@@ -236,21 +210,21 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-edge",
-    size = "large",
-    srcs = glob([
+    name="test-edge",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/edge/**/*.py",
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=Edge",
     ],
-    tags = [
+    tags=[
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",
@@ -259,21 +233,21 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-edge-chromium",
-    size = "large",
-    srcs = glob([
+    name="test-edge-chromium",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/edge/**/*.py",
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=ChromiumEdge",
     ],
-    tags = [
+    tags=[
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",
@@ -282,21 +256,21 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-firefox",
-    size = "large",
-    srcs = glob([
+    name="test-firefox",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/marionette/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=Firefox",
     ],
-    tags = [
+    tags=[
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",
@@ -305,23 +279,23 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-remote",
-    size = "large",
-    srcs = glob([
+    name="test-remote",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=Remote",
     ],
-    data = [
+    data=[
         "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
-    tags = [
+    tags=[
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",
@@ -330,21 +304,21 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-ie",
-    size = "large",
-    srcs = glob([
+    name="test-ie",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/ie/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=Ie",
     ],
-    tags = [
+    tags=[
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",
@@ -353,22 +327,22 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-safari",
-    size = "large",
-    srcs = glob([
+    name="test-safari",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/safari/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=Safari",
     ],
-    tags = [
+    tags=[
         "exclusive",
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",
@@ -377,23 +351,23 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-webkitgtk",
-    size = "large",
-    srcs = glob([
+    name="test-webkitgtk",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=WebKitGTK",
         "--browser-binary=MiniBrowser",
         "--browser-args=--automation",
     ],
-    tags = [
+    tags=[
         "exclusive",
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",
@@ -402,23 +376,23 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-wpewebkit",
-    size = "large",
-    srcs = glob([
+    name="test-wpewebkit",
+    size="large",
+    srcs=glob([
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = [
+    args=[
         "--instafail",
         "--driver=WPEWebKit",
         "--browser-binary=MiniBrowser",
         "--browser-args=--automation --headless",
     ],
-    tags = [
+    tags=[
         "exclusive",
         "no-sandbox",
     ],
-    deps = [
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",

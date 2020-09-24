@@ -21,6 +21,7 @@ from abc import ABCMeta
 import base64
 import copy
 from contextlib import (contextmanager, asynccontextmanager)
+import importlib
 import pkgutil
 import warnings
 import sys
@@ -49,6 +50,14 @@ try:
 except NameError:
     pass
 
+cdp = None
+
+
+def import_cdp():
+    global cdp
+    if cdp is None:
+        cdp = importlib.import_module("selenium.webdriver.common.bidi.cdp")
+
 
 _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',
@@ -68,6 +77,8 @@ _OSS_W3C_CONVERSION = {
     'version': 'browserVersion',
     'platform': 'platformName'
 }
+
+devtools = None
 
 
 def _make_w3c_caps(caps):
@@ -1422,9 +1433,40 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
 
     @asynccontextmanager
-    async def get_devtools_connection(self):
-        assert sys.version_info >= (3, 6)
+    async def add_listener(self, event_type):
+        '''
+        Listens for certain events that are passed in.
 
+        :Args:
+         - event_type: The type of event that we want to look at.
+
+         :Usage:
+             ::
+
+                async with driver.add_listener(Console.log) as messages:
+                    driver.execute_script("console.log('I like cheese')")
+                    assert messages.value
+
+        '''
+        assert sys.version_info >= (3, 7)
+        global cdp
+        from selenium.webdriver.common.bidi.console import Console
+
+        async with self._get_bidi_connection():
+            global devtools
+            session = cdp.get_session_context('page.enable')
+            await session.execute(devtools.page.enable())
+            session = cdp.get_session_context('console.enable')
+            await session.execute(devtools.console.enable())
+
+            async with session.wait_for(devtools.console.MessageAdded) as messages:
+                if event_type == Console.ALL:
+                    yield messages
+
+    @asynccontextmanager
+    async def _get_bidi_connection(self):
+        global cdp
+        import_cdp()
         ws_url = None
         if self.capabilities.get("se:options"):
             ws_url = self.capabilities.get("se:options").get("cdp")
@@ -1434,10 +1476,15 @@ class WebDriver(BaseWebDriver):
         if ws_url is None:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
-        from selenium.webdriver.support import cdp
         cdp.import_devtools(version)
+
+        global devtools
+        devtools = importlib.import_module("selenium.webdriver.common.devtools.v{}".format(version))
         async with cdp.open_cdp(ws_url) as conn:
-            yield conn
+            targets = await conn.execute(devtools.target.get_targets())
+            target_id = targets[0].target_id
+            async with conn.open_session(target_id) as session:
+                yield session
 
     def _get_cdp_details(self):
         import json

@@ -15,13 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver import Chrome
-
-from selenium.webdriver.common.bidi.console import Console
+from enum import Enum
 
 
-def test_execute_cdp_cmd():
-    driver = Chrome()
-    version_info = driver.execute_cdp_cmd('Browser.getVersion', {})
-    assert isinstance(version_info, dict)
-    assert 'userAgent' in version_info
+class Console(Enum):
+
+    ALL = "all"
+    LOG = "log"
+    ERROR = "error"

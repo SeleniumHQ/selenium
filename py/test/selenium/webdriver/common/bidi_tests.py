@@ -15,13 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver import Chrome
-
-from selenium.webdriver.common.bidi.console import Console
-
-
-def test_execute_cdp_cmd():
-    driver = Chrome()
-    version_info = driver.execute_cdp_cmd('Browser.getVersion', {})
-    assert isinstance(version_info, dict)
-    assert 'userAgent' in version_info
+async def test_check_console_messages(driver, pages):
+    pages.load("javascriptPage.html")
+    from selenium.webdriver.common.bidi.console import Console
+    async with driver.add_listener(Console.ALL) as messages:
+        driver.execute_script("console.log('I love cheese')")
+        driver.execute_script("console.log('I love cheese')")
+        assert messages is not None

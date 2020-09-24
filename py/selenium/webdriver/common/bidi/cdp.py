@@ -1,19 +1,27 @@
-# Licensed to the Software Freedom Conservancy (SFC) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The SFC licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
+# The MIT License(MIT)
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+# Copyright(c) 2018 Hyperion Gray
 #
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files(the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# This code comes from https://github.com/HyperionGray/trio-chrome-devtools-protocol/tree/master/trio_cdp
+
 from trio_websocket import (
     ConnectionClosed as WsConnectionClosed,
     connect_websocket_url,
@@ -36,10 +44,14 @@ logger = logging.getLogger('trio_cdp')
 T = typing.TypeVar('T')
 MAX_WS_MESSAGE_SIZE = 2**24
 
-global devtools
+devtools = None
+version = None
 
 
-def import_devtools(version):
+def import_devtools(ver):
+    global devtools
+    global version
+    version = ver
     devtools = importlib.import_module("selenium.webdriver.common.devtools.v{}".format(version))
 
 
@@ -259,6 +271,7 @@ class CdpBase:
         Handle an event.
         :param dict data: event as a JSON dictionary
         '''
+        global devtools
         event = devtools.util.parse_json_event(data)
         logger.debug('Received event: %s', event)
         to_remove = set()
@@ -303,6 +316,7 @@ class CdpSession(CdpBase):
         This keeps track of concurrent callers and only disables DOM events when
         all callers have exited.
         '''
+        global devtools
         async with self._dom_enable_lock:
             self._dom_enable_count += 1
             if self._dom_enable_count == 1:
@@ -323,6 +337,7 @@ class CdpSession(CdpBase):
         This keeps track of concurrent callers and only disables page events
         when all callers have exited.
         '''
+        global devtools
         async with self._page_enable_lock:
             self._page_enable_count += 1
             if self._page_enable_count == 1:
@@ -384,6 +399,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         '''
         Returns a new :class:`CdpSession` connected to the specified target.
         '''
+        global devtools
         session_id = await self.execute(devtools.target.attach_to_target(
             target_id, True))
         session = CdpSession(self.ws, session_id, target_id)
@@ -395,6 +411,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         Runs in the background and handles incoming messages: dispatching
         responses to commands and events to listeners.
         '''
+        global devtools
         while True:
             try:
                 message = await self.ws.get_message()
