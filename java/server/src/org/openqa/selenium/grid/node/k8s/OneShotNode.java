@@ -353,6 +353,11 @@ public class OneShotNode extends Node {
   }
 
   @Override
+  public String getRegistrationSecret() {
+    return registrationSecret;
+  }
+
+  @Override
   public boolean isReady() {
     return events.isReady();
   }

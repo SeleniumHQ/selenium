@@ -120,11 +120,14 @@ public class NodeServer extends TemplateGridCommand {
 
     HttpHandler readinessCheck = req -> {
       if (node.getStatus().hasCapacity()) {
-        return new HttpResponse().setStatus(HTTP_NO_CONTENT);
+        return new HttpResponse()
+          .setStatus(HTTP_NO_CONTENT)
+          .setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret());
       }
 
       return new HttpResponse()
         .setStatus(HTTP_INTERNAL_ERROR)
+        .setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret())
         .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
         .setContent(Contents.utf8String("No capacity available"));
     };

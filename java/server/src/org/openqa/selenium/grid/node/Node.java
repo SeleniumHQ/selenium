@@ -187,6 +187,8 @@ public abstract class Node implements HasReadyState, Routable {
 
   public abstract void drain();
 
+  public abstract String getRegistrationSecret();
+
   @Override
   public boolean matches(HttpRequest req) {
     return routes.matches(req);

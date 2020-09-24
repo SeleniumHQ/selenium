@@ -458,6 +458,9 @@ public class LocalNode extends Node {
       pendingSessions.set(currentSessionCount);
     }
   }
+  public String getRegistrationSecret() {
+    return registrationSecret;
+  }
 
   private Map<String, Object> toJson() {
     return ImmutableMap.of(

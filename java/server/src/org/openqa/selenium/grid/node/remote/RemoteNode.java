@@ -220,6 +220,11 @@ public class RemoteNode extends Node {
         "capabilities", capabilities);
   }
 
+  @Override
+  public String getRegistrationSecret() {
+    return "";
+  }
+
   private class RemoteCheck implements HealthCheck {
     @Override
     public Result check() {

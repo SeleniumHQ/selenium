@@ -258,6 +258,11 @@ public class LocalDistributor extends Distributor {
     }
   }
 
+  @Override
+  public String getRegistrationSecret() {
+    return registrationSecret;
+  }
+
   @Beta
   public void refresh() {
     Lock writeLock = lock.writeLock();

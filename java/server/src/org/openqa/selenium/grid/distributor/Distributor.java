@@ -82,7 +82,8 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 /**
- * Responsible for being the central place where the {@link Node}s on which {@link Session}s run
+ * Responsible for being the central place where the {@link Node}s
+ * on which {@link Session}s run
  * are determined.
  * <p>
  * This class responds to the following URLs:
@@ -95,19 +96,23 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
  * <tr>
  *   <td>POST</td>
  *   <td>/session</td>
- *   <td>This is exactly the same as the New Session command from the WebDriver spec.</td>
+ *   <td>This is exactly the same as the New Session command
+ *   from the WebDriver spec.</td>
  * </tr>
  * <tr>
  *   <td>POST</td>
  *   <td>/se/grid/distributor/node</td>
- *   <td>Adds a new {@link Node} to this distributor. Please read the javadocs for {@link Node} for
+ *   <td>Adds a new {@link Node} to this distributor.
+ *   Please read the javadocs for {@link Node} for
  *     how the Node should be serialized.</td>
  * </tr>
  * <tr>
  *   <td>DELETE</td>
  *   <td>/se/grid/distributor/node/{nodeId}</td>
- *   <td>Remove the {@link Node} identified by {@code nodeId} from this distributor. It is expected
- *     that any sessions running on the Node are allowed to complete: this simply means that no new
+ *   <td>Remove the {@link Node} identified by {@code nodeId}
+ *      from this distributor. It is expected
+ *     that any sessions running on the Node are allowed to complete:
+ *     this simply means that no new
  *     sessions will be scheduled on this Node.</td>
  * </tr>
  * </table>
@@ -284,4 +289,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     return routes.execute(req);
   }
+
+  public abstract String getRegistrationSecret();
 }
