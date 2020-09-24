@@ -27,19 +27,22 @@ import org.openqa.selenium.remote.SessionId;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.Instant;
 
 public abstract class BaseActiveSession implements ActiveSession {
 
   private final Session session;
   private final Dialect downstream;
   private final Dialect upstream;
+  private final Instant startTime;
 
   protected BaseActiveSession(
-      SessionId id,
-      URL url,
-      Dialect downstream,
-      Dialect upstream,
-      Capabilities capabilities) {
+    SessionId id,
+    URL url,
+    Dialect downstream,
+    Dialect upstream,
+    Capabilities capabilities,
+    Instant startTime) {
     URI uri = null;
     try {
       uri = Require.nonNull("URL", url).toURI();
@@ -54,6 +57,8 @@ public abstract class BaseActiveSession implements ActiveSession {
 
     this.downstream = Require.nonNull("Downstream dialect", downstream);
     this.upstream = Require.nonNull("Upstream dialect", upstream);
+
+    this.startTime = Require.nonNull("Start time", startTime);
   }
 
   @Override
@@ -64,6 +69,11 @@ public abstract class BaseActiveSession implements ActiveSession {
   @Override
   public Capabilities getCapabilities() {
     return session.getCapabilities();
+  }
+
+  @Override
+  public Instant getStartTime() {
+    return startTime;
   }
 
   @Override

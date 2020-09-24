@@ -49,6 +49,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ import java.util.logging.Level;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.valueOf;
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -104,7 +106,7 @@ public class JsonOutputTest {
 
     String json = convert(toConvert);
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
     assertThat(converted.get("cheese").getAsString()).isEqualTo("cheddar");
   }
 
@@ -112,7 +114,7 @@ public class JsonOutputTest {
   public void shouldConvertASimpleJavaBean() {
     String json = convert(new SimpleBean());
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
     assertThat(converted.get("foo").getAsString()).isEqualTo("bar");
     assertThat(converted.get("simple").getAsBoolean()).isEqualTo(true);
     assertThat(converted.get("number").getAsDouble()).isEqualTo(123.456);
@@ -122,7 +124,7 @@ public class JsonOutputTest {
   public void shouldConvertArrays() {
     String json = convert(new BeanWithArray());
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
     JsonArray allNames = converted.get("names").getAsJsonArray();
     assertThat(allNames).hasSize(3);
   }
@@ -131,7 +133,7 @@ public class JsonOutputTest {
   public void shouldConvertCollections() {
     String json = convert(new BeanWithCollection());
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
     JsonArray allNames = converted.get("something").getAsJsonArray();
     assertThat(allNames).hasSize(2);
   }
@@ -146,6 +148,19 @@ public class JsonOutputTest {
 
     Object o = line.get("lineNumber");
     assertThat(o).isInstanceOf(Long.class);
+  }
+
+  @Test
+  public void shouldConvertAnInstantToEpochMillis() {
+    Instant now = Instant.ofEpochMilli(System.currentTimeMillis());
+    String json = convert(now);
+
+    System.out.println(json);
+
+    String value = JsonParser.parseString(json).getAsString();
+    // We expect the instant to be an ISO 8601 string
+    Instant seen = Instant.from(ISO_INSTANT.parse(value));
+    assertThat(seen).isEqualTo(now);
   }
 
   @Test
@@ -182,7 +197,7 @@ public class JsonOutputTest {
   public void shouldEncodeClassNameAsClassProperty() {
     String json = convert(new SimpleBean());
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.get("class").getAsString()).isEqualTo(SimpleBean.class.getName());
   }
@@ -192,7 +207,7 @@ public class JsonOutputTest {
     SessionId sessionId = new SessionId("some id");
     String json = convert(sessionId);
 
-    JsonPrimitive converted = new JsonParser().parse(json).getAsJsonPrimitive();
+    JsonPrimitive converted = JsonParser.parseString(json).getAsJsonPrimitive();
 
     assertThat(converted.getAsString()).isEqualTo("some id");
   }
@@ -203,7 +218,7 @@ public class JsonOutputTest {
     obj.addProperty("key", "value");
     String json = convert(obj);
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.get("key").getAsString()).isEqualTo("value");
   }
@@ -214,7 +229,7 @@ public class JsonOutputTest {
 
     String json = convert(caps);
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.get("key").getAsString()).isEqualTo("alpha");
   }
@@ -231,7 +246,7 @@ public class JsonOutputTest {
 
     String json = convert(command.getParameters());
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
     JsonObject capsAsMap = converted.get("desiredCapabilities").getAsJsonObject();
 
     assertThat(capsAsMap.get(CapabilityType.PROXY).getAsJsonObject().get("httpProxy").getAsString())
@@ -260,7 +275,7 @@ public class JsonOutputTest {
     }
 
     String json = convert(new ToJsonReturnsMap());
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.entrySet()).hasSize(1);
     assertThat(converted.get("cheese").getAsString()).isEqualTo("peas");
@@ -276,7 +291,7 @@ public class JsonOutputTest {
     }
 
     String json = convert(new ToJsonReturnsCollection());
-    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+    JsonArray converted = JsonParser.parseString(json).getAsJsonArray();
 
     assertThat(converted).hasSize(2);
     JsonArray expected = new JsonArray();
@@ -333,7 +348,7 @@ public class JsonOutputTest {
     // The JSON spec says that we should encode the forward stroke ("solidus"). Decode the string
     assertThat(json.startsWith("\"")).isTrue();
     assertThat(json.endsWith("\"")).isTrue();
-    json = new JsonParser().parse(json).getAsString();
+    json = JsonParser.parseString(json).getAsString();
 
     assertThat(json).isEqualTo("gnu/linux");
   }
@@ -373,7 +388,7 @@ public class JsonOutputTest {
     StackTraceElement[] stackTrace = clientError.getStackTrace();
     String raw = convert(clientError);
 
-    JsonObject converted = new JsonParser().parse(raw).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(raw).getAsJsonObject();
 
     assertThat(converted.has("buildInformation")).isTrue();
     assertThat(converted.has("systemInformation")).isTrue();
@@ -421,7 +436,7 @@ public class JsonOutputTest {
     Bean bean = new Bean(date);
     String jsonStr = convert(bean);
 
-    JsonObject converted = new JsonParser().parse(jsonStr).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(jsonStr).getAsJsonObject();
 
     assertThat(converted.has("date")).isTrue();
     assertThat(converted.get("date").getAsLong()).isEqualTo(123456L);
@@ -434,7 +449,7 @@ public class JsonOutputTest {
 
     String jsonStr = convert(cookie);
 
-    JsonObject converted = new JsonParser().parse(jsonStr).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(jsonStr).getAsJsonObject();
 
     assertThat(converted.get("name").getAsString()).isEqualTo("name");
     assertThat(converted.get("value").getAsString()).isEqualTo("value");
@@ -474,7 +489,7 @@ public class JsonOutputTest {
 
     String json = convert(prefs);
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.get(BROWSER).getAsString()).isEqualTo("WARNING");
     assertThat(converted.get(CLIENT).getAsString()).isEqualTo("DEBUG");
@@ -486,7 +501,7 @@ public class JsonOutputTest {
   public void convertsLogEntryToJson() {
     String raw = convert(new LogEntry(Level.OFF, 17, "foo"));
 
-    JsonObject converted = new JsonParser().parse(raw).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(raw).getAsJsonObject();
 
     assertThat(converted.get("message").getAsString()).isEqualTo("foo");
     assertThat(converted.get("timestamp").getAsLong()).isEqualTo(17);
@@ -502,7 +517,7 @@ public class JsonOutputTest {
 
     String json = convert(entries);
 
-    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+    JsonArray converted = JsonParser.parseString(json).getAsJsonArray();
 
     JsonObject obj1 = converted.get(0).getAsJsonObject();
     JsonObject obj2 = converted.get(1).getAsJsonObject();
@@ -525,7 +540,7 @@ public class JsonOutputTest {
 
     String json = convert(command);
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.has("sessionId")).isTrue();
     JsonPrimitive sid = converted.get("sessionId").getAsJsonPrimitive();
@@ -546,7 +561,7 @@ public class JsonOutputTest {
     Map<String, URL> toConvert = ImmutableMap.of("url", url);
 
     String seen = new Json().toJson(toConvert);
-    JsonObject converted = new JsonParser().parse(seen).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(seen).getAsJsonObject();
 
     assertThat(converted.get("url").getAsString()).isEqualTo(url.toExternalForm());
   }
@@ -555,7 +570,7 @@ public class JsonOutputTest {
   public void shouldNotIncludePropertiesFromJavaLangObjectOtherThanClass() {
     String json = convert(new SimpleBean());
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     Stream.of(SimplePropertyDescriptor.getPropertyDescriptors(Object.class))
         .filter(pd -> !"class".equals(pd.getName()))
@@ -597,7 +612,7 @@ public class JsonOutputTest {
   public void whenConvertingObjectsContainingClassesDoNotBeNoisy() {
     String json = convert(ImmutableMap.of("thing", SimpleBean.class));
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.size()).isEqualTo(1);
     assertThat(converted.getAsJsonPrimitive("thing").getAsString())
@@ -632,7 +647,7 @@ public class JsonOutputTest {
   public void shouldNotWriteOptionalFieldsThatAreEmptyInAMap() {
     String json = convert(ImmutableMap.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.has("notThere")).isFalse();
     assertThat(converted.get("there").getAsString()).isEqualTo("cheese");
@@ -642,10 +657,58 @@ public class JsonOutputTest {
   public void shouldNotWriteOptionalsThatAreNotPresentToAList() {
     String json = convert(Arrays.asList(Optional.of("cheese"), Optional.empty()));
 
-    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+    JsonArray converted = JsonParser.parseString(json).getAsJsonArray();
 
     assertThat(converted.size()).isEqualTo(1);
     assertThat(converted.get(0).getAsString()).isEqualTo("cheese");
+  }
+
+  @Test
+  public void shouldNotWriteOptionalValuesIfOnAnInstanceAndEmpty() {
+    class WithOptionals {
+      private final Optional<String> value = Optional.of("Cheese");
+      private final Optional<String> noValue = Optional.empty();
+
+      public Optional<String> getValue() {
+        return value;
+      }
+
+      public Optional<String> getNoValue() {
+        return noValue;
+      }
+    }
+
+    String json = convert(new WithOptionals());
+
+    JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+
+    assertThat(obj.get("value").getAsString()).describedAs(json).isEqualTo("Cheese");
+    assertThat(obj.has("noValue")).describedAs(json).isFalse();
+  }
+
+  @Test
+  public void onRequsetShouldNotWriteClassNamesIntoJson() {
+    class WithClassName {
+      public String getCheese() {
+        return "gouda";
+      }
+    }
+
+    String json = convert(new WithClassName());
+
+    JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+    assertThat(obj.has("class")).isTrue();
+    assertThat(obj.get("cheese").getAsString()).isEqualTo("gouda");
+
+    StringBuilder str = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(str).writeClassName(false)) {
+      out.write(new WithClassName());
+    }
+
+    json = str.toString();
+    obj = JsonParser.parseString(json).getAsJsonObject();
+    assertThat(obj.has("class")).isFalse();
+    assertThat(obj.get("cheese").getAsString()).isEqualTo("gouda");
   }
 
   private String convert(Object toConvert) {

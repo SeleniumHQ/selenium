@@ -121,6 +121,7 @@ public class CdpVersionFinder {
 
     for (CdpInfo info : infos) {
       if (info.getMajorVersion() == version) {
+        LOG.info(String.format("Found exact CDP implementation for version %d", version));
         return Optional.of(info);
       }
 
@@ -140,6 +141,12 @@ public class CdpVersionFinder {
       "Unable to find an exact match for CDP version %d, so returning the closest version found: %s",
       version,
       nearestMatch == null ? "a no-op implementation" : nearestMatch.getMajorVersion()));
+
+    if (nearestMatch == null) {
+      LOG.info(String.format("Unable to find CDP implementation matching %d.", version));
+    } else {
+      LOG.info(String.format("Found CDP implementation for version %d of %d", version, nearestMatch.getMajorVersion()));
+    }
 
     return Optional.ofNullable(nearestMatch);
   }

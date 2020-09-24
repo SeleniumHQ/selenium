@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -57,6 +58,10 @@ import java.util.concurrent.Future;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class LocalDistributorTest {
@@ -65,7 +70,7 @@ public class LocalDistributorTest {
   private EventBus bus;
   private HttpClient.Factory clientFactory;
   private URI uri;
-  private Node local;
+  private Node localNode;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -75,7 +80,7 @@ public class LocalDistributorTest {
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
     uri = new URI("http://localhost:1234");
-    local = LocalNode.builder(tracer, bus, uri, uri, null)
+    localNode = LocalNode.builder(tracer, bus, uri, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .maximumConcurrentSessions(2)
         .build();
@@ -84,7 +89,7 @@ public class LocalDistributorTest {
   @Test
   public void testAddNodeToDistributor() {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
-    distributor.add(local);
+    distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
     //Check the size
@@ -93,14 +98,14 @@ public class LocalDistributorTest {
 
     //Check a couple attributes
     final DistributorStatus.NodeSummary distributorNode = nodes.iterator().next();
-    assertThat(distributorNode.getNodeId()).isEqualByComparingTo(local.getId());
+    assertThat(distributorNode.getNodeId()).isEqualByComparingTo(localNode.getId());
     assertThat(distributorNode.getUri()).isEqualTo(uri);
   }
 
   @Test
   public void testRemoveNodeFromDistributor() {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
-    distributor.add(local);
+    distributor.add(localNode);
 
     //Check the size
     DistributorStatus statusBefore = distributor.getStatus();
@@ -108,7 +113,7 @@ public class LocalDistributorTest {
     assertThat(nodesBefore.size()).isEqualTo(1);
 
     //Recheck the status--should be zero
-    distributor.remove(local.getId());
+    distributor.remove(localNode.getId());
     DistributorStatus statusAfter = distributor.getStatus();
     final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
     assertThat(nodesAfter.size()).isEqualTo(0);
@@ -117,8 +122,8 @@ public class LocalDistributorTest {
   @Test
   public void testAddSameNodeTwice() {
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
-    distributor.add(local);
-    distributor.add(local);
+    distributor.add(localNode);
+    distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
     //Should only be one node after dupe check
@@ -153,18 +158,17 @@ public class LocalDistributorTest {
 
     // Only use one node.
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-      .add(caps, new TestSessionFactory(VerifyingHandler::new))
-      .add(caps, new TestSessionFactory(VerifyingHandler::new))
-      .add(caps, new TestSessionFactory(VerifyingHandler::new))
-      .build();
+        .add(caps, new TestSessionFactory(VerifyingHandler::new))
+        .add(caps, new TestSessionFactory(VerifyingHandler::new))
+        .add(caps, new TestSessionFactory(VerifyingHandler::new))
+        .build();
     distributor.add(node);
 
     HttpRequest req = new HttpRequest(HttpMethod.POST, "/session")
-      .setContent(Contents.asJson(ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", ImmutableMap.of(
-            "browserName", "cheese")))));
-
+        .setContent(Contents.asJson(ImmutableMap.of(
+            "capabilities", ImmutableMap.of(
+                "alwaysMatch", ImmutableMap.of(
+                    "browserName", "cheese")))));
 
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
@@ -186,7 +190,47 @@ public class LocalDistributorTest {
     }
   }
 
+
+  @Test
+  public void testDrainNodeFromDistributor() {
+    Distributor
+        distributor =
+        new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    distributor.add(localNode);
+    assertThat(localNode.isDraining()).isFalse();
+
+    //Check the size - there should be one node
+    DistributorStatus statusBefore = distributor.getStatus();
+    final Set<DistributorStatus.NodeSummary> nodesBefore = statusBefore.getNodes();
+    assertThat(nodesBefore.size()).isEqualTo(1);
+    DistributorStatus.NodeSummary nodeBefore = nodesBefore.iterator().next();
+    assertFalse(nodeBefore.getHostAvailability().equals(DRAINING));
+
+    distributor.drain(localNode.getId());
+    assertThat(localNode.isDraining()).isTrue();
+
+    //Recheck the status - there should still be no node, it is removed
+    DistributorStatus statusAfter = distributor.getStatus();
+    final Set<DistributorStatus.NodeSummary> nodesAfter = statusAfter.getNodes();
+    assertThat(nodesAfter.size()).isEqualTo(0);
+  }
+
+  @Test
+  public void testDrainNodeFromNode() {
+    assertThat(localNode.isDraining()).isFalse();
+
+    Distributor
+        distributor =
+        new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    distributor.add(localNode);
+
+    localNode.drain();
+    assertThat(localNode.isDraining()).isTrue();
+  }
+
+
   private class Handler extends Session implements HttpHandler {
+
     private Handler(Capabilities capabilities) {
       super(new SessionId(UUID.randomUUID()), uri, capabilities);
     }

@@ -8,6 +8,9 @@ java_test_suite(
     tags = [
         "no-sandbox",
     ],
+    resources = [
+        "packaged-file.txt",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",

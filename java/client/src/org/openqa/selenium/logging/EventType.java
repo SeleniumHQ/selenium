@@ -21,7 +21,7 @@ package org.openqa.selenium.logging;
 public interface EventType<X> {
   void consume(X event);
 
-  default void initializeLogger(HasLogEvents loggable) {
+  default void initializeListener(HasLogEvents loggable) {
     // no-op
   }
 }

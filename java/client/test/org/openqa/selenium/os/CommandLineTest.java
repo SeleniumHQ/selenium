@@ -41,7 +41,7 @@ import java.util.Map;
 public class CommandLineTest {
 
   // ping can be found on every platform we support.
-  private static String testExecutable = "ping";
+  private static String testExecutable = "java/client/test/org/openqa/selenium/os/echo";
 
   private CommandLine commandLine = new CommandLine(testExecutable);
   private OsProcess process = spyProcess(commandLine);
@@ -102,12 +102,15 @@ public class CommandLineTest {
 
   @Test
   public void canHandleOutput() {
+    CommandLine commandLine = new CommandLine(testExecutable, "ping");
     commandLine.execute();
     assertThat(commandLine.getStdOut()).isNotEmpty().contains("ping");
   }
 
   @Test
   public void canCopyOutput() {
+    CommandLine commandLine = new CommandLine(testExecutable, "I", "love", "cheese");
+
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     commandLine.copyOutputTo(buffer);
     commandLine.execute();

@@ -24,7 +24,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -32,12 +31,18 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeDrainStarted;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.ActiveSession;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
@@ -61,19 +66,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
@@ -99,6 +105,7 @@ public class LocalNode extends Node {
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
   private final String registrationSecret;
+  private AtomicInteger pendingSessions = new AtomicInteger();
 
   private LocalNode(
     Tracer tracer,
@@ -111,7 +118,7 @@ public class LocalNode extends Node {
     Duration sessionTimeout,
     List<SessionSlot> factories,
     String registrationSecret) {
-    super(tracer, UUID.randomUUID(), uri);
+    super(tracer, new NodeId(UUID.randomUUID()), uri);
 
     this.bus = Require.nonNull("Event bus", bus);
 
@@ -154,6 +161,13 @@ public class LocalNode extends Node {
         this.stop(event.getData(SessionId.class));
       } catch (NoSuchSessionException ignore) {
       }
+      if (this.isDraining()) {
+        int done = pendingSessions.decrementAndGet();
+        if (done <= 0) {
+          LOG.info("Firing node drain complete message");
+          bus.fire(new NodeDrainComplete(this.getId()));
+        }
+      }
     });
   }
 
@@ -195,6 +209,10 @@ public class LocalNode extends Node {
         span.setStatus(Status.RESOURCE_EXHAUSTED);
         attributeMap.put("max.session.count", EventAttribute.setValue(maxSessionCount));
         span.addEvent("Max session count reached", attributeMap);
+        return Optional.empty();
+      }
+      if (isDraining()) {
+        span.setStatus(Status.UNAVAILABLE.withDescription("The node is draining. Cannot accept new sessions."));
         return Optional.empty();
       }
 
@@ -383,7 +401,7 @@ public class LocalNode extends Node {
     }
   }
 
-  private void killSession(SessionSlot slot) {
+  private void  killSession(SessionSlot slot) {
     currentSessions.invalidate(slot.getSession().getId());
     // Attempt to stop the session
     if (!slot.isAvailable()) {
@@ -393,22 +411,33 @@ public class LocalNode extends Node {
 
   @Override
   public NodeStatus getStatus() {
-    Map<Capabilities, Integer> stereotypes = factories.stream()
-      .collect(groupingBy(SessionSlot::getStereotype, summingInt(caps -> 1)));
+    Set<Slot> slots = factories.stream()
+      .map(slot -> {
+        Optional<Active> session = Optional.empty();
+        if (!slot.isAvailable()) {
+          ActiveSession activeSession = slot.getSession();
+          session = Optional.of(
+            new Active(
+              slot.getStereotype(),
+              activeSession.getId(),
+              activeSession.getCapabilities(),
+              activeSession.getStartTime()));
+        }
 
-    ImmutableSet<NodeStatus.Active> activeSessions = currentSessions.asMap().values().stream()
-      .map(slot -> new NodeStatus.Active(
-        slot.getStereotype(),
-        slot.getSession().getId(),
-        slot.getSession().getCapabilities()))
+        return new Slot(
+          new SlotId(getId(), slot.getId()),
+          slot.getStereotype(),
+          Instant.EPOCH,
+          session);
+      })
       .collect(toImmutableSet());
 
     return new NodeStatus(
       getId(),
       externalUri,
       maxSessionCount,
-      stereotypes,
-      activeSessions,
+      slots,
+      isDraining(),
       registrationSecret);
   }
 
@@ -417,11 +446,28 @@ public class LocalNode extends Node {
     return healthCheck;
   }
 
+  @Override
+  public void drain() {
+    bus.fire(new NodeDrainStarted(getId()));
+    draining = true;
+    int currentSessionCount = getCurrentSessionCount();
+    if (currentSessionCount == 0) {
+      LOG.info("Firing node drain complete message");
+      bus.fire(new NodeDrainComplete(getId()));
+    } else {
+      pendingSessions.set(currentSessionCount);
+    }
+  }
+  public String getRegistrationSecret() {
+    return registrationSecret;
+  }
+
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
       "id", getId(),
       "uri", externalUri,
       "maxSessions", maxSessionCount,
+      "draining", isDraining(),
       "capabilities", factories.stream()
         .map(SessionSlot::getStereotype)
         .collect(Collectors.toSet()));

@@ -46,6 +46,6 @@ class StatusHandler implements HttpHandler {
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
             "node", status));
 
-    return new HttpResponse().setContent(asJson(report));
+    return new HttpResponse().setContent(asJson(report)).setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret());
   }
 }

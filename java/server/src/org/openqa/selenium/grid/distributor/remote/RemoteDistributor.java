@@ -18,10 +18,15 @@
 package org.openqa.selenium.grid.distributor.remote;
 
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.sessionmap.NullSessionMap;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -32,10 +37,10 @@ import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
-import java.util.UUID;
+import java.util.Set;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -47,7 +52,11 @@ public class RemoteDistributor extends Distributor {
   private final HttpHandler client;
 
   public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url) {
-    super(tracer, factory);
+    super(
+      tracer,
+      factory,
+      (caps, nodes) -> {throw new UnsupportedOperationException("host selection");},
+      new NullSessionMap(tracer));
     this.client = factory.createClient(url);
   }
 
@@ -88,7 +97,19 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public void remove(UUID nodeId) {
+  public boolean drain(NodeId nodeId) {
+    Require.nonNull("Node ID", nodeId);
+    HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node/" + nodeId + "/drain");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
+    request.setContent(asJson(nodeId));
+
+    HttpResponse response = client.execute(request);
+
+    return Values.get(response, Boolean.class);
+  }
+
+  @Override
+  public void remove(NodeId nodeId) {
     Require.nonNull("Node ID", nodeId);
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
@@ -106,5 +127,19 @@ public class RemoteDistributor extends Distributor {
     HttpResponse response = client.execute(request);
 
     return Values.get(response, DistributorStatus.class);
+  }
+
+  @Override
+  protected Set<Host> getModel() {
+    throw new UnsupportedOperationException("getModel is not required for remote sessions");
+  }
+
+  @Override
+  protected Supplier<CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request) {
+    throw new UnsupportedOperationException("reserve is not required for remote sessions");
+  }
+
+  public String getRegistrationSecret() {
+    return "";
   }
 }

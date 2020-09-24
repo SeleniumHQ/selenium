@@ -32,6 +32,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -66,11 +67,12 @@ public class TestSessionFactory implements SessionFactory {
 
 
     BaseActiveSession activeSession = new BaseActiveSession(
-        session.getId(),
-        url,
-        downstream,
-        W3C,
-        session.getCapabilities()) {
+      session.getId(),
+      url,
+      downstream,
+      W3C,
+      session.getCapabilities(),
+      Instant.now()) {
       @Override
       public void stop() {
         // Do nothing

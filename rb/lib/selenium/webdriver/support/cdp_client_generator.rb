@@ -24,7 +24,6 @@ module Selenium
   module WebDriver
     module Support
       class CDPClientGenerator
-        DEVTOOLS_DIR = File.expand_path('../devtools', __dir__)
         BROWSER_PROTOCOL_PATH = File.expand_path('cdp/browser_protocol.json', __dir__)
         JS_PROTOCOL_PATH = File.expand_path('cdp/js_protocol.json', __dir__)
         TEMPLATE_PATH = File.expand_path('cdp/domain.rb.erb', __dir__)
@@ -37,14 +36,16 @@ module Selenium
           @template = ERB.new(File.read(TEMPLATE_PATH))
         end
 
-        def call
+        def call(output_dir:, version:, **)
+          @output_dir = output_dir
+          @version = version
           @browser_protocol[:domains].each(&method(:process_domain))
           @js_protocol[:domains].each(&method(:process_domain))
         end
 
         def process_domain(domain)
-          result = @template.result_with_hash(domain: domain, h: self)
-          filename = File.join(DEVTOOLS_DIR, "#{snake_case(domain[:domain])}.rb")
+          result = @template.result_with_hash(domain: domain, version: @version.upcase, h: self)
+          filename = File.join(@output_dir, "#{snake_case(domain[:domain])}.rb")
           File.write(filename, remove_empty_lines(result))
         end
 
