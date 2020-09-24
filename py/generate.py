@@ -55,13 +55,34 @@ MODULE_HEADER = '''{}
 #
 # CDP domain: {{}}{{}}
 from __future__ import annotations
-from ..util import event_class, T_JSON_DICT
+from .util import event_class, T_JSON_DICT
 from dataclasses import dataclass
 import enum
 import typing
 '''.format(SHARED_HEADER)
 
 current_version = ''
+
+UTIL_PY = """
+import typing
+
+
+T_JSON_DICT = typing.Dict[str, typing.Any]
+_event_parsers = dict()
+
+
+def event_class(method):
+    ''' A decorator that registers a class as an event class. '''
+    def decorate(cls):
+        _event_parsers[method] = cls
+        return cls
+    return decorate
+
+
+def parse_json_event(json: T_JSON_DICT) -> typing.Any:
+    ''' Parse a JSON dictionary into a CDP event. '''
+    return _event_parsers[json['method']].from_json(json['params'])
+"""
 
 
 def indent(s, n):
@@ -275,6 +296,7 @@ class CdpProperty:
             if self.items.ref:
                 py_ref = ref_to_python(self.items.ref)
                 expr = f"[{py_ref}.from_json(i) for i in {dict_}['{self.name}']]"
+                expr
             else:
                 cons = CdpPrimitiveType.get_constructor(self.items.type, 'i')
                 expr = f"[{cons} for i in {dict_}['{self.name}']]"
@@ -830,7 +852,7 @@ class CdpDomain:
                 continue
             if domain != self.domain:
                 dependencies.add(snake_case(domain))
-        code = '\n'.join(f'from .. import {d}' for d in sorted(dependencies))
+        code = '\n'.join(f'from . import {d}' for d in sorted(dependencies))
 
         return code
 
@@ -928,7 +950,7 @@ def generate_init(init_path, domains):
         init_file.write(INIT_HEADER)
         for domain in domains:
             init_file.write('from . import {}\n'.format(domain.module))
-        init_file.write('from .. import util\n\n')
+        init_file.write('from . import util\n\n')
 
 
 def generate_docs(docs_path, domains):
@@ -956,6 +978,11 @@ def main(browser_protocol_path, js_protocol_path, output_path):
         js_protocol_path,
     ]
     output_path.mkdir(parents=True)
+
+    # Generate util.py
+    util_path = output_path / "util.py"
+    with util_path.open('w') as util_file:
+        util_file.write(UTIL_PY)
 
     # Remove generated code
     for subpath in output_path.iterdir():
