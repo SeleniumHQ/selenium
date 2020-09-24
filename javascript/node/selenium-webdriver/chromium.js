@@ -730,36 +730,44 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
-  * Sets a listener for Fetch.authRequired event from CDP
-  * If event is triggered, it enter username and password
-  * and allows the test to move forward
-  * @param {string} username
-  * @param {string} password
-  * Doesn't return anything, sets the listener and goes off.
-  */
+   * Sets a listener for Fetch.authRequired event from CDP
+   * If event is triggered, it enter username and password
+   * and allows the test to move forward
+   * @param {string} username
+   * @param {string} password
+   * Doesn't return anything, sets the listener and goes off.
+   */
   async register(username, password) {
-    await this.sendDevToolsCommand('Fetch.enable', {
-      handleAuthRequests: true
+    await this.sendDevToolsCommand('Network.setCacheDisabled', {
+      cacheDisabled: true,
     })
 
     this._wsConnection.on('message', (message) => {
-      console.log(message);
-      const params = JSON.parse(message.data);
+      const params = JSON.parse(message.data)
 
-      if (params.method == 'Fetch.authRequired') {
-        const requestParams = params['params'];
+      if (params.method === 'Fetch.authRequired') {
+        const requestParams = params['params']
         this.sendDevToolsCommand('Fetch.continueWithAuth', {
           requestId: requestParams['requestId'],
           authChallengeResponse: {
             response: 'ProvideCredentials',
             username: username,
-            password: password
-          }
+            password: password,
+          },
         });
+      } else if (params.method === 'Fetch.requestPaused') {
+        const requestPausedParams = params['params']
+        this.sendDevToolsCommand('Fetch.continueRequest', {
+          requestId: requestPausedParams['requestId'],
+        })
       }
-    });
+    })
 
-    return;
+    await this.sendDevToolsCommand('Fetch.enable', {
+      handleAuthRequests: true,
+    })
+
+    return
   }
   /**
    * Set a permission state to the given value.
