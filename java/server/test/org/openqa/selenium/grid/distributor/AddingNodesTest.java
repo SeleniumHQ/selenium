@@ -42,6 +42,7 @@ import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -82,7 +83,7 @@ public class AddingNodesTest {
   private Wait<Object> wait;
   private URL externalUrl;
   private CombinedHandler handler;
-  private String registrationSecret;
+  private Secret registrationSecret;
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
@@ -310,7 +311,7 @@ public class AddingNodesTest {
             Instant.now(),
             Optional.ofNullable(active))),
         false,
-        "cheese");
+        new Secret("cheese"));
     }
 
     @Override

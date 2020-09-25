@@ -26,6 +26,7 @@ import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.NullSessionMap;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
@@ -51,7 +52,7 @@ public class RemoteDistributor extends Distributor {
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Remote)");
   private final HttpHandler client;
 
-  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url, String registrationSecret) {
+  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url, Secret registrationSecret) {
     super(
       tracer,
       factory,

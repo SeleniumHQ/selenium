@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
 
@@ -62,7 +63,7 @@ public class Host {
 
   private static final Logger LOG = Logger.getLogger("Selenium Host");
   private final Node node;
-  private final String registrationSecret;
+  private final Secret registrationSecret;
   private final NodeId nodeId;
   private final URI uri;
   private final Runnable performHealthCheck;
@@ -73,7 +74,7 @@ public class Host {
   private Set<Slot> slots;
   private int maxSessionCount;
 
-  public Host(EventBus bus, Node node, String registrationSecret) {
+  public Host(EventBus bus, Node node, Secret registrationSecret) {
     this.node = Require.nonNull("Node", node);
     Require.nonNull("Event bus", bus);
 

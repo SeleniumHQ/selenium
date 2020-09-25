@@ -25,6 +25,7 @@ import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
@@ -105,7 +106,7 @@ public abstract class Node implements HasReadyState, Routable {
   private final Route routes;
   protected boolean draining;
 
-  protected Node(Tracer tracer, NodeId id, URI uri, String registrationSecret) {
+  protected Node(Tracer tracer, NodeId id, URI uri, Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("URI", uri);

@@ -17,26 +17,42 @@
 
 package org.openqa.selenium.grid.security;
 
-import org.openqa.selenium.remote.http.Filter;
-import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.internal.Require;
 
-public class AddSecretFilter implements Filter {
+import java.util.Objects;
 
-  static final String HEADER_NAME = "X-REGISTRATION-SECRET";
-  private final Secret secret;
+public class Secret {
 
-  public AddSecretFilter(Secret secret) {
-    this.secret = secret;
+  private final String secret;
+
+  public Secret(String secret) {
+    this.secret = Require.nonNull("Secret", secret);
+  }
+
+  public String encode() {
+    return secret;
   }
 
   @Override
-  public HttpHandler apply(HttpHandler httpHandler) {
-    return req -> {
-      if (req.getHeader(HEADER_NAME) == null) {
-        req.addHeader(HEADER_NAME, secret.encode());
-      }
+  public boolean equals(Object o) {
+    if (!(o instanceof Secret)) {
+      return false;
+    }
 
-      return httpHandler.execute(req);
-    };
+    Secret that = (Secret) o;
+    return Objects.equals(this.secret, that.secret);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(secret);
+  }
+
+  private String toJson() {
+    return secret;
+  }
+
+  private static Secret fromJson(String secret) {
+    return new Secret(secret);
   }
 }

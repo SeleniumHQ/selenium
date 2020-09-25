@@ -41,6 +41,7 @@ import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
@@ -93,7 +94,7 @@ public class DistributorTest {
   private EventBus bus;
   private Distributor local;
   private ImmutableCapabilities caps;
-  private String registrationSecret;
+  private Secret registrationSecret;
 
   @Before
   public void setUp() {
@@ -365,7 +366,7 @@ public class DistributorTest {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(rejected, e -> latch.countDown());
 
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, "pickles")
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, new Secret("pickles"))
       .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
       .build();
 

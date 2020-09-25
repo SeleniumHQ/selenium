@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -131,7 +132,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     HttpClient.Factory httpClientFactory,
     SlotSelector slotSelector,
     SessionMap sessions,
-    String registrationSecret) {
+    Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
     Require.nonNull("HTTP client factory", httpClientFactory);
     this.slotSelector = Require.nonNull("Host selector", slotSelector);

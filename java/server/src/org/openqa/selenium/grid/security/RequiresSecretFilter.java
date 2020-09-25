@@ -25,15 +25,17 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static org.openqa.selenium.grid.security.AddSecretFilter.HEADER_NAME;
 
 public class RequiresSecretFilter implements Filter {
 
-  private final String secret;
+  private static final Logger LOG = Logger.getLogger(RequiresSecretFilter.class.getName());
+  private final Secret secret;
 
-  public RequiresSecretFilter(String secret) {
+  public RequiresSecretFilter(Secret secret) {
     this.secret = secret;
   }
 
@@ -53,12 +55,23 @@ public class RequiresSecretFilter implements Filter {
     };
   }
 
-  private boolean isSecretMatch(String secret, HttpRequest request) {
+  private boolean isSecretMatch(Secret secret, HttpRequest request) {
     String header = request.getHeader(HEADER_NAME);
     if (header == null) {
-      return secret == null;
+      if (secret != null) {
+        LOG.warning("Unexpected secret sent!");
+        return false;
+      }
+      return true;
     }
 
-    return Objects.equals(secret, header);
+    Secret requestSecret = new Secret(header);
+
+    if (!Objects.equals(secret, requestSecret)) {
+      LOG.warning("Secrets did not match!");
+      return false;
+    }
+
+    return true;
   }
 }

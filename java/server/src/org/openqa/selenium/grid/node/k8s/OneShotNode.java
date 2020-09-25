@@ -43,6 +43,7 @@ import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.NodeOptions;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.internal.Require;
@@ -86,7 +87,7 @@ public class OneShotNode extends Node {
   private final EventBus events;
   private final WebDriverInfo driverInfo;
   private final Capabilities stereotype;
-  private final String registrationSecret;
+  private final Secret registrationSecret;
   private final URI gridUri;
   private final UUID slotId = UUID.randomUUID();
   private RemoteWebDriver driver;
@@ -97,7 +98,7 @@ public class OneShotNode extends Node {
   private OneShotNode(
     Tracer tracer,
     EventBus events,
-    String registrationSecret,
+    Secret registrationSecret,
     NodeId id,
     URI uri,
     URI gridUri,

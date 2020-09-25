@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 
 @FunctionalInterface
@@ -27,13 +28,13 @@ public interface HealthCheck {
   class Result {
     private final boolean isAlive;
     private final String message;
-    private final String registrationSecret;
+    private final Secret registrationSecret;
 
     public Result(boolean isAlive, String message) {
       this(isAlive, message, null);
     }
 
-    public Result(boolean isAlive, String message, String registrationSecret) {
+    public Result(boolean isAlive, String message, Secret registrationSecret) {
       this.isAlive = isAlive;
       this.message = Require.nonNull("Message", message);
       this.registrationSecret = registrationSecret;

@@ -37,6 +37,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.Values;
@@ -102,7 +103,7 @@ public class NodeTest {
   private Node node;
   private ImmutableCapabilities caps;
   private URI uri;
-  private String registrationSecret;
+  private Secret registrationSecret;
 
   @Before
   public void setUp() throws URISyntaxException {

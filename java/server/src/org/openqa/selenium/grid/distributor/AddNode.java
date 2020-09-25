@@ -21,6 +21,7 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -39,14 +40,14 @@ class AddNode implements HttpHandler {
   private final Distributor distributor;
   private final Json json;
   private final HttpClient.Factory httpFactory;
-  private final String registrationSecret;
+  private final Secret registrationSecret;
 
   AddNode(
       Tracer tracer,
       Distributor distributor,
       Json json,
       HttpClient.Factory httpFactory,
-      String registrationSecret) {
+      Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.distributor = Require.nonNull("Distributor", distributor);
     this.json = Require.nonNull("Json converter", json);
