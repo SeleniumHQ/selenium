@@ -1175,7 +1175,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   }
 
   if (textTransform == 'capitalize') {
-    text = text.replace(/(^|\s|\b)(\S)/g, function() {
+    text = text.replace(/(^|[^\d\p{L}\p{S}])([\p{Ll}|\p{S}])/gu, function() {
       return arguments[1] + arguments[2].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {
