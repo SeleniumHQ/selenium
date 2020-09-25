@@ -20,6 +20,8 @@
 module Selenium
   module WebDriver
     class DevTools
+      autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
+
       SUPPORTED_VERSIONS = [84, 85, 86].freeze
 
       def initialize(url:, version:)

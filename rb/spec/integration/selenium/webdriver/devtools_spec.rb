@@ -61,6 +61,27 @@ module Selenium
         driver.navigate.to auth_url
         expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
       end
+
+      it 'notifies about log messages' do
+        logs = []
+        driver.on_log_event { |log| logs.push(log) }
+        driver.navigate.to url_for('javascriptPage.html')
+
+        driver.execute_script("console.log('I like cheese');")
+        driver.execute_script("console.log(true);")
+        driver.execute_script("console.log(null);")
+        driver.execute_script("console.log(undefined);")
+        driver.execute_script("console.log(document);")
+        wait.until { logs.size == 5 }
+
+        expect(logs).to include(
+          an_object_having_attributes(type: :log, args: ['I like cheese']),
+          an_object_having_attributes(type: :log, args: [true]),
+          an_object_having_attributes(type: :log, args: [nil]),
+          an_object_having_attributes(type: :log, args: [{'type' => 'undefined'}]),
+          an_object_having_attributes(type: :log, args: [hash_including('type' => 'object')])
+        )
+      end
     end
   end
 end
