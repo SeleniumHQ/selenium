@@ -67,6 +67,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 import static java.time.Duration.ofSeconds;
@@ -90,20 +91,8 @@ public class EndToEndTest {
   @Parameterized.Parameters(name = "End to End {0}")
   public static Collection<Supplier<Object[]>> buildGrids() {
     return ImmutableSet.of(
-        () -> {
-          try {
-            return createRemotes();
-          } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-          }
-        },
-        () -> {
-          try {
-            return createInMemory();
-          } catch (Exception e) {
-            throw new RuntimeException(e);
-          }
-        });
+      safely(EndToEndTest::createRemotes),
+      safely(EndToEndTest::createInMemory));
   }
 
   @Parameter
@@ -183,9 +172,10 @@ public class EndToEndTest {
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
-        tracer,
-        HttpClient.Factory.createDefault(),
-        distributorServer.getUrl());
+      tracer,
+      HttpClient.Factory.createDefault(),
+      distributorServer.getUrl(),
+      null);
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
@@ -339,5 +329,17 @@ public class EndToEndTest {
   @Test
   public void shouldDoProtocolTranslationFromJWPLocalEndToW3CRemoteEnd() {
 
+  }
+
+  private static <X> Supplier<X> safely(Callable<X> callable) {
+    return () -> {
+      try {
+        return callable.call();
+      } catch (RuntimeException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 }

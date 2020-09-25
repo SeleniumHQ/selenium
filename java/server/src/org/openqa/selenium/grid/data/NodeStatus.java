@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
@@ -40,7 +41,7 @@ public class NodeStatus {
   private final URI externalUri;
   private final int maxSessionCount;
   private final Set<Slot> slots;
-  private final String registrationSecret;
+  private final Secret registrationSecret;
   private final boolean draining;
 
   public NodeStatus(
@@ -49,7 +50,7 @@ public class NodeStatus {
       int maxSessionCount,
       Set<Slot> slots,
       boolean draining,
-      String registrationSecret) {
+      Secret registrationSecret) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count", maxSessionCount);
@@ -120,7 +121,7 @@ public class NodeStatus {
 
 
   public String getRegistrationSecret() {
-    return registrationSecret;
+    return registrationSecret == null ? null : registrationSecret.encode();
   }
 
   @Override
@@ -166,7 +167,7 @@ public class NodeStatus {
     NodeId nodeId = null;
     URI uri = null;
     int maxSessions = 0;
-    String registrationSecret = null;
+    Secret registrationSecret = null;
     Set<Slot> slots = null;
     boolean draining = false;
 
@@ -187,7 +188,7 @@ public class NodeStatus {
           break;
 
         case "registrationSecret":
-          registrationSecret = input.nextString();
+          registrationSecret = input.read(Secret.class);
           break;
 
         case "slots":

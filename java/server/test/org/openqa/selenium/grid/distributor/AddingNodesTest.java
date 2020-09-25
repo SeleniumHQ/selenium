@@ -42,6 +42,7 @@ import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -82,6 +83,7 @@ public class AddingNodesTest {
   private Wait<Object> wait;
   private URL externalUrl;
   private CombinedHandler handler;
+  private Secret registrationSecret;
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
@@ -98,7 +100,7 @@ public class AddingNodesTest {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(local);
-    distributor = new RemoteDistributor(tracer, clientFactory, externalUrl);
+    distributor = new RemoteDistributor(tracer, clientFactory, externalUrl, registrationSecret);
 
     wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(2));
   }
@@ -228,7 +230,7 @@ public class AddingNodesTest {
         NodeId nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(DefaultTestTracer.createTracer(), nodeId, uri);
+      super(DefaultTestTracer.createTracer(), nodeId, uri, null);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);
@@ -292,11 +294,6 @@ public class AddingNodesTest {
     }
 
     @Override
-    public String getRegistrationSecret() {
-      return "cheese";
-    }
-
-    @Override
     public NodeStatus getStatus() {
       Active active = null;
       if (running != null) {
@@ -314,7 +311,7 @@ public class AddingNodesTest {
             Instant.now(),
             Optional.ofNullable(active))),
         false,
-        "cheese");
+        new Secret("cheese"));
     }
 
     @Override

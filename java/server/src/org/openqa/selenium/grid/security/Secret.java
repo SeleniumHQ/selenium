@@ -15,32 +15,44 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node;
-
-import com.google.common.collect.ImmutableMap;
+package org.openqa.selenium.grid.security;
 
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.UncheckedIOException;
+import java.util.Objects;
 
-import static org.openqa.selenium.remote.http.Contents.asJson;
+public class Secret {
 
-class IsSessionOwner implements HttpHandler {
+  private final String secret;
 
-  private final Node node;
-  private final SessionId id;
+  public Secret(String secret) {
+    this.secret = Require.nonNull("Secret", secret);
+  }
 
-  IsSessionOwner(Node node, SessionId id) {
-    this.node = Require.nonNull("Node", node);
-    this.id = Require.nonNull("Session id", id);
+  public String encode() {
+    return secret;
   }
 
   @Override
-  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", node.isSessionOwner(id))));
+  public boolean equals(Object o) {
+    if (!(o instanceof Secret)) {
+      return false;
+    }
+
+    Secret that = (Secret) o;
+    return Objects.equals(this.secret, that.secret);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(secret);
+  }
+
+  private String toJson() {
+    return secret;
+  }
+
+  private static Secret fromJson(String secret) {
+    return new Secret(secret);
   }
 }

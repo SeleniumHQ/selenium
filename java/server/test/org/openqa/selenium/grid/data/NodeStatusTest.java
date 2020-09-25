@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.data;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 
@@ -52,7 +53,7 @@ public class NodeStatusTest {
             new ImmutableCapabilities("peas", "sausages"),
             Instant.now())))),
       false,
-      "cheese");
+      new Secret("cheese"));
 
     Json json = new Json();
     String source = json.toJson(status);

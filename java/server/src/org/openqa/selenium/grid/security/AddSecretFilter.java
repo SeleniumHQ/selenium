@@ -15,32 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node;
+package org.openqa.selenium.grid.security;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.UncheckedIOException;
+public class AddSecretFilter implements Filter {
 
-import static org.openqa.selenium.remote.http.Contents.asJson;
+  static final String HEADER_NAME = "X-REGISTRATION-SECRET";
+  private final Secret secret;
 
-class IsSessionOwner implements HttpHandler {
-
-  private final Node node;
-  private final SessionId id;
-
-  IsSessionOwner(Node node, SessionId id) {
-    this.node = Require.nonNull("Node", node);
-    this.id = Require.nonNull("Session id", id);
+  public AddSecretFilter(Secret secret) {
+    this.secret = secret;
   }
 
   @Override
-  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", node.isSessionOwner(id))));
+  public HttpHandler apply(HttpHandler httpHandler) {
+    return req -> {
+      if (req.getHeader(HEADER_NAME) == null) {
+        req.addHeader(HEADER_NAME, secret.encode());
+      }
+
+      return httpHandler.execute(req);
+    };
   }
 }

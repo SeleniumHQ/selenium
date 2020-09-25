@@ -31,6 +31,8 @@ import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.RequiresSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -129,11 +131,14 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     Tracer tracer,
     HttpClient.Factory httpClientFactory,
     SlotSelector slotSelector,
-    SessionMap sessions) {
+    SessionMap sessions,
+    Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
     Require.nonNull("HTTP client factory", httpClientFactory);
     this.slotSelector = Require.nonNull("Host selector", slotSelector);
     this.sessions = Require.nonNull("Session map", sessions);
+
+    RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
     Json json = new Json();
     routes = Route.combine(
@@ -142,13 +147,17 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
       }),
       post("/se/grid/distributor/session")
-          .to(() -> new CreateSession(this)),
+          .to(() -> new CreateSession(this))
+          .with(requiresSecret),
       post("/se/grid/distributor/node")
-          .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
+          .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
+          .with(requiresSecret),
       post("/se/grid/distributor/node/{nodeId}/drain")
-          .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
+          .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .with(requiresSecret),
       delete("/se/grid/distributor/node/{nodeId}")
-          .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
+          .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .with(requiresSecret),
       get("/se/grid/distributor/status")
           .to(() -> new GetDistributorStatus(this))
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
@@ -289,6 +298,4 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     return routes.execute(req);
   }
-
-  public abstract String getRegistrationSecret();
 }
