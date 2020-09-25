@@ -94,7 +94,7 @@ public class LocalDistributor extends Distributor {
       HttpClient.Factory clientFactory,
       SessionMap sessions,
       String registrationSecret) {
-    super(tracer, clientFactory, new DefaultSlotSelector(), sessions);
+    super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
@@ -168,6 +168,7 @@ public class LocalDistributor extends Distributor {
             clientFactory,
             status.getNodeId(),
             status.getUri(),
+            registrationSecret,
             status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
         add(node, status);
       }
@@ -256,11 +257,6 @@ public class LocalDistributor extends Distributor {
     } finally {
       readLock.unlock();
     }
-  }
-
-  @Override
-  public String getRegistrationSecret() {
-    return registrationSecret;
   }
 
   @Beta

@@ -20,6 +20,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/distributor/selector",
         "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/remote",
+        "//java/server/src/org/openqa/selenium/grid/security",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         # Default implementation of the session map. Loaded reflectively
         "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",

@@ -72,8 +72,9 @@ public class RemoteNode extends Node {
       HttpClient.Factory clientFactory,
       NodeId id,
       URI externalUri,
+      String registrationSecret,
       Collection<Capabilities> capabilities) {
-    super(tracer, id, externalUri);
+    super(tracer, id, externalUri, registrationSecret);
     this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
@@ -218,11 +219,6 @@ public class RemoteNode extends Node {
         "id", getId(),
         "uri", externalUri,
         "capabilities", capabilities);
-  }
-
-  @Override
-  public String getRegistrationSecret() {
-    return "";
   }
 
   private class RemoteCheck implements HealthCheck {

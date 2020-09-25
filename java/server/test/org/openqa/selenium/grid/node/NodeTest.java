@@ -102,6 +102,7 @@ public class NodeTest {
   private Node node;
   private ImmutableCapabilities caps;
   private URI uri;
+  private String registrationSecret;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -136,6 +137,7 @@ public class NodeTest {
         new PassthroughHttpClient.Factory(local),
         new NodeId(UUID.randomUUID()),
         uri,
+        registrationSecret,
         ImmutableSet.of(caps));
   }
 
@@ -143,7 +145,13 @@ public class NodeTest {
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
     Node local = LocalNode.builder(tracer, bus, uri, uri, null).build();
     HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
-    Node node = new RemoteNode(tracer, clientFactory, new NodeId(UUID.randomUUID()), uri, ImmutableSet.of());
+    Node node = new RemoteNode(
+      tracer,
+      clientFactory,
+      new NodeId(UUID.randomUUID()),
+      uri,
+      registrationSecret,
+      ImmutableSet.of());
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
@@ -262,6 +270,7 @@ public class NodeTest {
         new PassthroughHttpClient.Factory(local),
         new NodeId(UUID.randomUUID()),
         uri,
+        registrationSecret,
         ImmutableSet.of(caps));
 
     Session session = remote.newSession(createSessionRequest(caps))

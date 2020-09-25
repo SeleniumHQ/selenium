@@ -1,0 +1,13 @@
+java_library(
+    name = "security",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote/http",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ]
+)

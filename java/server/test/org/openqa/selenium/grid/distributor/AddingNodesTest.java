@@ -82,6 +82,7 @@ public class AddingNodesTest {
   private Wait<Object> wait;
   private URL externalUrl;
   private CombinedHandler handler;
+  private String registrationSecret;
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
@@ -98,7 +99,7 @@ public class AddingNodesTest {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(local);
-    distributor = new RemoteDistributor(tracer, clientFactory, externalUrl);
+    distributor = new RemoteDistributor(tracer, clientFactory, externalUrl, registrationSecret);
 
     wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(2));
   }
@@ -228,7 +229,7 @@ public class AddingNodesTest {
         NodeId nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(DefaultTestTracer.createTracer(), nodeId, uri);
+      super(DefaultTestTracer.createTracer(), nodeId, uri, null);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);
@@ -289,11 +290,6 @@ public class AddingNodesTest {
     @Override
     public boolean isSupporting(Capabilities capabilities) {
       return Objects.equals("cake", capabilities.getCapability("cheese"));
-    }
-
-    @Override
-    public String getRegistrationSecret() {
-      return "cheese";
     }
 
     @Override

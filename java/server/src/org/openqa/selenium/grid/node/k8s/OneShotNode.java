@@ -103,7 +103,7 @@ public class OneShotNode extends Node {
     URI gridUri,
     Capabilities stereotype,
     WebDriverInfo driverInfo) {
-    super(tracer, id, uri);
+    super(tracer, id, uri, registrationSecret);
 
     this.registrationSecret = registrationSecret;
     this.events = Require.nonNull("Event bus", events);
@@ -350,11 +350,6 @@ public class OneShotNode extends Node {
   @Override
   public HealthCheck getHealthCheck() {
     return () -> new HealthCheck.Result(true, "Everything is fine", registrationSecret);
-  }
-
-  @Override
-  public String getRegistrationSecret() {
-    return registrationSecret;
   }
 
   @Override

@@ -39,16 +39,19 @@ class AddNode implements HttpHandler {
   private final Distributor distributor;
   private final Json json;
   private final HttpClient.Factory httpFactory;
+  private final String registrationSecret;
 
   AddNode(
       Tracer tracer,
       Distributor distributor,
       Json json,
-      HttpClient.Factory httpFactory) {
+      HttpClient.Factory httpFactory,
+      String registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.distributor = Require.nonNull("Distributor", distributor);
     this.json = Require.nonNull("Json converter", json);
     this.httpFactory = Require.nonNull("HTTP Factory", httpFactory);
+    this.registrationSecret = registrationSecret;
   }
 
   @Override
@@ -60,6 +63,7 @@ class AddNode implements HttpHandler {
         httpFactory,
         status.getNodeId(),
         status.getUri(),
+        registrationSecret,
         status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
 
     distributor.add(node);

@@ -30,16 +30,15 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.data.Slot;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.NodeDrainComplete;
-import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -89,11 +88,12 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class DistributorTest {
 
+  private static final Logger LOG = Logger.getLogger("Distributor Test");
   private Tracer tracer;
   private EventBus bus;
   private Distributor local;
   private ImmutableCapabilities caps;
-  private static final Logger LOG = Logger.getLogger("Distributor Test");
+  private String registrationSecret;
 
   @Before
   public void setUp() {
@@ -110,7 +110,8 @@ public class DistributorTest {
     Distributor distributor = new RemoteDistributor(
         tracer,
         new PassthroughHttpClient.Factory(local),
-        new URL("http://does.not.exist/"));
+        new URL("http://does.not.exist/"),
+      registrationSecret);
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
@@ -192,9 +193,10 @@ public class DistributorTest {
         sessions,
         null);
     Distributor distributor = new RemoteDistributor(
-        tracer,
-        new PassthroughHttpClient.Factory(local),
-        new URL("http://does.not.exist"));
+      tracer,
+      new PassthroughHttpClient.Factory(local),
+      new URL("http://does.not.exist"),
+      registrationSecret);
     distributor.add(node);
     distributor.remove(node.getId());
 

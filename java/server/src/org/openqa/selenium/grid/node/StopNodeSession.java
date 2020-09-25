@@ -37,6 +37,6 @@ class StopNodeSession implements HttpHandler {
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     node.stop(id);
-    return new HttpResponse().setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret());
+    return new HttpResponse();
   }
 }

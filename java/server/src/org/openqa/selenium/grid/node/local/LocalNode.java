@@ -118,7 +118,7 @@ public class LocalNode extends Node {
     Duration sessionTimeout,
     List<SessionSlot> factories,
     String registrationSecret) {
-    super(tracer, new NodeId(UUID.randomUUID()), uri);
+    super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
 
@@ -457,9 +457,6 @@ public class LocalNode extends Node {
     } else {
       pendingSessions.set(currentSessionCount);
     }
-  }
-  public String getRegistrationSecret() {
-    return registrationSecret;
   }
 
   private Map<String, Object> toJson() {

@@ -51,12 +51,13 @@ public class RemoteDistributor extends Distributor {
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Remote)");
   private final HttpHandler client;
 
-  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url) {
+  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url, String registrationSecret) {
     super(
       tracer,
       factory,
       (caps, nodes) -> {throw new UnsupportedOperationException("host selection");},
-      new NullSessionMap(tracer));
+      new NullSessionMap(tracer),
+      registrationSecret);
     this.client = factory.createClient(url);
   }
 
@@ -137,9 +138,5 @@ public class RemoteDistributor extends Distributor {
   @Override
   protected Supplier<CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request) {
     throw new UnsupportedOperationException("reserve is not required for remote sessions");
-  }
-
-  public String getRegistrationSecret() {
-    return "";
   }
 }

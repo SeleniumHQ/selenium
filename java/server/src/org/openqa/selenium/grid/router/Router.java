@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -31,9 +30,6 @@ import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
-import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.matching;
@@ -86,16 +82,6 @@ public class Router implements HasReadyState, Routable {
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    HttpResponse response =  routes.execute(req);
-    if (response.getHeader("X-REGISTRATION-SECRET").equals(distributor.getRegistrationSecret())) {
-      return response;
-    }
-
-    return new HttpResponse()
-      .setStatus(HTTP_UNAUTHORIZED)
-      .setContent(asJson(ImmutableMap.of(
-        "value", ImmutableMap.of(
-          "error", "unauthorized",
-          "stacktrace", ""))));
+    return routes.execute(req);
   }
 }
