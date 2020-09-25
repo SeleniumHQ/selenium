@@ -22,6 +22,9 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe DevTools, only: {driver: %i[chrome edge]} do
+      let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
+      let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
+
       after do
         quit_driver
       end
@@ -39,6 +42,24 @@ module Selenium
         driver.navigate.to url_for('xhtmlTest.html')
 
         expect(callback).to have_received(:call)
+      end
+
+      it 'authenticates on any request' do
+        driver.register(username: username, password: password)
+
+        driver.navigate.to url_for('basicAuth')
+        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
+      end
+
+      it 'authenticates based on URL' do
+        auth_url = url_for('basicAuth')
+        driver.register(username: username, password: password, uri: /localhost/)
+
+        driver.navigate.to auth_url.sub('localhost', '127.0.0.1')
+        expect { driver.find_element(tag_name: 'h1') }.to raise_error(Error::NoSuchElementError)
+
+        driver.navigate.to auth_url
+        expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
       end
     end
   end

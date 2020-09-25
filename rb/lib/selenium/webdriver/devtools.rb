@@ -41,6 +41,7 @@ module Selenium
       def send_cmd(method, **params)
         id = next_id
         data = JSON.generate(id: id, method: method, params: params.reject { |_, v| v.nil? })
+        WebDriver.logger.debug "DevTools -> #{data}"
 
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
         socket.write(out_frame.to_s)
@@ -77,10 +78,11 @@ module Selenium
             while (frame = incoming_frame.next)
               message = JSON.parse(frame.to_s)
               @messages << message
+              WebDriver.logger.debug "DevTools <- #{message}"
               next unless message['method']
 
               callbacks[message['method']].each do |callback|
-                callback.call(message['params'])
+                Thread.new { callback.call(message['params']) }
               end
             end
           end
