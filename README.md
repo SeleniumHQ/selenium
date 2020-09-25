@@ -4,7 +4,7 @@
 
 Selenium is an umbrella project encapsulating a variety of tools and
 libraries enabling web browser automation. Selenium specifically
-provides infrastructure for the [W3C WebDriver specification](https://w3c.github.io/webdriver/)
+provides an infrastructure for the [W3C WebDriver specification](https://w3c.github.io/webdriver/)
 — a platform and language-neutral coding interface compatible with all
 major web browsers.
 
@@ -40,7 +40,7 @@ which wraps the main build too, `bazel`.
 ### Bazel
 
 [Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
-downloads, generates the Selenium binaries, executes tests and does it all rather quickly.
+downloads, generates the Selenium binaries, executes tests, and does it all rather quickly.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
 the java and javascript folders to build without errors, you should be confident that you have the
@@ -86,7 +86,7 @@ individual module (assuming all dependent modules have previously been built), t
 ```
 
 In this case, `javascript/atoms` is the module directory,
-`test` is a target in that directory's `build.desc` file,
+`test` is a target in that directory's `build.desc` file
 and `run` is the action to run on that target.
 
 As you see *build targets* scroll past in the log,
@@ -133,7 +133,7 @@ If you plan to compile the
 you also need:
 
 * [Visual Studio 2008](https://www.visualstudio.com/)
-* 32 and 64 bit cross compilers
+* 32 and 64-bit cross compilers
 
 The build will work on any platform, but the tests for IE will be
 skipped silently if you are not building on Windows.
@@ -166,7 +166,7 @@ the ```test java/...``` to launch browsers and consume a considerable amount of 
 
 ## Tour
 
-The code base is generally segmented around the languages used to
+The codebase is generally segmented around the languages used to
 write the component.  Selenium makes extensive use of JavaScript, so
 let's start there.  Working on the JavaScript is easy.  First of all,
 start the development server:
@@ -236,7 +236,7 @@ targets.
 
 If it is not clear already, Selenium is not built with Maven. It is
 built with `bazel`, though that is invoked with `go` as outlined above,
-so you do not really have to learn too much about that.
+so you do not have to learn too much about that.
 
 That said, it is possible to relatively quickly build Selenium pieces
 for Maven to use. You are only really going to want to do this when
@@ -264,7 +264,7 @@ the browser-specific drivers (`geckodriver`, `chromedriver`, etc.) - you need
 to download them separately and put them on your `PATH`.
 
 1. Run the X server `Xvfb :99` or `Xnest :99`
-2. Run a window manager, for example `DISPLAY=:99 jwm`
+2. Run a window manager, for example, `DISPLAY=:99 jwm`
 3. Run the tests you are interested in:
 ```sh
 bazel test --test_env=DISPLAY=:99 //java/... --test_tag_filters=chrome
