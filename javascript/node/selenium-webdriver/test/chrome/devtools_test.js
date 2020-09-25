@@ -94,10 +94,10 @@ test.suite(
       )
     })
 
-    describe('Basic Auth Injection', function() {
+    describe('Basic Auth Injection', function () {
       const server = new Server(function(req, res) {
         if (req.method == 'GET' && req.url == '/protected') {
-          const denyAccess = function() {
+          const denyAccess = function () {
             res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
             res.end('Access denied')
           }
@@ -122,14 +122,15 @@ test.suite(
         }
       })
 
-      server.start();
+      server.start()
 
       it('denies entry if username and password do not match', async function() {
-        const cdpConnection = await driver.createCDPConnection();
+        // eslint-disable-next-line no-unused-vars
+        const cdpConnection = await driver.createCDPConnection()
 
-        await driver.register('random', 'random');
+        await driver.register('random', 'random')
         await driver.get(server.url() + '/protected')
-        server.stop()
+        await server.stop()
       })
     })
 
