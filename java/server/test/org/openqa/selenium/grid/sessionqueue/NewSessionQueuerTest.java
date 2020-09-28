@@ -23,6 +23,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.grid.data.NewSessionRejectedEvent.NEW_SESSION_REJECTED;
 import static org.openqa.selenium.grid.data.NewSessionRequestEvent.NEW_SESSION_REQUEST;
@@ -160,7 +161,7 @@ public class NewSessionQueuerTest {
   }
 
   @Test
-  public void shouldBeAbleToAddToQueueRemotely() {
+  public void shouldBeAbleToAddToQueueRemotelyAndGetErrorResponse() {
 
     bus.addListener(NEW_SESSION_REQUEST, event -> {
       Optional<HttpRequest> sessionRequest = this.remote.remove();
@@ -342,12 +343,8 @@ public class NewSessionQueuerTest {
       assertEquals(firstResponse.getStatus(), HTTP_OK);
       assertEquals(secondResponse.getStatus(), HTTP_OK);
 
-      assertTrue(!firstResponseContents.equals(secondResponseContents));
-    } catch (InterruptedException e) {
-      fail("Could not create session");
-    } catch (ExecutionException e) {
-      fail("Could not create session");
-    } catch (TimeoutException e) {
+      assertNotEquals(firstResponseContents, secondResponseContents);
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
       fail("Could not create session");
     }
 
@@ -401,11 +398,7 @@ public class NewSessionQueuerTest {
       assertEquals(firstResponse.getStatus(), HTTP_INTERNAL_ERROR);
       assertEquals(secondResponse.getStatus(), HTTP_INTERNAL_ERROR);
 
-    } catch (InterruptedException e) {
-      fail("Could not create session");
-    } catch (ExecutionException e) {
-      fail("Could not create session");
-    } catch (TimeoutException e) {
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
       fail("Could not create session");
     }
 
