@@ -34,15 +34,15 @@ import java.util.Set;
 public class NewSessionQueueFlags implements HasRoles {
 
   @Parameter(
-      names = {"--session-request-timeout"},
-      description = "Timeout in seconds. New incoming session request is added to the queue. "
-                    + "Requests sitting in the queue for longer than the configured time will timeout.")
+    names = { "--session-request-timeout" },
+    description = "Timeout in seconds. New incoming session request is added to the queue. "
+      + "Requests sitting in the queue for longer than the configured time will timeout.")
   @ConfigValue(section = "sessionqueue", name = "session-request-timeout", example = "5")
-  private int sessionRequestTimeout = 30;
+  private int sessionRequestTimeout = 300;
 
   @Parameter(
-      names = {"--session-retry-interval"},
-      description = "If all slots are busy, new session request will be retried after the given interval.")
+    names = { "--session-retry-interval" },
+    description = "If all slots are busy, new session request will be retried after the given interval.")
   @ConfigValue(section = "sessionqueue", name = "session-retry-interval", example = "5")
   private int sessionRetryInterval = 5;
 

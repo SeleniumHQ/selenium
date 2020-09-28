@@ -20,33 +20,35 @@ package org.openqa.selenium.grid.sessionqueue.config;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 
+import java.time.Duration;
+
 public class NewSessionQueueOptions {
 
   private static final String SESSIONS_QUEUE_SECTION = "sessionqueue";
   private static final String
-      DEFAULT_NEWSESSION_QUEUE = "org.openqa.selenium.grid.sessionmap.remote.LocalNewSessionQueue";
+    DEFAULT_NEWSESSION_QUEUE = "org.openqa.selenium.grid.sessionmap.remote.LocalNewSessionQueue";
 
   private final Config config;
-  private int DEFAULT_REQUEST_TIMEOUT = 30;
-  private int DEFAULT_RETRY_INTERVAL = 5;
+  private final int DEFAULT_REQUEST_TIMEOUT = 300;
+  private final int DEFAULT_RETRY_INTERVAL = 5;
 
   public NewSessionQueueOptions(Config config) {
     this.config = config;
   }
 
-  public int getSessionRequestTimeout() {
+  public Duration getSessionRequestTimeout() {
     int timeout = config.getInt(SESSIONS_QUEUE_SECTION, "session-request-timeout")
-        .orElse(DEFAULT_REQUEST_TIMEOUT);
+      .orElse(DEFAULT_REQUEST_TIMEOUT);
 
     if (timeout <= 0) {
-      return DEFAULT_REQUEST_TIMEOUT;
+      return Duration.ofSeconds(DEFAULT_REQUEST_TIMEOUT);
     }
-    return timeout;
+    return Duration.ofSeconds(timeout);
   }
 
   public int getSessionRequestRetryInterval() {
     int interval = config.getInt(SESSIONS_QUEUE_SECTION, "session-retry-interval")
-        .orElse(DEFAULT_RETRY_INTERVAL);
+      .orElse(DEFAULT_RETRY_INTERVAL);
 
     if (interval <= 0) {
       return DEFAULT_RETRY_INTERVAL;
@@ -56,7 +58,7 @@ public class NewSessionQueueOptions {
 
   public NewSessionQueue getSessionQueue() {
     return config
-        .getClass(SESSIONS_QUEUE_SECTION, "implementation", NewSessionQueue.class,
-                  DEFAULT_NEWSESSION_QUEUE);
+      .getClass(SESSIONS_QUEUE_SECTION, "implementation", NewSessionQueue.class,
+        DEFAULT_NEWSESSION_QUEUE);
   }
 }
