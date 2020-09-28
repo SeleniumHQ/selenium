@@ -207,9 +207,12 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .collect(toImmutableSet());
 
         // Find a host that supports the capabilities present in the new session
-        selected = slotSelector.selectSlot(firstRequest.getCapabilities(), availableHosts)
-          // Reserve some space for this session
-          .map(id -> reserve(id, firstRequest));
+        Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getCapabilities(), availableHosts);
+        if (!slotIds.isEmpty()) {
+          selected = Optional.of(reserve(slotIds.iterator().next(), firstRequest));
+        } else {
+          selected = Optional.empty();
+        }
       } finally {
         writeLock.unlock();
       }
