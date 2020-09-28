@@ -31,6 +31,8 @@ import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.RequiresSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -82,7 +84,8 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 /**
- * Responsible for being the central place where the {@link Node}s on which {@link Session}s run
+ * Responsible for being the central place where the {@link Node}s
+ * on which {@link Session}s run
  * are determined.
  * <p>
  * This class responds to the following URLs:
@@ -95,19 +98,23 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
  * <tr>
  *   <td>POST</td>
  *   <td>/session</td>
- *   <td>This is exactly the same as the New Session command from the WebDriver spec.</td>
+ *   <td>This is exactly the same as the New Session command
+ *   from the WebDriver spec.</td>
  * </tr>
  * <tr>
  *   <td>POST</td>
  *   <td>/se/grid/distributor/node</td>
- *   <td>Adds a new {@link Node} to this distributor. Please read the javadocs for {@link Node} for
+ *   <td>Adds a new {@link Node} to this distributor.
+ *   Please read the javadocs for {@link Node} for
  *     how the Node should be serialized.</td>
  * </tr>
  * <tr>
  *   <td>DELETE</td>
  *   <td>/se/grid/distributor/node/{nodeId}</td>
- *   <td>Remove the {@link Node} identified by {@code nodeId} from this distributor. It is expected
- *     that any sessions running on the Node are allowed to complete: this simply means that no new
+ *   <td>Remove the {@link Node} identified by {@code nodeId}
+ *      from this distributor. It is expected
+ *     that any sessions running on the Node are allowed to complete:
+ *     this simply means that no new
  *     sessions will be scheduled on this Node.</td>
  * </tr>
  * </table>
@@ -124,11 +131,14 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     Tracer tracer,
     HttpClient.Factory httpClientFactory,
     SlotSelector slotSelector,
-    SessionMap sessions) {
+    SessionMap sessions,
+    Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
     Require.nonNull("HTTP client factory", httpClientFactory);
     this.slotSelector = Require.nonNull("Host selector", slotSelector);
     this.sessions = Require.nonNull("Session map", sessions);
+
+    RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
     Json json = new Json();
     routes = Route.combine(
@@ -137,13 +147,17 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
       }),
       post("/se/grid/distributor/session")
-          .to(() -> new CreateSession(this)),
+          .to(() -> new CreateSession(this))
+          .with(requiresSecret),
       post("/se/grid/distributor/node")
-          .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
+          .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
+          .with(requiresSecret),
       post("/se/grid/distributor/node/{nodeId}/drain")
-          .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
+          .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .with(requiresSecret),
       delete("/se/grid/distributor/node/{nodeId}")
-          .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId"))))),
+          .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .with(requiresSecret),
       get("/se/grid/distributor/status")
           .to(() -> new GetDistributorStatus(this))
           .with(new SpanDecorator(tracer, req -> "distributor.status")));

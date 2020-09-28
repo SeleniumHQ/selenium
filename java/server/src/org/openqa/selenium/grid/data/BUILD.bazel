@@ -13,6 +13,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid/security",
         artifact("com.google.guava:guava"),
     ],
 )

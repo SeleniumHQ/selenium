@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -72,8 +73,9 @@ public class RemoteNode extends Node {
       HttpClient.Factory clientFactory,
       NodeId id,
       URI externalUri,
+      Secret registrationSecret,
       Collection<Capabilities> capabilities) {
-    super(tracer, id, externalUri);
+    super(tracer, id, externalUri, registrationSecret);
     this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 

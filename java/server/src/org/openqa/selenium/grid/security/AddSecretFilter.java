@@ -15,37 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node;
+package org.openqa.selenium.grid.security;
 
-import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpHandler;
 
-@FunctionalInterface
-public interface HealthCheck {
+public class AddSecretFilter implements Filter {
 
-  Result check();
+  static final String HEADER_NAME = "X-REGISTRATION-SECRET";
+  private final Secret secret;
 
-  class Result {
-    private final boolean isAlive;
-    private final String message;
-    private final Secret registrationSecret;
+  public AddSecretFilter(Secret secret) {
+    this.secret = secret;
+  }
 
-    public Result(boolean isAlive, String message) {
-      this(isAlive, message, null);
-    }
+  @Override
+  public HttpHandler apply(HttpHandler httpHandler) {
+    return req -> {
+      if (req.getHeader(HEADER_NAME) == null) {
+        req.addHeader(HEADER_NAME, secret.encode());
+      }
 
-    public Result(boolean isAlive, String message, Secret registrationSecret) {
-      this.isAlive = isAlive;
-      this.message = Require.nonNull("Message", message);
-      this.registrationSecret = registrationSecret;
-    }
-
-    public boolean isAlive() {
-      return isAlive;
-    }
-
-    public String getMessage() {
-      return message;
-    }
+      return httpHandler.execute(req);
+    };
   }
 }

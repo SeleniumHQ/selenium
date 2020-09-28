@@ -26,12 +26,12 @@ import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
-import org.openqa.selenium.grid.data.NodeId;
-import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.config.NodeOptions;
@@ -120,7 +120,8 @@ public class NodeServer extends TemplateGridCommand {
 
     HttpHandler readinessCheck = req -> {
       if (node.getStatus().hasCapacity()) {
-        return new HttpResponse().setStatus(HTTP_NO_CONTENT);
+        return new HttpResponse()
+          .setStatus(HTTP_NO_CONTENT);
       }
 
       return new HttpResponse()

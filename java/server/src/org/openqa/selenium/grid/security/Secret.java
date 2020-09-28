@@ -15,37 +15,44 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node;
+package org.openqa.selenium.grid.security;
 
-import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 
-@FunctionalInterface
-public interface HealthCheck {
+import java.util.Objects;
 
-  Result check();
+public class Secret {
 
-  class Result {
-    private final boolean isAlive;
-    private final String message;
-    private final Secret registrationSecret;
+  private final String secret;
 
-    public Result(boolean isAlive, String message) {
-      this(isAlive, message, null);
+  public Secret(String secret) {
+    this.secret = Require.nonNull("Secret", secret);
+  }
+
+  public String encode() {
+    return secret;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Secret)) {
+      return false;
     }
 
-    public Result(boolean isAlive, String message, Secret registrationSecret) {
-      this.isAlive = isAlive;
-      this.message = Require.nonNull("Message", message);
-      this.registrationSecret = registrationSecret;
-    }
+    Secret that = (Secret) o;
+    return Objects.equals(this.secret, that.secret);
+  }
 
-    public boolean isAlive() {
-      return isAlive;
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(secret);
+  }
 
-    public String getMessage() {
-      return message;
-    }
+  private String toJson() {
+    return secret;
+  }
+
+  private static Secret fromJson(String secret) {
+    return new Secret(secret);
   }
 }

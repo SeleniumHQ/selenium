@@ -19,41 +19,20 @@
 
 module Selenium
   module WebDriver
-    module Chrome
+    class DevTools
+      class ConsoleEvent
 
-      #
-      # Driver implementation for Chrome.
-      # @api private
-      #
+        attr_accessor :type, :timestamp, :args
 
-      class Driver < WebDriver::Driver
-        include DriverExtensions::HasNetworkConditions
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasLocation
-        include DriverExtensions::TakesScreenshot
-        include DriverExtensions::DownloadsFiles
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasAuthentication
-        include DriverExtensions::HasLogEvents
-
-        def browser
-          :chrome
+        def initialize(type:, timestamp:, args:)
+          @type = type.to_sym
+          @timestamp = Time.at(timestamp / 1000)
+          @args = args.map do |arg|
+            arg.key?('value') ? arg['value'] : arg
+          end
         end
 
-        def bridge_class
-          Bridge
-        end
-
-        def execute_cdp(cmd, **params)
-          @bridge.send_command(cmd: cmd, params: params)
-        end
-
-        private
-
-        def debugger_address
-          capabilities['goog:chromeOptions']['debuggerAddress']
-        end
-      end # Driver
-    end # Chrome
+      end # ConsoleEvent
+    end # DevTools
   end # WebDriver
 end # Selenium

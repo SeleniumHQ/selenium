@@ -45,6 +45,7 @@ import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
@@ -104,7 +105,7 @@ public class LocalNode extends Node {
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
-  private final String registrationSecret;
+  private final Secret registrationSecret;
   private AtomicInteger pendingSessions = new AtomicInteger();
 
   private LocalNode(
@@ -117,8 +118,8 @@ public class LocalNode extends Node {
     Ticker ticker,
     Duration sessionTimeout,
     List<SessionSlot> factories,
-    String registrationSecret) {
-    super(tracer, new NodeId(UUID.randomUUID()), uri);
+    Secret registrationSecret) {
+    super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
 
@@ -475,7 +476,7 @@ public class LocalNode extends Node {
     EventBus bus,
     URI uri,
     URI gridUri,
-    String registrationSecret) {
+    Secret registrationSecret) {
     return new Builder(tracer, bus, uri, gridUri, registrationSecret);
   }
 
@@ -485,7 +486,7 @@ public class LocalNode extends Node {
     private final EventBus bus;
     private final URI uri;
     private final URI gridUri;
-    private final String registrationSecret;
+    private final Secret registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
@@ -497,7 +498,7 @@ public class LocalNode extends Node {
       EventBus bus,
       URI uri,
       URI gridUri,
-      String registrationSecret) {
+      Secret registrationSecret) {
       this.tracer = Require.nonNull("Tracer", tracer);
       this.bus = Require.nonNull("Event bus", bus);
       this.uri = Require.nonNull("Remote node URI", uri);

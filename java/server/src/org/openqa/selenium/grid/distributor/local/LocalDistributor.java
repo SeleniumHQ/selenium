@@ -40,6 +40,7 @@ import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
@@ -86,15 +87,15 @@ public class LocalDistributor extends Distributor {
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<NodeId, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
-  private final String registrationSecret;
+  private final Secret registrationSecret;
 
   public LocalDistributor(
       Tracer tracer,
       EventBus bus,
       HttpClient.Factory clientFactory,
       SessionMap sessions,
-      String registrationSecret) {
-    super(tracer, clientFactory, new DefaultSlotSelector(), sessions);
+      Secret registrationSecret) {
+    super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
@@ -168,6 +169,7 @@ public class LocalDistributor extends Distributor {
             clientFactory,
             status.getNodeId(),
             status.getUri(),
+            registrationSecret,
             status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
         add(node, status);
       }
