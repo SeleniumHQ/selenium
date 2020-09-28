@@ -101,17 +101,23 @@ class UnboundZmqEventBus implements EventBus {
     Failsafe.with(retryPolicy).run(
       () -> {
         sub = context.createSocket(SocketType.SUB);
-        sub.setCurvePublicKey(clientKeys[0].getBytes());
-        sub.setCurveSecretKey(clientKeys[1].getBytes());
-        sub.setCurveServerKey(serverKeys[0].getBytes());
-        sub.setIPv6(isSubAddressIPv6(publishConnection));
+        if (subscribeConnection.contains("tcp://")) {
+          sub.setCurvePublicKey(clientKeys[0].getBytes());
+          sub.setCurveSecretKey(clientKeys[1].getBytes());
+          sub.setCurveServerKey(serverKeys[0].getBytes());
+          sub.setIPv6(isSubAddressIPv6(publishConnection));
+        }
+
         sub.connect(publishConnection);
         sub.subscribe(new byte[0]);
 
         pub = context.createSocket(SocketType.PUB);
-        pub.setCurvePublicKey(serverKeys[0].getBytes());
-        pub.setCurveSecretKey(serverKeys[1].getBytes());
-        pub.setIPv6(isSubAddressIPv6(subscribeConnection));
+        if (publishConnection.contains("tcp://")) {
+          pub.setCurvePublicKey(serverKeys[0].getBytes());
+          pub.setCurveSecretKey(serverKeys[1].getBytes());
+          pub.setIPv6(isSubAddressIPv6(subscribeConnection));
+        }
+
         pub.connect(subscribeConnection);
       }
     );

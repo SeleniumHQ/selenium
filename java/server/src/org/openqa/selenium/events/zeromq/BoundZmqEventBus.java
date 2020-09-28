@@ -58,17 +58,23 @@ class BoundZmqEventBus implements EventBus {
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
     xpub = context.createSocket(SocketType.XPUB);
-    xpub.setCurvePublicKey(serverKeys[0].getBytes());
-    xpub.setCurveSecretKey(serverKeys[1].getBytes());
-    xpub.setIPv6(xpubAddr.isIPv6);
+    if (publishConnection.contains("tcp://")) {
+      xpub.setCurvePublicKey(serverKeys[0].getBytes());
+      xpub.setCurveSecretKey(serverKeys[1].getBytes());
+      xpub.setIPv6(xpubAddr.isIPv6);
+    }
+
     xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
 
     xsub = context.createSocket(SocketType.XSUB);
-    xsub.setCurvePublicKey(clientKeys[0].getBytes());
-    xsub.setCurveSecretKey(clientKeys[1].getBytes());
-    xsub.setCurveServerKey(serverKeys[0].getBytes());
-    xsub.setIPv6(xsubAddr.isIPv6);
+    if (subscribeConnection.contains("tcp://")) {
+      xsub.setCurvePublicKey(clientKeys[0].getBytes());
+      xsub.setCurveSecretKey(clientKeys[1].getBytes());
+      xsub.setCurveServerKey(serverKeys[0].getBytes());
+      xsub.setIPv6(xsubAddr.isIPv6);
+    }
+
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
 
