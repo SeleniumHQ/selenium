@@ -130,14 +130,14 @@ public class LocalNodeTest {
     assertThat(status.getSlots().stream()
       .filter(slot -> slot.getSession().isPresent())
       .map(slot -> slot.getSession().get())
-      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+      .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     status = node.getStatus();
     assertThat(status.getSlots().stream()
       .filter(slot -> slot.getSession().isPresent())
       .map(slot -> slot.getSession().get())
-      .filter(s -> s.getSessionId().equals(session.getId()))).isEmpty();
+      .filter(s -> s.getId().equals(session.getId()))).isEmpty();
   }
 
   @Test
@@ -146,13 +146,13 @@ public class LocalNodeTest {
     assertThat(status.getSlots().stream()
       .filter(slot -> slot.getSession().isPresent())
       .map(slot -> slot.getSession().get())
-      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+      .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     assertThat(status.getSlots().stream()
       .filter(slot -> slot.getSession().isPresent())
       .map(slot -> slot.getSession().get())
-      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+      .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
   }
 
   @Test

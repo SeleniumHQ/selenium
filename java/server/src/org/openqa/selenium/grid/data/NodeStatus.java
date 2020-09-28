@@ -59,7 +59,7 @@ public class NodeStatus {
     this.registrationSecret = registrationSecret;
 
     Map<Capabilities, Integer> stereotypes = new HashMap<>();
-    ImmutableSet.Builder<Active> sessions = ImmutableSet.builder();
+    ImmutableSet.Builder<Session> sessions = ImmutableSet.builder();
 
     for (Slot slot : slots) {
       int count = stereotypes.getOrDefault(slot.getStereotype(), 0);

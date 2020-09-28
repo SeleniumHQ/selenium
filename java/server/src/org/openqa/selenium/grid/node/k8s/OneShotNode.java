@@ -28,7 +28,6 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
-import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
@@ -340,7 +339,7 @@ public class OneShotNode extends Node {
           Instant.EPOCH,
           driver == null ?
             Optional.empty() :
-            Optional.of(new Active(stereotype, sessionId, capabilities, Instant.now())))),
+            Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
       draining,
       registrationSecret);
   }

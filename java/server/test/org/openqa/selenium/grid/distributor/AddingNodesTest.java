@@ -25,7 +25,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -212,7 +211,7 @@ public class AddingNodesTest {
           new SlotId(status.getNodeId(), UUID.randomUUID()),
           CAPS,
           Instant.now(),
-          Optional.of(new Active(CAPS, new SessionId(UUID.randomUUID()), CAPS, Instant.now())))),
+          Optional.of(new Session(new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
       false,
       null);
 
@@ -298,9 +297,13 @@ public class AddingNodesTest {
 
     @Override
     public NodeStatus getStatus() {
-      Active active = null;
+      Session sess = null;
       if (running != null) {
-        active = new Active(CAPS, running.getId(), running.getCapabilities(), Instant.now());
+        try {
+          sess = new Session(running.getId(), new URI("http://localhost:14568"), CAPS, running.getCapabilities(), Instant.now());
+        } catch (URISyntaxException e) {
+          throw new RuntimeException(e);
+        }
       }
 
       return new NodeStatus(
@@ -312,7 +315,7 @@ public class AddingNodesTest {
             new SlotId(getId(), UUID.randomUUID()),
             CAPS,
             Instant.now(),
-            Optional.ofNullable(active))),
+            Optional.ofNullable(sess))),
         false,
         new Secret("cheese"));
     }

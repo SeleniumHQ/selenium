@@ -19,10 +19,8 @@ package org.openqa.selenium.grid.distributor.model;
 
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -169,12 +167,7 @@ public class Host {
         new SlotId(nodeId, UUID.randomUUID()),
         slot.getStereotype(),
         Instant.ofEpochMilli(slot.getLastSessionCreated()),
-        Optional.ofNullable(slot.getCurrentSession()).map(session ->
-          new Active(
-            slot.getStereotype(),
-            session.getId(),
-            ImmutableCapabilities.copyOf(session.getCapabilities()),
-            Instant.ofEpochMilli(slot.getLastSessionCreated())))))
+        Optional.ofNullable(slot.getCurrentSession())))
       .collect(toImmutableSet());
 
     return new NodeStatus(

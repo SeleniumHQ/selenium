@@ -31,7 +31,6 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
@@ -414,13 +413,14 @@ public class LocalNode extends Node {
   public NodeStatus getStatus() {
     Set<Slot> slots = factories.stream()
       .map(slot -> {
-        Optional<Active> session = Optional.empty();
+        Optional<Session> session = Optional.empty();
         if (!slot.isAvailable()) {
           ActiveSession activeSession = slot.getSession();
           session = Optional.of(
-            new Active(
-              slot.getStereotype(),
+            new Session(
               activeSession.getId(),
+              activeSession.getUri(),
+              slot.getStereotype(),
               activeSession.getCapabilities(),
               activeSession.getStartTime()));
         }
