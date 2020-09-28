@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.sessionqueue;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -54,8 +55,14 @@ class AddBackToSessionQueue implements HttpHandler {
 
       boolean value = newSessionQueuer.retryAddToQueue(req, id);
 
-      return new HttpResponse().setContent(
+      span.setAttribute("request.retry", value);
+
+      HttpResponse response = new HttpResponse().setContent(
           asJson(ImmutableMap.of("value", value)));
+
+      HTTP_RESPONSE.accept(span, response);
+
+      return response;
     }
   }
 }

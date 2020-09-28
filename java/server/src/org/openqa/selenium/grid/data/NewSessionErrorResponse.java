@@ -23,23 +23,22 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class NewSessionErrorResponse {
 
   private final String message;
-  private final UUID requestId;
+  private final RequestId requestId;
 
-  public NewSessionErrorResponse(String message, UUID requestId) {
-    this.message = Require.nonNull("Message", message);
+  public NewSessionErrorResponse(RequestId requestId, String message) {
     this.requestId = Require.nonNull("Request Id", requestId);
+    this.message = Require.nonNull("Message", message);
   }
 
   public String getMessage() {
     return message;
   }
 
-  public UUID getRequestId() {
+  public RequestId getRequestId() {
     return requestId;
   }
 
@@ -51,7 +50,7 @@ public class NewSessionErrorResponse {
 
   private static NewSessionErrorResponse fromJson(JsonInput input) {
     String message = null;
-    UUID requestId = null;
+    RequestId requestId = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -61,7 +60,7 @@ public class NewSessionErrorResponse {
           break;
 
         case "requestId":
-          requestId = input.read(UUID.class);
+          requestId = input.read(RequestId.class);
           break;
 
         default:
@@ -71,7 +70,7 @@ public class NewSessionErrorResponse {
     }
     input.endObject();
 
-    return new NewSessionErrorResponse(message, requestId);
+    return new NewSessionErrorResponse(requestId, message);
   }
 
 }
