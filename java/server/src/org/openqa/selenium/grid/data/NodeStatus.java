@@ -69,7 +69,7 @@ public class NodeStatus {
   }
 
   public boolean hasCapacity() {
-    return slots.stream().anyMatch(slot -> slot.getSession().isPresent());
+    return slots.stream().anyMatch(slot -> !slot.getSession().isPresent());
   }
 
   public boolean hasCapacity(Capabilities caps) {
@@ -103,7 +103,7 @@ public class NodeStatus {
 
   public float getLoad() {
     float inUse = slots.parallelStream()
-      .filter(slot -> !slot.getSession().isPresent())
+      .filter(slot -> slot.getSession().isPresent())
       .count();
 
     return (inUse / (float) maxSessionCount) * 100f;

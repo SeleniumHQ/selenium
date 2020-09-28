@@ -51,6 +51,7 @@ public class DefaultSlotSelector implements SlotSelector {
     Stream<NodeStatus> prioritizedNodes = getPrioritizedNodeStream(firstRound, capabilities);
 
     //Take the further-filtered Stream and prioritize by load, then by session age
+
     return prioritizedNodes
       .sorted(
         // Now sort by node which has the lowest load (natural ordering)

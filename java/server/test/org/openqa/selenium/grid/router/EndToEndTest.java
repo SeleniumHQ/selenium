@@ -51,6 +51,7 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -254,9 +255,10 @@ public class EndToEndTest {
     driver.quit();
 
     HttpClient client = clientFactory.createClient(server.getUrl());
-    new FluentWait<>("").withTimeout(ofSeconds(2)).until(obj -> {
+    new FluentWait<>("").withTimeout(ofSeconds(200)).until(obj -> {
       try {
         HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+        System.out.println(Contents.string(response));
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status.get("ready"));
       } catch (UncheckedIOException e) {

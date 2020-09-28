@@ -21,11 +21,12 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -37,7 +38,6 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -51,37 +51,33 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
 public class LocalDistributor extends Distributor {
 
-  private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
 
   private final Tracer tracer;
@@ -90,10 +86,10 @@ public class LocalDistributor extends Distributor {
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Multimap<NodeId, Runnable> allChecks = HashMultimap.create();
-  private final Secret registrationSecret;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final Set<Host> hosts = new HashSet<>();
+  private final GridModel model;
+  private final Map<NodeId, Node> nodes;
 
   public LocalDistributor(
       Tracer tracer,
@@ -106,9 +102,11 @@ public class LocalDistributor extends Distributor {
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.sessions = Require.nonNull("Session map", sessions);
-    this.registrationSecret = registrationSecret;
+    this.model = new GridModel(bus, registrationSecret);
+    this.nodes = new HashMap<>();
 
-    bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
+    bus.addListener(NODE_STATUS, event -> register(registrationSecret, event.getData(NodeStatus.class)));
+    bus.addListener(NODE_STATUS, event -> model.refresh(registrationSecret, event.getData(NodeStatus.class)));
     bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(NodeId.class)));
   }
 
@@ -133,52 +131,38 @@ public class LocalDistributor extends Distributor {
     }
   }
 
-  private void refresh(NodeStatus status) {
-    Require.nonNull("Node status", status);
+  private void register(Secret registrationSecret, NodeStatus status) {
+    Require.nonNull("Node", status);
 
-    LOG.fine("Refreshing: " + status.getUri());
-
-    // check registrationSecret and stop processing if it doesn't match
-    if (!Objects.equals(status.getRegistrationSecret(), registrationSecret)) {
+    Secret nodeSecret = status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret());
+    if (!Objects.equals(registrationSecret, nodeSecret)) {
       LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT registered.", status.getUri()));
       bus.fire(new NodeRejectedEvent(status.getUri()));
       return;
     }
 
-    // Iterate over the available nodes to find a match.
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<Host> existingByNodeId = hosts.stream()
-          .filter(host -> host.getId().equals(status.getId()))
-          .findFirst();
-
-      if (existingByNodeId.isPresent()) {
-        // Modify the state
-        LOG.fine("Modifying existing state");
-        existingByNodeId.get().update(status);
-      } else {
-        Optional<Host> existingByUri = hosts.stream()
-          .filter(host -> host.asNodeStatus().getUri().equals(status.getUri()))
-          .findFirst();
-        // There is a URI match, probably means a node was restarted. We need to remove
-        // the previous one so we add the new request.
-        existingByUri.ifPresent(host -> {
-          LOG.fine("Removing old node, a new one is registering with the same URI");
-          remove(host.getId());
-        });
-
-        // Add a new host.
-        LOG.info("Creating a new remote node for " + status.getUri());
-        Node node = new RemoteNode(
-            tracer,
-            clientFactory,
-            status.getId(),
-            status.getUri(),
-            registrationSecret,
-            status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));
-        add(node, status);
+      if (nodes.containsKey(status.getId())) {
+        return;
       }
+
+      Set<Capabilities> capabilities = status.getSlots().stream()
+        .map(Slot::getStereotype)
+        .map(ImmutableCapabilities::copyOf)
+        .collect(toImmutableSet());
+
+      // A new node! Add this as a remote node, since we've not called add
+      RemoteNode remoteNode = new RemoteNode(
+        tracer,
+        clientFactory,
+        status.getId(),
+        status.getUri(),
+        registrationSecret,
+        capabilities);
+
+      add(remoteNode);
     } finally {
       writeLock.unlock();
     }
@@ -186,88 +170,70 @@ public class LocalDistributor extends Distributor {
 
   @Override
   public LocalDistributor add(Node node) {
-    return add(node, node.getStatus());
-  }
+    Require.nonNull("Node", node);
 
-  private LocalDistributor add(Node node, NodeStatus status) {
-    StringBuilder sb = new StringBuilder();
+    LOG.info(String.format("Added node %s at %s.", node.getId(), node.getUri()));
 
-    Lock writeLock = this.lock.writeLock();
-    writeLock.lock();
-    try (JsonOutput out = JSON.newOutput(sb)) {
-      out.setPrettyPrint(false).write(node);
+    nodes.put(node.getId(), node);
+    model.add(node.getStatus());
 
-      Host host = new Host(bus, node, registrationSecret);
-      host.update(status);
+    // Extract the health check
+    Runnable runnableHealthCheck = asRunnableHealthCheck(node);
+    allChecks.put(node.getId(), runnableHealthCheck);
+    hostChecker.submit(runnableHealthCheck, Duration.ofMinutes(5), Duration.ofSeconds(30));
 
-      LOG.fine(String.format("Adding host: %s with id %s", host.asNodeStatus().getUri(), host.getId()));
-      hosts.add(host);
-
-      LOG.info(String.format("Added node %s.", node.getId()));
-
-
-      Runnable runnable = asRunnableHealthCheck(node.getId(), node.getHealthCheck());
-      allChecks.put(node.getId(), runnable);
-      hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
-    } catch (Throwable t) {
-      LOG.log(Level.WARNING, "Unable to process host", t);
-    } finally {
-      writeLock.unlock();
-      bus.fire(new NodeAddedEvent(node.getId()));
-    }
+    bus.fire(new NodeAddedEvent(node.getId()));
 
     return this;
   }
 
-  private Runnable asRunnableHealthCheck(NodeId id, HealthCheck healthCheck) {
-    Require.nonNull("Node ID", id);
-    Require.nonNull("Health check", healthCheck);
-    AtomicReference<Availability> previous = new AtomicReference<>(DOWN);
-
+  private Runnable asRunnableHealthCheck(Node node) {
+    HealthCheck healthCheck = node.getHealthCheck();
+    NodeId id = node.getId();
     return () -> {
-      HealthCheck.Result result = healthCheck.check();
-      Availability current = result.getAvailability();
-
-      if (!previous.get().equals(current)) {
-        LOG.info(String.format(
-          "Changing status of node %s from %s to %s. Reason: %s",
-          id,
-          previous.get(),
-          current,
-          result.getMessage()));
+      HealthCheck.Result result;
+      try {
+        result = healthCheck.check();
+      } catch (Exception e) {
+        LOG.log(Level.WARNING, "Unable to process node " + id, e);
+        result = new HealthCheck.Result(DOWN, "Unable to run healthcheck. Assuming down");
       }
 
-      hosts.stream()
-        .filter(host -> id.equals(host.getId()))
-        .forEach(host -> host.setHostStatus(current));
-
-      previous.set(current);
+      Lock writeLock = lock.writeLock();
+      writeLock.lock();
+      try {
+        model.setAvailability(id, result.getAvailability());
+      } finally {
+        writeLock.unlock();
+      }
     };
   }
 
   @Override
   public boolean drain(NodeId nodeId) {
+    Node node = nodes.get(nodeId);
+    if (node == null) {
+      LOG.info("Asked to drain unregistered node " + nodeId);
+      return false;
+    }
+
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<Host> host = hosts.stream().filter(node -> nodeId.equals(node.getId())).findFirst();
-      if (host.isPresent()) {
-        Availability status = host.get().drainHost();
-        return DRAINING == status;
-      } else {
-        LOG.log(Level.WARNING, "Unable to drain the host. Host not found. Node id: {0}", nodeId);
-        return false;
-      }
+      node.drain();
+      model.setAvailability(nodeId, DRAINING);
     } finally {
       writeLock.unlock();
     }
+
+    return node.isDraining();
   }
 
   public void remove(NodeId nodeId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      hosts.removeIf(host -> nodeId.equals(host.getId()));
+      model.remove(nodeId);
       allChecks.get(nodeId).forEach(hostChecker::remove);
       allChecks.removeAll(nodeId);
     } finally {
@@ -281,11 +247,7 @@ public class LocalDistributor extends Distributor {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      ImmutableSet<NodeStatus> summaries = this.hosts.stream()
-          .map(Host::asNodeStatus)
-          .collect(toImmutableSet());
-
-      return new DistributorStatus(summaries);
+      return new DistributorStatus(model.getSnapshot());
     } finally {
       readLock.unlock();
     }
@@ -311,9 +273,8 @@ public class LocalDistributor extends Distributor {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      return hosts.stream()
-        .filter(host -> UP.equals(host.getHostStatus()))
-        .map(Host::asNodeStatus)
+      return model.getSnapshot().stream()
+        .filter(node -> !DOWN.equals(node.getAvailability()))
         .collect(toImmutableSet());
     } finally {
       readLock.unlock();
@@ -328,11 +289,28 @@ public class LocalDistributor extends Distributor {
     Lock writeLock = this.lock.writeLock();
     writeLock.lock();
     try {
-      return hosts.stream()
-        .filter(host -> slotId.getOwningNodeId().equals(host.getId()))
-        .findFirst()
-        .orElseThrow(() -> new SessionNotCreatedException("Unable to find host with ID " + slotId.getOwningNodeId()))
-        .reserve(request);
+      Node node = nodes.get(slotId.getOwningNodeId());
+      if (node == null) {
+        return () -> {
+          throw new SessionNotCreatedException("Unable to find node");
+        };
+      }
+
+      model.reserve(slotId);
+
+      return () -> {
+        Optional<CreateSessionResponse> response = node.newSession(request);
+
+        if (!response.isPresent()) {
+          model.setSession(slotId, null);
+          throw new SessionNotCreatedException("Unable to create session for " + request);
+        }
+
+        model.setSession(slotId, response.get().getSession());
+
+        return response.get();
+      };
+
     } finally {
       writeLock.unlock();
     }
