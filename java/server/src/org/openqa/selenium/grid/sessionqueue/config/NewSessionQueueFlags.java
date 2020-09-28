@@ -42,7 +42,8 @@ public class NewSessionQueueFlags implements HasRoles {
 
   @Parameter(
     names = { "--session-retry-interval" },
-    description = "If all slots are busy, new session request will be retried after the given interval.")
+    description = "Retry interval in seconds. If all slots are busy, new session request " +
+      "will be retried after the given interval.")
   @ConfigValue(section = "sessionqueue", name = "session-retry-interval", example = "5")
   private int sessionRetryInterval = 5;
 

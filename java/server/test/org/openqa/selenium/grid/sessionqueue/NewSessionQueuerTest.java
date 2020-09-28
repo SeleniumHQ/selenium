@@ -94,7 +94,7 @@ public class NewSessionQueuerTest {
     caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
 
-    sessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
+    sessionQueue = new LocalNewSessionQueue(tracer, bus, Duration.ofSeconds(1));
     local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
 
     HttpClient client = new PassthroughHttpClient(local);

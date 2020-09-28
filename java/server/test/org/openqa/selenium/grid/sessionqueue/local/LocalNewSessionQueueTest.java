@@ -38,6 +38,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class LocalNewSessionQueueTest {
     caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
     requestId = new RequestId(UUID.randomUUID());
-    sessionQueue = new LocalNewSessionQueue(tracer, bus, 1);
+    sessionQueue = new LocalNewSessionQueue(tracer, bus, Duration.ofSeconds(1));
 
     NewSessionPayload payload = NewSessionPayload.create(caps);
     expectedSessionRequest = createRequest(payload, POST, "/session");

@@ -31,8 +31,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.time.Duration;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public class LocalNewSessionQueuer extends NewSessionQueuer {
@@ -51,7 +51,7 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   public static NewSessionQueuer create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
-    int retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
+    Duration retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
     NewSessionQueue sessionRequests = new LocalNewSessionQueue(tracer, bus, retryInterval);
     return new LocalNewSessionQueuer(tracer, bus, sessionRequests);
   }

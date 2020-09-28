@@ -46,14 +46,14 @@ public class NewSessionQueueOptions {
     return Duration.ofSeconds(timeout);
   }
 
-  public int getSessionRequestRetryInterval() {
+  public Duration getSessionRequestRetryInterval() {
     int interval = config.getInt(SESSIONS_QUEUE_SECTION, "session-retry-interval")
       .orElse(DEFAULT_RETRY_INTERVAL);
 
     if (interval <= 0) {
-      return DEFAULT_RETRY_INTERVAL;
+      return Duration.ofSeconds(DEFAULT_RETRY_INTERVAL);
     }
-    return interval;
+    return Duration.ofSeconds(interval);
   }
 
   public NewSessionQueue getSessionQueue() {

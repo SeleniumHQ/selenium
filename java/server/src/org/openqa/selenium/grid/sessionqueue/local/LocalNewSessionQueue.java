@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.time.Duration;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,10 +58,10 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   private final Deque<HttpRequest> sessionRequests = new ConcurrentLinkedDeque<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
   private final ScheduledExecutorService executorService = Executors
-      .newSingleThreadScheduledExecutor();
+    .newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
 
-  public LocalNewSessionQueue(Tracer tracer, EventBus bus, int retryInterval) {
+  public LocalNewSessionQueue(Tracer tracer, EventBus bus, Duration retryInterval) {
     super(tracer, retryInterval);
     this.bus = Require.nonNull("Event bus", bus);
     Runtime.getRuntime().addShutdownHook(shutdownHook);
@@ -69,7 +70,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   public static NewSessionQueue create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
-    int retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
+    Duration retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
     return new LocalNewSessionQueue(tracer, bus, retryInterval);
   }
 
@@ -87,14 +88,14 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     Span span = tracer.getCurrentContext().createSpan("local_sessionqueue.add");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
     attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                     EventAttribute.setValue(getClass().getName()));
+      EventAttribute.setValue(getClass().getName()));
     boolean added = false;
     try {
       added = sessionRequests.offerLast(request);
       addRequestHeaders(request, requestId);
 
       attributeMap
-          .put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
+        .put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
       attributeMap.put("request.added", EventAttribute.setValue(added));
       span.addEvent("Add new session request to the queue", attributeMap);
 
@@ -122,9 +123,9 @@ public class LocalNewSessionQueue extends NewSessionQueue {
       if (added) {
         executorService.schedule(() -> {
           LOG.log(Level.INFO, "Adding request back to the queue. All slots are busy. Request: {0}",
-                  requestId);
+            requestId);
           bus.fire(new NewSessionRequestEvent(requestId));
-        }, super.retryInterval, TimeUnit.SECONDS);
+        }, super.retryInterval.getSeconds(), TimeUnit.SECONDS);
       }
     }
   }
@@ -152,7 +153,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
         count++;
         UUID reqId = UUID.fromString(request.getHeader(SESSIONREQUEST_ID_HEADER));
         NewSessionErrorResponse errorResponse =
-            new NewSessionErrorResponse(new RequestId(reqId), "New session request cancelled.");
+          new NewSessionErrorResponse(new RequestId(reqId), "New session request cancelled.");
 
         bus.fire(new NewSessionRejectedEvent(errorResponse));
       }
