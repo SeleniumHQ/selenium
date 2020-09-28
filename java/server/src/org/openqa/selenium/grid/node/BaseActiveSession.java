@@ -34,7 +34,6 @@ public abstract class BaseActiveSession implements ActiveSession {
   private final Session session;
   private final Dialect downstream;
   private final Dialect upstream;
-  private final Instant startTime;
 
   protected BaseActiveSession(
     SessionId id,
@@ -43,7 +42,7 @@ public abstract class BaseActiveSession implements ActiveSession {
     Dialect upstream,
     Capabilities capabilities,
     Instant startTime) {
-    URI uri = null;
+    URI uri;
     try {
       uri = Require.nonNull("URL", url).toURI();
     } catch (URISyntaxException e) {
@@ -51,14 +50,13 @@ public abstract class BaseActiveSession implements ActiveSession {
     }
 
     this.session = new Session(
-        Require.nonNull("Session id", id),
-        uri,
-        ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities)));
+      Require.nonNull("Session id", id),
+      uri,
+      ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities)),
+      Require.nonNull("Start time", startTime));
 
     this.downstream = Require.nonNull("Downstream dialect", downstream);
     this.upstream = Require.nonNull("Upstream dialect", upstream);
-
-    this.startTime = Require.nonNull("Start time", startTime);
   }
 
   @Override
@@ -73,7 +71,7 @@ public abstract class BaseActiveSession implements ActiveSession {
 
   @Override
   public Instant getStartTime() {
-    return startTime;
+    return session.getStartTime();
   }
 
   @Override

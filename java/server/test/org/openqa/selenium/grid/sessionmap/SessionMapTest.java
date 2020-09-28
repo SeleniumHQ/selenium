@@ -37,6 +37,7 @@ import org.openqa.selenium.support.ui.Wait;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.UUID;
 
 import static java.time.Duration.ofSeconds;
@@ -61,9 +62,10 @@ public class SessionMapTest {
   public void setUp() throws URISyntaxException {
     id = new SessionId(UUID.randomUUID());
     expected = new Session(
-        id,
-        new URI("http://localhost:1234"),
-        new ImmutableCapabilities());
+      id,
+      new URI("http://localhost:1234"),
+      new ImmutableCapabilities(),
+      Instant.now());
 
     Tracer tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();

@@ -384,7 +384,7 @@ public class LocalNode extends Node {
       toUse = new PersistentCapabilities(toUse).setCapability("se:options", updated);
     }
 
-    return new Session(other.getId(), externalUri, toUse);
+    return new Session(other.getId(), externalUri, toUse, Instant.now());
   }
 
   private URI rewrite(String path) {

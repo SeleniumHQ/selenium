@@ -53,6 +53,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -98,7 +99,7 @@ public class NewSessionCreationTest {
       uri,
       uri,
       null)
-      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
       .build();
     distributor.add(node);
 

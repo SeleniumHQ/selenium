@@ -42,6 +42,7 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -91,7 +92,7 @@ public class ProxyCdpTest {
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), Instant.now()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
     try (WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
@@ -112,7 +113,7 @@ public class ProxyCdpTest {
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), Instant.now()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
     CountDownLatch latch = new CountDownLatch(1);
@@ -152,7 +153,7 @@ public class ProxyCdpTest {
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
 
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), Instant.now()));
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();

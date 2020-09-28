@@ -43,6 +43,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -92,7 +93,7 @@ public class RouterTest {
     AtomicBoolean isUp = new AtomicBoolean(false);
 
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
         .build();
@@ -110,7 +111,7 @@ public class RouterTest {
     AtomicBoolean isUp = new AtomicBoolean(true);
 
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
         .build();

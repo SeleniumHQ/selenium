@@ -94,6 +94,7 @@ public class OneShotNode extends Node {
   private SessionId sessionId;
   private HttpClient client;
   private Capabilities capabilities;
+  private Instant sessionStart = Instant.EPOCH;
 
   private OneShotNode(
     Tracer tracer,
@@ -170,6 +171,7 @@ public class OneShotNode extends Node {
     this.sessionId = this.driver.getSessionId();
     this.client = extractHttpClient(this.driver);
     this.capabilities = rewriteCapabilities(this.driver);
+    this.sessionStart = Instant.now();
 
     LOG.info("Encoded response: " + JSON.toJson(ImmutableMap.of(
       "value", ImmutableMap.of(
@@ -285,8 +287,8 @@ public class OneShotNode extends Node {
     return new Session(
       sessionId,
       getUri(),
-      capabilities);
-  }
+      capabilities,
+      sessionStart); }
 
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {

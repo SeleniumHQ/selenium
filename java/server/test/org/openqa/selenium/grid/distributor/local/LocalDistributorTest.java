@@ -47,6 +47,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -145,7 +146,7 @@ public class LocalDistributorTest {
 
     class VerifyingHandler extends Session implements HttpHandler {
       private VerifyingHandler(SessionId id, Capabilities capabilities) {
-        super(id, uri, capabilities);
+        super(id, uri, capabilities, Instant.now());
       }
 
       @Override
@@ -232,7 +233,7 @@ public class LocalDistributorTest {
   private class Handler extends Session implements HttpHandler {
 
     private Handler(Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), uri, capabilities);
+      super(new SessionId(UUID.randomUUID()), uri, capabilities, Instant.now());
     }
 
     @Override

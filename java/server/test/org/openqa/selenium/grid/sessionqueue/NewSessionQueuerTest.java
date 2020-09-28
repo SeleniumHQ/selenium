@@ -17,21 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.data.NewSessionRejectedEvent.NEW_SESSION_REJECTED;
-import static org.openqa.selenium.grid.data.NewSessionRequestEvent.NEW_SESSION_REQUEST;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -75,6 +61,19 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.NewSessionRejectedEvent.NEW_SESSION_REJECTED;
+import static org.openqa.selenium.grid.data.NewSessionRequestEvent.NEW_SESSION_REQUEST;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 public class NewSessionQueuerTest {
 
   private LocalNewSessionQueuer local;
@@ -115,17 +114,15 @@ public class NewSessionQueuerTest {
       ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       try {
         SessionId sessionId = new SessionId("123");
-        Session session = new Session(sessionId, new URI("http://example.com"), capabilities);
-        CreateSessionResponse sessionResponse = new CreateSessionResponse(session,
-                                                                          JSON.toJson(
-                                                                              ImmutableMap.of(
-                                                                                  "value",
-                                                                                  ImmutableMap.of(
-                                                                                      "sessionId",
-                                                                                      sessionId,
-                                                                                      "capabilities",
-                                                                                      capabilities)))
-                                                                              .getBytes(UTF_8));
+        Session session = new Session(sessionId, new URI("http://example.com"), capabilities, Instant.now());
+        CreateSessionResponse sessionResponse = new CreateSessionResponse(
+          session,
+          JSON.toJson(
+            ImmutableMap.of(
+              "value", ImmutableMap.of(
+                "sessionId", sessionId,
+                "capabilities", capabilities)))
+            .getBytes(UTF_8));
         NewSessionResponse newSessionResponse =
             new NewSessionResponse(reqId, sessionResponse.getSession(),
                                    sessionResponse.getDownstreamEncodedResponse());
@@ -214,9 +211,7 @@ public class NewSessionQueuerTest {
   public void shouldBeClearQueueAndFireRejectedEvent() {
 
     RequestId requestId = new RequestId(UUID.randomUUID());
-    bus.addListener(NEW_SESSION_REJECTED, event -> {
-      assertEquals(event.getData(UUID.class), requestId);
-    });
+    bus.addListener(NEW_SESSION_REJECTED, event -> assertEquals(event.getData(UUID.class), requestId));
 
     sessionQueue.offerLast(request, requestId);
 
@@ -266,17 +261,15 @@ public class NewSessionQueuerTest {
         ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
         try {
           SessionId sessionId = new SessionId("123");
-          Session session = new Session(sessionId, new URI("http://example.com"), capabilities);
-          CreateSessionResponse sessionResponse = new CreateSessionResponse(session,
-                                                                            JSON.toJson(
-                                                                                ImmutableMap.of(
-                                                                                    "value",
-                                                                                    ImmutableMap.of(
-                                                                                        "sessionId",
-                                                                                        sessionId,
-                                                                                        "capabilities",
-                                                                                        capabilities)))
-                                                                                .getBytes(UTF_8));
+          Session session = new Session(sessionId, new URI("http://example.com"), capabilities, Instant.now());
+          CreateSessionResponse sessionResponse = new CreateSessionResponse(
+            session,
+            JSON.toJson(
+              ImmutableMap.of(
+                "value", ImmutableMap.of(
+                  "sessionId", sessionId,
+                  "capabilities", capabilities)))
+              .getBytes(UTF_8));
           NewSessionResponse newSessionResponse =
               new NewSessionResponse(reqId, sessionResponse.getSession(),
                                      sessionResponse.getDownstreamEncodedResponse());
@@ -304,17 +297,15 @@ public class NewSessionQueuerTest {
       ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       try {
         SessionId sessionId = new SessionId(UUID.randomUUID());
-        Session session = new Session(sessionId, new URI("http://example.com"), capabilities);
-        CreateSessionResponse sessionResponse = new CreateSessionResponse(session,
-                                                                          JSON.toJson(
-                                                                              ImmutableMap.of(
-                                                                                  "value",
-                                                                                  ImmutableMap.of(
-                                                                                      "sessionId",
-                                                                                      sessionId,
-                                                                                      "capabilities",
-                                                                                      capabilities)))
-                                                                              .getBytes(UTF_8));
+        Session session = new Session(sessionId, new URI("http://example.com"), capabilities, Instant.now());
+        CreateSessionResponse sessionResponse = new CreateSessionResponse(
+          session,
+          JSON.toJson(
+            ImmutableMap.of(
+              "value", ImmutableMap.of(
+                "sessionId", sessionId,
+                "capabilities", capabilities)))
+            .getBytes(UTF_8));
         NewSessionResponse newSessionResponse =
             new NewSessionResponse(reqId, sessionResponse.getSession(),
                                    sessionResponse.getDownstreamEncodedResponse());
@@ -328,7 +319,7 @@ public class NewSessionQueuerTest {
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
-    Callable callable = () -> remote.addToQueue(request);
+    Callable<HttpResponse> callable = () -> remote.addToQueue(request);
 
     Future<HttpResponse> firstRequest = executor.submit(callable);
     Future<HttpResponse> secondRequest = executor.submit(callable);
@@ -380,7 +371,7 @@ public class NewSessionQueuerTest {
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
-    Callable callable = () -> remote.addToQueue(request);
+    Callable<HttpResponse> callable = () -> remote.addToQueue(request);
 
     Future<HttpResponse> firstRequest = executor.submit(callable);
     Future<HttpResponse> secondRequest = executor.submit(callable);

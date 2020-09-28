@@ -64,6 +64,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -210,7 +211,7 @@ public class EndToEndTest {
     class SpoofSession extends Session implements HttpHandler {
 
       private SpoofSession(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
+        super(new SessionId(UUID.randomUUID()), serverUri, capabilities, Instant.now());
       }
 
       @Override

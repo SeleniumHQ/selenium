@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +36,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class JdbcBackedSessionMapTest {
   private static Connection connection;
@@ -51,7 +52,7 @@ public class JdbcBackedSessionMapTest {
     bus = new GuavaEventBus();
     connection = DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "SA", "");
     Statement createStatement = connection.createStatement();
-    createStatement.executeUpdate("create table sessions_map (session_ids varchar(50), session_uri varchar(30), session_caps varchar(300));");
+    createStatement.executeUpdate("create table sessions_map (session_ids varchar(50), session_uri varchar(30), session_caps varchar(300), session_start varchar(128));");
   }
 
   @AfterClass
@@ -84,9 +85,10 @@ public class JdbcBackedSessionMapTest {
     SessionMap sessions = getSessionMap();
 
     Session expected = new Session(
-        new SessionId(UUID.randomUUID()),
-        new URI("http://example.com/foo"),
-        new ImmutableCapabilities("key", "value"));
+      new SessionId(UUID.randomUUID()),
+      new URI("http://example.com/foo"),
+      new ImmutableCapabilities("key", "value"),
+      Instant.now());
     sessions.add(expected);
 
     SessionMap reader = getSessionMap();
@@ -101,9 +103,10 @@ public class JdbcBackedSessionMapTest {
     SessionMap sessions = getSessionMap();
 
     Session expected = new Session(
-        new SessionId(UUID.randomUUID()),
-        new URI("http://example.com/foo"),
-        new ImmutableCapabilities("key", "value"));
+      new SessionId(UUID.randomUUID()),
+      new URI("http://example.com/foo"),
+      new ImmutableCapabilities("key", "value"),
+      Instant.now());
     sessions.add(expected);
 
     SessionMap reader = getSessionMap();

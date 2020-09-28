@@ -109,7 +109,7 @@ public class AddingNodesTest {
   public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 
@@ -128,7 +128,7 @@ public class AddingNodesTest {
         bus,
         new NodeId(UUID.randomUUID()),
         externalUrl.toURI(),
-        c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c));
+        c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c, Instant.now()));
     handler.addHandler(node);
 
     Json json = new Json();
@@ -147,7 +147,7 @@ public class AddingNodesTest {
   public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 
@@ -163,10 +163,10 @@ public class AddingNodesTest {
   public void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node firstNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
-      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps, Instant.now())))
       .build();
     Node secondNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
-      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps, Instant.now())))
       .build();
     handler.addHandler(firstNode);
     handler.addHandler(secondNode);
@@ -186,7 +186,7 @@ public class AddingNodesTest {
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 

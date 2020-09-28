@@ -34,6 +34,7 @@ import redis.embedded.RedisServer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,7 +75,8 @@ public class RedisBackedSessionMapTest {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
-      new ImmutableCapabilities());
+      new ImmutableCapabilities(),
+      Instant.now());
     sessions.add(expected);
 
     SessionMap reader = new RedisBackedSessionMap(tracer, uri, bus);
@@ -91,7 +93,8 @@ public class RedisBackedSessionMapTest {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
-      new ImmutableCapabilities("cheese", "beyaz peynir"));
+      new ImmutableCapabilities("cheese", "beyaz peynir"),
+      Instant.now());
     sessions.add(expected);
 
     SessionMap reader = new RedisBackedSessionMap(tracer, uri, bus);
@@ -108,7 +111,8 @@ public class RedisBackedSessionMapTest {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
-      new ImmutableCapabilities("cheese", "beyaz peynir"));
+      new ImmutableCapabilities("cheese", "beyaz peynir"),
+      Instant.now());
     sessions.add(expected);
 
     SessionMap reader = new RedisBackedSessionMap(tracer, uri, bus);

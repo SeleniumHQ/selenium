@@ -42,6 +42,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,7 @@ public class LocalNodeTest {
     URI uri = new URI("http://localhost:1234");
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -163,7 +164,7 @@ public class LocalNodeTest {
 
     class VerifyingHandler extends Session implements HttpHandler {
       private VerifyingHandler(SessionId id, Capabilities capabilities) {
-        super(id, uri, capabilities);
+        super(id, uri, capabilities, Instant.now());
       }
 
       @Override

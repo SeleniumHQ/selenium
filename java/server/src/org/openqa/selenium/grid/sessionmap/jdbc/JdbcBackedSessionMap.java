@@ -50,6 +50,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -64,6 +65,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   private static final String SESSION_ID_COL = "session_ids";
   private static final String SESSION_CAPS_COL = "session_caps";
   private static final String SESSION_URI_COL = "session_uri";
+  private static final String SESSION_START_COL = "session_start";
   private static final String DATABASE_STATEMENT = AttributeKey.DATABASE_STATEMENT.getKey();
   private static final String DATABASE_OPERATION = AttributeKey.DATABASE_OPERATION.getKey();
   private static final String DATABASE_USER = AttributeKey.DATABASE_USER.getKey();
@@ -119,7 +121,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session to add", session);
 
     try (Span span = tracer.getCurrentContext().createSpan(
-        "INSERT into  sessions_map (session_ids, session_uri, session_caps) values (?, ?, ?) ")) {
+        "INSERT into  sessions_map (session_ids, session_uri, session_caps, session_start) values (?, ?, ?, ?) ")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       SESSION_ID.accept(span, session.getId());
       SESSION_ID_EVENT.accept(attributeMap, session.getId());
@@ -160,6 +162,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
     URI uri = null;
     Capabilities caps = null;
+    Instant start = null;
     String rawUri = null;
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
 
@@ -201,6 +204,8 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
                  new ImmutableCapabilities() :
                  JSON.toType(rawCapabilities, Capabilities.class);
 
+          String rawStart = sessions.getString(SESSION_START_COL);
+          start = JSON.toType(rawStart, Instant.class);
         }
         CAPABILITIES_EVENT.accept(attributeMap, caps);
 
@@ -221,7 +226,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         }
 
         span.addEvent("Retrieved session from the database", attributeMap);
-        return new Session(id, uri, caps);
+        return new Session(id, uri, caps, start);
       } catch (SQLException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
@@ -279,15 +284,17 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private PreparedStatement insertSessionStatement(Session session) throws SQLException {
     PreparedStatement insertStatement = connection.prepareStatement(
-      String.format("insert into %1$s (%2$s, %3$s, %4$s) values (?, ?, ?)",
+      String.format("insert into %1$s (%2$s, %3$s, %4$s, %5$s) values (?, ?, ?, ?)",
         TABLE_NAME,
         SESSION_ID_COL,
         SESSION_URI_COL,
-        SESSION_CAPS_COL));
+        SESSION_CAPS_COL,
+        SESSION_START_COL));
 
     insertStatement.setString(1, session.getId().toString());
     insertStatement.setString(2, session.getUri().toString());
     insertStatement.setString(3, JSON.toJson(session.getCapabilities()));
+    insertStatement.setString(4, JSON.toJson(session.getStartTime()));
 
     return insertStatement;
   }

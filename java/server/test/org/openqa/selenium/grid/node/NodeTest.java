@@ -117,7 +117,7 @@ public class NodeTest {
     class Handler extends Session implements HttpHandler {
 
       private Handler(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), uri, capabilities);
+        super(new SessionId(UUID.randomUUID()), uri, capabilities, Instant.now());
       }
 
       @Override
@@ -171,7 +171,7 @@ public class NodeTest {
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c, Instant.now())))
         .build();
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
@@ -253,7 +253,7 @@ public class NodeTest {
     class Recording extends Session implements HttpHandler {
 
       private Recording() {
-        super(new SessionId(UUID.randomUUID()), uri, caps);
+        super(new SessionId(UUID.randomUUID()), uri, caps, Instant.now());
       }
 
       @Override
@@ -305,7 +305,7 @@ public class NodeTest {
 
     Clock clock = new MyClock(now);
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c, Instant.now())))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
         .clock(clock)
@@ -338,7 +338,7 @@ public class NodeTest {
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, c)))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, c, Instant.now())))
         .build();
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);

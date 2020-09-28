@@ -18,15 +18,14 @@
 package org.openqa.selenium.grid.data;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
@@ -40,12 +39,12 @@ public class Session {
   private final SessionId id;
   private final URI uri;
   private final Capabilities capabilities;
-  private final LocalDateTime startTime;
+  private final Instant startTime;
 
-  public Session(SessionId id, URI uri, Capabilities capabilities) {
+  public Session(SessionId id, URI uri, Capabilities capabilities, Instant startTime) {
     this.id = Require.nonNull("Session ID", id);
     this.uri = Require.nonNull("Where the session is running", uri);
-    this.startTime = LocalDateTime.now();
+    this.startTime = Require.nonNull("Start time", startTime);
 
     this.capabilities = ImmutableCapabilities.copyOf(
         Require.nonNull("Session capabilities", capabilities));
@@ -63,24 +62,52 @@ public class Session {
     return capabilities;
   }
 
-  public LocalDateTime getStartTime() {
+  public Instant getStartTime() {
     return startTime;
   }
 
   private Map<String, Object> toJson() {
     // Deliberately shaped like the return value for the W3C New Session command's return value.
     return ImmutableMap.of(
-        "sessionId", getId().toString(),
-        "capabilities", getCapabilities(),
-        "uri", getUri());
+      "capabilities", getCapabilities(),
+      "sessionId", getId().toString(),
+      "start", getStartTime(),
+      "uri", getUri());
   }
 
-  private static Session fromJson(Map<String, Object> raw) throws URISyntaxException {
-    SessionId id = new SessionId((String) raw.get("sessionId"));
-    URI uri = new URI((String) raw.get("uri"));
-    Capabilities caps = new ImmutableCapabilities((Map<?, ?>) raw.get("capabilities"));
+  private static Session fromJson(JsonInput input) {
+    SessionId id = null;
+    URI uri = null;
+    Capabilities caps = null;
+    Instant start = null;
 
-    return new Session(id, uri, caps);
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "capabilities":
+          caps = ImmutableCapabilities.copyOf(input.read(Capabilities.class));
+          break;
+
+        case "sessionId":
+          id = input.read(SessionId.class);
+          break;
+
+        case "start":
+          start = input.read(Instant.class);
+          break;
+
+        case "uri":
+          uri = input.read(URI.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    input.endObject();
+
+    return new Session(id, uri, caps, start);
   }
 
   @Override

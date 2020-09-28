@@ -38,6 +38,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -171,7 +172,7 @@ public class DefaultSlotSelectorTest {
 
   private class Handler extends Session implements HttpHandler {
     private Handler(Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), uri, capabilities);
+      super(new SessionId(UUID.randomUUID()), uri, capabilities, Instant.now());
     }
 
     @Override
