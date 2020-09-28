@@ -107,20 +107,22 @@ public class RedisBackedSessionMap extends SessionMap {
 
       String uriKey = uriKey(session.getId());
       String uriValue = session.getUri().toString();
+      String stereotypeKey = stereotypeKey(session.getId());
+      String stereotypeJson = JSON.toJson(session.getStereotype());
       String capabilitiesKey = capabilitiesKey(session.getId());
-      String capabilitiesJSON = JSON.toJson(session.getCapabilities());
+      String capabilitiesJson = JSON.toJson(session.getCapabilities());
       String startKey = startKey(session.getId());
       String startValue = JSON.toJson(session.getStartTime());
 
       span.setAttribute(REDIS_URI_KEY, uriKey);
       span.setAttribute(REDIS_URI_VALUE, uriValue);
       span.setAttribute(REDIS_CAPABILITIES_KEY, capabilitiesKey);
-      span.setAttribute(REDIS_CAPABILITIES_VALUE, capabilitiesJSON);
+      span.setAttribute(REDIS_CAPABILITIES_VALUE, capabilitiesJson);
       span.setAttribute(DATABASE_OPERATION, "MSET");
       attributeMap.put(REDIS_URI_KEY, EventAttribute.setValue(uriKey));
       attributeMap.put(REDIS_URI_VALUE, EventAttribute.setValue(uriValue));
       attributeMap.put(REDIS_CAPABILITIES_KEY, EventAttribute.setValue(capabilitiesKey));
-      attributeMap.put(REDIS_CAPABILITIES_VALUE, EventAttribute.setValue(capabilitiesJSON));
+      attributeMap.put(REDIS_CAPABILITIES_VALUE, EventAttribute.setValue(capabilitiesJson));
       attributeMap.put(REDIS_START_KEY, EventAttribute.setValue(startKey));
       attributeMap.put(REDIS_START_VALUE, EventAttribute.setValue(startValue));
       attributeMap.put(DATABASE_OPERATION, EventAttribute.setValue("MSET"));
@@ -129,7 +131,8 @@ public class RedisBackedSessionMap extends SessionMap {
       connection.mset(
         ImmutableMap.of(
           uriKey, uriValue,
-          capabilitiesKey, capabilitiesJSON,
+          stereotypeKey, stereotypeJson,
+          capabilitiesKey, capabilitiesJson,
           startKey, startValue));
 
       return true;
@@ -157,6 +160,9 @@ public class RedisBackedSessionMap extends SessionMap {
       String capabilitiesKey = capabilitiesKey(id);
       String rawCapabilities = connection.get(capabilitiesKey);
 
+      String sterotypeKey = stereotypeKey(id);
+      String rawStereotype = connection.get(sterotypeKey);
+
       span.setAttribute(REDIS_CAPABILITIES_KEY, capabilitiesKey);
       attributeMap.put(REDIS_CAPABILITIES_KEY, EventAttribute.setValue(capabilitiesKey));
 
@@ -168,6 +174,10 @@ public class RedisBackedSessionMap extends SessionMap {
         new ImmutableCapabilities() :
         JSON.toType(rawCapabilities, Capabilities.class);
 
+      Capabilities sterotype = rawStereotype == null ?
+        new ImmutableCapabilities() :
+        JSON.toType(rawStereotype, Capabilities.class);
+
       String rawStart = connection.get(startKey(id));
       Instant start = JSON.toType(rawStart, Instant.class);
 
@@ -175,7 +185,7 @@ public class RedisBackedSessionMap extends SessionMap {
       CAPABILITIES_EVENT.accept(attributeMap, caps);
 
       span.addEvent("Retrieved session from the database", attributeMap);
-      return new Session(id, uri, caps, start);
+      return new Session(id, uri, sterotype, caps, start);
     }
   }
 
@@ -278,6 +288,12 @@ public class RedisBackedSessionMap extends SessionMap {
     Require.nonNull("Session ID", id);
 
     return "session:" + id.toString() + ":start";
+  }
+
+  private String stereotypeKey(SessionId id) {
+    Require.nonNull("Session ID", id);
+
+    return "session:" + id.toString() + ":stereotype";
   }
 
   private void setCommonSpanAttributes(Span span) {

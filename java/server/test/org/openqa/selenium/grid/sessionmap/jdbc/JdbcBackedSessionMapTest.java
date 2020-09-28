@@ -52,7 +52,8 @@ public class JdbcBackedSessionMapTest {
     bus = new GuavaEventBus();
     connection = DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "SA", "");
     Statement createStatement = connection.createStatement();
-    createStatement.executeUpdate("create table sessions_map (session_ids varchar(50), session_uri varchar(30), session_caps varchar(300), session_start varchar(128));");
+    createStatement.executeUpdate(
+      "create table sessions_map (session_ids varchar(50), session_uri varchar(30), session_stereotype varchar(300), session_caps varchar(300), session_start varchar(128));");
   }
 
   @AfterClass
@@ -87,6 +88,7 @@ public class JdbcBackedSessionMapTest {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
+      new ImmutableCapabilities("foo", "bar"),
       new ImmutableCapabilities("key", "value"),
       Instant.now());
     sessions.add(expected);
@@ -105,6 +107,7 @@ public class JdbcBackedSessionMapTest {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
+      new ImmutableCapabilities("foo", "bar"),
       new ImmutableCapabilities("key", "value"),
       Instant.now());
     sessions.add(expected);

@@ -38,14 +38,16 @@ public class Session {
 
   private final SessionId id;
   private final URI uri;
+  private final Capabilities stereotype;
   private final Capabilities capabilities;
   private final Instant startTime;
 
-  public Session(SessionId id, URI uri, Capabilities capabilities, Instant startTime) {
+  public Session(SessionId id, URI uri, Capabilities stereotype, Capabilities capabilities, Instant startTime) {
     this.id = Require.nonNull("Session ID", id);
     this.uri = Require.nonNull("Where the session is running", uri);
     this.startTime = Require.nonNull("Start time", startTime);
 
+    this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.capabilities = ImmutableCapabilities.copyOf(
         Require.nonNull("Session capabilities", capabilities));
   }
@@ -56,6 +58,10 @@ public class Session {
 
   public URI getUri() {
     return uri;
+  }
+
+  public Capabilities getStereotype() {
+    return stereotype;
   }
 
   public Capabilities getCapabilities() {
@@ -71,6 +77,7 @@ public class Session {
     return ImmutableMap.of(
       "capabilities", getCapabilities(),
       "sessionId", getId().toString(),
+      "stereotype", getStereotype(),
       "start", getStartTime(),
       "uri", getUri());
   }
@@ -79,6 +86,7 @@ public class Session {
     SessionId id = null;
     URI uri = null;
     Capabilities caps = null;
+    Capabilities stereotype = null;
     Instant start = null;
 
     input.beginObject();
@@ -96,6 +104,10 @@ public class Session {
           start = input.read(Instant.class);
           break;
 
+        case "stereotype":
+          stereotype = input.read(Capabilities.class);
+          break;
+
         case "uri":
           uri = input.read(URI.class);
           break;
@@ -107,7 +119,7 @@ public class Session {
     }
     input.endObject();
 
-    return new Session(id, uri, caps, start);
+    return new Session(id, uri, stereotype, caps, start);
   }
 
   @Override

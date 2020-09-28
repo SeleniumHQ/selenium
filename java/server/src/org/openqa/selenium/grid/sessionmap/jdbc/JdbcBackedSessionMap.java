@@ -64,6 +64,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   private static final String TABLE_NAME = "sessions_map";
   private static final String SESSION_ID_COL = "session_ids";
   private static final String SESSION_CAPS_COL = "session_caps";
+  private static final String SESSION_STEREOTYPE_COL = "session_stereotype";
   private static final String SESSION_URI_COL = "session_uri";
   private static final String SESSION_START_COL = "session_start";
   private static final String DATABASE_STATEMENT = AttributeKey.DATABASE_STATEMENT.getKey();
@@ -161,6 +162,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session ID", id);
 
     URI uri = null;
+    Capabilities sterotype = null;
     Capabilities caps = null;
     Instant start = null;
     String rawUri = null;
@@ -198,6 +200,13 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
           }
 
           rawUri = sessions.getString(SESSION_URI_COL);
+
+          String rawStereotype = sessions.getString(SESSION_STEREOTYPE_COL);
+
+          sterotype = rawStereotype == null ?
+            new ImmutableCapabilities() :
+            JSON.toType(rawStereotype, Capabilities.class);
+
           String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
 
           caps = rawCapabilities == null ?
@@ -226,7 +235,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         }
 
         span.addEvent("Retrieved session from the database", attributeMap);
-        return new Session(id, uri, caps, start);
+        return new Session(id, uri, sterotype, caps, start);
       } catch (SQLException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
@@ -284,17 +293,19 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private PreparedStatement insertSessionStatement(Session session) throws SQLException {
     PreparedStatement insertStatement = connection.prepareStatement(
-      String.format("insert into %1$s (%2$s, %3$s, %4$s, %5$s) values (?, ?, ?, ?)",
+      String.format("insert into %1$s (%2$s, %3$s, %4$s, %5$s, %6$s) values (?, ?, ?, ?, ?)",
         TABLE_NAME,
         SESSION_ID_COL,
         SESSION_URI_COL,
+        SESSION_STEREOTYPE_COL,
         SESSION_CAPS_COL,
         SESSION_START_COL));
 
     insertStatement.setString(1, session.getId().toString());
     insertStatement.setString(2, session.getUri().toString());
-    insertStatement.setString(3, JSON.toJson(session.getCapabilities()));
-    insertStatement.setString(4, JSON.toJson(session.getStartTime()));
+    insertStatement.setString(3, JSON.toJson(session.getStereotype()));
+    insertStatement.setString(4, JSON.toJson(session.getCapabilities()));
+    insertStatement.setString(5, JSON.toJson(session.getStartTime()));
 
     return insertStatement;
   }

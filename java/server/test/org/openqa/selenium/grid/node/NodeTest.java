@@ -101,6 +101,7 @@ public class NodeTest {
   private EventBus bus;
   private LocalNode local;
   private Node node;
+  private ImmutableCapabilities stereotype;
   private ImmutableCapabilities caps;
   private URI uri;
   private Secret registrationSecret;
@@ -110,6 +111,7 @@ public class NodeTest {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
+    stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
 
     uri = new URI("http://localhost:1234");
@@ -117,7 +119,7 @@ public class NodeTest {
     class Handler extends Session implements HttpHandler {
 
       private Handler(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), uri, capabilities, Instant.now());
+        super(new SessionId(UUID.randomUUID()), uri, stereotype, capabilities, Instant.now());
       }
 
       @Override
@@ -171,7 +173,7 @@ public class NodeTest {
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c, Instant.now())))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .build();
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
@@ -253,7 +255,7 @@ public class NodeTest {
     class Recording extends Session implements HttpHandler {
 
       private Recording() {
-        super(new SessionId(UUID.randomUUID()), uri, caps, Instant.now());
+        super(new SessionId(UUID.randomUUID()), uri, stereotype, caps, Instant.now());
       }
 
       @Override
@@ -305,7 +307,7 @@ public class NodeTest {
 
     Clock clock = new MyClock(now);
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c, Instant.now())))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
         .clock(clock)
@@ -338,7 +340,7 @@ public class NodeTest {
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
     Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, c, Instant.now())))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, stereotype, c, Instant.now())))
         .build();
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);

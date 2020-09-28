@@ -172,7 +172,7 @@ public class DefaultSlotSelectorTest {
 
   private class Handler extends Session implements HttpHandler {
     private Handler(Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), uri, capabilities, Instant.now());
+      super(new SessionId(UUID.randomUUID()), uri, new ImmutableCapabilities(), capabilities, Instant.now());
     }
 
     @Override

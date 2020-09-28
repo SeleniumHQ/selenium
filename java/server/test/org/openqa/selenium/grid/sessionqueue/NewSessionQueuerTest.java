@@ -114,7 +114,7 @@ public class NewSessionQueuerTest {
       ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       try {
         SessionId sessionId = new SessionId("123");
-        Session session = new Session(sessionId, new URI("http://example.com"), capabilities, Instant.now());
+        Session session = new Session(sessionId, new URI("http://example.com"), caps, capabilities, Instant.now());
         CreateSessionResponse sessionResponse = new CreateSessionResponse(
           session,
           JSON.toJson(
@@ -261,7 +261,7 @@ public class NewSessionQueuerTest {
         ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
         try {
           SessionId sessionId = new SessionId("123");
-          Session session = new Session(sessionId, new URI("http://example.com"), capabilities, Instant.now());
+          Session session = new Session(sessionId, new URI("http://example.com"), caps, capabilities, Instant.now());
           CreateSessionResponse sessionResponse = new CreateSessionResponse(
             session,
             JSON.toJson(
@@ -297,7 +297,7 @@ public class NewSessionQueuerTest {
       ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       try {
         SessionId sessionId = new SessionId(UUID.randomUUID());
-        Session session = new Session(sessionId, new URI("http://example.com"), capabilities, Instant.now());
+        Session session = new Session(sessionId, new URI("http://example.com"), caps, capabilities, Instant.now());
         CreateSessionResponse sessionResponse = new CreateSessionResponse(
           session,
           JSON.toJson(

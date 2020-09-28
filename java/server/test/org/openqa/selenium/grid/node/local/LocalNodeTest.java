@@ -68,7 +68,7 @@ public class LocalNodeTest {
     URI uri = new URI("http://localhost:1234");
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -164,7 +164,7 @@ public class LocalNodeTest {
 
     class VerifyingHandler extends Session implements HttpHandler {
       private VerifyingHandler(SessionId id, Capabilities capabilities) {
-        super(id, uri, capabilities, Instant.now());
+        super(id, uri, new ImmutableCapabilities(), capabilities, Instant.now());
       }
 
       @Override

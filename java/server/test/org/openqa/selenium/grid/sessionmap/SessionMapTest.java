@@ -65,6 +65,7 @@ public class SessionMapTest {
       id,
       new URI("http://localhost:1234"),
       new ImmutableCapabilities(),
+      new ImmutableCapabilities(),
       Instant.now());
 
     Tracer tracer = DefaultTestTracer.createTracer();

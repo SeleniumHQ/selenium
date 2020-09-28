@@ -76,6 +76,7 @@ public class RedisBackedSessionMapTest {
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
       new ImmutableCapabilities(),
+      new ImmutableCapabilities(),
       Instant.now());
     sessions.add(expected);
 
@@ -93,6 +94,7 @@ public class RedisBackedSessionMapTest {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
+      new ImmutableCapabilities(),
       new ImmutableCapabilities("cheese", "beyaz peynir"),
       Instant.now());
     sessions.add(expected);
@@ -111,6 +113,7 @@ public class RedisBackedSessionMapTest {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
+      new ImmutableCapabilities(),
       new ImmutableCapabilities("cheese", "beyaz peynir"),
       Instant.now());
     sessions.add(expected);

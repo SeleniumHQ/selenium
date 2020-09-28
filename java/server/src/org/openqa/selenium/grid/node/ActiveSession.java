@@ -29,6 +29,8 @@ public interface ActiveSession extends HttpHandler {
 
   SessionId getId();
 
+  Capabilities getStereotype();
+
   Capabilities getCapabilities();
 
   Instant getStartTime();

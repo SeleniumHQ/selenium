@@ -61,14 +61,17 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private final HttpClient.Factory clientFactory;
   private final Predicate<Capabilities> predicate;
   private final DriverService.Builder builder;
+  private final Capabilities stereotype;
 
   public DriverServiceSessionFactory(
       Tracer tracer,
       HttpClient.Factory clientFactory,
+      Capabilities stereotype,
       Predicate<Capabilities> predicate,
       DriverService.Builder builder) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.builder = Require.nonNull("Driver service bulder", builder);
   }
@@ -121,7 +124,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
         attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
         attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
 
-
         // TODO: This is a nasty hack. Try and make it elegant.
 
         Capabilities caps = new ImmutableCapabilities((Map<?, ?>) response.getValue());
@@ -144,6 +146,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
             service.getUrl(),
             downstream,
             upstream,
+            stereotype,
             caps,
             Instant.now()) {
             @Override

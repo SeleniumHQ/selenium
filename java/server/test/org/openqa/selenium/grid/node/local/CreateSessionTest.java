@@ -68,7 +68,7 @@ public class CreateSessionTest {
         uri,
         uri,
         null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -119,7 +119,7 @@ public class CreateSessionTest {
         uri,
         uri,
         null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -162,7 +162,7 @@ public class CreateSessionTest {
         uri,
         uri,
         null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(

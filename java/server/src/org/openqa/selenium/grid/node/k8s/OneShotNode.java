@@ -287,6 +287,7 @@ public class OneShotNode extends Node {
     return new Session(
       sessionId,
       getUri(),
+      stereotype,
       capabilities,
       sessionStart); }
 

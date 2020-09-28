@@ -92,7 +92,7 @@ public class ProxyCdpTest {
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
     try (WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
@@ -113,7 +113,7 @@ public class ProxyCdpTest {
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
     CountDownLatch latch = new CountDownLatch(1);
@@ -145,7 +145,7 @@ public class ProxyCdpTest {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ProxyCdpIntoGrid proxy = new ProxyCdpIntoGrid(clientFactory, sessions);
 
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheedar", emptyConfig);
+    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheddar", emptyConfig);
 
     Server<?> secureProxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy);
 
@@ -153,7 +153,7 @@ public class ProxyCdpTest {
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
 
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
@@ -168,7 +168,7 @@ public class ProxyCdpTest {
       socket.sendText("Cheese!");
 
       assertThat(latch.await(5, SECONDS)).isTrue();
-      assertThat(text.get()).isEqualTo("Cheedar");
+      assertThat(text.get()).isEqualTo("Cheddar");
     }
 
     secureProxyServer.stop();

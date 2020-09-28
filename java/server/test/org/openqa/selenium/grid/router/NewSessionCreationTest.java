@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.events.EventBus;
@@ -99,7 +100,7 @@ public class NewSessionCreationTest {
       uri,
       uri,
       null)
-      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, caps, Instant.now())))
+      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, Browser.detect().getCapabilities(), caps, Instant.now())))
       .build();
     distributor.add(node);
 
@@ -145,6 +146,7 @@ public class NewSessionCreationTest {
       new DriverServiceSessionFactory(
         tracer,
         clientFactory,
+        info.getCanonicalCapabilities(),
         info::isSupporting,
         driverService));
   }

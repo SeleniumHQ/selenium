@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -59,9 +58,7 @@ import java.util.concurrent.Future;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -146,7 +143,7 @@ public class LocalDistributorTest {
 
     class VerifyingHandler extends Session implements HttpHandler {
       private VerifyingHandler(SessionId id, Capabilities capabilities) {
-        super(id, uri, capabilities, Instant.now());
+        super(id, uri, new ImmutableCapabilities(), capabilities, Instant.now());
       }
 
       @Override
@@ -233,7 +230,7 @@ public class LocalDistributorTest {
   private class Handler extends Session implements HttpHandler {
 
     private Handler(Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), uri, capabilities, Instant.now());
+      super(new SessionId(UUID.randomUUID()), uri, new ImmutableCapabilities(), capabilities, Instant.now());
     }
 
     @Override

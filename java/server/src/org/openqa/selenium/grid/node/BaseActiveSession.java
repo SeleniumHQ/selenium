@@ -40,6 +40,7 @@ public abstract class BaseActiveSession implements ActiveSession {
     URL url,
     Dialect downstream,
     Dialect upstream,
+    Capabilities stereotype,
     Capabilities capabilities,
     Instant startTime) {
     URI uri;
@@ -52,6 +53,7 @@ public abstract class BaseActiveSession implements ActiveSession {
     this.session = new Session(
       Require.nonNull("Session id", id),
       uri,
+      ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype)),
       ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities)),
       Require.nonNull("Start time", startTime));
 
@@ -62,6 +64,11 @@ public abstract class BaseActiveSession implements ActiveSession {
   @Override
   public SessionId getId() {
     return session.getId();
+  }
+
+  @Override
+  public Capabilities getStereotype() {
+    return session.getStereotype();
   }
 
   @Override
