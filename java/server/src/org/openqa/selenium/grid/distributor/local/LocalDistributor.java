@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
@@ -54,14 +56,10 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -86,7 +84,7 @@ public class LocalDistributor extends Distributor {
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
-  private final Map<NodeId, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
+  private final Multimap<NodeId, Runnable> allChecks = HashMultimap.create();
   private final Secret registrationSecret;
 
   public LocalDistributor(
@@ -201,9 +199,7 @@ public class LocalDistributor extends Distributor {
       host.runHealthCheck();
 
       Runnable runnable = host::runHealthCheck;
-      Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
-      nodeRunnables.add(runnable);
-      allChecks.put(node.getId(), nodeRunnables);
+      allChecks.put(node.getId(), runnable);
       hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
     } catch (Throwable t) {
       LOG.log(Level.WARNING, "Unable to process host", t);
@@ -238,7 +234,8 @@ public class LocalDistributor extends Distributor {
     writeLock.lock();
     try {
       hosts.removeIf(host -> nodeId.equals(host.getId()));
-      allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
+      allChecks.get(nodeId).forEach(hostChecker::remove);
+      allChecks.removeAll(nodeId);
     } finally {
       writeLock.unlock();
       bus.fire(new NodeRemovedEvent(nodeId));
