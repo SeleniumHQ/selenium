@@ -27,6 +27,7 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import zmq.io.mechanism.curve.Curve;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -49,15 +50,24 @@ class BoundZmqEventBus implements EventBus {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
+    Curve curve = new Curve();
+    String[] serverKeys = curve.keypairZ85();
+    String[] clientKeys = curve.keypairZ85();
+
 
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
     xpub = context.createSocket(SocketType.XPUB);
+    xpub.setCurvePublicKey(serverKeys[0].getBytes());
+    xpub.setCurveSecretKey(serverKeys[1].getBytes());
     xpub.setIPv6(xpubAddr.isIPv6);
     xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
 
     xsub = context.createSocket(SocketType.XSUB);
+    xsub.setCurvePublicKey(clientKeys[0].getBytes());
+    xsub.setCurveSecretKey(clientKeys[1].getBytes());
+    xsub.setCurveServerKey(serverKeys[0].getBytes());
     xsub.setIPv6(xsubAddr.isIPv6);
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
