@@ -398,8 +398,6 @@ public class DistributorTest {
     assertThat(latch.getCount()).isEqualTo(0);
   }
 
-
-
   @Test
   public void theMostLightlyLoadedNodeIsSelectedFirst() {
     // Create enough hosts so that we avoid the scheduler returning hosts in:

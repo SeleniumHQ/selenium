@@ -86,7 +86,7 @@
   </div>
 
 </div>
-                                                                                         
+
 <div id="formageddon">
     <form action="#">
         Key Up: <input type="text" id="keyUp" onkeyup="javascript:updateContent(this)"/><br/>
@@ -151,15 +151,15 @@
            />
 
     <input id="changeable" name="changeable" onfocus="appendMessage('focus')" onchange="appendMessage('change')" onblur="appendMessage('blur')"/>
-           
-    <button type="button" id="plainButton" 
+
+    <button type="button" id="plainButton"
     		onfocus="appendMessage('focus')"
            	onkeydown="appendMessage('keydown')"
            	onkeypress="appendMessage('keypress')"
            	onkeyup="appendMessage('keyup')"
            	onblur="appendMessage('blur')"
            	onclick="appendMessage('click')"
-           	onmousedown="appendMessage('mousedown ')" 
+           	onmousedown="appendMessage('mousedown ')"
            	onmouseup="appendMessage('mouseup ')"
             onmouseover="register('mouseover ')"
             onmousemove="register('mousemove ')"
@@ -173,7 +173,7 @@
     <button type="button" onclick="var element = document.getElementById('switchFocus'); var clickEvent = document.createEvent('MouseEvents'); clickEvent.initMouseEvent('click', true, true, null, 0, 0, 0, 0, 0,false, false, false, false, 0, element);element.dispatchEvent(clickEvent);">Do magic</button><br/>
     <label id="labelForCheckbox" for="labeledCheckbox" onclick="appendMessage('labelclick')">Toggle checkbox</label><input type="checkbox" id="labeledCheckbox" onclick="appendMessage('chboxclick')"/>
   </form>
-  
+
   <form action="javascriptPage.html" id="submitListeningForm" onsubmit="appendMessage('form-onsubmit '); return false;">
     <p>
       <input id="submitListeningForm-text" type="text" onsubmit="appendMessage('text-onsubmit ')" onclick="appendMessage('text-onclick ');" />
@@ -198,7 +198,7 @@
         <a href="#" id="hiddenlink">ok</a>
       </div>
     </div>
-    
+
     <div style="visibility: hidden;">
       <span>
         <input id="unclickable" />
@@ -265,7 +265,7 @@
 
 <a id="new_window" onmouseup="window.open('closeable_window.html', 'close_me')" href="#">Click me to open a new window</a>
 
-<a id="throwing-mouseover" onmouseover="throw new Error()" href="#throwing-mouseover">Mouse over me will throw a JS error</a>
+<a id="throwing-mouseover" onmouseover="throw new Error('I like cheese')" href="#throwing-mouseover">Mouse over me will throw a JS error</a>
 
 <div id="parent">
     <span id="movable" onmouseover="var p = document.getElementById('movable'); displayMessage('parent matches? ' + (p != event.relatedTarget));">

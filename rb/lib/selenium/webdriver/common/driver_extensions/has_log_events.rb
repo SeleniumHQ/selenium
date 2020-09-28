@@ -21,29 +21,51 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasLogEvents
+        KINDS = %i[console exception].freeze
 
         #
-        #
         # Registers listener to be called whenever browser receives
-        # a new Console API message such as console.log().
+        # a new Console API message such as console.log() or an unhandled
+        # exception.
+        #
         # This currently relies on DevTools so is only supported in
         # Chromium browsers.
         #
-        # @example
+        # @example Collect console messages
         #   logs = []
-        #   driver.on_log_event do |event|
+        #   driver.on_log_event(:console) do |event|
         #     logs.push(event)
         #   end
         #
-        # @param [#call] block which yields DevTools::ConsoleEvent
+        # @example Collect JavaScript exceptions
+        #   exceptions = []
+        #   driver.on_log_event(:exception) do |event|
+        #     exceptions.push(event)
+        #   end
+        #
+        # @param [Symbol] kind :console or :exception
+        # @param [#call] block which is called when event happens
+        # @yieldparam [DevTools::ConsoleEvent, DevTools::ExceptionEvent]
         #
 
-        def on_log_event(&block)
-          console_listeners_enabled = console_listeners.any?
-          console_listeners << block
-          return if console_listeners_enabled
+        def on_log_event(kind, &block)
+          raise WebDriverError, "Don't know how to handle #{kind} events" unless KINDS.include?(kind)
+
+          enabled = log_listeners[kind].any?
+          log_listeners[kind] << block
+          return if enabled
 
           devtools.runtime.enable
+          __send__("log_#{kind}_events")
+        end
+
+        private
+
+        def log_listeners
+          @log_listeners ||= Hash.new { |listeners, kind| listeners[kind] = [] }
+        end
+
+        def log_console_events
           devtools.runtime.on(:console_api_called) do |params|
             event = DevTools::ConsoleEvent.new(
               type: params['type'],
@@ -51,16 +73,24 @@ module Selenium
               args: params['args']
             )
 
-            console_listeners.each do |listener|
+            log_listeners[:console].each do |listener|
               listener.call(event)
             end
           end
         end
 
-        private
+        def log_exception_events
+          devtools.runtime.on(:exception_thrown) do |params|
+            event = DevTools::ExceptionEvent.new(
+              description: params.dig('exceptionDetails', 'exception', 'description'),
+              timestamp: params['timestamp'],
+              stacktrace: params.dig('exceptionDetails', 'stackTrace', 'callFrames')
+            )
 
-        def console_listeners
-          @console_listeners ||= []
+            log_listeners[:exception].each do |listener|
+              listener.call(event)
+            end
+          end
         end
 
       end # HasLogEvents
