@@ -34,20 +34,21 @@ import java.util.Set;
 @AutoService(HasRoles.class)
 public class NewSessionQueuerFlags implements HasRoles {
 
-  @Parameter(names = {"-sq",
-                      "--sessionqueuer"}, description = "Address of the session queue server.")
+  @Parameter(
+    names = { "-sq",  "--sessionqueuer" },
+    description = "Address of the session queue server.")
   @ConfigValue(section = "sessionqueuer", name = "host", example = "\"http://localhost:1237\"")
   private URI sessionQueueServer;
 
   @Parameter(
-      names = "--sessionqueuer-port",
-      description = "Port on which the session queue server is listening.")
+    names = "--sessionqueuer-port",
+    description = "Port on which the session queue server is listening.")
   @ConfigValue(section = "sessionqueuer", name = "port", example = "1234")
   private int sessionQueueServerPort;
 
   @Parameter(
-      names = "--sessionqueuer-host",
-      description = "Host on which the session queue server is listening.")
+    names = "--sessionqueuer-host",
+    description = "Host on which the session queue server is listening.")
   @ConfigValue(section = "sessionqueuer", name = "hostname", example = "\"localhost\"")
   private String sessionQueueServerHost;
 
