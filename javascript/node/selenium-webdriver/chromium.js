@@ -738,8 +738,12 @@ class Driver extends webdriver.WebDriver {
    * Doesn't return anything, sets the listener and goes off.
    */
   async register(username, password) {
-    await this.sendDevToolsCommand('Network.setCacheDisabled', {
+    const response = await this.sendDevToolsCommand('Network.setCacheDisabled', {
       cacheDisabled: true,
+    })
+
+    this._wsConnection.on('Fetch.authRequired', (message) => {
+      console.log(message)
     })
 
     this._wsConnection.on('message', (message) => {
