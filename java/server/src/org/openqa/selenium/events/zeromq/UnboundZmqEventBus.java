@@ -101,7 +101,7 @@ class UnboundZmqEventBus implements EventBus {
     Failsafe.with(retryPolicy).run(
       () -> {
         sub = context.createSocket(SocketType.SUB);
-        if (subscribeConnection.contains("tcp://")) {
+        if (subscribeConnection.startsWith("tcp://")) {
           sub.setCurvePublicKey(clientKeys[0].getBytes());
           sub.setCurveSecretKey(clientKeys[1].getBytes());
           sub.setCurveServerKey(serverKeys[0].getBytes());
@@ -112,7 +112,7 @@ class UnboundZmqEventBus implements EventBus {
         sub.subscribe(new byte[0]);
 
         pub = context.createSocket(SocketType.PUB);
-        if (publishConnection.contains("tcp://")) {
+        if (publishConnection.startsWith("tcp://")) {
           pub.setCurvePublicKey(serverKeys[0].getBytes());
           pub.setCurveSecretKey(serverKeys[1].getBytes());
           pub.setIPv6(isSubAddressIPv6(subscribeConnection));
