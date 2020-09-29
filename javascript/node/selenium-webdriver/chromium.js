@@ -746,38 +746,39 @@ class Driver extends webdriver.WebDriver {
    * @param {string} password
    * Doesn't return anything, sets the listener and goes off.
    */
-  async register(username, password, connection) {
-    await connection.execute("Network.setCacheDisabled", 1, {
+  async register(username, password, connection1, connection2) {
+    await connection1.execute("Network.setCacheDisabled", 1, {
       cacheDisabled: true,
     }, null);
 
-    await connection.getCdpMessage()
+    connection1.getCdpMessage()
+    connection2.getCdpMessage()
+    // this._wsConnection.on('message', (message) => {
+    //   console.log("Message is here")
+    //   console.log(message);
+    //   const params = JSON.parse(message)
+    //
+    //   if (params.method === 'Fetch.authRequired') {
+    //     const requestParams = params['params']
+    //     this.sendDevToolsCommand('Fetch.continueWithAuth', {
+    //       requestId: requestParams['requestId'],
+    //       authChallengeResponse: {
+    //         response: 'ProvideCredentials',
+    //         username: username,
+    //         password: password,
+    //       },
+    //     });
+    //   } else if (params.method === 'Fetch.requestPaused') {
+    //     const requestPausedParams = params['params']
+    //     this.sendDevToolsCommand('Fetch.continueRequest', {
+    //       requestId: requestPausedParams['requestId'],
+    //     })
+    //   }
+    // })
 
-    this._wsConnection.on('message', (message) => {
-      console.log(message);
-      const params = JSON.parse(message.data)
-
-      if (params.method === 'Fetch.authRequired') {
-        const requestParams = params['params']
-        this.sendDevToolsCommand('Fetch.continueWithAuth', {
-          requestId: requestParams['requestId'],
-          authChallengeResponse: {
-            response: 'ProvideCredentials',
-            username: username,
-            password: password,
-          },
-        });
-      } else if (params.method === 'Fetch.requestPaused') {
-        const requestPausedParams = params['params']
-        this.sendDevToolsCommand('Fetch.continueRequest', {
-          requestId: requestPausedParams['requestId'],
-        })
-      }
-    })
-
-    await this.sendDevToolsCommand('Fetch.enable', {
+    await connection2.execute('Fetch.enable', 1, {
       handleAuthRequests: true,
-    })
+    }, null)
 
     return
   }

@@ -28,13 +28,14 @@ class CDPConnection {
       id: id,
     }
 
-    this._wsConnection.send(JSON.stringify(message), callback)
+    const mergedMessage = Object.assign({'params':params}, message)
+
+    this._wsConnection.send(JSON.stringify(mergedMessage), callback)
   }
 
   getCdpMessage() {
     this._wsConnection.on('message', function(data){
       console.log(data);
-      return data;
     })
   }
 }

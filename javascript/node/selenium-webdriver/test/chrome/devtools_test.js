@@ -124,12 +124,13 @@ test.suite(
 
       server.start()
 
-      it('denies entry if username and password do not match', async function() {
+      it.only('denies entry if username and password do not match', async function() {
         // eslint-disable-next-line no-unused-vars
         await driver.get('http://the-internet.herokuapp.com/basic_auth')
-        const cdpConnection = await driver.createCDPConnection()
+        const pageCdpConnection = await driver.createCDPConnection('page')
+        const browserCdpConnection = await driver.createCDPConnection('browser')
 
-        await driver.register('random', 'random', cdpConnection)
+        await driver.register('random', 'random', pageCdpConnection, browserCdpConnection)
         await server.stop()
       })
     })
