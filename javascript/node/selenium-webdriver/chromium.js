@@ -753,10 +753,6 @@ class Driver extends webdriver.WebDriver {
 
     await connection.getCdpMessage()
 
-    this._wsConnection.on('Fetch.authRequired', (message) => {
-      console.log(message)
-    })
-
     this._wsConnection.on('message', (message) => {
       console.log(message);
       const params = JSON.parse(message.data)
