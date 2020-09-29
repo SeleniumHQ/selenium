@@ -158,7 +158,13 @@ class UnboundZmqEventBus implements EventBus {
 
   private boolean isSubAddressIPv6(String connection) {
     try {
-      return InetAddress.getByName(new URI(connection).getHost()) instanceof Inet6Address;
+      URI uri = new URI(connection);
+
+      if ("inproc".equals(uri.getScheme())) {
+        return false;
+      }
+
+      return InetAddress.getByName(uri.getHost()) instanceof Inet6Address;
     } catch (UnknownHostException | URISyntaxException e) {
       LOG.log(Level.WARNING, String.format("Could not determine if the address %s is IPv6 or IPv4", connection), e);
     }
