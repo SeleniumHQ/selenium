@@ -34,6 +34,8 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
@@ -87,8 +89,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.grid.data.NodeAddedEvent.NODE_ADDED;
-import static org.openqa.selenium.grid.data.NodeRemovedEvent.NODE_REMOVED;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -250,7 +250,7 @@ public class DistributorTest {
         .build();
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(NODE_REMOVED, e -> latch.countDown());
+    bus.addListener(NodeRemovedEvent.listener(ignored -> latch.countDown()));
 
     Distributor distributor = new LocalDistributor(
         tracer,
@@ -284,7 +284,7 @@ public class DistributorTest {
         .build();
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(NODE_REMOVED, e -> latch.countDown());
+    bus.addListener(NodeRemovedEvent.listener(ignored -> latch.countDown()));
 
     Distributor distributor = new LocalDistributor(
         tracer,
@@ -318,7 +318,7 @@ public class DistributorTest {
         .build();
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(NODE_REMOVED, e -> latch.countDown());
+    bus.addListener(NodeRemovedEvent.listener(ignored -> latch.countDown()));
 
     Distributor distributor = new LocalDistributor(
         tracer,
@@ -391,7 +391,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(NODE_ADDED, e -> latch.countDown());
+    bus.addListener(NodeAddedEvent.listener(ignored -> latch.countDown()));
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
       .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))

@@ -20,10 +20,15 @@ package org.openqa.selenium.grid.distributor.local;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Availability;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRejectedEvent;
+import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.security.Secret;
@@ -46,11 +51,6 @@ import java.util.logging.Logger;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
-import static org.openqa.selenium.grid.data.NodeDrainStarted.NODE_DRAIN_STARTED;
-import static org.openqa.selenium.grid.data.NodeRemovedEvent.NODE_REMOVED;
-import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 
 public class GridModel {
 
@@ -63,12 +63,12 @@ public class GridModel {
   public GridModel(EventBus events, Secret registrationSecret) {
     this.events = Require.nonNull("Event bus", events);
 
-    events.addListener(NODE_DRAIN_STARTED, event -> setAvailability(event.getData(NodeId.class), DRAINING));
-    events.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(NodeId.class)));
-    events.addListener(NODE_REMOVED, event -> remove(event.getData(NodeId.class)));
-    events.addListener(NODE_STATUS, event -> refresh(registrationSecret, event.getData(NodeStatus.class)));
+    events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
+    events.addListener(NodeDrainComplete.listener(this::remove));
+    events.addListener(NodeRemovedEvent.listener(this::remove));
+    events.addListener(NodeStatusEvent.listener(status -> refresh(registrationSecret, status)));
 
-    events.addListener(SESSION_CLOSED, event -> release(event.getData(SessionId.class)));
+    events.addListener(SessionClosedEvent.listener(this::release));
   }
 
   public GridModel add(NodeStatus node) {

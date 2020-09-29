@@ -38,6 +38,7 @@ import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -82,7 +83,6 @@ import java.util.stream.Collectors;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -163,9 +163,9 @@ public class LocalNode extends Node {
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
     regularly.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
 
-    bus.addListener(SESSION_CLOSED, event -> {
+    bus.addListener(SessionClosedEvent.listener(id -> {
       try {
-        this.stop(event.getData(SessionId.class));
+        this.stop(id);
       } catch (NoSuchSessionException ignore) {
       }
       if (this.isDraining()) {
@@ -175,7 +175,7 @@ public class LocalNode extends Node {
           bus.fire(new NodeDrainComplete(this.getId()));
         }
       }
-    });
+    }));
   }
 
   @Override

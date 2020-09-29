@@ -84,7 +84,7 @@ public class AddingNodesTest {
   private Wait<Object> wait;
   private URL externalUrl;
   private CombinedHandler handler;
-  private Secret registrationSecret;
+  private Secret registrationSecret = null;
   private Capabilities stereotype;
 
   @Before
@@ -106,7 +106,7 @@ public class AddingNodesTest {
 
     stereotype = new ImmutableCapabilities("browserName", "gouda");
 
-    wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(2));
+    wait = new FluentWait<>(new Object()).ignoring(Throwable.class).withTimeout(Duration.ofSeconds(2));
   }
 
   @Test
@@ -174,7 +174,7 @@ public class AddingNodesTest {
     bus.fire(new NodeStatusEvent(firstNode.getStatus()));
     bus.fire(new NodeStatusEvent(secondNode.getStatus()));
 
-    wait.until(obj -> distributor.getStatus().hasCapacity());
+    wait.until(obj -> distributor.getStatus());
 
     Set<NodeStatus> nodes = distributor.getStatus().getNodes();
 

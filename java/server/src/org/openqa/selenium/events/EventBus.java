@@ -26,6 +26,10 @@ public interface EventBus extends Closeable, HasReadyState {
 
   void addListener(EventName eventName, Consumer<Event> onType);
 
+  default void addListener(EventListener<?> listener) {
+    addListener(listener.getEventName(), listener);
+  }
+
   void fire(Event event);
 
   void close();

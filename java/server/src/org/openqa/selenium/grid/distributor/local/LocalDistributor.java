@@ -29,10 +29,12 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -70,8 +72,6 @@ import java.util.logging.Logger;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
-import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 
 public class LocalDistributor extends Distributor {
 
@@ -102,9 +102,9 @@ public class LocalDistributor extends Distributor {
     this.model = new GridModel(bus, registrationSecret);
     this.nodes = new HashMap<>();
 
-    bus.addListener(NODE_STATUS, event -> register(registrationSecret, event.getData(NodeStatus.class)));
-    bus.addListener(NODE_STATUS, event -> model.refresh(registrationSecret, event.getData(NodeStatus.class)));
-    bus.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(NodeId.class)));
+    bus.addListener(NodeStatusEvent.listener(status -> register(registrationSecret, status)));
+    bus.addListener(NodeStatusEvent.listener(status -> model.refresh(registrationSecret, status)));
+    bus.addListener(NodeDrainComplete.listener(this::remove));
   }
 
   public static Distributor create(Config config) {

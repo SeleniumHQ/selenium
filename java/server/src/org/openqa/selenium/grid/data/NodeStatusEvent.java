@@ -18,14 +18,23 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
+import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.internal.Require;
 
+import java.util.function.Consumer;
+
 public class NodeStatusEvent extends Event {
 
-  public static final EventName NODE_STATUS = new EventName("node-status");
+  private static final EventName NODE_STATUS = new EventName("node-status");
 
   public NodeStatusEvent(NodeStatus status) {
     super(NODE_STATUS, Require.nonNull("Node status", status));
+  }
+
+  public static EventListener<NodeStatus> listener(Consumer<NodeStatus> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<NodeStatus>(NODE_STATUS, NodeStatus.class, handler);
   }
 }

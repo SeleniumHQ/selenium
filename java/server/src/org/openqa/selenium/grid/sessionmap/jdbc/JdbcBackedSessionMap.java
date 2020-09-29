@@ -24,6 +24,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -37,12 +38,6 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-
 import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,7 +50,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
@@ -83,10 +82,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     this.bus = Require.nonNull("Event bus", bus);
 
     this.connection = jdbcConnection;
-    this.bus.addListener(SESSION_CLOSED, event -> {
-      SessionId id = event.getData(SessionId.class);
-      remove(id);
-    });
+    this.bus.addListener(SessionClosedEvent.listener(this::remove));
   }
 
   public static SessionMap create(Config config) {

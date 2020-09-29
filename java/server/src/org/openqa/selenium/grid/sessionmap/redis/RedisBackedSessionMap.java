@@ -25,6 +25,7 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -48,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -78,10 +78,7 @@ public class RedisBackedSessionMap extends SessionMap {
     this.bus = Require.nonNull("Event bus", bus);
     this.connection = new GridRedisClient(serverUri);
     this.serverUri = serverUri;
-    this.bus.addListener(SESSION_CLOSED, event -> {
-      SessionId id = event.getData(SessionId.class);
-      remove(id);
-    });
+    this.bus.addListener(SessionClosedEvent.listener(this::remove));
   }
 
   public static SessionMap create(Config config) {

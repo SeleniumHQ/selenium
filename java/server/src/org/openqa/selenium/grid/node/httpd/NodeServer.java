@@ -28,7 +28,8 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
-import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeAddedEvent;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -51,7 +52,6 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
@@ -61,8 +61,6 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.NodeAddedEvent.NODE_ADDED;
-import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
@@ -131,15 +129,13 @@ public class NodeServer extends TemplateGridCommand {
         .setContent(Contents.utf8String("No capacity available"));
     };
 
-    bus.addListener(NODE_ADDED, event -> {
-      UUID nodeId = event.getData(UUID.class);
+    bus.addListener(NodeAddedEvent.listener(nodeId -> {
       if (node.getId().equals(nodeId)) {
         LOG.info("Node has been added");
       }
-    });
+    }));
 
-    bus.addListener(NODE_DRAIN_COMPLETE, event -> {
-      NodeId nodeId = event.getData(NodeId.class);
+    bus.addListener(NodeDrainComplete.listener(nodeId -> {
       if (!node.getId().equals(nodeId)) {
         return;
       }
@@ -158,7 +154,7 @@ public class NodeServer extends TemplateGridCommand {
         },
         "Node shutdown: " + nodeId)
         .start();
-    });
+    }));
 
     Route httpHandler = Route.combine(
       node,
