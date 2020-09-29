@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -50,7 +48,6 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
@@ -85,7 +82,7 @@ public class LocalDistributor extends Distributor {
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
-  private final Multimap<NodeId, Runnable> allChecks = HashMultimap.create();
+  private final Map<NodeId, Runnable> allChecks = new HashMap<>();
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
@@ -234,8 +231,10 @@ public class LocalDistributor extends Distributor {
     writeLock.lock();
     try {
       model.remove(nodeId);
-      allChecks.get(nodeId).forEach(hostChecker::remove);
-      allChecks.removeAll(nodeId);
+      Runnable runnable = allChecks.remove(nodeId);
+      if (runnable != null) {
+        hostChecker.remove(runnable);
+      }
     } finally {
       writeLock.unlock();
       bus.fire(new NodeRemovedEvent(nodeId));

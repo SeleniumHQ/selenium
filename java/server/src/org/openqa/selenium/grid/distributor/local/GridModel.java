@@ -103,7 +103,7 @@ public class GridModel {
 
     Secret statusSecret = status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret());
     if (!Objects.equals(registrationSecret, statusSecret)) {
-      LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT registered.", status.getUri()));
+      LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT refreshed.", status.getUri()));
       events.fire(new NodeRejectedEvent(status.getUri()));
       return this;
     }
@@ -127,7 +127,7 @@ public class GridModel {
 
       // But do trust the node if it tells us it's draining
       nodes(availabilityAndNode.availability).remove(availabilityAndNode.status);
-      nodes(availabilityAndNode.availability).add(status);
+      nodes(status.getAvailability()).add(status);
       return this;
     } finally {
       writeLock.unlock();
@@ -184,47 +184,6 @@ public class GridModel {
     }
   }
 
-  public Set<NodeStatus> getSnapshot() {
-    Lock readLock = this.lock.readLock();
-    readLock.lock();
-    try {
-      ImmutableSet.Builder<NodeStatus> snapshot = ImmutableSet.builder();
-      for (Map.Entry<Availability, Set<NodeStatus>> entry : nodes.entrySet()) {
-        entry.getValue().stream()
-          .map(status -> rewrite(status, entry.getKey()))
-          .forEach(snapshot::add);
-      }
-      return snapshot.build();
-    } finally {
-      readLock.unlock();
-    }
-  }
-
-  private Set<NodeStatus> nodes(Availability availability) {
-    return nodes.computeIfAbsent(availability, ignored -> new HashSet<>());
-  }
-
-  private NodeStatus rewrite(NodeStatus status, Availability availability) {
-    return new NodeStatus(
-      status.getId(),
-      status.getUri(),
-      status.getMaxSessionCount(),
-      status.getSlots(),
-      availability,
-      status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret()));
-  }
-
-  private AvailabilityAndNode findNode(NodeId id) {
-    for (Map.Entry<Availability, Set<NodeStatus>> entry : nodes.entrySet()) {
-      for (NodeStatus nodeStatus : entry.getValue()) {
-        if (id.equals(nodeStatus.getId())) {
-          return new AvailabilityAndNode(entry.getKey(), nodeStatus);
-        }
-      }
-    }
-    return null;
-  }
-
   public boolean reserve(SlotId slotId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -260,6 +219,47 @@ public class GridModel {
     } finally {
       writeLock.unlock();
     }
+  }
+
+  public Set<NodeStatus> getSnapshot() {
+    Lock readLock = this.lock.readLock();
+    readLock.lock();
+    try {
+      ImmutableSet.Builder<NodeStatus> snapshot = ImmutableSet.builder();
+      for (Map.Entry<Availability, Set<NodeStatus>> entry : nodes.entrySet()) {
+        entry.getValue().stream()
+          .map(status -> rewrite(status, entry.getKey()))
+          .forEach(snapshot::add);
+      }
+      return snapshot.build();
+    } finally {
+      readLock.unlock();
+    }
+  }
+
+  private Set<NodeStatus> nodes(Availability availability) {
+    return nodes.computeIfAbsent(availability, ignored -> new HashSet<>());
+  }
+
+  private AvailabilityAndNode findNode(NodeId id) {
+    for (Map.Entry<Availability, Set<NodeStatus>> entry : nodes.entrySet()) {
+      for (NodeStatus nodeStatus : entry.getValue()) {
+        if (id.equals(nodeStatus.getId())) {
+          return new AvailabilityAndNode(entry.getKey(), nodeStatus);
+        }
+      }
+    }
+    return null;
+  }
+
+  private NodeStatus rewrite(NodeStatus status, Availability availability) {
+    return new NodeStatus(
+      status.getId(),
+      status.getUri(),
+      status.getMaxSessionCount(),
+      status.getSlots(),
+      availability,
+      status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret()));
   }
 
   private void release(SessionId id) {
