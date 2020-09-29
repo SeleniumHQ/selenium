@@ -18,12 +18,12 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.remote.SessionId;
 
 public class SessionClosedEvent extends Event {
 
-  public static final Type SESSION_CLOSED = new Type("session-closed");
+  public static final EventName SESSION_CLOSED = new EventName("session-closed");
 
   public SessionClosedEvent(SessionId id) {
     super(SESSION_CLOSED, id);

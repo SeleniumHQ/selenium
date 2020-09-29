@@ -19,7 +19,7 @@ package org.openqa.selenium.events.zeromq;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.net.NetworkUtils;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -77,8 +77,8 @@ class BoundZmqEventBus implements EventBus {
   }
 
   @Override
-  public void addListener(Type type, Consumer<Event> onType) {
-    delegate.addListener(type, onType);
+  public void addListener(EventName eventName, Consumer<Event> onType) {
+    delegate.addListener(eventName, onType);
   }
 
   @Override

@@ -18,13 +18,11 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
-
-import java.util.UUID;
+import org.openqa.selenium.events.EventName;
 
 public class NewSessionRejectedEvent extends Event {
 
-  public static final Type NEW_SESSION_REJECTED = new Type("new-session-rejected");
+  public static final EventName NEW_SESSION_REJECTED = new EventName("new-session-rejected");
 
   public NewSessionRejectedEvent(NewSessionErrorResponse response) {
     super(NEW_SESSION_REJECTED, response);

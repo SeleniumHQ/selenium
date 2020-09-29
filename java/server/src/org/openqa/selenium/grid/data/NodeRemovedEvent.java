@@ -18,11 +18,11 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 
 public class NodeRemovedEvent extends Event {
 
-  public static final Type NODE_REMOVED = new Type("node-removed");
+  public static final EventName NODE_REMOVED = new EventName("node-removed");
 
   public NodeRemovedEvent(NodeId nodeId) {
     super(NODE_REMOVED, nodeId);

@@ -18,11 +18,11 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 
 public class NodeDrainStarted extends Event {
 
-  public static final Type NODE_DRAIN_STARTED = new Type("node-drain-started");
+  public static final EventName NODE_DRAIN_STARTED = new EventName("node-drain-started");
 
   public NodeDrainStarted(NodeId id) {
     super(NODE_DRAIN_STARTED, id);

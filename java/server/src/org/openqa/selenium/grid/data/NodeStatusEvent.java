@@ -18,12 +18,12 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.internal.Require;
 
 public class NodeStatusEvent extends Event {
 
-  public static final Type NODE_STATUS = new Type("node-status");
+  public static final EventName NODE_STATUS = new EventName("node-status");
 
   public NodeStatusEvent(NodeStatus status) {
     super(NODE_STATUS, Require.nonNull("Node status", status));

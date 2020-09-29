@@ -28,13 +28,12 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
@@ -370,7 +369,7 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    Type rejected = new Type("node-rejected");
+    EventName rejected = new EventName("node-rejected");
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(rejected, e -> latch.countDown());
 

@@ -18,11 +18,11 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 
 public class NodeAddedEvent extends Event {
 
-  public static final Type NODE_ADDED = new Type("node-added");
+  public static final EventName NODE_ADDED = new EventName("node-added");
 
   public NodeAddedEvent(NodeId nodeId) {
     super(NODE_ADDED, nodeId);

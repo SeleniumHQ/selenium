@@ -21,11 +21,11 @@ import org.openqa.selenium.internal.Require;
 
 import java.util.Objects;
 
-public final class Type {
+public final class EventName {
 
   private final String name;
 
-  public Type(String name) {
+  public EventName(String name) {
     this.name = Require.nonNull("Type name", name);
   }
 
@@ -40,11 +40,11 @@ public final class Type {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof Type)) {
+    if (!(obj instanceof EventName)) {
       return false;
     }
 
-    Type that = (Type) obj;
+    EventName that = (EventName) obj;
     return Objects.equals(this.name, that.name);
   }
 

@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 public interface EventBus extends Closeable, HasReadyState {
 
-  void addListener(Type type, Consumer<Event> onType);
+  void addListener(EventName eventName, Consumer<Event> onType);
 
   void fire(Event event);
 

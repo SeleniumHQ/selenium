@@ -18,14 +18,11 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
-import org.openqa.selenium.remote.SessionId;
-
-import java.util.UUID;
+import org.openqa.selenium.events.EventName;
 
 public class NewSessionRequestEvent extends Event {
 
-  public static final Type NEW_SESSION_REQUEST = new Type("new-session-request");
+  public static final EventName NEW_SESSION_REQUEST = new EventName("new-session-request");
 
   public NewSessionRequestEvent(RequestId requestId) {
     super(NEW_SESSION_REQUEST, requestId);

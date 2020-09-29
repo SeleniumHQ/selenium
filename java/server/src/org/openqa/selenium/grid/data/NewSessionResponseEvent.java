@@ -18,13 +18,11 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
-
-import java.util.UUID;
+import org.openqa.selenium.events.EventName;
 
 public class NewSessionResponseEvent extends Event {
 
-  public static final Type NEW_SESSION_RESPONSE = new Type("new-session-response");
+  public static final EventName NEW_SESSION_RESPONSE = new EventName("new-session-response");
 
   public NewSessionResponseEvent(NewSessionResponse sessionResponse) {
     super(NEW_SESSION_RESPONSE, sessionResponse);

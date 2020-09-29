@@ -22,7 +22,7 @@ import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.zeromq.SocketType;
@@ -55,7 +55,7 @@ class UnboundZmqEventBus implements EventBus {
   private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private static final Json JSON = new Json();
   private final ExecutorService executor;
-  private final Map<Type, List<Consumer<Event>>> listeners = new ConcurrentHashMap<>();
+  private final Map<EventName, List<Consumer<Event>>> listeners = new ConcurrentHashMap<>();
   private final Queue<UUID> recentMessages = EvictingQueue.create(128);
 
   private ZMQ.Socket pub;
@@ -109,19 +109,19 @@ class UnboundZmqEventBus implements EventBus {
           if (poller.pollin(0)) {
             ZMQ.Socket socket = poller.getSocket(0);
 
-            Type type = new Type(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
+            EventName eventName = new EventName(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
             UUID id = UUID.fromString(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
             String data = new String(socket.recv(ZMQ.DONTWAIT), UTF_8);
 
             Object converted = JSON.toType(data, Object.class);
-            Event event = new Event(id, type, converted);
+            Event event = new Event(id, eventName, converted);
 
             if (recentMessages.contains(id)) {
               continue;
             }
             recentMessages.add(id);
 
-            List<Consumer<Event>> typeListeners = listeners.get(type);
+            List<Consumer<Event>> typeListeners = listeners.get(eventName);
             if (typeListeners == null) {
               continue;
             }
@@ -172,11 +172,11 @@ class UnboundZmqEventBus implements EventBus {
   }
 
   @Override
-  public void addListener(Type type, Consumer<Event> onType) {
-    Require.nonNull("Event type", type);
+  public void addListener(EventName eventName, Consumer<Event> onType) {
+    Require.nonNull("Event type", eventName);
     Require.nonNull("Event listener", onType);
 
-    List<Consumer<Event>> typeListeners = listeners.computeIfAbsent(type, t -> new LinkedList<>());
+    List<Consumer<Event>> typeListeners = listeners.computeIfAbsent(eventName, t -> new LinkedList<>());
     typeListeners.add(onType);
   }
 

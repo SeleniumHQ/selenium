@@ -78,7 +78,7 @@ public class EventBusTest {
 
   @Test(timeout = 4000)
   public void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
-    Type cheese = new Type("cheese");
+    EventName cheese = new EventName("cheese");
     Event event = new Event(cheese, null);
 
     CountDownLatch latch = new CountDownLatch(1);
@@ -92,9 +92,9 @@ public class EventBusTest {
   @Test(timeout = 4000)
   public void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
-    bus.addListener(new Type("peas"), e -> count.incrementAndGet());
+    bus.addListener(new EventName("peas"), e -> count.incrementAndGet());
 
-    bus.fire(new Event(new Type("cheese"), null));
+    bus.fire(new Event(new EventName("cheese"), null));
 
     assertThat(count.get()).isEqualTo(0);
   }

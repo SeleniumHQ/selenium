@@ -21,7 +21,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 
@@ -44,8 +44,8 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
   }
 
   @Override
-  public void addListener(Type type, Consumer<Event> onType) {
-    Listener listener = new Listener(type, onType);
+  public void addListener(EventName eventName, Consumer<Event> onType) {
+    Listener listener = new Listener(eventName, onType);
     allListeners.add(listener);
     guavaBus.register(listener);
   }
@@ -67,17 +67,17 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
 
   private static class Listener {
 
-    private final Type type;
+    private final EventName eventName;
     private final Consumer<Event> onType;
 
-    public Listener(Type type, Consumer<Event> onType) {
-      this.type = Require.nonNull("Event type", type);
+    public Listener(EventName eventName, Consumer<Event> onType) {
+      this.eventName = Require.nonNull("Event type", eventName);
       this.onType = Require.nonNull("Event listener", onType);
     }
 
     @Subscribe
     public void handle(Event event) {
-      if (type.equals(event.getType())) {
+      if (eventName.equals(event.getType())) {
         onType.accept(event);
       }
     }
