@@ -48,6 +48,7 @@ import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.data.NodeDrainComplete.NODE_DRAIN_COMPLETE;
 import static org.openqa.selenium.grid.data.NodeDrainStarted.NODE_DRAIN_STARTED;
+import static org.openqa.selenium.grid.data.NodeRemovedEvent.NODE_REMOVED;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 
@@ -64,6 +65,7 @@ public class GridModel {
 
     events.addListener(NODE_DRAIN_STARTED, event -> setAvailability(event.getData(NodeId.class), DRAINING));
     events.addListener(NODE_DRAIN_COMPLETE, event -> remove(event.getData(NodeId.class)));
+    events.addListener(NODE_REMOVED, event -> remove(event.getData(NodeId.class)));
     events.addListener(NODE_STATUS, event -> refresh(registrationSecret, event.getData(NodeStatus.class)));
 
     events.addListener(SESSION_CLOSED, event -> release(event.getData(SessionId.class)));
