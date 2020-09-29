@@ -22,13 +22,20 @@ class CDPConnection {
     this._wsConnection = wsConnection
   }
 
-  execute(method, params, callback) {
+  execute(method, id, params, callback) {
     const message = {
       method,
-      params: params || {},
+      id: id,
     }
 
     this._wsConnection.send(JSON.stringify(message), callback)
+  }
+
+  getCdpMessage() {
+    this._wsConnection.on('message', function(data){
+      console.log(data);
+      return data;
+    })
   }
 }
 

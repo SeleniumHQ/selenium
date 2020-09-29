@@ -73,15 +73,15 @@ test.suite(
     })
 
     it('sends Page.enable command using devtools', async function () {
-      const cdpConnection = await driver.createCDPConnection()
-      cdpConnection.execute('Page.enable', '', function (_res, err) {
+      const cdpConnection = await driver.createCDPConnection('page')
+      cdpConnection.execute('Page.enable', 1, {}, function (_res, err) {
         assert(!err)
       })
     })
 
     it('sends Network and Page command using devtools', async function () {
-      const cdpConnection = await driver.createCDPConnection()
-      cdpConnection.execute('Network.enable', '', function (_res, err) {
+      const cdpConnection = await driver.createCDPConnection('browser')
+      cdpConnection.execute('Network.enable', 1, {}, function (_res, err) {
         assert(!err)
       })
 
@@ -95,42 +95,42 @@ test.suite(
     })
 
     describe('Basic Auth Injection', function () {
-      // const server = new Server(function(req, res) {
-      //   if (req.method == 'GET' && req.url == '/protected') {
-      //     const denyAccess = function () {
-      //       res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
-      //       res.end('Access denied')
-      //     }
-      //
-      //     const basicAuthRegExp = /^\s*basic\s+([a-z0-9\-\._~\+\/]+)=*\s*$/i
-      //     const auth = req.headers.authorization
-      //     const match = basicAuthRegExp.exec(auth || '')
-      //     if (!match) {
-      //       denyAccess()
-      //       return
-      //     }
-      //
-      //     const userNameAndPass = Buffer.from(match[1], 'base64').toString()
-      //     const parts = userNameAndPass.split(':', 2)
-      //     if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
-      //       denyAccess()
-      //       return
-      //     }
-      //
-      //     res.writeHead(200, { 'content-type': 'text/plain' })
-      //     res.end('Access granted!')
-      //   }
-      // })
-      //
-      // server.start()
+      const server = new Server(function(req, res) {
+        if (req.method == 'GET' && req.url == '/protected') {
+          const denyAccess = function () {
+            res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
+            res.end('Access denied')
+          }
 
-      it.only('denies entry if username and password do not match', async function() {
+          const basicAuthRegExp = /^\s*basic\s+([a-z0-9\-\._~\+\/]+)=*\s*$/i
+          const auth = req.headers.authorization
+          const match = basicAuthRegExp.exec(auth || '')
+          if (!match) {
+            denyAccess()
+            return
+          }
+
+          const userNameAndPass = Buffer.from(match[1], 'base64').toString()
+          const parts = userNameAndPass.split(':', 2)
+          if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
+            denyAccess()
+            return
+          }
+
+          res.writeHead(200, { 'content-type': 'text/plain' })
+          res.end('Access granted!')
+        }
+      })
+
+      server.start()
+
+      it('denies entry if username and password do not match', async function() {
         // eslint-disable-next-line no-unused-vars
+        await driver.get('http://the-internet.herokuapp.com/basic_auth')
         const cdpConnection = await driver.createCDPConnection()
 
-        await driver.register('random', 'random')
-        await driver.get('http://the-internet.herokuapp.com/basic_auth')
-        // await server.stop()
+        await driver.register('random', 'random', cdpConnection)
+        await server.stop()
       })
     })
 

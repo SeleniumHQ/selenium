@@ -688,14 +688,15 @@ class Driver extends webdriver.WebDriver {
    * Creates a new WebSocket connection.
    * @return {!Promise<resolved>} A new CDP instance.
    */
-  async createCDPConnection() {
+  async createCDPConnection(target) {
     const caps = await this.getCapabilities()
     const seOptions = caps['map_'].get('se:options') || new Map()
     const vendorInfo =
       caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
       new Map()
     const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress']
-    this._wsUrl = await this.getWsUrl(debuggerUrl)
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
+
     return new Promise((resolve, reject) => {
       try {
         this._wsConnection = new WebSocket(this._wsUrl)
@@ -720,12 +721,20 @@ class Driver extends webdriver.WebDriver {
    * @param {string} debuggerAddress
    * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
    */
-  async getWsUrl(debuggerAddress) {
-    let request = new http.Request('GET', '/json/version')
+  async getWsUrl(debuggerAddress, target) {
+    let path = '/json/version'
+
+    if (target === 'page') {
+      path = '/json'
+    }
+    let request = new http.Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
-    let url
     let response = await client.send(request)
-    url = JSON.parse(response.body)['webSocketDebuggerUrl']
+    let url = JSON.parse(response.body)['webSocketDebuggerUrl']
+    if (target.toLowerCase() === 'page') {
+      url = JSON.parse(response.body)[0]['webSocketDebuggerUrl']
+    }
+
     return url
   }
 
@@ -737,16 +746,19 @@ class Driver extends webdriver.WebDriver {
    * @param {string} password
    * Doesn't return anything, sets the listener and goes off.
    */
-  async register(username, password) {
-    const response = await this.sendDevToolsCommand('Network.setCacheDisabled', {
+  async register(username, password, connection) {
+    await connection.execute("Network.setCacheDisabled", 1, {
       cacheDisabled: true,
-    })
+    }, null);
+
+    await connection.getCdpMessage()
 
     this._wsConnection.on('Fetch.authRequired', (message) => {
       console.log(message)
     })
 
     this._wsConnection.on('message', (message) => {
+      console.log(message);
       const params = JSON.parse(message.data)
 
       if (params.method === 'Fetch.authRequired') {
