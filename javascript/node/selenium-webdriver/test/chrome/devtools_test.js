@@ -95,6 +95,16 @@ test.suite(
       )
     })
 
+    describe('Console.log events', function () {
+      it('calls the event listener', async function () {
+        const cdpConnection = await driver.createCDPConnection('page')
+        await driver.onLogEvent(cdpConnection, function(event) {
+          assert.equal(event['args'][0]['value'], 'here')
+        })
+        await driver.executeScript('console.log("here")')
+      })
+    })
+
     describe('Basic Auth Injection', function () {
       const server = new Server(function(req, res) {
         if (req.method == 'GET' && req.url == '/protected') {

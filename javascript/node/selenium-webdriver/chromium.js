@@ -780,6 +780,32 @@ class Driver extends webdriver.WebDriver {
       handleAuthRequests: true,
     }, null)
   }
+
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogEvent(connection, callback) {
+    await connection.execute('Runtime.enable', 1, {}, null)
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.consoleAPICalled') {
+        const consoleEventParams = params['params']
+        let event = {
+          type: consoleEventParams['type'],
+          timestamp: new Date(consoleEventParams['timestamp']),
+          args: consoleEventParams['args']
+        }
+
+        callback(event)
+      }
+    })
+  }
+
   /**
    * Set a permission state to the given value.
    *
