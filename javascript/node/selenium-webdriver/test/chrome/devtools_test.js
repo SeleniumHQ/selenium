@@ -80,13 +80,14 @@ test.suite(
     })
 
     it('sends Network and Page command using devtools', async function () {
-      const cdpConnection = await driver.createCDPConnection('browser')
+      const cdpConnection = await driver.createCDPConnection('page')
       cdpConnection.execute('Network.enable', 1, {}, function (_res, err) {
         assert(!err)
       })
 
       cdpConnection.execute(
         'Page.navigate',
+        1,
         { url: 'chrome://newtab/' },
         function (_res, err) {
           assert(!err)
@@ -124,13 +125,23 @@ test.suite(
 
       server.start()
 
-      it.only('denies entry if username and password do not match', async function() {
-        // eslint-disable-next-line no-unused-vars
-        await driver.get('http://the-internet.herokuapp.com/basic_auth')
+      it('denies entry if username and password do not match', async function() {
         const pageCdpConnection = await driver.createCDPConnection('page')
-        const browserCdpConnection = await driver.createCDPConnection('browser')
 
-        await driver.register('random', 'random', pageCdpConnection, browserCdpConnection)
+        await driver.register('random', 'random', pageCdpConnection)
+        await driver.get(server.url() + '/protected')
+        let source = await driver.getPageSource()
+        assert.equal(source.includes('Access granted!'), false)
+        await server.stop()
+      })
+
+      it('grants access if username and password are a match', async function() {
+        const pageCdpConnection = await driver.createCDPConnection('page')
+
+        await driver.register('genie', 'bottle', pageCdpConnection)
+        await driver.get(server.url() + '/protected')
+        let source = await driver.getPageSource()
+        assert.equal(source.includes('Access granted!'), true)
         await server.stop()
       })
     })

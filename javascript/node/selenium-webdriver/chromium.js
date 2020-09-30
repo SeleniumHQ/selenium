@@ -744,43 +744,36 @@ class Driver extends webdriver.WebDriver {
    * and allows the test to move forward
    * @param {string} username
    * @param {string} password
-   * Doesn't return anything, sets the listener and goes off.
+   * @param connection CDP Connection
    */
-  async register(username, password, connection1, connection2) {
-    await connection1.execute("Network.setCacheDisabled", 1, {
+  async register(username, password, connection) {
+    await connection.execute("Network.setCacheDisabled", 1, {
       cacheDisabled: true,
     }, null);
 
-    connection1.getCdpMessage()
-    connection2.getCdpMessage()
-    // this._wsConnection.on('message', (message) => {
-    //   console.log("Message is here")
-    //   console.log(message);
-    //   const params = JSON.parse(message)
-    //
-    //   if (params.method === 'Fetch.authRequired') {
-    //     const requestParams = params['params']
-    //     this.sendDevToolsCommand('Fetch.continueWithAuth', {
-    //       requestId: requestParams['requestId'],
-    //       authChallengeResponse: {
-    //         response: 'ProvideCredentials',
-    //         username: username,
-    //         password: password,
-    //       },
-    //     });
-    //   } else if (params.method === 'Fetch.requestPaused') {
-    //     const requestPausedParams = params['params']
-    //     this.sendDevToolsCommand('Fetch.continueRequest', {
-    //       requestId: requestPausedParams['requestId'],
-    //     })
-    //   }
-    // })
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
 
-    await connection2.execute('Fetch.enable', 1, {
+      if (params.method === 'Fetch.authRequired') {
+        const requestParams = params['params']
+        connection.execute('Fetch.continueWithAuth', 1, {
+          requestId: requestParams['requestId'],
+          authChallengeResponse: {
+            response: 'ProvideCredentials',
+            username: username,
+            password: password,
+        }})
+      } else if (params.method === 'Fetch.requestPaused') {
+        const requestPausedParams = params['params']
+        connection.execute('Fetch.continueRequest', 1, {
+          requestId: requestPausedParams['requestId'],
+        })
+      }
+    })
+
+    await connection.execute('Fetch.enable', 1, {
       handleAuthRequests: true,
     }, null)
-
-    return
   }
   /**
    * Set a permission state to the given value.

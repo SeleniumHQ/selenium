@@ -35,7 +35,7 @@ class CDPConnection {
 
   getCdpMessage() {
     this._wsConnection.on('message', function(data){
-      console.log(data);
+      return data
     })
   }
 }
