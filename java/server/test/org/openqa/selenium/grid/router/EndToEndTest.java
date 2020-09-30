@@ -74,6 +74,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import static java.time.Duration.ofSeconds;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -202,37 +203,37 @@ public class EndToEndTest {
     int publish = PortProber.findFreePort();
     int subscribe = PortProber.findFreePort();
 
-    String[] rawConfig = new String[] {
-      "[events]",
-      "publish = \"tcp://localhost:" + publish + "\"",
-      "subscribe = \"tcp://localhost:" + subscribe + "\"",
-      "bind = false",
-      "",
-      "[network]",
-      "relax-checks = true",
-      "",
-      "[node]",
-      "detect-drivers = false",
-      "driver-factories = [",
-      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
-      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
-      "]",
-      "",
-      "[server]",
-      "registration-secret = \"colby\""
+    String[] rawConfig = new String[]{
+        "[events]",
+        "publish = \"tcp://localhost:" + publish + "\"",
+        "subscribe = \"tcp://localhost:" + subscribe + "\"",
+        "bind = false",
+        "",
+        "[network]",
+        "relax-checks = true",
+        "",
+        "[node]",
+        "detect-drivers = false",
+        "driver-factories = [",
+        String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
+        String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
+        "]",
+        "",
+        "[server]",
+        "registration-secret = \"colby\""
     };
 
     Config sharedConfig = new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
 
     Server<?> eventServer = new EventBusCommand()
-      .asServer(new CompoundConfig(
-        new TomlConfig(new StringReader(String.join("\n", new String[] {
-          "[events]",
-          "publish = \"tcp://localhost:" + publish + "\"",
-          "subscribe = \"tcp://localhost:" + subscribe + "\"",
-          "bind = true"}))),
-        setRandomPort(sharedConfig)))
-      .start();
+        .asServer(new CompoundConfig(
+            new TomlConfig(new StringReader(String.join("\n", new String[] {
+                "[events]",
+                "publish = \"tcp://localhost:" + publish + "\"",
+                "subscribe = \"tcp://localhost:" + subscribe + "\"",
+                "bind = true"}))),
+            setRandomPort(sharedConfig)))
+        .start();
     waitUntilReady(eventServer);
 
     Server<?> newSessionQueueServer = new NewSessionQueuerServer().asServer(setRandomPort(sharedConfig)).start();
@@ -240,45 +241,47 @@ public class EndToEndTest {
 
     Server<?> sessionMapServer = new SessionMapServer().asServer(setRandomPort(sharedConfig)).start();
     Config sessionMapConfig = new TomlConfig(new StringReader(String.join(
-      "\n",
-      new String[] {
-        "[sessions]",
-        "hostname = \"localhost\"",
-        "port = " + sessionMapServer.getUrl().getPort()
-      }
+        "\n",
+        new String[] {
+            "[sessions]",
+            "hostname = \"localhost\"",
+            "port = " + sessionMapServer.getUrl().getPort()
+        }
     )));
 
     Server<?> distributorServer = new DistributorServer()
-      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig)))
-      .start();
+        .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig)))
+        .start();
     Config distributorConfig = new TomlConfig(new StringReader(String.join(
-      "\n",
-      new String[] {
-        "[distributor]",
-        "hostname = \"localhost\"",
-        "port = " + distributorServer.getUrl().getPort()
-      }
+        "\n",
+        new String[]{
+            "[distributor]",
+            "hostname = \"localhost\"",
+            "port = " + distributorServer.getUrl().getPort()
+        }
     )));
 
     Server<?> router = new RouterServer()
-      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
-      .start();
+        .asServer(
+            setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+        .start();
 
     Server<?> nodeServer = new NodeServer()
-      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
-      .start();
+        .asServer(
+            setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+        .start();
     waitUntilReady(nodeServer);
 
     waitUntilReady(router);
 
     return new TestData(
-      router,
-      router::stop,
-      nodeServer::stop,
-      distributorServer::stop,
-      sessionMapServer::stop,
-      newSessionQueueServer::stop,
-      eventServer::stop);
+        router,
+        router::stop,
+        nodeServer::stop,
+        distributorServer::stop,
+        sessionMapServer::stop,
+        newSessionQueueServer::stop,
+        eventServer::stop);
   }
 
   private static void waitUntilReady(Server<?> server) {

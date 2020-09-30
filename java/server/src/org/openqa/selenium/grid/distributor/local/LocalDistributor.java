@@ -17,7 +17,13 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -28,12 +34,18 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NewSessionErrorResponse;
+import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
+import org.openqa.selenium.grid.data.NewSessionRequestEvent;
+import org.openqa.selenium.grid.data.NewSessionResponse;
+import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -48,12 +60,22 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,10 +88,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
 
 public class LocalDistributor extends Distributor {
 
@@ -87,25 +105,85 @@ public class LocalDistributor extends Distributor {
   private final GridModel model;
   private final Map<NodeId, Node> nodes;
 
+  private final NewSessionQueuer sessionRequests;
+
   public LocalDistributor(
       Tracer tracer,
       EventBus bus,
       HttpClient.Factory clientFactory,
       SessionMap sessions,
+      NewSessionQueuer sessionRequests,
       Secret registrationSecret) {
     super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
+
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.sessions = Require.nonNull("Session map", sessions);
     this.model = new GridModel(bus);
     this.nodes = new HashMap<>();
-
+    this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
     bus.addListener(NodeDrainComplete.listener(this::remove));
+
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      Optional<HttpRequest> sessionRequest = this.sessionRequests.remove(reqId);
+      // Check if polling the queue did not return null
+      if (sessionRequest.isPresent()) {
+        handleNewSessionRequest(sessionRequest.get(), reqId);
+      } else {
+        fireSessionRejectedEvent("Unable to poll request from the new session request queue.",
+                                 reqId);
+      }
+    }));
+  }
+
+  private void handleNewSessionRequest(HttpRequest sessionRequest, RequestId reqId) {
+
+    Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue");
+    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+                     EventAttribute.setValue(getClass().getName()));
+    span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
+    attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(reqId.toString()));
+
+    attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
+
+    try {
+      CreateSessionResponse sessionResponse = newSession(sessionRequest);
+      NewSessionResponse newSessionResponse =
+          new NewSessionResponse(reqId, sessionResponse.getSession(),
+                                 sessionResponse.getDownstreamEncodedResponse());
+
+      bus.fire(new NewSessionResponseEvent(newSessionResponse));
+    } catch (SessionNotCreatedException e) {
+      // If error is due to the slots being busy, adding to front of queue else reject the request
+      // If that fails, then just reject the request.
+      if (e.getMessage().startsWith("Unable to find provider for session") ||
+          e.getMessage().startsWith("Unable to reserve a slot for session request")) {
+        boolean retried = this.sessionRequests.retryAddToQueue(sessionRequest, reqId);
+
+        attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
+        span.addEvent("Retry adding to front of queue. All slots are busy.", attributeMap);
+
+        if (!retried) {
+          span.addEvent("Retry adding to front of queue failed.", attributeMap);
+          fireSessionRejectedEvent(e.getMessage(), reqId);
+        }
+      } else {
+        fireSessionRejectedEvent(e.getMessage(), reqId);
+      }
+    } finally {
+      span.close();
+    }
+  }
+
+  private void fireSessionRejectedEvent(String message, RequestId reqId) {
+    bus.fire(
+        new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, message)));
   }
 
   public static Distributor create(Config config) {
@@ -114,8 +192,16 @@ public class LocalDistributor extends Distributor {
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
     SecretOptions secretOptions = new SecretOptions(config);
+    NewSessionQueuer sessionRequests =
+        new NewSessionQueuerOptions(config).getSessionQueuer(
+            "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer");
 
-    return new LocalDistributor(tracer, bus, clientFactory, sessions, secretOptions.getRegistrationSecret());
+    return new LocalDistributor(tracer,
+                                bus,
+                                clientFactory,
+                                sessions,
+                                sessionRequests,
+                                secretOptions.getRegistrationSecret());
   }
 
   @Override

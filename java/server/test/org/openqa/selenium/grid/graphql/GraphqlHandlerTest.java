@@ -35,6 +35,9 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -51,12 +54,14 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -84,10 +89,24 @@ public class GraphqlHandlerTest {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    distributor = new LocalDistributor(tracer, events, clientFactory, sessions, registrationSecret);
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
     payload = NewSessionPayload.create(caps);
+
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+        tracer,
+        events,
+        Duration.of(2, SECONDS),
+        Duration.of(2, SECONDS));
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+
+    distributor = new LocalDistributor(
+        tracer,
+        events,
+        clientFactory,
+        sessions,
+        queuer,
+        registrationSecret);
   }
 
   @Test
