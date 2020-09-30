@@ -132,7 +132,6 @@ test.suite(
         await driver.get(server.url() + '/protected')
         let source = await driver.getPageSource()
         assert.equal(source.includes('Access granted!'), false)
-        await server.stop()
       })
 
       it('grants access if username and password are a match', async function() {
