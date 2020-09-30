@@ -85,6 +85,7 @@ const webdriver = require('./lib/webdriver')
 const WebSocket = require('ws')
 const cdp = require('./devtools/CDPConnection')
 const remote = require('./remote')
+const cdpTargets = ['page', 'browser']
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -719,9 +720,13 @@ class Driver extends webdriver.WebDriver {
   /**
    * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
    * @param {string} debuggerAddress
+   * @param {string} target
    * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
    */
   async getWsUrl(debuggerAddress, target) {
+    if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
+      throw new error.InvalidArgumentError('invalid target value')
+    }
     let path = '/json/version'
 
     if (target === 'page') {
