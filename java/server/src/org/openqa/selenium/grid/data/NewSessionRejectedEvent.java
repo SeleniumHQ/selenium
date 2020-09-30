@@ -18,13 +18,23 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
+import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
+
+import java.util.function.Consumer;
 
 public class NewSessionRejectedEvent extends Event {
 
-  public static final EventName NEW_SESSION_REJECTED = new EventName("new-session-rejected");
+  private static final EventName NEW_SESSION_REJECTED = new EventName("new-session-rejected");
 
   public NewSessionRejectedEvent(NewSessionErrorResponse response) {
     super(NEW_SESSION_REJECTED, response);
+  }
+
+  public static EventListener<NewSessionErrorResponse> listener(Consumer<NewSessionErrorResponse> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(NEW_SESSION_REJECTED, NewSessionErrorResponse.class, handler);
   }
 }

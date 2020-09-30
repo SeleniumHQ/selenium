@@ -17,18 +17,13 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.openqa.selenium.grid.data.NewSessionRejectedEvent.NEW_SESSION_REJECTED;
-import static org.openqa.selenium.grid.data.NewSessionResponseEvent.NEW_SESSION_RESPONSE;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
+import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequest;
 import org.openqa.selenium.grid.data.NewSessionResponse;
+import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -42,6 +37,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 public class GetNewSessionResponse {
 
@@ -57,23 +56,21 @@ public class GetNewSessionResponse {
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
 
-    this.bus.addListener(NEW_SESSION_RESPONSE, event -> {
+    this.bus.addListener(NewSessionResponseEvent.listener(sessionResponse -> {
       try {
-        NewSessionResponse sessionResponse = event.getData(NewSessionResponse.class);
         this.setResponse(sessionResponse);
       } catch (Exception ignore) {
         // Ignore any exception. Do not want to block the eventbus thread.
       }
-    });
+    }));
 
-    this.bus.addListener(NEW_SESSION_REJECTED, event -> {
+    this.bus.addListener(NewSessionRejectedEvent.listener(sessionResponse -> {
       try {
-        NewSessionErrorResponse sessionResponse = event.getData(NewSessionErrorResponse.class);
         this.setErrorResponse(sessionResponse);
       } catch (Exception ignore) {
         // Ignore any exception. Do not want to block the eventbus thread.
       }
-    });
+    }));
   }
 
   private void setResponse(NewSessionResponse sessionResponse) {

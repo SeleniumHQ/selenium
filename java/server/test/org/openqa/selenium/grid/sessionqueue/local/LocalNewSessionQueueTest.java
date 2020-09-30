@@ -17,17 +17,13 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.data.NewSessionRequestEvent.NEW_SESSION_REQUEST;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -42,10 +38,16 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 public class LocalNewSessionQueueTest {
 
   private EventBus bus;
-  private ImmutableCapabilities caps;
+  private Capabilities caps;
   private NewSessionQueue sessionQueue;
   private HttpRequest expectedSessionRequest;
   private RequestId requestId;
@@ -67,9 +69,7 @@ public class LocalNewSessionQueueTest {
     boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
     assertTrue(added);
 
-    bus.addListener(NEW_SESSION_REQUEST, event -> {
-      assertEquals(requestId, event.getData(UUID.class));
-    });
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> assertThat(reqId).isEqualTo(requestId)));
   }
 
   @Test

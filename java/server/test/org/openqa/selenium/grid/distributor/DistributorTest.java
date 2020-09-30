@@ -28,6 +28,7 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
@@ -371,7 +372,7 @@ public class DistributorTest {
 
     EventName rejected = new EventName("node-rejected");
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(rejected, e -> latch.countDown());
+    bus.addListener(new EventListener<>(rejected, Object.class, obj -> latch.countDown()));
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, new Secret("pickles"))
       .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))

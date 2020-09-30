@@ -18,13 +18,23 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
+import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
+
+import java.util.function.Consumer;
 
 public class NewSessionResponseEvent extends Event {
 
-  public static final EventName NEW_SESSION_RESPONSE = new EventName("new-session-response");
+  private static final EventName NEW_SESSION_RESPONSE = new EventName("new-session-response");
 
   public NewSessionResponseEvent(NewSessionResponse sessionResponse) {
     super(NEW_SESSION_RESPONSE, sessionResponse);
+  }
+
+  public static EventListener<NewSessionResponse> listener(Consumer<NewSessionResponse> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(NEW_SESSION_RESPONSE, NewSessionResponse.class, handler);
   }
 }

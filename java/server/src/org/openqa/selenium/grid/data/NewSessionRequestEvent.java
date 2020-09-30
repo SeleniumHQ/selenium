@@ -18,13 +18,24 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
+import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
+
+import java.util.function.Consumer;
 
 public class NewSessionRequestEvent extends Event {
 
-  public static final EventName NEW_SESSION_REQUEST = new EventName("new-session-request");
+  private static final EventName NEW_SESSION_REQUEST = new EventName("new-session-request");
 
   public NewSessionRequestEvent(RequestId requestId) {
     super(NEW_SESSION_REQUEST, requestId);
   }
+
+  public static EventListener<RequestId> listener(Consumer<RequestId> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(NEW_SESSION_REQUEST, RequestId.class, handler);
+  }
+
 }
