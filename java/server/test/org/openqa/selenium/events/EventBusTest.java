@@ -82,7 +82,7 @@ public class EventBusTest {
     Event event = new Event(cheese, null);
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(cheese, e -> latch.countDown());
+    bus.addListener(new EventListener<>(cheese, Object.class, obj -> latch.countDown()));
     bus.fire(event);
     latch.await(1, SECONDS);
 
@@ -92,7 +92,7 @@ public class EventBusTest {
   @Test(timeout = 4000)
   public void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
-    bus.addListener(new EventName("peas"), e -> count.incrementAndGet());
+    bus.addListener(new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));
 
     bus.fire(new Event(new EventName("cheese"), null));
 

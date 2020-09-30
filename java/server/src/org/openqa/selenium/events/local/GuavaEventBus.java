@@ -21,6 +21,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import org.openqa.selenium.events.Event;
+import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
@@ -44,10 +45,12 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
   }
 
   @Override
-  public void addListener(EventName eventName, Consumer<Event> onType) {
-    Listener listener = new Listener(eventName, onType);
-    allListeners.add(listener);
-    guavaBus.register(listener);
+  public void addListener(EventListener<?> listener) {
+    Require.nonNull("Listener", listener);
+
+    Listener guavaListener = new Listener(listener.getEventName(), listener);
+    allListeners.add(guavaListener);
+    guavaBus.register(guavaListener);
   }
 
   @Override

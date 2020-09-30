@@ -22,6 +22,7 @@ import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -172,12 +173,11 @@ class UnboundZmqEventBus implements EventBus {
   }
 
   @Override
-  public void addListener(EventName eventName, Consumer<Event> onType) {
-    Require.nonNull("Event type", eventName);
-    Require.nonNull("Event listener", onType);
+  public void addListener(EventListener<?> listener) {
+    Require.nonNull("Listener", listener);
 
-    List<Consumer<Event>> typeListeners = listeners.computeIfAbsent(eventName, t -> new LinkedList<>());
-    typeListeners.add(onType);
+    List<Consumer<Event>> typeListeners = listeners.computeIfAbsent(listener.getEventName(), t -> new LinkedList<>());
+    typeListeners.add(listener);
   }
 
   @Override
