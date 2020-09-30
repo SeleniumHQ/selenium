@@ -37,6 +37,9 @@ import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -65,11 +68,22 @@ public class LocalNewSessionQueueTest {
   }
 
   @Test
-  public void shouldBeAbleToAddToEndOfQueue() {
+  public void shouldBeAbleToAddToEndOfQueue() throws InterruptedException {
+    AtomicBoolean result = new AtomicBoolean(false);
+    CountDownLatch latch = new CountDownLatch(1);
+
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      result.set(reqId.equals(requestId));
+      latch.countDown();
+    }));
+
     boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
     assertTrue(added);
+    
+    latch.await(5, TimeUnit.SECONDS);
 
-    bus.addListener(NewSessionRequestEvent.listener(reqId -> assertThat(reqId).isEqualTo(requestId)));
+    assertThat(latch.getCount()).isEqualTo(0);
+    assertTrue(result.get());
   }
 
   @Test
