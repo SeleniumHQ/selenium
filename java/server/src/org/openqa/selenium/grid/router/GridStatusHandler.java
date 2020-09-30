@@ -132,12 +132,12 @@ class GridStatusHandler implements HttpHandler {
 
       long remaining = System.currentTimeMillis() + 2000 - start;
       List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
-        .map(summary -> {
+        .map(node -> {
           ImmutableMap<String, Object> defaultResponse = ImmutableMap.of(
-            "id", summary.getNodeId(),
-            "uri", summary.getUri(),
-            "maxSessions", summary.getMaxSessionCount(),
-            "stereotypes", summary.getStereotypes(),
+            "id", node.getId(),
+            "uri", node.getUri(),
+            "maxSessions", node.getMaxSessionCount(),
+            "slots", node.getSlots(),
             "warning", "Unable to read data from node.");
 
           CompletableFuture<Map<String, Object>> toReturn = new CompletableFuture<>();
@@ -145,7 +145,7 @@ class GridStatusHandler implements HttpHandler {
           Future<?> future = EXECUTOR_SERVICE.submit(
             () -> {
               try {
-                HttpClient client = clientFactory.createClient(summary.getUri().toURL());
+                HttpClient client = clientFactory.createClient(node.getUri().toURL());
                 HttpRequest nodeStatusReq = new HttpRequest(GET, "/se/grid/node/status");
                 HttpTracing.inject(tracer, span, nodeStatusReq);
                 HttpResponse res = client.execute(nodeStatusReq);

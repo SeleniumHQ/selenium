@@ -41,6 +41,6 @@ class IsSessionOwner implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", node.isSessionOwner(id)))).setHeader("X-REGISTRATION-SECRET", node.getRegistrationSecret());
+    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", node.isSessionOwner(id))));
   }
 }

@@ -24,6 +24,7 @@ module Selenium
   module WebDriver
     module Support
       class CDPClientGenerator
+        # Input JSON files are generated from PDL tasks.
         BROWSER_PROTOCOL_PATH = File.expand_path('cdp/browser_protocol.json', __dir__)
         JS_PROTOCOL_PATH = File.expand_path('cdp/js_protocol.json', __dir__)
         TEMPLATE_PATH = File.expand_path('cdp/domain.rb.erb', __dir__)
@@ -50,7 +51,9 @@ module Selenium
         end
 
         def snake_case(string)
-          name = string.gsub(/([a-z])([A-Z])/, '\1_\2').downcase
+          name = string.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+                       .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+                       .downcase
           # Certain CDP parameters conflict with Ruby keywords
           # so we prefix the name with underscore.
           name = "_#{name}" if RESERVED_KEYWORDS.include?(name)

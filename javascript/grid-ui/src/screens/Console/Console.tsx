@@ -265,8 +265,7 @@ export default function Console(props: {
 			if (capStr === "") return { ...node, capabilities: [] };
 			let json: { [key: string]: number } = JSON.parse(capStr);
 			let capabilities = Object.keys(json).map((key) => {
-				let data = key
-					.split("{")
+				key.split("{")
 					.slice(1)
 					.join("")
 					.replace(/}/g, "")

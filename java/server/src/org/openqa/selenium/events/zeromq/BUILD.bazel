@@ -5,6 +5,7 @@ java_library(
     srcs = glob(["*.java"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/events:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     deps = [
@@ -14,6 +15,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config",
         artifact("com.google.guava:guava"),
         artifact("net.jodah:failsafe"),
-        artifact("org.zeromq:jeromq:0.5.1"),
+        artifact("org.zeromq:jeromq"),
     ],
 )

@@ -18,14 +18,22 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
 
-import java.util.UUID;
+import java.util.function.Consumer;
 
 public class NodeDrainComplete extends Event {
-  public static final Type NODE_DRAIN_COMPLETE = new Type("node-drain-complete");
+  private static final EventName NODE_DRAIN_COMPLETE = new EventName("node-drain-complete");
 
   public NodeDrainComplete(NodeId id) {
     super(NODE_DRAIN_COMPLETE, id);
+  }
+
+  public static EventListener<NodeId> listener(Consumer<NodeId> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(NODE_DRAIN_COMPLETE, NodeId.class, handler);
   }
 }

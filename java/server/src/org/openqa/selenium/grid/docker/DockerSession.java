@@ -40,11 +40,12 @@ class DockerSession extends ProtocolConvertingSession {
     HttpClient client,
     SessionId id,
     URL url,
+    Capabilities stereotype,
     Capabilities capabilities,
     Dialect downstream,
     Dialect upstream,
     Instant startTime) {
-    super(tracer, client, id, url, downstream, upstream, capabilities, startTime);
+    super(tracer, client, id, url, downstream, upstream, stereotype, capabilities, startTime);
     this.container = Require.nonNull("Container", container);
   }
 

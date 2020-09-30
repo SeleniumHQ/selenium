@@ -24,7 +24,8 @@ import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -106,8 +107,8 @@ public class EventBusCommand extends TemplateGridCommand {
         Route.get("/status").to(() -> req -> {
           CountDownLatch latch = new CountDownLatch(1);
 
-          Type healthCheck = new Type("healthcheck");
-          bus.addListener(healthCheck, event -> latch.countDown());
+          EventName healthCheck = new EventName("healthcheck");
+          bus.addListener(new EventListener<>(healthCheck, Object.class, obj -> latch.countDown()));
           bus.fire(new Event(healthCheck, "ping"));
 
           try {

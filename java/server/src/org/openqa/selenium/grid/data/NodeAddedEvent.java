@@ -18,13 +18,23 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
+
+import java.util.function.Consumer;
 
 public class NodeAddedEvent extends Event {
 
-  public static final Type NODE_ADDED = new Type("node-added");
+  private static final EventName NODE_ADDED = new EventName("node-added");
 
   public NodeAddedEvent(NodeId nodeId) {
     super(NODE_ADDED, nodeId);
+  }
+
+  public static EventListener<NodeId> listener(Consumer<NodeId> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(NODE_ADDED, NodeId.class, handler);
   }
 }

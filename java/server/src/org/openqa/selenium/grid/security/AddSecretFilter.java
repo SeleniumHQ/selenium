@@ -15,41 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.events;
+package org.openqa.selenium.grid.security;
 
-import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpHandler;
 
-import java.util.Objects;
+public class AddSecretFilter implements Filter {
 
-public final class Type {
+  static final String HEADER_NAME = "X-REGISTRATION-SECRET";
+  private final Secret secret;
 
-  private final String name;
-
-  public Type(String name) {
-    this.name = Require.nonNull("Type name", name);
-  }
-
-  public String getName() {
-    return name;
+  public AddSecretFilter(Secret secret) {
+    this.secret = secret;
   }
 
   @Override
-  public String toString() {
-    return name;
-  }
+  public HttpHandler apply(HttpHandler httpHandler) {
+    return req -> {
+      if (req.getHeader(HEADER_NAME) == null) {
+        req.addHeader(HEADER_NAME, secret.encode());
+      }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof Type)) {
-      return false;
-    }
-
-    Type that = (Type) obj;
-    return Objects.equals(this.name, that.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return name.hashCode();
+      return httpHandler.execute(req);
+    };
   }
 }

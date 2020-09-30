@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.testing;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
@@ -43,9 +44,15 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class TestSessionFactory implements SessionFactory {
 
+  private final Capabilities stereotype;
   private final BiFunction<SessionId, Capabilities, Session> sessionGenerator;
 
   public TestSessionFactory(BiFunction<SessionId, Capabilities, Session> sessionGenerator) {
+    this(new ImmutableCapabilities(), sessionGenerator);
+  }
+
+  public TestSessionFactory(Capabilities stereotype, BiFunction<SessionId, Capabilities, Session> sessionGenerator) {
+    this.stereotype = ImmutableCapabilities.copyOf(stereotype);
     this.sessionGenerator = sessionGenerator;
   }
 
@@ -71,6 +78,7 @@ public class TestSessionFactory implements SessionFactory {
       url,
       downstream,
       W3C,
+      stereotype,
       session.getCapabilities(),
       Instant.now()) {
       @Override

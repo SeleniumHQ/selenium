@@ -28,7 +28,6 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
-import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
@@ -43,6 +42,7 @@ import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.NodeOptions;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.internal.Require;
@@ -69,6 +69,8 @@ import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
@@ -86,24 +88,25 @@ public class OneShotNode extends Node {
   private final EventBus events;
   private final WebDriverInfo driverInfo;
   private final Capabilities stereotype;
-  private final String registrationSecret;
+  private final Secret registrationSecret;
   private final URI gridUri;
   private final UUID slotId = UUID.randomUUID();
   private RemoteWebDriver driver;
   private SessionId sessionId;
   private HttpClient client;
   private Capabilities capabilities;
+  private Instant sessionStart = Instant.EPOCH;
 
   private OneShotNode(
     Tracer tracer,
     EventBus events,
-    String registrationSecret,
+    Secret registrationSecret,
     NodeId id,
     URI uri,
     URI gridUri,
     Capabilities stereotype,
     WebDriverInfo driverInfo) {
-    super(tracer, id, uri);
+    super(tracer, id, uri, registrationSecret);
 
     this.registrationSecret = registrationSecret;
     this.events = Require.nonNull("Event bus", events);
@@ -169,11 +172,14 @@ public class OneShotNode extends Node {
     this.sessionId = this.driver.getSessionId();
     this.client = extractHttpClient(this.driver);
     this.capabilities = rewriteCapabilities(this.driver);
+    this.sessionStart = Instant.now();
 
     LOG.info("Encoded response: " + JSON.toJson(ImmutableMap.of(
       "value", ImmutableMap.of(
         "sessionId", sessionId,
         "capabilities", capabilities))));
+
+    events.fire(new NodeDrainStarted(getId()));
 
     return Optional.of(
       new CreateSessionResponse(
@@ -284,8 +290,9 @@ public class OneShotNode extends Node {
     return new Session(
       sessionId,
       getUri(),
-      capabilities);
-  }
+      stereotype,
+      capabilities,
+      sessionStart); }
 
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
@@ -336,8 +343,8 @@ public class OneShotNode extends Node {
           Instant.EPOCH,
           driver == null ?
             Optional.empty() :
-            Optional.of(new Active(stereotype, sessionId, capabilities, Instant.now())))),
-      draining,
+            Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
+      isDraining() ? DRAINING : UP,
       registrationSecret);
   }
 
@@ -349,12 +356,7 @@ public class OneShotNode extends Node {
 
   @Override
   public HealthCheck getHealthCheck() {
-    return () -> new HealthCheck.Result(true, "Everything is fine", registrationSecret);
-  }
-
-  @Override
-  public String getRegistrationSecret() {
-    return registrationSecret;
+    return () -> new HealthCheck.Result(isDraining() ? DRAINING : UP, "Everything is fine");
   }
 
   @Override
