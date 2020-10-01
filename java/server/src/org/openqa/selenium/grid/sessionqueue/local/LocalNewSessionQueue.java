@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -56,10 +57,11 @@ public class LocalNewSessionQueue extends NewSessionQueue {
 
   private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());
   private final EventBus bus;
-  private final Deque<HttpRequest> sessionRequests = new ConcurrentLinkedDeque<>();
+  private final Deque<RequestId> requestIdQueue = new ConcurrentLinkedDeque<>();
+  private final Map<RequestId, HttpRequest> sessionRequests = new ConcurrentHashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
   private final ScheduledExecutorService executorService = Executors
-    .newSingleThreadScheduledExecutor();
+      .newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
 
   public LocalNewSessionQueue(Tracer tracer, EventBus bus, Duration retryInterval,
@@ -96,12 +98,14 @@ public class LocalNewSessionQueue extends NewSessionQueue {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
         EventAttribute.setValue(getClass().getName()));
 
-
-      added = sessionRequests.offerLast(request);
+      added = requestIdQueue.offerLast(requestId);
       addRequestHeaders(request, requestId);
 
-      attributeMap
-        .put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
+      if (added) {
+        sessionRequests.put(requestId, request);
+      }
+      attributeMap.put(
+          AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(requestId.toString()));
       attributeMap.put("request.added", EventAttribute.setValue(added));
       span.addEvent("Add new session request to the queue", attributeMap);
 
@@ -122,7 +126,10 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     writeLock.lock();
     boolean added = false;
     try {
-      added = sessionRequests.offerFirst(request);
+      added = requestIdQueue.offerFirst(requestId);
+      if (added) {
+        sessionRequests.put(requestId, request);
+      }
       return added;
     } finally {
       writeLock.unlock();
@@ -139,7 +146,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
-        sessionRequests.remove();
+        requestIdQueue.remove();
       } finally {
         writeLock.unlock();
         bus.fire(new NewSessionRejectedEvent(
@@ -154,11 +161,11 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
-  public Optional<HttpRequest> poll() {
+  public Optional<HttpRequest> poll(RequestId id) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<HttpRequest> request = Optional.ofNullable(sessionRequests.poll());
+      Optional<HttpRequest> request = Optional.ofNullable(sessionRequests.remove(id));
       if (request.isPresent()) {
         HttpRequest httpRequest = request.get();
         if (hasRequestTimedOut(httpRequest)) {
@@ -181,12 +188,12 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     try {
       int count = 0;
       LOG.info("Clearing new session request queue");
-      for (HttpRequest request = sessionRequests.poll(); request != null;
-           request = sessionRequests.poll()) {
+      for (RequestId id = requestIdQueue.poll(); id != null;
+           id = requestIdQueue.poll()) {
         count++;
-        UUID reqId = UUID.fromString(request.getHeader(SESSIONREQUEST_ID_HEADER));
+        sessionRequests.remove(id);
         NewSessionErrorResponse errorResponse =
-          new NewSessionErrorResponse(new RequestId(reqId), "New session request cancelled.");
+            new NewSessionErrorResponse(id, "New session request cancelled.");
 
         bus.fire(new NewSessionRejectedEvent(errorResponse));
       }

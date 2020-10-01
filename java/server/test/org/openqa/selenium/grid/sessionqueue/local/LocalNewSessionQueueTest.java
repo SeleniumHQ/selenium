@@ -97,7 +97,7 @@ public class LocalNewSessionQueueTest {
     boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
     assertTrue(added);
 
-    Optional<HttpRequest> receivedRequest = sessionQueue.poll();
+    Optional<HttpRequest> receivedRequest = sessionQueue.poll(requestId);
 
     assertTrue(receivedRequest.isPresent());
     assertEquals(expectedSessionRequest, receivedRequest.get());
@@ -108,7 +108,7 @@ public class LocalNewSessionQueueTest {
     boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
     assertTrue(added);
 
-    Optional<HttpRequest> receivedRequest = sessionQueue.poll();
+    Optional<HttpRequest> receivedRequest = sessionQueue.poll(requestId);
 
     assertTrue(receivedRequest.isPresent());
     HttpRequest request = receivedRequest.get();
@@ -121,7 +121,7 @@ public class LocalNewSessionQueueTest {
     boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
     assertTrue(added);
 
-    Optional<HttpRequest> receivedRequest = sessionQueue.poll();
+    Optional<HttpRequest> receivedRequest = sessionQueue.poll(requestId);
 
     assertTrue(receivedRequest.isPresent());
     HttpRequest request = receivedRequest.get();
@@ -153,19 +153,19 @@ public class LocalNewSessionQueueTest {
     boolean addFirefoxRequest = sessionQueue.offerFirst(firefoxRequest, firefoxRequestId);
     assertTrue(addFirefoxRequest);
 
-    Optional<HttpRequest> polledFirefoxRequest = sessionQueue.poll();
+    Optional<HttpRequest> polledFirefoxRequest = sessionQueue.poll(firefoxRequestId);
     assertTrue(polledFirefoxRequest.isPresent());
     assertEquals(firefoxRequest, polledFirefoxRequest.get());
 
-    Optional<HttpRequest> polledChromeRequest = sessionQueue.poll();
+    Optional<HttpRequest> polledChromeRequest = sessionQueue.poll(chromeRequestId);
     assertTrue(polledChromeRequest.isPresent());
     assertEquals(chromeRequest, polledChromeRequest.get());
   }
 
   @Test
   public void shouldBeClearAPopulatedQueue() {
-    sessionQueue.offerLast(expectedSessionRequest, requestId);
-    sessionQueue.offerLast(expectedSessionRequest, requestId);
+    sessionQueue.offerLast(expectedSessionRequest, new RequestId(UUID.randomUUID()));
+    sessionQueue.offerLast(expectedSessionRequest, new RequestId(UUID.randomUUID()));
 
     int count = sessionQueue.clear();
     assertEquals(count, 2);
