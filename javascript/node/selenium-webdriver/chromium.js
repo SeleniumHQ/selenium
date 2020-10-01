@@ -837,11 +837,10 @@ class Driver extends webdriver.WebDriver {
       const params = JSON.parse(message)
 
       if (params.method === 'Runtime.exceptionThrown') {
-        const consoleEventParams = params['params']
+        const exceptionEventParams = params['params']
         let event = {
-          type: consoleEventParams['type'],
-          timestamp: new Date(consoleEventParams['timestamp']),
-          args: consoleEventParams['args']
+          exceptionDetails: exceptionEventParams['exceptionDetails'],
+          timestamp: new Date(exceptionEventParams['timestamp']),
         }
 
         callback(event)
