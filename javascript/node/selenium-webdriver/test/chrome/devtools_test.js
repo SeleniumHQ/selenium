@@ -154,7 +154,7 @@ test.suite(
         await server.stop()
       })
     })
-
+    
     describe('setDownloadPath', function () {
       it('can enable downloads in headless mode', async function () {
         const dir = await io.tmpDir()

@@ -825,6 +825,30 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogException(connection, callback) {
+    await connection.execute('Runtime.enable', 1, {}, null)
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.exceptionThrown') {
+        const consoleEventParams = params['params']
+        let event = {
+          type: consoleEventParams['type'],
+          timestamp: new Date(consoleEventParams['timestamp']),
+          args: consoleEventParams['args']
+        }
+
+        callback(event)
+      }
+    })
+  }
+  /**
    * Sends a DevTools command to change the browser's download directory.
    *
    * @param {string} path The desired download directory.
