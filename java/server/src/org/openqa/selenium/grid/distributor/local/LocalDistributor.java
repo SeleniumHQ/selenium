@@ -145,8 +145,8 @@ public class LocalDistributor extends Distributor {
 
     Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                     EventAttribute.setValue(getClass().getName()));
+    attributeMap.put(
+        AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
     span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
     attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(reqId.toString()));
 
@@ -195,7 +195,6 @@ public class LocalDistributor extends Distributor {
     NewSessionQueuer sessionRequests =
         new NewSessionQueuerOptions(config).getSessionQueuer(
             "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer");
-
     return new LocalDistributor(tracer,
                                 bus,
                                 clientFactory,
