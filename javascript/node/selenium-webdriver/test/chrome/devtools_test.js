@@ -95,13 +95,23 @@ test.suite(
       )
     })
 
-    describe('Console.log events', function () {
-      it('calls the event listener', async function () {
+    describe('JS CDP events', function () {
+      it('calls the event listener for console.log', async function () {
         const cdpConnection = await driver.createCDPConnection('page')
         await driver.onLogEvent(cdpConnection, function(event) {
           assert.equal(event['args'][0]['value'], 'here')
         })
         await driver.executeScript('console.log("here")')
+      })
+
+      it('calls the event listener for js exceptions', async function () {
+        const cdpConnection = await driver.createCDPConnection('page')
+        await driver.onLogException(cdpConnection, function(event) {
+          assert.equal(event['exceptionDetails']['stackTrace']['callFrames'][0]['functionName'], 'onmouseover')
+        })
+        await driver.get(test.Pages.javascriptPage)
+        let element = driver.findElement({id: 'throwing-mouseover'})
+        await element.click()
       })
     })
 
