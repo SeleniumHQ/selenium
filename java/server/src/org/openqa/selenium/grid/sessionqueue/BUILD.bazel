@@ -15,10 +15,10 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
-        "//java/server/src/org/openqa/selenium/grid/data",
-        "//java/server/src/org/openqa/selenium/status",
         "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/log",
+        "//java/server/src/org/openqa/selenium/status",
         artifact("com.google.guava:guava"),
     ],
 )

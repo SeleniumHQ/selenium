@@ -70,11 +70,11 @@ react_scripts(
 
 zip_file(
     name = "react_jar",
-    extension = "jar",
     srcs = [
         ":build",
     ],
+    extension = "jar",
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
-    ]
+    ],
 )
