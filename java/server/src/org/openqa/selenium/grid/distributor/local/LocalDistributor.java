@@ -49,6 +49,7 @@ import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.RetrySessionRequestException;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -64,6 +65,7 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -143,41 +145,42 @@ public class LocalDistributor extends Distributor {
 
   private void handleNewSessionRequest(HttpRequest sessionRequest, RequestId reqId) {
 
-    Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue");
-    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    attributeMap.put(
-        AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
-    span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
-    attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(reqId.toString()));
+    try (Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue")) {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(
+          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+      span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
+      attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(reqId.toString()));
 
-    attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
+      attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
+      Either<SessionNotCreatedException, CreateSessionResponse> response =
+          createNewSessionResponse(sessionRequest);
+      if (response.isRight()) {
+        CreateSessionResponse sessionResponse = response.right();
+        NewSessionResponse newSessionResponse =
+            new NewSessionResponse(
+                reqId,
+                sessionResponse.getSession(),
+                sessionResponse.getDownstreamEncodedResponse());
 
-    try {
-      CreateSessionResponse sessionResponse = newSession(sessionRequest);
-      NewSessionResponse newSessionResponse =
-          new NewSessionResponse(reqId, sessionResponse.getSession(),
-                                 sessionResponse.getDownstreamEncodedResponse());
-
-      bus.fire(new NewSessionResponseEvent(newSessionResponse));
-    } catch (SessionNotCreatedException e) {
-      // If error is due to the slots being busy, adding to front of queue else reject the request
-      // If that fails, then just reject the request.
-      if (e.getMessage().startsWith("Unable to find provider for session") ||
-          e.getMessage().startsWith("Unable to reserve a slot for session request")) {
-        boolean retried = this.sessionRequests.retryAddToQueue(sessionRequest, reqId);
-
-        attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
-        span.addEvent("Retry adding to front of queue. All slots are busy.", attributeMap);
-
-        if (!retried) {
-          span.addEvent("Retry adding to front of queue failed.", attributeMap);
-          fireSessionRejectedEvent(e.getMessage(), reqId);
-        }
+        bus.fire(new NewSessionResponseEvent(newSessionResponse));
       } else {
-        fireSessionRejectedEvent(e.getMessage(), reqId);
+        SessionNotCreatedException exception = response.left();
+
+        if (exception instanceof RetrySessionRequestException) {
+          boolean retried = this.sessionRequests.retryAddToQueue(sessionRequest, reqId);
+
+          attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
+          span.addEvent("Retry adding to front of queue. All slots are busy.", attributeMap);
+
+          if (!retried) {
+            span.addEvent("Retry adding to front of queue failed.", attributeMap);
+            fireSessionRejectedEvent(exception.getMessage(), reqId);
+          }
+        } else {
+          fireSessionRejectedEvent(exception.getMessage(), reqId);
+        }
       }
-    } finally {
-      span.close();
     }
   }
 

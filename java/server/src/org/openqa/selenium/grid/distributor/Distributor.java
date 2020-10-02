@@ -34,6 +34,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -69,7 +70,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -164,8 +164,22 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
             .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public CreateSessionResponse newSession(HttpRequest request)
-      throws SessionNotCreatedException {
+  public CreateSessionResponse newSession(HttpRequest request) {
+    Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
+        createNewSessionResponse(request);
+    if (sessionResponse.isRight()) {
+      return sessionResponse.right();
+    } else {
+      SessionNotCreatedException exception = sessionResponse.left();
+      if (exception instanceof RetrySessionRequestException) {
+        throw new SessionNotCreatedException(exception.getMessage(), exception);
+      }
+      throw sessionResponse.left();
+    }
+  }
+
+  public Either<SessionNotCreatedException, CreateSessionResponse> createNewSessionResponse(
+      HttpRequest request) throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -190,7 +204,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
             EventAttribute.setValue(
                 "Unable to create session. No capabilities found: " + exception.getMessage()));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-        throw exception;
+        return Either.left(exception);
       }
 
       Optional<Supplier<CreateSessionResponse>> selected;
@@ -225,34 +239,31 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         writeLock.unlock();
       }
 
-      CreateSessionResponse sessionResponse = selected
-          .orElseThrow(
-              () -> {
-                throw new SessionNotCreatedException(
-                    "Unable to find provider for session: " + payload.stream()
-                        .map(Capabilities::toString).collect(Collectors.joining(", ")));
-              })
-          .get();
+      if (!selected.isPresent()) {
+        String errorMessage =
+            String.format(
+                "Unable to find provider for session: %s",
+                payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
+        SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
+        return Either.left(exception);
+      } else {
+        CreateSessionResponse sessionResponse = selected.get().get();
 
-      sessions.add(sessionResponse.getSession());
+        sessions.add(sessionResponse.getSession());
+        SessionId sessionId = sessionResponse.getSession().getId();
+        Capabilities caps = sessionResponse.getSession().getCapabilities();
+        String sessionUri = sessionResponse.getSession().getUri().toString();
+        SESSION_ID.accept(span, sessionId);
+        CAPABILITIES.accept(span, caps);
+        SESSION_ID_EVENT.accept(attributeMap, sessionId);
+        CAPABILITIES_EVENT.accept(attributeMap, caps);
+        span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
+        attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
 
-      SessionId sessionId = sessionResponse.getSession().getId();
-      Capabilities caps = sessionResponse.getSession().getCapabilities();
-      String sessionUri = sessionResponse.getSession().getUri().toString();
-      SESSION_ID.accept(span, sessionId);
-      CAPABILITIES.accept(span, caps);
-      SESSION_ID_EVENT.accept(attributeMap, sessionId);
-      CAPABILITIES_EVENT.accept(attributeMap, caps);
-      span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
-      attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
-
-      return sessionResponse;
-    } catch (SessionNotCreatedException e) {
-      if (e.getMessage().startsWith("Unable to find provider for session") ||
-          e.getMessage().startsWith("Unable to reserve a slot for session request") ||
-          e.getMessage().startsWith("Unable to reserve an instance")) {
-        throw e;
+        span.addEvent("Session created by the distributor", attributeMap);
+        return Either.right(sessionResponse);
       }
+    } catch (SessionNotCreatedException e) {
 
       span.setAttribute("error", true);
       span.setStatus(Status.ABORTED);
@@ -263,7 +274,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           EventAttribute.setValue("Unable to create session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-      throw e;
+      return Either.left(e);
     } catch (IOException e) {
       span.setAttribute("error", true);
       span.setStatus(Status.UNKNOWN);
@@ -275,7 +286,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
               "Unknown error in LocalDistributor while creating session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
-      throw new SessionNotCreatedException(e.getMessage(), e);
+      return Either.left(new SessionNotCreatedException(e.getMessage(), e));
     } finally {
       span.close();
     }
