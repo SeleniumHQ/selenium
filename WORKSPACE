@@ -117,7 +117,7 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 py_repositories()
 
 # This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_import", "pip_repositories")
+load("@rules_python//python:pip.bzl", "pip3_import", "pip_repositories")
 
 pip3_import(
     name = "dev_requirements",
@@ -199,7 +199,11 @@ load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
 
 k8s_go_deps()
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+load(
+    "@io_bazel_rules_go//go:deps.bzl",
+    "go_register_toolchains",
+    "go_rules_dependencies",
+)
 
 go_rules_dependencies()
 
