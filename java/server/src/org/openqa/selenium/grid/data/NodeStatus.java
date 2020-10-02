@@ -51,7 +51,9 @@ public class NodeStatus {
       Secret registrationSecret) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
-    this.maxSessionCount = Require.positive("Max session count", maxSessionCount);
+    this.maxSessionCount = Require.positive("Max session count",
+        maxSessionCount,
+"Make sure that a driver is available on $PATH");
     this.slots = ImmutableSet.copyOf(Require.nonNull("Slots", slots));
     this.availability = Require.nonNull("Availability", availability);
     this.registrationSecret = registrationSecret;

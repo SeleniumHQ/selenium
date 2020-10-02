@@ -146,6 +146,13 @@ public class RequireTest {
   }
 
   @Test
+  public void canCheckIntegersWithMessages() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Timeout", 0, "Message should only be this"))
+        .withMessage("Message should only be this");
+  }
+
+  @Test
   public void canCheckIntegerArgumentWithCheckerObject() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> Require.argument("Timeout", (Integer) null).greaterThan(5, "It should be longer"))
