@@ -70,6 +70,11 @@ public class InternetExplorerDriverService extends DriverService {
    */
   public static final String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
 
+  @Override
+  protected String getDriverName() {
+    return "ie";
+  }
+
   /**
    * @param executable The IEDriverServer executable.
    * @param port Which port to start the IEDriverServer on.

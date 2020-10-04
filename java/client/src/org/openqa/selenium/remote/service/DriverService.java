@@ -55,7 +55,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is
  * used to stop the server.
  */
-public class DriverService {
+public abstract class DriverService {
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
 
   /**
@@ -287,6 +287,8 @@ public class DriverService {
   protected OutputStream getOutputStream() {
     return outputStream;
   }
+
+  protected abstract String getDriverName();
 
   public abstract static class Builder<DS extends DriverService, B extends Builder<?, ?>> {
 

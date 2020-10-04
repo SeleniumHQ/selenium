@@ -54,6 +54,11 @@ public class EdgeHtmlDriverService extends DriverService {
    */
   public static final String EDGEHTML_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.edgehtml.verboseLogging";
 
+  @Override
+  protected String getDriverName() {
+    return "edgehtml";
+  }
+
   public EdgeHtmlDriverService(File executable, int port,
                                List<String> args,
                                Map<String, String> environment) throws IOException {

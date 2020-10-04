@@ -48,6 +48,11 @@ public class SafariDriverService extends DriverService {
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
       new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
 
+  @Override
+  protected String getDriverName() {
+    return "safari";
+  }
+
   public SafariDriverService(
       File executable,
       int port,

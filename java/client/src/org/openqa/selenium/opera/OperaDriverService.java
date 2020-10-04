@@ -64,6 +64,11 @@ public class OperaDriverService extends DriverService {
   public static final String OPERA_DRIVER_SILENT_OUTPUT_PROPERTY =
       "webdriver.opera.silentOutput";
 
+  @Override
+  protected String getDriverName() {
+    return "opera";
+  }
+
   /**
    *
    * @param executable The operadriver executable.

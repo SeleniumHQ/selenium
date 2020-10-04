@@ -68,6 +68,11 @@ public class XpiDriverService extends FirefoxDriverService {
   private static final String PATH_PREFIX =
       "/" + XpiDriverService.class.getPackage().getName().replace(".", "/") + "/";
 
+  @Override
+  protected String getDriverName() {
+    return "xpi";
+  }
+
   private final Lock lock = new ReentrantLock();
 
   private final int port;

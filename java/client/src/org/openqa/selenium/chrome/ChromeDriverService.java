@@ -75,6 +75,11 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
       "webdriver.chrome.whitelistedIps";
 
+  @Override
+  protected String getDriverName() {
+    return "chrome";
+  }
+
   /**
    * @param executable  The chromedriver executable.
    * @param port        Which port to start the ChromeDriver on.

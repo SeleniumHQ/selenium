@@ -50,6 +50,11 @@ public class GeckoDriverService extends FirefoxDriverService {
    */
   public static final String GECKO_DRIVER_EXE_PROPERTY = "webdriver.gecko.driver";
 
+  @Override
+  protected String getDriverName() {
+    return "gecko";
+  }
+
   /**
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.

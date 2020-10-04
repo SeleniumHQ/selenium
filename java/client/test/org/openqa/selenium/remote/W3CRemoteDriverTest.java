@@ -202,6 +202,13 @@ public class W3CRemoteDriverTest {
   }
 
   static class FakeDriverService extends DriverService {
+
+    @Override
+    protected String getDriverName() {
+      return "fake";
+    }
+
+
     FakeDriverService() throws IOException {
       super(new File("."), 0, DEFAULT_TIMEOUT, null, null);
     }

@@ -69,6 +69,11 @@ public class EdgeDriverService extends DriverService {
    */
   public static final String EDGE_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.edge.withAllowedIps";
 
+  @Override
+  protected String getDriverName() {
+    return "edge";
+  }
+
   /**
    * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
    * this configuration, the service will use the MSEdgeDriver executable identified by the
