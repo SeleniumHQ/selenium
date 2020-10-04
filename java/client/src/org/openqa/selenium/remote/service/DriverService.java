@@ -24,8 +24,10 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
@@ -40,6 +42,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -288,7 +291,21 @@ public abstract class DriverService {
     return outputStream;
   }
 
+  /**
+   * Define the name of webdriver, * this method should be implemented by derived classes
+   * @return name of webdriver
+   */
   protected abstract String getDriverName();
+
+
+  public Capabilities getDefaultCapabilities() {
+    String propertyName = String.format("webdriver.%s.defaultCapabilities", getDriverName());
+    return Optional.ofNullable(System.getProperty(propertyName)).map(caps -> {
+      Map<String, Object> obj = new Json().toType(caps, Json.MAP_TYPE);
+      return new MutableCapabilities(obj);
+    }).orElse(new MutableCapabilities());
+  }
+
 
   public abstract static class Builder<DS extends DriverService, B extends Builder<?, ?>> {
 
