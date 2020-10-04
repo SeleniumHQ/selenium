@@ -292,7 +292,7 @@ public abstract class DriverService {
   }
 
   /**
-   * Define the name of webdriver, * this method should be implemented by derived classes
+   * Define the name of webdriver, this method should be implemented by derived classes
    * @return name of webdriver
    */
   protected abstract String getDriverName();
