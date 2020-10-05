@@ -196,6 +196,7 @@ py_test_suite(
         requirement("attrs"),
         requirement("idna"),
         requirement("iniconfig"),
+        requirement("importlib_metadata"),
         requirement("h11"),
         requirement("more_itertools"),
         requirement("multidict"),
@@ -209,6 +210,7 @@ py_test_suite(
         requirement("sniffio"),
         requirement("trio"),
         requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 

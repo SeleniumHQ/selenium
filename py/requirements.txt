@@ -3,6 +3,7 @@ attrs
 dataclasses
 h11
 idna
+importlib_metadata
 inflection
 iniconfig
 more_itertools
@@ -17,3 +18,4 @@ sortedcontainers
 sniffio
 trio
 trio_websocket
+zipp
