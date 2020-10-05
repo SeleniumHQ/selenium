@@ -21,7 +21,9 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasLogEvents
-        KINDS = %i[console exception].freeze
+        include Atoms
+
+        KINDS = %i[console exception mutation].freeze
 
         #
         # Registers listener to be called whenever browser receives
@@ -43,13 +45,19 @@ module Selenium
         #     exceptions.push(event)
         #   end
         #
-        # @param [Symbol] kind :console or :exception
+        # @example Collect DOM mutations
+        #   mutations = []
+        #   driver.on_log_event(:mutation) do |event|
+        #     mutations.push(event)
+        #   end
+        #
+        # @param [Symbol] kind :console, :exception or :mutation
         # @param [#call] block which is called when event happens
-        # @yieldparam [DevTools::ConsoleEvent, DevTools::ExceptionEvent]
+        # @yieldparam [DevTools::ConsoleEvent, DevTools::ExceptionEvent, DevTools::MutationEvent]
         #
 
         def on_log_event(kind, &block)
-          raise WebDriverError, "Don't know how to handle #{kind} events" unless KINDS.include?(kind)
+          raise Error::WebDriverError, "Don't know how to handle #{kind} events" unless KINDS.include?(kind)
 
           enabled = log_listeners[kind].any?
           log_listeners[kind] << block
@@ -91,6 +99,42 @@ module Selenium
               listener.call(event)
             end
           end
+        end
+
+        def log_mutation_events
+          devtools.page.enable
+
+          devtools.runtime.add_binding(name: '__webdriver_attribute')
+          execute_script(mutation_listener)
+          script = devtools.page.add_script_to_evaluate_on_new_document(source: mutation_listener)
+          pinned_scripts[mutation_listener] = script['identifier']
+
+          devtools.runtime.on(:binding_called, &method(:log_mutation_event))
+        end
+
+        def log_mutation_event(params)
+          payload = JSON.parse(params['payload'])
+          elements = find_elements(css: "*[data-__webdriver_id='#{payload['target']}']")
+          return if elements.empty?
+
+          event = DevTools::MutationEvent.new(
+            element: elements.first,
+            attribute_name: payload['name'],
+            current_value: payload['value'],
+            old_value: payload['oldValue']
+          )
+
+          log_listeners[:mutation].each do |log_listener|
+            log_listener.call(event)
+          end
+        end
+
+        def mutation_listener
+          @mutation_listener ||= read_atom(:mutationListener)
+        end
+
+        def pinned_scripts
+          @pinned_scripts ||= {}
         end
 
       end # HasLogEvents

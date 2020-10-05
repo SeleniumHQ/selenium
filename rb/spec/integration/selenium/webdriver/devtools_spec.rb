@@ -95,6 +95,21 @@ module Selenium
         expect(exception.description).to include('Error: I like cheese')
         expect(exception.stacktrace).not_to be_empty
       end
+
+      it 'notifies about DOM mutations' do
+        mutations = []
+        driver.on_log_event(:mutation) { |mutation| mutations.push(mutation) }
+        driver.navigate.to url_for('dynamic.html')
+
+        driver.find_element(id: 'reveal').click
+        wait.until { mutations.any? }
+
+        mutation = mutations.first
+        expect(mutation.element).to eq(driver.find_element(id: 'revealed'))
+        expect(mutation.attribute_name).to eq('style')
+        expect(mutation.current_value).to eq('')
+        expect(mutation.old_value).to eq('display:none;')
+      end
     end
   end
 end

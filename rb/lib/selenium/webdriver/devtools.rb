@@ -22,6 +22,7 @@ module Selenium
     class DevTools
       autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
       autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
+      autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
 
       SUPPORTED_VERSIONS = [84, 85, 86].freeze
 

@@ -291,6 +291,9 @@ ruby_library(name = "devtools",
     ":cdp-v84",
     ":cdp-v85",
     ":cdp-v86"
+  ],
+  resources = [
+    { "../javascript/cdp-support/mutation-listener.js": "rb/lib/selenium/webdriver/atoms/mutationListener.js" }
   ]
 )
 
