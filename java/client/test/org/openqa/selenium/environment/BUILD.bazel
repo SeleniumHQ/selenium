@@ -67,8 +67,8 @@ java_library(
 
 java_binary(
     name = "appserver",
-    main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
     testonly = True,
+    main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
     visibility = [
         "//:__pkg__",
         "//dotnet/test:__subpackages__",
@@ -80,8 +80,8 @@ java_binary(
 
 java_binary(
     name = "jre-server",
-    main_class = "org.openqa.selenium.environment.webserver.JreAppServer",
     testonly = True,
+    main_class = "org.openqa.selenium.environment.webserver.JreAppServer",
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
@@ -92,8 +92,8 @@ java_binary(
 
 java_library(
     name = "test-base",
-    srcs = ["webserver/AppServerTestBase.java"],
     testonly = True,
+    srcs = ["webserver/AppServerTestBase.java"],
     deps = [
         ":environment",
         "//java/client/src/org/openqa/selenium:core",

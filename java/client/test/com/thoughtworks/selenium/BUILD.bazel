@@ -3,10 +3,10 @@ load("//java:defs.bzl", "java_test_suite")
 
 java_library(
     name = "test-base",
+    testonly = True,
     srcs = [
         "InternalSelenseTestBase.java",
     ],
-    testonly = True,
     resource_strip_prefix = "java/client/test",
     resources = [
         "testHelpers.js",
