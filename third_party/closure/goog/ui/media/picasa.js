@@ -245,7 +245,7 @@ goog.inherits(goog.ui.media.PicasaAlbumModel, goog.ui.media.MediaModel);
  * @const
  */
 goog.ui.media.PicasaAlbumModel.MATCHER_ =
-    /http?:\/\/(?:www\.)?picasaweb\.(?:google\.)?com\/([\d\w\.]+)\/([\d\w_\-\.]+)(?:\?[\w\d\-_=&amp;;\.]*&?authKey=([\w\d\-_=;\.]+))?(?:#([\d]+)?)?/im;
+    /https?:\/\/(?:www\.)?picasaweb\.(?:google\.)?com\/([\d\w\.]+)\/([\d\w_\-\.]+)(?:\?[\w\d\-_=&amp;;\.]*&?authKey=([\w\d\-_=;\.]+))?(?:#([\d]+)?)?/im;
 
 
 /**
