@@ -28,6 +28,7 @@ java_selenium_test_suite(
 
 java_library(
     name = "test-lib",
+    testonly = True,
     srcs = glob(
         ["*.java"],
         exclude = [

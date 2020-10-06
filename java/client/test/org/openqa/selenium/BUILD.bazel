@@ -82,6 +82,7 @@ java_selenium_test_suite(
 # TODO: replace with smaller suites
 java_library(
     name = "tests",
+    testonly = True,
     srcs = glob([
         "*Test.java",
         "html5/*.java",

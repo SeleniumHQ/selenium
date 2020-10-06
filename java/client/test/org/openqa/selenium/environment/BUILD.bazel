@@ -13,6 +13,7 @@ filegroup(
 
 java_library(
     name = "environment",
+    testonly = True,
     srcs = glob(
         [
             "*.java",
@@ -65,6 +66,7 @@ java_library(
 java_binary(
     name = "appserver",
     main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
+    testonly = True,
     visibility = [
         "//:__pkg__",
         "//dotnet/test:__subpackages__",
@@ -77,6 +79,7 @@ java_binary(
 java_binary(
     name = "jre-server",
     main_class = "org.openqa.selenium.environment.webserver.JreAppServer",
+    testonly = True,
     visibility = [
         "//dotnet/test:__subpackages__",
     ],
@@ -88,6 +91,7 @@ java_binary(
 java_library(
     name = "test-base",
     srcs = ["webserver/AppServerTestBase.java"],
+    testonly = True,
     deps = [
         ":environment",
         "//java/client/src/org/openqa/selenium:core",

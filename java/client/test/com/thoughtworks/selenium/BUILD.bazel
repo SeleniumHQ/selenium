@@ -6,6 +6,7 @@ java_library(
     srcs = [
         "InternalSelenseTestBase.java",
     ],
+    testonly = True,
     resource_strip_prefix = "java/client/test",
     resources = [
         "testHelpers.js",
