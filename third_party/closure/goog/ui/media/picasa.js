@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS-IS" BASIS,
@@ -36,7 +36,8 @@
  *
  * <pre>
  *   var album = goog.ui.media.PicasaAlbumModel.newInstance(
- *       'http://picasaweb.google.com/username/SanFranciscoCalifornia');
+ *       '
+ ://picasaweb.google.com/username/SanFranciscoCalifornia');
  *   goog.ui.media.PicasaAlbum.newControl(album).render();
  * </pre>
  *
@@ -89,7 +90,7 @@ goog.require('goog.ui.media.MediaRenderer');
  * with the photos, but could possibly display a handwritten js photo viewer,
  * in case flash is not available.
  *
- * This design is patterned after http://go/closure_control_subclassing
+ * This design is patterned after https://go/closure_control_subclassing
  *
  * It uses {@link goog.ui.media.FlashObject} to embed the flash object.
  *
@@ -218,14 +219,14 @@ goog.ui.media.PicasaAlbumModel = function(
   var flashVars = {
     'host': 'picasaweb.google.com',
     'RGB': '0x000000',
-    'feed': 'http://picasaweb.google.com/data/feed/api/user/' + userId +
+    'feed': 'https://picasaweb.google.com/data/feed/api/user/' + userId +
         '/album/' + albumId + '?kind=photo&alt=rss' + authParam
   };
   flashVars[opt_autoplay ? 'autoplay' : 'noautoplay'] = '1';
 
   var flashUrl = goog.html.TrustedResourceUrl.fromConstant(
       goog.string.Const.from(
-          'http://picasaweb.google.com/s/c/bin/slideshow.swf'));
+          'https://picasaweb.google.com/s/c/bin/slideshow.swf'));
   var player = new goog.ui.media.MediaModel.Player(flashUrl, flashVars);
 
   this.setPlayer(player);
@@ -279,7 +280,7 @@ goog.ui.media.PicasaAlbumModel.newInstance = function(
  * @return {string} The URL of the album.
  */
 goog.ui.media.PicasaAlbumModel.buildUrl = function(userId, albumId) {
-  return 'http://picasaweb.google.com/' + userId + '/' + albumId;
+  return 'https://picasaweb.google.com/' + userId + '/' + albumId;
 };
 
 
