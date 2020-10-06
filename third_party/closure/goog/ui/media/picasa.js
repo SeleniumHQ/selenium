@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      https://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS-IS" BASIS,
@@ -36,8 +36,7 @@
  *
  * <pre>
  *   var album = goog.ui.media.PicasaAlbumModel.newInstance(
- *       '
- ://picasaweb.google.com/username/SanFranciscoCalifornia');
+ *       'http://picasaweb.google.com/username/SanFranciscoCalifornia');
  *   goog.ui.media.PicasaAlbum.newControl(album).render();
  * </pre>
  *
@@ -90,7 +89,7 @@ goog.require('goog.ui.media.MediaRenderer');
  * with the photos, but could possibly display a handwritten js photo viewer,
  * in case flash is not available.
  *
- * This design is patterned after https://go/closure_control_subclassing
+ * This design is patterned after http://go/closure_control_subclassing
  *
  * It uses {@link goog.ui.media.FlashObject} to embed the flash object.
  *
@@ -246,7 +245,7 @@ goog.inherits(goog.ui.media.PicasaAlbumModel, goog.ui.media.MediaModel);
  * @const
  */
 goog.ui.media.PicasaAlbumModel.MATCHER_ =
-    /https?:\/\/(?:www\.)?picasaweb\.(?:google\.)?com\/([\d\w\.]+)\/([\d\w_\-\.]+)(?:\?[\w\d\-_=&amp;;\.]*&?authKey=([\w\d\-_=;\.]+))?(?:#([\d]+)?)?/im;
+    /http?:\/\/(?:www\.)?picasaweb\.(?:google\.)?com\/([\d\w\.]+)\/([\d\w_\-\.]+)(?:\?[\w\d\-_=&amp;;\.]*&?authKey=([\w\d\-_=;\.]+))?(?:#([\d]+)?)?/im;
 
 
 /**
