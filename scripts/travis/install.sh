@@ -9,7 +9,7 @@ if [[ ! -z $CHROME ]]; then
   CHROME_FULL_VERSION=${CHROME_VERSION%%.*}
   CHROME_MAJOR_VERSION=${CHROME_FULL_VERSION//[!0-9]}
   sudo rm /etc/apt/sources.list.d/google-chrome.list
-  export CHROMEDRIVER_VERSION=`curl -s http://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION%%.*}`
+  export CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION%%.*}`
   curl -L -O "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
   unzip chromedriver_linux64.zip && chmod +x chromedriver && sudo mv chromedriver /usr/local/bin
 fi
