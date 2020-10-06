@@ -28,10 +28,12 @@ java_library(
         "webserver/keystore",
         "//common/src/web",
         "//javascript/atoms",
+        "//javascript/atoms:deps",
         "//third_party/closure/goog",
         "//third_party/js/selenium:webdriver_json",
         "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/sizzle",
+        "@com_google_javascript_closure_library",
     ],
     javacopts = [
         "-source",
