@@ -171,10 +171,10 @@ public class Hub extends TemplateGridServerCommand {
     URL uiRoot = getClass().getResource("/javascript/grid-ui/build");
     if (uiRoot != null) {
       ResourceHandler
-        uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, "javascript/grid-ui/build"));
+          uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, "javascript/grid-ui/build"));
       ui = Route.combine(
-        get("/grid/console").to(() -> req -> new HttpResponse().setStatus(HTTP_MOVED_PERM).addHeader("Location", "/ui/index.html")),
-        Route.prefix("/ui/").to(Route.matching(req -> true).to(() -> uiHandler)));
+          get("/grid/console").to(() -> req -> new HttpResponse().setStatus(HTTP_MOVED_PERM).addHeader("Location", "/ui/index.html")),
+          Route.prefix("/ui/").to(Route.matching(req -> true).to(() -> uiHandler)));
     } else {
       Json json = new Json();
       ui = Route.matching(req -> false).to(() -> new NoHandler(json));
