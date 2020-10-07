@@ -189,7 +189,7 @@ class WebDriver(BaseWebDriver):
             self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
-        self.capabilities = {}
+        self.caps = {}
         self.error_handler = ErrorHandler()
         self.start_client()
         self.start_session(capabilities, browser_profile)
@@ -249,8 +249,8 @@ class WebDriver(BaseWebDriver):
 
                 name = driver.name
         """
-        if 'browserName' in self.capabilities:
-            return self.capabilities['browserName']
+        if 'browserName' in self.caps:
+            return self.caps['browserName']
         else:
             raise KeyError('browserName not specified in session capabilities')
 
@@ -293,12 +293,12 @@ class WebDriver(BaseWebDriver):
         if 'sessionId' not in response:
             response = response['value']
         self.session_id = response['sessionId']
-        self.capabilities = response.get('value')
+        self.caps = response.get('value')
 
         # if capabilities is none we are probably speaking to
         # a W3C endpoint
-        if self.capabilities is None:
-            self.capabilities = response.get('capabilities')
+        if self.caps is None:
+            self.caps = response.get('capabilities')
 
         # Double check to see if we have a W3C Compliant browser
         self.w3c = response.get('status') is None
@@ -1149,7 +1149,16 @@ class WebDriver(BaseWebDriver):
         """
         returns the drivers current desired capabilities being used
         """
-        return self.capabilities
+        warnings.warn("desired_capabilities is deprecated. Please call capabilities.",
+                      DeprecationWarning, stacklevel=2)
+        return self.caps
+
+    @property
+    def capabilities(self):
+        """
+        returns the drivers current capabilities being used.
+        """
+        return self.caps
 
     def get_screenshot_as_file(self, filename):
         """
@@ -1504,8 +1513,8 @@ class WebDriver(BaseWebDriver):
         global cdp
         import_cdp()
         ws_url = None
-        if self.capabilities.get("se:options"):
-            ws_url = self.capabilities.get("se:options").get("cdp")
+        if self.caps.get("se:options"):
+            ws_url = self.caps.get("se:options").get("cdp")
         else:
             version, ws_url = self._get_cdp_details()
 
@@ -1527,7 +1536,7 @@ class WebDriver(BaseWebDriver):
         import urllib3
 
         http = urllib3.PoolManager()
-        debugger_address = self.capabilities.get("{0}:chromeOptions".format(self.vendor_prefix)).get("debuggerAddress")
+        debugger_address = self.caps.get("{0}:chromeOptions".format(self.vendor_prefix)).get("debuggerAddress")
         res = http.request('GET', "http://{0}/json/version".format(debugger_address))
         data = json.loads(res.data)
 
