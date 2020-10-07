@@ -57,7 +57,7 @@ test.suite(
       await driver.get(test.Pages.echoPage)
       assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage)
 
-      let history = await driver.sendDevToolsCommandAndGetReturn(
+      let history = await driver.sendAndGetDevToolsCommand(
         'Page.getNavigationHistory'
       )
       assert(history)

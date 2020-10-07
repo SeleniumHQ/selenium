@@ -96,6 +96,7 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
   SET_PERMISSION: 'setPermission',
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
@@ -141,6 +142,11 @@ function configureExecutor(executor, vendorPrefix) {
     Command.SEND_DEVTOOLS_COMMAND,
     'POST',
     '/session/:sessionId/chromium/send_command'
+  )
+  executor.defineCommand(
+    Command.SEND_AND_GET_DEVTOOLS_COMMAND,
+    'POST',
+    '/session/:sessionId/chromium/send_command_and_get_result'
   )
   executor.defineCommand(
     Command.SET_PERMISSION,
@@ -680,6 +686,23 @@ class Driver extends webdriver.WebDriver {
   sendDevToolsCommand(cmd, params = {}) {
     return this.execute(
       new command.Command(Command.SEND_DEVTOOLS_COMMAND)
+        .setParameter('cmd', cmd)
+        .setParameter('params', params)
+    )
+  }
+
+  /**
+   * ends an arbitrary devtools command to the browser and get the result.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has finished.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
+   */
+  sendAndGetDevToolsCommand(cmd, params = {}) {
+    return this.execute(
+      new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
         .setParameter('cmd', cmd)
         .setParameter('params', params)
     )
