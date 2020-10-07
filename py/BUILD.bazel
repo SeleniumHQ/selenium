@@ -81,6 +81,8 @@ py_wheel(
     ],
     requires = [
         "urllib3[secure]",
+        "trio",
+        "trio-websocket",
     ],
     strip_path_prefixes = [
         "py",
