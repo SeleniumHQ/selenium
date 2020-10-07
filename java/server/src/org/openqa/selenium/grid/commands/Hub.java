@@ -136,9 +136,9 @@ public class Hub extends TemplateGridServerCommand {
 
     NetworkOptions networkOptions = new NetworkOptions(config);
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-        externalUrl,
-        handler,
-        networkOptions.getHttpClientFactory(tracer));
+      externalUrl,
+      handler,
+      networkOptions.getHttpClientFactory(tracer));
 
     NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
     NewSessionQueue sessionRequests = new LocalNewSessionQueue(
