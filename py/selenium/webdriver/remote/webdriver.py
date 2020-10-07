@@ -31,10 +31,12 @@ from .errorhandler import ErrorHandler
 from .file_detector import FileDetector, LocalFileDetector
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
+from .script_key import ScriptKey
 from .switch_to import SwitchTo
 from .webelement import WebElement
 
 from selenium.common.exceptions import (InvalidArgumentException,
+                                        JavascriptException,
                                         WebDriverException,
                                         NoSuchCookieException,
                                         UnknownMethodException)
@@ -190,6 +192,7 @@ class WebDriver(BaseWebDriver):
         self._is_remote = True
         self.session_id = None
         self.caps = {}
+        self.pinned_scripts = {}
         self.error_handler = ErrorHandler()
         self.start_client()
         self.start_session(capabilities, browser_profile)
@@ -703,6 +706,26 @@ class WebDriver(BaseWebDriver):
         warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
+    def pin_script(self, script):
+        """
+
+        """
+        script_key = ScriptKey()
+        self.pinned_scripts[script_key.id] = script
+        return script_key
+
+    def unpin(self, script_key):
+        """
+
+        """
+        self.pinned_scripts.pop(script_key.id)
+
+    def get_pinned_scripts(self):
+        """
+
+        """
+        return list(self.pinned_scripts.keys())
+
     def execute_script(self, script, *args):
         """
         Synchronously Executes JavaScript in the current window/frame.
@@ -716,6 +739,12 @@ class WebDriver(BaseWebDriver):
 
                 driver.execute_script('return document.title;')
         """
+        if isinstance(script, ScriptKey):
+            try:
+                script = self.pinned_scripts[script.id]
+            except KeyError:
+                raise JavascriptException("Pinned script could not be found")
+
         converted_args = list(args)
         command = None
         if self.w3c:
