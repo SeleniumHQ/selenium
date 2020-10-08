@@ -148,20 +148,20 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
       }),
       post("/se/grid/distributor/session")
-        .to(() -> new CreateSession(this))
-        .with(requiresSecret),
+          .to(() -> new CreateSession(this))
+          .with(requiresSecret),
       post("/se/grid/distributor/node")
-        .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
-        .with(requiresSecret),
+          .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
+          .with(requiresSecret),
       post("/se/grid/distributor/node/{nodeId}/drain")
-        .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
-        .with(requiresSecret),
+          .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .with(requiresSecret),
       delete("/se/grid/distributor/node/{nodeId}")
-        .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
-        .with(requiresSecret),
+          .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .with(requiresSecret),
       get("/se/grid/distributor/status")
-        .to(() -> new GetDistributorStatus(this))
-        .with(new SpanDecorator(tracer, req -> "distributor.status")));
+          .to(() -> new GetDistributorStatus(this))
+          .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
   public CreateSessionResponse newSession(HttpRequest request) {
@@ -188,21 +188,19 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       NewSessionPayload payload = NewSessionPayload.create(reader)) {
       Objects.requireNonNull(payload, "Requests to process must be set.");
 
-      attributeMap.put(
-        AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+        EventAttribute.setValue(getClass().getName()));
 
       Iterator<Capabilities> iterator = payload.stream().iterator();
       attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
       span.addEvent("Session request received by the distributor", attributeMap);
 
       if (!iterator.hasNext()) {
-        SessionNotCreatedException exception =
-          new SessionNotCreatedException("No capabilities found");
+        SessionNotCreatedException exception = new SessionNotCreatedException("No capabilities found");
         EXCEPTION.accept(attributeMap, exception);
-        attributeMap.put(
-          AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue(
-            "Unable to create session. No capabilities found: " + exception.getMessage()));
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Unable to create session. No capabilities found: "
+            + exception.getMessage()));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         return Either.left(exception);
       }
@@ -269,8 +267,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       span.setStatus(Status.ABORTED);
 
       EXCEPTION.accept(attributeMap, e);
-      attributeMap.put(
-        AttributeKey.EXCEPTION_MESSAGE.getKey(),
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
         EventAttribute.setValue("Unable to create session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
