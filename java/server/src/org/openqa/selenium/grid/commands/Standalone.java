@@ -160,17 +160,16 @@ public class Standalone extends TemplateGridServerCommand {
         sessions,
         queuer,
         registrationSecret);
-
     combinedHandler.addHandler(distributor);
 
     Routable router = new Router(tracer, clientFactory, sessions, distributor)
-        .with(networkOptions.getSpecComplianceChecks());
+      .with(networkOptions.getSpecComplianceChecks());
 
     HttpHandler readinessCheck = req -> {
       boolean ready = sessions.isReady() && distributor.isReady() && bus.isReady();
       return new HttpResponse()
-          .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
-          .setContent(Contents.utf8String("Standalone is " + ready));
+        .setStatus(ready ? HTTP_OK : HTTP_INTERNAL_ERROR)
+        .setContent(Contents.utf8String("Standalone is " + ready));
     };
 
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
