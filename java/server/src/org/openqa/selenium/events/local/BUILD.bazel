@@ -6,6 +6,7 @@ java_library(
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
         "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
+        "//java/server/test/org/openqa/selenium/events:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [

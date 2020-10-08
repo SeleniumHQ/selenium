@@ -291,6 +291,9 @@ ruby_library(name = "devtools",
     ":cdp-v84",
     ":cdp-v85",
     ":cdp-v86"
+  ],
+  resources = [
+    { "../javascript/cdp-support/mutation-listener.js": "rb/lib/selenium/webdriver/atoms/mutationListener.js" }
   ]
 )
 
@@ -325,7 +328,7 @@ ruby_class_call(name = "cdp-v84",
   ],
   resources = [
     { "//common/devtools/chromium/v84:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
-    { "//common/devtools/chromium/v84:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
+    { "//common/devtools/chromium/v84:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
   ]
 )
 
@@ -341,7 +344,7 @@ ruby_class_call(name = "cdp-v85",
   ],
   resources = [
     { "//common/devtools/chromium/v85:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
-    { "//common/devtools/chromium/v85:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
+    { "//common/devtools/chromium/v85:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
   ]
 )
 
@@ -357,7 +360,7 @@ ruby_class_call(name = "cdp-v86",
   ],
   resources = [
     { "//common/devtools/chromium/v86:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
-    { "//common/devtools/chromium/v86:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
+    { "//common/devtools/chromium/v86:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
   ]
 )
 

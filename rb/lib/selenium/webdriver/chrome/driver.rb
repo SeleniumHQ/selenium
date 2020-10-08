@@ -33,6 +33,8 @@ module Selenium
         include DriverExtensions::TakesScreenshot
         include DriverExtensions::DownloadsFiles
         include DriverExtensions::HasDevTools
+        include DriverExtensions::HasAuthentication
+        include DriverExtensions::HasLogEvents
 
         def browser
           :chrome

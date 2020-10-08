@@ -27,6 +27,12 @@ java_library(
     ],
 )
 
+copy_file(
+    name = "mutation-listener",
+    src = "//javascript/cdp-support:mutation-listener.js",
+    out = "mutation-listener.js",
+)
+
 java_export(
     name = "devtools",
     srcs = glob(
@@ -40,6 +46,9 @@ java_export(
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    resources = [
+        ":mutation-listener",
+    ],
     visibility = [
         "//visibility:public",
     ],

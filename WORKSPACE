@@ -86,8 +86,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "4952ef879704ab4ad6729a29007e7094aef213ea79e9f2e94cbe1c9a753e63ef",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.0/rules_nodejs-2.2.0.tar.gz"],
+    sha256 = "64a71a64ac58b8969bb19b1c9258a973b6433913e958964da698943fb5521d98",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.1/rules_nodejs-2.2.1.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
@@ -117,9 +117,9 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 py_repositories()
 
 # This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_import", "pip_repositories")
+load("@rules_python//python:pip.bzl", "pip3_import", "pip_repositories")
 
-pip_import(
+pip3_import(
     name = "dev_requirements",
     requirements = "//py:requirements.txt",
 )
@@ -199,7 +199,11 @@ load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
 
 k8s_go_deps()
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+load(
+    "@io_bazel_rules_go//go:deps.bzl",
+    "go_register_toolchains",
+    "go_rules_dependencies",
+)
 
 go_rules_dependencies()
 

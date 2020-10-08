@@ -3,6 +3,7 @@ load("//java:defs.bzl", "java_test_suite")
 
 java_library(
     name = "test-base",
+    testonly = True,
     srcs = [
         "InternalSelenseTestBase.java",
     ],

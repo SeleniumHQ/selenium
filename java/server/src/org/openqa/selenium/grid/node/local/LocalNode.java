@@ -31,7 +31,6 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.Active;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
@@ -39,12 +38,14 @@ import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
@@ -80,7 +81,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -104,7 +106,7 @@ public class LocalNode extends Node {
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
-  private final String registrationSecret;
+  private final Secret registrationSecret;
   private AtomicInteger pendingSessions = new AtomicInteger();
 
   private LocalNode(
@@ -117,17 +119,22 @@ public class LocalNode extends Node {
     Ticker ticker,
     Duration sessionTimeout,
     List<SessionSlot> factories,
-    String registrationSecret) {
-    super(tracer, new NodeId(UUID.randomUUID()), uri);
+    Secret registrationSecret) {
+    super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
 
     this.externalUri = Require.nonNull("Remote node URI", uri);
     this.gridUri = Require.nonNull("Grid URI", gridUri);
-    this.healthCheck = Require.nonNull("Health checker", healthCheck);
     this.maxSessionCount = Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.factories = ImmutableList.copyOf(factories);
     this.registrationSecret = registrationSecret;
+
+    this.healthCheck = healthCheck == null ?
+      () -> new HealthCheck.Result(
+        isDraining() ? DRAINING : UP,
+        String.format("%s is %s", uri, isDraining() ? "draining" : "up")) :
+      healthCheck;
 
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
@@ -156,9 +163,9 @@ public class LocalNode extends Node {
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
     regularly.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
 
-    bus.addListener(SESSION_CLOSED, event -> {
+    bus.addListener(SessionClosedEvent.listener(id -> {
       try {
-        this.stop(event.getData(SessionId.class));
+        this.stop(id);
       } catch (NoSuchSessionException ignore) {
       }
       if (this.isDraining()) {
@@ -168,7 +175,7 @@ public class LocalNode extends Node {
           bus.fire(new NodeDrainComplete(this.getId()));
         }
       }
-    });
+    }));
   }
 
   @Override
@@ -383,7 +390,7 @@ public class LocalNode extends Node {
       toUse = new PersistentCapabilities(toUse).setCapability("se:options", updated);
     }
 
-    return new Session(other.getId(), externalUri, toUse);
+    return new Session(other.getId(), externalUri, other.getStereotype(), toUse, Instant.now());
   }
 
   private URI rewrite(String path) {
@@ -413,13 +420,14 @@ public class LocalNode extends Node {
   public NodeStatus getStatus() {
     Set<Slot> slots = factories.stream()
       .map(slot -> {
-        Optional<Active> session = Optional.empty();
+        Optional<Session> session = Optional.empty();
         if (!slot.isAvailable()) {
           ActiveSession activeSession = slot.getSession();
           session = Optional.of(
-            new Active(
-              slot.getStereotype(),
+            new Session(
               activeSession.getId(),
+              activeSession.getUri(),
+              slot.getStereotype(),
               activeSession.getCapabilities(),
               activeSession.getStartTime()));
         }
@@ -437,7 +445,7 @@ public class LocalNode extends Node {
       externalUri,
       maxSessionCount,
       slots,
-      isDraining(),
+      isDraining() ? DRAINING : UP,
       registrationSecret);
   }
 
@@ -475,7 +483,7 @@ public class LocalNode extends Node {
     EventBus bus,
     URI uri,
     URI gridUri,
-    String registrationSecret) {
+    Secret registrationSecret) {
     return new Builder(tracer, bus, uri, gridUri, registrationSecret);
   }
 
@@ -485,7 +493,7 @@ public class LocalNode extends Node {
     private final EventBus bus;
     private final URI uri;
     private final URI gridUri;
-    private final String registrationSecret;
+    private final Secret registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
@@ -497,7 +505,7 @@ public class LocalNode extends Node {
       EventBus bus,
       URI uri,
       URI gridUri,
-      String registrationSecret) {
+      Secret registrationSecret) {
       this.tracer = Require.nonNull("Tracer", tracer);
       this.bus = Require.nonNull("Event bus", bus);
       this.uri = Require.nonNull("Remote node URI", uri);
@@ -526,17 +534,12 @@ public class LocalNode extends Node {
     }
 
     public LocalNode build() {
-      HealthCheck check =
-        healthCheck == null ?
-          () -> new HealthCheck.Result(true, uri + " is ok", registrationSecret) :
-          healthCheck;
-
       return new LocalNode(
         tracer,
         bus,
         uri,
         gridUri,
-        check,
+        healthCheck,
         maxCount,
         ticker,
         sessionTimeout,

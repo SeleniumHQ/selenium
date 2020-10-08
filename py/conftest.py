@@ -22,7 +22,7 @@ import sys
 import time
 
 import pytest
-from _pytest.skipping import MarkEvaluator
+#from _pytest.skipping import MarkEvaluator
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
@@ -83,9 +83,9 @@ def driver(request):
         raise Exception('This test requires a --driver to be specified.')
 
     # conditionally mark tests as expected to fail based on driver
-    request.node._evalxfail = request.node._evalxfail or MarkEvaluator(
-        request.node, 'xfail_{0}'.format(driver_class.lower()))
-    if request.node._evalxfail.istrue():
+    marker = request.node.get_closest_marker('xfail_{0}'.format(driver_class.lower()))
+
+    if marker is not None:
         def fin():
             global driver_instance
             if driver_instance is not None:
@@ -94,11 +94,11 @@ def driver(request):
         request.addfinalizer(fin)
 
     # skip driver instantiation if xfail(run=False)
-    if not request.config.getoption('runxfail'):
-        if request.node._evalxfail.istrue():
-            if request.node._evalxfail.get('run') is False:
-                yield
-                return
+    #if not request.config.getoption('runxfail'):
+    #    if request.node._evalxfail.istrue():
+    #        if request.node._evalxfail.get('run') is False:
+    #            yield
+    #            return
 
     driver_path = request.config.option.executable
     options = None
@@ -129,7 +129,8 @@ def driver(request):
             kwargs['options'] = options
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
-    if MarkEvaluator(request.node, 'no_driver_after_test').istrue():
+
+    if request.node.get_closest_marker("no_driver_after_test"):
         driver_instance = None
 
 

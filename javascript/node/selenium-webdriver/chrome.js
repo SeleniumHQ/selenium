@@ -467,7 +467,7 @@ class Driver extends chromium.Driver {
    * @see <https://chromedevtools.github.io/devtools-protocol/>
    */
   sendAndGetDevToolsCommand(cmd, params = {}) {
-    return this.schedule(
+    return this.execute(
       new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
         .setParameter('cmd', cmd)
         .setParameter('params', params)

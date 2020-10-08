@@ -21,17 +21,17 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 
 public class Session {
 
   private final String id;
   private final Capabilities capabilities;
-  private final LocalDateTime startTime;
+  private final Instant startTime;
   private static final Json JSON = new Json();
 
-  public Session(String id, Capabilities capabilities, LocalDateTime startTime) {
+  public Session(String id, Capabilities capabilities, Instant startTime) {
     this.id = Require.nonNull("Node id", id);
     this.capabilities = Require.nonNull("Node capabilities", capabilities);
     this.startTime = Require.nonNull("Session Start time", startTime);

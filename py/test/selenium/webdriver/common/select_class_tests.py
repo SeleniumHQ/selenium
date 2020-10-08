@@ -91,20 +91,20 @@ def testSelectByVisibleTextSingle(driver, pages):
             assert sel.first_selected_option.text == select['values'][x]
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
-@pytest.mark.xfail_chromiumedge(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
-@pytest.mark.xfail_safari
-def testSelectByVisibleTextShouldNormalizeSpaces(driver, pages):
-    pages.load("formPage.html")
+# @pytest.mark.xfail_chrome(
+#     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
+# @pytest.mark.xfail_chromiumedge(
+#     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
+# @pytest.mark.xfail_safari
+# def testSelectByVisibleTextShouldNormalizeSpaces(driver, pages):
+#     pages.load("formPage.html")
 
-    for select in [singleSelectValuesWithSpaces]:
-        sel = Select(driver.find_element(By.NAME, select['name']))
-        for x in range(len(select['values'])):
-            print(select['values'][x])
-            sel.select_by_visible_text(select['values'][x])
-            assert sel.first_selected_option.text == select['values'][x]
+#     for select in [singleSelectValuesWithSpaces]:
+#         sel = Select(driver.find_element(By.NAME, select['name']))
+#         for x in range(len(select['values'])):
+#             print(select['values'][x])
+#             sel.select_by_visible_text(select['values'][x])
+#             assert sel.first_selected_option.text == select['values'][x]
 
 
 @pytest.mark.xfail_firefox(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')

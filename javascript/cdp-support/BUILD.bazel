@@ -1,0 +1,7 @@
+package(default_visibility = [
+    "//java/client/src/org/openqa/selenium/devtools:__pkg__",
+])
+
+exports_files([
+    "mutation-listener.js",
+])

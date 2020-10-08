@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.devtools.events;
 
-import com.google.common.base.Joiner;
+import com.google.common.io.Resources;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -29,10 +29,13 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.EventType;
 import org.openqa.selenium.logging.HasLogEvents;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class CdpEventTypes {
@@ -64,45 +67,18 @@ public class CdpEventTypes {
   }
 
   public static EventType<Void> domMutation(Consumer<DomMutationEvent> handler) {
-    String script = Joiner.on("\n").join(new String[]{
-      "(function() {",
-      "const observer = new MutationObserver((mutations) => {",
-      "  for (const mutation of mutations) {",
-      "    switch (mutation.type) {",
-      "      case \"attributes\":",
-      // Don't report our own attribute has changed.
-      "        if (mutation.attributeName == 'data-__webdriver_id') {",
-      "          break;",
-      "        }",
-      "        const curr = mutation.target.getAttribute(mutation.attributeName);",
-      "        var id = mutation.target.dataset.__webdriver_id",
-      "        if (!id) {",
-      "          id = Math.random().toString(36).substring(2) + Date.now().toString(36);",
-      "          mutation.target.dataset.__webdriver_id = id;",
-      "        }",
-      "        const json = JSON.stringify({",
-      "          \"target\": id,",
-      "          \"name\": mutation.attributeName,",
-      "          \"value\": curr,",
-      "          \"oldValue\": mutation.oldValue",
-      "        });",
-      "        __webdriver_attribute(json);",
-      "        break;",
-      "      default:",
-      "        break;",
-      "    }",
-      "  }",
-      "});",
-      "observer.observe(document, {",
-      "  \"attributes\": true,",
-      "  \"attributeOldValue\": true,",
-      "  \"characterData\": true,",
-      "  \"characterDataOldValue\": true,",
-      "  \"childList\": true,",
-      "  \"subtree\": true",
-      "});",
-      "})();"
-    });
+    Require.nonNull("Handler", handler);
+
+    URL url = CdpEventTypes.class.getResource("/org/openqa/selenium/devtools/mutation-listener.js");
+    if (url == null) {
+      throw new IllegalStateException("Unable to find helper script");
+    }
+    String script;
+    try {
+      script = Resources.toString(url, UTF_8);
+    } catch (IOException e) {
+      throw new IllegalStateException("Unable to read helper script");
+    }
 
     return new EventType<Void>() {
       @Override

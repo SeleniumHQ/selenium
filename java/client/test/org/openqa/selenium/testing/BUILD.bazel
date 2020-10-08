@@ -26,6 +26,7 @@ java_library(
 
 java_library(
     name = "test-base",
+    testonly = True,
     srcs = [
         "IgnoreComparator.java",
         "JUnit4TestBase.java",

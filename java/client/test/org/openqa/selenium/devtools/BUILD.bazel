@@ -17,7 +17,7 @@ java_selenium_test_suite(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
-        "//java/client/test/org/openqa/selenium/environment:environment",
+        "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
@@ -28,6 +28,7 @@ java_selenium_test_suite(
 
 java_library(
     name = "test-lib",
+    testonly = True,
     srcs = glob(
         ["*.java"],
         exclude = [

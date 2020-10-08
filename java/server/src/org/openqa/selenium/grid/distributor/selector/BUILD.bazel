@@ -9,7 +9,6 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        "//java/server/src/org/openqa/selenium/grid/distributor/model",
         "//java/server/src/org/openqa/selenium/grid/data",
         artifact("com.google.guava:guava"),
     ],

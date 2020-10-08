@@ -48,7 +48,9 @@ public enum AttributeKey {
   DATABASE_OPERATION ("db.operation"),
   DATABASE_USER ("db.user"),
   DATABASE_CONNECTION_STRING ("db.connection_string"),
-  DATABASE_SYSTEM("db.system");
+  DATABASE_SYSTEM("db.system"),
+
+  REQUEST_ID ("request.id");
 
   private final String key;
 

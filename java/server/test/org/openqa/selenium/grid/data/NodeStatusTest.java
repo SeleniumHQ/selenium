@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.data;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 
@@ -30,6 +31,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class NodeStatusTest {
 
@@ -46,16 +48,19 @@ public class NodeStatusTest {
           new SlotId(nodeId, UUID.randomUUID()),
           stereotype,
           Instant.EPOCH,
-          Optional.of(new Active(
-            stereotype,
+          Optional.of(new Session(
             new SessionId(UUID.randomUUID()),
+            new URI("http://localhost:1235"),
+            stereotype,
             new ImmutableCapabilities("peas", "sausages"),
             Instant.now())))),
-      false,
-      "cheese");
+      UP,
+      new Secret("cheese"));
 
     Json json = new Json();
     String source = json.toJson(status);
+
+    System.out.println(source);
 
     Object seen = json.toType(source, NodeStatus.class);
 

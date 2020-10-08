@@ -84,12 +84,6 @@ export default function NavBar() {
 						<li data-nav-id="/console" title="Console" className="dd-item">
 							<Link to="/console">Console</Link>
 						</li>
-						<li data-nav-id="/hub" title="Hub" className="dd-item parent">
-							<Link to="/hub">
-								Hub
-								<i className="fas fa-check read-icon"></i>
-							</Link>
-						</li>
 						<li data-nav-id="/docs/" title="Docs" className="dd-item parent">
 							<a href="https://www.selenium.dev/documentation/en/grid/">
 								Docs

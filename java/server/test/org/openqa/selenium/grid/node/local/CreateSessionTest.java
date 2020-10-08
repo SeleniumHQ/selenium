@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -67,7 +68,7 @@ public class CreateSessionTest {
         uri,
         uri,
         null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -118,7 +119,7 @@ public class CreateSessionTest {
         uri,
         uri,
         null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -161,7 +162,7 @@ public class CreateSessionTest {
         uri,
         uri,
         null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(

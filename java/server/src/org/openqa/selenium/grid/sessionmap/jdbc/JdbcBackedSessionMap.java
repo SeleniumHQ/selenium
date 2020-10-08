@@ -24,6 +24,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -37,12 +38,6 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-
 import java.io.Closeable;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,11 +45,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
@@ -63,7 +63,9 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   private static final String TABLE_NAME = "sessions_map";
   private static final String SESSION_ID_COL = "session_ids";
   private static final String SESSION_CAPS_COL = "session_caps";
+  private static final String SESSION_STEREOTYPE_COL = "session_stereotype";
   private static final String SESSION_URI_COL = "session_uri";
+  private static final String SESSION_START_COL = "session_start";
   private static final String DATABASE_STATEMENT = AttributeKey.DATABASE_STATEMENT.getKey();
   private static final String DATABASE_OPERATION = AttributeKey.DATABASE_OPERATION.getKey();
   private static final String DATABASE_USER = AttributeKey.DATABASE_USER.getKey();
@@ -80,10 +82,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     this.bus = Require.nonNull("Event bus", bus);
 
     this.connection = jdbcConnection;
-    this.bus.addListener(SESSION_CLOSED, event -> {
-      SessionId id = event.getData(SessionId.class);
-      remove(id);
-    });
+    this.bus.addListener(SessionClosedEvent.listener(this::remove));
   }
 
   public static SessionMap create(Config config) {
@@ -119,7 +118,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session to add", session);
 
     try (Span span = tracer.getCurrentContext().createSpan(
-        "INSERT into  sessions_map (session_ids, session_uri, session_caps) values (?, ?, ?) ")) {
+        "INSERT into  sessions_map (session_ids, session_uri, session_caps, session_start) values (?, ?, ?, ?) ")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       SESSION_ID.accept(span, session.getId());
       SESSION_ID_EVENT.accept(attributeMap, session.getId());
@@ -159,7 +158,9 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     Require.nonNull("Session ID", id);
 
     URI uri = null;
+    Capabilities sterotype = null;
     Capabilities caps = null;
+    Instant start = null;
     String rawUri = null;
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
 
@@ -195,12 +196,21 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
           }
 
           rawUri = sessions.getString(SESSION_URI_COL);
+
+          String rawStereotype = sessions.getString(SESSION_STEREOTYPE_COL);
+
+          sterotype = rawStereotype == null ?
+            new ImmutableCapabilities() :
+            JSON.toType(rawStereotype, Capabilities.class);
+
           String rawCapabilities = sessions.getString(SESSION_CAPS_COL);
 
           caps = rawCapabilities == null ?
                  new ImmutableCapabilities() :
                  JSON.toType(rawCapabilities, Capabilities.class);
 
+          String rawStart = sessions.getString(SESSION_START_COL);
+          start = JSON.toType(rawStart, Instant.class);
         }
         CAPABILITIES_EVENT.accept(attributeMap, caps);
 
@@ -221,7 +231,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
         }
 
         span.addEvent("Retrieved session from the database", attributeMap);
-        return new Session(id, uri, caps);
+        return new Session(id, uri, sterotype, caps, start);
       } catch (SQLException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
@@ -279,15 +289,19 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
 
   private PreparedStatement insertSessionStatement(Session session) throws SQLException {
     PreparedStatement insertStatement = connection.prepareStatement(
-      String.format("insert into %1$s (%2$s, %3$s, %4$s) values (?, ?, ?)",
+      String.format("insert into %1$s (%2$s, %3$s, %4$s, %5$s, %6$s) values (?, ?, ?, ?, ?)",
         TABLE_NAME,
         SESSION_ID_COL,
         SESSION_URI_COL,
-        SESSION_CAPS_COL));
+        SESSION_STEREOTYPE_COL,
+        SESSION_CAPS_COL,
+        SESSION_START_COL));
 
     insertStatement.setString(1, session.getId().toString());
     insertStatement.setString(2, session.getUri().toString());
-    insertStatement.setString(3, JSON.toJson(session.getCapabilities()));
+    insertStatement.setString(3, JSON.toJson(session.getStereotype()));
+    insertStatement.setString(4, JSON.toJson(session.getCapabilities()));
+    insertStatement.setString(5, JSON.toJson(session.getStartTime()));
 
     return insertStatement;
   }

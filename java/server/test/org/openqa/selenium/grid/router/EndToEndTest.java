@@ -51,6 +51,7 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -64,9 +65,11 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 import static java.time.Duration.ofSeconds;
@@ -90,20 +93,8 @@ public class EndToEndTest {
   @Parameterized.Parameters(name = "End to End {0}")
   public static Collection<Supplier<Object[]>> buildGrids() {
     return ImmutableSet.of(
-        () -> {
-          try {
-            return createRemotes();
-          } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-          }
-        },
-        () -> {
-          try {
-            return createInMemory();
-          } catch (Exception e) {
-            throw new RuntimeException(e);
-          }
-        });
+      safely(EndToEndTest::createRemotes),
+      safely(EndToEndTest::createInMemory));
   }
 
   @Parameter
@@ -183,9 +174,10 @@ public class EndToEndTest {
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
-        tracer,
-        HttpClient.Factory.createDefault(),
-        distributorServer.getUrl());
+      tracer,
+      HttpClient.Factory.createDefault(),
+      distributorServer.getUrl(),
+      null);
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
@@ -220,7 +212,7 @@ public class EndToEndTest {
     class SpoofSession extends Session implements HttpHandler {
 
       private SpoofSession(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
+        super(new SessionId(UUID.randomUUID()), serverUri, new ImmutableCapabilities(), capabilities, Instant.now());
       }
 
       @Override
@@ -263,9 +255,10 @@ public class EndToEndTest {
     driver.quit();
 
     HttpClient client = clientFactory.createClient(server.getUrl());
-    new FluentWait<>("").withTimeout(ofSeconds(2)).until(obj -> {
+    new FluentWait<>("").withTimeout(ofSeconds(200)).until(obj -> {
       try {
         HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+        System.out.println(Contents.string(response));
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status.get("ready"));
       } catch (UncheckedIOException e) {
@@ -339,5 +332,17 @@ public class EndToEndTest {
   @Test
   public void shouldDoProtocolTranslationFromJWPLocalEndToW3CRemoteEnd() {
 
+  }
+
+  private static <X> Supplier<X> safely(Callable<X> callable) {
+    return () -> {
+      try {
+        return callable.call();
+      } catch (RuntimeException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 }

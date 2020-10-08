@@ -185,6 +185,7 @@ public class DockerSessionFactory implements SessionFactory {
         client,
         id,
         remoteAddress,
+        stereotype,
         capabilities,
         downstream,
         result.getDialect(),

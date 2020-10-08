@@ -18,11 +18,10 @@
 package org.openqa.selenium.grid.graphql;
 
 import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
@@ -60,10 +59,11 @@ public class Node {
 
   public List<org.openqa.selenium.grid.graphql.Session> getSessions() {
     return activeSessions.stream()
-        .map(session -> new org.openqa.selenium.grid.graphql.Session(session.getId().toString(),
-                                                                     session.getCapabilities(),
-                                                                     session.getStartTime()))
-        .collect(ImmutableList.toImmutableList());
+      .map(session -> new org.openqa.selenium.grid.graphql.Session(
+        session.getId().toString(),
+        session.getCapabilities(),
+        session.getStartTime()))
+      .collect(ImmutableList.toImmutableList());
   }
 
   public NodeId getId() {

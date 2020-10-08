@@ -86,6 +86,7 @@ public class LocalNodeFactory {
         toReturn.add(new DriverServiceSessionFactory(
           tracer,
           clientFactory,
+          info.getCanonicalCapabilities(),
           c -> freePortBuilder.score(c) > 0,
           freePortBuilder));
       });

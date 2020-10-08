@@ -26,6 +26,7 @@ const error = require('../../lib/error')
 const fileServer = require('../../lib/test/fileserver')
 const io = require('../../io')
 const test = require('../../lib/test')
+const Server = require('../../lib/test/httpserver').Server
 
 test.suite(
   function (env) {
@@ -56,7 +57,7 @@ test.suite(
       await driver.get(test.Pages.echoPage)
       assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage)
 
-      let history = await driver.sendDevToolsCommandAndGetReturn(
+      let history = await driver.sendAndGetDevToolsCommand(
         'Page.getNavigationHistory'
       )
       assert(history)
@@ -72,25 +73,96 @@ test.suite(
     })
 
     it('sends Page.enable command using devtools', async function () {
-      const cdpConnection = await driver.createCDPConnection()
-      cdpConnection.execute('Page.enable', '', function (_res, err) {
+      const cdpConnection = await driver.createCDPConnection('page')
+      cdpConnection.execute('Page.enable', 1, {}, function (_res, err) {
         assert(!err)
       })
     })
 
     it('sends Network and Page command using devtools', async function () {
-      const cdpConnection = await driver.createCDPConnection()
-      cdpConnection.execute('Network.enable', '', function (_res, err) {
+      const cdpConnection = await driver.createCDPConnection('page')
+      cdpConnection.execute('Network.enable', 1, {}, function (_res, err) {
         assert(!err)
       })
 
       cdpConnection.execute(
         'Page.navigate',
+        1,
         { url: 'chrome://newtab/' },
         function (_res, err) {
           assert(!err)
         }
       )
+    })
+
+    describe('JS CDP events', function () {
+      it('calls the event listener for console.log', async function () {
+        const cdpConnection = await driver.createCDPConnection('page')
+        await driver.onLogEvent(cdpConnection, function(event) {
+          assert.equal(event['args'][0]['value'], 'here')
+        })
+        await driver.executeScript('console.log("here")')
+      })
+
+      it('calls the event listener for js exceptions', async function () {
+        const cdpConnection = await driver.createCDPConnection('page')
+        await driver.onLogException(cdpConnection, function(event) {
+          assert.equal(event['exceptionDetails']['stackTrace']['callFrames'][0]['functionName'], 'onmouseover')
+        })
+        await driver.get(test.Pages.javascriptPage)
+        let element = driver.findElement({id: 'throwing-mouseover'})
+        await element.click()
+      })
+    })
+
+    describe('Basic Auth Injection', function () {
+      const server = new Server(function(req, res) {
+        if (req.method == 'GET' && req.url == '/protected') {
+          const denyAccess = function () {
+            res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
+            res.end('Access denied')
+          }
+
+          const basicAuthRegExp = /^\s*basic\s+([a-z0-9\-\._~\+\/]+)=*\s*$/i
+          const auth = req.headers.authorization
+          const match = basicAuthRegExp.exec(auth || '')
+          if (!match) {
+            denyAccess()
+            return
+          }
+
+          const userNameAndPass = Buffer.from(match[1], 'base64').toString()
+          const parts = userNameAndPass.split(':', 2)
+          if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
+            denyAccess()
+            return
+          }
+
+          res.writeHead(200, { 'content-type': 'text/plain' })
+          res.end('Access granted!')
+        }
+      })
+
+      server.start()
+
+      it('denies entry if username and password do not match', async function() {
+        const pageCdpConnection = await driver.createCDPConnection('page')
+
+        await driver.register('random', 'random', pageCdpConnection)
+        await driver.get(server.url() + '/protected')
+        let source = await driver.getPageSource()
+        assert.equal(source.includes('Access granted!'), false)
+      })
+
+      it('grants access if username and password are a match', async function() {
+        const pageCdpConnection = await driver.createCDPConnection('page')
+
+        await driver.register('genie', 'bottle', pageCdpConnection)
+        await driver.get(server.url() + '/protected')
+        let source = await driver.getPageSource()
+        assert.equal(source.includes('Access granted!'), true)
+        await server.stop()
+      })
     })
 
     describe('setDownloadPath', function () {

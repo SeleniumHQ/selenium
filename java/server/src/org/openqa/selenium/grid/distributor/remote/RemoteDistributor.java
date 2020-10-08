@@ -22,10 +22,11 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.NullSessionMap;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
@@ -51,12 +52,13 @@ public class RemoteDistributor extends Distributor {
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Remote)");
   private final HttpHandler client;
 
-  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url) {
+  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url, Secret registrationSecret) {
     super(
       tracer,
       factory,
       (caps, nodes) -> {throw new UnsupportedOperationException("host selection");},
-      new NullSessionMap(tracer));
+      new NullSessionMap(tracer),
+      registrationSecret);
     this.client = factory.createClient(url);
   }
 
@@ -130,7 +132,7 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  protected Set<Host> getModel() {
+  protected Set<NodeStatus> getAvailableNodes() {
     throw new UnsupportedOperationException("getModel is not required for remote sessions");
   }
 

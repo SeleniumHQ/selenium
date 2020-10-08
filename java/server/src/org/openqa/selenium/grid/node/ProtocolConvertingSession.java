@@ -48,9 +48,10 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
     URL url,
     Dialect downstream,
     Dialect upstream,
+    Capabilities stereotype,
     Capabilities capabilities,
     Instant startTime) {
-    super(id, url, downstream, upstream, capabilities, startTime);
+    super(id, url, downstream, upstream, stereotype, capabilities, startTime);
 
     Require.nonNull("HTTP client", client);
 

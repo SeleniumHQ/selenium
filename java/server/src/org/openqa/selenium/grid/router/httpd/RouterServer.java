@@ -108,10 +108,10 @@ public class RouterServer extends TemplateGridCommand {
     DistributorOptions distributorOptions = new DistributorOptions(config);
     URL distributorUrl = fromUri(distributorOptions.getDistributorUri());
     Distributor distributor = new RemoteDistributor(
-        tracer,
-        clientFactory,
-        distributorUrl
-    );
+      tracer,
+      clientFactory,
+      distributorUrl,
+      serverOptions.getRegistrationSecret());
 
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
 

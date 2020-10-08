@@ -19,13 +19,20 @@ package org.openqa.selenium.grid.graphql;
 
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
-
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class Grid {
@@ -44,37 +51,50 @@ public class Grid {
   }
 
   public List<Node> getNodes() {
-    return distributorStatus.get().getNodes().stream()
-      .map(summary -> new Node(summary.getNodeId(),
-                               summary.getUri(),
-                               summary.getHostAvailability(),
-                               summary.getMaxSessionCount(),
-                               summary.getStereotypes(),
-                               summary.getActiveSessions()))
-      .collect(ImmutableList.toImmutableList());
+    ImmutableList.Builder<Node> toReturn = ImmutableList.builder();
+
+    for (NodeStatus status : distributorStatus.get().getNodes()) {
+      Map<Capabilities, Integer> capabilities = new HashMap<>();
+      Set<org.openqa.selenium.grid.data.Session> sessions = new HashSet<>();
+
+      for (Slot slot : status.getSlots()) {
+        slot.getSession().ifPresent(sessions::add);
+        int count = capabilities.getOrDefault(slot.getStereotype(), 0);
+        count++;
+        capabilities.put(slot.getStereotype(), count);
+      }
+
+      toReturn.add(new Node(
+        status.getId(),
+        status.getUri(),
+        status.getAvailability(),
+        status.getMaxSessionCount(),
+        capabilities,
+        sessions));
+    }
+
+    return toReturn.build();
   }
 
   public int getSessionCount() {
     return distributorStatus.get().getNodes().stream()
-        .map(summary -> summary.getUsedStereotypes().values().stream().mapToInt(i -> i).sum())
-        .mapToInt(i -> i)
-        .sum();
+      .map(NodeStatus::getSlots)
+      .flatMap(Collection::stream)
+      .filter(slot -> slot.getSession().isPresent())
+      .mapToInt(slot -> 1)
+      .sum();
   }
 
   public int getTotalSlots() {
     return distributorStatus.get().getNodes().stream()
-      .map(summary -> {
-        int slotCount = summary.getStereotypes().values().stream().mapToInt(i -> i).sum();
-        return Math.min(summary.getMaxSessionCount(), slotCount);
+      .mapToInt(status -> {
+        int slotCount = status.getSlots().size();
+        return Math.min(status.getMaxSessionCount(), slotCount);
       })
-      .mapToInt(i -> i)
       .sum();
   }
 
   public int getUsedSlots() {
-    return distributorStatus.get().getNodes().stream()
-      .map(summary -> summary.getUsedStereotypes().values().stream().mapToInt(i -> i).sum())
-      .mapToInt(i -> i)
-      .sum();
+    return getSessionCount();
   }
 }
