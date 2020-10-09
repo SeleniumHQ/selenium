@@ -115,6 +115,22 @@ test.suite(
       })
     })
 
+    describe('JS DOM events', function() {
+      it('calls the event listener on dom mutations', async function() {
+        const cdpConnection = await driver.createCDPConnection('page')
+
+        await driver.logMutationEvents(cdpConnection, function(event) {
+          console.log(event)
+        })
+
+        await driver.get(test.Pages.dynamicPage)
+
+        let element = driver.findElement({id: 'reveal'})
+        await element.click()
+
+      })
+    })
+
     describe('Basic Auth Injection', function () {
       const server = new Server(function(req, res) {
         if (req.method == 'GET' && req.url == '/protected') {

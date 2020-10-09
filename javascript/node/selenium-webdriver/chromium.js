@@ -86,6 +86,7 @@ const WebSocket = require('ws')
 const cdp = require('./devtools/CDPConnection')
 const remote = require('./remote')
 const cdpTargets = ['page', 'browser']
+const fs = require('fs')
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -870,6 +871,36 @@ class Driver extends webdriver.WebDriver {
       }
     })
   }
+
+  /**
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async logMutationEvents(connection, callback) {
+    await connection.execute('Runtime.enable', 1, {}, null)
+    await connection.execute('Page.enable', 2, {}, null)
+
+    await connection.execute('Runtime.addBinding', 3, {
+      name: '__webdriver_attribute',
+    }, null)
+
+    const mutationListener = fs.readFileSync('../../cdp-support/mutation-listener.js', 'utf-8').toString()
+
+    await this.executeScript(mutationListener)
+
+    await connection.execute('Page.addScriptToEvaluateOnNewDocument', 4, {
+      source: mutationListener,
+    }, null)
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+      if (params.method === 'Runtime.bindingCalled') {
+        callback(message)
+      }
+    })
+  }
+
   /**
    * Sends a DevTools command to change the browser's download directory.
    *
