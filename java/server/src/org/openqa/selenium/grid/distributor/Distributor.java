@@ -181,7 +181,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
   public Either<SessionNotCreatedException, CreateSessionResponse> createNewSessionResponse(
     HttpRequest request) throws SessionNotCreatedException {
 
-    Span span = newSpanAsChildOf(tracer, request, "distributor.new_session");
+    Span span = newSpanAsChildOf(tracer, request, "distributor.create_session_response");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
     try (
       Reader reader = reader(request);
@@ -237,14 +237,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         writeLock.unlock();
       }
 
-      if (!selected.isPresent()) {
-        String errorMessage =
-          String.format(
-            "Unable to find provider for session: %s",
-            payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
-        SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
-        return Either.left(exception);
-      } else {
+      if (selected.isPresent()) {
         CreateSessionResponse sessionResponse = selected.get().get();
 
         sessions.add(sessionResponse.getSession());
@@ -260,6 +253,14 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
         span.addEvent("Session created by the distributor", attributeMap);
         return Either.right(sessionResponse);
+
+      } else {
+        String errorMessage =
+            String.format(
+                "Unable to find provider for session: %s",
+                payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
+        SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
+        return Either.left(exception);
       }
     } catch (SessionNotCreatedException e) {
 
@@ -277,10 +278,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       span.setStatus(Status.UNKNOWN);
 
       EXCEPTION.accept(attributeMap, e);
-      attributeMap.put(
-        AttributeKey.EXCEPTION_MESSAGE.getKey(),
-        EventAttribute.setValue(
-          "Unknown error in LocalDistributor while creating session: " + e.getMessage()));
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(new SessionNotCreatedException(e.getMessage(), e));
