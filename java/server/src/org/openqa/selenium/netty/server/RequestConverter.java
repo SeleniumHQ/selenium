@@ -68,7 +68,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
         return;
       }
 
-      if (nettyRequest.headers().contains("Sec-WebSocket-Version") ||
+      if (nettyRequest.headers().contains("Sec-WebSocket-Version") &&
         "upgrade".equals(nettyRequest.headers().get("Connection"))) {
         // Pass this on to later in the pipeline.
         ReferenceCountUtil.retain(msg);
