@@ -52,7 +52,12 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
     Duration retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
-    NewSessionQueue sessionRequests = new LocalNewSessionQueue(tracer, bus, retryInterval);
+    Duration requestTimeout = new NewSessionQueueOptions(config).getSessionRequestTimeout();
+    NewSessionQueue sessionRequests = new LocalNewSessionQueue(
+        tracer,
+        bus,
+        retryInterval,
+        requestTimeout);
     return new LocalNewSessionQueuer(tracer, bus, sessionRequests);
   }
 
