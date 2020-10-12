@@ -67,12 +67,7 @@ public class DistributorServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(
-        EVENT_BUS_ROLE,
-        HTTPD_ROLE,
-        SESSION_MAP_ROLE,
-        SESSION_QUEUER_ROLE,
-        SESSION_QUEUE_ROLE);
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_MAP_ROLE, SESSION_QUEUER_ROLE);
   }
 
   @Override
