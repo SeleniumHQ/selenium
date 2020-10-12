@@ -33,6 +33,7 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
@@ -109,15 +110,12 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
     driver.get(pages.javascriptPage);
-    List<Object> expectedResult = new ArrayList<>();
-    expectedResult.add("zero");
-    expectedResult.add("one");
-    expectedResult.add("two");
+
     Object result = ((JavascriptExecutor) driver).executeScript(
         "return ['zero', 'one', 'two'];");
 
     assertThat(result).isInstanceOf(List.class);
-    compareLists(expectedResult, (List<Object>) result);
+    assertThat((List<?>) result).isEqualTo(ImmutableList.of("zero", "one", "two"));
   }
 
   @SuppressWarnings("unchecked")
@@ -324,7 +322,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   public void testPassingArrayAsOnlyArgumentFlattensArray() {
     driver.get(pages.javascriptPage);
-    Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
+    Object[] array = new Object[]{"zero", 1, true, 42.4242, false};
     String value = (String) executeScript("return arguments[0]", array);
     assertThat(value).isEqualTo(array[0]);
   }
@@ -332,7 +330,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
     driver.get(pages.javascriptPage);
-    Object[] array = new Object[]{"zero", 1, true, 3.14159, false};
+    Object[] array = new Object[]{"zero", 1, true, 42.4242, false};
     long length = (Long) executeScript("return arguments[1].length", "string", array);
     assertThat(length).isEqualTo(array.length);
   }
@@ -487,7 +485,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
 
     Map<String, Object> args = ImmutableMap.of(
-        "key", Arrays.asList("a", new Object[]{"zero", 1, true, 3.14159, false, el}, "c"));
+        "key", Arrays.asList("a", new Object[]{"zero", 1, true, 42.4242, false, el}, "c"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
         .isThrownBy(() -> executeScript("return undefined;", args));

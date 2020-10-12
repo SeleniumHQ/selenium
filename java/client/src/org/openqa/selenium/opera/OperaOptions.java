@@ -204,11 +204,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
   public Map<String, Object> asMap() {
     Map<String, Object> toReturn = new TreeMap<>(super.asMap());
 
-    Map<String, Object> options = new TreeMap<>();
-
-    for (String key : experimentalOptions.keySet()) {
-      options.put(key, experimentalOptions.get(key));
-    }
+    Map<String, Object> options = new TreeMap<>(experimentalOptions);
 
     if (binary != null) {
       options.put("binary", binary);

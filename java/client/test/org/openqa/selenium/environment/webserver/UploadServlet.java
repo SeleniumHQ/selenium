@@ -53,7 +53,9 @@ public class UploadServlet extends HttpServlet {
       if (part.getName().equalsIgnoreCase("upload")) {
         byte[] buffer = new byte[(int) part.getSize()];
         try (InputStream in = part.getInputStream()) {
-          in.read(buffer, 0, (int) part.getSize());
+          if (in.read(buffer, 0, (int) part.getSize()) == -1) {
+            throw new IOException("Unable to read all content");
+          }
           content.append(new String(buffer, StandardCharsets.UTF_8));
         }
       }

@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -57,5 +58,27 @@ class UnpinnedScriptKey extends ScriptKey {
 
   String getScript() {
     return script;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    if (!super.equals(o)) {
+      return false;
+    }
+
+    UnpinnedScriptKey that = (UnpinnedScriptKey) o;
+    return Objects.equals(this.script, that.script);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), script);
   }
 }

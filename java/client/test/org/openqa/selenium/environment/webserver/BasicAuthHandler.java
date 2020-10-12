@@ -51,7 +51,7 @@ public class BasicAuthHandler implements HttpHandler {
       final int index = auth.indexOf(' ') + 1;
 
       if (index > 0) {
-        final String credentials = new String(decoder.decode(auth.substring(index)));
+        final String credentials = new String(decoder.decode(auth.substring(index)), UTF_8);
         return CREDENTIALS.equals(credentials);
       }
     }

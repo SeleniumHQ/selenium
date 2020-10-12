@@ -69,6 +69,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
         driver.getWindowHandles().stream().filter(handle -> ! mainWindow.equals(handle))
             .forEach(handle -> driver.switchTo().window(handle).close());
       } catch (Exception ignore) {
+        System.err.println("Ignoring: " + ignore.getMessage());
       }
       try {
         driver.switchTo().window(mainWindow);

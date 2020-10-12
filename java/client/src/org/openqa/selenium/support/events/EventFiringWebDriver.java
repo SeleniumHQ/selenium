@@ -269,8 +269,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     } else if (arg instanceof Map<?, ?>) {
       Map<?, ?> aMap = (Map<?, ?>) arg;
       Map<Object, Object> toReturn = new HashMap<>();
-      for (Object key : aMap.keySet()) {
-        toReturn.put(key, unpackWrappedElement(aMap.get(key)));
+      for (Map.Entry<?, ?> entry : aMap.entrySet()) {
+        toReturn.put(entry.getKey(), unpackWrappedElement(aMap.get(entry.getValue())));
       }
       return toReturn;
     } else if (arg instanceof EventFiringWebElement) {

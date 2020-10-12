@@ -85,12 +85,13 @@ public class GetLogsTest extends JUnit4TestBase {
     for (String logType : logTypes) {
       logTypeToEntriesMap.put(logType, driver.manage().logs().get(logType));
     }
-    for (String firstLogType : logTypeToEntriesMap.keySet()) {
-      for (String secondLogType : logTypeToEntriesMap.keySet()) {
-        if (!firstLogType.equals(secondLogType)) {
-          assertThat(hasOverlappingLogEntries(logTypeToEntriesMap.get(firstLogType), logTypeToEntriesMap.get(secondLogType)))
-              .describedAs("Two different log types (%s, %s) should not  contain the same log entries", firstLogType, secondLogType)
-              .isFalse();
+
+    for (Map.Entry<String, LogEntries> entry : logTypeToEntriesMap.entrySet()) {
+      for (Map.Entry<String, LogEntries> nested : logTypeToEntriesMap.entrySet()) {
+        if (!entry.getKey().equals(nested.getKey())) {
+          assertThat(hasOverlappingLogEntries(entry.getValue(), nested.getValue()))
+            .describedAs("Two different log types (%s, %s) should not  contain the same log entries", entry.getKey(), nested.getKey())
+            .isFalse();
         }
       }
     }

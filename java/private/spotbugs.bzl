@@ -54,6 +54,8 @@ def _spotbugs_impl(ctx):
     runfiles = ctx.runfiles(
         files = jars + [ctx.executable._spotbugs_cli],
     )
+    if (exclude_filter):
+        runfiles = runfiles.merge(ctx.runfiles(files = [exclude_filter]))
 
     return [
         DefaultInfo(

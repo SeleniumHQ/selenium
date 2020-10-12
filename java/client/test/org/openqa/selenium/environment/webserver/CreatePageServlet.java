@@ -32,6 +32,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * Simple API to create pages on server.
  * Request format (JSON):
@@ -49,7 +51,7 @@ public class CreatePageServlet extends HttpServlet {
 
     Path tempPageDir = Paths.get(getServletContext().getInitParameter("tempPageDir"));
     Path target = Files.createTempFile(tempPageDir, "page", ".html");
-    try (Writer out = new FileWriter(target.toFile())) {
+    try (Writer out = new FileWriter(target.toFile(), UTF_8)) {
       out.write(json.get("content"));
     }
 
