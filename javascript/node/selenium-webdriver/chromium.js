@@ -87,6 +87,7 @@ const cdp = require('./devtools/CDPConnection')
 const remote = require('./remote')
 const cdpTargets = ['page', 'browser']
 const fs = require('fs')
+let cdpCommandId = 0
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -776,7 +777,7 @@ class Driver extends webdriver.WebDriver {
    * @param connection CDP Connection
    */
   async register(username, password, connection) {
-    await connection.execute("Network.setCacheDisabled", 1, {
+    await connection.execute("Network.setCacheDisabled", cdpCommandId++, {
       cacheDisabled: true,
     }, null);
 
@@ -785,7 +786,7 @@ class Driver extends webdriver.WebDriver {
 
       if (params.method === 'Fetch.authRequired') {
         const requestParams = params['params']
-        connection.execute('Fetch.continueWithAuth', 1, {
+        connection.execute('Fetch.continueWithAuth', cdpCommandId++, {
           requestId: requestParams['requestId'],
           authChallengeResponse: {
             response: 'ProvideCredentials',
@@ -794,7 +795,7 @@ class Driver extends webdriver.WebDriver {
         }})
       } else if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
-        connection.execute('Fetch.continueRequest', 1, {
+        connection.execute('Fetch.continueRequest', cdpCommandId++, {
           requestId: requestPausedParams['requestId'],
         })
       }
@@ -812,7 +813,7 @@ class Driver extends webdriver.WebDriver {
    * @returns {Promise<void>}
    */
   async onLogEvent(connection, callback) {
-    await connection.execute('Runtime.enable', 1, {}, null)
+    await connection.execute('Runtime.enable', cdpCommandId++, {}, null)
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -855,7 +856,7 @@ class Driver extends webdriver.WebDriver {
    * @returns {Promise<void>}
    */
   async onLogException(connection, callback) {
-    await connection.execute('Runtime.enable', 1, {}, null)
+    await connection.execute('Runtime.enable', cdpCommandId++, {}, null)
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -878,18 +879,18 @@ class Driver extends webdriver.WebDriver {
    * @returns {Promise<void>}
    */
   async logMutationEvents(connection, callback) {
-    await connection.execute('Runtime.enable', 1, {}, null)
-    await connection.execute('Page.enable', 2, {}, null)
+    await connection.execute('Runtime.enable', cdpCommandId++, {}, null)
+    await connection.execute('Page.enable', cdpCommandId++, {}, null)
 
-    await connection.execute('Runtime.addBinding', 3, {
+    await connection.execute('Runtime.addBinding', cdpCommandId++, {
       name: '__webdriver_attribute',
     }, null)
 
     const mutationListener = fs.readFileSync('../../cdp-support/mutation-listener.js', 'utf-8').toString()
 
-    await this.executeScript(mutationListener)
+    this.executeScript(mutationListener)
 
-    await connection.execute('Page.addScriptToEvaluateOnNewDocument', 4, {
+    await connection.execute('Page.addScriptToEvaluateOnNewDocument', cdpCommandId++, {
       source: mutationListener,
     }, null)
 
