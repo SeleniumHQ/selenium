@@ -25,6 +25,7 @@ def _spotbugs_impl(ctx):
         jars = depset(transitive = [target[JavaInfo].transitive_runtime_deps for target in ctx.attr.deps if JavaInfo in target]).to_list()
 
     flags = ["-textui", "-effort:%s" % effort]
+#    flags = ["-textui", "-xml", "-effort:%s" % effort]
     if exclude_filter:
         flags.extend(["-exclude", exclude_filter.short_path])
 

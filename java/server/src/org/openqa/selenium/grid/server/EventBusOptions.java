@@ -21,15 +21,12 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 
-import java.util.logging.Logger;
-
 public class EventBusOptions {
 
-  private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private static final String DEFAULT_CLASS = "org.openqa.selenium.events.zeromq.ZeroMqEventBus";
 
   private final Config config;
-  private EventBus bus;
+  private volatile EventBus bus;
 
   public EventBusOptions(Config config) {
     this.config = Require.nonNull("Config", config);
