@@ -117,17 +117,21 @@ test.suite(
 
     describe('JS DOM events', function() {
       it('calls the event listener on dom mutations', async function() {
-        const cdpConnection = await driver.createCDPConnection('page')
+        driver = await env
+            .builder()
+            .build()
 
-        await driver.logMutationEvents(cdpConnection, function(event) {
-          console.log(event)
+        const cdpConnection = await driver.createCDPConnection('page')
+        driver.logMutationEvents(cdpConnection, async function(event) {
+          assert.equal(event['attribute_name'], 'style')
+          assert.equal(event['current_value'], '')
+          assert.equal(event['old_value'], 'display:none;')
         })
 
         await driver.get(test.Pages.dynamicPage)
 
         let element = driver.findElement({id: 'reveal'})
         await element.click()
-
       })
     })
 

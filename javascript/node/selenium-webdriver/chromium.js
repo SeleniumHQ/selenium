@@ -888,16 +888,29 @@ class Driver extends webdriver.WebDriver {
 
     const mutationListener = fs.readFileSync('../../cdp-support/mutation-listener.js', 'utf-8').toString()
 
-    this.executeScript(mutationListener)
+    this.executeAsyncScript(mutationListener)
 
     await connection.execute('Page.addScriptToEvaluateOnNewDocument', cdpCommandId++, {
       source: mutationListener,
     }, null)
 
-    this._wsConnection.on('message', (message) => {
+    this._wsConnection.on('message', async (message) => {
       const params = JSON.parse(message)
       if (params.method === 'Runtime.bindingCalled') {
-        callback(message)
+        let payload = JSON.parse(params['params']['payload'])
+        let elements = await this.findElements({css: "*[data-__webdriver_id=" + payload['target']})
+
+        if (elements.length === 0) {
+          return
+        }
+
+        let event = {
+          element: elements[0],
+          attribute_name: payload['name'],
+          current_value: payload['value'],
+          old_value: payload['oldValue']
+        }
+        callback(event)
       }
     })
   }
