@@ -149,7 +149,7 @@ public class Standalone extends TemplateGridServerCommand {
         tracer,
         bus,
         newSessionQueueOptions.getSessionRequestRetryInterval(),
-        newSessionQueueOptions.getSessionRequestRetryInterval());
+        newSessionQueueOptions.getSessionRequestTimeout());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
     combinedHandler.addHandler(queuer);
 
