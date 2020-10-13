@@ -34,6 +34,8 @@ public abstract class NewSessionQueue implements HasReadyState {
 
   protected final Duration retryInterval;
 
+  protected final Duration requestTimeout;
+
   public static final String SESSIONREQUEST_TIMESTAMP_HEADER = "new-session-request-timestamp";
 
   public static final String SESSIONREQUEST_ID_HEADER = "request-id";
@@ -53,9 +55,19 @@ public abstract class NewSessionQueue implements HasReadyState {
     request.addHeader(SESSIONREQUEST_ID_HEADER, reqId.toString());
   }
 
-  public NewSessionQueue(Tracer tracer, Duration retryInterval) {
+  public boolean hasRequestTimedOut(HttpRequest request) {
+    String enqueTimestampStr = request.getHeader(SESSIONREQUEST_TIMESTAMP_HEADER);
+    Instant enque = Instant.ofEpochSecond(Long.parseLong(enqueTimestampStr));
+    Instant deque = Instant.now();
+    Duration duration = Duration.between(enque, deque);
+
+    return duration.compareTo(requestTimeout) > 0;
+  }
+
+  public NewSessionQueue(Tracer tracer, Duration retryInterval, Duration requestTimeout) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
+    this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
   }
 
 }

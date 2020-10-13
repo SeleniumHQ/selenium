@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -123,7 +124,7 @@ public abstract class AppServerTestBase {
     HttpClient client = factory.createClient(new URL(url));
     HttpResponse response = client.execute(new HttpRequest(HttpMethod.GET, url));
 
-    System.out.printf("Content for %s was %s\n", url, string(response));
+    System.out.printf("Content for %s was %s%n", url, string(response));
 
     assertTrue(StreamSupport.stream(response.getHeaders("Content-Type").spliterator(), false)
         .anyMatch(header -> header.contains(APPCACHE_MIME_TYPE)));
@@ -134,7 +135,7 @@ public abstract class AppServerTestBase {
     String FILE_CONTENTS = "Uploaded file";
     File testFile = File.createTempFile("webdriver", "tmp");
     testFile.deleteOnExit();
-    Files.write(testFile.toPath(), FILE_CONTENTS.getBytes());
+    Files.write(testFile.toPath(), FILE_CONTENTS.getBytes(UTF_8));
 
     driver.get(server.whereIs("upload.html"));
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());

@@ -64,6 +64,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -74,6 +75,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -87,7 +89,6 @@ public class NewSessionQueuerTest {
   private HttpRequest request;
   private static int count = 0;
   private static final Json JSON = new Json();
-  private static int sessionTimeout = 5;
   private NewSessionQueue sessionQueue;
 
 
@@ -97,7 +98,12 @@ public class NewSessionQueuerTest {
     caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
 
-    sessionQueue = new LocalNewSessionQueue(tracer, bus, Duration.ofSeconds(1));
+    sessionQueue = new LocalNewSessionQueue(
+        tracer,
+        bus,
+        Duration.ofSeconds(1),
+        Duration.ofSeconds(1000));
+
     local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
 
     HttpClient client = new PassthroughHttpClient(local);
@@ -373,28 +379,66 @@ public class NewSessionQueuerTest {
   }
 
   @Test
-  public void shouldBeAbleToTimeoutARequest() {
-    AtomicBoolean isPresent = new AtomicBoolean(false);
+  public void shouldBeAbleToTimeoutARequestOnRetry() {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    LocalNewSessionQueue sessionQueue = new LocalNewSessionQueue(
+        tracer,
+        bus,
+        Duration.ofSeconds(4),
+        Duration.ofSeconds(2));
+
+    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
+
+    HttpClient client = new PassthroughHttpClient(local);
+    remote = new RemoteNewSessionQueuer(tracer, client);
+
+
+    HttpRequest request = createRequest(payload, POST, "/session");
+    request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER,
+                      Long.toString(1539091064));
+
+    AtomicInteger count = new AtomicInteger();
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.remote.remove();
-      isPresent.set(sessionRequest.isPresent());
-
-      // Ensures that timestamp header is present
-      if (hasRequestTimedOut(sessionRequest.get())) {
-        // Reject the request once timeout occurs.
-        bus.fire(
-            new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, "Error")));
-      } else {
-        // Keep adding to front of queue till the request times out
-        assertTrue(remote.retryAddToQueue(sessionRequest.get(), reqId));
-      }
+      // Add to front of queue, when retry is triggered it will check if request timed out
+      count.incrementAndGet();
+      remote.retryAddToQueue(request, reqId);
     }));
 
     HttpResponse httpResponse = remote.addToQueue(request);
 
-    assertThat(isPresent.get()).isTrue();
+    assertEquals(count.get(),1);
     assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
+  }
+
+  @Test
+  public void shouldBeAbleToTimeoutARequestOnPoll() {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    LocalNewSessionQueue sessionQueue = new LocalNewSessionQueue(
+        tracer,
+        bus,
+        Duration.ofSeconds(4),
+        Duration.ofSeconds(0));
+
+    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
+
+    HttpClient client = new PassthroughHttpClient(local);
+    remote = new RemoteNewSessionQueuer(tracer, client);
+
+    AtomicBoolean isPresent = new AtomicBoolean();
+    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
+      Optional<HttpRequest> request = remote.remove();
+      isPresent.set(request.isPresent());
+      bus.fire(
+          new NewSessionRejectedEvent(
+              new NewSessionErrorResponse(reqId, "Error")));
+
+    }));
+
+    HttpResponse httpResponse = remote.addToQueue(request);
+    assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
+
+    assertThat(isPresent.get()).isFalse();
   }
 
   @Test
@@ -439,14 +483,5 @@ public class NewSessionQueuerTest {
     request.setContent(utf8String(builder.toString()));
 
     return request;
-  }
-
-  private boolean hasRequestTimedOut(HttpRequest request) {
-    String enqueTimestampStr = request.getHeader(NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER);
-    Instant enque = Instant.ofEpochSecond(Long.parseLong(enqueTimestampStr));
-    Instant deque = Instant.now();
-    Duration duration = Duration.between(enque, deque);
-
-    return duration.getSeconds() > sessionTimeout;
   }
 }

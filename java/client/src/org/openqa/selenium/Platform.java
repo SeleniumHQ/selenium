@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -179,6 +180,28 @@ public enum Platform {
     }
   },
 
+  CATALINA("catalina", "os x 10.15", "macos 10.15") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 10.15";
+    }
+  },
+
+  BIG_SUR("big sur", "os x 11.0", "macos 11.0") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 11.0";
+    }
+  },
+
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
@@ -232,7 +255,7 @@ public enum Platform {
   }
 
   public String[] getPartOfOsName() {
-    return partOfOsName;
+    return Arrays.copyOf(partOfOsName, partOfOsName.length);
   }
 
   private static Platform current;

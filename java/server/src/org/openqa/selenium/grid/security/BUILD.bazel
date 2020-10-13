@@ -1,3 +1,5 @@
+load("//java:defs.bzl", "java_library")
+
 java_library(
     name = "security",
     srcs = glob(["*.java"]),

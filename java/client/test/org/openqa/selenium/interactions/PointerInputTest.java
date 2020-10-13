@@ -33,9 +33,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Unit test for PointerInputs.
- */
 public class PointerInputTest {
 
   @Test
@@ -61,10 +58,10 @@ public class PointerInputTest {
   }
 
   private static class ActionSequenceJson {
-    public List<ActionJson> actions;
+    List<ActionJson> actions;
   }
 
   private static class ActionJson {
-    public Map<String, String> origin;
+    Map<String, String> origin;
   }
 }

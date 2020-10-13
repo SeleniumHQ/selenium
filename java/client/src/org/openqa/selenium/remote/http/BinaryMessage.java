@@ -41,6 +41,5 @@ public class BinaryMessage implements Message {
   public byte[] data() {
     return data;
   }
-
 }
 

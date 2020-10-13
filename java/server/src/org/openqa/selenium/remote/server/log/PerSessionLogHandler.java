@@ -202,8 +202,8 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
     SessionLogs sessionLogs = new SessionLogs();
     if (perSessionDriverEntries.containsKey(sessionId)) {
       Map<String, LogEntries> typeToEntriesMap = perSessionDriverEntries.get(sessionId);
-      for (String logType : typeToEntriesMap.keySet()) {
-        sessionLogs.addLog(logType, typeToEntriesMap.get(logType));
+      for (Map.Entry<String, LogEntries> entry : typeToEntriesMap.entrySet()) {
+        sessionLogs.addLog(entry.getKey(), entry.getValue());
       }
       perSessionDriverEntries.remove(sessionId);
     }
@@ -254,7 +254,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
    * @param prefs The logging preferences object.
    */
   // TODO(simons): Of course, this effects all loggers, not just the one for the session.
-  public void configureLogging(LoggingPreferences prefs) {
+  public synchronized void configureLogging(LoggingPreferences prefs) {
     if (prefs == null) {
       return;
     }

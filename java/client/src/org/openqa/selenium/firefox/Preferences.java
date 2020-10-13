@@ -33,6 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -67,7 +68,7 @@ class Preferences {
 
   public Preferences(Reader defaults, File userPrefs) {
     readDefaultPreferences(defaults);
-    try (FileReader reader = new FileReader(userPrefs)) {
+    try (FileReader reader = new FileReader(userPrefs, Charset.defaultCharset())) {
       readPreferences(reader);
     } catch (IOException e) {
       throw new WebDriverException(e);

@@ -31,10 +31,12 @@ from .errorhandler import ErrorHandler
 from .file_detector import FileDetector, LocalFileDetector
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
+from .script_key import ScriptKey
 from .switch_to import SwitchTo
 from .webelement import WebElement
 
 from selenium.common.exceptions import (InvalidArgumentException,
+                                        JavascriptException,
                                         WebDriverException,
                                         NoSuchCookieException,
                                         UnknownMethodException)
@@ -114,7 +116,7 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
-def get_remote_connection(capabilities, command_executor, keep_alive):
+def get_remote_connection(capabilities, command_executor, keep_alive, ignore_local_proxy=False):
     from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
     from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
@@ -177,8 +179,10 @@ class WebDriver(BaseWebDriver):
          - options - instance of a driver options.Options class
         """
         capabilities = {}
+        _ignore_local_proxy = False
         if options is not None:
             capabilities = options.to_capabilities()
+            _ignore_local_proxy = options._ignore_local_proxy
         if desired_capabilities is not None:
             if not isinstance(desired_capabilities, dict):
                 raise WebDriverException("Desired Capabilities must be a dictionary")
@@ -186,10 +190,13 @@ class WebDriver(BaseWebDriver):
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
-            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
+            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor,
+                                                          keep_alive=keep_alive,
+                                                          ignore_local_proxy=_ignore_local_proxy)
         self._is_remote = True
         self.session_id = None
-        self.capabilities = {}
+        self.caps = {}
+        self.pinned_scripts = {}
         self.error_handler = ErrorHandler()
         self.start_client()
         self.start_session(capabilities, browser_profile)
@@ -249,8 +256,8 @@ class WebDriver(BaseWebDriver):
 
                 name = driver.name
         """
-        if 'browserName' in self.capabilities:
-            return self.capabilities['browserName']
+        if 'browserName' in self.caps:
+            return self.caps['browserName']
         else:
             raise KeyError('browserName not specified in session capabilities')
 
@@ -293,12 +300,12 @@ class WebDriver(BaseWebDriver):
         if 'sessionId' not in response:
             response = response['value']
         self.session_id = response['sessionId']
-        self.capabilities = response.get('value')
+        self.caps = response.get('value')
 
         # if capabilities is none we are probably speaking to
         # a W3C endpoint
-        if self.capabilities is None:
-            self.capabilities = response.get('capabilities')
+        if self.caps is None:
+            self.caps = response.get('capabilities')
 
         # Double check to see if we have a W3C Compliant browser
         self.w3c = response.get('status') is None
@@ -703,6 +710,26 @@ class WebDriver(BaseWebDriver):
         warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
+    def pin_script(self, script):
+        """
+
+        """
+        script_key = ScriptKey()
+        self.pinned_scripts[script_key.id] = script
+        return script_key
+
+    def unpin(self, script_key):
+        """
+
+        """
+        self.pinned_scripts.pop(script_key.id)
+
+    def get_pinned_scripts(self):
+        """
+
+        """
+        return list(self.pinned_scripts.keys())
+
     def execute_script(self, script, *args):
         """
         Synchronously Executes JavaScript in the current window/frame.
@@ -716,6 +743,12 @@ class WebDriver(BaseWebDriver):
 
                 driver.execute_script('return document.title;')
         """
+        if isinstance(script, ScriptKey):
+            try:
+                script = self.pinned_scripts[script.id]
+            except KeyError:
+                raise JavascriptException("Pinned script could not be found")
+
         converted_args = list(args)
         command = None
         if self.w3c:
@@ -1149,7 +1182,16 @@ class WebDriver(BaseWebDriver):
         """
         returns the drivers current desired capabilities being used
         """
-        return self.capabilities
+        warnings.warn("desired_capabilities is deprecated. Please call capabilities.",
+                      DeprecationWarning, stacklevel=2)
+        return self.caps
+
+    @property
+    def capabilities(self):
+        """
+        returns the drivers current capabilities being used.
+        """
+        return self.caps
 
     def get_screenshot_as_file(self, filename):
         """
@@ -1504,8 +1546,8 @@ class WebDriver(BaseWebDriver):
         global cdp
         import_cdp()
         ws_url = None
-        if self.capabilities.get("se:options"):
-            ws_url = self.capabilities.get("se:options").get("cdp")
+        if self.caps.get("se:options"):
+            ws_url = self.caps.get("se:options").get("cdp")
         else:
             version, ws_url = self._get_cdp_details()
 
@@ -1527,7 +1569,7 @@ class WebDriver(BaseWebDriver):
         import urllib3
 
         http = urllib3.PoolManager()
-        debugger_address = self.capabilities.get("{0}:chromeOptions".format(self.vendor_prefix)).get("debuggerAddress")
+        debugger_address = self.caps.get("{0}:chromeOptions".format(self.vendor_prefix)).get("debuggerAddress")
         res = http.request('GET', "http://{0}/json/version".format(debugger_address))
         data = json.loads(res.data)
 

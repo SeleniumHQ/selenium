@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.internal.Require;
+
+import java.util.Arrays;
+
 public class EventAttributeValue {
 
   private final Type type;
@@ -49,22 +53,26 @@ public class EventAttributeValue {
   }
 
   public EventAttributeValue(String[] value) {
-    this.stringArrayValue = value;
+    Require.nonNull("Value", value);
+    this.stringArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.STRING_ARRAY;
   }
 
   public EventAttributeValue(Long[] value) {
-    this.longArrayValue = value;
+    Require.nonNull("Value", value);
+    this.longArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.LONG_ARRAY;
   }
 
   public EventAttributeValue(Double[] value) {
-    this.doubleArrayValue = value;
+    Require.nonNull("Value", value);
+    this.doubleArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.DOUBLE_ARRAY;
   }
 
   public EventAttributeValue(Boolean[] value) {
-    this.booleanArrayValue = value;
+    Require.nonNull("Value", value);
+    this.booleanArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.BOOLEAN_ARRAY;
   }
 
@@ -80,13 +88,13 @@ public class EventAttributeValue {
     return booleanValue;
   }
 
-  public String[] getStringArrayValue() { return stringArrayValue; }
+  public String[] getStringArrayValue() { return Arrays.copyOf(stringArrayValue, stringArrayValue.length); }
 
-  public Long[] getLongArrayValue() { return longArrayValue; }
+  public Long[] getLongArrayValue() { return Arrays.copyOf(longArrayValue, longArrayValue.length); }
 
-  public Double[] getDoubleArrayValue() { return doubleArrayValue; }
+  public Double[] getDoubleArrayValue() { return Arrays.copyOf(doubleArrayValue, doubleArrayValue.length); }
 
-  public Boolean[] getBooleanArrayValue() { return booleanArrayValue; }
+  public Boolean[] getBooleanArrayValue() { return Arrays.copyOf(booleanArrayValue, booleanArrayValue.length); }
 
   public Type getAttributeType() {
     return type;

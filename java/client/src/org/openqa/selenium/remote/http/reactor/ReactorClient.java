@@ -50,6 +50,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -153,7 +154,7 @@ public class ReactorClient implements HttpClient {
         res.responseHeaders().entries().forEach(
           entry -> toReturn.addHeader(entry.getKey(), entry.getValue()));
         return buf.asInputStream()
-          .switchIfEmpty(Mono.just(new ByteArrayInputStream("".getBytes())))
+          .switchIfEmpty(Mono.just(new ByteArrayInputStream("".getBytes(UTF_8))))
           .zipWith(Mono.just(toReturn));
       }).block();
     result.getT2().setContent(result::getT1);

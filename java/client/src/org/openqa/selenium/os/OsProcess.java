@@ -36,6 +36,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,7 +89,7 @@ class OsProcess {
   }
 
   private ByteArrayInputStream getInputStream() {
-    return allInput != null ? new ByteArrayInputStream(allInput.getBytes()) : null;
+    return allInput != null ? new ByteArrayInputStream(allInput.getBytes(Charset.defaultCharset())) : null;
   }
 
   public void executeAsync() {

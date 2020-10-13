@@ -128,7 +128,7 @@ public class RemoteNode extends Node {
 
     HttpResponse res = client.execute(req);
 
-    return Values.get(res, Boolean.class) == Boolean.TRUE;
+    return Boolean.TRUE.equals(Values.get(res, Boolean.class));
   }
 
   @Override

@@ -83,6 +83,6 @@ class HeaderContainer {
 
   public int getIntHeader(String name) {
     String value = getHeader(name);
-    return value == null ? -1 : Integer.valueOf(value);
+    return value == null ? -1 : Integer.parseInt(value);
   }
 }

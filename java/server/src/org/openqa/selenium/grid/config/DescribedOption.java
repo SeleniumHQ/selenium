@@ -145,6 +145,26 @@ public class DescribedOption implements Comparable<DescribedOption> {
     return optionName.compareTo(o.optionName);
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DescribedOption that = (DescribedOption) o;
+    return repeats == that.repeats &&
+      quotable == that.quotable &&
+      Objects.equals(section, that.section) &&
+      Objects.equals(optionName, that.optionName) &&
+      Objects.equals(description, that.description) &&
+      Objects.equals(type, that.type) &&
+      Objects.equals(example, that.example) &&
+      Objects.equals(flags, that.flags);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(section, optionName, description, type, example, repeats, quotable, flags);
+  }
+
   public String getType(Type type) {
     String className = deriveClass(type).getSimpleName().toLowerCase();
 
