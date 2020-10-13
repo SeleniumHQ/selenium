@@ -115,26 +115,6 @@ test.suite(
       })
     })
 
-    describe('JS DOM events', function() {
-      it('calls the event listener on dom mutations', async function() {
-        driver = await env
-            .builder()
-            .build()
-
-        const cdpConnection = await driver.createCDPConnection('page')
-        driver.logMutationEvents(cdpConnection, async function(event) {
-          assert.equal(event['attribute_name'], 'style')
-          assert.equal(event['current_value'], '')
-          assert.equal(event['old_value'], 'display:none;')
-        })
-
-        await driver.get(test.Pages.dynamicPage)
-
-        let element = driver.findElement({id: 'reveal'})
-        await element.click()
-      })
-    })
-
     describe('Basic Auth Injection', function () {
       const server = new Server(function(req, res) {
         if (req.method == 'GET' && req.url == '/protected') {
