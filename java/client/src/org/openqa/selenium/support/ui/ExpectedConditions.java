@@ -18,7 +18,6 @@
 package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Joiner;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -354,7 +353,7 @@ public class ExpectedConditions {
           String elementText = element.getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -383,7 +382,7 @@ public class ExpectedConditions {
           String elementText = driver.findElement(locator).getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -416,7 +415,7 @@ public class ExpectedConditions {
           }
           return false;
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -449,7 +448,7 @@ public class ExpectedConditions {
           }
           return false;
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -787,7 +786,7 @@ public class ExpectedConditions {
           WebElement element = driver.findElement(locator);
           return element.isSelected() == selected;
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -824,7 +823,7 @@ public class ExpectedConditions {
         try {
           return driver.getWindowHandles().size() == expectedNumberOfWindows;
         } catch (WebDriverException e) {
-          return null;
+          return false;
         }
       }
 
@@ -868,8 +867,10 @@ public class ExpectedConditions {
    * @param value     used as expected attribute value
    * @return Boolean true when element has css or html attribute with the value
    */
-  public static ExpectedCondition<Boolean> attributeToBe(final By locator, final String attribute,
-                                                         final String value) {
+  public static ExpectedCondition<Boolean> attributeToBe(
+    final By locator,
+    final String attribute,
+    final String value) {
     return new ExpectedCondition<Boolean>() {
       private String currentValue = null;
 
@@ -877,7 +878,7 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         WebElement element = driver.findElement(locator);
         currentValue = element.getAttribute(attribute);
-        if (currentValue == null||currentValue.isEmpty()) {
+        if (currentValue == null || currentValue.isEmpty()) {
           currentValue = element.getCssValue(attribute);
         }
         return value.equals(currentValue);
@@ -886,7 +887,7 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format("element found by %s to have value \"%s\". Current value: \"%s\"",
-                             locator, value, currentValue);
+          locator, value, currentValue);
       }
     };
   }
@@ -1078,8 +1079,6 @@ public class ExpectedConditions {
                                                              final String attribute,
                                                              final String value) {
     return new ExpectedCondition<Boolean>() {
-      private String currentValue = null;
-
       @Override
       public Boolean apply(WebDriver driver) {
         return getAttributeOrCssValue(element, attribute)
@@ -1089,7 +1088,7 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("value to contain \"%s\". Current value: \"%s\"", value, currentValue);
+        return String.format("value to contain \"%s\".", value);
       }
     };
   }
@@ -1107,8 +1106,6 @@ public class ExpectedConditions {
                                                              final String attribute,
                                                              final String value) {
     return new ExpectedCondition<Boolean>() {
-      private String currentValue = null;
-
       @Override
       public Boolean apply(WebDriver driver) {
         return getAttributeOrCssValue(driver.findElement(locator), attribute)
@@ -1118,8 +1115,10 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("value found by %s to contain \"%s\". Current value: \"%s\"",
-                             locator, value, currentValue);
+        return String.format(
+          "value found by %s to contain \"%s\".",
+          locator,
+          value);
       }
     };
   }

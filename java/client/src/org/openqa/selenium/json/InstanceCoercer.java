@@ -73,8 +73,6 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
         jsonInput.beginObject();
 
-        List<TypeAndWriter> usedWriters = new ArrayList<>();
-
         while (jsonInput.hasNext()) {
           String key = jsonInput.nextName();
 
@@ -83,7 +81,6 @@ class InstanceCoercer extends TypeCoercer<Object> {
             jsonInput.skipValue();
             continue;
           }
-          usedWriters.add(writer);
 
           Object value = coercer.coerce(jsonInput, writer.type, setter);
           writer.writer.accept(instance, value);
@@ -161,7 +158,7 @@ class InstanceCoercer extends TypeCoercer<Object> {
     }
   }
 
-  private Class getClss(Type type) {
+  private static Class getClss(Type type) {
     Class target = null;
 
     if (type instanceof Class) {

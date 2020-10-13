@@ -17,6 +17,8 @@
 
 package org.openqa.selenium;
 
+import java.util.Objects;
+
 /**
  * A copy of java.awt.Point, to remove dependency on awt.
  */
@@ -53,9 +55,7 @@ public class Point {
 
   @Override
   public int hashCode() {
-    // Assuming x,y rarely exceed 4096 pixels, shifting
-    // by 12 should provide a good hash value.
-    return x << 12 + y;
+    return Objects.hash(x, y);
   }
 
   public void move(int newX, int newY) {

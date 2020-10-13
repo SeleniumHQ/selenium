@@ -51,6 +51,7 @@ import org.openqa.selenium.support.ui.Wait;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -74,6 +75,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Docker docker;
+  private final URI dockerUri;
   private final Image image;
   private final Capabilities stereotype;
 
@@ -81,11 +83,13 @@ public class DockerSessionFactory implements SessionFactory {
       Tracer tracer,
       HttpClient.Factory clientFactory,
       Docker docker,
+      URI dockerUri,
       Image image,
       Capabilities stereotype) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client", clientFactory);
     this.docker = Require.nonNull("Docker command", docker);
+    this.dockerUri = Require.nonNull("Docker URI", dockerUri);
     this.image = Require.nonNull("Docker image", image);
     this.stereotype = ImmutableCapabilities.copyOf(
         Require.nonNull("Stereotype", stereotype));
@@ -207,7 +211,11 @@ public class DockerSessionFactory implements SessionFactory {
 
   private URL getUrl(int port) {
     try {
-      return new URL(String.format("http://localhost:%s/wd/hub", port));
+      String host = "localhost";
+      if (dockerUri.getScheme().startsWith("tcp") || dockerUri.getScheme().startsWith("http")) {
+        host = dockerUri.getHost();
+      }
+      return new URL(String.format("http://%s:%s/wd/hub", host, port));
     } catch (MalformedURLException e) {
       throw new SessionNotCreatedException(e.getMessage(), e);
     }

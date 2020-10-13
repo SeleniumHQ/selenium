@@ -19,6 +19,8 @@ package com.thoughtworks.selenium;
 
 import org.openqa.selenium.net.Urls;
 
+import java.util.Arrays;
+
 /**
  * The default implementation of the RemoteCommand interface
  *
@@ -38,13 +40,13 @@ public class DefaultRemoteCommand implements RemoteCommand {
 
   public DefaultRemoteCommand(String command, String[] args) {
     this.command = command;
-    this.args = args;
-    if ("selectWindow".equals(command) && args[0] == null) {
+    this.args = Arrays.copyOf(args, args.length);
+    if ("selectWindow".equals(command) && this.args[0] == null) {
       // hackylicious I know, but what a dorky interface! Users naturally give us too much credit,
       // and submit a null argument
       // instead of a string "null". Our code elsewhere assumes that all arguments are non-null, so
       // I fix this up here in order to avoid trouble later:
-      args[0] = "null";
+      this.args[0] = "null";
     }
   }
 

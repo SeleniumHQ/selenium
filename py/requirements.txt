@@ -1,4 +1,3 @@
-async_generator
 attrs
 dataclasses
 h11
@@ -13,6 +12,7 @@ pluggy
 py
 pytest
 pytest-instafail
+pytest-mock
 pytest-trio
 sortedcontainers
 sniffio

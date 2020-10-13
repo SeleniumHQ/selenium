@@ -139,7 +139,7 @@ public class DockerOptions {
     kinds.forEach((name, caps) -> {
       Image image = docker.getImage(name);
       for (int i = 0; i < maxContainerCount; i++) {
-        factories.put(caps, new DockerSessionFactory(tracer, clientFactory, docker, image, caps));
+        factories.put(caps, new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
       }
       LOG.info(String.format(
           "Mapping %s to docker image %s %d times",

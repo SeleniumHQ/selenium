@@ -39,6 +39,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,7 +95,7 @@ class UnboundZmqEventBus implements EventBus {
     );
     // Connections are already established
     ZMQ.Poller poller = context.createPoller(1);
-    poller.register(sub, ZMQ.Poller.POLLIN);
+    poller.register(Objects.requireNonNull(sub), ZMQ.Poller.POLLIN);
 
     LOG.info("Sockets created");
 

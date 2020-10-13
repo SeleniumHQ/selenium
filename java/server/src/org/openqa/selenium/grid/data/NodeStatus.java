@@ -27,7 +27,6 @@ import org.openqa.selenium.json.TypeToken;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,14 +57,9 @@ public class NodeStatus {
     this.availability = Require.nonNull("Availability", availability);
     this.registrationSecret = registrationSecret;
 
-    Map<Capabilities, Integer> stereotypes = new HashMap<>();
     ImmutableSet.Builder<Session> sessions = ImmutableSet.builder();
 
     for (Slot slot : slots) {
-      int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
-      count++;
-      stereotypes.put(slot.getStereotype(), count);
-
       slot.getSession().ifPresent(sessions::add);
     }
   }

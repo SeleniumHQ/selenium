@@ -86,20 +86,18 @@ public class LocalSessionMap extends SessionMap {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try (Span span = tracer.getCurrentContext().createSpan("local_sessionmap.add")) {
-      try {
-        Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-        attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-                         EventAttribute.setValue(getClass().getName()));
-        SessionId id = session.getId();
-        SESSION_ID.accept(span, id);
-        SESSION_ID_EVENT.accept(attributeMap, id);
-        knownSessions.put(session.getId(), session);
-        span.addEvent("Added session into local session map", attributeMap);
-      } finally {
-        writeLock.unlock();
-      }
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+        EventAttribute.setValue(getClass().getName()));
+      SessionId id = session.getId();
+      SESSION_ID.accept(span, id);
+      SESSION_ID_EVENT.accept(attributeMap, id);
+      knownSessions.put(session.getId(), session);
+      span.addEvent("Added session into local session map", attributeMap);
 
       return true;
+    } finally {
+      writeLock.unlock();
     }
   }
 

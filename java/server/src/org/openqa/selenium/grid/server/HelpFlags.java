@@ -36,7 +36,7 @@ public class HelpFlags {
       BuildInfo info = new BuildInfo();
 
       outputTo.printf(
-          "%s version: %s, revision: %s\n",
+          "%s version: %s, revision: %s%n",
           commander.getProgramName(),
           info.getReleaseLabel(),
           info.getBuildRevision());

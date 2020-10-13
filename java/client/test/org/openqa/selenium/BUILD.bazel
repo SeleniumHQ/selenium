@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
+load("//java:defs.bzl", "java_library", "java_selenium_test_suite", "java_test_suite")
 
 SMALL_TESTS = [
     "ArchitectureTest.java",
@@ -82,6 +82,7 @@ java_selenium_test_suite(
 # TODO: replace with smaller suites
 java_library(
     name = "tests",
+    testonly = True,
     srcs = glob([
         "*Test.java",
         "html5/*.java",

@@ -38,7 +38,7 @@ public class IndividualKeyboardActionsTest {
   @Mock private Mouse mockMouse;
   @Mock private Coordinates mockCoordinates;
   @Mock private Locatable stubLocatable;
-  final String keysToSend = "hello";
+  private final static String KEYS_TO_SEND = "hello";
 
   @Before
   public void setUp() {
@@ -102,23 +102,23 @@ public class IndividualKeyboardActionsTest {
 
   @Test
   public void sendKeysActionWithoutProvidedElement() {
-    SendKeysAction sendKeys = new SendKeysAction(mockKeyboard, mockMouse, keysToSend);
+    SendKeysAction sendKeys = new SendKeysAction(mockKeyboard, mockMouse, KEYS_TO_SEND);
     sendKeys.perform();
 
     InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
-    order.verify(mockKeyboard).sendKeys(keysToSend);
+    order.verify(mockKeyboard).sendKeys(KEYS_TO_SEND);
     order.verifyNoMoreInteractions();
   }
 
   @Test
   public void sendKeysActionOnAnElement() {
     SendKeysAction sendKeys = new SendKeysAction(
-        mockKeyboard, mockMouse, stubLocatable, keysToSend);
+        mockKeyboard, mockMouse, stubLocatable, KEYS_TO_SEND);
     sendKeys.perform();
 
     InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
     order.verify(mockMouse).click(mockCoordinates);
-    order.verify(mockKeyboard).sendKeys(keysToSend);
+    order.verify(mockKeyboard).sendKeys(KEYS_TO_SEND);
     order.verifyNoMoreInteractions();
   }
 

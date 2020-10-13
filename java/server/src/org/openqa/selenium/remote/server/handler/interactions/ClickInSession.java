@@ -44,6 +44,9 @@ public class ClickInSession extends WebDriverHandler<Void> {
         case 2:
           leftMouseButton = false;
           break;
+        default:
+          // This is suboptimal
+          break;
       }
     }
   }

@@ -1,6 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
-load("//java:defs.bzl", "java_export")
+load("//java:defs.bzl", "java_binary", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
 
 GENERATOR_SOURCES = [
@@ -30,7 +30,7 @@ java_library(
 copy_file(
     name = "mutation-listener",
     src = "//javascript/cdp-support:mutation-listener.js",
-    out = "mutation-listener.js"
+    out = "mutation-listener.js",
 )
 
 java_export(
@@ -44,11 +44,11 @@ java_export(
         ],
         exclude = PROTOTYPE_SOURCES + GENERATOR_SOURCES,
     ),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     resources = [
         ":mutation-listener",
     ],
-    maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,
-    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = [
         "//visibility:public",
     ],

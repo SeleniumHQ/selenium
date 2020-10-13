@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -44,6 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -61,7 +63,11 @@ public class LocalNewSessionQueueTest {
     caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
     requestId = new RequestId(UUID.randomUUID());
-    sessionQueue = new LocalNewSessionQueue(tracer, bus, Duration.ofSeconds(1));
+    sessionQueue = new LocalNewSessionQueue(
+        tracer,
+        bus,
+        Duration.ofSeconds(1),
+        Duration.ofSeconds(30));
 
     NewSessionPayload payload = NewSessionPayload.create(caps);
     expectedSessionRequest = createRequest(payload, POST, "/session");
@@ -127,14 +133,18 @@ public class LocalNewSessionQueueTest {
 
   @Test
   public void shouldBeAbleToAddToFrontOfQueue() {
+    long timestamp = Instant.now().getEpochSecond();
+
     ImmutableCapabilities chromeCaps = new ImmutableCapabilities("browserName", "chrome");
     NewSessionPayload chromePayload = NewSessionPayload.create(chromeCaps);
     HttpRequest chromeRequest = createRequest(chromePayload, POST, "/session");
+    chromeRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
     RequestId chromeRequestId = new RequestId(UUID.randomUUID());
 
     ImmutableCapabilities firefoxCaps = new ImmutableCapabilities("browserName", "firefox");
     NewSessionPayload firefoxpayload = NewSessionPayload.create(firefoxCaps);
     HttpRequest firefoxRequest = createRequest(firefoxpayload, POST, "/session");
+    firefoxRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
     RequestId firefoxRequestId = new RequestId(UUID.randomUUID());
 
     boolean addedChromeRequest = sessionQueue.offerFirst(chromeRequest, chromeRequestId);
