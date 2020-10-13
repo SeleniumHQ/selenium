@@ -116,7 +116,7 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
-def get_remote_connection(capabilities, command_executor, keep_alive):
+def get_remote_connection(capabilities, command_executor, keep_alive, ignore_local_proxy=False):
     from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
     from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
@@ -179,8 +179,10 @@ class WebDriver(BaseWebDriver):
          - options - instance of a driver options.Options class
         """
         capabilities = {}
+        _ignore_local_proxy = False
         if options is not None:
             capabilities = options.to_capabilities()
+            _ignore_local_proxy = options._ignore_local_proxy
         if desired_capabilities is not None:
             if not isinstance(desired_capabilities, dict):
                 raise WebDriverException("Desired Capabilities must be a dictionary")
@@ -188,7 +190,9 @@ class WebDriver(BaseWebDriver):
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
-            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
+            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor,
+                                                          keep_alive=keep_alive,
+                                                          ignore_local_proxy=_ignore_local_proxy)
         self._is_remote = True
         self.session_id = None
         self.caps = {}

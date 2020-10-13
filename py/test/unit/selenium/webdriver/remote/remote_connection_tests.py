@@ -103,6 +103,12 @@ def test_get_connection_manager_with_proxy(mock_proxy_settings):
     assert conn.proxy.port == 8080
 
 
+def test_ignore_proxy_env_vars(mock_proxy_settings):
+    remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
+    conn = remote_connection._get_connection_manager()
+    assert type(conn) == urllib3.PoolManager
+
+
 class MockResponse:
     code = 200
     headers = []
