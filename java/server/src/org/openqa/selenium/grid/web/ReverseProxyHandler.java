@@ -70,13 +70,7 @@ public class ReverseProxyHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     try (Span span = newSpanAsChildOf(tracer, req, "reverse_proxy")) {
 
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.HTTP_HANDLER_CLASS.getKey(),
-                       EventAttribute.setValue(getClass().getName()));
-
-      KIND.accept(span, Span.Kind.SERVER);
       HTTP_REQUEST.accept(span, req);
-      HTTP_REQUEST_EVENT.accept(attributeMap, req);
 
       HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
 
@@ -102,7 +96,6 @@ public class ReverseProxyHandler implements HttpHandler {
       HttpResponse resp = upstream.execute(toUpstream);
 
       HTTP_RESPONSE.accept(span,resp);
-      HTTP_RESPONSE_EVENT.accept(attributeMap, resp);
 
       // clear response defaults.
       resp.removeHeader("Date");
@@ -110,7 +103,6 @@ public class ReverseProxyHandler implements HttpHandler {
 
       IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
 
-      span.addEvent("HTTP request execution complete", attributeMap);
       return resp;
     }
   }

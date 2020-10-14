@@ -126,7 +126,6 @@ public class DockerSessionFactory implements SessionFactory {
       LOG.info(String.format("Waiting for server to start (container id: %s)", container.getId()));
       try {
         waitForServerToStart(client, Duration.ofMinutes(1));
-        span.addEvent("Container started. Docker server ready.", attributeMap);
       } catch (TimeoutException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
@@ -178,7 +177,7 @@ public class DockerSessionFactory implements SessionFactory {
       attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
 
       span.addEvent("Docker driver service created session", attributeMap);
-      LOG.info(String.format(
+      LOG.fine(String.format(
           "Created session: %s - %s (container id: %s)",
           id,
           capabilities,

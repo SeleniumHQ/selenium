@@ -175,6 +175,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
       Iterator<Capabilities> iterator = payload.stream().iterator();
       attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
+      span.addEvent("Session request received by the distributor", attributeMap);
 
       if (!iterator.hasNext()) {
         SessionNotCreatedException exception = new SessionNotCreatedException("No capabilities found");
@@ -239,7 +240,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
       attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
 
-      span.addEvent("Session created by the distributor", attributeMap);
       return sessionResponse;
     } catch (SessionNotCreatedException e) {
       span.setAttribute("error", true);
