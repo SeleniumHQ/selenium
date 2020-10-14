@@ -53,18 +53,11 @@ public class TracedHttpClient implements HttpClient {
   @Override
   public HttpResponse execute(HttpRequest req) {
     try (Span span = newSpanAsChildOf(tracer, req, "httpclient.execute")) {
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      attributeMap.put(AttributeKey.HTTP_CLIENT_CLASS.getKey(),
-                       EventAttribute.setValue(delegate.getClass().getName()));
-
       KIND.accept(span, Span.Kind.CLIENT);
       HTTP_REQUEST.accept(span, req);
-      HTTP_REQUEST_EVENT.accept(attributeMap, req);
       tracer.getPropagator().inject(span, req, (r, key, value) -> r.setHeader(key, value));
       HttpResponse response = delegate.execute(req);
       HTTP_RESPONSE.accept(span, response);
-      HTTP_RESPONSE_EVENT.accept(attributeMap, response);
-      span.addEvent("HTTP request received response", attributeMap);
       return response;
     }
   }

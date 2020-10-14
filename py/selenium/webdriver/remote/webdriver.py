@@ -127,7 +127,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
         RemoteConnection
     )
 
-    return handler(command_executor, keep_alive=keep_alive)
+    return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
 
 
 @add_metaclass(ABCMeta)
