@@ -23,8 +23,8 @@ class FirefoxRemoteConnection(RemoteConnection):
 
     browser_name = DesiredCapabilities.FIREFOX['browserName']
 
-    def __init__(self, remote_server_addr, keep_alive=True):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive)
+    def __init__(self, remote_server_addr, keep_alive=True, ignore_proxy=False):
+        RemoteConnection.__init__(self, remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
 
         self._commands["GET_CONTEXT"] = ('GET', '/session/$sessionId/moz/context')
         self._commands["SET_CONTEXT"] = ("POST", "/session/$sessionId/moz/context")

@@ -85,15 +85,18 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   @Override
   public boolean offerLast(HttpRequest request, RequestId requestId) {
     Require.nonNull("New Session request", request);
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
 
     Span span = tracer.getCurrentContext().createSpan("local_sessionqueue.add");
-    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-    attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-      EventAttribute.setValue(getClass().getName()));
     boolean added = false;
+
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
     try {
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+        EventAttribute.setValue(getClass().getName()));
+
+
       added = sessionRequests.offerLast(request);
       addRequestHeaders(request, requestId);
 

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import org.openqa.selenium.WebDriverException;
@@ -128,7 +129,7 @@ public class FileExtension implements Extension {
   private String readIdFromManifestJson(File root) {
     final String MANIFEST_JSON_FILE = "manifest.json";
     File manifestJsonFile = new File(root, MANIFEST_JSON_FILE);
-    try (Reader reader = new FileReader(manifestJsonFile);
+    try (Reader reader = new FileReader(manifestJsonFile, UTF_8);
          JsonInput json = new Json().newInput(reader)) {
       String addOnId = null;
 

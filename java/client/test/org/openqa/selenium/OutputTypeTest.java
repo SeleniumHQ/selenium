@@ -24,8 +24,8 @@ import org.junit.Test;
 import java.io.File;
 
 public class OutputTypeTest {
-  public static final String TEST_BASE64 = "ABADABAD";
-  public static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};
+  private static final String TEST_BASE64 = "ABADABAD";
+  private static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};
 
   @Test
   public void testBase64() {
@@ -44,10 +44,9 @@ public class OutputTypeTest {
 
   @Test
   public void testFiles() {
-    File tmpFile = OutputType.FILE
-        .convertFromBase64Png(TEST_BASE64);
+    File tmpFile = OutputType.FILE.convertFromBase64Png(TEST_BASE64);
     assertThat(tmpFile.exists()).isTrue();
     assertThat(tmpFile.length()).isEqualTo(TEST_BYTES.length);
-    tmpFile.delete();
+    assertThat(tmpFile.delete()).isTrue();
   }
 }

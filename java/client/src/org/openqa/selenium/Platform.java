@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -254,7 +255,7 @@ public enum Platform {
   }
 
   public String[] getPartOfOsName() {
-    return partOfOsName;
+    return Arrays.copyOf(partOfOsName, partOfOsName.length);
   }
 
   private static Platform current;

@@ -12,6 +12,7 @@ pluggy
 py
 pytest
 pytest-instafail
+pytest-mock
 pytest-trio
 sortedcontainers
 sniffio

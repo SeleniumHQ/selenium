@@ -30,6 +30,9 @@ java_library(
     srcs = [
         ":create-cdp-srcs",
     ],
+    tags = [
+        "no-lint",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/devtools",

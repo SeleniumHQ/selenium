@@ -17,6 +17,25 @@
 
 package org.openqa.selenium;
 
+import com.google.common.collect.Sets;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
@@ -30,27 +49,6 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-import com.google.common.collect.Sets;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.imageio.ImageIO;
 
 /**
  * Test screenshot feature.
@@ -88,7 +86,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @After
   public void tearDown() {
     if (tempFile != null) {
-      tempFile.delete();
+      if (!tempFile.delete()) {
+        System.err.println("Unable to delete temp file");
+      }
       tempFile = null;
     }
   }

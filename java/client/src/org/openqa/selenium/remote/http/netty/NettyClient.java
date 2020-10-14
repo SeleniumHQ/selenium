@@ -18,7 +18,7 @@
 package org.openqa.selenium.remote.http.netty;
 
 import com.google.auto.service.AutoService;
-
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
@@ -32,16 +32,20 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
+import java.io.IOException;
 
 public class NettyClient implements HttpClient {
 
-  private static final AsyncHttpClient httpClient = Dsl.asyncHttpClient(
-    new DefaultAsyncHttpClientConfig.Builder()
-      .setUseInsecureTrustManager(true)
-      .setAggregateWebSocketFrameFragments(true)
-      .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
-      .setWebSocketMaxFrameSize(Integer.MAX_VALUE));
+  private static final AsyncHttpClient httpClient =
+      Dsl.asyncHttpClient(
+          new DefaultAsyncHttpClientConfig.Builder()
+              .setThreadFactory(new DefaultThreadFactory("AsyncHttpClient", true))
+              .setUseInsecureTrustManager(true)
+              .setAggregateWebSocketFrameFragments(true)
+              .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
+              .setWebSocketMaxFrameSize(Integer.MAX_VALUE));
 
   private final HttpHandler handler;
   private BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
@@ -75,6 +79,23 @@ public class NettyClient implements HttpClient {
   @AutoService(HttpClient.Factory.class)
   @HttpClientName("netty")
   public static class Factory implements HttpClient.Factory {
+
+    private static final AtomicBoolean addedHook = new AtomicBoolean();
+
+    public Factory() {
+      if (!addedHook.get()) {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::callAsyncClientShutdown));
+        addedHook.set(true);
+      }
+    }
+
+    private void callAsyncClientShutdown() {
+      try {
+        httpClient.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
     @Override
     public HttpClient createClient(ClientConfig config) {

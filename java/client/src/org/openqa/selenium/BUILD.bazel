@@ -1,5 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
-load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "javadoc")
+load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "java_library", "javadoc")
 
 filegroup(
     name = "template-pom",

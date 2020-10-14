@@ -25,12 +25,13 @@ import java.time.Duration;
 public class NewSessionQueueOptions {
 
   private static final String SESSIONS_QUEUE_SECTION = "sessionqueue";
-  private static final String
-    DEFAULT_NEWSESSION_QUEUE = "org.openqa.selenium.grid.sessionmap.remote.LocalNewSessionQueue";
+  private static final String DEFAULT_NEWSESSION_QUEUE =
+    "org.openqa.selenium.grid.sessionmap.remote.LocalNewSessionQueue";
+  private static final int DEFAULT_REQUEST_TIMEOUT = 300;
+  private static final int DEFAULT_RETRY_INTERVAL = 5;
+
 
   private final Config config;
-  private final int DEFAULT_REQUEST_TIMEOUT = 300;
-  private final int DEFAULT_RETRY_INTERVAL = 5;
 
   public NewSessionQueueOptions(Config config) {
     this.config = config;

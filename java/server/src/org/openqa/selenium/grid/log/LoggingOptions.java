@@ -66,7 +66,7 @@ public class LoggingOptions {
   // humanity. This implies that we're never going to need to configure
   // tracing more than once for the entire JVM, so we're never going to be
   // adding unit tests for this.
-  private static Tracer tracer;
+  private static volatile Tracer tracer;
 
   public static final Json JSON = new Json();
 

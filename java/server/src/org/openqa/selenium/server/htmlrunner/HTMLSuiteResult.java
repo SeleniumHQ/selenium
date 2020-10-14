@@ -42,7 +42,7 @@ public class HTMLSuiteResult {
     HTMLEditorKit k = new HTMLEditorKit();
     HTMLDocument doc = (HTMLDocument) k.createDefaultDocument();
     Parser parser = doc.getParser();
-    HrefConverter p = new HrefConverter(originalSuite);
+    HrefConverter p = new HrefConverter();
     doc.setAsynchronousLoadPriority(-1);
     try {
       parser.parse(s, p, true);
@@ -81,14 +81,9 @@ public class HTMLSuiteResult {
     return this.updatedSuite;
   }
 
-  private class HrefConverter extends ParserCallback {
-    public HrefConverter(String foo) {
-      this.foo = foo;
-    }
-
-    String foo;
-    public List<String> hrefList = new ArrayList<>();
-    public List<Integer> tagPositions = new ArrayList<>();
+  private static class HrefConverter extends ParserCallback {
+    public final List<String> hrefList = new ArrayList<>();
+    public final List<Integer> tagPositions = new ArrayList<>();
 
     @Override
     public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {

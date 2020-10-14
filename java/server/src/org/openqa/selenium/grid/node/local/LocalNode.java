@@ -375,7 +375,6 @@ public class LocalNode extends Node {
       @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
       Map<String, Object> updated = new TreeMap<>(original);
 
-      Object cdp = original.get("cdp");
       String cdpPath = String.format("/session/%s/se/cdp", other.getId());
       updated.put("cdp", rewrite(cdpPath));
 

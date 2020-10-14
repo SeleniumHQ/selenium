@@ -271,7 +271,7 @@ public class HttpCommandProcessor implements CommandProcessor {
   @Override
   public void stop() {
     if (hasSessionInProgress()) {
-      doCommand("testComplete", null);
+      doCommand("testComplete", new String[0]);
     }
     setSessionInProgress(null);
   }

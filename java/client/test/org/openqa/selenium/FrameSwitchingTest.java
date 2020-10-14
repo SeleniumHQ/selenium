@@ -43,6 +43,8 @@ import java.util.Random;
 
 public class FrameSwitchingTest extends JUnit4TestBase {
 
+  private Random random;
+
   @After
   public void tearDown() {
     try {
@@ -499,7 +501,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
         WebElement input = wait.until(presenceOfElementLocated(By.id("inputText")));
         WebElement submit = wait.until(presenceOfElementLocated(By.id("submitButton")));
         input.clear();
-        input.sendKeys("rand" + new Random().nextInt());
+        random = new Random();
+        input.sendKeys("rand" + random.nextInt());
         submit.click();
       } finally {
         String url = (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");

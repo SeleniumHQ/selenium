@@ -29,7 +29,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * A wrapper around temporary filesystem behaviour.
  */
-public class TemporaryFilesystem {
+public class
+TemporaryFilesystem {
 
   private final Set<File> temporaryFiles = new CopyOnWriteArraySet<>();
   private final File baseDir;
@@ -92,7 +93,10 @@ public class TemporaryFilesystem {
     try {
       // Create a tempfile, and delete it.
       File file = File.createTempFile(prefix, suffix, baseDir);
-      file.delete();
+
+      if (!file.delete()) {
+        throw new IOException("Unable to create temp file");
+      }
 
       // Create it as a directory.
       File dir = new File(file.getAbsolutePath());

@@ -28,6 +28,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class ManifestServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,7 +40,7 @@ public class ManifestServlet extends HttpServlet {
     String manifestContent = "";
 
     try (InputStream is = new FileInputStream(manifestPath)) {
-      manifestContent = new String(ByteStreams.toByteArray(is));
+      manifestContent = new String(ByteStreams.toByteArray(is), UTF_8);
     } catch (IOException e) {
       throw new ServletException("Failed to read cache-manifest file: " + manifestPath);
     }

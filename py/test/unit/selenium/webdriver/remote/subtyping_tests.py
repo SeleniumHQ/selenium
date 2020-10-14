@@ -22,7 +22,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 def test_web_element_not_subclassed():
     """A registered subtype of WebElement should work with isinstance checks."""
-    class MyWebElement(object):
+    class MyWebElement:
         def __init__(self, parent, id, _w3c=True):
             self.parent = parent
             self.id = id
@@ -33,7 +33,7 @@ def test_web_element_not_subclassed():
     assert not isinstance(my_web_element, WebElement)
 
     # Register the class as a subtype of WebElement
-    WebElement.register('MyWebElement')
+    WebElement.register(MyWebElement)
     my_registered_web_element = MyWebElement('parent', '2')
 
     assert isinstance(my_registered_web_element, WebElement)

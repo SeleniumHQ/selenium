@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class BasicAuth extends HttpServlet {
   private static final String CREDENTIALS = "test:test";
   private final Base64.Decoder decoder = Base64.getDecoder();
@@ -44,7 +46,7 @@ public class BasicAuth extends HttpServlet {
       final int index = auth.indexOf(' ') + 1;
 
       if (index > 0) {
-        final String credentials = new String(decoder.decode(auth.substring(index)));
+        final String credentials = new String(decoder.decode(auth.substring(index)), UTF_8);
         return CREDENTIALS.equals(credentials);
       }
     }

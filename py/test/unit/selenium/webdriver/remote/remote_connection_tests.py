@@ -85,7 +85,7 @@ def test_get_connection_manager_for_certs_and_timeout():
     conn = remote_connection._get_connection_manager()
     assert conn.connection_pool_kw['timeout'] == 10
     assert conn.connection_pool_kw['cert_reqs'] == 'CERT_REQUIRED'
-    assert 'site-packages/certifi/cacert.pem' in conn.connection_pool_kw['ca_certs']
+    assert 'certifi/cacert.pem' in conn.connection_pool_kw['ca_certs']
 
 
 def test_get_connection_manager_with_proxy(mock_proxy_settings):
@@ -101,6 +101,12 @@ def test_get_connection_manager_with_proxy(mock_proxy_settings):
     assert conn.proxy.scheme == 'http'
     assert conn.proxy.host == 'https_proxy.com'
     assert conn.proxy.port == 8080
+
+
+def test_ignore_proxy_env_vars(mock_proxy_settings):
+    remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
+    conn = remote_connection._get_connection_manager()
+    assert type(conn) == urllib3.PoolManager
 
 
 class MockResponse:
