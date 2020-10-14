@@ -49,7 +49,7 @@ def selenium_java_deps():
             maven.artifact(
                 group = "junit",
                 artifact = "junit",
-                version = "4.13",
+                version = "4.13.1",
                 exclusions = [
                     "org.hamcrest:hamcrest-all",
                     "org.hamcrest:hamcrest-core",
