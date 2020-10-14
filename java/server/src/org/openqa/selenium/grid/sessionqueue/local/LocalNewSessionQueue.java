@@ -146,7 +146,9 @@ public class LocalNewSessionQueue extends NewSessionQueue {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
-        requestIdQueue.remove();
+        if (requestIdQueue.remove(requestId)) {
+          sessionRequests.remove(requestId);
+        }
       } finally {
         writeLock.unlock();
         bus.fire(new NewSessionRejectedEvent(
@@ -165,17 +167,19 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<HttpRequest> request = Optional.ofNullable(sessionRequests.remove(id));
-      if (request.isPresent()) {
-        HttpRequest httpRequest = request.get();
-        if (hasRequestTimedOut(httpRequest)) {
-          // TODO Fire NewSessionRejectedEvent with timeout message once request id is passed to poll
-          return Optional.empty();
+      if (requestIdQueue.remove(id)) {
+        Optional<HttpRequest> request = Optional.ofNullable(sessionRequests.remove(id));
+        if (request.isPresent()) {
+          HttpRequest httpRequest = request.get();
+          if (hasRequestTimedOut(httpRequest)) {
+            bus.fire(new NewSessionRejectedEvent(
+                new NewSessionErrorResponse(id, "New session request timed out")));
+            return Optional.empty();
+          }
+          return Optional.of(httpRequest);
         }
-        return Optional.of(httpRequest);
-      } else {
-        return Optional.empty();
       }
+      return Optional.empty();
     } finally {
       writeLock.unlock();
     }
