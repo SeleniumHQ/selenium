@@ -288,45 +288,54 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   }
 
   private PreparedStatement insertSessionStatement(Session session) throws SQLException {
-    PreparedStatement insertStatement = connection.prepareStatement(
-      String.format("insert into %1$s (%2$s, %3$s, %4$s, %5$s, %6$s) values (?, ?, ?, ?, ?)",
-        TABLE_NAME,
-        SESSION_ID_COL,
-        SESSION_URI_COL,
-        SESSION_STEREOTYPE_COL,
-        SESSION_CAPS_COL,
-        SESSION_START_COL));
+    try (PreparedStatement insertStatement = connection.prepareStatement(
+        String.format("insert into %1$s (%2$s, %3$s, %4$s, %5$s, %6$s) values (?, ?, ?, ?, ?)",
+                      TABLE_NAME,
+                      SESSION_ID_COL,
+                      SESSION_URI_COL,
+                      SESSION_STEREOTYPE_COL,
+                      SESSION_CAPS_COL,
+                      SESSION_START_COL))) {
 
-    insertStatement.setString(1, session.getId().toString());
-    insertStatement.setString(2, session.getUri().toString());
-    insertStatement.setString(3, JSON.toJson(session.getStereotype()));
-    insertStatement.setString(4, JSON.toJson(session.getCapabilities()));
-    insertStatement.setString(5, JSON.toJson(session.getStartTime()));
+      insertStatement.setString(1, session.getId().toString());
+      insertStatement.setString(2, session.getUri().toString());
+      insertStatement.setString(3, JSON.toJson(session.getStereotype()));
+      insertStatement.setString(4, JSON.toJson(session.getCapabilities()));
+      insertStatement.setString(5, JSON.toJson(session.getStartTime()));
 
-    return insertStatement;
+      return insertStatement;
+    } catch (SQLException e) {
+      throw e;
+    }
   }
 
   private PreparedStatement readSessionStatement(SessionId sessionId) throws SQLException {
-    PreparedStatement getSessionsStatement = connection.prepareStatement(
-      String.format("select * from %1$s where %2$s = ?",
-        TABLE_NAME,
-        SESSION_ID_COL));
+    try (PreparedStatement getSessionsStatement = connection.prepareStatement(
+        String.format("select * from %1$s where %2$s = ?",
+                      TABLE_NAME,
+                      SESSION_ID_COL))){
 
-    getSessionsStatement.setMaxRows(1);
-    getSessionsStatement.setString(1, sessionId.toString());
+      getSessionsStatement.setMaxRows(1);
+      getSessionsStatement.setString(1, sessionId.toString());
 
-    return getSessionsStatement;
+      return getSessionsStatement;
+    } catch (SQLException e) {
+      throw e;
+    }
   }
 
   private PreparedStatement getDeleteSqlForSession(SessionId sessionId) throws SQLException{
-    PreparedStatement deleteSessionStatement = connection.prepareStatement(
-      String.format("delete from %1$s where %2$s = ?",
-        TABLE_NAME,
-        SESSION_ID_COL));
+    try (PreparedStatement deleteSessionStatement = connection.prepareStatement(
+        String.format("delete from %1$s where %2$s = ?",
+                      TABLE_NAME,
+                      SESSION_ID_COL))) {
 
-    deleteSessionStatement.setString(1, sessionId.toString());
+      deleteSessionStatement.setString(1, sessionId.toString());
 
-    return deleteSessionStatement;
+      return deleteSessionStatement;
+    } catch (SQLException e) {
+      throw e;
+    }
   }
 
   private void setCommonSpanAttributes(Span span) {

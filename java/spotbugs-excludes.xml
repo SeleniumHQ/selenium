@@ -124,11 +124,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.grid.sessionmap.jdbc.JdbcBackedSessionMap"/>
-    <Bug pattern="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueFlags"/>
     <Bug pattern="URF_UNREAD_FIELD"/>
   </Match>
