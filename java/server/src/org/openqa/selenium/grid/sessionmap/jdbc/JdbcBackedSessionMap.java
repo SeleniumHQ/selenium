@@ -129,7 +129,21 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
       attributeMap.put(AttributeKey.SESSION_URI.getKey(),
                        EventAttribute.setValue(session.getUri().toString()));
 
-      try (PreparedStatement statement = insertSessionStatement(session)) {
+      try (PreparedStatement statement = connection.prepareStatement(
+          String.format("insert into %1$s (%2$s, %3$s, %4$s, %5$s, %6$s) values (?, ?, ?, ?, ?)",
+                        TABLE_NAME,
+                        SESSION_ID_COL,
+                        SESSION_URI_COL,
+                        SESSION_STEREOTYPE_COL,
+                        SESSION_CAPS_COL,
+                        SESSION_START_COL))) {
+
+        statement.setString(1, session.getId().toString());
+        statement.setString(2, session.getUri().toString());
+        statement.setString(3, JSON.toJson(session.getStereotype()));
+        statement.setString(4, JSON.toJson(session.getCapabilities()));
+        statement.setString(5, JSON.toJson(session.getStartTime()));
+
         String statementStr = statement.toString();
         span.setAttribute(DATABASE_STATEMENT, statementStr);
         span.setAttribute(DATABASE_OPERATION, "insert");
@@ -171,7 +185,14 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
       setCommonSpanAttributes(span);
       setCommonEventAttributes(attributeMap);
 
-      try (PreparedStatement statement = readSessionStatement(id)) {
+      try (PreparedStatement statement = connection.prepareStatement(
+          String.format("select * from %1$s where %2$s = ?",
+                        TABLE_NAME,
+                        SESSION_ID_COL))) {
+
+        statement.setMaxRows(1);
+        statement.setString(1, id.toString());
+
         String statementStr = statement.toString();
         span.setAttribute(DATABASE_STATEMENT, statementStr);
         span.setAttribute(DATABASE_OPERATION, "select");
@@ -255,7 +276,12 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
       setCommonSpanAttributes(span);
       setCommonEventAttributes(attributeMap);
 
-      try (PreparedStatement statement = getDeleteSqlForSession(id)) {
+      try (PreparedStatement statement = connection.prepareStatement(
+          String.format("delete from %1$s where %2$s = ?",
+                        TABLE_NAME,
+                        SESSION_ID_COL))) {
+
+        statement.setString(1, id.toString());
         String statementStr = statement.toString();
         span.setAttribute(DATABASE_STATEMENT, statementStr);
         span.setAttribute(DATABASE_OPERATION, "delete");
@@ -285,48 +311,6 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
     } catch (SQLException e) {
       LOG.warning("SQL exception while closing JDBC Connection:" + e.getMessage());
     }
-  }
-
-  private PreparedStatement insertSessionStatement(Session session) throws SQLException {
-    PreparedStatement insertStatement = connection.prepareStatement(
-      String.format("insert into %1$s (%2$s, %3$s, %4$s, %5$s, %6$s) values (?, ?, ?, ?, ?)",
-        TABLE_NAME,
-        SESSION_ID_COL,
-        SESSION_URI_COL,
-        SESSION_STEREOTYPE_COL,
-        SESSION_CAPS_COL,
-        SESSION_START_COL));
-
-    insertStatement.setString(1, session.getId().toString());
-    insertStatement.setString(2, session.getUri().toString());
-    insertStatement.setString(3, JSON.toJson(session.getStereotype()));
-    insertStatement.setString(4, JSON.toJson(session.getCapabilities()));
-    insertStatement.setString(5, JSON.toJson(session.getStartTime()));
-
-    return insertStatement;
-  }
-
-  private PreparedStatement readSessionStatement(SessionId sessionId) throws SQLException {
-    PreparedStatement getSessionsStatement = connection.prepareStatement(
-      String.format("select * from %1$s where %2$s = ?",
-        TABLE_NAME,
-        SESSION_ID_COL));
-
-    getSessionsStatement.setMaxRows(1);
-    getSessionsStatement.setString(1, sessionId.toString());
-
-    return getSessionsStatement;
-  }
-
-  private PreparedStatement getDeleteSqlForSession(SessionId sessionId) throws SQLException{
-    PreparedStatement deleteSessionStatement = connection.prepareStatement(
-      String.format("delete from %1$s where %2$s = ?",
-        TABLE_NAME,
-        SESSION_ID_COL));
-
-    deleteSessionStatement.setString(1, sessionId.toString());
-
-    return deleteSessionStatement;
   }
 
   private void setCommonSpanAttributes(Span span) {
