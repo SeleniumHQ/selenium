@@ -126,6 +126,54 @@ public class AddingNodesTest {
   }
 
   @Test
+  public void shouldNotRegisterALocalNodeWithWrongRegistrationSecret() throws URISyntaxException {
+    URI sessionUri = new URI("http://example:1234");
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+        externalUrl,
+        handler,
+        HttpClient.Factory.createDefault());
+
+    Secret registrationSecret = new Secret("my_secret");
+
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+        .build();
+    handler.addHandler(node);
+
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    Distributor secretDistributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+
+    bus.fire(new NodeStatusEvent(node.getStatus()));
+
+    assertEquals(0, secretDistributor.getAvailableNodes().size());
+  }
+
+  @Test
+  public void shouldRegisterALocalNodeWithCorrectRegistrationSecret() throws URISyntaxException {
+    URI sessionUri = new URI("http://example:1234");
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+        externalUrl,
+        handler,
+        HttpClient.Factory.createDefault());
+
+    Secret registrationSecret = new Secret("my_secret");
+
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+        .build();
+    handler.addHandler(node);
+
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    Distributor secretDistributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+
+    bus.fire(new NodeStatusEvent(node.getStatus()));
+
+    wait.until(obj -> secretDistributor.getStatus().hasCapacity());
+
+    assertEquals(1, secretDistributor.getAvailableNodes().size());
+  }
+
+  @Test
   public void shouldBeAbleToRegisterACustomNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = new CustomNode(

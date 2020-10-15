@@ -135,7 +135,7 @@ public class Hub extends TemplateGridCommand {
       bus,
       clientFactory,
       sessions,
-      null);
+      serverOptions.getRegistrationSecret());
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);

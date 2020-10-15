@@ -27,10 +27,12 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.HttpSessionId;
@@ -98,6 +100,18 @@ public class LocalDistributorTest {
     NodeStatus distributorNode = nodes.iterator().next();
     assertThat(distributorNode.getId()).isEqualByComparingTo(localNode.getId());
     assertThat(distributorNode.getUri()).isEqualTo(uri);
+  }
+
+  @Test
+  public void testShouldNotAddNodeWithWrongSecret() {
+    Secret secret = new Secret("my_secret");
+    Distributor secretDistributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), secret);
+    bus.fire(new NodeStatusEvent(localNode.getStatus()));
+    DistributorStatus status = secretDistributor.getStatus();
+
+    //Check the size
+    final Set<NodeStatus> nodes = status.getNodes();
+    assertThat(nodes.size()).isEqualTo(0);
   }
 
   @Test
