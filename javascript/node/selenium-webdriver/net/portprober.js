@@ -161,15 +161,24 @@ function isFree(port, opt_host) {
  * @return {!Promise<number>} A promise that will resolve to a free port. If a
  *     port cannot be found, the promise will be rejected.
  */
-async function findFreePort(opt_host) {
-  let range = await findSystemPortRange()
-  for (let i = 0; i < 100; i++) {
-    let port = Math.floor(Math.random() * (range.max - range.min) + range.min)
-    if (await isFree(port, opt_host)) {
-      return port
-    }
-  }
-  throw Error('Unable to find a free port')
+
+function findFreePort(opt_host) {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.on('listening', function() {
+      resolve(server.address().port);
+      server.close();
+    });
+    server.on('error', (e) => {
+      if (e.code === 'EADDRINUSE' || e.code === 'EACCES') {
+        resolve('Unable to find a free port')
+      } else {
+        reject(e)
+      }
+    });
+    // By providing 0 we let the operative system find an arbitrary port
+    server.listen(0, opt_host);
+  });
 }
 
 // PUBLIC API
