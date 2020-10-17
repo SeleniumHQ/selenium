@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
@@ -57,11 +58,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.Map;
 
 public class FirefoxOptionsTest {
-
+  @Test
+  public void optionsAsMapAndMergeShouldNotOverwriteExistingFireFoxOptions() {
+    FirefoxOptions source = new FirefoxOptions();
+    FirefoxOptions destination = new FirefoxOptions();
+    source.addArguments("-url www.google.com");
+    source.addPreference("an option",true);
+    destination.merge(source);
+    Map<String, Object> firefoxOptions = (Map<String, Object>)destination.asMap().get(FIREFOX_OPTIONS);
+    assertThat(firefoxOptions.get("args")).asInstanceOf(InstanceOfAssertFactories.ITERABLE).contains("-url www.google.com");
+    assertThat(firefoxOptions.get("prefs")).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry("an option",true);
+  }
   @Test
   public void canInitFirefoxOptionsWithCapabilities() {
     FirefoxOptions options = new FirefoxOptions(new ImmutableCapabilities(
@@ -278,7 +289,7 @@ public class FirefoxOptionsTest {
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
         .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("args", Arrays.asList("-a", "-b"));
+        .containsEntry("args", Set.of("-a", "-b"));
   }
 
   @Test
@@ -335,7 +346,7 @@ public class FirefoxOptionsTest {
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> prefs.put("x", true));
 
-    List<String> args = (List<String>) mozOptions.get("args");
+    Set<String> args = (Set<String>) mozOptions.get("args");
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> args.add("-help"));
   }

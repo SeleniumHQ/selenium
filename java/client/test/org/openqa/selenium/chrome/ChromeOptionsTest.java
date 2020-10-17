@@ -27,10 +27,31 @@ import java.util.Map;
 import org.junit.Test;
 
 public class ChromeOptionsTest {
+  @Test
+  public void optionsAsMapAndMergeShouldNotOverwriteExistingGoogleOptions(){
+    ChromeOptions destination = new ChromeOptions();
+    ChromeOptions source = new ChromeOptions();
+    source.addArguments("--start-maximized");
+    source.setBinary("path/to/binary");
+    source.addEncodedExtensions("encodedExtension");
+    destination.merge(source);
+
+    Map<String, Object> googOptions = (Map<String, Object>)destination.asMap().get(ChromeOptions.CAPABILITY);
+
+    List<String> args = (List<String>)googOptions.get("args");
+    List<String> extensions = (List<String>)googOptions.get("extensions");
+    String binary = (String)googOptions.get("binary");
+    assertThat(args).contains("--start-maximized");
+    assertThat(extensions).contains("encodedExtension");
+    assertThat(binary).isEqualTo("path/to/binary");
+  }
 
   @Test
   public void optionsAsMapShouldBeImmutable() {
-    Map<String, Object> options = new ChromeOptions().asMap();
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.addArguments("--argument");
+    chromeOptions.addEncodedExtensions("path/to/binary");
+    Map<String, Object> options = chromeOptions.asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> options.put("browserType", "firefox"));
 
