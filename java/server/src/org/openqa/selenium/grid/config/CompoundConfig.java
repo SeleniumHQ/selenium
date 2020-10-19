@@ -19,10 +19,13 @@ package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
@@ -32,6 +35,7 @@ import org.openqa.selenium.internal.Require;
 
 public class CompoundConfig implements Config {
 
+  private static final Logger LOG = Logger.getLogger(Config.class.getName());
   private final List<Config> allConfigs;
 
   public CompoundConfig(Config... allConfigsInDescendingOrderOfImportance) {

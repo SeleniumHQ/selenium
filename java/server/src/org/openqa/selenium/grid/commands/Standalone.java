@@ -24,6 +24,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -77,7 +78,7 @@ import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
-public class Standalone extends TemplateGridCommand {
+public class Standalone extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger("selenium");
 
@@ -111,11 +112,8 @@ public class Standalone extends TemplateGridCommand {
     return new DefaultStandaloneConfig();
   }
 
-  public Server<?> asServer(Config initialConfig) {
-    Require.nonNull("Config", initialConfig);
-
-    MemoizedConfig config = new MemoizedConfig(new CompoundConfig(initialConfig, getDefaultConfig()));
-
+  @Override
+  protected Handlers createHandlers(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 
@@ -188,7 +186,7 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    return new NettyServer(serverOptions, httpHandler, new ProxyNodeCdp(clientFactory, node));
+    return new Handlers(httpHandler, new ProxyNodeCdp(clientFactory, node));
   }
 
   @Override
