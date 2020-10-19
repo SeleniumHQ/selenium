@@ -30,7 +30,11 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
+import org.openqa.selenium.grid.commands.Standalone;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.MemoizedConfig;
+import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -43,10 +47,9 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -61,8 +64,8 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
+import java.io.StringReader;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
@@ -88,13 +91,13 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 public class EndToEndTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
-  private Json json = new Json();
+  private final Json json = new Json();
 
   @Parameterized.Parameters(name = "End to End {0}")
   public static Collection<Supplier<Object[]>> buildGrids() {
     return ImmutableSet.of(
       safely(EndToEndTest::createRemotes),
-      safely(EndToEndTest::createInMemory));
+      safely(EndToEndTest::createStandalone));
   }
 
   @Parameter
@@ -111,39 +114,32 @@ public class EndToEndTest {
     this.clientFactory = (HttpClient.Factory) raw[1];
   }
 
-  private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
-    Tracer tracer = DefaultTestTracer.createTracer();
-    EventBus bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "inproc://end-to-end-pub",
-        "inproc://end-to-end-sub",
-        true);
+  private static Object[] createStandalone() {
+    StringBuilder rawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(rawCaps)) {
+      out.setPrettyPrint(false).write(CAPS);
+    }
 
-    URI nodeUri = new URI("http://localhost:" + PortProber.findFreePort());
-    CombinedHandler handler = new CombinedHandler();
-    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-        nodeUri.toURL(),
-        handler,
-        HttpClient.Factory.createDefault());
+    String[] rawConfig = new String[] {
+      "[network]",
+      "relax-checks = true",
+      "",
+      "[node]",
+      "detect-drivers = false",
+      "driver-factories = [",
+      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
+      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
+      "]",
+      "",
+      "[server]",
+      "port = " + PortProber.findFreePort()
+    };
+    Config config = new MemoizedConfig(
+        new TomlConfig(new StringReader(String.join("\n", rawConfig))));
 
-    SessionMap sessions = new LocalSessionMap(tracer, bus);
-    handler.addHandler(sessions);
+    Server<?> server = new Standalone().asServer(config).start();
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
-    handler.addHandler(distributor);
-
-    LocalNode node = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
-        .add(CAPS, createFactory(nodeUri))
-        .build();
-    handler.addHandler(node);
-    distributor.add(node);
-
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
-
-    Server<?> server = createServer(router);
-    server.start();
-
-    return new Object[] { server, clientFactory };
+    return new Object[] {server, HttpClient.Factory.createDefault()};
   }
 
   private static Object[] createRemotes() throws URISyntaxException {
@@ -209,19 +205,36 @@ public class EndToEndTest {
   }
 
   private static SessionFactory createFactory(URI serverUri) {
-    class SpoofSession extends Session implements HttpHandler {
+    return new TestSessionFactory((id, caps) -> new SpoofSession(serverUri, caps));
+  }
 
-      private SpoofSession(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), serverUri, new ImmutableCapabilities(), capabilities, Instant.now());
+  // Hahahaha. Java naming.
+  public static class TestSessionFactoryFactory {
+    public static SessionFactory create(Config config, Capabilities stereotype) {
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
+      String hostname = serverOptions.getHostname().orElse("localhost");
+      int port = serverOptions.getPort();
+      URI serverUri;
+      try {
+         serverUri = new URI("http", null, hostname, port, null, null, null);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
       }
 
-      @Override
-      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-        return new HttpResponse();
-      }
-   }
+      return new TestSessionFactory(stereotype, (id, caps) -> new SpoofSession(serverUri, caps));
+    }
+  }
 
-    return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
+  private static class SpoofSession extends Session implements HttpHandler {
+
+    private SpoofSession(URI serverUri, Capabilities capabilities) {
+      super(new SessionId(UUID.randomUUID()), serverUri, new ImmutableCapabilities(), capabilities, Instant.now());
+    }
+
+    @Override
+    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+      return new HttpResponse();
+    }
   }
 
   @Test

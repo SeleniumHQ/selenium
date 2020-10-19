@@ -50,6 +50,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/events/local",
         "//java/server/src/org/openqa/selenium/events/zeromq",
+        "//java/server/src/org/openqa/selenium/grid/commands",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/data",
