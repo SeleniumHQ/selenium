@@ -32,6 +32,8 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -81,32 +83,90 @@ public class NodeOptions {
 
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(maxSessions, factoryFactory);
 
-    // If drivers have been specified, use those.
-    List<String> drivers = config.getAll("node", "drivers").orElse(new ArrayList<>()).stream()
-      .map(String::toLowerCase)
-      .collect(Collectors.toList());
-
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories = ImmutableMultimap.builder();
 
-    if (!drivers.isEmpty()) {
-      allDrivers.entrySet().stream()
-        .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
-        .sorted(Comparator.comparing(entry -> entry.getKey().getDisplayName().toLowerCase()))
-        .peek(this::report)
-        .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+    addDriverFactoriesFromConfig(sessionFactories);
+    addSpecificDrivers(allDrivers, sessionFactories);
+    addDetectedDrivers(allDrivers, sessionFactories);
 
-      return sessionFactories.build().asMap();
+    return sessionFactories.build().asMap();
+  }
+
+  private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+    Optional<List<String>> additionalDriverFactories = config.getAll("node", "driver-factories");
+    if (!additionalDriverFactories.isPresent()) {
+      return;
     }
 
+    List<String> allConfigs = additionalDriverFactories.get();
+    if (allConfigs.size() % 2 != 0) {
+      throw new ConfigException("Expected each driver class to be mapped to a config");
+    }
+
+    for (int i = 0; i < allConfigs.size(); i++) {
+      SessionFactory sessionFactory = createSessionFactory(allConfigs.get(i));
+      i++;
+      if (i == allConfigs.size()) {
+        throw new ConfigException("Unable to find JSON config");
+      }
+      Capabilities stereotype = JSON.toType(allConfigs.get(i), Capabilities.class);
+
+      sessionFactories.put(stereotype, sessionFactory);
+    }
+  }
+
+  private SessionFactory createSessionFactory(String clazz) {
+    LOG.fine(String.format("Creating %s as instance of %s", clazz, SessionFactory.class));
+
+    try {
+      // Use the context class loader since this is what the `--ext`
+      // flag modifies.
+      Class<?> ClassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
+      Method create = ClassClazz.getMethod("create", Config.class);
+
+      if (!Modifier.isStatic(create.getModifiers())) {
+        throw new IllegalArgumentException(String.format(
+          "Class %s's `create(Config)` method must be static", clazz));
+      }
+
+      if (!SessionFactory.class.isAssignableFrom(create.getReturnType())) {
+        throw new IllegalArgumentException(String.format(
+          "Class %s's `create(Config)` method must be static", clazz));
+      }
+
+      return (SessionFactory) create.invoke(null, config);
+    } catch (NoSuchMethodException e) {
+      throw new IllegalArgumentException(String.format(
+        "Class %s must have a static `create(Config)` method", clazz));
+    } catch (ReflectiveOperationException e) {
+      throw new IllegalArgumentException("Unable to find class: " + clazz, e);
+    }
+  }
+
+  private void addDetectedDrivers(
+    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
     if (!config.getBool("node", "detect-drivers").orElse(false)) {
-      return sessionFactories.build().asMap();
+      return;
     }
 
     allDrivers.entrySet().stream()
       .peek(this::report)
       .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+  }
 
-    return sessionFactories.build().asMap();
+  private void addSpecificDrivers(
+    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+    List<String> drivers = config.getAll("node", "drivers").orElse(new ArrayList<>()).stream()
+      .map(String::toLowerCase)
+      .collect(Collectors.toList());
+
+    allDrivers.entrySet().stream()
+      .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
+      .sorted(Comparator.comparing(entry -> entry.getKey().getDisplayName().toLowerCase()))
+      .peek(this::report)
+      .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
