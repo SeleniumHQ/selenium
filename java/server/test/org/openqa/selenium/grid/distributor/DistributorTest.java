@@ -101,14 +101,14 @@ public class DistributorTest {
   private Distributor local;
   private Capabilities stereotype;
   private Capabilities caps;
-  private Secret registrationSecret;
+  private final Secret registrationSecret = new Secret("hellim");
 
   @Before
   public void setUp() {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions, null);
+    local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions, registrationSecret);
 
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
@@ -134,7 +134,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
@@ -143,7 +143,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(node),
         sessions,
-        null);
+        registrationSecret);
     distributor.add(node);
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
@@ -162,7 +162,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
@@ -171,7 +171,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(node),
         sessions,
-        null);
+        registrationSecret);
     distributor.add(node);
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
@@ -191,7 +191,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
@@ -200,7 +200,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(node),
         sessions,
-        null);
+        registrationSecret);
     Distributor distributor = new RemoteDistributor(
       tracer,
       new PassthroughHttpClient.Factory(local),
@@ -221,7 +221,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
@@ -230,7 +230,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(node),
         sessions,
-        null);
+        registrationSecret);
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -246,7 +246,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
@@ -258,7 +258,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(node),
         sessions,
-        null);
+        registrationSecret);
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -280,7 +280,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
@@ -292,7 +292,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(node),
         sessions,
-        null);
+        registrationSecret);
     distributor.add(node);
 
     NewSessionPayload payload = NewSessionPayload.create(caps);
@@ -313,7 +313,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
@@ -326,7 +326,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(node),
         sessions,
-        null);
+        registrationSecret);
     distributor.add(node);
 
     NewSessionPayload payload = NewSessionPayload.create(caps);
@@ -352,7 +352,7 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
@@ -394,7 +394,7 @@ public class DistributorTest {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeAddedEvent.listener(ignored -> latch.countDown()));
 
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, null)
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
@@ -428,7 +428,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null)
+        registrationSecret)
         .add(heavy)
         .add(medium)
         .add(lightest)
@@ -455,7 +455,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null)
+        registrationSecret)
         .add(leastRecent);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       distributor.newSession(createRequest(payload));
@@ -514,14 +514,14 @@ public class DistributorTest {
     handler.addHandler(sessions);
 
     URI uri = createUri();
-    Node alwaysDown = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node alwaysDown = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(DOWN, "Boo!"))
         .build();
     handler.addHandler(alwaysDown);
 
-    Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(UP, "Yay!"))
@@ -533,7 +533,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null);
+        registrationSecret);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
 
@@ -559,7 +559,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null);
+        registrationSecret);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -588,7 +588,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null);
+        registrationSecret);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -637,7 +637,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null);
+        registrationSecret);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -671,7 +671,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null);
+        registrationSecret);
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -693,7 +693,7 @@ public class DistributorTest {
     AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
 
     URI uri = createUri();
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
@@ -705,7 +705,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null);
+        registrationSecret);
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -730,7 +730,7 @@ public class DistributorTest {
     Set<Node> nodeSet = new HashSet<>();
     for (int i=0; i<count; i++) {
       URI uri = createUri();
-      LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, null);
+      LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret);
       for (Capabilities caps: capabilities) {
         builder.add(caps, new TestSessionFactory((id, hostCaps) -> new HandledSession(uri, hostCaps)));
       }
@@ -757,7 +757,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(handler),
         sessions,
-        null);
+        registrationSecret);
     handler.addHandler(distributor);
 
     //Create all three Capability types
@@ -812,7 +812,7 @@ public class DistributorTest {
 
   private Node createNode(Capabilities stereotype, int count, int currentLoad) {
     URI uri = createUri();
-    LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, null);
+    LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret);
     for (int i = 0; i < count; i++) {
       builder.add(stereotype, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
     }
@@ -841,7 +841,7 @@ public class DistributorTest {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("http://example.com");
 
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
@@ -859,7 +859,7 @@ public class DistributorTest {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("http://example.com");
 
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))

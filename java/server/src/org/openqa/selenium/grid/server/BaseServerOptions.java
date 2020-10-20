@@ -120,7 +120,7 @@ public class BaseServerOptions {
   }
 
   public Secret getRegistrationSecret() {
-    return config.get(SERVER_SECTION, "registration-secret").map(Secret::new).orElse(null);
+    return config.get(SERVER_SECTION, "registration-secret").map(Secret::new).orElse(new Secret(""));
   }
 
   public boolean isSelfSigned() {

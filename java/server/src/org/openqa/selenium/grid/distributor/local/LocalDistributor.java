@@ -102,6 +102,8 @@ public class LocalDistributor extends Distributor {
     this.model = new GridModel(bus, registrationSecret);
     this.nodes = new HashMap<>();
 
+    Require.nonNull("Registration secret", registrationSecret);
+
     bus.addListener(NodeStatusEvent.listener(status -> register(registrationSecret, status)));
     bus.addListener(NodeStatusEvent.listener(status -> model.refresh(registrationSecret, status)));
     bus.addListener(NodeDrainComplete.listener(this::remove));

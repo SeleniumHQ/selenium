@@ -30,6 +30,7 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
@@ -76,7 +77,7 @@ public class RouterTest {
     sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
+    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, new Secret("stinking bishop"));
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, distributor);
