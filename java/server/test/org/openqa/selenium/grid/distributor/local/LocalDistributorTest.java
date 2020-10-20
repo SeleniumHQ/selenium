@@ -27,10 +27,12 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.HttpSessionId;
@@ -64,6 +66,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class LocalDistributorTest {
 
+  private final Secret registrationSecret = new Secret("bavarian smoked");
   private Tracer tracer;
   private EventBus bus;
   private HttpClient.Factory clientFactory;
@@ -78,7 +81,7 @@ public class LocalDistributorTest {
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
     uri = new URI("http://localhost:1234");
-    localNode = LocalNode.builder(tracer, bus, uri, uri, null)
+    localNode = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .maximumConcurrentSessions(2)
         .build();
@@ -86,7 +89,12 @@ public class LocalDistributorTest {
 
   @Test
   public void testAddNodeToDistributor() {
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      registrationSecret);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
@@ -101,8 +109,25 @@ public class LocalDistributorTest {
   }
 
   @Test
+  public void testShouldNotAddNodeWithWrongSecret() {
+    Secret secret = new Secret("my_secret");
+    Distributor secretDistributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), secret);
+    bus.fire(new NodeStatusEvent(localNode.getStatus()));
+    DistributorStatus status = secretDistributor.getStatus();
+
+    //Check the size
+    final Set<NodeStatus> nodes = status.getNodes();
+    assertThat(nodes.size()).isEqualTo(0);
+  }
+
+  @Test
   public void testRemoveNodeFromDistributor() {
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      registrationSecret);
     distributor.add(localNode);
 
     //Check the size
@@ -119,7 +144,12 @@ public class LocalDistributorTest {
 
   @Test
   public void testAddSameNodeTwice() {
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      registrationSecret);
     distributor.add(localNode);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
@@ -136,7 +166,7 @@ public class LocalDistributorTest {
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      null);
+      registrationSecret);
 
     // Add one node to ensure that everything is created in that.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
@@ -155,7 +185,7 @@ public class LocalDistributorTest {
     }
 
     // Only use one node.
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory(VerifyingHandler::new))
         .add(caps, new TestSessionFactory(VerifyingHandler::new))
         .add(caps, new TestSessionFactory(VerifyingHandler::new))
@@ -196,7 +226,7 @@ public class LocalDistributorTest {
       bus,
       clientFactory,
       new LocalSessionMap(tracer, bus),
-      null);
+      registrationSecret);
     distributor.add(localNode);
     assertThat(localNode.isDraining()).isFalse();
 
@@ -220,9 +250,12 @@ public class LocalDistributorTest {
   public void testDrainNodeFromNode() {
     assertThat(localNode.isDraining()).isFalse();
 
-    Distributor
-        distributor =
-        new LocalDistributor(tracer, bus, clientFactory, new LocalSessionMap(tracer, bus), null);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      new LocalSessionMap(tracer, bus),
+      registrationSecret);
     distributor.add(localNode);
 
     localNode.drain();

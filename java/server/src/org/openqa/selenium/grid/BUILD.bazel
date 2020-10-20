@@ -20,6 +20,7 @@ genrule(
 
 BASE_COMMAND_SRCS = [
     "TemplateGridCommand.java",
+    "TemplateGridServerCommand.java",
 ]
 
 java_library(
@@ -29,10 +30,13 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],

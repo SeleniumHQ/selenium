@@ -128,7 +128,7 @@ public class LocalNode extends Node {
     this.gridUri = Require.nonNull("Grid URI", gridUri);
     this.maxSessionCount = Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.factories = ImmutableList.copyOf(factories);
-    this.registrationSecret = registrationSecret;
+    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
 
     this.healthCheck = healthCheck == null ?
       () -> new HealthCheck.Result(
@@ -261,20 +261,12 @@ public class LocalNode extends Node {
       Capabilities caps = session.getCapabilities();
       SESSION_ID.accept(span, sessionId);
       CAPABILITIES.accept(span, caps);
-      SESSION_ID_EVENT.accept(attributeMap, sessionId);
-      CAPABILITIES_EVENT.accept(attributeMap, caps);
       String downstream = session.getDownstreamDialect().toString();
       String upstream = session.getUpstreamDialect().toString();
       String sessionUri = session.getUri().toString();
       span.setAttribute(AttributeKey.DOWNSTREAM_DIALECT.getKey(), downstream);
       span.setAttribute(AttributeKey.UPSTREAM_DIALECT.getKey(), upstream);
       span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
-
-      attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream));
-      attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(), EventAttribute.setValue(upstream));
-      attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
-
-      span.addEvent("Session created by node", attributeMap);
 
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
@@ -499,7 +491,7 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofMinutes(5);
     private HealthCheck healthCheck;
 
-    public Builder(
+    private Builder(
       Tracer tracer,
       EventBus bus,
       URI uri,
@@ -509,7 +501,7 @@ public class LocalNode extends Node {
       this.bus = Require.nonNull("Event bus", bus);
       this.uri = Require.nonNull("Remote node URI", uri);
       this.gridUri = Require.nonNull("Grid URI", gridUri);
-      this.registrationSecret = registrationSecret;
+      this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
       this.factories = ImmutableList.builder();
     }
 

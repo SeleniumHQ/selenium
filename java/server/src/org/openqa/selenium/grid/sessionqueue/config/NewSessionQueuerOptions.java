@@ -74,7 +74,6 @@ public class NewSessionQueuerOptions {
   }
 
   public NewSessionQueuer getSessionQueuer(String implementation) {
-    return config
-        .getClass(SESSION_QUEUER_SECTION, "implementation", NewSessionQueuer.class, implementation);
+    return config.getClass(SESSION_QUEUER_SECTION, "implementation", NewSessionQueuer.class, implementation);
   }
 }

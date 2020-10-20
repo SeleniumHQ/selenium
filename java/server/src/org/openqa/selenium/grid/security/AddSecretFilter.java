@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.security;
 
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 
@@ -26,7 +27,7 @@ public class AddSecretFilter implements Filter {
   private final Secret secret;
 
   public AddSecretFilter(Secret secret) {
-    this.secret = secret;
+    this.secret = Require.nonNull("Secret", secret);
   }
 
   @Override

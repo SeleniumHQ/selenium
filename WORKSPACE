@@ -105,8 +105,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "64a71a64ac58b8969bb19b1c9258a973b6433913e958964da698943fb5521d98",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.1/rules_nodejs-2.2.1.tar.gz"],
+    sha256 = "f2194102720e662dbf193546585d705e645314319554c6ce7e47d8b59f459e9c",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.2/rules_nodejs-2.2.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
@@ -119,15 +119,9 @@ npm_install(
 
 http_archive(
     name = "rules_python",
-    patches = [
-        "//py:rules_python_any_version_wheel.patch",
-        "//py:rules_python_wheel_directory_check.patch",
-    ],
-    sha256 = "ddb2e1298684defde2f5e466d96e572119f30f9e2a901a7a81474fd4fa9f6d52",
-    strip_prefix = "rules_python-dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f",
-    urls = [
-        "https://github.com/bazelbuild/rules_python/archive/dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f.zip",
-    ],
+    sha256 = "4d8ed66d5f57a0b6b90e495ca8e29e5c5fa353b93f093e7c31c595a4631ff293",
+    strip_prefix = "rules_python-5c948dcfd4ca79c2ed3a87636c46abba9f5836e9",
+    url = "https://github.com/bazelbuild/rules_python/archive/5c948dcfd4ca79c2ed3a87636c46abba9f5836e9.zip",
 )
 
 # This call should always be present.
@@ -136,18 +130,12 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 py_repositories()
 
 # This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip3_import", "pip_repositories")
+load("@rules_python//python:pip.bzl", "pip_install", "pip_repositories")
 
-pip3_import(
+pip_install(
     name = "dev_requirements",
     requirements = "//py:requirements.txt",
 )
-
-load("@dev_requirements//:requirements.bzl", "pip_install")
-
-pip_repositories()
-
-pip_install()
 
 http_archive(
     name = "rules_pkg",
@@ -157,9 +145,9 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "4521794f0fba2e20f3bf15846ab5e01d5332e587e9ce81629c7f96c793bb7036",
-    strip_prefix = "rules_docker-0.14.4",
-    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.14.4/rules_docker-v0.14.4.tar.gz"],
+    sha256 = "a5007da3a22ce4d53a44e2a8d1895cdd8e41e8d7d11fae66840a112c5f4c00b1",
+    strip_prefix = "rules_docker-cc45596d140b3b8651eb7b51b561f1bf72d1eea9",
+    urls = ["https://github.com/bazelbuild/rules_docker/archive/cc45596d140b3b8651eb7b51b561f1bf72d1eea9.zip"],
 )
 
 load(
@@ -173,11 +161,17 @@ load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
 
 container_deps()
 
-load("@io_bazel_rules_docker//repositories:pip_repositories.bzl", "pip_deps")
+load(
+    "@io_bazel_rules_docker//repositories:pip_repositories.bzl",
+    "io_bazel_rules_docker_pip_deps",
+)
 
-pip_deps()
+io_bazel_rules_docker_pip_deps()
 
-load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
+load(
+    "@io_bazel_rules_docker//container:container.bzl",
+    "container_pull",
+)
 
 container_pull(
     name = "java_image_base",

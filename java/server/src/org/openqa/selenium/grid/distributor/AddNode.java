@@ -52,7 +52,7 @@ class AddNode implements HttpHandler {
     this.distributor = Require.nonNull("Distributor", distributor);
     this.json = Require.nonNull("Json converter", json);
     this.httpFactory = Require.nonNull("HTTP Factory", httpFactory);
-    this.registrationSecret = registrationSecret;
+    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
   }
 
   @Override

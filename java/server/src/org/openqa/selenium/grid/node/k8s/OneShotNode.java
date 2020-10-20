@@ -108,7 +108,7 @@ public class OneShotNode extends Node {
     WebDriverInfo driverInfo) {
     super(tracer, id, uri, registrationSecret);
 
-    this.registrationSecret = registrationSecret;
+    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.events = Require.nonNull("Event bus", events);
     this.gridUri = Require.nonNull("Public Grid URI", gridUri);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));

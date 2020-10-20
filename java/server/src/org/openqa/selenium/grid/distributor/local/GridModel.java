@@ -62,6 +62,7 @@ public class GridModel {
 
   public GridModel(EventBus events, Secret registrationSecret) {
     this.events = Require.nonNull("Event bus", events);
+    Require.nonNull("Registration secret", registrationSecret);
 
     events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
     events.addListener(NodeDrainComplete.listener(this::remove));
@@ -101,10 +102,11 @@ public class GridModel {
   }
 
   public GridModel refresh(Secret registrationSecret, NodeStatus status) {
+    Require.nonNull("Registration secret", registrationSecret);
     Require.nonNull("Node status", status);
 
-    Secret statusSecret = status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret());
-    if (!Objects.equals(registrationSecret, statusSecret)) {
+    Secret statusSecret = new Secret(status.getRegistrationSecret());
+    if (!Secret.matches(registrationSecret, statusSecret)) {
       LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT refreshed.", status.getUri()));
       events.fire(new NodeRejectedEvent(status.getUri()));
       return this;
@@ -261,7 +263,7 @@ public class GridModel {
       status.getMaxSessionCount(),
       status.getSlots(),
       availability,
-      status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret()));
+      new Secret(status.getRegistrationSecret()));
   }
 
   private void release(SessionId id) {
@@ -365,7 +367,7 @@ public class GridModel {
       status.getMaxSessionCount(),
       newSlots,
       status.getAvailability(),
-      status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret())));
+      new Secret(status.getRegistrationSecret())));
   }
 
   private static class AvailabilityAndNode {

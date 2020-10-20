@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.Role;
@@ -38,6 +38,7 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -58,7 +59,7 @@ import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
-public class RouterServer extends TemplateGridCommand {
+public class RouterServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(RouterServer.class.getName());
 
@@ -93,7 +94,7 @@ public class RouterServer extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) {
+  protected Handlers createHandlers(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 
@@ -120,8 +121,14 @@ public class RouterServer extends TemplateGridCommand {
       Route.post("/graphql").to(() -> graphqlHandler),
       get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
 
-    Server<?> server = new NettyServer(serverOptions, handler, new ProxyCdpIntoGrid(clientFactory, sessions));
-    server.start();
+    return new Handlers(handler, new ProxyCdpIntoGrid(clientFactory, sessions));
+  }
+
+  @Override
+  protected void execute(Config config) {
+    Require.nonNull("Config", config);
+
+    Server<?> server = asServer(config).start();
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(

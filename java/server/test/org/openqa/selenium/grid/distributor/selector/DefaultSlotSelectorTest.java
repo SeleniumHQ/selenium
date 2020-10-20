@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -195,7 +196,7 @@ public class DefaultSlotSelectorTest {
   //Create a single node with the given browserName
   private NodeStatus createNode(String...browsers) {
     URI uri = createUri();
-    LocalNode.Builder nodeBuilder = LocalNode.builder(tracer, bus, uri, uri, null);
+    LocalNode.Builder nodeBuilder = LocalNode.builder(tracer, bus, uri, uri, new Secret("cornish yarg"));
     nodeBuilder.maximumConcurrentSessions(browsers.length);
 
     Arrays.stream(browsers).forEach(browser -> {

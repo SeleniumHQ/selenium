@@ -27,12 +27,15 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
@@ -94,14 +97,17 @@ public class EventBusCommand extends TemplateGridCommand {
         "port", 5557)));
   }
 
-  @Override
-  protected void execute(Config config) {
+  public Server<?> asServer(Config initialConfig) {
+    Require.nonNull("Config", initialConfig);
+
+    Config config = new MemoizedConfig(new CompoundConfig(initialConfig, getDefaultConfig()));
+
     EventBusOptions events = new EventBusOptions(config);
     EventBus bus = events.getEventBus();
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-    Server<?> server = new NettyServer(
+    return new NettyServer(
       serverOptions,
       Route.combine(
         Route.get("/status").to(() -> req -> {
@@ -124,6 +130,13 @@ public class EventBusCommand extends TemplateGridCommand {
         }),
         Route.get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)))
     );
+  }
+
+  @Override
+  protected void execute(Config config) {
+    Require.nonNull("Config", config);
+
+    Server<?> server = asServer(config);
     server.start();
 
     BuildInfo info = new BuildInfo();

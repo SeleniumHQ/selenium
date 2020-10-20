@@ -127,7 +127,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
         RemoteConnection
     )
 
-    return handler(command_executor, keep_alive=keep_alive)
+    return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
 
 
 @add_metaclass(ABCMeta)
@@ -1114,8 +1114,7 @@ class WebDriver(BaseWebDriver):
 
     def find_element(self, by=By.ID, value=None):
         """
-        Find an element given a By strategy and locator. Prefer the find_element_by_* methods when
-        possible.
+        Find an element given a By strategy and locator.
 
         :Usage:
             ::
@@ -1142,8 +1141,7 @@ class WebDriver(BaseWebDriver):
 
     def find_elements(self, by=By.ID, value=None):
         """
-        Find elements given a By strategy and locator. Prefer the find_elements_by_* methods when
-        possible.
+        Find elements given a By strategy and locator.
 
         :Usage:
             ::

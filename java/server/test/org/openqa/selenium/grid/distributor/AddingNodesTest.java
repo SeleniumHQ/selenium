@@ -77,6 +77,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 public class AddingNodesTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("cheese", "gouda");
+  private static final Secret registrationSecret = new Secret("caerphilly");
 
   private Distributor distributor;
   private Tracer tracer;
@@ -84,7 +85,6 @@ public class AddingNodesTest {
   private Wait<Object> wait;
   private URL externalUrl;
   private CombinedHandler handler;
-  private Secret registrationSecret = null;
   private Capabilities stereotype;
 
   @Before
@@ -100,7 +100,7 @@ public class AddingNodesTest {
       HttpClient.Factory.createDefault());
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
+    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
     handler.addHandler(local);
     distributor = new RemoteDistributor(tracer, clientFactory, externalUrl, registrationSecret);
 
@@ -112,7 +112,7 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
@@ -123,6 +123,54 @@ public class AddingNodesTest {
 
     NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
     assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+  }
+
+  @Test
+  public void shouldNotRegisterALocalNodeWithWrongRegistrationSecret() throws URISyntaxException {
+    URI sessionUri = new URI("http://example:1234");
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+        externalUrl,
+        handler,
+        HttpClient.Factory.createDefault());
+
+    Secret registrationSecret = new Secret("my_secret");
+
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+        .build();
+    handler.addHandler(node);
+
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    Distributor secretDistributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+
+    bus.fire(new NodeStatusEvent(node.getStatus()));
+
+    assertEquals(0, secretDistributor.getAvailableNodes().size());
+  }
+
+  @Test
+  public void shouldRegisterALocalNodeWithCorrectRegistrationSecret() throws URISyntaxException {
+    URI sessionUri = new URI("http://example:1234");
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+        externalUrl,
+        handler,
+        HttpClient.Factory.createDefault());
+
+    Secret registrationSecret = new Secret("my_secret");
+
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+        .build();
+    handler.addHandler(node);
+
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    Distributor secretDistributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+
+    bus.fire(new NodeStatusEvent(node.getStatus()));
+
+    wait.until(obj -> secretDistributor.getStatus().hasCapacity());
+
+    assertEquals(1, secretDistributor.getAvailableNodes().size());
   }
 
   @Test
@@ -146,7 +194,7 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
@@ -162,10 +210,10 @@ public class AddingNodesTest {
   @Test
   public void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node firstNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+    Node firstNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
       .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
       .build();
-    Node secondNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+    Node secondNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
       .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
       .build();
     handler.addHandler(firstNode);
@@ -185,7 +233,7 @@ public class AddingNodesTest {
   public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), null)
+    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
@@ -211,7 +259,7 @@ public class AddingNodesTest {
           Instant.now(),
           Optional.of(new Session(new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
       UP,
-      null);
+      registrationSecret);
 
     bus.fire(new NodeStatusEvent(crafted));
 
@@ -327,7 +375,7 @@ public class AddingNodesTest {
             Instant.now(),
             Optional.ofNullable(sess))),
         UP,
-        new Secret("cheese"));
+        registrationSecret);
     }
 
     @Override
