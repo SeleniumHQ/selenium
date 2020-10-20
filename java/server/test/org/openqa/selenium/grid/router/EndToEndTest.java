@@ -217,6 +217,9 @@ public class EndToEndTest {
       String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
       String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
       "]",
+      "",
+      "[server]",
+      "registration-secret = \"colby\""
     };
 
     Config sharedConfig = new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
