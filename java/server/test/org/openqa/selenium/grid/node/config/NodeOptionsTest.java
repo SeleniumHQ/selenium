@@ -17,9 +17,13 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
@@ -27,20 +31,31 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.TomlConfig;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.node.ActiveSession;
+import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.spy;
@@ -155,10 +170,52 @@ public class NodeOptionsTest {
     assertThat(reported).isEmpty();
   }
 
+  @Test
+  public void canBeConfiguredToUseHelperClassesToCreateSessionFactories() {
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
+    StringBuilder capsString = new StringBuilder();
+    new Json().newOutput(capsString).setPrettyPrint(false).write(caps);
+
+    Config config = new TomlConfig(new StringReader(String.format(
+      "[node]\n" +
+        "detect-drivers = false\n" +
+        "driver-factories = [" +
+        "  \"%s\",\n" +
+        "  \"%s\"\n" +
+        "]",
+      HelperFactory.class.getName(),
+      capsString.toString().replace("\"", "\\\""))));
+
+
+    NodeOptions options = new NodeOptions(config);
+    Map<Capabilities, Collection<SessionFactory>> factories = options.getSessionFactories(info -> emptySet());
+
+    Collection<SessionFactory> sessionFactories = factories.get(caps);
+    assertThat(sessionFactories).size().isEqualTo(1);
+    assertThat(sessionFactories.iterator().next()).isInstanceOf(SessionFactory.class);
+  }
+
   private Condition<? super List<? extends WebDriverInfo>> supporting(String name) {
     return new Condition<>(
       infos -> infos.stream().anyMatch(info -> name.equals(info.getCanonicalCapabilities().getBrowserName())),
       "supporting %s",
       name);
+  }
+
+  public static class HelperFactory {
+
+    public static SessionFactory create(Config config) {
+      return new SessionFactory() {
+        @Override
+        public Optional<ActiveSession> apply(CreateSessionRequest createSessionRequest) {
+          return Optional.empty();
+        }
+
+        @Override
+        public boolean test(Capabilities capabilities) {
+          return true;
+        }
+      };
+    }
   }
 }
