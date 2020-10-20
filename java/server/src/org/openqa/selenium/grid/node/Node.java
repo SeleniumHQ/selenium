@@ -110,6 +110,7 @@ public abstract class Node implements HasReadyState, Routable {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("URI", uri);
+    Require.nonNull("Registration secret", registrationSecret);
 
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 

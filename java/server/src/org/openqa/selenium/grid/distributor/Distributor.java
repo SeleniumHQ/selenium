@@ -135,6 +135,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.sessions = Require.nonNull("Session map", sessions);
 
+    Require.nonNull("Registration secret", registrationSecret);
+
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
     Json json = new Json();

@@ -84,11 +84,11 @@ public class RemoteNode extends Node {
     this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    this.client = Require
-        .nonNull("HTTP client factory", clientFactory).createClient(fromUri(externalUri));
+    this.client = Require.nonNull("HTTP client factory", clientFactory).createClient(fromUri(externalUri));
 
     this.healthCheck = new RemoteCheck();
 
+    Require.nonNull("Registration secret", registrationSecret);
     this.addSecret = new AddSecretFilter(registrationSecret);
   }
 

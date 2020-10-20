@@ -37,7 +37,7 @@ public class RequiresSecretFilter implements Filter {
   private final Secret secret;
 
   public RequiresSecretFilter(Secret secret) {
-    this.secret = secret;
+    this.secret = Require.nonNull("Secret", secret);
   }
 
   @Override
