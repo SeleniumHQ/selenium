@@ -24,7 +24,10 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
+import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -45,6 +48,7 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.NoHandler;
 import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
@@ -74,7 +78,7 @@ import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
-public class Standalone extends TemplateGridCommand {
+public class Standalone extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger("selenium");
 
@@ -109,7 +113,7 @@ public class Standalone extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) {
+  protected Handlers createHandlers(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
     BaseServerOptions serverOptions = new BaseServerOptions(config);
@@ -184,7 +188,14 @@ public class Standalone extends TemplateGridCommand {
     combinedHandler.addHandler(node);
     distributor.add(node);
 
-    Server<?> server = new NettyServer(serverOptions, httpHandler, new ProxyNodeCdp(clientFactory, node));
+    return new Handlers(httpHandler, new ProxyNodeCdp(clientFactory, node));
+  }
+
+  @Override
+  protected void execute(Config config) {
+    Require.nonNull("Config", config);
+
+    Server<?> server = asServer(config).start();
     server.start();
 
     BuildInfo info = new BuildInfo();

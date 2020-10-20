@@ -204,7 +204,7 @@ public class NodeOptionsTest {
 
   public static class HelperFactory {
 
-    public static SessionFactory create(Config config) {
+    public static SessionFactory create(Config config, Capabilities caps) {
       return new SessionFactory() {
         @Override
         public Optional<ActiveSession> apply(CreateSessionRequest createSessionRequest) {

@@ -50,7 +50,7 @@ public class NetworkOptions {
     // Base case: we do nothing
     Filter toReturn = httpHandler -> httpHandler;
 
-    if (config.getBool("network", "relax_checks").orElse(false)) {
+    if (config.getBool("network", "relax-checks").orElse(false)) {
       return toReturn;
     }
 

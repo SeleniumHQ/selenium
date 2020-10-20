@@ -104,40 +104,42 @@ public class NodeOptions {
     }
 
     for (int i = 0; i < allConfigs.size(); i++) {
-      SessionFactory sessionFactory = createSessionFactory(allConfigs.get(i));
+      String clazz = allConfigs.get(i);
       i++;
       if (i == allConfigs.size()) {
         throw new ConfigException("Unable to find JSON config");
       }
       Capabilities stereotype = JSON.toType(allConfigs.get(i), Capabilities.class);
 
+      SessionFactory sessionFactory = createSessionFactory(clazz, stereotype);
+
       sessionFactories.put(stereotype, sessionFactory);
     }
   }
 
-  private SessionFactory createSessionFactory(String clazz) {
+  private SessionFactory createSessionFactory(String clazz, Capabilities stereotype) {
     LOG.fine(String.format("Creating %s as instance of %s", clazz, SessionFactory.class));
 
     try {
       // Use the context class loader since this is what the `--ext`
       // flag modifies.
       Class<?> ClassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
-      Method create = ClassClazz.getMethod("create", Config.class);
+      Method create = ClassClazz.getMethod("create", Config.class, Capabilities.class);
 
       if (!Modifier.isStatic(create.getModifiers())) {
         throw new IllegalArgumentException(String.format(
-          "Class %s's `create(Config)` method must be static", clazz));
+          "Class %s's `create(Config, Capabilities)` method must be static", clazz));
       }
 
       if (!SessionFactory.class.isAssignableFrom(create.getReturnType())) {
         throw new IllegalArgumentException(String.format(
-          "Class %s's `create(Config)` method must be static", clazz));
+          "Class %s's `create(Config, Capabilities)` method must be static", clazz));
       }
 
-      return (SessionFactory) create.invoke(null, config);
+      return (SessionFactory) create.invoke(null, config, stereotype);
     } catch (NoSuchMethodException e) {
       throw new IllegalArgumentException(String.format(
-        "Class %s must have a static `create(Config)` method", clazz));
+        "Class %s must have a static `create(Config, Capabilities)` method", clazz));
     } catch (ReflectiveOperationException e) {
       throw new IllegalArgumentException("Unable to find class: " + clazz, e);
     }

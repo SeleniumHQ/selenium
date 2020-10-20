@@ -41,8 +41,10 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   private final EventBus bus;
   public final NewSessionQueue sessionRequests;
 
-  public LocalNewSessionQueuer(Tracer tracer, EventBus bus,
-                               NewSessionQueue sessionRequests) {
+  public LocalNewSessionQueuer(
+    Tracer tracer,
+    EventBus bus,
+    NewSessionQueue sessionRequests) {
     super(tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);

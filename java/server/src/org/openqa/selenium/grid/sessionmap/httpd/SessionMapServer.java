@@ -22,14 +22,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
-import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
@@ -46,7 +46,7 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
-public class SessionMapServer extends TemplateGridCommand {
+public class SessionMapServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(SessionMapServer.class.getName());
 
@@ -81,22 +81,29 @@ public class SessionMapServer extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) {
+  protected Handlers createHandlers(Config config) {
+    Require.nonNull("Config", config);
+
     SessionMapOptions sessionMapOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionMapOptions.getSessionMap();
 
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    return new Handlers(
+      Route.combine(
+        sessions,
+        get("/status").to(() -> req ->
+          new HttpResponse()
+            .addHeader("Content-Type", JSON_UTF_8)
+            .setContent(asJson(
+              ImmutableMap.of("value", ImmutableMap.of(
+                "ready", true,
+                "message", "Session map is ready."))))),
+        get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))),
+      null);
+  }
 
-    Server<?> server = new NettyServer(serverOptions, Route.combine(
-      sessions,
-      get("/status").to(() -> req ->
-        new HttpResponse()
-          .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(asJson(
-            ImmutableMap.of("value", ImmutableMap.of(
-              "ready", true,
-              "message", "Session map is ready."))))),
-      get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))));
+  @Override
+  protected void execute(Config config) {
+    Server<?> server = asServer(config);
     server.start();
 
     BuildInfo info = new BuildInfo();
