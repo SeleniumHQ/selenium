@@ -104,7 +104,7 @@ public class GridModel {
     Require.nonNull("Node status", status);
 
     Secret statusSecret = status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret());
-    if (!Objects.equals(registrationSecret, statusSecret)) {
+    if (!Secret.matches(registrationSecret, statusSecret)) {
       LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT refreshed.", status.getUri()));
       events.fire(new NodeRejectedEvent(status.getUri()));
       return this;

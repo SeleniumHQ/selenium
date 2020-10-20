@@ -67,7 +67,7 @@ public class RequiresSecretFilter implements Filter {
 
     Secret requestSecret = new Secret(header);
 
-    if (!Objects.equals(secret, requestSecret)) {
+    if (!secret.matches(requestSecret)) {
       LOG.warning("Secrets did not match!");
       return false;
     }

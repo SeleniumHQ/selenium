@@ -132,7 +132,7 @@ public class LocalDistributor extends Distributor {
     Require.nonNull("Node", status);
 
     Secret nodeSecret = status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret());
-    if (!Objects.equals(registrationSecret, nodeSecret)) {
+    if (!Secret.matches(registrationSecret, nodeSecret)) {
       LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT registered.", status.getUri()));
       bus.fire(new NodeRejectedEvent(status.getUri()));
       return;
