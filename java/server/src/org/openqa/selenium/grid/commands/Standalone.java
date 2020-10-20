@@ -116,6 +116,7 @@ public class Standalone extends TemplateGridServerCommand {
   protected Handlers createHandlers(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
 
     EventBusOptions events = new EventBusOptions(config);
     EventBus bus = events.getEventBus();
@@ -132,7 +133,9 @@ public class Standalone extends TemplateGridServerCommand {
     URI localhost;
     URL localhostURL;
     try {
-      localhost = new URI("http", null, hostName, port, null, null, null);
+      localhost =
+          new URI((serverOptions.isSecure() || serverOptions.isSelfSigned()) ? "https" : "http",
+                  null, hostName, port, null, null, null);
       localhostURL = localhost.toURL();
     } catch (URISyntaxException | MalformedURLException e) {
       throw new IllegalArgumentException(e);
@@ -160,7 +163,6 @@ public class Standalone extends TemplateGridServerCommand {
         .setContent(Contents.utf8String("Standalone is " + ready));
     };
 
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
 
     Routable ui;
