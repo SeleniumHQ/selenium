@@ -20,14 +20,10 @@ package org.openqa.selenium.grid.commands;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.TemplateGridServerCommand;
-import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -37,6 +33,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.local.LocalNodeFactory;
 import org.openqa.selenium.grid.router.Router;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
@@ -50,8 +47,6 @@ import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -62,7 +57,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
@@ -116,41 +110,31 @@ public class Standalone extends TemplateGridServerCommand {
   protected Handlers createHandlers(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
 
     EventBusOptions events = new EventBusOptions(config);
     EventBus bus = events.getEventBus();
 
-    String hostName;
-    try {
-      hostName = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
-    } catch (WebDriverException e) {
-      hostName = "localhost";
-    }
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    Secret registrationSecret = serverOptions.getRegistrationSecret();
 
-    int port = config.getInt("server", "port")
-      .orElseThrow(() -> new IllegalArgumentException("No port to use configured"));
-    URI localhost;
-    URL localhostURL;
+    URI localhost = serverOptions.getExternalUri();
+    URL localhostUrl;
     try {
-      localhost =
-          new URI((serverOptions.isSecure() || serverOptions.isSelfSigned()) ? "https" : "http",
-                  null, hostName, port, null, null, null);
-      localhostURL = localhost.toURL();
-    } catch (URISyntaxException | MalformedURLException e) {
+      localhostUrl = localhost.toURL();
+    } catch (MalformedURLException e) {
       throw new IllegalArgumentException(e);
     }
 
     NetworkOptions networkOptions = new NetworkOptions(config);
     CombinedHandler combinedHandler = new CombinedHandler();
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      localhostURL,
+      localhostUrl,
       combinedHandler,
       networkOptions.getHttpClientFactory(tracer));
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     combinedHandler.addHandler(sessions);
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
     combinedHandler.addHandler(distributor);
 
     Routable router = new Router(tracer, clientFactory, sessions, distributor)

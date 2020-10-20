@@ -137,7 +137,8 @@ public class EndToEndTest {
       "]",
       "",
       "[server]",
-      "port = " + PortProber.findFreePort()
+      "port = " + PortProber.findFreePort(),
+      "registration-secret = \"provolone\""
     };
     Config config = new MemoizedConfig(
       new TomlConfig(new StringReader(String.join("\n", rawConfig))));

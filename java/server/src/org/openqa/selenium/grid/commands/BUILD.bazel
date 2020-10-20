@@ -29,6 +29,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/node/config",
         "//java/server/src/org/openqa/selenium/grid/node/local",
         "//java/server/src/org/openqa/selenium/grid/router",
+        "//java/server/src/org/openqa/selenium/grid/security",
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
