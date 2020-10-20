@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +59,8 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.testing.Safely;
+import org.openqa.selenium.testing.TearDownFixture;
 
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -68,7 +71,6 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
 import static java.time.Duration.ofSeconds;
@@ -89,17 +91,16 @@ public class EndToEndTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private final Json json = new Json();
 
-
   @Parameterized.Parameters(name = "End to End {0}")
-  public static Collection<Supplier<Object[]>> buildGrids() {
+  public static Collection<Supplier<TestData>> buildGrids() {
     return ImmutableSet.of(
-      safely(EndToEndTest::createFullyDistributed),
-      safely(EndToEndTest::createHubAndNode),
-      safely(EndToEndTest::createStandalone));
+      EndToEndTest::createFullyDistributed,
+      EndToEndTest::createHubAndNode,
+      EndToEndTest::createStandalone);
   }
 
   @Parameter
-  public Supplier<Object[]> values;
+  public Supplier<TestData> values;
 
   private Server<?> server;
 
@@ -107,12 +108,18 @@ public class EndToEndTest {
 
   @Before
   public void setFields() {
-    Object[] raw = values.get();
-    this.server = (Server<?>) raw[0];
-    this.clientFactory = (HttpClient.Factory) raw[1];
+    TestData data = values.get();
+    this.server = data.server;
+    this.clientFactory = HttpClient.Factory.createDefault();
   }
 
-  private static Object[] createStandalone() {
+  @After
+  public void stopServers() {
+    Safely.safelyCall(values.get().fixtures);
+  }
+
+
+  private static TestData createStandalone() {
     StringBuilder rawCaps = new StringBuilder();
     try (JsonOutput out = new Json().newOutput(rawCaps)) {
       out.setPrettyPrint(false).write(CAPS);
@@ -139,10 +146,10 @@ public class EndToEndTest {
 
     waitUntilReady(server);
 
-    return new Object[]{server, HttpClient.Factory.createDefault()};
+    return new TestData(server, server::stop);
   }
 
-  private static Object[] createHubAndNode() {
+  private static TestData createHubAndNode() {
     StringBuilder rawCaps = new StringBuilder();
     try (JsonOutput out = new Json().newOutput(rawCaps)) {
       out.setPrettyPrint(false).write(CAPS);
@@ -179,10 +186,10 @@ public class EndToEndTest {
 
     waitUntilReady(hub);
 
-    return new Object[]{hub, HttpClient.Factory.createDefault()};
+    return new TestData(hub, hub::stop, node::stop);
   }
 
-  private static Object[] createFullyDistributed() {
+  private static TestData createFullyDistributed() {
     StringBuilder rawCaps = new StringBuilder();
     try (JsonOutput out = new Json().newOutput(rawCaps)) {
       out.setPrettyPrint(false).write(CAPS);
@@ -256,7 +263,15 @@ public class EndToEndTest {
     waitUntilReady(nodeServer);
 
     waitUntilReady(router);
-    return new Object[]{router, HttpClient.Factory.createDefault()};
+
+    return new TestData(
+      router,
+      router::stop,
+      nodeServer::stop,
+      distributorServer::stop,
+      sessionMapServer::stop,
+      newSessionQueueServer::stop,
+      eventServer::stop);
   }
 
   private static void waitUntilReady(Server<?> server) {
@@ -417,15 +432,13 @@ public class EndToEndTest {
 
   }
 
-  private static <X> Supplier<X> safely(Callable<X> callable) {
-    return () -> {
-      try {
-        return callable.call();
-      } catch (RuntimeException e) {
-        throw e;
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    };
+  private static class TestData {
+    public final Server<?> server;
+    public final TearDownFixture[] fixtures;
+
+    public TestData(Server<?> server, TearDownFixture... fixtures) {
+      this.server = server;
+      this.fixtures = fixtures;
+    }
   }
 }
