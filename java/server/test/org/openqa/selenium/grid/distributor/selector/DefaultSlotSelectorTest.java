@@ -189,8 +189,7 @@ public class DefaultSlotSelectorTest {
       uri,
       count,
       ImmutableSet.copyOf(slots),
-      UP,
-      null);
+      UP);
   }
 
   //Create a single node with the given browserName
