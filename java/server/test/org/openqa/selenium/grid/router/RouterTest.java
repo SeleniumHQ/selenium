@@ -65,6 +65,7 @@ public class RouterTest {
   private SessionMap sessions;
   private Distributor distributor;
   private Router router;
+  private Secret registrationSecret;
 
   @Before
   public void setUp() {
@@ -77,7 +78,8 @@ public class RouterTest {
     sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, new Secret("stinking bishop"));
+    registrationSecret = new Secret("stinking bishop");
+    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, distributor);
@@ -96,7 +98,7 @@ public class RouterTest {
 
     AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
 
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
@@ -114,7 +116,7 @@ public class RouterTest {
 
     AtomicReference<Availability> isUp = new AtomicReference<>(UP);
 
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))

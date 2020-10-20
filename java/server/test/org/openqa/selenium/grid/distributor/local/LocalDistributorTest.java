@@ -81,7 +81,7 @@ public class LocalDistributorTest {
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
     uri = new URI("http://localhost:1234");
-    localNode = LocalNode.builder(tracer, bus, uri, uri, null)
+    localNode = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .maximumConcurrentSessions(2)
         .build();
@@ -185,7 +185,7 @@ public class LocalDistributorTest {
     }
 
     // Only use one node.
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory(VerifyingHandler::new))
         .add(caps, new TestSessionFactory(VerifyingHandler::new))
         .add(caps, new TestSessionFactory(VerifyingHandler::new))

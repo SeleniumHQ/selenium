@@ -659,7 +659,7 @@ public class DistributorTest {
     handler.addHandler(sessions);
 
     URI uri = createUri();
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, caps) -> {
           throw new SessionNotCreatedException("OMG");
         }))

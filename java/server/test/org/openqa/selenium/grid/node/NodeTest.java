@@ -101,13 +101,14 @@ public class NodeTest {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
+    registrationSecret = new Secret("sussex charmer");
+
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
 
     uri = new URI("http://localhost:1234");
 
     class Handler extends Session implements HttpHandler {
-
       private Handler(Capabilities capabilities) {
         super(new SessionId(UUID.randomUUID()), uri, stereotype, capabilities, Instant.now());
       }
@@ -118,7 +119,7 @@ public class NodeTest {
       }
     }
 
-    local = LocalNode.builder(tracer, bus, uri, uri, null)
+    local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
@@ -136,7 +137,7 @@ public class NodeTest {
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
-    Node local = LocalNode.builder(tracer, bus, uri, uri, null).build();
+    Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret).build();
     HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
     Node node = new RemoteNode(
       tracer,
@@ -162,7 +163,7 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .build();
 
@@ -255,7 +256,7 @@ public class NodeTest {
       }
     }
 
-    Node local = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Recording()))
         .build();
     Node remote = new RemoteNode(
@@ -296,7 +297,7 @@ public class NodeTest {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
@@ -314,7 +315,7 @@ public class NodeTest {
 
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
-    Node local = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> {
           throw new SessionNotCreatedException("eeek");
         }))
@@ -329,7 +330,7 @@ public class NodeTest {
   @Test
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, stereotype, c, Instant.now())))
         .build();
     Optional<Session> session = node.newSession(createSessionRequest(caps))

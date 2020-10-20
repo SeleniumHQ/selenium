@@ -27,6 +27,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
@@ -50,6 +51,7 @@ public class CreateSessionTest {
 
   private final Json json = new Json();
   private final Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+  private final Secret registrationSecret = new Secret("tunworth");
 
   @Test
   public void shouldAcceptAW3CPayload() throws URISyntaxException {
@@ -67,7 +69,7 @@ public class CreateSessionTest {
         new GuavaEventBus(),
         uri,
         uri,
-        null)
+        registrationSecret)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
@@ -118,7 +120,7 @@ public class CreateSessionTest {
         new GuavaEventBus(),
         uri,
         uri,
-        null)
+        registrationSecret)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
@@ -161,7 +163,7 @@ public class CreateSessionTest {
         new GuavaEventBus(),
         uri,
         uri,
-        null)
+        registrationSecret)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 

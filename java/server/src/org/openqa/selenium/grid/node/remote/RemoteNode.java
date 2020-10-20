@@ -164,7 +164,7 @@ public class RemoteNode extends Node {
     HttpRequest req = new HttpRequest(DELETE, "/se/grid/node/session/" + id);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
-    HttpResponse res = client.execute(req);
+    HttpResponse res = client.with(addSecret).execute(req);
 
     Values.get(res, Void.class);
   }
