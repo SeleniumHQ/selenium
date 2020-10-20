@@ -19,6 +19,7 @@ package org.openqa.selenium.events.zeromq;
 
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.security.Secret;
 import org.zeromq.ZContext;
 
 /**
@@ -32,11 +33,11 @@ public class ZeroMqEventBus {
     // Use the create method.
   }
 
-  public static EventBus create(ZContext context, String publish, String subscribe, boolean bind) {
+  public static EventBus create(ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
     if (bind) {
-      return new BoundZmqEventBus(context, publish, subscribe);
+      return new BoundZmqEventBus(context, publish, subscribe, secret);
     }
-    return new UnboundZmqEventBus(context, publish, subscribe);
+    return new UnboundZmqEventBus(context, publish, subscribe, secret);
   }
 
   public static EventBus create(Config config) {
@@ -50,7 +51,9 @@ public class ZeroMqEventBus {
 
     boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
 
-    return create(new ZContext(), publish, subscribe, bind);
+    Secret secret = config.get("server", "registration-secret").map(Secret::new).orElse(new Secret(""));
+
+    return create(new ZContext(), publish, subscribe, bind, secret);
   }
 
 }

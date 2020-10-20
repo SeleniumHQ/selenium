@@ -24,8 +24,10 @@ import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -59,11 +61,19 @@ class UnboundZmqEventBus implements EventBus {
   private final ExecutorService executor;
   private final Map<EventName, List<Consumer<Event>>> listeners = new ConcurrentHashMap<>();
   private final Queue<UUID> recentMessages = EvictingQueue.create(128);
+  private final String encodedSecret;
 
   private ZMQ.Socket pub;
   private ZMQ.Socket sub;
 
-  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection) {
+  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+    Require.nonNull("Secret", secret);
+    StringBuilder builder = new StringBuilder();
+    try (JsonOutput out = JSON.newOutput(builder)) {
+      out.setPrettyPrint(false).writeClassName(false).write(secret);
+    }
+    this.encodedSecret = builder.toString();
+
     executor = Executors.newCachedThreadPool(r -> {
       Thread thread = new Thread(r);
       thread.setName("Event Bus");
@@ -112,6 +122,7 @@ class UnboundZmqEventBus implements EventBus {
             ZMQ.Socket socket = poller.getSocket(0);
 
             EventName eventName = new EventName(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
+            Secret eventSecret = JSON.toType(new String(socket.recv(ZMQ.DONTWAIT), UTF_8), Secret.class);
             UUID id = UUID.fromString(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
             String data = new String(socket.recv(ZMQ.DONTWAIT), UTF_8);
 
@@ -122,6 +133,10 @@ class UnboundZmqEventBus implements EventBus {
               continue;
             }
             recentMessages.add(id);
+
+            if (!Secret.matches(secret, eventSecret)) {
+              LOG.severe(String.format("Received message without a valid secret. Rejecting. %s -> %s", event, data));
+            }
 
             List<Consumer<Event>> typeListeners = listeners.get(eventName);
             if (typeListeners == null) {
@@ -186,6 +201,7 @@ class UnboundZmqEventBus implements EventBus {
     Require.nonNull("Event to send", event);
 
     pub.sendMore(event.getType().getName().getBytes(UTF_8));
+    pub.sendMore(encodedSecret.getBytes(UTF_8));
     pub.sendMore(event.getId().toString().getBytes(UTF_8));
     pub.send(event.getRawData().getBytes(UTF_8));
   }

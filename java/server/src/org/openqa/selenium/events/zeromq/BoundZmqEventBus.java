@@ -21,6 +21,7 @@ import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.EventListener;
 import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.NetworkUtils;
 import org.zeromq.SocketType;
@@ -44,7 +45,7 @@ class BoundZmqEventBus implements EventBus {
   private final ZMQ.Socket xsub;
   private final ExecutorService executor;
 
-  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection) {
+  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
@@ -68,7 +69,7 @@ class BoundZmqEventBus implements EventBus {
     });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
 
-    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise);
+    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret);
 
     LOG.info("Event bus ready");
   }

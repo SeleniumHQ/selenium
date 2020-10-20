@@ -14,6 +14,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/security",
         artifact("com.google.guava:guava"),
         artifact("net.jodah:failsafe"),
         artifact("org.zeromq:jeromq"),
