@@ -24,11 +24,12 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Objects;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static org.openqa.selenium.grid.security.AddSecretFilter.HEADER_NAME;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
 
 public class RequiresSecretFilter implements Filter {
 
@@ -47,8 +48,14 @@ public class RequiresSecretFilter implements Filter {
       if (!isSecretMatch(secret, req)) {
         return new HttpResponse()
           .setStatus(HTTP_UNAUTHORIZED)
-          .addHeader("Content-Type", "text/plain; charset=UTF-8")
-          .setContent(Contents.utf8String("Unauthorized access attempted to " + req.getUri()));
+          .addHeader("Content-Type", JSON_UTF_8)
+          .setContent(Contents.asJson(new TreeMap<String, Object>() {{
+            put("value", new TreeMap<String, Object>() {{
+              put("error", "unknown error");
+              put("message", "Unauthorized access attempted to " + req);
+              put("stacktrace", "");
+            }});
+          }}));
       }
 
       return httpHandler.execute(req);
@@ -59,7 +66,7 @@ public class RequiresSecretFilter implements Filter {
     String header = request.getHeader(HEADER_NAME);
     if (header == null) {
       if (secret != null) {
-        LOG.warning("Unexpected secret sent!");
+        LOG.warning("Unexpectedly received registration secret to " + request);
         return false;
       }
       return true;
@@ -68,7 +75,7 @@ public class RequiresSecretFilter implements Filter {
     Secret requestSecret = new Secret(header);
 
     if (!secret.matches(requestSecret)) {
-      LOG.warning("Secrets did not match!");
+      LOG.warning("Unauthorized access attempted to " + request);
       return false;
     }
 
