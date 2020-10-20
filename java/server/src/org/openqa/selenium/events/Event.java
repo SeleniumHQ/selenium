@@ -19,6 +19,7 @@ package org.openqa.selenium.events;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -39,7 +40,11 @@ public class Event {
     this.id = Require.nonNull("Message id", id);
     this.eventName = Require.nonNull("Event type", eventName);
 
-    this.data = JSON.toJson(data);
+    StringBuilder builder = new StringBuilder();
+    try (JsonOutput out = JSON.newOutput(builder)) {
+      out.setPrettyPrint(false).writeClassName(false).write(data);
+    }
+    this.data = builder.toString();
   }
 
   public UUID getId() {
