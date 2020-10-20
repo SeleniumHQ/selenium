@@ -173,6 +173,9 @@ public class EndToEndTest {
       String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
       String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
       "]",
+      "",
+      "[server]",
+      "registration-secret = \"feta\""
     };
 
     TomlConfig baseConfig = new TomlConfig(new StringReader(String.join("\n", rawConfig)));

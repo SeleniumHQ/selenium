@@ -32,7 +32,7 @@ public class AddSecretFilter implements Filter {
   @Override
   public HttpHandler apply(HttpHandler httpHandler) {
     return req -> {
-      if (req.getHeader(HEADER_NAME) == null) {
+      if (secret != null && req.getHeader(HEADER_NAME) == null) {
         req.addHeader(HEADER_NAME, secret.encode());
       }
 

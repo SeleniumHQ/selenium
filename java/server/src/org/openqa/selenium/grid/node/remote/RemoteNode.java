@@ -28,12 +28,14 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -69,6 +71,7 @@ public class RemoteNode extends Node {
   private final URI externalUri;
   private final Set<Capabilities> capabilities;
   private final HealthCheck healthCheck;
+  private final Filter addSecret;
 
   public RemoteNode(
       Tracer tracer,
@@ -85,6 +88,8 @@ public class RemoteNode extends Node {
         .nonNull("HTTP client factory", clientFactory).createClient(fromUri(externalUri));
 
     this.healthCheck = new RemoteCheck();
+
+    this.addSecret = new AddSecretFilter(registrationSecret);
   }
 
   @Override
@@ -114,7 +119,7 @@ public class RemoteNode extends Node {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
     req.setContent(asJson(sessionRequest));
 
-    HttpResponse res = client.execute(req);
+    HttpResponse res = client.with(addSecret).execute(req);
 
     return Optional.ofNullable(Values.get(res, CreateSessionResponse.class));
   }
@@ -126,7 +131,7 @@ public class RemoteNode extends Node {
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/owner/" + id);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
-    HttpResponse res = client.execute(req);
+    HttpResponse res = client.with(addSecret).execute(req);
 
     return Boolean.TRUE.equals(Values.get(res, Boolean.class));
   }
@@ -138,7 +143,7 @@ public class RemoteNode extends Node {
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/session/" + id);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
-    HttpResponse res = client.execute(req);
+    HttpResponse res = client.with(addSecret).execute(req);
 
     return Values.get(res, Session.class);
   }
@@ -210,7 +215,7 @@ public class RemoteNode extends Node {
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/drain");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
 
-    HttpResponse res = client.execute(req);
+    HttpResponse res = client.with(addSecret).execute(req);
 
     if(res.getStatus() == HTTP_OK) {
       draining = true;
