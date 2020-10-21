@@ -18,6 +18,7 @@
 package org.openqa.selenium.events;
 
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 
 import java.util.Objects;
 
@@ -51,5 +52,13 @@ public final class EventName {
   @Override
   public int hashCode() {
     return name.hashCode();
+  }
+
+  private String toJson() {
+    return name;
+  }
+
+  private static EventName fromJson(JsonInput input) {
+    return new EventName(input.nextString());
   }
 }
