@@ -127,10 +127,9 @@
 
 'use strict'
 
-const http = require('./http');
-const io = require('./io');
-const { Browser } = require('./lib/capabilities');
-const chromium = require('./chromium');
+const io = require('./io')
+const { Browser } = require('./lib/capabilities')
+const chromium = require('./chromium')
 
 /**
  * Name of the ChromeDriver executable.
@@ -138,10 +137,10 @@ const chromium = require('./chromium');
  * @const
  */
 const CHROMEDRIVER_EXE =
-    process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver';
+  process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver'
 
 /** @type {remote.DriverService} */
-let defaultService = null;
+let defaultService = null
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -157,16 +156,16 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously();
+    let exe = opt_exe || locateSynchronously()
     if (!exe) {
       throw Error(
-          `The ChromeDriver could not be found on the current PATH. Please ` +
+        `The ChromeDriver could not be found on the current PATH. Please ` +
           `download the latest version of the ChromeDriver from ` +
           `http://chromedriver.storage.googleapis.com/index.html and ensure ` +
           `it can be found on your PATH.`
-      );
+      )
     }
-    super(exe);
+    super(exe)
   }
 }
 
@@ -186,7 +185,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeBinaryPath(path) {
-    return this.setBinaryPath(path);
+    return this.setBinaryPath(path)
   }
 
   /**
@@ -196,7 +195,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   androidChrome() {
-    return this.androidPackage('com.android.chrome');
+    return this.androidPackage('com.android.chrome')
   }
 
   /**
@@ -206,7 +205,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeLogFile(path) {
-    return this.setBrowserLogFile(path);
+    return this.setBrowserLogFile(path)
   }
 
   /**
@@ -216,7 +215,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setChromeMinidumpPath(path) {
-    return this.setBrowserMinidumpPath(path);
+    return this.setBrowserMinidumpPath(path)
   }
 }
 
@@ -236,11 +235,11 @@ class Driver extends chromium.Driver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(opt_config, opt_serviceExecutor) {
-    let caps = opt_config || new Options();
+    let caps = opt_config || new Options()
     return /** @type {!Driver} */ (super.createSession(
-        caps,
-        opt_serviceExecutor
-    ));
+      caps,
+      opt_serviceExecutor
+    ))
   }
 }
 
@@ -251,7 +250,7 @@ class Driver extends chromium.Driver {
  * @return {?string} the located executable, or `null`.
  */
 function locateSynchronously() {
-  return io.findInPath(CHROMEDRIVER_EXE, true);
+  return io.findInPath(CHROMEDRIVER_EXE, true)
 }
 
 /**
@@ -262,11 +261,11 @@ function locateSynchronously() {
 function setDefaultService(service) {
   if (defaultService && defaultService.isRunning()) {
     throw Error(
-        `The previously configured ChromeDriver service is still running. ` +
+      `The previously configured ChromeDriver service is still running. ` +
         `You must shut it down before you may adjust its configuration.`
-    );
+    )
   }
-  defaultService = service;
+  defaultService = service
 }
 
 /**
@@ -277,22 +276,20 @@ function setDefaultService(service) {
  */
 function getDefaultService() {
   if (!defaultService) {
-    defaultService = new ServiceBuilder().build();
+    defaultService = new ServiceBuilder().build()
   }
-  return defaultService;
+  return defaultService
 }
 
-
-Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions';
-Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME;
-Driver.getDefaultService = getDefaultService;
-Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog';
-
+Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'
+Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
+Driver.getDefaultService = getDefaultService
+Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
-exports.getDefaultService = getDefaultService;
-exports.setDefaultService = setDefaultService;
-exports.locateSynchronously = locateSynchronously;
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder
+exports.getDefaultService = getDefaultService
+exports.setDefaultService = setDefaultService
+exports.locateSynchronously = locateSynchronously
