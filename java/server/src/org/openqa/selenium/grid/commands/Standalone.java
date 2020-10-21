@@ -180,7 +180,6 @@ public class Standalone extends TemplateGridServerCommand {
     Require.nonNull("Config", config);
 
     Server<?> server = asServer(config).start();
-    server.start();
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(
