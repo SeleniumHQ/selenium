@@ -209,7 +209,7 @@ class Options extends chromium.Options {
   }
 
   /**
-   * Sets the directory to store Chrome minidump in. This option is only
+   * Sets the directory to store Chrome minidumps in. This option is only
    * supported when ChromeDriver is running on Linux.
    * @param {string} path The directory path.
    * @return {!Options} A self reference.
