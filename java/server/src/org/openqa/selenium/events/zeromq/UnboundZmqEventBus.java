@@ -38,6 +38,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 class UnboundZmqEventBus implements EventBus {
 
+  static final EventName REJECTED_EVENT = new EventName("selenium-rejected-event");
   private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private static final Json JSON = new Json();
   private final ExecutorService executor;
@@ -136,6 +138,11 @@ class UnboundZmqEventBus implements EventBus {
 
             if (!Secret.matches(secret, eventSecret)) {
               LOG.severe(String.format("Received message without a valid secret. Rejecting. %s -> %s", event, data));
+              Event rejectedEvent = new Event(REJECTED_EVENT, new ZeroMqEventBus.RejectedEvent(eventName, data));
+
+              listeners.getOrDefault(REJECTED_EVENT, new ArrayList<>())
+                .forEach(listener -> listener.accept(rejectedEvent));
+              return;
             }
 
             List<Consumer<Event>> typeListeners = listeners.get(eventName);

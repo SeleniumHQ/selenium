@@ -145,9 +145,9 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "a5007da3a22ce4d53a44e2a8d1895cdd8e41e8d7d11fae66840a112c5f4c00b1",
-    strip_prefix = "rules_docker-cc45596d140b3b8651eb7b51b561f1bf72d1eea9",
-    urls = ["https://github.com/bazelbuild/rules_docker/archive/cc45596d140b3b8651eb7b51b561f1bf72d1eea9.zip"],
+    sha256 = "8a51514f4a6341b5ab68512ab5b4d5d30be37af9795731402c586cb5d56f2bb7",
+    strip_prefix = "rules_docker-569d39130460987aebff3aa32cc2256c8f923630",
+    urls = ["https://github.com/AutomatedTester/rules_docker/archive/569d39130460987aebff3aa32cc2256c8f923630.zip"],
 )
 
 load(
@@ -160,13 +160,6 @@ container_repositories()
 load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
 
 container_deps()
-
-load(
-    "@io_bazel_rules_docker//repositories:pip_repositories.bzl",
-    "io_bazel_rules_docker_pip_deps",
-)
-
-io_bazel_rules_docker_pip_deps()
 
 load(
     "@io_bazel_rules_docker//container:container.bzl",

@@ -248,7 +248,7 @@ const RingSystem = React.memo(
 					>
 						{textFormat.replace(
 							RegExp(/:freePercent:/g),
-							`${100 - totalProgress}`
+							`${totalProgress}`
 						)}
 					</div>
 					{[...Array(count)].map((_, i) => (
