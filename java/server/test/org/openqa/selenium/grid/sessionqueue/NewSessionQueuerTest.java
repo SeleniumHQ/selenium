@@ -406,7 +406,7 @@ public class NewSessionQueuerTest {
   }
 
   @Test
-  public void shouldBeAbleToTimeoutARequestOnPoll() {
+  public void shouldBeAbleToTimeoutARequestOnRemove() {
     Tracer tracer = DefaultTestTracer.createTracer();
     LocalNewSessionQueue sessionQueue = new LocalNewSessionQueue(
         tracer,
