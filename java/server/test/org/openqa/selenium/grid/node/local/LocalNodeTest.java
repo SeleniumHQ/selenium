@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
@@ -60,6 +61,7 @@ public class LocalNodeTest {
 
   private LocalNode node;
   private Session session;
+  private Secret registrationSecret;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -67,7 +69,8 @@ public class LocalNodeTest {
     EventBus bus = new GuavaEventBus();
     URI uri = new URI("http://localhost:1234");
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
-    node = LocalNode.builder(tracer, bus, uri, uri, null)
+    registrationSecret = new Secret("red leicester");
+    node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .build();
 
@@ -175,7 +178,7 @@ public class LocalNodeTest {
       }
     }
 
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .add(caps, new TestSessionFactory(VerifyingHandler::new))

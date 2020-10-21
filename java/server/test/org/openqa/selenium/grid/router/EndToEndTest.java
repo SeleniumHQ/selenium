@@ -137,7 +137,8 @@ public class EndToEndTest {
       "]",
       "",
       "[server]",
-      "port = " + PortProber.findFreePort()
+      "port = " + PortProber.findFreePort(),
+      "registration-secret = \"provolone\""
     };
     Config config = new MemoizedConfig(
       new TomlConfig(new StringReader(String.join("\n", rawConfig))));
@@ -172,6 +173,9 @@ public class EndToEndTest {
       String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
       String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
       "]",
+      "",
+      "[server]",
+      "registration-secret = \"feta\""
     };
 
     TomlConfig baseConfig = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
@@ -213,6 +217,9 @@ public class EndToEndTest {
       String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
       String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
       "]",
+      "",
+      "[server]",
+      "registration-secret = \"colby\""
     };
 
     Config sharedConfig = new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));

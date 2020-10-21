@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.data;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
@@ -29,7 +28,6 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 public class NodeStatus {
@@ -38,7 +36,6 @@ public class NodeStatus {
   private final URI externalUri;
   private final int maxSessionCount;
   private final Set<Slot> slots;
-  private final Secret registrationSecret;
   private final Availability availability;
 
   public NodeStatus(
@@ -46,8 +43,7 @@ public class NodeStatus {
       URI externalUri,
       int maxSessionCount,
       Set<Slot> slots,
-      Availability availability,
-      Secret registrationSecret) {
+      Availability availability) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count",
@@ -55,7 +51,6 @@ public class NodeStatus {
 "Make sure that a driver is available on $PATH");
     this.slots = ImmutableSet.copyOf(Require.nonNull("Slots", slots));
     this.availability = Require.nonNull("Availability", availability);
-    this.registrationSecret = registrationSecret;
 
     ImmutableSet.Builder<Session> sessions = ImmutableSet.builder();
 
@@ -114,10 +109,6 @@ public class NodeStatus {
   }
 
 
-  public String getRegistrationSecret() {
-    return registrationSecret == null ? null : registrationSecret.encode();
-  }
-
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof NodeStatus)) {
@@ -129,8 +120,7 @@ public class NodeStatus {
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
            Objects.equals(this.slots, that.slots) &&
-           Objects.equals(this.availability, that.availability) &&
-           Objects.equals(this.registrationSecret, that.registrationSecret);
+           Objects.equals(this.availability, that.availability);
   }
 
   @Override
@@ -145,7 +135,6 @@ public class NodeStatus {
         .put("maxSessions", maxSessionCount)
         .put("slots", slots)
         .put("availability", availability)
-        .put("registrationSecret", Optional.ofNullable(registrationSecret))
         .build();
   }
 
@@ -153,7 +142,6 @@ public class NodeStatus {
     NodeId nodeId = null;
     URI uri = null;
     int maxSessions = 0;
-    Secret registrationSecret = null;
     Set<Slot> slots = null;
     Availability availability = null;
 
@@ -171,10 +159,6 @@ public class NodeStatus {
 
         case "maxSessions":
           maxSessions = input.read(Integer.class);
-          break;
-
-        case "registrationSecret":
-          registrationSecret = input.read(Secret.class);
           break;
 
         case "slots":
@@ -197,7 +181,6 @@ public class NodeStatus {
       uri,
       maxSessions,
       slots,
-      availability,
-      registrationSecret);
+      availability);
   }
 }

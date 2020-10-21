@@ -88,7 +88,6 @@ public class OneShotNode extends Node {
   private final EventBus events;
   private final WebDriverInfo driverInfo;
   private final Capabilities stereotype;
-  private final Secret registrationSecret;
   private final URI gridUri;
   private final UUID slotId = UUID.randomUUID();
   private RemoteWebDriver driver;
@@ -108,7 +107,6 @@ public class OneShotNode extends Node {
     WebDriverInfo driverInfo) {
     super(tracer, id, uri, registrationSecret);
 
-    this.registrationSecret = registrationSecret;
     this.events = Require.nonNull("Event bus", events);
     this.gridUri = Require.nonNull("Public Grid URI", gridUri);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
@@ -344,8 +342,7 @@ public class OneShotNode extends Node {
           driver == null ?
             Optional.empty() :
             Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
-      isDraining() ? DRAINING : UP,
-      registrationSecret);
+      isDraining() ? DRAINING : UP);
   }
 
   @Override

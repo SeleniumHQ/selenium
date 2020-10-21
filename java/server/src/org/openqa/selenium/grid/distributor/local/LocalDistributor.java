@@ -31,7 +31,6 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeId;
-import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
@@ -59,7 +58,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -81,6 +79,7 @@ public class LocalDistributor extends Distributor {
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
+  private final Secret registrationSecret;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
 
@@ -102,8 +101,10 @@ public class LocalDistributor extends Distributor {
     this.model = new GridModel(bus, registrationSecret);
     this.nodes = new HashMap<>();
 
-    bus.addListener(NodeStatusEvent.listener(status -> register(registrationSecret, status)));
-    bus.addListener(NodeStatusEvent.listener(status -> model.refresh(registrationSecret, status)));
+    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
+
+    bus.addListener(NodeStatusEvent.listener(this::register));
+    bus.addListener(NodeStatusEvent.listener(model::refresh));
     bus.addListener(NodeDrainComplete.listener(this::remove));
   }
 
@@ -128,15 +129,8 @@ public class LocalDistributor extends Distributor {
     }
   }
 
-  private void register(Secret registrationSecret, NodeStatus status) {
+  private void register(NodeStatus status) {
     Require.nonNull("Node", status);
-
-    Secret nodeSecret = status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret());
-    if (!Objects.equals(registrationSecret, nodeSecret)) {
-      LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT registered.", status.getUri()));
-      bus.fire(new NodeRejectedEvent(status.getUri()));
-      return;
-    }
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();

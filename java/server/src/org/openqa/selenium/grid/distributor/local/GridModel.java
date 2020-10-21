@@ -23,7 +23,6 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeId;
-import org.openqa.selenium.grid.data.NodeRejectedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
@@ -39,7 +38,6 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,11 +60,12 @@ public class GridModel {
 
   public GridModel(EventBus events, Secret registrationSecret) {
     this.events = Require.nonNull("Event bus", events);
+    Require.nonNull("Registration secret", registrationSecret);
 
     events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
     events.addListener(NodeDrainComplete.listener(this::remove));
     events.addListener(NodeRemovedEvent.listener(this::remove));
-    events.addListener(NodeStatusEvent.listener(status -> refresh(registrationSecret, status)));
+    events.addListener(NodeStatusEvent.listener(status -> refresh(status)));
 
     events.addListener(SessionClosedEvent.listener(this::release));
   }
@@ -100,15 +99,8 @@ public class GridModel {
     return this;
   }
 
-  public GridModel refresh(Secret registrationSecret, NodeStatus status) {
+  public GridModel refresh(NodeStatus status) {
     Require.nonNull("Node status", status);
-
-    Secret statusSecret = status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret());
-    if (!Objects.equals(registrationSecret, statusSecret)) {
-      LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT refreshed.", status.getUri()));
-      events.fire(new NodeRejectedEvent(status.getUri()));
-      return this;
-    }
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -260,8 +252,7 @@ public class GridModel {
       status.getUri(),
       status.getMaxSessionCount(),
       status.getSlots(),
-      availability,
-      status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret()));
+      availability);
   }
 
   private void release(SessionId id) {
@@ -364,8 +355,7 @@ public class GridModel {
       status.getUri(),
       status.getMaxSessionCount(),
       newSlots,
-      status.getAvailability(),
-      status.getRegistrationSecret() == null ? null : new Secret(status.getRegistrationSecret())));
+      status.getAvailability()));
   }
 
   private static class AvailabilityAndNode {

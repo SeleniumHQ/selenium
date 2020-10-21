@@ -36,6 +36,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
@@ -73,7 +74,7 @@ public class NodeOptionsTest {
     EventBus bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     URI uri = new URI("http://localhost:1234");
-    builder = LocalNode.builder(tracer, bus, uri, uri, null);
+    builder = LocalNode.builder(tracer, bus, uri, uri, new Secret("wensleydale"));
     builderSpy = spy(builder);
   }
 
