@@ -35,6 +35,12 @@ test --repository_cache=~/.cache/bazel-repo
 # See https://docs.bazel.build/versions/master/remote-caching.html#disk-cache
 build --disk_cache=~/.cache/bazel-disk
 test --disk_cache=~/.cache/bazel-disk"
+
+# Make output easier to read
+build --curses=no
+build --color=no
+build --show_timestamps
+
 EOM
 
 
