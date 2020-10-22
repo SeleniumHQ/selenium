@@ -1,0 +1,142 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+package org.openqa.selenium.grid.gridui;
+
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import com.google.common.collect.ImmutableSet;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.grid.commands.Standalone;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.MemoizedConfig;
+import org.openqa.selenium.grid.config.TomlConfig;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.testing.Safely;
+import org.openqa.selenium.testing.TearDownFixture;
+
+import java.io.StringReader;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Supplier;
+
+@RunWith(Parameterized.class)
+public class ConsolePageTest {
+
+  private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "chrome");
+  private final Json json = new Json();
+  private static final int port = PortProber.findFreePort();
+
+  @Parameterized.Parameters(name = "End to End {0}")
+  public static Collection<Supplier<TestData>> buildGrids() {
+    return ImmutableSet.of(
+        ConsolePageTest::createStandalone);
+  }
+
+  @Parameterized.Parameter
+  public Supplier<TestData> values;
+
+  private Server<?> server;
+
+  private HttpClient.Factory clientFactory;
+
+  @Before
+  public void setFields() {
+    TestData data = values.get();
+    this.server = data.server;
+    this.clientFactory = HttpClient.Factory.createDefault();
+  }
+
+  @After
+  public void stopServers() {
+    Safely.safelyCall(values.get().fixtures);
+  }
+
+  @Test
+  public void testConsolePage() {
+    Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    driver.get("http://localhost:" + port + "/ui/index.html#/console");
+//    System.out.println(driver.getPageSource());
+  }
+
+  private static TestData createStandalone() {
+    StringBuilder rawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(rawCaps)) {
+      out.setPrettyPrint(false).write(CAPS);
+    }
+
+    String[] rawConfig = new String[]{
+        "[network]",
+        "relax-checks = true",
+        "[node]",
+        "detect-drivers = true",
+        "[server]",
+        "port = " + port,
+        "registration-secret = \"provolone\""
+    };
+    Config config = new MemoizedConfig(
+        new TomlConfig(new StringReader(String.join("\n", rawConfig))));
+
+    Server<?> server = new Standalone().asServer(config).start();
+
+    waitUntilReady(server);
+
+    return new TestData(server, server::stop);
+  }
+
+  private static void waitUntilReady(Server<?> server) {
+    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
+
+    new FluentWait<>(client)
+        .withTimeout(Duration.ofSeconds(5))
+        .until(c -> {
+          HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+          Map<String, Object> status = Values.get(response, MAP_TYPE);
+          return Boolean.TRUE.equals(status.get("ready"));
+        });
+  }
+
+  private static class TestData {
+    public final Server<?> server;
+    public final TearDownFixture[] fixtures;
+
+    public TestData(Server<?> server, TearDownFixture... fixtures) {
+      this.server = server;
+      this.fixtures = fixtures;
+    }
+  }
+}

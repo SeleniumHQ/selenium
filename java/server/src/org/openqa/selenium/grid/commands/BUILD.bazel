@@ -8,6 +8,7 @@ java_library(
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
         "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/gridui:__pkg__",
     ],
     runtime_deps = [
         "//java/server/src/org/openqa/selenium/events/local",
