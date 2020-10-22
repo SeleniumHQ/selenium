@@ -22,6 +22,7 @@ java_library(
         artifact("com.google.guava:guava"),
         artifact("io.netty:netty-buffer"),
         artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-codec-http2"),
         artifact("io.netty:netty-common"),
         artifact("io.netty:netty-handler"),
         artifact("io.netty:netty-transport"),
