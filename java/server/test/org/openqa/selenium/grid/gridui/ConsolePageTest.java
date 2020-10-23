@@ -60,7 +60,6 @@ import java.util.function.Supplier;
 public class ConsolePageTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "chrome");
-  private final Json json = new Json();
   private static final int port = PortProber.findFreePort();
 
   @Parameterized.Parameters(name = "End to End {0}")
