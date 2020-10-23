@@ -67,7 +67,9 @@ matrix:
       <<: *firefox-latest
     - env: BZL="build //java/..." SONAR=1
       <<: *java
-    - env: BZL="test --test_size_filters=small //java/..."
+    - env: BZL="test --test_size_filters=small --test_tag_filters=-lint //java/..."
+      <<: *java
+    - env: BZL="test --test_tag_filters=lint //java/..."
       <<: *java
     - env: MARIONETTE=1 BZL="test --test_tag_filters=firefox //java/..."
       <<: *java
