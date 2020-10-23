@@ -89,7 +89,7 @@ public class ConsolePageTest {
   }
 
   @Test
-  public void testConsolePage() throws InterruptedException {
+  public void testConsolePage() {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
     driver.get("localhost:" + port + "/ui/index.html#/console");
