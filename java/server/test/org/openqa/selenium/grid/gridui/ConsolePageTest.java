@@ -74,13 +74,10 @@ public class ConsolePageTest {
 
   private Server<?> server;
 
-  private HttpClient.Factory clientFactory;
-
   @Before
   public void setFields() {
     TestData data = values.get();
     this.server = data.server;
-    this.clientFactory = HttpClient.Factory.createDefault();
   }
 
   @After
