@@ -4,8 +4,11 @@ load("//java:defs.bzl", "java_test_suite")
 java_test_suite(
     name = "MediumTests",
     size = "medium",
-    srcs = glob(["*Test.java"]),
+    srcs = [
+        "ConsolePageTest.java",
+    ],
     deps = [
+        "//java/server/src/org/openqa/selenium/grid",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote/http",

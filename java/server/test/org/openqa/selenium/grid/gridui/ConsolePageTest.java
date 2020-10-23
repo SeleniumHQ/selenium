@@ -27,9 +27,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.grid.commands.Standalone;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -46,6 +48,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 import java.time.Duration;
@@ -86,11 +89,12 @@ public class ConsolePageTest {
   }
 
   @Test
-  public void testConsolePage() {
+  public void testConsolePage() throws InterruptedException {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://localhost:" + port + "/ui/index.html#/console");
-//    System.out.println(driver.getPageSource());
+    driver.get("localhost:" + port + "/ui/index.html#/console");
+    WebElement element = driver.findElement(By.xpath("//*[text()='100% free']"));
+    assertEquals(element.getText(), "100% free");
   }
 
   private static TestData createStandalone() {
