@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.gridui;
 
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -45,7 +46,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
 import static org.junit.Assert.assertEquals;
@@ -85,12 +89,17 @@ public class ConsolePageTest {
   }
 
   @Test
-  public void testConsolePage() {
+  public void testConsolePage() throws InterruptedException {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+
     driver.get("localhost:" + port + "/ui/index.html#/console");
-    WebElement element = driver.findElement(By.xpath("//*[text()='100% free']"));
-    assertEquals(element.getText(), "100% free");
+
+    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[text()='100% free']"))));
+
+    assertNotNull(element);
+    assertEquals("100% free", element.getText());
   }
 
   private static TestData createStandalone() {
