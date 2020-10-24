@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.chromium;
 
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collectors.toList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -29,15 +28,15 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-import java.util.stream.Stream;
 
 /**
  * Class to manage options specific to {@link ChromiumDriver}.
@@ -62,11 +61,9 @@ import java.util.stream.Stream;
 public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOptions<ChromiumOptions> {
 
   private String binary;
-  private List<String> args = new ArrayList<>();
-  private List<File> extensionFiles = new ArrayList<>();
-  private List<String> extensions = new ArrayList<>();
-  private Map<String, Object> experimentalOptions = new HashMap<>();
-
+  private Set<String> args;
+  private Set<String> extensions;
+  private Map<String, Object> googleOptions;
   private final String CAPABILITY;
 
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
@@ -75,11 +72,43 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
   }
 
   @Override
+  @SuppressWarnings("unchecked")
+  public void setCapability(String capabilityName, Object value) {
+    if(capabilityName.equals(CAPABILITY) && value instanceof Map){
+      googleOptions = (Map<String,Object>)value;
+      if(googleOptions.containsKey("args") && googleOptions.get("args") instanceof Set)
+          args = (Set<String>)googleOptions.get("args");
+      if(googleOptions.containsKey("extensions") && googleOptions.get("extensions") instanceof Set)
+        extensions = (Set<String>)googleOptions.get("extensions");
+    }
+    super.setCapability(capabilityName, value);
+  }
+
+  @Override
   public T merge(Capabilities extraCapabilities) {
     super.merge(extraCapabilities);
     return (T) this;
   }
-
+  private Map<String,Object> getGoogleOptions(){
+      if(googleOptions == null){
+        setCapability(CAPABILITY,new HashMap<String,Object>());
+      }
+      return googleOptions;
+  }
+  private Set<String> getArgs() {
+    if(args == null){
+      args = new HashSet<>();
+      getGoogleOptions().put("args",args);
+    }
+    return args;
+  }
+  private Set<String> getExtensions(){
+    if(extensions == null){
+      extensions = new HashSet<>();
+      getGoogleOptions().put("extensions",extensions);
+    }
+    return extensions;
+  }
   /**
    * Sets the path to the Chrome executable. This path should exist on the
    * machine which will launch Chrome. The path should either be absolute or
@@ -89,6 +118,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    */
   public T setBinary(File path) {
     binary = Require.nonNull("Path to the chrome executable", path).getPath();
+    getGoogleOptions().put("binary",binary);
     return (T) this;
   }
 
@@ -101,6 +131,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    */
   public T setBinary(String path) {
     binary = Require.nonNull("Path to the chrome executable", path);
+    getGoogleOptions().put("binary",binary);
     return (T) this;
   }
 
@@ -129,7 +160,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @param arguments The arguments to use when starting Chrome.
    */
   public T addArguments(List<String> arguments) {
-    args.addAll(arguments);
+    getArgs().addAll(arguments);
     return (T) this;
   }
 
@@ -150,7 +181,13 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    */
   public T addExtensions(List<File> paths) {
     paths.forEach(path -> Require.argument("Extension", path).isFile());
-    extensionFiles.addAll(paths);
+    paths.forEach(file -> {
+          try {
+            getExtensions().add(Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath())));
+          } catch (IOException e) {
+            throw new SessionNotCreatedException(e.getMessage(), e);
+          }
+    });
     return (T) this;
   }
 
@@ -173,7 +210,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
     for (String extension : encoded) {
       Require.nonNull("Encoded extension", extension);
     }
-    extensions.addAll(encoded);
+    getExtensions().addAll(encoded);
     return (T) this;
   }
 
@@ -186,12 +223,12 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    *     to JSON.
    */
   public T setExperimentalOption(String name, Object value) {
-    experimentalOptions.put(Require.nonNull("Option name", name), value);
+    getGoogleOptions().put(Require.nonNull("Option name",name),value);
     return (T) this;
   }
 
   public T setHeadless(boolean headless) {
-    args.remove("--headless");
+    getArgs().remove("--headless");
     if (headless) {
       args.add("--headless");
     }
@@ -203,40 +240,18 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
     return Objects.hash(
         args,
         binary,
-        experimentalOptions,
-        extensionFiles,
         extensions);
   }
 
   @Override
   public Map<String, Object> asMap() {
     Map<String, Object> toReturn = new TreeMap<>(super.asMap());
-
-    Map<String, Object> options = new TreeMap<>();
-    experimentalOptions.forEach(options::put);
-
-    if (binary != null) {
-      options.put("binary", binary);
-    }
-
-    options.put("args", unmodifiableList(new ArrayList<>(args)));
-
-    options.put(
-        "extensions",
-        unmodifiableList(Stream.concat(
-            extensionFiles.stream()
-                .map(file -> {
-                  try {
-                    return Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
-                  } catch (IOException e) {
-                    throw new SessionNotCreatedException(e.getMessage(), e);
-                  }
-                }),
-            extensions.stream()
-        ).collect(toList())));
-
-    toReturn.put(CAPABILITY, unmodifiableMap(options));
-
+    Map<String, Object> options = new TreeMap<>((Map<String, Object>)toReturn.get(CAPABILITY));
+    if(options.containsKey("args"))
+      options.put("args", unmodifiableSet(args));
+    if(options.containsKey("extensions"))
+      options.put("extensions",unmodifiableSet(extensions));
+    toReturn.put(CAPABILITY,unmodifiableMap(options));
     return unmodifiableMap(toReturn);
   }
 }

@@ -18,7 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static java.util.Collections.singletonMap;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
@@ -36,10 +36,11 @@ import org.openqa.selenium.remote.CapabilityType;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -59,7 +60,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   public static final String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
-  private List<String> args = new ArrayList<>();
+  private Set<String> args = new HashSet<>();
   private Map<String, Object> preferences = new HashMap<>();
   private FirefoxDriverLogLevel logLevel;
   private Binary binary;
@@ -113,7 +114,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     if (raw instanceof FirefoxOptions) {
       FirefoxOptions that = (FirefoxOptions) raw;
-
       addArguments(that.args);
       that.preferences.forEach(this::addPreference);
       setLegacy(that.legacy);
@@ -124,45 +124,51 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       if (that.profile != null) { setProfile(that.profile); }
     } else if (raw instanceof Map) {
       Map<?, ?> that = (Map<?, ?>) raw;
-      if (that.containsKey("args")) {
-        Object value = that.get("args");
-        if (value instanceof String) {
-          addArguments((String) that.get("args"));
-        } else if (value instanceof List<?>) {
-          addArguments((List<String>) that.get("args"));
-        } else {
-          // last resort
-          addArguments(that.get("args").toString());
-        }
+      extractPrivateVariables(that);
+    }
+  }
+
+  private void extractPrivateVariables(Map<?, ?> that) {
+    if (that.containsKey("args")) {
+      Object value = that.get("args");
+      if (value instanceof String) {
+        String arg = (String) that.get("args");
+        if(args.contains(value))
+        addArguments();
+      } else if (value instanceof Collection<?>) {
+        addArguments((Collection<String>) that.get("args"));
+      } else {
+        // last resort
+        addArguments(that.get("args").toString());
       }
-      if (that.containsKey("prefs")) {
-        Map<String, Object> prefs = (Map<String, Object>) that.get("prefs");
-        preferences.putAll(prefs);
+    }
+    if (that.containsKey("prefs")) {
+      Map<String, Object> prefs = (Map<String, Object>) that.get("prefs");
+      preferences.putAll(prefs);
+    }
+    if (that.containsKey("binary")) { setBinary((String) that.get("binary")); }
+    if (that.containsKey("log")) {
+      Map<?, ?> logStruct = (Map<?, ?>) that.get("log");
+      Object rawLevel = logStruct.get("level");
+      if (rawLevel instanceof String) {
+        setLogLevel(FirefoxDriverLogLevel.fromString((String) rawLevel));
+      } else if (rawLevel instanceof FirefoxDriverLogLevel) {
+        setLogLevel((FirefoxDriverLogLevel) rawLevel);
       }
-      if (that.containsKey("binary")) { setBinary((String) that.get("binary")); }
-      if (that.containsKey("log")) {
-        Map<?, ?> logStruct = (Map<?, ?>) that.get("log");
-        Object rawLevel = logStruct.get("level");
-        if (rawLevel instanceof String) {
-          setLogLevel(FirefoxDriverLogLevel.fromString((String) rawLevel));
-        } else if (rawLevel instanceof FirefoxDriverLogLevel) {
-          setLogLevel((FirefoxDriverLogLevel) rawLevel);
+    }
+    if (that.containsKey("profile")) {
+      Object value = that.get("profile");
+      if (value instanceof String) {
+        try {
+          setProfile(FirefoxProfile.fromJson((String) value));
+        } catch (IOException e) {
+          throw new WebDriverException(e);
         }
-      }
-      if (that.containsKey("profile")) {
-        Object value = that.get("profile");
-        if (value instanceof String) {
-          try {
-            setProfile(FirefoxProfile.fromJson((String) value));
-          } catch (IOException e) {
-            throw new WebDriverException(e);
-          }
-        } else if (value instanceof FirefoxProfile) {
-          setProfile((FirefoxProfile) value);
-        } else {
-          throw new WebDriverException(
-              "In FirefoxOptions, don't know how to convert profile: " + that);
-        }
+      } else if (value instanceof FirefoxProfile) {
+        setProfile((FirefoxProfile) value);
+      } else {
+        throw new WebDriverException(
+            "In FirefoxOptions, don't know how to convert profile: " + that);
       }
     }
   }
@@ -217,7 +223,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return this;
   }
 
-  public FirefoxOptions addArguments(List<String> arguments) {
+  public FirefoxOptions addArguments(Collection<String> arguments) {
     args.addAll(arguments);
     return this;
   }
@@ -269,6 +275,10 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         }
         break;
 
+      case FIREFOX_OPTIONS:
+        if(value instanceof Map ){
+          extractPrivateVariables((Map<?,?>)value);
+        }
       default:
         // Do nothing
     }
@@ -280,7 +290,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     Map<String, Object> toReturn = new HashMap<>(super.asMap());
 
     ImmutableSortedMap.Builder<String, Object> w3cOptions = ImmutableSortedMap.naturalOrder();
-    w3cOptions.put("args", unmodifiableList(new ArrayList<>(args)));
+    w3cOptions.put("args", unmodifiableSet(new HashSet<>(args)));
 
     if (binary != null) {
       w3cOptions.put("binary", binary.asPath());
