@@ -25,6 +25,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.zeromq.ZContext;
+import zmq.io.mechanism.curve.Curve;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -37,6 +38,9 @@ import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVEN
 public class ZeroMqEventBus {
 
   private static final String EVENTS_SECTION = "events";
+  private static final Curve curve = new Curve();
+  private static final String[] serverKeys = curve.keypairZ85();
+  private static final String[] clientKeys = curve.keypairZ85();
 
   private ZeroMqEventBus() {
     // Use the create method.
@@ -44,9 +48,9 @@ public class ZeroMqEventBus {
 
   public static EventBus create(ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
     if (bind) {
-      return new BoundZmqEventBus(context, publish, subscribe, secret);
+      return new BoundZmqEventBus(context, publish, subscribe, secret, serverKeys, clientKeys);
     }
-    return new UnboundZmqEventBus(context, publish, subscribe, secret);
+    return new UnboundZmqEventBus(context, publish, subscribe, secret, serverKeys, clientKeys);
   }
 
   public static EventBus create(Config config) {

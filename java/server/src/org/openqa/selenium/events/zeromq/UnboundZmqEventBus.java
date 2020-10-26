@@ -69,7 +69,7 @@ class UnboundZmqEventBus implements EventBus {
   private ZMQ.Socket pub;
   private ZMQ.Socket sub;
 
-  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret, String[] serverKeys, String[] clientKeys) {
     Require.nonNull("Secret", secret);
     StringBuilder builder = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(builder)) {
@@ -83,10 +83,6 @@ class UnboundZmqEventBus implements EventBus {
       thread.setDaemon(true);
       return thread;
     });
-
-    Curve curve = new Curve();
-    String[] serverKeys = curve.keypairZ85();
-    String[] clientKeys = curve.keypairZ85();
 
     String connectionMessage = String.format("Connecting to %s and %s", publishConnection, subscribeConnection);
     LOG.info(connectionMessage);

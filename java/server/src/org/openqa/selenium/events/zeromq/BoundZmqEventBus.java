@@ -46,14 +46,10 @@ class BoundZmqEventBus implements EventBus {
   private final ZMQ.Socket xsub;
   private final ExecutorService executor;
 
-  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret, String[] serverKeys, String[] clientKeys) {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
-    Curve curve = new Curve();
-    String[] serverKeys = curve.keypairZ85();
-    String[] clientKeys = curve.keypairZ85();
-
 
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
@@ -85,7 +81,7 @@ class BoundZmqEventBus implements EventBus {
     });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
 
-    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret);
+    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret, serverKeys, clientKeys);
 
     LOG.info("Event bus ready");
   }
