@@ -50,6 +50,10 @@ public class LoggingFlags implements HasRoles {
   @ConfigValue(section = "logging", name = "log-file", example = "true")
   private String logFile;
 
+  @Parameter(description = "Log encoding", names = "--log-encoding", arity = 1)
+  @ConfigValue(section = "logging", name = "log-encoding", example = "UTF-8")
+  private String logEncoding = null;
+
   @Override
   public Set<Role> getRoles() {
     return ALL_ROLES;
