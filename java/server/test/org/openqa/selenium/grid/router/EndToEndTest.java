@@ -308,7 +308,7 @@ public class EndToEndTest {
       int port = serverOptions.getPort();
       URI serverUri;
       try {
-        serverUri = new URI("http", null, hostname, port, null, null, null);
+         serverUri = new URI("http", null, hostname, port, null, null, null);
       } catch (URISyntaxException e) {
         throw new RuntimeException(e);
       }
@@ -382,7 +382,7 @@ public class EndToEndTest {
   public void shouldAllowPassthroughForW3CMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-      ImmutableMap.of(
+        ImmutableMap.of(
         "capabilities", ImmutableMap.of(
           "alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
 
@@ -408,7 +408,7 @@ public class EndToEndTest {
   public void shouldAllowPassthroughForJWPMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-      ImmutableMap.of(
+        ImmutableMap.of(
         "desiredCapabilities", ImmutableMap.of(
           "browserName", "cheese"))));
 
