@@ -21,8 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableSet;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,53 +37,35 @@ import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.web.Values;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.TearDownFixture;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 import java.time.Duration;
-import java.util.Collection;
 import java.util.Map;
-import java.util.function.Supplier;
 
-@RunWith(Parameterized.class)
 public class ConsolePageTest {
 
-  private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "chrome");
   private static final int port = PortProber.findFreePort();
-
-  @Parameterized.Parameters(name = "End to End {0}")
-  public static Collection<Supplier<TestData>> buildGrids() {
-    return ImmutableSet.of(
-        ConsolePageTest::createStandalone);
-  }
-
-  @Parameterized.Parameter
-  public Supplier<TestData> values;
 
   private Server<?> server;
 
   @Before
   public void setFields() {
-    TestData data = values.get();
-    this.server = data.server;
+    this.server = createStandalone();
   }
 
   @After
   public void stopServers() {
-    Safely.safelyCall(values.get().fixtures);
+    this.server.stop();
   }
 
   @Test
@@ -95,19 +75,13 @@ public class ConsolePageTest {
     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
 
     driver.get("localhost:" + port + "/ui/index.html#/console");
-
     WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[text()='100% free']"))));
 
     assertNotNull(element);
     assertEquals("100% free", element.getText());
   }
 
-  private static TestData createStandalone() {
-    StringBuilder rawCaps = new StringBuilder();
-    try (JsonOutput out = new Json().newOutput(rawCaps)) {
-      out.setPrettyPrint(false).write(CAPS);
-    }
-
+  private static Server<?> createStandalone() {
     String[] rawConfig = new String[]{
         "[network]",
         "relax-checks = true",
@@ -124,7 +98,7 @@ public class ConsolePageTest {
 
     waitUntilReady(server);
 
-    return new TestData(server, server::stop);
+    return server;
   }
 
   private static void waitUntilReady(Server<?> server) {
@@ -137,15 +111,5 @@ public class ConsolePageTest {
           Map<String, Object> status = Values.get(response, MAP_TYPE);
           return Boolean.TRUE.equals(status.get("ready"));
         });
-  }
-
-  private static class TestData {
-    public final Server<?> server;
-    public final TearDownFixture[] fixtures;
-
-    public TestData(Server<?> server, TearDownFixture... fixtures) {
-      this.server = server;
-      this.fixtures = fixtures;
-    }
   }
 }
