@@ -38,7 +38,8 @@ public class EventBusOptions {
       synchronized (this) {
         localBus = bus;
         if (localBus == null) {
-          bus = localBus = createBus();
+          localBus = createBus();
+          bus = localBus;
         }
       }
     }
