@@ -33,15 +33,18 @@ public class EventBusOptions {
   }
 
   public EventBus getEventBus() {
-    if (bus == null) {
+    EventBus localBus = bus;
+    if (localBus == null) {
       synchronized (this) {
-        if (bus == null) {
-          bus = createBus();
+        localBus = bus;
+        if (localBus == null) {
+          localBus = createBus();
+          bus = localBus;
         }
       }
     }
 
-    return bus;
+    return localBus;
   }
 
   private EventBus createBus() {
