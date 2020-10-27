@@ -894,7 +894,6 @@ class Driver extends webdriver.WebDriver {
     }, null)
 
     this._wsConnection.on('message', async (message) => {
-      console.log(message);
       const params = JSON.parse(message)
       if (params.method === 'Runtime.bindingCalled') {
         let payload = JSON.parse(params['params']['payload'])

@@ -26,6 +26,7 @@ const error = require('../../lib/error')
 const fileServer = require('../../lib/test/fileserver')
 const io = require('../../io')
 const test = require('../../lib/test')
+const until = require('../../lib/until')
 const Server = require('../../lib/test/httpserver').Server
 
 test.suite(
@@ -112,6 +113,24 @@ test.suite(
         await driver.get(test.Pages.javascriptPage)
         let element = driver.findElement({id: 'throwing-mouseover'})
         await element.click()
+      })
+    })
+
+    describe('JS DOM events', function() {
+      it('calls the event listener on dom mutations', async function() {
+        const cdpConnection = await driver.createCDPConnection('page')
+        await driver.logMutationEvents(cdpConnection, function(event) {
+          assert.equal(event['attribute_name'], 'style')
+          assert.equal(event['current_value'], '')
+          assert.equal(event['old_value'], 'display:none;')
+        })
+
+        await driver.get(test.Pages.dynamicPage)
+
+        let element = driver.findElement({id: 'reveal'})
+        await element.click()
+        let revealed = driver.findElement({id: 'revealed'});
+        await driver.wait(until.elementIsVisible(revealed), 5000);
       })
     })
 
