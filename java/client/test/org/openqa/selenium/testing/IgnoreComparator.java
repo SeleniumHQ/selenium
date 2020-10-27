@@ -31,15 +31,10 @@ import java.util.stream.Stream;
 
 public class IgnoreComparator {
   private Set<Browser> ignored = new HashSet<>();
-  private Platform currentPlatform = Platform.getCurrent();
 
   // TODO(simon): reduce visibility
   public void addDriver(Browser driverToIgnore) {
     ignored.add(driverToIgnore);
-  }
-
-  public void setCurrentPlatform(Platform platform) {
-    currentPlatform = platform;
   }
 
   public boolean shouldIgnore(IgnoreList ignoreList) {

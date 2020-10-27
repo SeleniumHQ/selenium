@@ -80,19 +80,18 @@
  * [WebDriver (Chromium)]: https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium
  */
 
-'use strict';
+'use strict'
 
-const http = require('./http');
-const io = require('./io');
-const remote = require('./remote');
-const webdriver = require('./lib/webdriver');
-const {Browser, Capabilities} = require('./lib/capabilities');
-const chromium = require('./chromium');
+const http = require('./http')
+const io = require('./io')
+const webdriver = require('./lib/webdriver')
+const { Browser, Capabilities } = require('./lib/capabilities')
+const chromium = require('./chromium')
 
-const EDGE_CHROMIUM_BROWSER_NAME = "msedge";
-const EDGEDRIVER_LEGACY_EXE = 'MicrosoftWebDriver.exe';
+const EDGE_CHROMIUM_BROWSER_NAME = 'msedge'
+const EDGEDRIVER_LEGACY_EXE = 'MicrosoftWebDriver.exe'
 const EDGEDRIVER_CHROMIUM_EXE =
-    process.platform === 'win32' ? 'msedgedriver.exe' : 'msedgedriver';
+  process.platform === 'win32' ? 'msedgedriver.exe' : 'msedgedriver'
 
 /**
  * _Synchronously_ attempts to locate the Edge driver executable
@@ -104,16 +103,16 @@ const EDGEDRIVER_CHROMIUM_EXE =
  * @return {?string} the located executable, or `null`.
  */
 function locateSynchronously(browserName) {
-  browserName = browserName || Browser.EDGE;
+  browserName = browserName || Browser.EDGE
 
   if (browserName === EDGE_CHROMIUM_BROWSER_NAME) {
-    return io.findInPath(EDGEDRIVER_CHROMIUM_EXE, true);
+    return io.findInPath(EDGEDRIVER_CHROMIUM_EXE, true)
   }
 
   return process.platform === 'win32'
-      ? io.findInPath(EDGEDRIVER_LEGACY_EXE, true) : null;
+    ? io.findInPath(EDGEDRIVER_LEGACY_EXE, true)
+    : null
 }
-
 
 /**
  * Class for managing Edge specific options.
@@ -127,15 +126,15 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setEdgeChromium(useEdgeChromium) {
-    this.set(Options.USE_EDGE_CHROMIUM, !!useEdgeChromium);
-    return this;
+    this.set(Options.USE_EDGE_CHROMIUM, !!useEdgeChromium)
+    return this
   }
 }
 
-Options.USE_EDGE_CHROMIUM = 'ms:edgeChromium';
-Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE;
-Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions';
-Options.prototype.VENDOR_CAPABILITY_PREFIX = 'ms';
+Options.USE_EDGE_CHROMIUM = 'ms:edgeChromium'
+Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
+Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions'
+Options.prototype.VENDOR_CAPABILITY_PREFIX = 'ms'
 
 /**
  * @param  {(Capabilities|Object<string, *>)=} o The options object
@@ -143,16 +142,15 @@ Options.prototype.VENDOR_CAPABILITY_PREFIX = 'ms';
  */
 function useEdgeChromium(o) {
   if (o instanceof Capabilities) {
-    return !!o.get(Options.USE_EDGE_CHROMIUM);
+    return !!o.get(Options.USE_EDGE_CHROMIUM)
   }
 
   if (o && typeof o === 'object') {
-    return !!o[Options.USE_EDGE_CHROMIUM];
+    return !!o[Options.USE_EDGE_CHROMIUM]
   }
 
-  return false;
+  return false
 }
-
 
 /**
  * Creates {@link remote.DriverService} instances that manage a
@@ -171,22 +169,24 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    *   MicrosoftWebDriver cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously();
+    let exe = opt_exe || locateSynchronously()
     if (!exe) {
-      throw Error('The WebDriver for Edge could not be found on the current PATH. Please ' +
-                  'download the latest version of ' + EDGEDRIVER_LEGACY_EXE + ' from ' +
-                  'https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ and ' +
-                  'ensure it can be found on your PATH.');
+      throw Error(
+        'The WebDriver for Edge could not be found on the current PATH. Please ' +
+          'download the latest version of ' +
+          EDGEDRIVER_LEGACY_EXE +
+          ' from ' +
+          'https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ and ' +
+          'ensure it can be found on your PATH.'
+      )
     }
 
-    super(exe);
+    super(exe)
   }
 }
 
-
 /** @type {remote.DriverService} */
-var defaultService = null;
-
+var defaultService = null
 
 /**
  * Sets the default service to use for new Edge instances.
@@ -197,31 +197,31 @@ function setDefaultService(service) {
   if (defaultService && defaultService.isRunning()) {
     throw Error(
       'The previously configured EdgeDriver service is still running. ' +
-      'You must shut it down before you may adjust its configuration.');
+        'You must shut it down before you may adjust its configuration.'
+    )
   }
-  defaultService = service;
+  defaultService = service
 }
 
-
 /**
-  * Returns the default Microsoft Edge driver service. If such a service has
+ * Returns the default Microsoft Edge driver service. If such a service has
  * not been configured, one will be constructed using the default configuration
  * for a MicrosoftWebDriver executable found on the system PATH.
  * @return {!remote.DriverService} The default Microsoft Edge driver service.
  */
 function getDefaultService() {
   if (!defaultService) {
-    defaultService = new ServiceBuilder().build();
+    defaultService = new ServiceBuilder().build()
   }
-  return defaultService;
+  return defaultService
 }
 
 function createServiceFromCapabilities(options) {
-  let exe;
+  let exe
   if (useEdgeChromium(options)) {
-    exe = locateSynchronously(EDGE_CHROMIUM_BROWSER_NAME);
+    exe = locateSynchronously(EDGE_CHROMIUM_BROWSER_NAME)
   }
-  return new ServiceBuilder(exe).build();
+  return new ServiceBuilder(exe).build()
 }
 
 /**
@@ -237,13 +237,14 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(options, opt_service) {
-    options = options || new Options();
-    let service = opt_service || createServiceFromCapabilities(options);
-    let client = service.start().then(url => new http.HttpClient(url));
-    let executor = new http.Executor(client);
+    options = options || new Options()
+    let service = opt_service || createServiceFromCapabilities(options)
+    let client = service.start().then((url) => new http.HttpClient(url))
+    let executor = new http.Executor(client)
 
-    return /** @type {!Driver} */(super.createSession(
-        executor, options, () => service.kill()));
+    return /** @type {!Driver} */ (super.createSession(executor, options, () =>
+      service.kill()
+    ))
   }
 
   /**
@@ -254,13 +255,11 @@ class Driver extends webdriver.WebDriver {
   setFileDetector() {}
 }
 
-
 // PUBLIC API
 
-
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
-exports.getDefaultService = getDefaultService;
-exports.setDefaultService = setDefaultService;
-exports.locateSynchronously = locateSynchronously;
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder
+exports.getDefaultService = getDefaultService
+exports.setDefaultService = setDefaultService
+exports.locateSynchronously = locateSynchronously

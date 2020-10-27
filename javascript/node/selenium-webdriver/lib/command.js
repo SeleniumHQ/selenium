@@ -19,7 +19,7 @@
  * @fileoverview Contains several classes for handling commands.
  */
 
-'use strict';
+'use strict'
 
 /**
  * Describes a command to execute.
@@ -29,15 +29,15 @@ class Command {
   /** @param {string} name The name of this command. */
   constructor(name) {
     /** @private {string} */
-    this.name_ = name;
+    this.name_ = name
 
     /** @private {!Object<*>} */
-    this.parameters_ = {};
+    this.parameters_ = {}
   }
 
   /** @return {string} This command's name. */
   getName() {
-    return this.name_;
+    return this.name_
   }
 
   /**
@@ -47,8 +47,8 @@ class Command {
    * @return {!Command} A self reference.
    */
   setParameter(name, value) {
-    this.parameters_[name] = value;
-    return this;
+    this.parameters_[name] = value
+    return this
   }
 
   /**
@@ -57,8 +57,8 @@ class Command {
    * @return {!Command} A self reference.
    */
   setParameters(parameters) {
-    this.parameters_ = parameters;
-    return this;
+    this.parameters_ = parameters
+    return this
   }
 
   /**
@@ -67,17 +67,16 @@ class Command {
    * @return {*} The parameter value, or undefined if it has not been set.
    */
   getParameter(key) {
-    return this.parameters_[key];
+    return this.parameters_[key]
   }
 
   /**
    * @return {!Object<*>} The parameters to send with this command.
    */
   getParameters() {
-    return this.parameters_;
+    return this.parameters_
   }
 }
-
 
 /**
  * Enumeration of predefined names command names that all command processors
@@ -109,7 +108,7 @@ const Name = {
   GET_ACTIVE_ELEMENT: 'getActiveElement',
   FIND_ELEMENT: 'findElement',
   FIND_ELEMENTS: 'findElements',
-  FIND_ELEMENTS_RELATIVE: "findElementsRelative",
+  FIND_ELEMENTS_RELATIVE: 'findElementsRelative',
   FIND_CHILD_ELEMENT: 'findChildElement',
   FIND_CHILD_ELEMENTS: 'findChildElements',
 
@@ -189,9 +188,7 @@ const Name = {
   LEGACY_ACTION_TOUCH_FLICK: 'legacyAction:touchFlick',
   LEGACY_ACTION_TOUCH_SINGLE_TAP: 'legacyAction:singleTap',
   LEGACY_ACTION_TOUCH_DOUBLE_TAP: 'legacyAction:doubleTap',
-};
-
-
+}
 
 /**
  * Handles the execution of WebDriver {@link Command commands}.
@@ -208,16 +205,13 @@ class Executor {
    * @return {!Promise<?>} A promise that will be fulfilled with the command
    *     result.
    */
-  execute(command) {}
+  execute(command) {} // eslint-disable-line
 }
 
-
-
 // PUBLIC API
-
 
 module.exports = {
   Command: Command,
   Name: Name,
-  Executor: Executor
-};
+  Executor: Executor,
+}

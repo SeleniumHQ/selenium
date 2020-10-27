@@ -28,7 +28,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
@@ -60,11 +59,12 @@ public class CdpClientGenerator {
   public static void main(String[] args) throws IOException {
     Path browserProtocol = Paths.get(args[0]);
     Path jsProtocol = Paths.get(args[1]);
+    String version = args[2];
 
     Path target = Files.createTempDirectory("devtools");
-    String devtoolsDir = "org/openqa/selenium/devtools/";
+    String devtoolsDir = "org/openqa/selenium/devtools/" + version + "/";
 
-    Model model = new Model("org.openqa.selenium.devtools");
+    Model model = new Model("org.openqa.selenium.devtools." + version);
     Stream.of(browserProtocol, jsProtocol).forEach(protoFile -> {
       try {
         String text = String.join("\n", Files.readAllLines(protoFile));
@@ -76,7 +76,7 @@ public class CdpClientGenerator {
     });
     model.dumpTo(target);
 
-    Path outputJar = Paths.get(args[2]).toAbsolutePath();
+    Path outputJar = Paths.get(args[3]).toAbsolutePath();
     Files.createDirectories(outputJar.getParent());
 
     try (OutputStream os = Files.newOutputStream(outputJar);
@@ -237,11 +237,11 @@ public class CdpClientGenerator {
     }
 
     public String getPackage() {
-      return "org.openqa.selenium.devtools." + name.toLowerCase();
+      return model.basePackage + "." + name.toLowerCase();
     }
 
     public void parse(Map<String, Object> json) {
-      new DomainParser().parse(this, json);
+      new DomainParser(model.basePackage).parse(this, json);
     }
 
     public void dumpTo(Path target) {
@@ -316,14 +316,14 @@ public class CdpClientGenerator {
 
   private static class DomainParser extends BaseSpecParser<Domain> {
     @SuppressWarnings("unchecked")
-    public DomainParser() {
+    public DomainParser(String basePackage) {
       super(new ImmutableMap.Builder<String, BiConsumer<Domain, Object>>()
                 .put("domain", (domain, value) -> domain.name = (String) value)
                 .put("dependencies", (domain, value) -> {
                   // TODO: what to do with dependencies?
                 })
                 .put("types", (domain, value) -> ((List<Map<String, Object>>) value).forEach(item -> {
-                  TypeSpec type = new TypeSpec(domain);
+                  TypeSpec type = new TypeSpec(basePackage, domain);
                   type.parse(item);
                   domain.types.add(type);
                 }))
@@ -427,8 +427,11 @@ public class CdpClientGenerator {
 
   private static class TypeSpec extends TypedSpec {
 
-    public TypeSpec(Domain domain) {
+    private final String basePackage;
+
+    public TypeSpec(String basePackage, Domain domain) {
       super(domain);
+      this.basePackage = basePackage;
     }
 
     public void parse(Map<String, Object> json) {
@@ -441,7 +444,7 @@ public class CdpClientGenerator {
 
     public void dumpTo(Path target) {
       CompilationUnit unit = new CompilationUnit();
-      unit.setPackageDeclaration("org.openqa.selenium.devtools." + domain.name.toLowerCase() + ".model");
+      unit.setPackageDeclaration(basePackage + "." + domain.name.toLowerCase() + ".model");
       unit.addImport(Beta.class);
       unit.addImport(JsonInput.class);
       unit.addType(toTypeDeclaration());
@@ -500,6 +503,10 @@ public class CdpClientGenerator {
 
     public void parse(Map<String, Object> json) {
       new VariableSpecParser().parse(this, json);
+    }
+
+    public String getDefaultValue() {
+      return type.getJavaDefaultValue();
     }
   }
 
@@ -627,6 +634,7 @@ public class CdpClientGenerator {
     String getName();
     String getTypeToken();
     String getJavaType();
+    String getJavaDefaultValue();
     TypeDeclaration<?> toTypeDeclaration();
     String getMapper();
   }
@@ -646,6 +654,11 @@ public class CdpClientGenerator {
     @Override
     public String getJavaType() {
       return "Void";
+    }
+
+    @Override
+    public String getJavaDefaultValue() {
+      return "null";
     }
 
     @Override
@@ -694,12 +707,32 @@ public class CdpClientGenerator {
         case "string":
           return String.class.getName();
         case "any":
+          return Object.class.getName();
         case "object":
           return "java.util.Map<String, Object>";
         case "array":
           return Object.class.getName();
         default:
-          throw new RuntimeException("Unknown simple type " + name);
+          throw new RuntimeException("Unknown simple type: " + name);
+      }
+    }
+
+    @Override
+    public String getJavaDefaultValue() {
+      switch (type) {
+        case "boolean":
+          return "false";
+        case "integer":
+          return "0";
+        case "number":
+          return "0";
+        case "any":
+        case "array":
+        case "object":
+        case "string":
+          return "null";
+        default:
+          throw new RuntimeException("Unknown simple type: " + name);
       }
     }
 
@@ -760,6 +793,7 @@ public class CdpClientGenerator {
         case "string":
           return "input.nextString()";
         case "any":
+          return "input.read(Object.class)";
         case "object":
           return "input.read(new com.google.common.reflect.TypeToken<java.util.Map<String, Object>>() {}.getType())";
         case "array":
@@ -795,6 +829,11 @@ public class CdpClientGenerator {
     @Override
     public String getJavaType() {
       return parent.getNamespace() + "." + name;
+    }
+
+    @Override
+    public String getJavaDefaultValue() {
+      return "null";
     }
 
     public TypeDeclaration<?> toTypeDeclaration() {
@@ -888,6 +927,11 @@ public class CdpClientGenerator {
       return parent.getNamespace() + "." + capitalize(name);
     }
 
+    @Override
+    public String getJavaDefaultValue() {
+      return "null";
+    }
+
     public TypeDeclaration<?> toTypeDeclaration() {
       ClassOrInterfaceDeclaration classDecl = new ClassOrInterfaceDeclaration().setName(capitalize(name));
 
@@ -935,7 +979,7 @@ public class CdpClientGenerator {
           if (property.optional) {
             body.addStatement(String.format("%s %s = java.util.Optional.empty();", property.getJavaType(), property.getFieldName()));
           } else {
-            body.addStatement(String.format("%s %s = null;", property.getJavaType(), property.getFieldName()));
+            body.addStatement(String.format("%s %s = %s;", property.getJavaType(), property.getFieldName(), property.getDefaultValue()));
           }
         });
 
@@ -998,6 +1042,11 @@ public class CdpClientGenerator {
     @Override
     public String getJavaType() {
       return String.format("java.util.List<%s>", itemType.getJavaType());
+    }
+
+    @Override
+    public String getJavaDefaultValue() {
+      return "null";
     }
 
     public TypeDeclaration<?> toTypeDeclaration() {
@@ -1081,6 +1130,11 @@ public class CdpClientGenerator {
       } else {
         return String.format("%s.%s.model.%s", domain.model.basePackage, domain.name.toLowerCase(), type);
       }
+    }
+
+    @Override
+    public String getJavaDefaultValue() {
+      return "null";
     }
 
     public TypeDeclaration<?> toTypeDeclaration() {

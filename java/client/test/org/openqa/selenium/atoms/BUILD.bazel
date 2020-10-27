@@ -1,6 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//:copy_file.bzl", "copy_file")
-load("//java:defs.bzl", "java_test_suite")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_library", "java_test_suite")
 
 copy_file(
     name = "execute_script",
@@ -18,7 +18,6 @@ java_library(
     name = "lib",
     srcs = ["JavaScriptLoader.java"],
     deps = [
-        "//java/client/test/org/openqa/selenium/build",
         artifact("com.google.guava:guava"),
         artifact("org.hamcrest:hamcrest"),
         artifact("junit:junit"),

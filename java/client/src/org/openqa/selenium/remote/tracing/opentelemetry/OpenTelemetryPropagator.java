@@ -18,12 +18,11 @@
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import io.grpc.Context;
-import io.opentelemetry.context.propagation.HttpTextFormat;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.trace.DefaultSpan;
 import io.opentelemetry.trace.SpanId;
 import io.opentelemetry.trace.Tracer;
 import io.opentelemetry.trace.TracingContextUtils;
-
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
@@ -33,9 +32,9 @@ import java.util.function.BiFunction;
 class OpenTelemetryPropagator implements Propagator {
 
   private final Tracer tracer;
-  private final HttpTextFormat httpTextFormat;
+  private final TextMapPropagator httpTextFormat;
 
-  OpenTelemetryPropagator(Tracer tracer, HttpTextFormat httpTextFormat) {
+  OpenTelemetryPropagator(Tracer tracer, TextMapPropagator httpTextFormat) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.httpTextFormat = Require.nonNull("HTTP text injector/extractor", httpTextFormat);
   }

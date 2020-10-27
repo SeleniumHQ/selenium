@@ -15,16 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
 /**
  * @fileoverview Defines types related to describing the capabilities of a
  * WebDriver session.
  */
 
-const proxy = require('./proxy');
-const Symbols = require('./symbols');
-
+const Symbols = require('./symbols')
 
 /**
  * Recognized browser names.
@@ -38,8 +36,7 @@ const Browser = {
   INTERNET_EXPLORER: 'internet explorer',
   SAFARI: 'safari',
   OPERA: 'opera',
-};
-
+}
 
 /**
  * Strategies for waiting for [document readiness] after a navigation
@@ -66,9 +63,8 @@ const PageLoadStrategy = {
    * Indicates WebDriver should wait for the document readiness state to
    * be "complete" after navigation. This is the default page loading strategy.
    */
-  NORMAL: 'normal'
-};
-
+  NORMAL: 'normal',
+}
 
 /**
  * Common platform names. These platforms are not explicitly defined by the
@@ -80,9 +76,8 @@ const PageLoadStrategy = {
 const Platform = {
   LINUX: 'linux',
   MAC: 'mac',
-  WINDOWS: 'windows'
-};
-
+  WINDOWS: 'windows',
+}
 
 /**
  * Record object defining the timeouts that apply to certain WebDriver actions.
@@ -96,14 +91,14 @@ function Timeouts() {}
  * {@linkplain ./webdriver.IWebDriver#executeScript evaluated}.
  * @type {number}
  */
-Timeouts.prototype.script;
+Timeouts.prototype.script
 
 /**
  * The timeout, in milliseconds, to apply to navigation events along with the
  * {@link PageLoadStrategy}.
  * @type {number}
  */
-Timeouts.prototype.pageLoad;
+Timeouts.prototype.pageLoad
 
 /**
  * The maximum amount of time, in milliseconds, to spend attempting to
@@ -111,8 +106,7 @@ Timeouts.prototype.pageLoad;
  * current page.
  * @type {number}
  */
-Timeouts.prototype.implicit;
-
+Timeouts.prototype.implicit
 
 /**
  * The possible default actions a WebDriver session can take to respond to
@@ -137,9 +131,8 @@ const UserPromptHandler = {
    */
   DISMISS_AND_NOTIFY: 'dismiss and notify',
   /** All prompts should be left unhandled. */
-  IGNORE: 'ignore'
-};
-
+  IGNORE: 'ignore',
+}
 
 /**
  * The standard WebDriver capability keys.
@@ -148,7 +141,6 @@ const UserPromptHandler = {
  * @see <https://w3c.github.io/webdriver/webdriver-spec.html#capabilities>
  */
 const Capability = {
-
   /**
    * Indicates whether a WebDriver session implicitly trusts otherwise untrusted
    * and self-signed TLS certificates during navigation.
@@ -214,13 +206,12 @@ const Capability = {
    */
   UNHANDLED_PROMPT_BEHAVIOR: 'unhandledPromptBehavior',
 
-   /**
-    * Defines the current session’s strict file interactability.
-    * Used to upload a file when strict file interactability is on
-    */
-   STRICT_FILE_INTERACTABILITY: 'strictFileInteractability',
-};
-
+  /**
+   * Defines the current session’s strict file interactability.
+   * Used to upload a file when strict file interactability is on
+   */
+  STRICT_FILE_INTERACTABILITY: 'strictFileInteractability',
+}
 
 /**
  * Converts a generic hash object to a map.
@@ -228,15 +219,14 @@ const Capability = {
  * @return {!Map<string, ?>} The converted map.
  */
 function toMap(hash) {
-  let m = new Map;
+  let m = new Map()
   for (let key in hash) {
-    if (hash.hasOwnProperty(key)) {
-      m.set(key, hash[key]);
+    if (Object.prototype.hasOwnProperty.call(hash, key)) {
+      m.set(key, hash[key])
     }
   }
-  return m;
+  return m
 }
-
 
 /**
  * Describes a set of capabilities for a WebDriver session.
@@ -248,47 +238,47 @@ class Capabilities {
    */
   constructor(other = undefined) {
     if (other instanceof Capabilities) {
-      other = other.map_;
+      other = other.map_
     } else if (other && !(other instanceof Map)) {
-      other = toMap(other);
+      other = toMap(other)
     }
     /** @private @const {!Map<string, ?>} */
-    this.map_ = new Map(other);
+    this.map_ = new Map(other)
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Chrome.
    */
   static chrome() {
-    return new Capabilities().setBrowserName(Browser.CHROME);
+    return new Capabilities().setBrowserName(Browser.CHROME)
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Microsoft Edge.
    */
   static edge() {
-    return new Capabilities().setBrowserName(Browser.EDGE);
+    return new Capabilities().setBrowserName(Browser.EDGE)
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Firefox.
    */
   static firefox() {
-    return new Capabilities().setBrowserName(Browser.FIREFOX);
+    return new Capabilities().setBrowserName(Browser.FIREFOX)
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Internet Explorer.
    */
   static ie() {
-    return new Capabilities().setBrowserName(Browser.INTERNET_EXPLORER);
+    return new Capabilities().setBrowserName(Browser.INTERNET_EXPLORER)
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Safari.
    */
   static safari() {
-    return new Capabilities().setBrowserName(Browser.SAFARI);
+    return new Capabilities().setBrowserName(Browser.SAFARI)
   }
 
   /**
@@ -298,7 +288,7 @@ class Capabilities {
    *     Map).
    */
   [Symbols.serialize]() {
-    return serialize(this);
+    return serialize(this)
   }
 
   /**
@@ -307,7 +297,7 @@ class Capabilities {
    * @template T
    */
   get(key) {
-    return this.map_.get(key);
+    return this.map_.get(key)
   }
 
   /**
@@ -315,19 +305,19 @@ class Capabilities {
    * @return {boolean} whether this capability set has the specified key.
    */
   has(key) {
-    return this.map_.has(key);
+    return this.map_.has(key)
   }
 
   /**
    * @return {!Iterator<string>} an iterator of the keys set.
    */
   keys() {
-    return this.map_.keys();
+    return this.map_.keys()
   }
 
   /** @return {number} The number of capabilities set. */
   get size() {
-    return this.map_.size;
+    return this.map_.size
   }
 
   /**
@@ -338,20 +328,20 @@ class Capabilities {
    */
   merge(other) {
     if (other) {
-      let otherMap;
+      let otherMap
       if (other instanceof Capabilities) {
-        otherMap = other.map_;
+        otherMap = other.map_
       } else if (other instanceof Map) {
-        otherMap = other;
+        otherMap = other
       } else {
-        otherMap = toMap(other);
+        otherMap = toMap(other)
       }
       otherMap.forEach((value, key) => {
-        this.set(key, value);
-      });
-      return this;
+        this.set(key, value)
+      })
+      return this
     } else {
-      throw new TypeError('no capabilities provided for merge');
+      throw new TypeError('no capabilities provided for merge')
     }
   }
 
@@ -361,7 +351,7 @@ class Capabilities {
    * @param {string} key the capability key to delete.
    */
   delete(key) {
-    this.map_.delete(key);
+    this.map_.delete(key)
   }
 
   /**
@@ -372,10 +362,10 @@ class Capabilities {
    */
   set(key, value) {
     if (typeof key !== 'string') {
-      throw new TypeError('Capability keys must be strings: ' + typeof key);
+      throw new TypeError('Capability keys must be strings: ' + typeof key)
     }
-    this.map_.set(key, value);
-    return this;
+    this.map_.set(key, value)
+    return this
   }
 
   /**
@@ -386,7 +376,7 @@ class Capabilities {
    * @return {!Capabilities} a self reference.
    */
   setAcceptInsecureCerts(accept) {
-    return this.set(Capability.ACCEPT_INSECURE_TLS_CERTS, accept);
+    return this.set(Capability.ACCEPT_INSECURE_TLS_CERTS, accept)
   }
 
   /**
@@ -394,7 +384,7 @@ class Capabilities {
    *     TLS certificates.
    */
   getAcceptInsecureCerts() {
-    return this.get(Capability.ACCEPT_INSECURE_TLS_CERTS);
+    return this.get(Capability.ACCEPT_INSECURE_TLS_CERTS)
   }
 
   /**
@@ -404,7 +394,7 @@ class Capabilities {
    * @return {!Capabilities} a self reference.
    */
   setBrowserName(name) {
-    return this.set(Capability.BROWSER_NAME, name);
+    return this.set(Capability.BROWSER_NAME, name)
   }
 
   /**
@@ -412,7 +402,7 @@ class Capabilities {
    *     not set.
    */
   getBrowserName() {
-    return this.get(Capability.BROWSER_NAME);
+    return this.get(Capability.BROWSER_NAME)
   }
 
   /**
@@ -422,7 +412,7 @@ class Capabilities {
    * @return {!Capabilities} a self reference.
    */
   setBrowserVersion(version) {
-    return this.set(Capability.BROWSER_VERSION, version);
+    return this.set(Capability.BROWSER_VERSION, version)
   }
 
   /**
@@ -430,7 +420,7 @@ class Capabilities {
    *     if not set.
    */
   getBrowserVersion() {
-    return this.get(Capability.BROWSER_VERSION);
+    return this.get(Capability.BROWSER_VERSION)
   }
 
   /**
@@ -440,7 +430,7 @@ class Capabilities {
    * @return {!Capabilities} a self reference.
    */
   setPageLoadStrategy(strategy) {
-    return this.set(Capability.PAGE_LOAD_STRATEGY, strategy);
+    return this.set(Capability.PAGE_LOAD_STRATEGY, strategy)
   }
 
   /**
@@ -449,7 +439,7 @@ class Capabilities {
    * @return {(string|undefined)} the page load strategy.
    */
   getPageLoadStrategy() {
-    return this.get(Capability.PAGE_LOAD_STRATEGY);
+    return this.get(Capability.PAGE_LOAD_STRATEGY)
   }
 
   /**
@@ -459,7 +449,7 @@ class Capabilities {
    * @return {!Capabilities} a self reference.
    */
   setPlatform(platform) {
-    return this.set(Capability.PLATFORM_NAME, platform);
+    return this.set(Capability.PLATFORM_NAME, platform)
   }
 
   /**
@@ -467,7 +457,7 @@ class Capabilities {
    *     set.
    */
   getPlatform() {
-    return this.get(Capability.PLATFORM_NAME);
+    return this.get(Capability.PLATFORM_NAME)
   }
 
   /**
@@ -479,7 +469,7 @@ class Capabilities {
    * @return {!Capabilities} A self reference.
    */
   setLoggingPrefs(prefs) {
-    return this.set(Capability.LOGGING_PREFS, prefs);
+    return this.set(Capability.LOGGING_PREFS, prefs)
   }
 
   /**
@@ -488,7 +478,7 @@ class Capabilities {
    * @return {!Capabilities} A self reference.
    */
   setProxy(proxy) {
-    return this.set(Capability.PROXY, proxy);
+    return this.set(Capability.PROXY, proxy)
   }
 
   /**
@@ -496,7 +486,7 @@ class Capabilities {
    *     undefined if not set.
    */
   getProxy() {
-    return this.get(Capability.PROXY);
+    return this.get(Capability.PROXY)
   }
 
   /**
@@ -509,7 +499,7 @@ class Capabilities {
    * @return {!Capabilities} A self reference.
    */
   setAlertBehavior(behavior) {
-    return this.set(Capability.UNHANDLED_PROMPT_BEHAVIOR, behavior);
+    return this.set(Capability.UNHANDLED_PROMPT_BEHAVIOR, behavior)
   }
 
   /**
@@ -517,17 +507,19 @@ class Capabilities {
    *     to unhandled user prompts, or undefined if not set.
    */
   getAlertBehavior() {
-    return this.get(Capability.UNHANDLED_PROMPT_BEHAVIOR);
+    return this.get(Capability.UNHANDLED_PROMPT_BEHAVIOR)
   }
 
-   /**
-    * Sets the boolean flag configuration for this instance.
-    */
+  /**
+   * Sets the boolean flag configuration for this instance.
+   */
   setStrictFileInteractability(strictFileInteractability) {
-    return this.set(Capability.STRICT_FILE_INTERACTABILITY, strictFileInteractability);
+    return this.set(
+      Capability.STRICT_FILE_INTERACTABILITY,
+      strictFileInteractability
+    )
   }
 }
-
 
 /**
  * Serializes a capabilities object. This is defined as a standalone function
@@ -539,19 +531,17 @@ class Capabilities {
  *     Note, the returned object may contain nested promised values.
  */
 function serialize(caps) {
-  let ret = {};
+  let ret = {}
   for (let key of caps.keys()) {
-    let cap = caps.get(key);
+    let cap = caps.get(key)
     if (cap !== undefined && cap !== null) {
-      ret[key] = cap;
+      ret[key] = cap
     }
   }
-  return ret;
+  return ret
 }
 
-
 // PUBLIC API
-
 
 module.exports = {
   Browser,
@@ -561,4 +551,4 @@ module.exports = {
   Platform,
   Timeouts,
   UserPromptHandler,
-};
+}

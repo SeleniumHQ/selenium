@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.server;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
@@ -88,7 +89,7 @@ public class BaseServerOptions {
     int port = getPort();
 
     try {
-      return new URI(isSecure() ? "https" : "http", null, host, port, null, null, null);
+      return new URI((isSecure() || isSelfSigned()) ? "https" : "http", null, host, port, null, null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
     }
@@ -118,8 +119,8 @@ public class BaseServerOptions {
     throw new ConfigException("you must provide a certificate via --https-certificate when using --https");
   }
 
-  public String getRegistrationSecret() {
-    return config.get(SERVER_SECTION, "registration-secret").orElse(null);
+  public Secret getRegistrationSecret() {
+    return config.get(SERVER_SECTION, "registration-secret").map(Secret::new).orElse(new Secret(""));
   }
 
   public boolean isSelfSigned() {

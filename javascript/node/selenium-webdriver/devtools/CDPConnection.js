@@ -19,17 +19,19 @@
 
 class CDPConnection {
   constructor(wsConnection) {
-    this._wsConnection = wsConnection;
+    this._wsConnection = wsConnection
   }
 
-  execute(method, params, callback) {
+  execute(method, id, params, callback) {
     const message = {
       method,
-      params: params || {}
-    };
+      id: id,
+    }
 
-    this._wsConnection.send(JSON.stringify(message), callback);
+    const mergedMessage = Object.assign({ params: params }, message)
+
+    this._wsConnection.send(JSON.stringify(mergedMessage), callback)
   }
 }
 
-exports.CdpConnection = CDPConnection;
+exports.CdpConnection = CDPConnection

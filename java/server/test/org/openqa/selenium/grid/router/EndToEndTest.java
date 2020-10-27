@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,42 +29,45 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
+import org.openqa.selenium.grid.commands.EventBusCommand;
+import org.openqa.selenium.grid.commands.Hub;
+import org.openqa.selenium.grid.commands.Standalone;
+import org.openqa.selenium.grid.config.CompoundConfig;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.MemoizedConfig;
+import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.local.LocalDistributor;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.distributor.httpd.DistributorServer;
 import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.node.httpd.NodeServer;
+import org.openqa.selenium.grid.router.httpd.RouterServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.grid.sessionmap.httpd.SessionMapServer;
+import org.openqa.selenium.grid.sessionqueue.httpd.NewSessionQueuerServer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DefaultTestTracer;
-import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
-import org.zeromq.ZContext;
+import org.openqa.selenium.testing.Safely;
+import org.openqa.selenium.testing.TearDownFixture;
 
+import java.io.StringReader;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -85,29 +89,18 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 public class EndToEndTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
-  private Json json = new Json();
+  private final Json json = new Json();
 
   @Parameterized.Parameters(name = "End to End {0}")
-  public static Collection<Supplier<Object[]>> buildGrids() {
+  public static Collection<Supplier<TestData>> buildGrids() {
     return ImmutableSet.of(
-        () -> {
-          try {
-            return createRemotes();
-          } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-          }
-        },
-        () -> {
-          try {
-            return createInMemory();
-          } catch (Exception e) {
-            throw new RuntimeException(e);
-          }
-        });
+      EndToEndTest::createFullyDistributed,
+      EndToEndTest::createHubAndNode,
+      EndToEndTest::createStandalone);
   }
 
   @Parameter
-  public Supplier<Object[]> values;
+  public Supplier<TestData> values;
 
   private Server<?> server;
 
@@ -115,121 +108,225 @@ public class EndToEndTest {
 
   @Before
   public void setFields() {
-    Object[] raw = values.get();
-    this.server = (Server<?>) raw[0];
-    this.clientFactory = (HttpClient.Factory) raw[1];
+    TestData data = values.get();
+    this.server = data.server;
+    this.clientFactory = HttpClient.Factory.createDefault();
   }
 
-  private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
-    Tracer tracer = DefaultTestTracer.createTracer();
-    EventBus bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "inproc://end-to-end-pub",
-        "inproc://end-to-end-sub",
-        true);
-
-    URI nodeUri = new URI("http://localhost:4444");
-    CombinedHandler handler = new CombinedHandler();
-    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-        nodeUri.toURL(),
-        handler,
-        HttpClient.Factory.createDefault());
-
-    SessionMap sessions = new LocalSessionMap(tracer, bus);
-    handler.addHandler(sessions);
-
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
-    handler.addHandler(distributor);
-
-    LocalNode node = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
-        .add(CAPS, createFactory(nodeUri))
-        .build();
-    handler.addHandler(node);
-    distributor.add(node);
-
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
-
-    Server<?> server = createServer(router);
-    server.start();
-
-    return new Object[] { server, clientFactory };
+  @After
+  public void stopServers() {
+    Safely.safelyCall(values.get().fixtures);
   }
 
-  private static Object[] createRemotes() throws URISyntaxException {
-    Tracer tracer = DefaultTestTracer.createTracer();
-    EventBus bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "tcp://localhost:" + PortProber.findFreePort(),
-        "tcp://localhost:" + PortProber.findFreePort(),
-        true);
 
-    LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
+  private static TestData createStandalone() {
+    StringBuilder rawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(rawCaps)) {
+      out.setPrettyPrint(false).write(CAPS);
+    }
 
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    String[] rawConfig = new String[]{
+      "[network]",
+      "relax-checks = true",
+      "",
+      "[node]",
+      "detect-drivers = false",
+      "driver-factories = [",
+      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
+      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
+      "]",
+      "",
+      "[server]",
+      "port = " + PortProber.findFreePort(),
+      "registration-secret = \"provolone\""
+    };
+    Config config = new MemoizedConfig(
+      new TomlConfig(new StringReader(String.join("\n", rawConfig))));
 
-    Server<?> sessionServer = createServer(localSessions);
-    sessionServer.start();
+    Server<?> server = new Standalone().asServer(config).start();
 
-    HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
-    SessionMap sessions = new RemoteSessionMap(tracer, client);
+    waitUntilReady(server);
 
-    LocalDistributor localDistributor = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
-        sessions,
-        null);
-    Server<?> distributorServer = createServer(localDistributor);
-    distributorServer.start();
-
-    Distributor distributor = new RemoteDistributor(
-        tracer,
-        HttpClient.Factory.createDefault(),
-        distributorServer.getUrl());
-
-    int port = PortProber.findFreePort();
-    URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, null)
-        .add(CAPS, createFactory(nodeUri))
-        .build();
-
-    Server<?> nodeServer = new NettyServer(
-        new BaseServerOptions(
-            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
-        localNode);
-    nodeServer.start();
-
-    distributor.add(localNode);
-
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
-    Server<?> routerServer = createServer(router);
-    routerServer.start();
-
-    return new Object[] { routerServer, clientFactory };
+    return new TestData(server, server::stop);
   }
 
-  private static Server<?> createServer(HttpHandler handler) {
-    int port = PortProber.findFreePort();
-    return new NettyServer(
-        new BaseServerOptions(
-            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
-        handler);
+  private static TestData createHubAndNode() {
+    StringBuilder rawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(rawCaps)) {
+      out.setPrettyPrint(false).write(CAPS);
+    }
+
+    int publish = PortProber.findFreePort();
+    int subscribe = PortProber.findFreePort();
+
+    String[] rawConfig = new String[] {
+      "[events]",
+      "publish = \"tcp://localhost:" + publish + "\"",
+      "subscribe = \"tcp://localhost:" + subscribe + "\"",
+      "",
+      "[network]",
+      "relax-checks = true",
+      "",
+      "[node]",
+      "detect-drivers = false",
+      "driver-factories = [",
+      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
+      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
+      "]",
+      "",
+      "[server]",
+      "registration-secret = \"feta\""
+    };
+
+    TomlConfig baseConfig = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+    Config hubConfig = new CompoundConfig(
+      new MapConfig(ImmutableMap.of("events", ImmutableMap.of("bind", true))),
+      baseConfig);
+
+    Server<?> hub = new Hub().asServer(setRandomPort(hubConfig)).start();
+
+    Server<?> node = new NodeServer().asServer(setRandomPort(baseConfig)).start();
+    waitUntilReady(node);
+
+    waitUntilReady(hub);
+
+    return new TestData(hub, hub::stop, node::stop);
   }
 
-  private static SessionFactory createFactory(URI serverUri) {
-    class SpoofSession extends Session implements HttpHandler {
+  private static TestData createFullyDistributed() {
+    StringBuilder rawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(rawCaps)) {
+      out.setPrettyPrint(false).write(CAPS);
+    }
 
-      private SpoofSession(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
+    int publish = PortProber.findFreePort();
+    int subscribe = PortProber.findFreePort();
+
+    String[] rawConfig = new String[] {
+      "[events]",
+      "publish = \"tcp://localhost:" + publish + "\"",
+      "subscribe = \"tcp://localhost:" + subscribe + "\"",
+      "bind = false",
+      "",
+      "[network]",
+      "relax-checks = true",
+      "",
+      "[node]",
+      "detect-drivers = false",
+      "driver-factories = [",
+      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
+      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
+      "]",
+      "",
+      "[server]",
+      "registration-secret = \"colby\""
+    };
+
+    Config sharedConfig = new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
+
+    Server<?> eventServer = new EventBusCommand()
+      .asServer(new CompoundConfig(
+        new TomlConfig(new StringReader(String.join("\n", new String[] {
+          "[events]",
+          "publish = \"tcp://localhost:" + publish + "\"",
+          "subscribe = \"tcp://localhost:" + subscribe + "\"",
+          "bind = true"}))),
+        setRandomPort(sharedConfig)))
+      .start();
+    waitUntilReady(eventServer);
+
+    Server<?> newSessionQueueServer = new NewSessionQueuerServer().asServer(setRandomPort(sharedConfig)).start();
+    waitUntilReady(newSessionQueueServer);
+
+    Server<?> sessionMapServer = new SessionMapServer().asServer(setRandomPort(sharedConfig)).start();
+    Config sessionMapConfig = new TomlConfig(new StringReader(String.join(
+      "\n",
+      new String[] {
+        "[sessions]",
+        "hostname = \"localhost\"",
+        "port = " + sessionMapServer.getUrl().getPort()
+      }
+    )));
+
+    Server<?> distributorServer = new DistributorServer()
+      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig)))
+      .start();
+    Config distributorConfig = new TomlConfig(new StringReader(String.join(
+      "\n",
+      new String[] {
+        "[distributor]",
+        "hostname = \"localhost\"",
+        "port = " + distributorServer.getUrl().getPort()
+      }
+    )));
+
+    Server<?> router = new RouterServer()
+      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+      .start();
+
+    Server<?> nodeServer = new NodeServer()
+      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+      .start();
+    waitUntilReady(nodeServer);
+
+    waitUntilReady(router);
+
+    return new TestData(
+      router,
+      router::stop,
+      nodeServer::stop,
+      distributorServer::stop,
+      sessionMapServer::stop,
+      newSessionQueueServer::stop,
+      eventServer::stop);
+  }
+
+  private static void waitUntilReady(Server<?> server) {
+    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
+
+    new FluentWait<>(client)
+      .withTimeout(Duration.ofSeconds(5))
+      .until(c -> {
+        HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+        Map<String, Object> status = Values.get(response, MAP_TYPE);
+        return Boolean.TRUE.equals(status.get("ready"));
+      });
+  }
+
+  private static Config setRandomPort(Config config) {
+    return new MemoizedConfig(
+      new CompoundConfig(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))),
+        config));
+  }
+
+  // Hahahaha. Java naming.
+  public static class TestSessionFactoryFactory {
+    public static SessionFactory create(Config config, Capabilities stereotype) {
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
+      String hostname = serverOptions.getHostname().orElse("localhost");
+      int port = serverOptions.getPort();
+      URI serverUri;
+      try {
+         serverUri = new URI("http", null, hostname, port, null, null, null);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
       }
 
-      @Override
-      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-        return new HttpResponse();
-      }
-   }
+      return new TestSessionFactory(stereotype, (id, caps) -> new SpoofSession(serverUri, caps));
+    }
+  }
 
-    return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
+  private static class SpoofSession extends Session implements HttpHandler {
+
+    private SpoofSession(URI serverUri, Capabilities capabilities) {
+      super(new SessionId(UUID.randomUUID()), serverUri, new ImmutableCapabilities(), capabilities, Instant.now());
+    }
+
+    @Override
+    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+      return new HttpResponse();
+    }
   }
 
   @Test
@@ -263,9 +360,10 @@ public class EndToEndTest {
     driver.quit();
 
     HttpClient client = clientFactory.createClient(server.getUrl());
-    new FluentWait<>("").withTimeout(ofSeconds(2)).until(obj -> {
+    new FluentWait<>("").withTimeout(ofSeconds(200)).until(obj -> {
       try {
         HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+        System.out.println(Contents.string(response));
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status.get("ready"));
       } catch (UncheckedIOException e) {
@@ -339,5 +437,15 @@ public class EndToEndTest {
   @Test
   public void shouldDoProtocolTranslationFromJWPLocalEndToW3CRemoteEnd() {
 
+  }
+
+  private static class TestData {
+    public final Server<?> server;
+    public final TearDownFixture[] fixtures;
+
+    public TestData(Server<?> server, TearDownFixture... fixtures) {
+      this.server = server;
+      this.fixtures = fixtures;
+    }
   }
 }

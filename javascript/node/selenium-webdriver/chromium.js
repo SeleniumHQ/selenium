@@ -73,20 +73,19 @@
  *     let driver = chrome.Driver.createSession(options, service);
  */
 
-'use strict';
+'use strict'
 
-const http = require('./http');
-const io = require('./io');
-const {Capabilities, Capability} = require('./lib/capabilities');
-const command = require('./lib/command');
-const error = require('./lib/error');
-const promise = require('./lib/promise');
-const Symbols = require('./lib/symbols');
-const webdriver = require('./lib/webdriver');
-const WebSocket = require('ws');
-const cdp = require('./devtools/CDPConnection');
-const remote = require('./remote');
-
+const http = require('./http')
+const io = require('./io')
+const { Capabilities, Capability } = require('./lib/capabilities')
+const command = require('./lib/command')
+const error = require('./lib/error')
+const Symbols = require('./lib/symbols')
+const webdriver = require('./lib/webdriver')
+const WebSocket = require('ws')
+const cdp = require('./devtools/CDPConnection')
+const remote = require('./remote')
+const cdpTargets = ['page', 'browser']
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -97,14 +96,14 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
   SET_PERMISSION: 'setPermission',
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
   GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
   STOP_CASTING: 'stopCasting',
-};
-
+}
 
 /**
  * Creates a command executor with support for Chromium's custom commands.
@@ -112,13 +111,12 @@ const Command = {
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url, vendorPrefix) {
-  let agent = new http.Agent({ keepAlive: true });
-  let client = url.then(url => new http.HttpClient(url, agent));
-  let executor = new http.Executor(client);
-  configureExecutor(executor, vendorPrefix);
-  return executor;
+  let agent = new http.Agent({ keepAlive: true })
+  let client = url.then((url) => new http.HttpClient(url, agent))
+  let executor = new http.Executor(client)
+  configureExecutor(executor, vendorPrefix)
+  return executor
 }
-
 
 /**
  * Configures the given executor with Chromium-specific commands.
@@ -126,47 +124,61 @@ function createExecutor(url, vendorPrefix) {
  */
 function configureExecutor(executor, vendorPrefix) {
   executor.defineCommand(
-      Command.LAUNCH_APP,
-      'POST',
-      '/session/:sessionId/chromium/launch_app');
+    Command.LAUNCH_APP,
+    'POST',
+    '/session/:sessionId/chromium/launch_app'
+  )
   executor.defineCommand(
-      Command.GET_NETWORK_CONDITIONS,
-      'GET',
-      '/session/:sessionId/chromium/network_conditions');
+    Command.GET_NETWORK_CONDITIONS,
+    'GET',
+    '/session/:sessionId/chromium/network_conditions'
+  )
   executor.defineCommand(
-      Command.SET_NETWORK_CONDITIONS,
-      'POST',
-      '/session/:sessionId/chromium/network_conditions');
+    Command.SET_NETWORK_CONDITIONS,
+    'POST',
+    '/session/:sessionId/chromium/network_conditions'
+  )
   executor.defineCommand(
-      Command.SEND_DEVTOOLS_COMMAND,
-      'POST',
-      '/session/:sessionId/chromium/send_command');
+    Command.SEND_DEVTOOLS_COMMAND,
+    'POST',
+    '/session/:sessionId/chromium/send_command'
+  )
   executor.defineCommand(
-      Command.SET_PERMISSION,
-      'POST',
-      '/session/:sessionId/permissions');
+    Command.SEND_AND_GET_DEVTOOLS_COMMAND,
+    'POST',
+    '/session/:sessionId/chromium/send_command_and_get_result'
+  )
   executor.defineCommand(
-      Command.GET_CAST_SINKS,
-      'GET',
-      `/session/:sessionId/${vendorPrefix}/cast/get_sinks`);
+    Command.SET_PERMISSION,
+    'POST',
+    '/session/:sessionId/permissions'
+  )
   executor.defineCommand(
-      Command.SET_CAST_SINK_TO_USE,
-      'POST',
-      `/session/:sessionId/${vendorPrefix}/cast/set_sink_to_use`);
+    Command.GET_CAST_SINKS,
+    'GET',
+    `/session/:sessionId/${vendorPrefix}/cast/get_sinks`
+  )
   executor.defineCommand(
-      Command.START_CAST_TAB_MIRRORING,
-      'POST',
-      `/session/:sessionId/${vendorPrefix}/cast/start_tab_mirroring`);
+    Command.SET_CAST_SINK_TO_USE,
+    'POST',
+    `/session/:sessionId/${vendorPrefix}/cast/set_sink_to_use`
+  )
   executor.defineCommand(
-      Command.GET_CAST_ISSUE_MESSAGE,
-      'GET',
-      `/session/:sessionId/${vendorPrefix}/cast/get_issue_message`);
+    Command.START_CAST_TAB_MIRRORING,
+    'POST',
+    `/session/:sessionId/${vendorPrefix}/cast/start_tab_mirroring`
+  )
   executor.defineCommand(
-      Command.STOP_CASTING,
-      'POST',
-      `/session/:sessionId/${vendorPrefix}/cast/stop_casting`);
+    Command.GET_CAST_ISSUE_MESSAGE,
+    'GET',
+    `/session/:sessionId/${vendorPrefix}/cast/get_issue_message`
+  )
+  executor.defineCommand(
+    Command.STOP_CASTING,
+    'POST',
+    `/session/:sessionId/${vendorPrefix}/cast/stop_casting`
+  )
 }
-
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -178,8 +190,8 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * should ensure a valid path to the appropriate exe is provided.
    */
   constructor(exe) {
-    super(exe);
-    this.setLoopback(true);  // Required
+    super(exe)
+    this.setLoopback(true) // Required
   }
 
   /**
@@ -191,7 +203,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @return {!ServiceBuilder} A self reference.
    */
   setAdbPort(port) {
-    return this.addArguments('--adb-port=' + port);
+    return this.addArguments('--adb-port=' + port)
   }
 
   /**
@@ -201,7 +213,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @return {!ServiceBuilder} A self reference.
    */
   loggingTo(path) {
-    return this.addArguments('--log-path=' + path);
+    return this.addArguments('--log-path=' + path)
   }
 
   /**
@@ -209,7 +221,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @return {!ServiceBuilder} A self reference.
    */
   enableVerboseLogging() {
-    return this.addArguments('--verbose');
+    return this.addArguments('--verbose')
   }
 
   /**
@@ -219,18 +231,17 @@ class ServiceBuilder extends remote.DriverService.Builder {
    * @return {!ServiceBuilder} A self reference.
    */
   setNumHttpThreads(n) {
-    return this.addArguments('--http-threads=' + n);
+    return this.addArguments('--http-threads=' + n)
   }
 
   /**
    * @override
    */
   setPath(path) {
-    super.setPath(path);
-    return this.addArguments('--url-base=' + path);
+    super.setPath(path)
+    return this.addArguments('--url-base=' + path)
   }
 }
-
 
 /**
  * Class for managing WebDriver options specific to a Chromium-based browser.
@@ -241,13 +252,13 @@ class Options extends Capabilities {
    *     capabilities to initialize this instance from.
    */
   constructor(other = undefined) {
-    super(other);
+    super(other)
 
     /** @private {!Object} */
-    this.options_ = this.get(this.CAPABILITY_KEY) || {};
+    this.options_ = this.get(this.CAPABILITY_KEY) || {}
 
-    this.setBrowserName(this.BROWSER_NAME_VALUE);
-    this.set(this.CAPABILITY_KEY, this.options_);
+    this.setBrowserName(this.BROWSER_NAME_VALUE)
+    this.set(this.CAPABILITY_KEY, this.options_)
   }
 
   /**
@@ -260,11 +271,11 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   addArguments(...args) {
-    let newArgs = (this.options_.args || []).concat(...args);
+    let newArgs = (this.options_.args || []).concat(...args)
     if (newArgs.length) {
-      this.options_.args = newArgs;
+      this.options_.args = newArgs
     }
-    return this;
+    return this
   }
 
   /**
@@ -283,7 +294,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   headless() {
-    return this.addArguments('headless');
+    return this.addArguments('headless')
   }
 
   /**
@@ -294,15 +305,15 @@ class Options extends Capabilities {
    * @throws {TypeError} if width or height is unspecified, not a number, or
    *     less than or equal to 0.
    */
-  windowSize({width, height}) {
+  windowSize({ width, height }) {
     function checkArg(arg) {
       if (typeof arg !== 'number' || arg <= 0) {
-        throw TypeError('Arguments must be {width, height} with numbers > 0');
+        throw TypeError('Arguments must be {width, height} with numbers > 0')
       }
     }
-    checkArg(width);
-    checkArg(height);
-    return this.addArguments(`window-size=${width},${height}`);
+    checkArg(width)
+    checkArg(height)
+    return this.addArguments(`window-size=${width},${height}`)
   }
 
   /**
@@ -313,11 +324,11 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   excludeSwitches(...args) {
-    let switches = (this.options_.excludeSwitches || []).concat(...args);
+    let switches = (this.options_.excludeSwitches || []).concat(...args)
     if (switches.length) {
-      this.options_.excludeSwitches = switches;
+      this.options_.excludeSwitches = switches
     }
-    return this;
+    return this
   }
 
   /**
@@ -329,9 +340,9 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   addExtensions(...args) {
-    let current = this.options_.extensions || [];
-    this.options_.extensions = current.concat(...args);
-    return this;
+    let current = this.options_.extensions || []
+    this.options_.extensions = current.concat(...args)
+    return this
   }
 
   /**
@@ -346,8 +357,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setBinaryPath(path) {
-    this.options_.binary = path;
-    return this;
+    this.options_.binary = path
+    return this
   }
 
   /**
@@ -359,8 +370,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   detachDriver(detach) {
-    this.options_.detach = detach;
-    return this;
+    this.options_.detach = detach
+    return this
   }
 
   /**
@@ -370,8 +381,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setUserPreferences(prefs) {
-    this.options_.prefs = prefs;
-    return this;
+    this.options_.prefs = prefs
+    return this
   }
 
   /**
@@ -399,8 +410,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setPerfLoggingPrefs(prefs) {
-    this.options_.perfLoggingPrefs = prefs;
-    return this;
+    this.options_.perfLoggingPrefs = prefs
+    return this
   }
 
   /**
@@ -410,8 +421,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setLocalState(state) {
-    this.options_.localState = state;
-    return this;
+    this.options_.localState = state
+    return this
   }
 
   /**
@@ -423,8 +434,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   androidActivity(name) {
-    this.options_.androidActivity = name;
-    return this;
+    this.options_.androidActivity = name
+    return this
   }
 
   /**
@@ -436,8 +447,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   androidDeviceSerial(serial) {
-    this.options_.androidDeviceSerial = serial;
-    return this;
+    this.options_.androidDeviceSerial = serial
+    return this
   }
 
   /**
@@ -448,8 +459,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   androidPackage(pkg) {
-    this.options_.androidPackage = pkg;
-    return this;
+    this.options_.androidPackage = pkg
+    return this
   }
 
   /**
@@ -461,8 +472,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   androidProcess(processName) {
-    this.options_.androidProcess = processName;
-    return this;
+    this.options_.androidProcess = processName
+    return this
   }
 
   /**
@@ -474,8 +485,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   androidUseRunningApp(useRunning) {
-    this.options_.androidUseRunningApp = useRunning;
-    return this;
+    this.options_.androidUseRunningApp = useRunning
+    return this
   }
 
   /**
@@ -485,8 +496,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setBrowserLogFile(path) {
-    this.options_.logPath = path;
-    return this;
+    this.options_.logPath = path
+    return this
   }
 
   /**
@@ -496,8 +507,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setBrowserMinidumpPath(path) {
-    this.options_.minidumpPath = path;
-    return this;
+    this.options_.minidumpPath = path
+    return this
   }
 
   /**
@@ -537,8 +548,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setMobileEmulation(config) {
-    this.options_.mobileEmulation = config;
-    return this;
+    this.options_.mobileEmulation = config
+    return this
   }
 
   /**
@@ -549,20 +560,21 @@ class Options extends Capabilities {
    * @suppress {checkTypes} Suppress [] access on a struct.
    */
   [Symbols.serialize]() {
-    if (this.options_.extensions &&  this.options_.extensions.length) {
-      this.options_.extensions =
-          this.options_.extensions.map(function(extension) {
-            if (Buffer.isBuffer(extension)) {
-              return extension.toString('base64');
-            }
-            return io.read(/** @type {string} */(extension))
-                .then(buffer => buffer.toString('base64'));
-          });
+    if (this.options_.extensions && this.options_.extensions.length) {
+      this.options_.extensions = this.options_.extensions.map(function (
+        extension
+      ) {
+        if (Buffer.isBuffer(extension)) {
+          return extension.toString('base64')
+        }
+        return io
+          .read(/** @type {string} */ (extension))
+          .then((buffer) => buffer.toString('base64'))
+      })
     }
-    return super[Symbols.serialize]();
+    return super[Symbols.serialize]()
   }
 }
-
 
 /**
  * Creates a new WebDriver client for Chromium-based browsers.
@@ -580,28 +592,28 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(caps, opt_serviceExecutor) {
-    let executor;
-    let onQuit;
+    let executor
+    let onQuit
     if (opt_serviceExecutor instanceof http.Executor) {
-      executor = opt_serviceExecutor;
-      configureExecutor(executor, this.VENDOR_COMMAND_PREFIX);
+      executor = opt_serviceExecutor
+      configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
     } else {
-      let service = opt_serviceExecutor || this.getDefaultService();
-      executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX);
-      onQuit = () => service.kill();
+      let service = opt_serviceExecutor || this.getDefaultService()
+      executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
+      onQuit = () => service.kill()
     }
 
     // W3C spec requires noProxy value to be an array of strings, but Chromium
     // expects a single host as a string.
-    let proxy = caps.get(Capability.PROXY);
+    let proxy = caps.get(Capability.PROXY)
     if (proxy && Array.isArray(proxy.noProxy)) {
-      proxy.noProxy = proxy.noProxy[0];
+      proxy.noProxy = proxy.noProxy[0]
       if (!proxy.noProxy) {
-        proxy.noProxy = undefined;
+        proxy.noProxy = undefined
       }
     }
 
-    return /** @type {!Driver} */(super.createSession(executor, caps, onQuit));
+    return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
   }
 
   /**
@@ -619,7 +631,8 @@ class Driver extends webdriver.WebDriver {
    */
   launchApp(id) {
     return this.execute(
-        new command.Command(Command.LAUNCH_APP).setParameter('id', id));
+      new command.Command(Command.LAUNCH_APP).setParameter('id', id)
+    )
   }
 
   /**
@@ -628,7 +641,7 @@ class Driver extends webdriver.WebDriver {
    *     emulation settings are retrievied.
    */
   getNetworkConditions() {
-    return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS));
+    return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS))
   }
 
   /**
@@ -649,11 +662,16 @@ class Driver extends webdriver.WebDriver {
    */
   setNetworkConditions(spec) {
     if (!spec || typeof spec !== 'object') {
-      throw TypeError('setNetworkConditions called with non-network-conditions parameter');
+      throw TypeError(
+        'setNetworkConditions called with non-network-conditions parameter'
+      )
     }
     return this.execute(
-        new command.Command(Command.SET_NETWORK_CONDITIONS)
-            .setParameter('network_conditions', spec));
+      new command.Command(Command.SET_NETWORK_CONDITIONS).setParameter(
+        'network_conditions',
+        spec
+      )
+    )
   }
 
   /**
@@ -667,44 +685,150 @@ class Driver extends webdriver.WebDriver {
    */
   sendDevToolsCommand(cmd, params = {}) {
     return this.execute(
-        new command.Command(Command.SEND_DEVTOOLS_COMMAND)
-            .setParameter('cmd', cmd)
-            .setParameter('params', params));
+      new command.Command(Command.SEND_DEVTOOLS_COMMAND)
+        .setParameter('cmd', cmd)
+        .setParameter('params', params)
+    )
   }
 
-  async createCDPConnection() {
+  /**
+   * ends an arbitrary devtools command to the browser and get the result.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has finished.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
+   */
+  sendAndGetDevToolsCommand(cmd, params = {}) {
+    return this.execute(
+      new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
+        .setParameter('cmd', cmd)
+        .setParameter('params', params)
+    )
+  }
+
+  /**
+   * Creates a new WebSocket connection.
+   * @return {!Promise<resolved>} A new CDP instance.
+   */
+  async createCDPConnection(target) {
     const caps = await this.getCapabilities()
-    const seOptions = caps['map_'].get('se:options') || new Map();
-    const vendorInfo = caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') || new Map();
-    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress'];
-    this._wsUrl = await this.getWsUrl(debuggerUrl);
+    const seOptions = caps['map_'].get('se:options') || new Map()
+    const vendorInfo =
+      caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
+      new Map()
+    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress']
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
+
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(this._wsUrl);
+        this._wsConnection = new WebSocket(this._wsUrl)
       } catch (err) {
-        reject(err);
+        reject(err)
         return
       }
 
       this._wsConnection.on('open', () => {
-        this._cdpConnection = new cdp.CdpConnection(this._wsConnection);
-        resolve(this._cdpConnection);
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
+        resolve(this._cdpConnection)
       })
 
       this._wsConnection.on('error', (error) => {
-        reject(error);
+        reject(error)
       })
-    });
+    })
   }
 
-  async getWsUrl(debuggerAddress) {
-    let request = new http.Request('GET', '/json/version');
-    let client = new http.HttpClient("http://" + debuggerAddress);
-    let url;
-    let response = await client.send(request);
-    url = JSON.parse(response.body)['webSocketDebuggerUrl'];
-    return url;
+  /**
+   * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
+   * @param {string} debuggerAddress
+   * @param {string} target
+   * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
+   */
+  async getWsUrl(debuggerAddress, target) {
+    if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
+      throw new error.InvalidArgumentError('invalid target value')
+    }
+    let path = '/json/version'
+
+    if (target === 'page') {
+      path = '/json'
+    }
+    let request = new http.Request('GET', path)
+    let client = new http.HttpClient('http://' + debuggerAddress)
+    let response = await client.send(request)
+    let url = JSON.parse(response.body)['webSocketDebuggerUrl']
+    if (target.toLowerCase() === 'page') {
+      url = JSON.parse(response.body)[0]['webSocketDebuggerUrl']
+    }
+
+    return url
   }
+
+  /**
+   * Sets a listener for Fetch.authRequired event from CDP
+   * If event is triggered, it enter username and password
+   * and allows the test to move forward
+   * @param {string} username
+   * @param {string} password
+   * @param connection CDP Connection
+   */
+  async register(username, password, connection) {
+    await connection.execute("Network.setCacheDisabled", 1, {
+      cacheDisabled: true,
+    }, null);
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Fetch.authRequired') {
+        const requestParams = params['params']
+        connection.execute('Fetch.continueWithAuth', 1, {
+          requestId: requestParams['requestId'],
+          authChallengeResponse: {
+            response: 'ProvideCredentials',
+            username: username,
+            password: password,
+        }})
+      } else if (params.method === 'Fetch.requestPaused') {
+        const requestPausedParams = params['params']
+        connection.execute('Fetch.continueRequest', 1, {
+          requestId: requestPausedParams['requestId'],
+        })
+      }
+    })
+
+    await connection.execute('Fetch.enable', 1, {
+      handleAuthRequests: true,
+    }, null)
+  }
+
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogEvent(connection, callback) {
+    await connection.execute('Runtime.enable', 1, {}, null)
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.consoleAPICalled') {
+        const consoleEventParams = params['params']
+        let event = {
+          type: consoleEventParams['type'],
+          timestamp: new Date(consoleEventParams['timestamp']),
+          args: consoleEventParams['args']
+        }
+
+        callback(event)
+      }
+    })
+  }
+
   /**
    * Set a permission state to the given value.
    *
@@ -719,10 +843,33 @@ class Driver extends webdriver.WebDriver {
     return this.execute(
       new command.Command(Command.SET_PERMISSION)
         .setParameter('descriptor', { name })
-        .setParameter('state', state),
-    );
+        .setParameter('state', state)
+    )
   }
 
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogException(connection, callback) {
+    await connection.execute('Runtime.enable', 1, {}, null)
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.exceptionThrown') {
+        const exceptionEventParams = params['params']
+        let event = {
+          exceptionDetails: exceptionEventParams['exceptionDetails'],
+          timestamp: new Date(exceptionEventParams['timestamp']),
+        }
+
+        callback(event)
+      }
+    })
+  }
   /**
    * Sends a DevTools command to change the browser's download directory.
    *
@@ -733,18 +880,17 @@ class Driver extends webdriver.WebDriver {
    */
   async setDownloadPath(path) {
     if (!path || typeof path !== 'string') {
-      throw new error.InvalidArgumentError('invalid download path');
+      throw new error.InvalidArgumentError('invalid download path')
     }
-    const stat = await io.stat(path);
+    const stat = await io.stat(path)
     if (!stat.isDirectory()) {
-      throw new error.InvalidArgumentError('not a directory: ' + path);
+      throw new error.InvalidArgumentError('not a directory: ' + path)
     }
     return this.sendDevToolsCommand('Page.setDownloadBehavior', {
-      'behavior': 'allow',
-      'downloadPath': path
-    });
+      behavior: 'allow',
+      downloadPath: path,
+    })
   }
-
 
   /**
    * Returns the list of cast sinks (Cast devices) available to the Chrome media router.
@@ -754,67 +900,77 @@ class Driver extends webdriver.WebDriver {
    */
   getCastSinks() {
     return this.schedule(
-        new command.Command(Command.GET_CAST_SINKS),
-        'Driver.getCastSinks()');
+      new command.Command(Command.GET_CAST_SINKS),
+      'Driver.getCastSinks()'
+    )
   }
 
   /**
    * Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the target device has been selected to respond further webdriver commands.
    */
   setCastSinkToUse(deviceName) {
     return this.schedule(
-        new command.Command(Command.SET_CAST_SINK_TO_USE).setParameter('sinkName', deviceName),
-        'Driver.setCastSinkToUse(' + deviceName + ')');
+      new command.Command(Command.SET_CAST_SINK_TO_USE).setParameter(
+        'sinkName',
+        deviceName
+      ),
+      'Driver.setCastSinkToUse(' + deviceName + ')'
+    )
   }
 
   /**
    * Initiates tab mirroring for the current browser tab on the specified device.
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the mirror command has been issued to the device.
    */
   startCastTabMirroring(deviceName) {
     return this.schedule(
-        new command.Command(Command.START_CAST_TAB_MIRRORING).setParameter('sinkName', deviceName),
-        'Driver.startCastTabMirroring(' + deviceName + ')');
+      new command.Command(Command.START_CAST_TAB_MIRRORING).setParameter(
+        'sinkName',
+        deviceName
+      ),
+      'Driver.startCastTabMirroring(' + deviceName + ')'
+    )
   }
 
   /**
-   *  a
-   *
-   * @param {String} Friendly name of the target device.
+   * Returns an error message when there is any issue in a Cast session.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the mirror command has been issued to the device.
    */
   getCastIssueMessage() {
     return this.schedule(
-        new command.Command(Command.GET_CAST_ISSUE_MESSAGE),
-        'Driver.getCastIssueMessage()');
+      new command.Command(Command.GET_CAST_ISSUE_MESSAGE),
+      'Driver.getCastIssueMessage()'
+    )
   }
 
   /**
    * Stops casting from media router to the specified device, if connected.
    *
-   * @param {String} Friendly name of the target device.
+   * @param {String} deviceName name of the target device.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the stop command has been issued to the device.
    */
   stopCasting(deviceName) {
     return this.schedule(
-        new command.Command(Command.STOP_CASTING).setParameter('sinkName', deviceName),
-        'Driver.stopCasting(' + deviceName + ')');
+      new command.Command(Command.STOP_CASTING).setParameter(
+        'sinkName',
+        deviceName
+      ),
+      'Driver.stopCasting(' + deviceName + ')'
+    )
   }
 }
 
-
 // PUBLIC API
 
-
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder

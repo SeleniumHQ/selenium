@@ -19,6 +19,7 @@ package org.openqa.selenium.events;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -28,26 +29,30 @@ public class Event {
 
   private static final Json JSON = new Json();
   private final UUID id;
-  private final Type type;
+  private final EventName eventName;
   private final String data;
 
-  public Event(Type type, Object data) {
-    this(UUID.randomUUID(), type, data);
+  public Event(EventName eventName, Object data) {
+    this(UUID.randomUUID(), eventName, data);
   }
 
-  public Event(UUID id, Type type, Object data) {
+  public Event(UUID id, EventName eventName, Object data) {
     this.id = Require.nonNull("Message id", id);
-    this.type = Require.nonNull("Event type", type);
+    this.eventName = Require.nonNull("Event type", eventName);
 
-    this.data = JSON.toJson(data);
+    StringBuilder builder = new StringBuilder();
+    try (JsonOutput out = JSON.newOutput(builder)) {
+      out.setPrettyPrint(false).writeClassName(false).write(data);
+    }
+    this.data = builder.toString();
   }
 
   public UUID getId() {
     return id;
   }
 
-  public Type getType() {
-    return type;
+  public EventName getType() {
+    return eventName;
   }
 
   public <T> T getData(java.lang.reflect.Type typeOfT) {
@@ -62,7 +67,7 @@ public class Event {
   public String toString() {
     return new StringJoiner(", ", Event.class.getSimpleName() + "[", "]")
         .add("id=" + id)
-        .add("type=" + type)
+        .add("type=" + eventName)
         .add("data=" + data)
         .toString();
   }

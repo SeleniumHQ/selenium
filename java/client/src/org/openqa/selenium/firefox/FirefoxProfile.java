@@ -33,6 +33,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,7 +111,7 @@ public class FirefoxProfile {
   protected Reader onlyOverrideThisIfYouKnowWhatYouAreDoing() {
     URL resource = Resources.getResource(FirefoxProfile.class, defaultPrefs);
     try {
-      return new InputStreamReader(resource.openStream());
+      return new InputStreamReader(resource.openStream(), Charset.defaultCharset());
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -247,7 +248,7 @@ public class FirefoxProfile {
       prefs.setPreference("browser.startup.page", 1);
     }
 
-    try (FileWriter writer = new FileWriter(userPrefs)) {
+    try (FileWriter writer = new FileWriter(userPrefs, Charset.defaultCharset())) {
       prefs.writeTo(writer);
     } catch (IOException e) {
       throw new WebDriverException(e);

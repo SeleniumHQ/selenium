@@ -19,6 +19,7 @@ package org.openqa.selenium.devtools;
 
 import com.google.auto.service.AutoService;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 
@@ -41,7 +42,8 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
 
   @Override
   public HasDevTools getImplementation(Capabilities caps, ExecuteMethod executeMethod) {
-    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(DevTools::new);
+    CdpInfo info = new CdpVersionFinder().match(caps.getBrowserVersion()).orElseGet(NoOpCdpInfo::new);
+    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
 
     return () -> devTools.orElseThrow(() -> new IllegalStateException("Unable to create connection to " + caps));
   }

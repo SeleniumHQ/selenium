@@ -38,7 +38,6 @@ import org.openqa.selenium.remote.mobile.AddNetworkConnection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -46,8 +45,10 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static java.util.Collections.unmodifiableSet;
 import static net.bytebuddy.matcher.ElementMatchers.anyOf;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
@@ -63,15 +64,26 @@ public class Augmenter {
   private final Set<Augmentation<?>> augmentations;
 
   public Augmenter() {
-    this.augmentations = Collections.emptySet();
-    addDriverAugmentation(new AddApplicationCache());
-    addDriverAugmentation(new AddLocationContext());
-    addDriverAugmentation(new AddNetworkConnection());
-    addDriverAugmentation(new AddRotatable());
-    addDriverAugmentation(new AddWebStorage());
+    Set<Augmentation<?>> augmentations = new HashSet<>();
+    Stream.of(
+        new AddApplicationCache(),
+        new AddLocationContext(),
+        new AddNetworkConnection(),
+        new AddRotatable(),
+        new AddWebStorage()
+    ).forEach(provider -> augmentations.add(createAugmentation(provider)));
 
     StreamSupport.stream(ServiceLoader.load(AugmenterProvider.class).spliterator(), false)
-      .forEach(this::addDriverAugmentation);
+        .forEach(provider -> augmentations.add(createAugmentation(provider)));
+
+    this.augmentations = unmodifiableSet(augmentations);
+  }
+
+  private static <X> Augmentation<X> createAugmentation(AugmenterProvider<X> provider) {
+    Require.nonNull("Interface provider", provider);
+    return new Augmentation<>(provider.isApplicable(),
+                              provider.getDescribedInterface(),
+                              provider::getImplementation);
   }
 
   private Augmenter(Set<Augmentation<?>> augmentations, Augmentation<?> toAdd) {
@@ -82,7 +94,7 @@ public class Augmenter {
     toUse.addAll(augmentations);
     toUse.add(toAdd);
 
-    this.augmentations = Collections.unmodifiableSet(toUse);
+    this.augmentations = unmodifiableSet(toUse);
   }
 
   public <X> Augmenter addDriverAugmentation(AugmenterProvider<X> provider) {

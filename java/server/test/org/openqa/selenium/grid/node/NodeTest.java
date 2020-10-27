@@ -29,16 +29,23 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -64,15 +71,15 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.time.Duration.ofSeconds;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -84,22 +91,26 @@ public class NodeTest {
   private EventBus bus;
   private LocalNode local;
   private Node node;
+  private ImmutableCapabilities stereotype;
   private ImmutableCapabilities caps;
   private URI uri;
+  private Secret registrationSecret;
 
   @Before
   public void setUp() throws URISyntaxException {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
+    registrationSecret = new Secret("sussex charmer");
+
+    stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
 
     uri = new URI("http://localhost:1234");
 
     class Handler extends Session implements HttpHandler {
-
       private Handler(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), uri, capabilities);
+        super(new SessionId(UUID.randomUUID()), uri, stereotype, capabilities, Instant.now());
       }
 
       @Override
@@ -108,7 +119,7 @@ public class NodeTest {
       }
     }
 
-    local = LocalNode.builder(tracer, bus, uri, uri, null)
+    local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
@@ -118,16 +129,23 @@ public class NodeTest {
     node = new RemoteNode(
         tracer,
         new PassthroughHttpClient.Factory(local),
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         uri,
+        registrationSecret,
         ImmutableSet.of(caps));
   }
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
-    Node local = LocalNode.builder(tracer, bus, uri, uri, null).build();
+    Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret).build();
     HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
-    Node node = new RemoteNode(tracer, clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
+    Node node = new RemoteNode(
+      tracer,
+      clientFactory,
+      new NodeId(UUID.randomUUID()),
+      uri,
+      registrationSecret,
+      ImmutableSet.of());
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
@@ -145,8 +163,8 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .build();
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
@@ -228,7 +246,7 @@ public class NodeTest {
     class Recording extends Session implements HttpHandler {
 
       private Recording() {
-        super(new SessionId(UUID.randomUUID()), uri, caps);
+        super(new SessionId(UUID.randomUUID()), uri, stereotype, caps, Instant.now());
       }
 
       @Override
@@ -238,14 +256,15 @@ public class NodeTest {
       }
     }
 
-    Node local = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Recording()))
         .build();
     Node remote = new RemoteNode(
         tracer,
         new PassthroughHttpClient.Factory(local),
-        UUID.randomUUID(),
+        new NodeId(UUID.randomUUID()),
         uri,
+        registrationSecret,
         ImmutableSet.of(caps));
 
     Session session = remote.newSession(createSessionRequest(caps))
@@ -278,8 +297,8 @@ public class NodeTest {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
         .clock(clock)
@@ -296,7 +315,7 @@ public class NodeTest {
 
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
-    Node local = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> {
           throw new SessionNotCreatedException("eeek");
         }))
@@ -311,8 +330,8 @@ public class NodeTest {
   @Test
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, c)))
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, stereotype, c, Instant.now())))
         .build();
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
@@ -323,7 +342,7 @@ public class NodeTest {
   @Test
   public void quittingASessionShouldCauseASessionClosedEventToBeFired() {
     AtomicReference<Object> obj = new AtomicReference<>();
-    bus.addListener(SESSION_CLOSED, event -> obj.set(event.getData(Object.class)));
+    bus.addListener(SessionClosedEvent.listener(obj::set));
 
     Session session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession)
@@ -346,29 +365,37 @@ public class NodeTest {
     HttpRequest req = new HttpRequest(GET, "/status");
     HttpResponse res = node.execute(req);
     assertThat(res.getStatus()).isEqualTo(200);
-    Map<String, Object> status = new Json().toType(string(res), MAP_TYPE);
-    assertThat(status).containsOnlyKeys("value");
-    assertThat(status).extracting("value").asInstanceOf(MAP)
-        .containsEntry("ready", true)
-        .containsEntry("message", "Ready")
-        .containsKey("node");
-    assertThat(status).extracting("value.node").asInstanceOf(MAP)
-        .containsKey("id")
-        .containsEntry("uri", "http://localhost:1234")
-        .containsEntry("maxSessions", (long) 2)
-        .containsKey("stereotypes")
-        .containsKey("sessions");
-    assertThat(status).extracting("value.node.stereotypes").asInstanceOf(LIST)
-        .hasSize(1)
-        .element(0).asInstanceOf(MAP)
-        .containsEntry("capabilities", Collections.singletonMap("browserName", "cheese"))
-        .containsEntry("count", (long) 3);
-    assertThat(status).extracting("value.node.sessions").asInstanceOf(LIST)
-        .hasSize(1)
-        .element(0).asInstanceOf(MAP)
-        .containsEntry("currentCapabilities", Collections.singletonMap("browserName", "cheese"))
-        .containsEntry("stereotype", Collections.singletonMap("browserName", "cheese"))
-        .containsKey("sessionId");
+
+    NodeStatus seen = null;
+    try (JsonInput input = new Json().newInput(Contents.reader(res))) {
+      input.beginObject();
+      while (input.hasNext()) {
+        switch (input.nextName()) {
+          case "value":
+            input.beginObject();
+            while (input.hasNext()) {
+              switch (input.nextName()) {
+                case "node":
+                  seen = input.read(NodeStatus.class);
+                  break;
+
+                default:
+                  input.skipValue();
+              }
+            }
+            input.endObject();
+            break;
+
+          default:
+            input.skipValue();
+            break;
+        }
+      }
+    }
+
+    NodeStatus expected = node.getStatus();
+
+    assertThat(seen).isEqualTo(expected);
   }
 
   @Test
@@ -404,6 +431,87 @@ public class NodeTest {
 
     node.stop(session.getId());
     assertThat(baseDir).doesNotExist();
+  }
+
+  @Test
+  public void shouldNotCreateSessionIfDraining() {
+    node.drain();
+    assertThat(local.isDraining()).isTrue();
+    assertThat(node.isDraining()).isTrue();
+
+    Optional<CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(caps));
+
+    assertThat(sessionResponse.isPresent()).isFalse();
+  }
+
+  @Test
+  public void shouldNotShutdownDuringOngoingSessionsIfDraining() throws InterruptedException {
+    Optional<Session> firstSession =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+    Optional<Session> secondSession =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
+
+    node.drain();
+    assertThat(local.isDraining()).isTrue();
+    assertThat(node.isDraining()).isTrue();
+
+    Optional<CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(caps));
+    assertThat(sessionResponse.isPresent()).isFalse();
+
+    assertThat(firstSession.isPresent()).isTrue();
+    assertThat(secondSession.isPresent()).isTrue();
+
+    assertThat(local.getCurrentSessionCount()).isEqualTo(2);
+
+    latch.await(1, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(1);
+  }
+
+  @Test
+  public void shouldShutdownAfterSessionsCompleteIfDraining() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
+
+    Optional<Session> firstSession =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+    Optional<Session> secondSession =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+
+    node.drain();
+
+    assertThat(firstSession.isPresent()).isTrue();
+    assertThat(secondSession.isPresent()).isTrue();
+
+    node.stop(firstSession.get().getId());
+    node.stop(secondSession.get().getId());
+
+    latch.await(5, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(0);
+  }
+
+  @Test
+  public void shouldAllowsWebDriverCommandsForOngoingSessionIfDraining() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
+
+    Optional<Session> session =
+        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+
+    node.drain();
+
+    SessionId sessionId = session.get().getId();
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", sessionId));
+
+    HttpResponse response = node.execute(req);
+
+    assertThat(response.getStatus()).isEqualTo(200);
+
+    assertThat(latch.getCount()).isEqualTo(1);
   }
 
   private File createTmpFile(String content) {

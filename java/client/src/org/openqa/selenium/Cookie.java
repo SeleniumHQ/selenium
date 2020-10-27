@@ -176,7 +176,7 @@ public class Cookie implements Serializable {
   }
 
   public Date getExpiry() {
-    return expiry;
+    return expiry == null ? null : new Date(expiry.getTime());
   }
 
   public String getSameSite() {
@@ -304,7 +304,7 @@ public class Cookie implements Serializable {
     }
 
     public Builder expiresOn(Date expiry) {
-      this.expiry = expiry;
+      this.expiry = expiry == null ? null : new Date(expiry.getTime());
       return this;
     }
 

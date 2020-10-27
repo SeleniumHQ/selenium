@@ -402,7 +402,6 @@ public class AlertsTest extends JUnit4TestBase {
         .withBody(String.format(
             "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>", pageWithOnLoad))));
 
-    String mainWindow = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
     driver.findElement(By.id("open-new-window")).click();
     wait.until(newWindowIsOpened(currentWindowHandles));

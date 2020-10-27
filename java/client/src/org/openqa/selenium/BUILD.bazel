@@ -1,5 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
-load("//java:defs.bzl", "java_dist_zip", "java_export", "javadoc")
+load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "java_library", "javadoc")
 
 filegroup(
     name = "template-pom",
@@ -97,13 +97,24 @@ genrule(
     outs = [
         "version.jar",
     ],
-    cmd = """
-      mkdir -p META-INF &&
-      echo "Selenium-Version = %s" >META-INF/selenium-build.properties &&
-      echo "Build-Revision = " $$(grep GIT_REVISION bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/selenium-build.properties &&
-      $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
+    cmd = select({
+        "//common:stamp": """
+        mkdir -p META-INF &&
+        echo "Selenium-Version = %s" >META-INF/selenium-build.properties &&
+        echo "Build-Revision = " $$(grep GIT_REVISION bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/selenium-build.properties &&
+        $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
     """ % SE_VERSION,
-    stamp = True,
+        "//conditions:default": """
+        mkdir -p META-INF &&
+        echo "Selenium-Version = %s" >META-INF/selenium-build.properties &&
+        echo "Build-Revision = Unknown"  >>META-INF/selenium-build.properties &&
+        $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
+    """ % SE_VERSION,
+    }),
+    stamp = select({
+        "//common:stamp": True,
+        "//conditions:default": False,
+    }),
     tools = [
         "@bazel_tools//tools/zip:zipper",
     ],

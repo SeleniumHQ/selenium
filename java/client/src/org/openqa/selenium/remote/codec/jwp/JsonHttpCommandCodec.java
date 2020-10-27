@@ -45,6 +45,7 @@ import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.MOUSE_DOWN;
 import static org.openqa.selenium.remote.DriverCommand.MOUSE_UP;
 import static org.openqa.selenium.remote.DriverCommand.MOVE_TO;
+import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT;
@@ -106,6 +107,8 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(DISMISS_ALERT, post(sessionId + "/dismiss_alert"));
     defineCommand(GET_ALERT_TEXT, get(sessionId + "/alert_text"));
     defineCommand(SET_ALERT_VALUE, post(sessionId + "/alert_text"));
+
+    defineCommand(UPLOAD_FILE, post(sessionId + "/file"));
 
     defineCommand(GET_ACTIVE_ELEMENT, post(sessionId + "/element/active"));
 

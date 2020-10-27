@@ -190,7 +190,7 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
 
 
 /**
- * Fires a touch event given the state of the deive and the given arguments.
+ * Fires a touch event given the state of the device and the given arguments.
  *
  * @param {bot.events.EventType} type Event type.
  * @param {number} id The touch identifier.

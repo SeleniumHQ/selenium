@@ -33,6 +33,7 @@ if [[ ! -z "$BZL" ]]; then
      fi
   else
     bazel $BZL
+    bazel analyze-profile /tmp/bazelprofile
   fi
 fi
 

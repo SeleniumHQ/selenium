@@ -15,16 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const {Capabilities} = require('./capabilities');
-
+const { Capabilities } = require('./capabilities')
 
 /**
  * Contains information about a single WebDriver session.
  */
 class Session {
-
   /**
    * @param {string} id The session ID.
    * @param {!./capabilities.Capabilities} capabilities
@@ -32,26 +30,27 @@ class Session {
    */
   constructor(id, capabilities) {
     /** @private {string} */
-    this.id_ = id;
+    this.id_ = id
 
     /** @private {!Capabilities} */
-    this.caps_ = capabilities instanceof Capabilities
-        ? /** @type {!Capabilities} */(capabilities)
-        : new Capabilities(capabilities);
+    this.caps_ =
+      capabilities instanceof Capabilities
+        ? /** @type {!Capabilities} */ (capabilities)
+        : new Capabilities(capabilities)
   }
 
   /**
    * @return {string} This session's ID.
    */
   getId() {
-    return this.id_;
+    return this.id_
   }
 
   /**
    * @return {!Capabilities} This session's capabilities.
    */
   getCapabilities() {
-    return this.caps_;
+    return this.caps_
   }
 
   /**
@@ -60,7 +59,7 @@ class Session {
    * @return {*} The capability value.
    */
   getCapability(key) {
-    return this.caps_.get(key);
+    return this.caps_.get(key)
   }
 
   /**
@@ -69,12 +68,10 @@ class Session {
    * @return {string} The JSON representation of this Session.
    */
   toJSON() {
-    return this.getId();
+    return this.getId()
   }
 }
 
-
 // PUBLIC API
 
-
-module.exports = {Session: Session};
+module.exports = { Session: Session }

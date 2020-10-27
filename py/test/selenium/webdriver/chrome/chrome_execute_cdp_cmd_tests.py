@@ -17,18 +17,11 @@
 
 from selenium.webdriver import Chrome
 
+from selenium.webdriver.common.bidi.console import Console
+
 
 def test_execute_cdp_cmd():
     driver = Chrome()
     version_info = driver.execute_cdp_cmd('Browser.getVersion', {})
     assert isinstance(version_info, dict)
     assert 'userAgent' in version_info
-
-
-async def test_devtools():
-    driver = Chrome()
-    async with driver.get_devtools_connection() as devtools:
-        import selenium.webdriver.common.devtools.performance as perf
-        await devtools.execute(perf.enable())
-        results = await devtools.execute(perf.get_metrics())
-        assert isinstance(results, list)

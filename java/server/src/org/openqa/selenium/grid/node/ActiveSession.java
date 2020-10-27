@@ -23,12 +23,17 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 
 import java.net.URI;
+import java.time.Instant;
 
 public interface ActiveSession extends HttpHandler {
 
   SessionId getId();
 
+  Capabilities getStereotype();
+
   Capabilities getCapabilities();
+
+  Instant getStartTime();
 
   URI getUri();
 

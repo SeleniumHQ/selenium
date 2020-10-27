@@ -63,12 +63,15 @@ def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
     tests = []
     test_name = test_class.rpartition(".")[2]
 
+    data = kwargs["data"] if "data" in kwargs else []
     jvm_flags = kwargs["jvm_flags"] if "jvm_flags" in kwargs else []
     tags = kwargs["tags"] if "tags" in kwargs else []
 
     stripped_args = dict(**kwargs)
+    stripped_args.pop("data", None)
     stripped_args.pop("jvm_flags", None)
     stripped_args.pop("tags", None)
+
 
     for browser in browsers:
         if not browser in _BROWSERS:
@@ -82,7 +85,26 @@ def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
             size = size,
             jvm_flags = _BROWSERS[browser]["jvm_flags"] + jvm_flags,
             tags = _BROWSERS[browser]["tags"] + tags,
+            data = data,
             **stripped_args
         )
         tests.append(test)
+
+        if not "no-remote" in tags:
+            native.java_test(
+                name = "%s-remote" % test,
+                test_class = test_class,
+                size = size,
+                jvm_flags = _BROWSERS[browser]["jvm_flags"] + jvm_flags + [
+                    "-Dselenium.browser.remote=true",
+                    "-Dselenium.browser.remote.path=$(location //java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
+                ],
+                tags = _BROWSERS[browser]["tags"] + tags + ["remote"],
+                data = data + [
+                    "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                ],
+                **stripped_args
+            )
+            tests.append("%s-remote" % test)
+
     native.test_suite(name = "%s-all" % test_name, tests = tests, tags = ["manual"])

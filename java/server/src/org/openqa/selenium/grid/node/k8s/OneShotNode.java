@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.node.k8s;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -25,18 +26,23 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeDrainStarted;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.NodeOptions;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.internal.Require;
@@ -52,7 +58,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -63,6 +69,8 @@ import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
@@ -80,25 +88,25 @@ public class OneShotNode extends Node {
   private final EventBus events;
   private final WebDriverInfo driverInfo;
   private final Capabilities stereotype;
-  private final String registrationSecret;
   private final URI gridUri;
+  private final UUID slotId = UUID.randomUUID();
   private RemoteWebDriver driver;
   private SessionId sessionId;
   private HttpClient client;
   private Capabilities capabilities;
+  private Instant sessionStart = Instant.EPOCH;
 
   private OneShotNode(
     Tracer tracer,
     EventBus events,
-    String registrationSecret,
-    UUID id,
+    Secret registrationSecret,
+    NodeId id,
     URI uri,
     URI gridUri,
     Capabilities stereotype,
     WebDriverInfo driverInfo) {
-    super(tracer, id, uri);
+    super(tracer, id, uri, registrationSecret);
 
-    this.registrationSecret = registrationSecret;
     this.events = Require.nonNull("Event bus", events);
     this.gridUri = Require.nonNull("Public Grid URI", gridUri);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
@@ -135,7 +143,7 @@ public class OneShotNode extends Node {
       loggingOptions.getTracer(),
       eventOptions.getEventBus(),
       serverOptions.getRegistrationSecret(),
-      UUID.randomUUID(),
+      new NodeId(UUID.randomUUID()),
       serverOptions.getExternalUri(),
       nodeOptions.getPublicGridUri().orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
       stereotype,
@@ -162,11 +170,14 @@ public class OneShotNode extends Node {
     this.sessionId = this.driver.getSessionId();
     this.client = extractHttpClient(this.driver);
     this.capabilities = rewriteCapabilities(this.driver);
+    this.sessionStart = Instant.now();
 
     LOG.info("Encoded response: " + JSON.toJson(ImmutableMap.of(
       "value", ImmutableMap.of(
         "sessionId", sessionId,
         "capabilities", capabilities))));
+
+    events.fire(new NodeDrainStarted(getId()));
 
     return Optional.of(
       new CreateSessionResponse(
@@ -277,8 +288,9 @@ public class OneShotNode extends Node {
     return new Session(
       sessionId,
       getUri(),
-      capabilities);
-  }
+      stereotype,
+      capabilities,
+      sessionStart); }
 
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
@@ -322,16 +334,26 @@ public class OneShotNode extends Node {
       getId(),
       getUri(),
       1,
-      ImmutableMap.of(stereotype, 1),
-      driver == null ?
-        Collections.emptySet() :
-        Collections.singleton(new NodeStatus.Active(stereotype, sessionId, capabilities)),
-      registrationSecret);
+      ImmutableSet.of(
+        new Slot(
+          new SlotId(getId(), slotId),
+          stereotype,
+          Instant.EPOCH,
+          driver == null ?
+            Optional.empty() :
+            Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
+      isDraining() ? DRAINING : UP);
+  }
+
+  @Override
+  public void drain() {
+    events.fire(new NodeDrainStarted(getId()));
+    draining = true;
   }
 
   @Override
   public HealthCheck getHealthCheck() {
-    return () -> new HealthCheck.Result(true, "Everything is fine", registrationSecret);
+    return () -> new HealthCheck.Result(isDraining() ? DRAINING : UP, "Everything is fine");
   }
 
   @Override

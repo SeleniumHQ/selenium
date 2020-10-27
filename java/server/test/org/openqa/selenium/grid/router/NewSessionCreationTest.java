@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverInfo;
@@ -33,6 +34,7 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -52,6 +54,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,12 +67,14 @@ public class NewSessionCreationTest {
   private Tracer tracer;
   private EventBus events;
   private HttpClient.Factory clientFactory;
+  private Secret registrationSecret;
 
   @Before
   public void setup() {
     tracer = DefaultTestTracer.createTracer();
     events = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
+    registrationSecret = new Secret("hereford hop");
   }
 
   @Test
@@ -80,8 +85,9 @@ public class NewSessionCreationTest {
     assumeThat(geckoDriverInfo.isAvailable()).isTrue();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, null);
-    Routable router = new Router(tracer, clientFactory, sessions, distributor).with(new EnsureSpecCompliantHeaders(ImmutableList.of()));
+    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, registrationSecret);
+    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+      .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
     Server<?> server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),
@@ -95,8 +101,8 @@ public class NewSessionCreationTest {
       events,
       uri,
       uri,
-      null)
-      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+      registrationSecret)
+      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, Browser.detect().getCapabilities(), caps, Instant.now())))
       .build();
     distributor.add(node);
 
@@ -142,6 +148,7 @@ public class NewSessionCreationTest {
       new DriverServiceSessionFactory(
         tracer,
         clientFactory,
+        info.getCanonicalCapabilities(),
         info::isSupporting,
         driverService));
   }

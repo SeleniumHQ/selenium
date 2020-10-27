@@ -18,17 +18,17 @@ package org.openqa.selenium.devtools;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.devtools.target.Target;
-import org.openqa.selenium.devtools.target.model.SessionID;
-import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.devtools.v84.target.Target;
+import org.openqa.selenium.devtools.v84.target.model.SessionID;
+import org.openqa.selenium.devtools.v84.target.model.TargetInfo;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.openqa.selenium.devtools.inspector.Inspector.detached;
-import static org.openqa.selenium.devtools.inspector.Inspector.disable;
-import static org.openqa.selenium.devtools.inspector.Inspector.enable;
-import static org.openqa.selenium.devtools.target.Target.attachToTarget;
+import static org.openqa.selenium.devtools.v84.inspector.Inspector.detached;
+import static org.openqa.selenium.devtools.v84.inspector.Inspector.disable;
+import static org.openqa.selenium.devtools.v84.inspector.Inspector.enable;
+import static org.openqa.selenium.devtools.v84.target.Target.attachToTarget;
 
 public class ChromeDevToolsInspectorTest extends DevToolsTestBase {
   @Test

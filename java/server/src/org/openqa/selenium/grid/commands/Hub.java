@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -37,9 +37,13 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.web.ClassPathResource;
 import org.openqa.selenium.grid.web.CombinedHandler;
+import org.openqa.selenium.grid.web.NoHandler;
+import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -55,13 +59,16 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_MOVED_PERM;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
 import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
-public class Hub extends TemplateGridCommand {
+public class Hub extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(Hub.class.getName());
 
@@ -77,7 +84,7 @@ public class Hub extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE);
+    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, ROUTER_ROLE);
   }
 
   @Override
@@ -96,7 +103,7 @@ public class Hub extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) {
+  protected Handlers createHandlers(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 
@@ -128,7 +135,7 @@ public class Hub extends TemplateGridCommand {
       bus,
       clientFactory,
       sessions,
-      null);
+      serverOptions.getRegistrationSecret());
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
@@ -140,15 +147,34 @@ public class Hub extends TemplateGridCommand {
         .setContent(Contents.utf8String("Router is " + ready));
     };
 
+    Routable ui;
+    URL uiRoot = getClass().getResource("/javascript/grid-ui/build");
+    if (uiRoot != null) {
+      ResourceHandler
+        uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, "javascript/grid-ui/build"));
+      ui = Route.combine(
+        get("/grid/console").to(() -> req -> new HttpResponse().setStatus(HTTP_MOVED_PERM).addHeader("Location", "/ui/index.html")),
+        Route.prefix("/ui/").to(Route.matching(req -> true).to(() -> uiHandler)));
+    } else {
+      Json json = new Json();
+      ui = Route.matching(req -> false).to(() -> new NoHandler(json));
+    }
+
     HttpHandler httpHandler = combine(
+      ui,
       router.with(networkOptions.getSpecComplianceChecks()),
       Route.prefix("/wd/hub").to(combine(router.with(networkOptions.getSpecComplianceChecks()))),
-      Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 
-    Server<?> server = new NettyServer(serverOptions, httpHandler, new ProxyCdpIntoGrid(clientFactory, sessions));
-    server.start();
+    return new Handlers(httpHandler, new ProxyCdpIntoGrid(clientFactory, sessions));
+  }
+
+  @Override
+  protected void execute(Config config) {
+    Require.nonNull("Config", config);
+
+    Server<?> server = asServer(config).start();
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(

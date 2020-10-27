@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "config",
@@ -8,7 +9,6 @@ java_library(
     ],
     deps = [
         "//java:auto-service",
-        "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         artifact("com.beust:jcommander"),

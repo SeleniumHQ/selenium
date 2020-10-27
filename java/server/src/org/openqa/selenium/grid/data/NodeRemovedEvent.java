@@ -18,15 +18,23 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
 
-import java.util.UUID;
+import java.util.function.Consumer;
 
 public class NodeRemovedEvent extends Event {
 
-  public static final Type NODE_REMOVED = new Type("node-removed");
+  private static final EventName NODE_REMOVED = new EventName("node-removed");
 
-  public NodeRemovedEvent(UUID nodeId) {
+  public NodeRemovedEvent(NodeId nodeId) {
     super(NODE_REMOVED, nodeId);
+  }
+
+  public static EventListener<NodeId> listener(Consumer<NodeId> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(NODE_REMOVED, NodeId.class, handler);
   }
 }

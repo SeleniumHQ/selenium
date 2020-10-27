@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
@@ -42,6 +43,8 @@ import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
+import java.net.URL;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +52,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
@@ -56,14 +61,17 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private final HttpClient.Factory clientFactory;
   private final Predicate<Capabilities> predicate;
   private final DriverService.Builder builder;
+  private final Capabilities stereotype;
 
   public DriverServiceSessionFactory(
       Tracer tracer,
       HttpClient.Factory clientFactory,
+      Capabilities stereotype,
       Predicate<Capabilities> predicate,
       DriverService.Builder builder) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
     this.builder = Require.nonNull("Driver service bulder", builder);
   }
@@ -84,12 +92,19 @@ public class DriverServiceSessionFactory implements SessionFactory {
     }
 
     try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
-      CAPABILITIES.accept(span, sessionRequest.getCapabilities());
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      Capabilities capabilities = sessionRequest.getCapabilities();
+      CAPABILITIES.accept(span, capabilities);
+      CAPABILITIES_EVENT.accept(attributeMap, capabilities);
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(this.getClass().getName()));
+
       DriverService service = builder.build();
       try {
         service.start();
 
-        HttpClient client = clientFactory.createClient(service.getUrl());
+        URL serviceURL = service.getUrl();
+        attributeMap.put(AttributeKey.DRIVER_URL.getKey(), EventAttribute.setValue(serviceURL.toString()));
+        HttpClient client = clientFactory.createClient(serviceURL);
 
         Command command = new Command(
             null,
@@ -105,6 +120,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         Response response = result.createResponse();
 
+        attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(), EventAttribute.setValue(upstream.toString()));
+        attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
+        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+
         // TODO: This is a nasty hack. Try and make it elegant.
 
         Capabilities caps = new ImmutableCapabilities((Map<?, ?>) response.getValue());
@@ -118,6 +137,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
           }
         }
 
+        span.addEvent("Driver service created session", attributeMap);
         return Optional.of(
           new ProtocolConvertingSession(
             tracer,
@@ -126,7 +146,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
             service.getUrl(),
             downstream,
             upstream,
-            caps) {
+            stereotype,
+            caps,
+            Instant.now()) {
             @Override
             public void stop() {
               service.stop();
@@ -135,11 +157,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
       } catch (Exception e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
-        Map<String, EventAttributeValue> attributeValueMap = new HashMap<>();
-        attributeValueMap.put("Error Message", EventAttribute.setValue(e.getMessage()));
-        span.addEvent(
-            "Error while creating session with the driver service. Stopping driver service.",
-            attributeValueMap);
+        EXCEPTION.accept(attributeMap, e);
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                         EventAttribute.setValue("Error while creating session with the driver service. Stopping driver service: " + e.getMessage()));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         service.stop();
         return Optional.empty();
       }

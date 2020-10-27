@@ -94,7 +94,7 @@ public class GridSupplier implements Supplier<WebDriver> {
       HttpResponse response = c.execute(req);
       Map<?, ?> value = json.toType(string(response), Map.class);
 
-      return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
+      return Boolean.TRUE.equals(((Map<?, ?>) value.get("value")).get("ready"));
     });
 
     started = true;

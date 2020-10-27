@@ -15,92 +15,86 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
+const assert = require('assert')
 
-const chrome = require('../chrome');
-const edge = require('../edge');
-const error = require('../lib/error');
-const firefox = require('../firefox');
-const ie = require('../ie');
-const safari = require('../safari');
-const test = require('../lib/test');
-const {Browser} = require('../lib/capabilities');
-const {Pages} = require('../lib/test');
-const {Builder, Capabilities} = require('..');
+const chrome = require('../chrome')
+const edge = require('../edge')
+const error = require('../lib/error')
+const firefox = require('../firefox')
+const ie = require('../ie')
+const safari = require('../safari')
+const test = require('../lib/test')
+const { Browser } = require('../lib/capabilities')
+const { Pages } = require('../lib/test')
+const { Builder, Capabilities } = require('..')
 
-
-test.suite(function(env) {
-  const browsers = (...args) => env.browsers(...args);
-
+test.suite(function (env) {
   const BROWSER_MAP = new Map([
     [Browser.CHROME, chrome.Driver],
     [Browser.EDGE, edge.Driver],
     [Browser.FIREFOX, firefox.Driver],
     [Browser.INTERNET_EXPLORER, ie.Driver],
     [Browser.SAFARI, safari.Driver],
-  ]);
+  ])
 
   if (BROWSER_MAP.has(env.browser.name)) {
-    describe('builder creates thenable driver instances', function() {
-      let driver;
+    describe('builder creates thenable driver instances', function () {
+      let driver
 
-      after(() => driver && driver.quit());
+      after(() => driver && driver.quit())
 
-      it(env.browser.name, function() {
-        driver = env.builder().build();
+      it(env.browser.name, function () {
+        driver = env.builder().build()
 
-        const want = BROWSER_MAP.get(env.browser.name);
+        const want = BROWSER_MAP.get(env.browser.name)
         assert.ok(
-            driver instanceof want,
-            `want ${want.name}, but got ${driver.name}`);
-        assert.equal(typeof driver.then, 'function');
+          driver instanceof want,
+          `want ${want.name}, but got ${driver.name}`
+        )
+        assert.equal(typeof driver.then, 'function')
 
-        return driver
-            .then(
-                d =>
-                    assert.ok(
-                        d instanceof want,
-                        `want ${want.name}, but got ${d.name}`))
+        return (
+          driver
+            .then((d) =>
+              assert.ok(
+                d instanceof want,
+                `want ${want.name}, but got ${d.name}`
+              )
+            )
             // Load something so the safari driver doesn't crash from starting and
             // stopping in short time.
-            .then(() => driver.get(Pages.echoPage));
-      });
-    });
+            .then(() => driver.get(Pages.echoPage))
+        )
+      })
+    })
   }
+})
 
-  class OptionsTest {
-    constructor(ctor, key) {
-      this.ctor = ctor;
-      this.key = key;
-    }
-  }
-
-});
-
-describe('Builder', function() {
-  describe('catches incorrect use of browser options class', function() {
+describe('Builder', function () {
+  describe('catches incorrect use of browser options class', function () {
     function test(key, options) {
-      it(key, async function() {
-        let builder = new Builder()
-            .withCapabilities(new Capabilities()
-                .set('browserName', 'fake-browser-should-not-try-to-start')
-                .set(key, new options()));
+      it(key, async function () {
+        let builder = new Builder().withCapabilities(
+          new Capabilities()
+            .set('browserName', 'fake-browser-should-not-try-to-start')
+            .set(key, new options())
+        )
         try {
-          let driver = await builder.build();
-          await driver.quit();
-          return Promise.reject(Error('should have failed'));
+          let driver = await builder.build()
+          await driver.quit()
+          return Promise.reject(Error('should have failed'))
         } catch (ex) {
           if (!(ex instanceof error.InvalidArgumentError)) {
-            throw ex;
+            throw ex
           }
         }
-      });
+      })
     }
 
-    test('chromeOptions', chrome.Options);
-    test('moz:firefoxOptions', firefox.Options);
-    test('safari.options', safari.Options);
-  });
-});
+    test('chromeOptions', chrome.Options)
+    test('moz:firefoxOptions', firefox.Options)
+    test('safari.options', safari.Options)
+  })
+})

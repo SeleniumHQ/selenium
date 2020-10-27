@@ -27,13 +27,15 @@ import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class FakeHttpServletResponse extends HeaderContainer
     implements HttpServletResponse {
 
   private final StringWriter stringWriter = new StringWriter();
   private final ServletOutputStream servletOutputStream =
       new StringServletOutputStream(stringWriter);
-  private final PrintWriter printWriter = new PrintWriter(servletOutputStream);
+  private final PrintWriter printWriter = new PrintWriter(servletOutputStream, false, UTF_8);
   private int status = HttpServletResponse.SC_OK;
 
   @Override

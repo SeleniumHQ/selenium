@@ -1,10 +1,11 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_library", "java_test_suite")
 
 java_library(
     name = "test-lib",
     testonly = True,
     srcs = [
+        "DomainSocketsTestBase.java",
         "HttpClientTestBase.java",
     ],
     visibility = [
@@ -15,12 +16,22 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
         artifact("org.eclipse.jetty:jetty-server"),
         artifact("org.eclipse.jetty:jetty-servlet"),
         artifact("javax.servlet:javax.servlet-api"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-handler"),
+        artifact("io.netty:netty-transport"),
+        artifact("io.netty:netty-transport-native-epoll"),
+        artifact("io.netty:netty-transport-native-epoll-linux-x86_64"),
+        artifact("io.netty:netty-transport-native-kqueue"),
+        artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
+        artifact("io.netty:netty-transport-native-unix-common"),
     ],
 )
 

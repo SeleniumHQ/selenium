@@ -23,8 +23,10 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -279,9 +281,15 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("text", "text cannot be null");
             }
 
-            if (this.driver.FileDetector.IsFile(text))
+            var fileNames = text.Split('\n');
+            if (fileNames.All(this.driver.FileDetector.IsFile))
             {
-                text = this.UploadFile(text);
+                var uploadResults = new List<string>();
+                foreach (var fileName in fileNames)
+                {
+                    uploadResults.Add(this.UploadFile(fileName));
+                }
+                text = string.Join("\n", uploadResults);
             }
 
             // N.B. The Java remote server expects a CharSequence as the value input to
@@ -883,8 +891,8 @@ namespace OpenQA.Selenium.Remote
                     {
                         string fileName = Path.GetFileName(localFile);
                         zipArchive.CreateEntryFromFile(localFile, fileName);
-                        base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
+                    base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                 }
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();

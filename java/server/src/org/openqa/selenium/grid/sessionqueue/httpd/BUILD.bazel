@@ -1,0 +1,26 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "httpd",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/server/src/org/openqa/selenium/cli",
+        "//java/server/src/org/openqa/selenium/grid:base-command",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/config",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
+        "//java/server/src/org/openqa/selenium/netty/server",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+    ],
+)

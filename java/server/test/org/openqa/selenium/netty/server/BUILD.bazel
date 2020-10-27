@@ -21,7 +21,10 @@ java_test_suite(
 java_test_suite(
     name = "medium-tests",
     size = "medium",
-    srcs = glob(["*.java"], exclude = SMALL_TEST_SRCS),
+    srcs = glob(
+        ["*.java"],
+        exclude = SMALL_TEST_SRCS,
+    ),
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/http",

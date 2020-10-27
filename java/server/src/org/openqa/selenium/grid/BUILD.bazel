@@ -1,6 +1,6 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//:copy_file.bzl", "copy_file")
-load("//java:defs.bzl", "java_dist_zip", "java_export", "javadoc")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_binary", "java_dist_zip", "java_export", "java_library", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
 
 genrule(
@@ -20,6 +20,7 @@ genrule(
 
 BASE_COMMAND_SRCS = [
     "TemplateGridCommand.java",
+    "TemplateGridServerCommand.java",
 ]
 
 java_library(
@@ -29,10 +30,13 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],
@@ -46,6 +50,9 @@ java_export(
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    resource_jars = [
+        "//javascript/grid-ui:react_jar",
+    ],
     uses = [
         "org.openqa.selenium.WebDriverInfo",
         "org.openqa.selenium.cli.CliCommand",
@@ -69,6 +76,7 @@ java_export(
         "//java/server/src/org/openqa/selenium/grid/node/httpd",
         "//java/server/src/org/openqa/selenium/grid/router/httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/httpd",
     ],
     deps = [
         ":base-command",
@@ -83,6 +91,9 @@ java_binary(
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+        "//javascript:__subpackages__",
         "//py:__pkg__",
     ],
     runtime_deps = [

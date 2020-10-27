@@ -17,12 +17,20 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.internal.Require;
+
+import java.util.Arrays;
+
 public class EventAttributeValue {
 
   private final Type type;
   private String stringValue;
   private Number numberValue;
   private Boolean booleanValue;
+  private String[] stringArrayValue;
+  private Long[] longArrayValue;
+  private Double[] doubleArrayValue;
+  private Boolean[] booleanArrayValue;
 
   public EventAttributeValue(String value) {
     this.stringValue = value;
@@ -44,6 +52,30 @@ public class EventAttributeValue {
     this.type = Type.BOOLEAN;
   }
 
+  public EventAttributeValue(String[] value) {
+    Require.nonNull("Value", value);
+    this.stringArrayValue = Arrays.copyOf(value, value.length);
+    this.type = Type.STRING_ARRAY;
+  }
+
+  public EventAttributeValue(Long[] value) {
+    Require.nonNull("Value", value);
+    this.longArrayValue = Arrays.copyOf(value, value.length);
+    this.type = Type.LONG_ARRAY;
+  }
+
+  public EventAttributeValue(Double[] value) {
+    Require.nonNull("Value", value);
+    this.doubleArrayValue = Arrays.copyOf(value, value.length);
+    this.type = Type.DOUBLE_ARRAY;
+  }
+
+  public EventAttributeValue(Boolean[] value) {
+    Require.nonNull("Value", value);
+    this.booleanArrayValue = Arrays.copyOf(value, value.length);
+    this.type = Type.BOOLEAN_ARRAY;
+  }
+
   public String getStringValue() {
     return stringValue;
   }
@@ -56,15 +88,27 @@ public class EventAttributeValue {
     return booleanValue;
   }
 
+  public String[] getStringArrayValue() { return Arrays.copyOf(stringArrayValue, stringArrayValue.length); }
+
+  public Long[] getLongArrayValue() { return Arrays.copyOf(longArrayValue, longArrayValue.length); }
+
+  public Double[] getDoubleArrayValue() { return Arrays.copyOf(doubleArrayValue, doubleArrayValue.length); }
+
+  public Boolean[] getBooleanArrayValue() { return Arrays.copyOf(booleanArrayValue, booleanArrayValue.length); }
+
   public Type getAttributeType() {
     return type;
   }
 
   public enum Type {
-    STRING,
     BOOLEAN,
+    BOOLEAN_ARRAY,
+    DOUBLE,
+    DOUBLE_ARRAY,
     LONG,
-    DOUBLE
+    LONG_ARRAY,
+    STRING,
+    STRING_ARRAY
   }
 
 }

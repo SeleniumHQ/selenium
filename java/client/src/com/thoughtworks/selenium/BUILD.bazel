@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "api",
@@ -40,8 +41,6 @@ java_library(
     deps = [
         ":api",
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/edge",
-        "//java/client/src/org/openqa/selenium/remote",
         artifact("junit:junit"),
         artifact("org.testng:testng"),
     ],

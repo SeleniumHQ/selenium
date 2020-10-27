@@ -17,16 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-Dir["#{__dir__}/devtools/*"].sort.each { |f| require f }
-
 module Selenium
   module WebDriver
     class DevTools
+      autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
+      autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
+      autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
 
-      def initialize(url)
+      SUPPORTED_VERSIONS = [84, 85, 86].freeze
+
+      def initialize(url:, version:)
         @messages = []
         @uri = URI("http://#{url}")
 
+        load_devtools_version(version)
         process_handshake
         attach_socket_listener
 
@@ -41,6 +45,7 @@ module Selenium
       def send_cmd(method, **params)
         id = next_id
         data = JSON.generate(id: id, method: method, params: params.reject { |_, v| v.nil? })
+        WebDriver.logger.debug "DevTools -> #{data}"
 
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
         socket.write(out_frame.to_s)
@@ -56,6 +61,14 @@ module Selenium
 
       private
 
+      def load_devtools_version(version)
+        closest_version = SUPPORTED_VERSIONS.min_by { |v| (version - v).abs }
+        WebDriver.logger.info("Loading DevTools::V#{closest_version} for #{version}.")
+        Dir["#{__dir__}/devtools/v#{closest_version}/*"].sort.each do |f|
+          require f
+        end
+      end
+
       def process_handshake
         socket.print(ws.to_s)
         ws << socket.readpartial(1024)
@@ -69,10 +82,11 @@ module Selenium
             while (frame = incoming_frame.next)
               message = JSON.parse(frame.to_s)
               @messages << message
+              WebDriver.logger.debug "DevTools <- #{message}"
               next unless message['method']
 
               callbacks[message['method']].each do |callback|
-                callback.call(message['params'])
+                Thread.new { callback.call(message['params']) }
               end
             end
           end

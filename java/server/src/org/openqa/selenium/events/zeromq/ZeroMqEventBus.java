@@ -18,8 +18,17 @@
 package org.openqa.selenium.events.zeromq;
 
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.JsonInput;
 import org.zeromq.ZContext;
+
+import java.util.function.Consumer;
+
+import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVENT;
 
 /**
  * An {@link EventBus} backed by ZeroMQ.
@@ -32,11 +41,11 @@ public class ZeroMqEventBus {
     // Use the create method.
   }
 
-  public static EventBus create(ZContext context, String publish, String subscribe, boolean bind) {
+  public static EventBus create(ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
     if (bind) {
-      return new BoundZmqEventBus(context, publish, subscribe);
+      return new BoundZmqEventBus(context, publish, subscribe, secret);
     }
-    return new UnboundZmqEventBus(context, publish, subscribe);
+    return new UnboundZmqEventBus(context, publish, subscribe, secret);
   }
 
   public static EventBus create(Config config) {
@@ -50,7 +59,56 @@ public class ZeroMqEventBus {
 
     boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
 
-    return create(new ZContext(), publish, subscribe, bind);
+    Secret secret = config.get("server", "registration-secret").map(Secret::new).orElse(new Secret(""));
+
+    return create(new ZContext(), publish, subscribe, bind, secret);
   }
 
+  public static EventListener<RejectedEvent> onRejectedEvent(Consumer<RejectedEvent> handler) {
+    Require.nonNull("Handler", handler);
+    return new EventListener<>(REJECTED_EVENT, RejectedEvent.class, handler);
+  }
+
+  public static class RejectedEvent {
+    private final EventName name;
+    private final Object data;
+
+    RejectedEvent(EventName name, Object data) {
+      this.name = name;
+      this.data = data;
+    }
+
+    public EventName getName() {
+      return name;
+    }
+
+    public Object getData() {
+      return data;
+    }
+
+    private static RejectedEvent fromJson(JsonInput input) {
+      EventName name = null;
+      Object data = null;
+
+      input.beginObject();
+      while (input.hasNext()) {
+        switch (input.nextName()) {
+          case "data":
+            data = input.read(Object.class);
+            break;
+
+          case "name":
+            name = input.read(EventName.class);
+            break;
+
+          default:
+            input.skipValue();
+            break;
+        }
+      }
+      input.endObject();
+
+      return new RejectedEvent(name, data);
+    }
+  }
 }

@@ -5,6 +5,9 @@ java_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = glob(["*Test.java"]),
+    resources = [
+        "packaged-file.txt",
+    ],
     tags = [
         "no-sandbox",
     ],

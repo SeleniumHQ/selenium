@@ -141,7 +141,7 @@ class RemoteConnection(object):
         return urllib3.PoolManager(**pool_manager_init_args) if self._proxy_url is None else \
             urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
 
-    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None):
+    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None, ignore_proxy=False):
         if resolve_ip is not None:
             import warnings
             warnings.warn(
@@ -149,7 +149,7 @@ class RemoteConnection(object):
                 DeprecationWarning)
         self.keep_alive = keep_alive
         self._url = remote_server_addr
-        self._proxy_url = self._get_proxy_url()
+        self._proxy_url = self._get_proxy_url() if not ignore_proxy else None
         if keep_alive:
             self._conn = self._get_connection_manager()
 
@@ -197,7 +197,7 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/element/$id/value'),
             Command.SEND_KEYS_TO_ACTIVE_ELEMENT:
                 ('POST', '/session/$sessionId/keys'),
-            Command.UPLOAD_FILE: ('POST', "/session/$sessionId/file"),
+            Command.UPLOAD_FILE: ('POST', "/session/$sessionId/se/file"),
             Command.GET_ELEMENT_VALUE:
                 ('GET', '/session/$sessionId/element/$id/value'),
             Command.GET_ELEMENT_TAG_NAME:

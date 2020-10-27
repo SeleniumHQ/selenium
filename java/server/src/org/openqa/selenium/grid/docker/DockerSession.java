@@ -28,21 +28,24 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
 
 class DockerSession extends ProtocolConvertingSession {
 
   private final Container container;
 
   DockerSession(
-      Container container,
-      Tracer tracer,
-      HttpClient client,
-      SessionId id,
-      URL url,
-      Capabilities capabilities,
-      Dialect downstream,
-      Dialect upstream) {
-    super(tracer, client, id, url, downstream, upstream, capabilities);
+    Container container,
+    Tracer tracer,
+    HttpClient client,
+    SessionId id,
+    URL url,
+    Capabilities stereotype,
+    Capabilities capabilities,
+    Dialect downstream,
+    Dialect upstream,
+    Instant startTime) {
+    super(tracer, client, id, url, downstream, upstream, stereotype, capabilities, startTime);
     this.container = Require.nonNull("Container", container);
   }
 

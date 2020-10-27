@@ -1,10 +1,10 @@
-Selenium [![Travis Status](https://travis-ci.com/SeleniumHQ/selenium.svg?branch=master)](//travis-ci.com/SeleniumHQ/selenium/builds) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/master?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/master)
-========
+# Selenium [![Travis Status](https://travis-ci.com/SeleniumHQ/selenium.svg?branch=trunk)](https://travis-ci.com/SeleniumHQ/selenium/builds) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/trunk?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/trunk)
+
 <a href="https://selenium.dev"><img src="https://selenium.dev/images/selenium_logo_square_green.png" width="180" alt="Selenium"/></a>
 
 Selenium is an umbrella project encapsulating a variety of tools and
 libraries enabling web browser automation. Selenium specifically
-provides infrastructure for the [W3C WebDriver specification](https://w3c.github.io/webdriver/)
+provides an infrastructure for the [W3C WebDriver specification](https://w3c.github.io/webdriver/)
 — a platform and language-neutral coding interface compatible with all
 major web browsers.
 
@@ -39,17 +39,17 @@ which wraps the main build too, `bazel`.
 
 ### Bazel
 
-[Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency 
-downloads, generates the Selenium binaries, executes tests and does it all rather quickly.
+[Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
+downloads, generates the Selenium binaries, executes tests, and does it all rather quickly.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
-the java and javascript folders to build without errors, you should be confident that you have the 
+the java and javascript folders to build without errors, you should be confident that you have the
 correct binaries on your system.
 
 ### Before Building
 
 Ensure that you have Chrome installed and the
-[`chromedriver` ](https://chromedriver.chromium.org/downloads) that matches
+[`chromedriver`](https://chromedriver.chromium.org/downloads) that matches
 your Chrome version available on your `$PATH`. You may have to update this from time to time.
 
 ### Common Build Targets
@@ -71,14 +71,14 @@ bazel build java/... javascript/...
 If you're making changes to the java/ or javascript/ folders in this project, and this command
 executes without errors, you should be able to create a PR of your changes. (See also CONTRIBUTING.md)
 
-### Build Details ###
+### Build Details
 
-- Bazel files are called BUILD.bazel
-- [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) build files are called 
+* Bazel files are called BUILD.bazel
+* [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) build files are called
 *build.desc*. This is an older build system, still in use in the project
-- There is also a main Rakefile
+* There is also a main Rakefile
 
-The order the modules are built is determined by the build system. If you want to build an 
+The order the modules are built is determined by the build system. If you want to build an
 individual module (assuming all dependent modules have previously been built), try the following:
 
 ```sh
@@ -86,7 +86,7 @@ individual module (assuming all dependent modules have previously been built), t
 ```
 
 In this case, `javascript/atoms` is the module directory,
-`test` is a target in that directory's `build.desc` file,
+`test` is a target in that directory's `build.desc` file
 and `run` is the action to run on that target.
 
 As you see *build targets* scroll past in the log,
@@ -102,7 +102,7 @@ To list all available targets, you can append the `-T` flag:
 ## Requirements
 
 * The latest version of the [Java 11 OpenJDK](https://openjdk.java.net/)
-* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE). 
+* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE).
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
 * [Bazel](https://docs.bazel.build/versions/master/install.html)
@@ -133,14 +133,14 @@ If you plan to compile the
 you also need:
 
 * [Visual Studio 2008](https://www.visualstudio.com/)
-* 32 and 64 bit cross compilers
+* 32 and 64-bit cross compilers
 
 The build will work on any platform, but the tests for IE will be
 skipped silently if you are not building on Windows.
 
 ## Common Tasks (Bazel)
 
-To build the bulk of the Selenium binaries from source, run the 
+To build the bulk of the Selenium binaries from source, run the
 following command from the root folder:
 
 ```sh
@@ -166,7 +166,7 @@ the ```test java/...``` to launch browsers and consume a considerable amount of 
 
 ## Tour
 
-The code base is generally segmented around the languages used to
+The codebase is generally segmented around the languages used to
 write the component.  Selenium makes extensive use of JavaScript, so
 let's start there.  Working on the JavaScript is easy.  First of all,
 start the development server:
@@ -219,7 +219,7 @@ going.  Java test outputs appear in one of two places: either under
 tests.  If you'd like the build to be chattier, just append `log=true`
 to the build command line.
 
-# Help with `go`
+## Help with `go`
 
 More general, but basic, help for `go`…
 
@@ -235,8 +235,8 @@ targets.
 ## Maven _per se_
 
 If it is not clear already, Selenium is not built with Maven. It is
-built with `bazel`, though that is invoked with `go` as outlined above, 
-so you do not really have to learn too much about that.
+built with `bazel`, though that is invoked with `go` as outlined above,
+so you do not have to learn too much about that.
 
 That said, it is possible to relatively quickly build Selenium pieces
 for Maven to use. You are only really going to want to do this when
@@ -257,11 +257,24 @@ Refer to the [Building Web
 Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver)
 wiki page for the last word on building the bits and pieces of Selenium.
 
+## Running Browser Tests on Linux
+
+You can run browser tests on linux in xvfb or xnest. You also need to install
+the browser-specific drivers (`geckodriver`, `chromedriver`, etc.) - you need
+to download them separately and put them on your `PATH`.
+
+1. Run the X server `Xvfb :99` or `Xnest :99`
+2. Run a window manager, for example, `DISPLAY=:99 jwm`
+3. Run the tests you are interested in:
+```sh
+bazel test --test_env=DISPLAY=:99 //java/... --test_tag_filters=chrome
+```
+
 ## Bazel Installation/Troubleshooting
 
 ### MacOS
 
-#### bazelisk 
+#### bazelisk
 
 Bazelisk is a Mac-friendly launcher for Bazel. To install, follow these steps:
 
@@ -276,22 +289,21 @@ brew install bazelbuild/tap/bazelisk
 If you're getting errors that mention Xcode, you'll need to install the command-line tools.
 
 Bazel for Mac requires some additional steps to configure properly. First things first: use
-the Bazelisk project (courtesy of philwo), a pure golang implementation of Bazel. In order to 
+the Bazelisk project (courtesy of philwo), a pure golang implementation of Bazel. In order to
 install Bazelisk, first verify that your Xcode will cooperate: execute the following command:
 
 `xcode-select -p`
 
 If the value is `/Applications/Xcode.app/Contents/Developer/`, you can proceed with bazelisk
 installation. If, however, the return value is `/Library/Developer/CommandLineTools/`, you'll
-need to redirect the Xcode system to the correct value. 
+need to redirect the Xcode system to the correct value.
 
 ```
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer/
 sudo xcodebuild -license
 ```
 
-The first command will prompt you for a password. The second step requires you to read a new Xcode 
+The first command will prompt you for a password. The second step requires you to read a new Xcode
 license, and then accept it by typing "agree".
 
 (Thanks to [this thread](https://github.com/bazelbuild/bazel/issues/4314) for these steps)
-

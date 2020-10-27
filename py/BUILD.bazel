@@ -1,7 +1,14 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 load("@rules_python//experimental/python:wheel.bzl", "py_package", "py_wheel")
+load("@dev_requirements//:requirements.bzl", "requirement")
+load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
-load("//:copy_file.bzl", "copy_file")
+
+BROWSER_VERSIONS = [
+    "v84",
+    "v85",
+    "v86",
+]
 
 copy_file(
     name = "get-attribute",
@@ -34,12 +41,11 @@ py_library(
         exclude = ["generate.py"],
     ),
     data = [
-        ":create-cdp-srcs",
         ":find-elements",
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
-    ],
+    ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
@@ -69,12 +75,11 @@ py_package(
 py_wheel(
     name = "selenium-wheel",
     distribution = "selenium",
-    python_tag = [
-        "py2",
-        "py3",
-    ],
+    python_tag = "py3",
     requires = [
         "urllib3[secure]",
+        "trio",
+        "trio-websocket",
     ],
     strip_path_prefixes = [
         "py",
@@ -108,6 +113,7 @@ py_library(
         "test/selenium/webdriver/support/conftest.py",
     ],
     data = [
+        "pytest.ini",
         "setup.cfg",
     ],
     imports = ["."],
@@ -116,30 +122,25 @@ py_library(
     ],
 )
 
-genrule(
-    name = "create-cdp-srcs",
+py_binary(
+    name = "generate",
+    srcs = ["generate.py"],
+    srcs_version = "PY3",
+    deps = [requirement("inflection")],
+)
+
+[genrule(
+    name = "create-cdp-srcs-" + n,
     srcs = [
-        "generate.py",
-        ":browser_protocol",
-        ":js_protocol",
+        "//common/devtools/chromium/" + n + ":browser_protocol",
+        "//common/devtools/chromium/" + n + ":js_protocol",
     ],
-    outs = ["selenium/webdriver/common/devtools"],
-    cmd = "python3 $(location generate.py) $(location :browser_protocol) $(location :js_protocol) $@",
+    outs = ["selenium/webdriver/common/devtools/" + n],
+    cmd = "python3 $(location :generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $@",
     tools = [
+        ":generate",
     ],
-)
-
-copy_file(
-    name = "browser_protocol",
-    src = "//common/devtools:browser_protocol.json",
-    out = "browser_protocol.json",
-)
-
-copy_file(
-    name = "js_protocol",
-    src = "//common/devtools:js_protocol.json",
-    out = "js_protocol.json",
-)
+) for n in BROWSER_VERSIONS]
 
 py_test_suite(
     name = "unit",
@@ -148,13 +149,30 @@ py_test_suite(
         "test/unit/**/*.py",
     ]),
     args = [
-        "-n=auto",
         "--instafail",
     ],
     deps = [
         ":init-tree",
         ":selenium",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-mock"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -190,7 +208,24 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -213,7 +248,24 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -236,7 +288,24 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -259,7 +328,24 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -284,7 +370,24 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -307,7 +410,24 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -331,7 +451,24 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -356,7 +493,24 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )
 
@@ -381,6 +535,23 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        "//third_party/py:pytest",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("zipp"),
     ],
 )

@@ -33,6 +33,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -45,22 +47,39 @@ public class SessionSlot implements
 
   private static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
   private final EventBus bus;
+  private final UUID id;
   private final Capabilities stereotype;
   private final SessionFactory factory;
+  private final AtomicBoolean reserved = new AtomicBoolean(false);
   private ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
     this.bus = Require.nonNull("Event bus", bus);
+    this.id = UUID.randomUUID();
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.factory = Require.nonNull("Session factory", factory);
+  }
+
+  public UUID getId() {
+    return id;
   }
 
   public Capabilities getStereotype() {
     return stereotype;
   }
 
+  public void reserve() {
+    if (reserved.getAndSet(true)) {
+      throw new IllegalStateException("Attempt to reserve a slot that is already reserved");
+    }
+  }
+
+  public void release() {
+    reserved.set(false);
+  }
+
   public boolean isAvailable() {
-    return currentSession == null;
+    return !reserved.get();
   }
 
   public ActiveSession getSession() {
@@ -77,8 +96,13 @@ public class SessionSlot implements
     }
 
     SessionId id = currentSession.getId();
-    currentSession.stop();
+    try {
+      currentSession.stop();
+    } catch (Exception e) {
+      LOG.log(Level.WARNING, "Unable to cleanly close session", e);
+    }
     currentSession = null;
+    release();
     bus.fire(new SessionClosedEvent(id));
   }
 
@@ -98,7 +122,7 @@ public class SessionSlot implements
 
   @Override
   public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
-    if (!isAvailable()) {
+    if (currentSession != null) {
       return Optional.empty();
     }
 

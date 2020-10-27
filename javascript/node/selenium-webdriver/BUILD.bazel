@@ -1,6 +1,12 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "pkg_npm")
-load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
-load("//:copy_file.bzl", "copy_file")
+load("@npm//@bazel/jasmine:index.bzl", "jasmine_node_test")
+load("//common:defs.bzl", "copy_file")
+
+BROWSER_VERSIONS = [
+    "v84",
+    "v85",
+    "v86",
+]
 
 SRC_FILES = [
     "CHANGES.md",
@@ -15,7 +21,7 @@ SRC_FILES = [
     "net/*.js",
     "remote/*.js",
     "testing/*.js",
-    "devtools/*.js"
+    "devtools/*.js",
 ])
 
 pkg_npm(
@@ -92,40 +98,40 @@ genrule(
     cmd = "cp $(locations //:license) $(@D)",
 )
 
-nodejs_binary(
-    name = "cdp-srcs-generator",
-    entry_point = "devtools/generator/protocol-dts-generator.js",
+[copy_file(
+    name = "browser_protocol_" + n,
+    src = "//common/devtools/chromium/" + n + ":browser_protocol.json",
+    out = "devtools/generator/" + n + "/browser_protocol.json",
+) for n in BROWSER_VERSIONS]
+
+[copy_file(
+    name = "js_protocol_" + n,
+    src = "//common/devtools/chromium/" + n + ":js_protocol.json",
+    out = "devtools/generator/" + n + "/js_protocol.json",
+) for n in BROWSER_VERSIONS]
+
+[nodejs_binary(
+    name = "cdp-srcs-generator-" + n,
     data = [
-       ":browser_protocol",
-       ":js_protocol"
+        ":browser_protocol_" + n,
+        ":js_protocol_" + n,
     ],
-)
+    entry_point = "devtools/generator/protocol-dts-generator.js",
+) for n in BROWSER_VERSIONS]
 
-copy_file(
-    name = "browser_protocol",
-    src = "//common/devtools:browser_protocol.json",
-    out = "devtools/generator/browser_protocol.json",
-)
-
-copy_file(
-    name = "js_protocol",
-    src = "//common/devtools:js_protocol.json",
-    out = "devtools/generator/js_protocol.json",
-)
-
-genrule(
-    name="create-cdp-srcs",
+[genrule(
+    name = "create-cdp-srcs-" + n,
     srcs = [
-       ":browser_protocol",
-       ":js_protocol",
+        ":browser_protocol_" + n,
+        ":js_protocol_" + n,
     ],
-    outs=[
-      "devtools/generator/protocol.d.js",
-      "devtools/generator/protocol-mapping.d.js",
-      "devtools/generator/protocol-proxy-api.d.js",
+    outs = [
+        "devtools/generator/" + n + "/protocol.d.js",
+        "devtools/generator/" + n + "/protocol-mapping.d.js",
+        "devtools/generator/" + n + "/protocol-proxy-api.d.js",
     ],
-    cmd = "$(location :cdp-srcs-generator) $(location :browser_protocol) $(location :js_protocol) $(OUTS)",
-    tools=[
-      ":cdp-srcs-generator"
+    cmd = "$(location :cdp-srcs-generator-" + n + ") $(location :browser_protocol_" + n + ") $(location :js_protocol_" + n + ") $(OUTS)",
+    tools = [
+        ":cdp-srcs-generator-" + n,
     ],
-)
+) for n in BROWSER_VERSIONS]
