@@ -1,5 +1,5 @@
 diff --git experimental/examples/wheel/BUILD experimental/examples/wheel/BUILD
-index 8916423..8a4aeb4 100644
+index 06371fe..eaf0709 100644
 --- experimental/examples/wheel/BUILD
 +++ experimental/examples/wheel/BUILD
 @@ -31,6 +31,20 @@ py_library(
@@ -36,7 +36,7 @@ index 8916423..8a4aeb4 100644
  py_wheel(
      name = "minimal_with_py_package",
      # Package data. We're building "example_minimal_package-0.0.1-py3-none-any.whl"
-@@ -131,6 +151,16 @@ py_wheel(
+@@ -135,6 +155,16 @@ py_wheel(
      ],
  )
 
@@ -53,11 +53,11 @@ index 8916423..8a4aeb4 100644
  py_test(
      name = "wheel_test",
      srcs = ["wheel_test.py"],
-diff --git experimental/rules_python/wheelmaker.py experimental/rules_python/wheelmaker.py
-index 1b3261d..1a28df2 100644
---- experimental/rules_python/wheelmaker.py
-+++ experimental/rules_python/wheelmaker.py
-@@ -101,6 +101,11 @@ class WheelMaker(object):
+diff --git experimental/tools/wheelmaker.py experimental/tools/wheelmaker.py
+index 38fb122..4c7be30 100644
+--- experimental/tools/wheelmaker.py
++++ experimental/tools/wheelmaker.py
+@@ -102,6 +102,11 @@ class WheelMaker(object):
 
              return normalized_arcname
 

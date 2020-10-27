@@ -119,6 +119,7 @@ npm_install(
 
 http_archive(
     name = "rules_python",
+    patches = ["//py:rules_python_wheel_directory_check.patch"],
     sha256 = "4d8ed66d5f57a0b6b90e495ca8e29e5c5fa353b93f093e7c31c595a4631ff293",
     strip_prefix = "rules_python-5c948dcfd4ca79c2ed3a87636c46abba9f5836e9",
     url = "https://github.com/bazelbuild/rules_python/archive/5c948dcfd4ca79c2ed3a87636c46abba9f5836e9.zip",
