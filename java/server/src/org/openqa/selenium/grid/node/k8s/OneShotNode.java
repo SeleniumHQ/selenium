@@ -43,6 +43,7 @@ import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.internal.Require;
@@ -117,6 +118,7 @@ public class OneShotNode extends Node {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     EventBusOptions eventOptions = new EventBusOptions(config);
     BaseServerOptions serverOptions = new BaseServerOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
     NodeOptions nodeOptions = new NodeOptions(config);
 
     Map<String, Object> raw = new Json().toType(
@@ -142,7 +144,7 @@ public class OneShotNode extends Node {
     return new OneShotNode(
       loggingOptions.getTracer(),
       eventOptions.getEventBus(),
-      serverOptions.getRegistrationSecret(),
+      secretOptions.getRegistrationSecret(),
       new NodeId(UUID.randomUUID()),
       serverOptions.getExternalUri(),
       nodeOptions.getPublicGridUri().orElseThrow(() -> new ConfigException("Unable to determine public grid address")),

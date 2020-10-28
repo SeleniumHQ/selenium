@@ -34,6 +34,7 @@ import org.openqa.selenium.grid.node.ProxyNodeCdp;
 import org.openqa.selenium.grid.node.local.LocalNodeFactory;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
@@ -115,7 +116,8 @@ public class Standalone extends TemplateGridServerCommand {
     EventBus bus = events.getEventBus();
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
-    Secret registrationSecret = serverOptions.getRegistrationSecret();
+    SecretOptions secretOptions = new SecretOptions(config);
+    Secret registrationSecret = secretOptions.getRegistrationSecret();
 
     URI localhost = serverOptions.getExternalUri();
     URL localhostUrl;

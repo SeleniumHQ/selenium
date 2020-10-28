@@ -43,7 +43,7 @@ import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -98,7 +98,7 @@ public class LocalDistributor extends Distributor {
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.sessions = Require.nonNull("Session map", sessions);
-    this.model = new GridModel(bus, registrationSecret);
+    this.model = new GridModel(bus);
     this.nodes = new HashMap<>();
 
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
@@ -113,9 +113,9 @@ public class LocalDistributor extends Distributor {
     EventBus bus = new EventBusOptions(config).getEventBus();
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
 
-    return new LocalDistributor(tracer, bus, clientFactory, sessions, serverOptions.getRegistrationSecret());
+    return new LocalDistributor(tracer, bus, clientFactory, sessions, secretOptions.getRegistrationSecret());
   }
 
   @Override

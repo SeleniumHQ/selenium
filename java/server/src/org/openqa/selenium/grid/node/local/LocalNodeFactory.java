@@ -27,6 +27,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
@@ -47,6 +48,7 @@ public class LocalNodeFactory {
     BaseServerOptions serverOptions = new BaseServerOptions(config);
     NodeOptions nodeOptions = new NodeOptions(config);
     NetworkOptions networkOptions = new NetworkOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
 
     Tracer tracer = loggingOptions.getTracer();
     HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
@@ -56,7 +58,7 @@ public class LocalNodeFactory {
       eventOptions.getEventBus(),
       serverOptions.getExternalUri(),
       nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
-      serverOptions.getRegistrationSecret());
+      secretOptions.getRegistrationSecret());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);

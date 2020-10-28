@@ -21,6 +21,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/graphql",
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/router",
+        "//java/server/src/org/openqa/selenium/grid/security",
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/config",
