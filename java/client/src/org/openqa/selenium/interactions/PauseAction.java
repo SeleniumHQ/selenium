@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.WebDriverException;
+
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +42,8 @@ public class PauseAction implements Action, IsInteraction {
     try {
       Thread.sleep(pause);
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new WebDriverException("Sleep was interrupted", e);
     }
   }
 

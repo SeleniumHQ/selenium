@@ -26,7 +26,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.zeromq.ZContext;
 
-import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.openqa.selenium.events.zeromq.UnboundZmqEventBus.REJECTED_EVENT;

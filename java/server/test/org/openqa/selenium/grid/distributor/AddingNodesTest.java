@@ -289,7 +289,7 @@ public class AddingNodesTest {
         NodeId nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(DefaultTestTracer.createTracer(), nodeId, uri, null);
+      super(DefaultTestTracer.createTracer(), nodeId, uri, registrationSecret);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);
