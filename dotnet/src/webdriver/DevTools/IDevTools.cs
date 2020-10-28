@@ -27,6 +27,6 @@ namespace OpenQA.Selenium.DevTools
         /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
         /// </summary>
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-        DevToolsSession CreateDevToolsSession();
+        IDevToolsSession CreateDevToolsSession();
     }
 }

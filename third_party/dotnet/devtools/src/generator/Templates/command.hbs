@@ -1,0 +1,57 @@
+﻿namespace {{rootNamespace}}.{{domain.Name}}
+{
+    using Newtonsoft.Json;
+
+    /// <summary>
+    /// {{xml-code-comment command.Description 1}}
+    /// </summary>
+    public sealed class {{className}}CommandSettings : ICommand
+    {
+        private const string DevToolsRemoteInterface_CommandName = "{{domain.Name}}.{{command.Name}}";
+        
+        [JsonIgnore]
+        public string CommandName
+        {
+            get { return DevToolsRemoteInterface_CommandName; }
+        }
+
+    {{#each command.Parameters}}
+        {{#if Description}}
+        /// <summary>
+        /// {{xml-code-comment Description 2}}
+        /// </summary>
+        {{else}}
+        /// <summary>
+        /// Gets or sets the {{Name}}
+        /// </summary>
+        {{/if}}
+        [JsonProperty("{{Name}}"{{#if Optional}}, DefaultValueHandling = DefaultValueHandling.Ignore{{/if}})]
+        public {{typemap ../context}} {{dehumanize Name}}
+        {
+            get;
+            set;
+        }
+    {{/each}}
+    }
+
+    public sealed class {{className}}CommandResponse : ICommandResponse<{{className}}CommandSettings>
+    {
+    {{#each command.Returns}}
+        {{#if Description}}
+        /// <summary>
+        /// {{xml-code-comment Description 2}}
+        ///</summary>
+        {{else}}
+        /// <summary>
+        /// Gets or sets the {{Name}}
+        /// </summary>
+        {{/if}}
+        [JsonProperty("{{Name}}"{{#if Optional}}, DefaultValueHandling = DefaultValueHandling.Ignore{{/if}})]
+        public {{typemap ../context}} {{dehumanize Name}}
+        {
+            get;
+            set;
+        }
+    {{/each}}
+    }
+}

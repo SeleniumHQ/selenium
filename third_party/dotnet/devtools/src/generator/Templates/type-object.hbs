@@ -1,0 +1,22 @@
+﻿namespace {{rootNamespace}}.{{domain.Name}}
+{
+    using Newtonsoft.Json;
+
+    /// <summary>
+    /// {{xml-code-comment type.Description 1}}
+    /// </summary>
+    public sealed class {{className}}
+    {
+    {{#each type.Properties}}
+        /// <summary>
+        /// {{xml-code-comment Description 2}}
+        ///</summary>
+        [JsonProperty("{{Name}}"{{#if Optional}}, DefaultValueHandling = DefaultValueHandling.Ignore{{/if}})]
+        public {{typemap ../context}} {{dehumanize Name}}
+        {
+            get;
+            set;
+        }
+    {{/each}}
+    }
+}

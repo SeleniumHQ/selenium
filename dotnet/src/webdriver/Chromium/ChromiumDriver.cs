@@ -168,7 +168,7 @@ namespace OpenQA.Selenium.Chromium
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession CreateDevToolsSession()
+        public IDevToolsSession CreateDevToolsSession()
         {
             if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
             {
@@ -189,31 +189,8 @@ namespace OpenQA.Selenium.Chromium
             string debuggerAddress = options["debuggerAddress"].ToString();
             try
             {
-                string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}/", debuggerAddress);
-                string rawDebuggerInfo = string.Empty;
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(debuggerUrl);
-                    rawDebuggerInfo = client.GetStringAsync("/json").ConfigureAwait(false).GetAwaiter().GetResult();
-                }
-
-                string webSocketUrl = null;
-                string targetId = null;
-                var sessions = JsonConvert.DeserializeObject<ICollection<DevToolsSessionInfo>>(rawDebuggerInfo);
-                foreach (var target in sessions)
-                {
-                    if (target.Type == "page")
-                    {
-                        targetId = target.Id;
-                        webSocketUrl = target.WebSocketDebuggerUrl;
-                        break;
-                    }
-                }
-
-                DevToolsSession session = new DevToolsSession(webSocketUrl);
-                var foo = session.Target.AttachToTarget(new DevTools.Target.AttachToTargetCommandSettings() { TargetId = targetId }).ConfigureAwait(false).GetAwaiter().GetResult();
-                var t1 = session.Target.SetAutoAttach(new DevTools.Target.SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false }).ConfigureAwait(false).GetAwaiter().GetResult();
-                var t2 = session.Log.Clear().ConfigureAwait(false).GetAwaiter().GetResult();
+                DevToolsSession session = new DevToolsSession(debuggerAddress);
+                session.Start().ConfigureAwait(false).GetAwaiter().GetResult();
                 return session;
             }
             catch (Exception e)

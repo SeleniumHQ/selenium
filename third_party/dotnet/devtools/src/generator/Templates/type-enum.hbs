@@ -1,0 +1,18 @@
+﻿namespace {{rootNamespace}}.{{domain.Name}}
+{
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
+    using System.Runtime.Serialization;
+
+    /// <summary>
+    /// {{xml-code-comment type.Description 1}}
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum {{className}}
+    {
+    {{#each type.Enum}}
+        [EnumMember(Value = "{{this}}")]
+        {{dehumanize this}},
+    {{/each}}
+    }
+}
