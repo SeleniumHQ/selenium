@@ -52,7 +52,7 @@ class AddNode implements HttpHandler {
     this.distributor = Require.nonNull("Distributor", distributor);
     this.json = Require.nonNull("Json converter", json);
     this.httpFactory = Require.nonNull("HTTP Factory", httpFactory);
-    this.registrationSecret = registrationSecret;
+    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
   }
 
   @Override
@@ -62,7 +62,7 @@ class AddNode implements HttpHandler {
     Node node = new RemoteNode(
         tracer,
         httpFactory,
-        status.getNodeId(),
+        status.getId(),
         status.getUri(),
         registrationSecret,
         status.getSlots().stream().map(Slot::getStereotype).collect(Collectors.toSet()));

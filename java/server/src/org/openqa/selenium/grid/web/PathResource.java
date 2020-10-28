@@ -39,7 +39,7 @@ public class PathResource implements Resource {
 
   @Override
   public String name() {
-    return base.getFileName().toString();
+    return base.getFileName() == null ? "" : base.getFileName().toString();
   }
 
   @Override

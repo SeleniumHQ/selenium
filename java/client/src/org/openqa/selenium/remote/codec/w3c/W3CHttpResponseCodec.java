@@ -135,7 +135,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     response.setState("success");
     response.setStatus(ErrorCodes.SUCCESS);
     if (!content.isEmpty()) {
-      if (contentType.startsWith("application/json") || Strings.isNullOrEmpty("")) {
+      if (contentType.startsWith("application/json")) {
         Map<String, Object> parsed = json.toType(content, MAP_TYPE);
         if (parsed.containsKey("value")) {
           Object value = parsed.get("value");

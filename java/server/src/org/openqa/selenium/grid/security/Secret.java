@@ -29,6 +29,22 @@ public class Secret {
     this.secret = Require.nonNull("Secret", secret);
   }
 
+  public static boolean matches(Secret first, Secret second) {
+    if (first == null) {
+      return second == null;
+    }
+
+    return first.matches(second);
+  }
+
+  public boolean matches(Secret other) {
+    if (other == null) {
+      return false;
+    }
+
+    return secret.equals(other.secret);
+  }
+
   public String encode() {
     return secret;
   }

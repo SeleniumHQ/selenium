@@ -64,7 +64,7 @@ module Selenium
 
       it 'notifies about log messages' do
         logs = []
-        driver.on_log_event { |log| logs.push(log) }
+        driver.on_log_event(:console) { |log| logs.push(log) }
         driver.navigate.to url_for('javascriptPage.html')
 
         driver.execute_script("console.log('I like cheese');")
@@ -81,6 +81,34 @@ module Selenium
           an_object_having_attributes(type: :log, args: [{'type' => 'undefined'}]),
           an_object_having_attributes(type: :log, args: [hash_including('type' => 'object')])
         )
+      end
+
+      it 'notifies about exceptions' do
+        exceptions = []
+        driver.on_log_event(:exception) { |exception| exceptions.push(exception) }
+        driver.navigate.to url_for('javascriptPage.html')
+
+        driver.find_element(id: 'throwing-mouseover').click
+        wait.until { exceptions.any? }
+
+        exception = exceptions.first
+        expect(exception.description).to include('Error: I like cheese')
+        expect(exception.stacktrace).not_to be_empty
+      end
+
+      it 'notifies about DOM mutations' do
+        mutations = []
+        driver.on_log_event(:mutation) { |mutation| mutations.push(mutation) }
+        driver.navigate.to url_for('dynamic.html')
+
+        driver.find_element(id: 'reveal').click
+        wait.until { mutations.any? }
+
+        mutation = mutations.first
+        expect(mutation.element).to eq(driver.find_element(id: 'revealed'))
+        expect(mutation.attribute_name).to eq('style')
+        expect(mutation.current_value).to eq('')
+        expect(mutation.old_value).to eq('display:none;')
       end
     end
   end

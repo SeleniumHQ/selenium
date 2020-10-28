@@ -89,12 +89,7 @@ public class JavascriptLibrary {
   }
 
   private String readScript(String script) {
-    String result = scripts.get(script);
-    if (result == null) {
-      result = readScriptImpl(script);
-      scripts.put(script, result);
-    }
-    return result;
+    return scripts.computeIfAbsent(script, this::readScriptImpl);
   }
 
   String readScriptImpl(String script) {

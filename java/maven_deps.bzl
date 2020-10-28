@@ -10,6 +10,7 @@ def selenium_java_deps():
         artifacts = [
             "com.beust:jcommander:1.78",
             "com.github.javaparser:javaparser-core:3.16.1",
+            "com.github.spotbugs:spotbugs:4.1.3",
             "com.google.code.gson:gson:2.8.6",
             "com.google.guava:guava:29.0-jre",
             "com.google.auto:auto-common:0.11",
@@ -48,7 +49,7 @@ def selenium_java_deps():
             maven.artifact(
                 group = "junit",
                 artifact = "junit",
-                version = "4.13",
+                version = "4.13.1",
                 exclusions = [
                     "org.hamcrest:hamcrest-all",
                     "org.hamcrest:hamcrest-core",

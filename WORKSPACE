@@ -9,6 +9,25 @@ workspace(
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
+    name = "apple_rules_lint",
+    sha256 = "ece669d52998c7a0df2c2380f37edbf4ed8ebb1a03587ed1781dfbececef9b3d",
+    urls = [
+        "https://github.com/apple/apple_rules_lint/releases/download/0.1.0/apple_rules_lint-0.1.0.tar.gz",
+    ],
+)
+
+load("@apple_rules_lint//lint:repositories.bzl", "lint_deps")
+
+lint_deps()
+
+load("@apple_rules_lint//lint:setup.bzl", "lint_setup")
+
+# Add your linters here.
+lint_setup({
+    "java-spotbugs": "//java:spotbugs-config",
+})
+
+http_archive(
     name = "platforms",
     sha256 = "ae95e4bfcd9f66e9dc73a92cee0107fede74163f788e3deefe00f3aaae75c431",
     strip_prefix = "platforms-681f1ee032566aa2d443cf0335d012925d9c58d4",
@@ -86,8 +105,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "4952ef879704ab4ad6729a29007e7094aef213ea79e9f2e94cbe1c9a753e63ef",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.0/rules_nodejs-2.2.0.tar.gz"],
+    sha256 = "f2194102720e662dbf193546585d705e645314319554c6ce7e47d8b59f459e9c",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.2/rules_nodejs-2.2.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
@@ -100,15 +119,10 @@ npm_install(
 
 http_archive(
     name = "rules_python",
-    patches = [
-        "//py:rules_python_any_version_wheel.patch",
-        "//py:rules_python_wheel_directory_check.patch",
-    ],
-    sha256 = "ddb2e1298684defde2f5e466d96e572119f30f9e2a901a7a81474fd4fa9f6d52",
-    strip_prefix = "rules_python-dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f",
-    urls = [
-        "https://github.com/bazelbuild/rules_python/archive/dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f.zip",
-    ],
+    patches = ["//py:rules_python_wheel_directory_check.patch"],
+    sha256 = "4d8ed66d5f57a0b6b90e495ca8e29e5c5fa353b93f093e7c31c595a4631ff293",
+    strip_prefix = "rules_python-5c948dcfd4ca79c2ed3a87636c46abba9f5836e9",
+    url = "https://github.com/bazelbuild/rules_python/archive/5c948dcfd4ca79c2ed3a87636c46abba9f5836e9.zip",
 )
 
 # This call should always be present.
@@ -117,18 +131,12 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 py_repositories()
 
 # This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_import", "pip_repositories")
+load("@rules_python//python:pip.bzl", "pip_install", "pip_repositories")
 
-pip_import(
+pip_install(
     name = "dev_requirements",
     requirements = "//py:requirements.txt",
 )
-
-load("@dev_requirements//:requirements.bzl", "pip_install")
-
-pip_repositories()
-
-pip_install()
 
 http_archive(
     name = "rules_pkg",
@@ -138,9 +146,9 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "4521794f0fba2e20f3bf15846ab5e01d5332e587e9ce81629c7f96c793bb7036",
-    strip_prefix = "rules_docker-0.14.4",
-    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.14.4/rules_docker-v0.14.4.tar.gz"],
+    sha256 = "8a51514f4a6341b5ab68512ab5b4d5d30be37af9795731402c586cb5d56f2bb7",
+    strip_prefix = "rules_docker-569d39130460987aebff3aa32cc2256c8f923630",
+    urls = ["https://github.com/AutomatedTester/rules_docker/archive/569d39130460987aebff3aa32cc2256c8f923630.zip"],
 )
 
 load(
@@ -154,11 +162,10 @@ load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
 
 container_deps()
 
-load("@io_bazel_rules_docker//repositories:pip_repositories.bzl", "pip_deps")
-
-pip_deps()
-
-load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
+load(
+    "@io_bazel_rules_docker//container:container.bzl",
+    "container_pull",
+)
 
 container_pull(
     name = "java_image_base",
@@ -199,7 +206,11 @@ load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
 
 k8s_go_deps()
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+load(
+    "@io_bazel_rules_go//go:deps.bzl",
+    "go_register_toolchains",
+    "go_rules_dependencies",
+)
 
 go_rules_dependencies()
 

@@ -57,7 +57,6 @@ public interface NetworkConnection {
     Future for Network Data types. With a new constructor accepting this enum.
     public enum DataType {
       _2G, _3G, _4G, LTE
-
     }
     */
 

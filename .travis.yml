@@ -65,9 +65,11 @@ matrix:
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
-    - env: BZL="build //java/..." SONAR=1
+    - env: BZL="build --profile=/tmp/bazelprofile //java/..." SONAR=1
       <<: *java
-    - env: BZL="test --test_size_filters=small //java/..."
+    - env: BZL="test --test_size_filters=small --test_tag_filters=-lint //java/..."
+      <<: *java
+    - env: BZL="test --test_tag_filters=lint //java/..."
       <<: *java
     - env: MARIONETTE=1 BZL="test --test_tag_filters=firefox //java/..."
       <<: *java
@@ -127,7 +129,7 @@ matrix:
       <<: *ruby
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
-script: travis_wait 40 ./scripts/travis/script.sh
+script: travis_wait 60 ./scripts/travis/script.sh
 
 notifications:
   email: false

@@ -1,10 +1,12 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "zeromq",
     srcs = glob(["*.java"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/events:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     deps = [
@@ -12,8 +14,9 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/security",
         artifact("com.google.guava:guava"),
         artifact("net.jodah:failsafe"),
-        artifact("org.zeromq:jeromq:0.5.1"),
+        artifact("org.zeromq:jeromq"),
     ],
 )

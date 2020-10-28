@@ -17,16 +17,21 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
+import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.Slot;
+import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -38,10 +43,12 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -49,12 +56,14 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class DefaultSlotSelectorTest {
 
   private Tracer tracer;
   private EventBus bus;
   private URI uri;
+  private Random random = new Random();
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -130,10 +139,63 @@ public class DefaultSlotSelectorTest {
     assertThat(selector.allBucketsSameSize(buckets)).isFalse();
   }
 
+  @Test
+  public void theMostLightlyLoadedNodeIsSelectedFirst() {
+    // Create enough hosts so that we avoid the scheduler returning hosts in:
+    // * insertion order
+    // * reverse insertion order
+    // * sorted with most heavily used first
+
+    Capabilities caps = new ImmutableCapabilities("cheese", "beyaz peynir");
+
+    NodeStatus lightest = createNode(caps, 10, 0);
+    NodeStatus medium = createNode(caps, 10, 4);
+    NodeStatus heavy = createNode(caps, 10, 6);
+    NodeStatus massive = createNode(caps, 10, 8);
+
+    SlotSelector selector = new DefaultSlotSelector();
+    Set<SlotId> ids = selector.selectSlot(caps, ImmutableSet.of(heavy, medium, lightest, massive));
+    SlotId expected = ids.iterator().next();
+
+    assertThat(lightest.getSlots().stream()).anyMatch(slot -> expected.equals(slot.getId()));
+  }
+
+  private NodeStatus createNode(Capabilities stereotype, int count, int currentLoad) {
+    NodeId nodeId = new NodeId(UUID.randomUUID());
+
+    URI uri = createUri();
+
+    Set<Slot> slots = new HashSet<>();
+    for (int i = 0; i < currentLoad; i++) {
+      Instant now = Instant.now();
+      slots.add(
+        new Slot(
+          new SlotId(nodeId, UUID.randomUUID()),
+          stereotype,
+          now,
+          Optional.of(new Session(new SessionId(UUID.randomUUID()), uri, stereotype, stereotype, now))));
+    }
+    for (int i = 0; i < count - currentLoad; i++) {
+      slots.add(
+        new Slot(
+          new SlotId(nodeId, UUID.randomUUID()),
+          stereotype,
+          Instant.EPOCH,
+          Optional.empty()));
+    }
+
+    return new NodeStatus(
+      nodeId,
+      uri,
+      count,
+      ImmutableSet.copyOf(slots),
+      UP);
+  }
+
   //Create a single node with the given browserName
   private NodeStatus createNode(String...browsers) {
     URI uri = createUri();
-    LocalNode.Builder nodeBuilder = LocalNode.builder(tracer, bus, uri, uri, null);
+    LocalNode.Builder nodeBuilder = LocalNode.builder(tracer, bus, uri, uri, new Secret("cornish yarg"));
     nodeBuilder.maximumConcurrentSessions(browsers.length);
 
     Arrays.stream(browsers).forEach(browser -> {
@@ -163,7 +225,7 @@ public class DefaultSlotSelectorTest {
 
   private URI createUri() {
     try {
-      return new URI("http://localhost:" + new Random().nextInt());
+      return new URI("http://localhost:" + random.nextInt());
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -171,7 +233,7 @@ public class DefaultSlotSelectorTest {
 
   private class Handler extends Session implements HttpHandler {
     private Handler(Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), uri, capabilities);
+      super(new SessionId(UUID.randomUUID()), uri, new ImmutableCapabilities(), capabilities, Instant.now());
     }
 
     @Override

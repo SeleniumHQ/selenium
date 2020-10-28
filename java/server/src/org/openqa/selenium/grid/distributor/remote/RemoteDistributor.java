@@ -22,14 +22,16 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeId;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.model.Host;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.NullSessionMap;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -51,6 +53,7 @@ public class RemoteDistributor extends Distributor {
 
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Remote)");
   private final HttpHandler client;
+  private final Filter addSecret;
 
   public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url, Secret registrationSecret) {
     super(
@@ -60,6 +63,8 @@ public class RemoteDistributor extends Distributor {
       new NullSessionMap(tracer),
       registrationSecret);
     this.client = factory.createClient(url);
+
+    this.addSecret = new AddSecretFilter(registrationSecret);
   }
 
   @Override
@@ -78,7 +83,7 @@ public class RemoteDistributor extends Distributor {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     upstream.setContent(request.getContent());
 
-    HttpResponse response = client.execute(upstream);
+    HttpResponse response = client.with(addSecret).execute(upstream);
 
     return Values.get(response, CreateSessionResponse.class);
   }
@@ -89,7 +94,7 @@ public class RemoteDistributor extends Distributor {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
     request.setContent(asJson(node.getStatus()));
 
-    HttpResponse response = client.execute(request);
+    HttpResponse response = client.with(addSecret).execute(request);
 
     Values.get(response, Void.class);
 
@@ -105,7 +110,7 @@ public class RemoteDistributor extends Distributor {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
     request.setContent(asJson(nodeId));
 
-    HttpResponse response = client.execute(request);
+    HttpResponse response = client.with(addSecret).execute(request);
 
     return Values.get(response, Boolean.class);
   }
@@ -116,7 +121,7 @@ public class RemoteDistributor extends Distributor {
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
 
-    HttpResponse response = client.execute(request);
+    HttpResponse response = client.with(addSecret).execute(request);
 
     Values.get(response, Void.class);
   }
@@ -132,7 +137,7 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  protected Set<Host> getModel() {
+  protected Set<NodeStatus> getAvailableNodes() {
     throw new UnsupportedOperationException("getModel is not required for remote sessions");
   }
 

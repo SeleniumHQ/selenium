@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.internal.Require.nonNull;
 
 import org.junit.Test;
@@ -146,6 +147,13 @@ public class RequireTest {
   }
 
   @Test
+  public void canCheckIntegersWithMessages() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> Require.positive("Timeout", 0, "Message should only be this"))
+        .withMessage("Message should only be this");
+  }
+
+  @Test
   public void canCheckIntegerArgumentWithCheckerObject() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> Require.argument("Timeout", (Integer) null).greaterThan(5, "It should be longer"))
@@ -168,7 +176,9 @@ public class RequireTest {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> Require.argument("Target", dir).isFile())
         .withMessage("Target must be a regular file: %s", dir);
-    tempFile.delete();
+    if (!tempFile.delete()) {
+      fail("Unable to delete temp file");
+    }
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> Require.argument("Target", tempFile).isFile())
         .withMessage("Target must exist: %s", tempFile);
@@ -186,7 +196,9 @@ public class RequireTest {
         .withMessage("Target must be a directory: %s", tempFile);
     File dir = tempFile.getParentFile();
     assertThat(Require.argument("Target", dir).isDirectory()).isSameAs(dir);
-    tempFile.delete();
+    if (!tempFile.delete()) {
+      fail("Unable to delete temp file");
+    }
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> Require.argument("Target", tempFile).isDirectory())
         .withMessage("Target must exist: %s", tempFile);
@@ -239,7 +251,9 @@ public class RequireTest {
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("Target", dir).isFile())
         .withMessage("Target must be a regular file: %s", dir);
-    tempFile.delete();
+    if (!tempFile.delete()) {
+      fail("Unable to delete temp file");
+    }
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("Target", tempFile).isFile())
         .withMessage("Target must exist: %s", tempFile);
@@ -257,7 +271,9 @@ public class RequireTest {
         .withMessage("Target must be a directory: %s", tempFile);
     File dir = tempFile.getParentFile();
     assertThat(Require.state("Target", dir).isDirectory()).isSameAs(dir);
-    tempFile.delete();
+    if (!tempFile.delete()) {
+      fail("Unable to delete temp file");
+    }
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("Target", tempFile).isDirectory())
         .withMessage("Target must exist: %s", tempFile);
@@ -276,7 +292,9 @@ public class RequireTest {
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("Target", dirPath).isFile())
         .withMessage("Target must be a regular file: %s", dirPath);
-    tempFile.delete();
+    if (!tempFile.delete()) {
+      fail("Unable to delete temp file");
+    }
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("Target", tempFilePath).isFile())
         .withMessage("Target must exist: %s", tempFilePath);
@@ -295,7 +313,9 @@ public class RequireTest {
         .withMessage("Target must be a directory: %s", tempFilePath);
     Path dirPath = tempFilePath.getParent();
     assertThat(Require.state("Target", dirPath).isDirectory()).isSameAs(dirPath);
-    tempFile.delete();
+    if (!tempFile.delete()) {
+      fail("Unable to delete temp file");
+    }
     assertThatExceptionOfType(IllegalStateException.class)
         .isThrownBy(() -> Require.state("Target", tempFilePath).isDirectory())
         .withMessage("Target must exist: %s", tempFilePath);

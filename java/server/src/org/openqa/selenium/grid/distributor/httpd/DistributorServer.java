@@ -23,14 +23,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
-import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -49,7 +48,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
-public class DistributorServer extends TemplateGridCommand {
+public class DistributorServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(DistributorServer.class.getName());
   private static final String LOCAL_DISTRIBUTOR_SERVER = "org.openqa.selenium.grid.distributor.local.LocalDistributor";
@@ -85,8 +84,7 @@ public class DistributorServer extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) {
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
+  protected Handlers createHandlers(Config config) {
     DistributorOptions distributorOptions = new DistributorOptions(config);
 
     Distributor distributor = distributorOptions.getDistributor(LOCAL_DISTRIBUTOR_SERVER);
@@ -99,18 +97,24 @@ public class DistributorServer extends TemplateGridCommand {
         .setContent(Contents.utf8String("Distributor is " + ready));
     };
 
-    Route handler = Route.combine(
-      distributor,
-      Route.matching(req -> GET.equals(req.getMethod()) && "/status".equals(req.getUri()))
-        .to(() -> req -> new HttpResponse()
-          .setContent(Contents.asJson(
-            ImmutableMap.of("value", ImmutableMap.of(
-              "ready", true,
-              "message", "Distributor is ready"))))),
-      get("/readyz").to(() -> readinessCheck));
+    return new Handlers(
+      Route.combine(
+        distributor,
+        Route.matching(req -> GET.equals(req.getMethod()) && "/status".equals(req.getUri()))
+          .to(() -> req -> new HttpResponse()
+            .setContent(Contents.asJson(
+              ImmutableMap.of("value", ImmutableMap.of(
+                "ready", true,
+                "message", "Distributor is ready"))))),
+        get("/readyz").to(() -> readinessCheck)),
+      null);
+  }
 
-    Server<?> server = new NettyServer(serverOptions, handler);
-    server.start();
+  @Override
+  protected void execute(Config config) {
+    Require.nonNull("Config", config);
+
+    Server<?> server = asServer(config).start();
 
     BuildInfo info = new BuildInfo();
     LOG.info(String.format(

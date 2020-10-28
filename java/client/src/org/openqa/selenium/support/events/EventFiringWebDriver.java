@@ -68,9 +68,15 @@ import java.util.stream.Collectors;
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
  * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
  */
-public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
-                                             WrapsDriver, HasInputDevices, HasTouchScreen,
-                                             Interactive, HasCapabilities {
+public class EventFiringWebDriver implements
+  WebDriver,
+  JavascriptExecutor,
+  TakesScreenshot,
+  WrapsDriver,
+  HasInputDevices,
+  HasTouchScreen,
+  Interactive,
+  HasCapabilities {
 
   private final WebDriver driver;
 
@@ -269,8 +275,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     } else if (arg instanceof Map<?, ?>) {
       Map<?, ?> aMap = (Map<?, ?>) arg;
       Map<Object, Object> toReturn = new HashMap<>();
-      for (Object key : aMap.keySet()) {
-        toReturn.put(key, unpackWrappedElement(aMap.get(key)));
+      for (Map.Entry<?, ?> entry : aMap.entrySet()) {
+        toReturn.put(entry.getKey(), unpackWrappedElement(entry.getValue()));
       }
       return toReturn;
     } else if (arg instanceof EventFiringWebElement) {

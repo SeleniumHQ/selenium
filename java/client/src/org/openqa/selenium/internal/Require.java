@@ -138,15 +138,22 @@ public final class Require {
     }
     return number;
   }
-
-  public static int positive(String argName, Integer number) {
+  public static int positive(String argName, Integer number, String message) {
     if (number == null) {
       throw new IllegalArgumentException(argName + " must be set");
     }
     if (number <= 0) {
-      throw new IllegalArgumentException(argName + " must be greater than 0");
+      if (message == null) {
+        throw new IllegalArgumentException(argName + " must be greater than 0");
+      } else {
+        throw new IllegalArgumentException(message);
+      }
     }
     return number;
+  }
+
+  public static int positive(String argName, Integer number) {
+    return positive(argName, number, null);
   }
 
   public static IntChecker argument(String argName, Integer number) {

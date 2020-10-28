@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.distributor.selector;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
@@ -36,12 +35,14 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 public class DefaultSlotSelector implements SlotSelector {
 
   private static final Logger LOG = Logger.getLogger(DefaultSlotSelector.class.getName());
 
   @Override
-  public Optional<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes) {
+  public Set<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes) {
     Stream<NodeStatus> firstRound = nodes.stream()
       // Find a node that supports this kind of thing
       .filter(node -> node.hasCapacity(capabilities));
@@ -50,20 +51,20 @@ public class DefaultSlotSelector implements SlotSelector {
     Stream<NodeStatus> prioritizedNodes = getPrioritizedNodeStream(firstRound, capabilities);
 
     //Take the further-filtered Stream and prioritize by load, then by session age
+
     return prioritizedNodes
-      .min(
+      .sorted(
         // Now sort by node which has the lowest load (natural ordering)
         Comparator.comparingDouble(NodeStatus::getLoad)
           // Then last session created (oldest first), so natural ordering again
           .thenComparingLong(NodeStatus::getLastSessionCreated)
           // And use the node id as a tie-breaker.
-          .thenComparing(NodeStatus::getNodeId))
-      .map(node -> node.getSlots().stream()
+          .thenComparing(NodeStatus::getId))
+      .flatMap(node -> node.getSlots().stream()
         .filter(slot -> !slot.getSession().isPresent())
         .filter(slot -> slot.isSupporting(capabilities))
-        .map(Slot::getId)
-        .findFirst()
-        .orElseThrow(() -> new SessionNotCreatedException("Unable to find slot matching: " + capabilities)));
+        .map(Slot::getId))
+      .collect(toImmutableSet());
   }
 
   /**
@@ -72,7 +73,8 @@ public class DefaultSlotSelector implements SlotSelector {
    * couple Edge nodes, but a lot of Chrome nodes, the Edge nodes should be removed from
    * consideration when Chrome is requested. This does not currently take the amount of load on the
    * server into consideration--it only checks for availability, not how much availability
-   * @param nodes Stream of nodestatus attached to the Distributor (assume it's filtered for only those that offer these Capabilities)
+   *
+   * @param nodes        Stream of nodestatus attached to the Distributor (assume it's filtered for only those that offer these Capabilities)
    * @param capabilities Passing in the whole Capabilities object will allow us to prioritize more than just browser
    * @return Stream of distinct NodeStatus with the more rare Capabilities removed
    */

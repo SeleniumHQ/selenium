@@ -212,7 +212,7 @@ public class Main {
                   "classpath to use with the server (for example, to provide additional " +
                   "commands, or to provide additional driver implementations). For example:\n");
         outWriter.write(String.format(
-            "\n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
+            "%n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
             File.pathSeparator));
         out.println("\n");
       };

@@ -29,5 +29,5 @@ import java.util.Set;
  */
 @FunctionalInterface
 public interface SlotSelector {
-  Optional<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes);
+  Set<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes);
 }

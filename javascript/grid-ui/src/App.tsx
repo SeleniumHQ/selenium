@@ -14,7 +14,6 @@ import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import HelpPage from "./screens/HelpPage/HelpPage";
 import Console from "./screens/Console/Console";
 import NavBar from "./components/NavBar/NavBar";
-import Hubpage from "./screens/Hub/Hub";
 import { GridConfig } from "./config";
 import NodePage from "./screens/Node/NodePage";
 import NodeType from "./models/node";
@@ -48,7 +47,6 @@ function App() {
 				<NavBar />
 				<Switch>
 					<Route exact path="/" component={Console} />
-					<Route exact path="/hub" component={Hubpage} />
 					<Route exact path="/node/:id" component={NodePage} />
 					<Route exact path="/home" component={HelpPage} />
 					<Route exact path="/console" component={Console} />

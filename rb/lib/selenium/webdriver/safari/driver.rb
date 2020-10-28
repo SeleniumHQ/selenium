@@ -30,7 +30,6 @@ module Selenium
         include DriverExtensions::HasDebugger
         include DriverExtensions::HasPermissions
         include DriverExtensions::HasWebStorage
-        include DriverExtensions::TakesScreenshot
 
         def browser
           :safari

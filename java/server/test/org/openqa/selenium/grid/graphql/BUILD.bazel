@@ -23,6 +23,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/graphql",
         "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/local",
+        "//java/server/src/org/openqa/selenium/grid/security",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         artifact("junit:junit"),

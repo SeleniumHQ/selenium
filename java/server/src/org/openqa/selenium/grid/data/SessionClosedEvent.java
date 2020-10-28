@@ -18,14 +18,24 @@
 package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.events.Event;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
+
+import java.util.function.Consumer;
 
 public class SessionClosedEvent extends Event {
 
-  public static final Type SESSION_CLOSED = new Type("session-closed");
+  private static final EventName SESSION_CLOSED = new EventName("session-closed");
 
   public SessionClosedEvent(SessionId id) {
     super(SESSION_CLOSED, id);
+  }
+
+  public static EventListener<SessionId> listener(Consumer<SessionId> handler) {
+    Require.nonNull("Handler", handler);
+
+    return new EventListener<>(SESSION_CLOSED, SessionId.class, handler);
   }
 }

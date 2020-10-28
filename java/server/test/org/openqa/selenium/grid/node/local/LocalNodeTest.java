@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
@@ -42,6 +43,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +61,7 @@ public class LocalNodeTest {
 
   private LocalNode node;
   private Session session;
+  private Secret registrationSecret;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -66,8 +69,9 @@ public class LocalNodeTest {
     EventBus bus = new GuavaEventBus();
     URI uri = new URI("http://localhost:1234");
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
-    node = LocalNode.builder(tracer, bus, uri, uri, null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+    registrationSecret = new Secret("red leicester");
+    node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -129,14 +133,14 @@ public class LocalNodeTest {
     assertThat(status.getSlots().stream()
       .filter(slot -> slot.getSession().isPresent())
       .map(slot -> slot.getSession().get())
-      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+      .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     status = node.getStatus();
     assertThat(status.getSlots().stream()
       .filter(slot -> slot.getSession().isPresent())
       .map(slot -> slot.getSession().get())
-      .filter(s -> s.getSessionId().equals(session.getId()))).isEmpty();
+      .filter(s -> s.getId().equals(session.getId()))).isEmpty();
   }
 
   @Test
@@ -145,13 +149,13 @@ public class LocalNodeTest {
     assertThat(status.getSlots().stream()
       .filter(slot -> slot.getSession().isPresent())
       .map(slot -> slot.getSession().get())
-      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+      .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
 
     node.stop(session.getId());
     assertThat(status.getSlots().stream()
       .filter(slot -> slot.getSession().isPresent())
       .map(slot -> slot.getSession().get())
-      .filter(s -> s.getSessionId().equals(session.getId()))).isNotEmpty();
+      .filter(s -> s.getId().equals(session.getId()))).isNotEmpty();
   }
 
   @Test
@@ -163,7 +167,7 @@ public class LocalNodeTest {
 
     class VerifyingHandler extends Session implements HttpHandler {
       private VerifyingHandler(SessionId id, Capabilities capabilities) {
-        super(id, uri, capabilities);
+        super(id, uri, new ImmutableCapabilities(), capabilities, Instant.now());
       }
 
       @Override
@@ -174,7 +178,7 @@ public class LocalNodeTest {
       }
     }
 
-    Node node = LocalNode.builder(tracer, bus, uri, uri, null)
+    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .add(caps, new TestSessionFactory(VerifyingHandler::new))

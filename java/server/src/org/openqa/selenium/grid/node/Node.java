@@ -110,6 +110,7 @@ public abstract class Node implements HasReadyState, Routable {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("URI", uri);
+    Require.nonNull("Registration secret", registrationSecret);
 
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
@@ -119,13 +120,13 @@ public abstract class Node implements HasReadyState, Routable {
         // route that is checked.
         matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
             .to(() -> new ForwardWebDriverCommand(this))
-            .with(spanDecorator("node.forward_command").andThen(requiresSecret)),
+            .with(spanDecorator("node.forward_command")),
         post("/session/{sessionId}/file")
             .to(params -> new UploadFile(this, sessionIdFrom(params)))
-            .with(spanDecorator("node.upload_file").andThen(requiresSecret)),
+            .with(spanDecorator("node.upload_file")),
         post("/session/{sessionId}/se/file")
           .to(params -> new UploadFile(this, sessionIdFrom(params)))
-          .with(spanDecorator("node.upload_file").andThen(requiresSecret)),
+          .with(spanDecorator("node.upload_file")),
         get("/se/grid/node/owner/{sessionId}")
             .to(params -> new IsSessionOwner(this, sessionIdFrom(params)))
             .with(spanDecorator("node.is_session_owner").andThen(requiresSecret)),

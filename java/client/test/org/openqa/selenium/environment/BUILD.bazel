@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_binary", "java_library", "java_test_suite")
 
 filegroup(
     name = "keystore",
@@ -13,6 +13,7 @@ filegroup(
 
 java_library(
     name = "environment",
+    testonly = True,
     srcs = glob(
         [
             "*.java",
@@ -27,10 +28,12 @@ java_library(
         "webserver/keystore",
         "//common/src/web",
         "//javascript/atoms",
+        "//javascript/atoms:deps",
         "//third_party/closure/goog",
         "//third_party/js/selenium:webdriver_json",
         "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/sizzle",
+        "@com_google_javascript_closure_library",
     ],
     javacopts = [
         "-source",
@@ -64,6 +67,7 @@ java_library(
 
 java_binary(
     name = "appserver",
+    testonly = True,
     main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
     visibility = [
         "//:__pkg__",
@@ -76,6 +80,7 @@ java_binary(
 
 java_binary(
     name = "jre-server",
+    testonly = True,
     main_class = "org.openqa.selenium.environment.webserver.JreAppServer",
     visibility = [
         "//dotnet/test:__subpackages__",
@@ -87,6 +92,7 @@ java_binary(
 
 java_library(
     name = "test-base",
+    testonly = True,
     srcs = ["webserver/AppServerTestBase.java"],
     deps = [
         ":environment",

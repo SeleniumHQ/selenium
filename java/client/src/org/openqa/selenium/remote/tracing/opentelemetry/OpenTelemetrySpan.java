@@ -193,6 +193,10 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
 
   @Override
   public boolean equals(Object o) {
+    if (o instanceof OpenTelemetryContext && (!(o instanceof OpenTelemetrySpan))) {
+      return false;
+    }
+
     if (!(o instanceof OpenTelemetrySpan)) {
       return false;
     }

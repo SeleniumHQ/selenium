@@ -368,23 +368,23 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
-@pytest.mark.xfail_chrome(raises=NoSuchElementException)
-@pytest.mark.xfail_chromiumedge(raises=NoSuchElementException)
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='https://github.com/mozilla/geckodriver/issues/614')
-@pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='https://github.com/mozilla/geckodriver/issues/614')
-@pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
-@pytest.mark.xfail_safari
-def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(driver, pages):
-    pages.load("frame_switching_tests/deletingFrame.html")
-    driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
+# @pytest.mark.xfail_chrome(raises=NoSuchElementException)
+# @pytest.mark.xfail_chromiumedge(raises=NoSuchElementException)
+# @pytest.mark.xfail_firefox(raises=WebDriverException,
+#                            reason='https://github.com/mozilla/geckodriver/issues/614')
+# @pytest.mark.xfail_remote(raises=WebDriverException,
+#                           reason='https://github.com/mozilla/geckodriver/issues/614')
+# @pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
+# @pytest.mark.xfail_safari
+# def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(driver, pages):
+#     pages.load("frame_switching_tests/deletingFrame.html")
+#     driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
 
-    killIframe = driver.find_element(By.ID, "killIframe")
-    killIframe.click()
+#     killIframe = driver.find_element(By.ID, "killIframe")
+#     killIframe.click()
 
-    with pytest.raises(NoSuchFrameException):
-        driver.find_element(By.ID, "killIframe").click()
+#     with pytest.raises(NoSuchFrameException):
+#         driver.find_element(By.ID, "killIframe").click()
 
 
 def testShouldReturnWindowTitleInAFrameset(driver, pages):

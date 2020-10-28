@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreenshot, Locatable {
 
   private String foundBy;
@@ -362,7 +364,7 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
       String base64EncodedPng = (String) result;
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result);
+      String base64EncodedPng = new String((byte[]) result, UTF_8);
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else {
       throw new RuntimeException(String.format("Unexpected result for %s command: %s",

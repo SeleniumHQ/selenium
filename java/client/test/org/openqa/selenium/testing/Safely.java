@@ -17,16 +17,36 @@
 
 package org.openqa.selenium.testing;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Safely {
 
   public static void safelyCall(TearDownFixture... fixtures) {
+    ExecutorService executor = Executors.newFixedThreadPool(fixtures.length);
+    List<CompletableFuture<Void>> futures = new LinkedList<>();
+
     for (TearDownFixture fixture : fixtures) {
-      try {
+      CompletableFuture<Void> check = new CompletableFuture<>();
+      executor.submit(() -> {
         // Fixture being null is handled by the exception check.
-        fixture.tearDown();
-      } catch (Exception ignored) {
-        // Keep going
-      }
+        try {
+          fixture.tearDown();
+        } catch (Exception ignored) {
+          // nothing to see here.
+        }
+        check.complete(null);
+      });
+      futures.add(check);
+    }
+
+    try {
+      CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+    } finally {
+      executor.shutdownNow();
     }
   }
 }

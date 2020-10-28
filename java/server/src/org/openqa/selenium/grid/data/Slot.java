@@ -30,10 +30,10 @@ public class Slot {
 
   private final SlotId id;
   private final Capabilities stereotype;
-  private final Optional<Active> session;
+  private final Optional<Session> session;
   private final Instant lastStarted;
 
-  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Optional<Active> session) {
+  public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Optional<Session> session) {
     this.id = Require.nonNull("Slot ID", id);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.lastStarted = Require.nonNull("Last started", lastStarted);
@@ -52,7 +52,7 @@ public class Slot {
     return lastStarted;
   }
 
-  public Optional<Active> getSession() {
+  public Optional<Session> getSession() {
     return session;
   }
 
@@ -90,11 +90,12 @@ public class Slot {
     SlotId id = null;
     Capabilities stereotype = null;
     Instant lastStarted = null;
-    Optional<Active> session = Optional.empty();
+    Optional<Session> session = Optional.empty();
 
     input.beginObject();
     while (input.hasNext()) {
-      switch (input.nextName()) {
+      String name = input.nextName();
+      switch (name) {
         case "id":
           id = input.read(SlotId.class);
           break;
@@ -104,7 +105,7 @@ public class Slot {
           break;
 
         case "session":
-          session = Optional.ofNullable(input.read(Active.class));
+          session = Optional.ofNullable(input.read(Session.class));
           break;
 
         case "stereotype":

@@ -122,7 +122,7 @@ public class CoreTestCase {
       if (!allLinks.isEmpty()) {
         String href = allLinks.get(0).getAttribute("href");
         try {
-          baseUrl = new URL(href);
+          new URL(href);
         } catch (MalformedURLException e) {
           throw new SeleniumException("Base URL for test cannot be parsed: " + href);
         }
@@ -225,7 +225,7 @@ public class CoreTestCase {
 
     public String getStepLog() {
       return cause == null ? step.toString()
-        : String.format("%s\n%s", step.toString(), cause);
+        : String.format("%s%n%s", step.toString(), cause);
     }
   }
 }

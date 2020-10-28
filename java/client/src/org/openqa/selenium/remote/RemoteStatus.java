@@ -16,16 +16,18 @@
 // under the License.
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.internal.Require;
+
 import java.util.Map;
 
 public class RemoteStatus {
 
-  private Map<String, Object> status;
-  private Map<String, Object> buildInfo;
-  private Map<String, Object> osInfo;
+  private final Map<String, Object> buildInfo;
+  private final Map<String, Object> osInfo;
 
+  @SuppressWarnings("unchecked")
   public RemoteStatus(Map<String, Object> status) {
-    this.status = status;
+    Require.nonNull("Status", status);
     buildInfo = (Map<String, Object>) status.get("build");
     osInfo = (Map<String, Object>) status.get("os");
   }
@@ -61,10 +63,14 @@ public class RemoteStatus {
   }
 
   public String toString() {
-    return String.format("Build info: version: '%s', revision: '%s', time: '%s'\n"
-                          + "OS info: arch: '%s', name: '%s', version: '%s'",
-        getReleaseLabel(), getBuildRevision(), getBuildTime(),
-        getOsArch(), getOsName(), getOsVersion());
+    return String.format(
+      "Build info: version: '%s', revision: '%s', time: '%s'%nOS info: arch: '%s', name: '%s', version: '%s'",
+      getReleaseLabel(),
+      getBuildRevision(),
+      getBuildTime(),
+      getOsArch(),
+      getOsName(),
+      getOsVersion());
   }
 
 }

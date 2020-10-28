@@ -30,6 +30,7 @@ import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.json.Json;
@@ -53,6 +54,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class GraphqlHandlerTest {
 
+  private final Secret registrationSecret = new Secret("stilton");
   private final URI publicUri = new URI("http://example.com/grid-o-matic");
   private Distributor distributor;
   private Tracer tracer;
@@ -68,7 +70,7 @@ public class GraphqlHandlerTest {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    distributor = new LocalDistributor(tracer, events, clientFactory, sessions, null);
+    distributor = new LocalDistributor(tracer, events, clientFactory, sessions, registrationSecret);
   }
 
   @Test
@@ -95,7 +97,7 @@ public class GraphqlHandlerTest {
   public void shouldBeAbleToGetUrlsOfAllNodes() throws URISyntaxException {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "stilton");
     String nodeUri = "http://localhost:5556";
-    Node node = LocalNode.builder(tracer, events, new URI(nodeUri), publicUri, null)
+    Node node = LocalNode.builder(tracer, events, new URI(nodeUri), publicUri, registrationSecret)
       .add(stereotype, new SessionFactory() {
         @Override
         public Optional<ActiveSession> apply(CreateSessionRequest createSessionRequest) {

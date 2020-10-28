@@ -85,10 +85,6 @@ public class Annotations extends AbstractAnnotations {
       ans = buildByFromDefault();
     }
 
-    if (ans == null) {
-      throw new IllegalArgumentException("Cannot determine how to locate element " + field);
-    }
-
     return ans;
   }
 

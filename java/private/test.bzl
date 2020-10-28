@@ -109,16 +109,16 @@ def java_test_suite(
             )
 
     if name in srcs:
-      native.test_suite(
-          name = "%s-suite" % name,
-          tests = tests,
-          tags = ["manual"] + tags,
-          visibility = visibility,
-      )
+        native.test_suite(
+            name = "%s-suite" % name,
+            tests = tests,
+            tags = ["manual"] + tags,
+            visibility = visibility,
+        )
     else:
         native.test_suite(
-          name = name,
-          tests = tests,
-          tags = ["manual"] + tags,
-          visibility = visibility,
+            name = name,
+            tests = tests,
+            tags = ["manual"] + tags,
+            visibility = visibility,
         )

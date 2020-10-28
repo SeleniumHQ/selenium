@@ -22,9 +22,12 @@ import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.events.EventName;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -35,9 +38,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,16 +57,25 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 class UnboundZmqEventBus implements EventBus {
 
+  static final EventName REJECTED_EVENT = new EventName("selenium-rejected-event");
   private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private static final Json JSON = new Json();
   private final ExecutorService executor;
-  private final Map<Type, List<Consumer<Event>>> listeners = new ConcurrentHashMap<>();
+  private final Map<EventName, List<Consumer<Event>>> listeners = new ConcurrentHashMap<>();
   private final Queue<UUID> recentMessages = EvictingQueue.create(128);
+  private final String encodedSecret;
 
   private ZMQ.Socket pub;
   private ZMQ.Socket sub;
 
-  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection) {
+  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+    Require.nonNull("Secret", secret);
+    StringBuilder builder = new StringBuilder();
+    try (JsonOutput out = JSON.newOutput(builder)) {
+      out.setPrettyPrint(false).writeClassName(false).write(secret);
+    }
+    this.encodedSecret = builder.toString();
+
     executor = Executors.newCachedThreadPool(r -> {
       Thread thread = new Thread(r);
       thread.setName("Event Bus");
@@ -93,7 +107,7 @@ class UnboundZmqEventBus implements EventBus {
     );
     // Connections are already established
     ZMQ.Poller poller = context.createPoller(1);
-    poller.register(sub, ZMQ.Poller.POLLIN);
+    poller.register(Objects.requireNonNull(sub), ZMQ.Poller.POLLIN);
 
     LOG.info("Sockets created");
 
@@ -109,19 +123,29 @@ class UnboundZmqEventBus implements EventBus {
           if (poller.pollin(0)) {
             ZMQ.Socket socket = poller.getSocket(0);
 
-            Type type = new Type(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
+            EventName eventName = new EventName(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
+            Secret eventSecret = JSON.toType(new String(socket.recv(ZMQ.DONTWAIT), UTF_8), Secret.class);
             UUID id = UUID.fromString(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
             String data = new String(socket.recv(ZMQ.DONTWAIT), UTF_8);
 
             Object converted = JSON.toType(data, Object.class);
-            Event event = new Event(id, type, converted);
+            Event event = new Event(id, eventName, converted);
 
             if (recentMessages.contains(id)) {
               continue;
             }
             recentMessages.add(id);
 
-            List<Consumer<Event>> typeListeners = listeners.get(type);
+            if (!Secret.matches(secret, eventSecret)) {
+              LOG.severe(String.format("Received message without a valid secret. Rejecting. %s -> %s", event, data));
+              Event rejectedEvent = new Event(REJECTED_EVENT, new ZeroMqEventBus.RejectedEvent(eventName, data));
+
+              listeners.getOrDefault(REJECTED_EVENT, new ArrayList<>())
+                .forEach(listener -> listener.accept(rejectedEvent));
+              return;
+            }
+
+            List<Consumer<Event>> typeListeners = listeners.get(eventName);
             if (typeListeners == null) {
               continue;
             }
@@ -158,7 +182,13 @@ class UnboundZmqEventBus implements EventBus {
 
   private boolean isSubAddressIPv6(String connection) {
     try {
-      return InetAddress.getByName(new URI(connection).getHost()) instanceof Inet6Address;
+      URI uri = new URI(connection);
+
+      if ("inproc".equals(uri.getScheme())) {
+        return false;
+      }
+
+      return InetAddress.getByName(uri.getHost()) instanceof Inet6Address;
     } catch (UnknownHostException | URISyntaxException e) {
       LOG.log(Level.WARNING, String.format("Could not determine if the address %s is IPv6 or IPv4", connection), e);
     }
@@ -166,12 +196,11 @@ class UnboundZmqEventBus implements EventBus {
   }
 
   @Override
-  public void addListener(Type type, Consumer<Event> onType) {
-    Require.nonNull("Event type", type);
-    Require.nonNull("Event listener", onType);
+  public void addListener(EventListener<?> listener) {
+    Require.nonNull("Listener", listener);
 
-    List<Consumer<Event>> typeListeners = listeners.computeIfAbsent(type, t -> new LinkedList<>());
-    typeListeners.add(onType);
+    List<Consumer<Event>> typeListeners = listeners.computeIfAbsent(listener.getEventName(), t -> new LinkedList<>());
+    typeListeners.add(listener);
   }
 
   @Override
@@ -179,6 +208,7 @@ class UnboundZmqEventBus implements EventBus {
     Require.nonNull("Event to send", event);
 
     pub.sendMore(event.getType().getName().getBytes(UTF_8));
+    pub.sendMore(encodedSecret.getBytes(UTF_8));
     pub.sendMore(event.getId().toString().getBytes(UTF_8));
     pub.send(event.getRawData().getBytes(UTF_8));
   }
