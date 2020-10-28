@@ -33,6 +33,7 @@ import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
 import org.openqa.selenium.grid.router.Router;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -104,6 +105,7 @@ public class RouterServer extends TemplateGridServerCommand {
     SessionMap sessions = sessionsOptions.getSessionMap();
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
 
     DistributorOptions distributorOptions = new DistributorOptions(config);
     URL distributorUrl = fromUri(distributorOptions.getDistributorUri());
@@ -111,7 +113,7 @@ public class RouterServer extends TemplateGridServerCommand {
       tracer,
       clientFactory,
       distributorUrl,
-      serverOptions.getRegistrationSecret());
+      secretOptions.getRegistrationSecret());
 
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
 
