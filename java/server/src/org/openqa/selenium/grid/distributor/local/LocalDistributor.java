@@ -98,7 +98,7 @@ public class LocalDistributor extends Distributor {
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
     this.sessions = Require.nonNull("Session map", sessions);
-    this.model = new GridModel(bus, registrationSecret);
+    this.model = new GridModel(bus);
     this.nodes = new HashMap<>();
 
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
