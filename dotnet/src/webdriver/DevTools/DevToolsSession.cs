@@ -1,17 +1,35 @@
+// <copyright file="DevToolsSession.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>
+
+using System;
+using System.Collections.Concurrent;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace OpenQA.Selenium.DevTools
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Globalization;
-    using System.IO;
-    using System.Net.Http;
-    using System.Net.WebSockets;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-
     /// <summary>
     /// Represents a WebSocket connection to a running DevTools instance that can be used to send 
     /// commands and recieve events.
@@ -59,39 +77,31 @@ namespace OpenQA.Selenium.DevTools
         public event EventHandler<DevToolsEventReceivedEventArgs> DevToolsEventReceived;
 
         /// <summary>
-        /// Gets or sets the number of milliseconds to wait for a command to complete. Default is 5 seconds.
+        /// Gets or sets the time to wait for a command to complete. Default is 5 seconds.
         /// </summary>
-        public TimeSpan CommandTimeout
-        {
-            get;
-            set;
-        }
+        public TimeSpan CommandTimeout { get; set; }
 
         /// <summary>
         /// Gets or sets the active session ID of the connection.
         /// </summary>
-        public string ActiveSessionId
-        {
-            get;
-            set;
-        }
+        public string ActiveSessionId { get; set; }
 
         /// <summary>
         /// Gets the endpoint address of the session.
         /// </summary>
-        public string EndpointAddress
-        {
-            get { return websocketAddress; }
-        }
+        public string EndpointAddress => this.websocketAddress;
 
         /// <summary>
         /// Gets the version-independent domain implementation for this Developer Tools connection
         /// </summary>
-        public IDomains Domains
-        {
-            get { return this.domains; }
-        }
+        public IDomains Domains => this.domains;
 
+        /// <summary>
+        /// Gets the version-specific implementation of domains for this DevTools session.
+        /// </summary>
+        /// <typeparam name="T">
+        /// A <see cref="DevToolsSessionDomains"/> object containing the version-specific DevTools Protocol domain implementations.</typeparam>
+        /// <returns>The version-specific DevTools Protocol domain implementation.</returns>
         public T GetVersionSpecificDomains<T>() where T: DevToolsSessionDomains
         {
             T versionSpecificDomains = this.domains.VersionSpecificDomains as T;
@@ -227,6 +237,10 @@ namespace OpenQA.Selenium.DevTools
             return null;
         }
 
+        /// <summary>
+        /// Asynchronously starts the session.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task Start()
         {
             string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.debuggerEndpoint);

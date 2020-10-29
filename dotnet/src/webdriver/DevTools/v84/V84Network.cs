@@ -1,16 +1,42 @@
-﻿using OpenQA.Selenium.DevTools.V84.Fetch;
-using OpenQA.Selenium.DevTools.V84.Network;
+// <copyright file="V84Network.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using OpenQA.Selenium.DevTools.V84.Fetch;
+using OpenQA.Selenium.DevTools.V84.Network;
 
 namespace OpenQA.Selenium.DevTools.V84
 {
+    /// <summary>
+    /// Class providing functionality for manipulating network calls using version 84 of the DevTools Protocol
+    /// </summary>
     public class V84Network : INetwork
     {
         private FetchAdapter fetch;
         private NetworkAdapter network;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="V84Network"/> class.
+        /// </summary>
+        /// <param name="network">The adapter for the Network domain.</param>
+        /// <param name="fetch">The adapter for the Fetch domain.</param>
         public V84Network(NetworkAdapter network, FetchAdapter fetch)
         {
             this.network = network;
@@ -19,19 +45,38 @@ namespace OpenQA.Selenium.DevTools.V84
             fetch.RequestPaused += OnFetchRequestPaused;
         }
 
+        /// <summary>
+        /// Occurs when a network request requires authorization.
+        /// </summary>
         public event EventHandler<AuthRequiredEventArgs> AuthRequired;
+
+        /// <summary>
+        /// Occurs when a network request is intercepted.
+        /// </summary>
         public event EventHandler<RequestPausedEventArgs> RequestPaused;
 
+        /// <summary>
+        /// Asynchronously disables network caching.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task DisableNetworkCaching()
         {
             await network.SetCacheDisabled(new SetCacheDisabledCommandSettings() { CacheDisabled = true });
         }
 
+        /// <summary>
+        /// Asynchronously enables network caching.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task EnableNetworkCaching()
         {
             await network.SetCacheDisabled(new SetCacheDisabledCommandSettings() { CacheDisabled = false });
         }
 
+        /// <summary>
+        /// Asynchronously enables the fetch domain for all URL patterns.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task EnableFetchForAllPatterns()
         {
             await fetch.Enable(new OpenQA.Selenium.DevTools.V84.Fetch.EnableCommandSettings()
@@ -44,11 +89,21 @@ namespace OpenQA.Selenium.DevTools.V84
             });
         }
 
+        /// <summary>
+        /// Asynchronously diables the fetch domain.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task DisableFetch()
         {
             await fetch.Disable();
         }
 
+        /// <summary>
+        /// Asynchronously continues an intercepted network request.
+        /// </summary>
+        /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
+        /// <param name="responseData">The <see cref="HttpResponseData"/> with which to respond to the request</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task ContinueRequest(HttpRequestData requestData, HttpResponseData responseData)
         {
             var commandSettings = new FulfillRequestCommandSettings()
@@ -77,11 +132,23 @@ namespace OpenQA.Selenium.DevTools.V84
             await fetch.FulfillRequest(commandSettings);
         }
 
+        /// <summary>
+        /// Asynchronously contines an intercepted network call without modification.
+        /// </summary>
+        /// <param name="requestData">The <see cref="HttpRequestData"/> of the network call.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task ContinueWithoutModification(HttpRequestData requestData)
         {
             await fetch.ContinueRequest(new ContinueRequestCommandSettings() { RequestId = requestData.RequestId });
         }
 
+        /// <summary>
+        /// Asynchronously continues an intercepted network call using authentication.
+        /// </summary>
+        /// <param name="requestData">The <see cref="HttpRequestData"/> of the network request.</param>
+        /// <param name="userName">The user name with which to authenticate.</param>
+        /// <param name="password">The password with which to authenticate.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task ContinueWithAuth(HttpRequestData requestData, string userName, string password)
         {
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
@@ -95,6 +162,11 @@ namespace OpenQA.Selenium.DevTools.V84
             });
         }
 
+        /// <summary>
+        /// Asynchronously cancels authorization of an intercepted network request.
+        /// </summary>
+        /// <param name="requestData">The <see cref="HttpRequestData"/> of the network request.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task CancelAuth(HttpRequestData requestData)
         {
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
