@@ -14,6 +14,17 @@ type Session {
   id: String!
   capabilities: String!
   startTime: String!
+  uri: Uri!
+  nodeId: String!
+  nodeUri: Uri!
+  sessionDurationMillis: String!
+  slot: Slot
+}
+
+type Slot {
+  id: String!
+  stereotype: String!
+  lastStarted: String!
 }
 
 type Node {
@@ -27,6 +38,7 @@ type Node {
 
 type GridQuery {
   grid: Grid!
+  session(id: String!) : Session!
 }
 
 type Grid {

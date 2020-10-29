@@ -29,10 +29,8 @@ import org.openqa.selenium.internal.Require;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 public class Grid {
@@ -55,10 +53,11 @@ public class Grid {
 
     for (NodeStatus status : distributorStatus.get().getNodes()) {
       Map<Capabilities, Integer> capabilities = new HashMap<>();
-      Set<org.openqa.selenium.grid.data.Session> sessions = new HashSet<>();
+      Map<org.openqa.selenium.grid.data.Session, Slot> sessions = new HashMap<>();
 
       for (Slot slot : status.getSlots()) {
-        slot.getSession().ifPresent(sessions::add);
+        slot.getSession().ifPresent(session -> sessions.put(session, slot));
+
         int count = capabilities.getOrDefault(slot.getStereotype(), 0);
         count++;
         capabilities.put(slot.getStereotype(), count);
