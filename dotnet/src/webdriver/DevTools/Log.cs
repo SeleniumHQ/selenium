@@ -21,25 +21,39 @@ using System.Threading.Tasks;
 namespace OpenQA.Selenium.DevTools
 {
     /// <summary>
-    /// Interface representing the browser's log as referenced by the DevTools Protocol.
+    /// Class representing the browser's log as referenced by the DevTools Protocol.
     /// </summary>
-    public interface ILog
+    public abstract class Log
     {
         /// <summary>
         /// Occurs when an entry is added to the browser's log.
         /// </summary>
-        event EventHandler<EntryAddedEventArgs> EntryAdded;
+        public event EventHandler<EntryAddedEventArgs> EntryAdded;
 
         /// <summary>
-        /// Asynchrounously enables manipulation of the browser's log.
+        /// Asynchronously enables manipulation of the browser's log.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        Task Enable();
+        public abstract Task Enable();
 
         /// <summary>
-        /// Asynchrounously clears the browser's log.
+        /// Asynchronously disables manipulation of the browser's log.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        Task Clear();
+        public abstract Task Disable();
+
+        /// <summary>
+        /// Asynchronously clears the browser's log.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public abstract Task Clear();
+
+        protected virtual void OnEntryAdded(EntryAddedEventArgs e)
+        {
+            if (this.EntryAdded != null)
+            {
+                this.EntryAdded(this, e);
+            }
+        }
     }
 }

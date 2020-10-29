@@ -46,21 +46,21 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public INetwork Network => new V85Network(domains.Network, domains.Fetch);
+        public DevTools.Network Network => new V85Network(domains.Network, domains.Fetch);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public IJavaScript JavaScript => new V85JavaScript(domains.Runtime, domains.Page);
+        public JavaScript JavaScript => new V85JavaScript(domains.Runtime, domains.Page);
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public ITarget Target => new V85Target(domains.Target);
+        public DevTools.Target Target => new V85Target(domains.Target);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public ILog Log => new V85Log(domains.Log);
+        public DevTools.Log Log => new V85Log(domains.Log);
     }
 }

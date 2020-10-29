@@ -34,21 +34,21 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        INetwork Network { get; }
+        Network Network { get; }
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        IJavaScript JavaScript { get; }
+        JavaScript JavaScript { get; }
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        ITarget Target { get; }
+        Target Target { get; }
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        ILog Log { get; }
+        Log Log { get; }
     }
 }

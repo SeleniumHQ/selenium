@@ -17,14 +17,15 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.DevTools
 {
     /// <summary>
-    /// Interface representing a target for DevTools Protocol commands
+    /// Class representing a target for DevTools Protocol commands
     /// </summary>
-    public interface ITarget
+    public abstract class Target
     {
         /// <summary>
         /// Asynchronously gets the targets available for this session.
@@ -34,7 +35,7 @@ namespace OpenQA.Selenium.DevTools
         /// contains the list of <see cref="TargetInfo"/> objects describing the
         /// targets available for this session.
         /// </returns>
-        Task<List<TargetInfo>> GetTargets();
+        public abstract Task<ReadOnlyCollection<TargetInfo>> GetTargets();
 
         /// <summary>
         /// Asynchronously attaches to a target.
@@ -44,12 +45,22 @@ namespace OpenQA.Selenium.DevTools
         /// A task representing the asynchronous attach operation. The task result contains the
         /// session ID established for commands to the target attached to.
         /// </returns>
-        Task<string> AttachToTarget(string TargetId);
+        public abstract Task<string> AttachToTarget(string targetId);
+
+        /// <summary>
+        /// Asynchronously detaches from a target.
+        /// </summary>
+        /// <param name="sessionId">The ID of the session of the target from which to detach.</param>
+        /// <param name="targetId">The ID of the target from which to detach.</param>
+        /// <returns>
+        /// A task representing the asynchronous detach operation.
+        /// </returns>
+        public abstract Task DetachFromTarget(string sessionId = null, string targetId = null);
 
         /// <summary>
         /// Asynchronously sets the DevTools Protocol connection to automatically attach to new targets.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        Task SetAutoAttach();
+        public abstract Task SetAutoAttach();
     }
 }

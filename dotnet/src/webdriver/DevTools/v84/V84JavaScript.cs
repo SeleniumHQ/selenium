@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.DevTools.V84
     /// <summary>
     /// Class containing the JavaScript implementation for version 84 of the DevTools Protocol.
     /// </summary>
-    public class V84JavaScript : IJavaScript
+    public class V84JavaScript : JavaScript
     {
         private RuntimeAdapter runtime;
         private PageAdapter page;
@@ -46,25 +46,10 @@ namespace OpenQA.Selenium.DevTools.V84
         }
 
         /// <summary>
-        /// Occurs when a JavaScript script binding is called.
-        /// </summary>
-        public event EventHandler<BindingCalledEventArgs> BindingCalled;
-
-        /// <summary>
-        /// Occurs when the browser's JavaScript console API is called.
-        /// </summary>
-        public event EventHandler<ConsoleApiCalledEventArgs> ConsoleApiCalled;
-
-        /// <summary>
-        /// Occurs when a JavaScript exception is thrown.
-        /// </summary>
-        public event EventHandler<ExceptionThrownEventArgs> ExceptionThrown;
-
-        /// <summary>
         /// Asynchronously enables the Runtime domain in the DevTools Protocol.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task EnableRuntime()
+        public override async Task EnableRuntime()
         {
             await runtime.Enable();
         }
@@ -73,7 +58,7 @@ namespace OpenQA.Selenium.DevTools.V84
         /// Asynchronously disables the Runtime domain in the DevTools Protocol.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task DisableRuntime()
+        public override async Task DisableRuntime()
         {
             await runtime.Disable();
         }
@@ -82,7 +67,7 @@ namespace OpenQA.Selenium.DevTools.V84
         /// Asynchronously enables the Page domain in the DevTools Protocol.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task EnablePage()
+        public override async Task EnablePage()
         {
             await page.Enable();
         }
@@ -91,7 +76,7 @@ namespace OpenQA.Selenium.DevTools.V84
         /// Asynchronously disables the Page domain in the DevTools Protocol.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task DisablePage()
+        public override async Task DisablePage()
         {
             await page.Disable();
         }
@@ -101,7 +86,7 @@ namespace OpenQA.Selenium.DevTools.V84
         /// </summary>
         /// <param name="name">The name to which to bind to.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task AddBinding(string name)
+        public override async Task AddBinding(string name)
         {
             await runtime.AddBinding(new AddBindingCommandSettings() { Name = name });
         }
@@ -111,7 +96,7 @@ namespace OpenQA.Selenium.DevTools.V84
         /// </summary>
         /// <param name="name">The name to which to remove the bind from.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task RemoveBinding(string name)
+        public override async Task RemoveBinding(string name)
         {
             await runtime.RemoveBinding(new RemoveBindingCommandSettings() { Name = name });
         }
@@ -121,7 +106,7 @@ namespace OpenQA.Selenium.DevTools.V84
         /// </summary>
         /// <param name="script">The script to add to be evaluated when a new document is opened.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the internal ID of the script.</returns>
-        public async Task<string> AddScriptToEvaluateOnNewDocument(string script)
+        public override async Task<string> AddScriptToEvaluateOnNewDocument(string script)
         {
             var result = await page.AddScriptToEvaluateOnNewDocument(new AddScriptToEvaluateOnNewDocumentCommandSettings() { Source = script });
             return result.Identifier;
@@ -132,63 +117,56 @@ namespace OpenQA.Selenium.DevTools.V84
         /// </summary>
         /// <param name="scriptId">The ID of the script to be removed.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task RemoveScriptToEvaluateOnNewDocument(string scriptId)
+        public override async Task RemoveScriptToEvaluateOnNewDocument(string scriptId)
         {
             await page.RemoveScriptToEvaluateOnNewDocument(new RemoveScriptToEvaluateOnNewDocumentCommandSettings() { Identifier = scriptId });
         }
 
         private void OnRuntimeBindingCalled(object sender, Runtime.BindingCalledEventArgs e)
         {
-            if (this.BindingCalled != null)
+            BindingCalledEventArgs wrapped = new BindingCalledEventArgs()
             {
-                BindingCalledEventArgs wrapped = new BindingCalledEventArgs()
-                {
-                    ExecutionContextId = e.ExecutionContextId,
-                    Name = e.Name,
-                    Payload = e.Payload
-                };
-                this.BindingCalled(this, wrapped);
-            }
+                ExecutionContextId = e.ExecutionContextId,
+                Name = e.Name,
+                Payload = e.Payload
+            };
+
+            this.OnBindingCalled(wrapped);
         }
 
         private void OnRuntimeExceptionThrown(object sender, Runtime.ExceptionThrownEventArgs e)
         {
-            if (this.ExceptionThrown != null)
+            // TODO: Collect stack trace elements
+            var wrapped = new ExceptionThrownEventArgs()
             {
-                var wrapped = new ExceptionThrownEventArgs()
-                {
-                    Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(e.Timestamp),
-                    Message = e.ExceptionDetails.Text
-                };
+                Timestamp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(e.Timestamp),
+                Message = e.ExceptionDetails.Text
+            };
 
-                // TODO: Collect stack trace elements
-                this.ExceptionThrown(this, wrapped);
-            }
+            this.OnExceptionThrown(wrapped);
         }
 
         private void OnRuntimeConsoleApiCalled(object sender, ConsoleAPICalledEventArgs e)
         {
-            if (this.ConsoleApiCalled != null)
+            List<ConsoleApiArgument> args = new List<ConsoleApiArgument>();
+            foreach (var arg in e.Args)
             {
-                var wrapped = new ConsoleApiCalledEventArgs()
+                string argValue = null;
+                if (arg.Value != null)
                 {
-                    Timestamp = new DateTime(1979, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(e.Timestamp),
-                    Type = e.Type,
-                    Arguments = new List<ConsoleApiArgument>()
-                };
-
-                foreach (var arg in e.Args)
-                {
-                    string argValue = null;
-                    if (arg.Value != null)
-                    {
-                        argValue = arg.Value.ToString();
-                    }
-                    wrapped.Arguments.Add(new ConsoleApiArgument() { Type = arg.Type.ToString(), Value = argValue });
+                    argValue = arg.Value.ToString();
                 }
-
-                this.ConsoleApiCalled(this, wrapped);
+                args.Add(new ConsoleApiArgument() { Type = arg.Type.ToString(), Value = argValue });
             }
+
+            var wrapped = new ConsoleApiCalledEventArgs()
+            {
+                Timestamp = new DateTime(1979, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(e.Timestamp),
+                Type = e.Type,
+                Arguments = args.AsReadOnly()
+            };
+
+            this.OnConsoleApiCalled(wrapped);
         }
     }
 }

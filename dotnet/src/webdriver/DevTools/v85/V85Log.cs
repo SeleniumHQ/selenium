@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.DevTools.V85
     /// <summary>
     /// Class containing the browser's log as referenced by version 85 of the DevTools Protocol.
     /// </summary>
-    public class V85Log : ILog
+    public class V85Log : DevTools.Log
     {
         LogAdapter adapter;
 
@@ -42,38 +42,39 @@ namespace OpenQA.Selenium.DevTools.V85
         }
 
         /// <summary>
-        /// Occurs when an entry is added to the browser's log.
-        /// </summary>
-        public event EventHandler<EntryAddedEventArgs> EntryAdded;
-
-        /// <summary>
-        /// Asynchrounously enables manipulation of the browser's log.
+        /// Asynchronously enables manipulation of the browser's log.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task Enable()
+        public override async Task Enable()
         {
             await adapter.Enable();
         }
 
         /// <summary>
-        /// Asynchrounously clears the browser's log.
+        /// Asynchronously disables manipulation of the browser's log.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task Clear()
+        public override async Task Disable()
+        {
+            await adapter.Disable();
+        }
+
+        /// <summary>
+        /// Asynchronously clears the browser's log.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public override async Task Clear()
         {
             await adapter.Clear();
         }
 
         private void OnAdapterEntryAdded(object sender, OpenQA.Selenium.DevTools.V85.Log.EntryAddedEventArgs e)
         {
-            if (this.EntryAdded != null)
-            {
-                EntryAddedEventArgs propagated = new EntryAddedEventArgs();
-                propagated.Entry = new LogEntry();
-                propagated.Entry.Kind = e.Entry.Source.ToString();
-                propagated.Entry.Message = e.Entry.Text;
-                this.EntryAdded(this, propagated);
-            }
+            EntryAddedEventArgs propagated = new EntryAddedEventArgs();
+            propagated.Entry = new LogEntry();
+            propagated.Entry.Kind = e.Entry.Source.ToString();
+            propagated.Entry.Message = e.Entry.Text;
+            this.OnEntryAdded(propagated);
         }
     }
 }

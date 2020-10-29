@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.DevTools.V85
     /// <summary>
     /// Class providing functionality for manipulating network calls using version 85 of the DevTools Protocol
     /// </summary>
-    public class V85Network : INetwork
+    public class V85Network : DevTools.Network
     {
         private FetchAdapter fetch;
         private NetworkAdapter network;
@@ -46,20 +46,10 @@ namespace OpenQA.Selenium.DevTools.V85
         }
 
         /// <summary>
-        /// Occurs when a network request requires authorization.
-        /// </summary>
-        public event EventHandler<AuthRequiredEventArgs> AuthRequired;
-
-        /// <summary>
-        /// Occurs when a network request is intercepted.
-        /// </summary>
-        public event EventHandler<RequestPausedEventArgs> RequestPaused;
-
-        /// <summary>
         /// Asynchronously disables network caching.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task DisableNetworkCaching()
+        public override async Task DisableNetworkCaching()
         {
             await network.SetCacheDisabled(new SetCacheDisabledCommandSettings() { CacheDisabled = true });
         }
@@ -68,7 +58,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// Asynchronously enables network caching.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task EnableNetworkCaching()
+        public override async Task EnableNetworkCaching()
         {
             await network.SetCacheDisabled(new SetCacheDisabledCommandSettings() { CacheDisabled = false });
         }
@@ -77,7 +67,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// Asynchronously enables the fetch domain for all URL patterns.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task EnableFetchForAllPatterns()
+        public override async Task EnableFetchForAllPatterns()
         {
             await fetch.Enable(new OpenQA.Selenium.DevTools.V85.Fetch.EnableCommandSettings()
             {
@@ -93,7 +83,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// Asynchronously diables the fetch domain.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task DisableFetch()
+        public override async Task DisableFetch()
         {
             await fetch.Disable();
         }
@@ -104,7 +94,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
         /// <param name="responseData">The <see cref="HttpResponseData"/> with which to respond to the request</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task ContinueRequest(HttpRequestData requestData, HttpResponseData responseData)
+        public override async Task ContinueRequest(HttpRequestData requestData, HttpResponseData responseData)
         {
             var commandSettings = new FulfillRequestCommandSettings()
             {
@@ -137,7 +127,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the network call.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task ContinueWithoutModification(HttpRequestData requestData)
+        public override async Task ContinueWithoutModification(HttpRequestData requestData)
         {
             await fetch.ContinueRequest(new ContinueRequestCommandSettings() { RequestId = requestData.RequestId });
         }
@@ -149,7 +139,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <param name="userName">The user name with which to authenticate.</param>
         /// <param name="password">The password with which to authenticate.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task ContinueWithAuth(HttpRequestData requestData, string userName, string password)
+        public override async Task ContinueWithAuth(HttpRequestData requestData, string userName, string password)
         {
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
@@ -167,7 +157,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the network request.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task CancelAuth(HttpRequestData requestData)
+        public override async Task CancelAuth(HttpRequestData requestData)
         {
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
@@ -178,37 +168,33 @@ namespace OpenQA.Selenium.DevTools.V85
             });
         }
 
-        private void OnFetchAuthRequired(object sender, OpenQA.Selenium.DevTools.V85.Fetch.AuthRequiredEventArgs e)
+        private void OnFetchAuthRequired(object sender, Fetch.AuthRequiredEventArgs e)
         {
-            if (this.AuthRequired != null)
+            AuthRequiredEventArgs wrapped = new AuthRequiredEventArgs()
             {
-                AuthRequiredEventArgs wrapped = new AuthRequiredEventArgs()
-                {
-                    RequestId = e.RequestId,
-                    Uri = e.AuthChallenge.Origin
-                };
-                this.AuthRequired(this, wrapped);
-            }
+                RequestId = e.RequestId,
+                Uri = e.AuthChallenge.Origin
+            };
+
+            this.OnAuthRequired(wrapped);
         }
 
-        private void OnFetchRequestPaused(object sender, OpenQA.Selenium.DevTools.V85.Fetch.RequestPausedEventArgs e)
+        private void OnFetchRequestPaused(object sender, Fetch.RequestPausedEventArgs e)
         {
-            if (this.RequestPaused != null)
+            RequestPausedEventArgs wrapped = new RequestPausedEventArgs();
+            if (e.ResponseErrorReason == null && e.ResponseStatusCode == null)
             {
-                RequestPausedEventArgs wrapped = new RequestPausedEventArgs();
-                if (e.ResponseErrorReason == null && e.ResponseStatusCode == null)
+                wrapped.RequestData = new HttpRequestData()
                 {
-                    wrapped.RequestData = new HttpRequestData()
-                    {
-                        RequestId = e.RequestId,
-                        Method = e.Request.Method,
-                        Url = e.Request.Url,
-                        PostData = e.Request.PostData,
-                        Headers = new Dictionary<string, string>(e.Request.Headers)
-                    };
-                }
-                this.RequestPaused(this, wrapped);
+                    RequestId = e.RequestId,
+                    Method = e.Request.Method,
+                    Url = e.Request.Url,
+                    PostData = e.Request.PostData,
+                    Headers = new Dictionary<string, string>(e.Request.Headers)
+                };
             }
+
+            this.OnRequestPaused(wrapped);
         }
     }
 }

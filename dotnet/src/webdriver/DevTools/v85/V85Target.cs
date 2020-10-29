@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools.V85.Target;
@@ -27,7 +28,7 @@ namespace OpenQA.Selenium.DevTools.V85
     /// <summary>
     /// Class providing functionality for manipulating targets for version 85 of the DevTools Protocol
     /// </summary>
-    public class V85Target : ITarget
+    public class V85Target : DevTools.Target
     {
         private TargetAdapter adapter;
 
@@ -48,7 +49,7 @@ namespace OpenQA.Selenium.DevTools.V85
         /// contains the list of <see cref="TargetInfo"/> objects describing the
         /// targets available for this session.
         /// </returns>
-        public async Task<List<TargetInfo>> GetTargets()
+        public override async Task<ReadOnlyCollection<TargetInfo>> GetTargets()
         {
             List<TargetInfo> targets = new List<TargetInfo>();
             var response = await adapter.GetTargets();
@@ -68,7 +69,7 @@ namespace OpenQA.Selenium.DevTools.V85
                 targets.Add(mapped);
             }
 
-            return targets;
+            return targets.AsReadOnly();
         }
 
         /// <summary>
@@ -79,17 +80,33 @@ namespace OpenQA.Selenium.DevTools.V85
         /// A task representing the asynchronous attach operation. The task result contains the
         /// session ID established for commands to the target attached to.
         /// </returns>
-        public async Task<string> AttachToTarget(string targetId)
+        public override async Task<string> AttachToTarget(string targetId)
         {
             var result = await adapter.AttachToTarget(new AttachToTargetCommandSettings() { TargetId = targetId, Flatten = true });
             return result.SessionId;
         }
 
         /// <summary>
+        /// Asynchronously detaches from a target.
+        /// </summary>
+        /// <param name="sessionId">The ID of the session of the target from which to detach.</param>
+        /// <param name="targetId">The ID of the target from which to detach.</param>
+        /// <returns>
+        /// A task representing the asynchronous detach operation.
+        public override async Task DetachFromTarget(string sessionId = null, string targetId = null)
+        {
+            await adapter.DetachFromTarget(new DetachFromTargetCommandSettings()
+            {
+                SessionId = sessionId,
+                TargetId = targetId
+            });
+        }
+
+        /// <summary>
         /// Asynchronously sets the DevTools Protocol connection to automatically attach to new targets.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task SetAutoAttach()
+        public override async Task SetAutoAttach()
         {
             await adapter.SetAutoAttach(new SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false, Flatten = true });
         }

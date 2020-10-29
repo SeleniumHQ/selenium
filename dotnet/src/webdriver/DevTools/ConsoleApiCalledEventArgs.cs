@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace OpenQA.Selenium.DevTools
@@ -40,6 +41,6 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Gets the arguments of the call to the browser's console API.
         /// </summary>
-        public List<ConsoleApiArgument> Arguments { get; internal set; }
+        public ReadOnlyCollection<ConsoleApiArgument> Arguments { get; internal set; }
     }
 }
