@@ -44,7 +44,7 @@ namespace OpenQA.Selenium.DevTools
         private ConcurrentDictionary<long, DevToolsCommandData> pendingCommands = new ConcurrentDictionary<long, DevToolsCommandData>();
         private long currentCommandId = 0;
 
-        private IDomains domains;
+        private DevToolsDomains domains;
 
         private Task receiveTask;
 
@@ -94,7 +94,7 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Gets the version-independent domain implementation for this Developer Tools connection
         /// </summary>
-        public IDomains Domains => this.domains;
+        public DevToolsDomains Domains => this.domains;
 
         /// <summary>
         /// Gets the version-specific implementation of domains for this DevTools session.
@@ -254,7 +254,7 @@ namespace OpenQA.Selenium.DevTools
             var versionInfo = JsonConvert.DeserializeObject<DevToolsVersionInfo>(rawVersionInfo);
             websocketAddress = versionInfo.WebSocketDebuggerUrl;
 
-            this.domains = DevToolsDomainFactory.InitializeDomains(versionInfo, this);
+            this.domains = DevToolsDomains.InitializeDomains(versionInfo, this);
 
             string targetId = null;
             var targets = await this.domains.Target.GetTargets();

@@ -1,7 +1,7 @@
 {
-  "DriverServiceLocation": "",
+  "DriverServiceLocation": "C:\\Projects\\WebDriverServers",
   "ActiveDriverConfig": "Chrome",
-  "ActiveWebsiteConfig": "Default",
+  "ActiveWebsiteConfig": "HostsFileRedirect",
   "TestWebServerConfig": {
     "CaptureConsoleOutput": false,
     "HideCommandPromptWindow": true,

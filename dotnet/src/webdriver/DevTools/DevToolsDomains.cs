@@ -1,4 +1,4 @@
-// <copyright file="DevToolsomainFactory.cs" company="WebDriver Committers">
+// <copyright file="IDomains.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -14,7 +14,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// </copyright>
 
 using System;
 using System.Collections.Generic;
@@ -24,9 +23,9 @@ using System.Text;
 namespace OpenQA.Selenium.DevTools
 {
     /// <summary>
-    /// Factory class used to create the set of DevTools Protocol domains specific to the specified version of the browser.
+    /// Interface providing version-independent implementations of operations available using the DevTools Protocol.
     /// </summary>
-    public static class DevToolsDomainFactory
+    public abstract class DevToolsDomains
     {
         // By default, we will look for a supported version within this
         // number of versions, as that will most likely still work.
@@ -44,16 +43,40 @@ namespace OpenQA.Selenium.DevTools
         };
 
         /// <summary>
+        /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
+        /// </summary>
+        public abstract DevToolsSessionDomains VersionSpecificDomains { get; }
+
+        /// <summary>
+        /// Gets the object used for manipulating network information in the browser.
+        /// </summary>
+        public abstract Network Network { get; }
+
+        /// <summary>
+        /// Gets the object used for manipulating the browser's JavaScript execution.
+        /// </summary>
+        public abstract JavaScript JavaScript { get; }
+
+        /// <summary>
+        /// Gets the object used for manipulating DevTools Protocol targets.
+        /// </summary>
+        public abstract Target Target { get; }
+
+        /// <summary>
+        /// Gets the object used for manipulating the browser's logs.
+        /// </summary>
+        public abstract Log Log { get; }
+
+        /// <summary>
         /// Initializes the supplied DevTools session's domains for the specified browser version.
         /// </summary>
         /// <param name="versionInfo">The <see cref="DevToolsVersionInfo"/> object containing the browser version information.</param>
         /// <param name="session">The <see cref="DevToolsSession"/> for which to initialiize the domains.</param>
-        /// <returns>The <see cref="IDomains"/> object containing the version-specific domains.</returns>
-        public static IDomains InitializeDomains(DevToolsVersionInfo versionInfo, DevToolsSession session)
+        /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
+        public static DevToolsDomains InitializeDomains(DevToolsVersionInfo versionInfo, DevToolsSession session)
         {
             return InitializeDomains(versionInfo, session, DefaultVersionRange);
         }
-
 
         /// <summary>
         /// Initializes the supplied DevTools session's domains for the specified browser version within the specified number of versions.
@@ -61,15 +84,15 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="versionInfo">The <see cref="DevToolsVersionInfo"/> object containing the browser version information.</param>
         /// <param name="session">The <see cref="DevToolsSession"/> for which to initialiize the domains.</param>
         /// <param name="versionRange">The range of versions within which to match the provided version number. Defaults to 5 versions.</param>
-        /// <returns>The <see cref="IDomains"/> object containing the version-specific domains.</returns>
-        public static IDomains InitializeDomains(DevToolsVersionInfo versionInfo, DevToolsSession session, int versionRange)
+        /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
+        public static DevToolsDomains InitializeDomains(DevToolsVersionInfo versionInfo, DevToolsSession session, int versionRange)
         {
             if (versionRange < 0)
             {
                 throw new ArgumentException("Version range must be positive", "versionRange");
             }
 
-            IDomains domains = null;
+            DevToolsDomains domains = null;
             int browserMajorVersion = 0;
             bool versionParsed = int.TryParse(versionInfo.BrowserMajorVersion, out browserMajorVersion);
             if (versionParsed)
@@ -78,7 +101,7 @@ namespace OpenQA.Selenium.DevTools
                 ConstructorInfo constructor = domainType.GetConstructor(new Type[] { typeof(DevToolsSession) });
                 if (constructor != null)
                 {
-                    domains = constructor.Invoke(new object[] { session }) as IDomains;
+                    domains = constructor.Invoke(new object[] { session }) as DevToolsDomains;
                 }
             }
 
@@ -90,7 +113,7 @@ namespace OpenQA.Selenium.DevTools
             // Use reflection to look for a DevToolsVersion static field on every known domain implementation type
             foreach (Type candidateType in SupportedDevToolsVersions)
             {
-                FieldInfo info = candidateType.GetField("DevToolsVersion", BindingFlags.Static | BindingFlags.Public);
+                PropertyInfo info = candidateType.GetProperty("DevToolsVersion", BindingFlags.Static | BindingFlags.Public);
                 if (info != null)
                 {
                     object propertyValue = info.GetValue(null);

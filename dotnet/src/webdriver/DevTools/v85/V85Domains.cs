@@ -24,7 +24,7 @@ namespace OpenQA.Selenium.DevTools.V85
     /// <summary>
     /// Class containing the domain implementation for version 85 of the DevTools Protocol.
     /// </summary>
-    public class V85Domains : IDomains
+    public class V85Domains : DevToolsDomains
     {
         private DevToolsSessionDomains domains;
 
@@ -41,26 +41,26 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <summary>
         /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
         /// </summary>
-        public DevTools.DevToolsSessionDomains VersionSpecificDomains => this.domains;
+        public override DevTools.DevToolsSessionDomains VersionSpecificDomains => this.domains;
 
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public DevTools.Network Network => new V85Network(domains.Network, domains.Fetch);
+        public override DevTools.Network Network => new V85Network(domains.Network, domains.Fetch);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public JavaScript JavaScript => new V85JavaScript(domains.Runtime, domains.Page);
+        public override JavaScript JavaScript => new V85JavaScript(domains.Runtime, domains.Page);
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public DevTools.Target Target => new V85Target(domains.Target);
+        public override DevTools.Target Target => new V85Target(domains.Target);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public DevTools.Log Log => new V85Log(domains.Log);
+        public override DevTools.Log Log => new V85Log(domains.Log);
     }
 }
