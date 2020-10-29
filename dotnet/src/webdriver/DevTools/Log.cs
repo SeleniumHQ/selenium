@@ -48,6 +48,10 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task Clear();
 
+        /// <summary>
+        /// Raises the EntryAdded event.
+        /// </summary>
+        /// <param name="e">An <see cref="EntryAddedEventArgs"/> that contains the event data.</param>
         protected virtual void OnEntryAdded(EntryAddedEventArgs e)
         {
             if (this.EntryAdded != null)

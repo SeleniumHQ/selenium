@@ -92,6 +92,10 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task RemoveScriptToEvaluateOnNewDocument(string scriptId);
 
+        /// <summary>
+        /// Raises the BindingCalled event.
+        /// </summary>
+        /// <param name="e">An <see cref="BindingCalledEventArgs"/> that contains the event data.</param>
         protected virtual void OnBindingCalled(BindingCalledEventArgs e)
         {
             if (this.BindingCalled != null)
@@ -100,6 +104,10 @@ namespace OpenQA.Selenium.DevTools
             }
         }
 
+        /// <summary>
+        /// Raises the ConsoleApiCalled event.
+        /// </summary>
+        /// <param name="e">An <see cref="ConsoleApiCalledEventArgs"/> that contains the event data.</param>
         protected virtual void OnConsoleApiCalled(ConsoleApiCalledEventArgs e)
         {
             if (this.ConsoleApiCalled != null)
@@ -108,6 +116,10 @@ namespace OpenQA.Selenium.DevTools
             }
         }
 
+        /// <summary>
+        /// Raises the ExceptionThrown event.
+        /// </summary>
+        /// <param name="e">An <see cref="ExceptionThrownEventArgs"/> that contains the event data.</param>
         protected virtual void OnExceptionThrown(ExceptionThrownEventArgs e)
         {
             if (this.ExceptionThrown != null)

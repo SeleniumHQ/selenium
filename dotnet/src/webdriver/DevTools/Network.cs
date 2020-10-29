@@ -91,6 +91,10 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task CancelAuth(HttpRequestData requestData);
 
+        /// <summary>
+        /// Raises the AuthRequired event.
+        /// </summary>
+        /// <param name="e">An <see cref="AuthRequiredEventArgs"/> that contains the event data.</param>
         protected virtual void OnAuthRequired(AuthRequiredEventArgs e)
         {
             if (this.AuthRequired != null)
@@ -99,6 +103,10 @@ namespace OpenQA.Selenium.DevTools
             }
         }
 
+        /// <summary>
+        /// Raises the RequestPaused event.
+        /// </summary>
+        /// <param name="e">An <see cref="RequestPausedEventArgs"/> that contains the event data.</param>
         protected virtual void OnRequestPaused(RequestPausedEventArgs e)
         {
             if (this.RequestPaused != null)
