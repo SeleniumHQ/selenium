@@ -95,7 +95,7 @@ public class DockerOptions {
   }
 
   private boolean isEnabled(HttpClient.Factory clientFactory) {
-    if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
+    if (config.getAll(DOCKER_SECTION, "configs").isEmpty()) {
       return false;
     }
 

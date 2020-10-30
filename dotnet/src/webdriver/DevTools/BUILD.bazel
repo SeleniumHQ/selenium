@@ -1,0 +1,18 @@
+load("//dotnet:generate-devtools.bzl", "generate_devtools")
+
+SUPPORTED_DEVTOOLS_VERSIONS = [
+    "v84",
+    "v85",
+    "v86",
+]
+
+[generate_devtools(
+    name = "generate-{}".format(devtools_version),
+    src = "{}/generator_settings.json".format(devtools_version),
+    out = "{}".format(devtools_version),
+    browser_protocol = "//common/devtools/chromium/{}:browser_protocol".format(devtools_version),
+    js_protocol = "//common/devtools/chromium/{}:js_protocol".format(devtools_version),
+    template = "//third_party/dotnet/devtools/src/generator/Templates:command.hbs",
+    generator = "//third_party/dotnet/devtools/src/generator:generator",
+    visibility = ["//visibility:public"],
+) for devtools_version in SUPPORTED_DEVTOOLS_VERSIONS]

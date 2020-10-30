@@ -24,7 +24,7 @@ public interface DockerProtocol {
 
   Image getImage(String imageName) throws DockerException;
 
-  Container create(ContainerInfo info);
+  Container create(ContainerConfig info);
   void startContainer(ContainerId id) throws DockerException;
   void stopContainer(ContainerId id, Duration timeout) throws DockerException;
   boolean exists(ContainerId id);

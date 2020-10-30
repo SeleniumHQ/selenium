@@ -92,6 +92,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\devtools\generated\v84\**\*.cs" LinkBase="DevTools\generated\v84" />
+    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\devtools\generated\v85\**\*.cs" LinkBase="DevTools\generated\v85" />
+    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\devtools\generated\v86\**\*.cs" LinkBase="DevTools\generated\v86" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 

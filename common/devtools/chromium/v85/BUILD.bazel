@@ -3,6 +3,7 @@ package(
         "//java/client/src/org/openqa/selenium/devtools:__subpackages__",
         "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
+        "//dotnet/src/webdriver:__subpackages__",
     ],
 )
 

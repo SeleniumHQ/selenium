@@ -62,7 +62,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.docker.ContainerInfo.image;
+import static org.openqa.selenium.docker.ContainerConfig.image;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -169,6 +169,7 @@ public class DockerSessionFactory implements SessionFactory {
 
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
+      // Start video container here, with env var containing the IP of the browser container and session is as the video file name
 
       Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
                            result.getDialect() :

@@ -56,7 +56,7 @@ if not exist  "%1..\..\..\bazel-bin\javascript\selenium-atoms\isSomethingSelecte
   popd
 )
 
-if not exist  "%1..\..\..\bazel-bin\javascript\selenium-atoms\isVisble.js" (
+if not exist  "%1..\..\..\bazel-bin\javascript\selenium-atoms\isVisible.js" (
   echo Building isVisible atom
   pushd "%1..\..\.."
   bazel build //javascript/selenium-atoms:isVisible

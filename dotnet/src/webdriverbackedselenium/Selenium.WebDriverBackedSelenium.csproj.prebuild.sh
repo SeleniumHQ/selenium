@@ -47,7 +47,7 @@ then
   bazel build //javascript/selenium-atoms:isSomethingSelected
 fi
 
-if [[ ! -f "$1../../../bazel-bin/javascript/selenium-atoms/isVisble.js" ]]
+if [[ ! -f "$1../../../bazel-bin/javascript/selenium-atoms/isVisible.js" ]]
 then
   echo "Building isVisble atom"
   bazel build //javascript/selenium-atoms:isVisble

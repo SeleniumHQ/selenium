@@ -1,0 +1,12 @@
+{
+  "include": [
+    {
+      "templatePath": "DevToolsSessionDomains.hbs",
+      "outputPath": "DevToolsSessionDomains.cs"
+    }
+  ],
+  "rootNamespace": "OpenQA.Selenium.DevTools.V85",
+  "runtimeVersion": "",
+  "includeExperimentalDomains": true,
+  "templatesPath": "GeneratorCommandLine/Templates"
+}

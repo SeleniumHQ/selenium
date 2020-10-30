@@ -18,12 +18,13 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SimpleStartStopAndGetProfilerTest()
         {
-            await session.Profiler.Enable();
-            await session.Profiler.Start();
-            var response = await session.Profiler.Stop();
-            Profiler.Profile profiler = response.Profile;
+            var domains = session.GetVersionSpecificDomains<V86.DevToolsSessionDomains>();
+            await domains.Profiler.Enable();
+            await domains.Profiler.Start();
+            var response = await domains.Profiler.Stop();
+            var profiler = response.Profile;
             ValidateProfile(profiler);
-            await session.Profiler.Disable();
+            await domains.Profiler.Disable();
         }
 
         [Test]
@@ -33,18 +34,19 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleGetBestEffortProfilerTest()
         {
-            await session.Profiler.Enable();
+            var domains = session.GetVersionSpecificDomains<V86.DevToolsSessionDomains>();
+            await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
-            await session.Profiler.SetSamplingInterval(new Profiler.SetSamplingIntervalCommandSettings()
+            await domains.Profiler.SetSamplingInterval(new V86.Profiler.SetSamplingIntervalCommandSettings()
             {
                 Interval = 30
             });
 
-            var response = await session.Profiler.GetBestEffortCoverage();
+            var response = await domains.Profiler.GetBestEffortCoverage();
             var bestEffort = response.Result;
             Assert.That(bestEffort, Is.Not.Null);
             Assert.That(bestEffort.Length, Is.GreaterThan(0));
-            await session.Profiler.Disable();
+            await domains.Profiler.Disable();
         }
 
         [Test]
@@ -54,21 +56,22 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleSetStartPreciseCoverageTest()
         {
-            await session.Profiler.Enable();
+            var domains = session.GetVersionSpecificDomains<V86.DevToolsSessionDomains>();
+            await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
-            await session.Profiler.StartPreciseCoverage(new Profiler.StartPreciseCoverageCommandSettings()
+            await domains.Profiler.StartPreciseCoverage(new V86.Profiler.StartPreciseCoverageCommandSettings()
             {
                 CallCount = true,
                 Detailed = true
             });
-            await session.Profiler.Start();
-            var coverageResponse = await session.Profiler.TakePreciseCoverage();
+            await domains.Profiler.Start();
+            var coverageResponse = await domains.Profiler.TakePreciseCoverage();
             var pc = coverageResponse.Result;
             Assert.That(pc, Is.Not.Null);
-            var response = await session.Profiler.Stop();
-            Profiler.Profile profiler = response.Profile;
+            var response = await domains.Profiler.Stop();
+            var profiler = response.Profile;
             ValidateProfile(profiler);
-            await session.Profiler.Disable();
+            await domains.Profiler.Disable();
         }
 
 
@@ -79,39 +82,40 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleProfileEvents()
         {
-            await session.Profiler.Enable();
+            var domains = session.GetVersionSpecificDomains<V86.DevToolsSessionDomains>();
+            await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
             ManualResetEventSlim startSync = new ManualResetEventSlim(false);
-            EventHandler<Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
+            EventHandler<V86.Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 startSync.Set();
             };
-            session.Profiler.ConsoleProfileStarted += consoleProfileStartedHandler;
+            domains.Profiler.ConsoleProfileStarted += consoleProfileStartedHandler;
 
-            await session.Profiler.StartTypeProfile();
-            await session.Profiler.Start();
+            await domains.Profiler.StartTypeProfile();
+            await domains.Profiler.Start();
             startSync.Wait(TimeSpan.FromSeconds(5));
             driver.Navigate().Refresh();
 
             ManualResetEventSlim finishSync = new ManualResetEventSlim(false);
-            EventHandler<Profiler.ConsoleProfileFinishedEventArgs> consoleProfileFinishedHandler = (sender, e) =>
+            EventHandler<V86.Profiler.ConsoleProfileFinishedEventArgs> consoleProfileFinishedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 finishSync.Set();
             };
-            session.Profiler.ConsoleProfileFinished += consoleProfileFinishedHandler;
+            domains.Profiler.ConsoleProfileFinished += consoleProfileFinishedHandler;
 
-            await session.Profiler.StopTypeProfile();
-            var response = await session.Profiler.Stop();
+            await domains.Profiler.StopTypeProfile();
+            var response = await domains.Profiler.Stop();
             finishSync.Wait(TimeSpan.FromSeconds(5));
 
-            Profiler.Profile profiler = response.Profile;
+            var profiler = response.Profile;
             ValidateProfile(profiler);
-            await session.Profiler.Disable();
+            await domains.Profiler.Disable();
         }
 
-        private void ValidateProfile(Profiler.Profile profiler)
+        private void ValidateProfile(V86.Profiler.Profile profiler)
         {
             Assert.That(profiler, Is.Not.Null);
             Assert.That(profiler.Nodes, Is.Not.Null);

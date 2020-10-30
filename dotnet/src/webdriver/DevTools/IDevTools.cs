@@ -1,4 +1,4 @@
-// <copyright file="IDevTools.cs" company="Microsoft">
+// <copyright file="IDevTools.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -27,6 +27,6 @@ namespace OpenQA.Selenium.DevTools
         /// Creates a session to communicate with a browser using a Developer Tools debugging protocol.
         /// </summary>
         /// <returns>The active session to use to communicate with the Developer Tools debugging protocol.</returns>
-        DevToolsSession CreateDevToolsSession();
+        IDevToolsSession CreateDevToolsSession();
     }
 }

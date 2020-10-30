@@ -251,6 +251,10 @@ module Selenium
           execute :take_screenshot
         end
 
+        def element_screenshot(element)
+          execute :take_element_screenshot, id: element.ref
+        end
+
         #
         # HTML 5
         #

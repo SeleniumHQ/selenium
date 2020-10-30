@@ -43,7 +43,12 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+        "//dotnet/src/webdriver/DevTools:generate-v84",
+        "//dotnet/src/webdriver/DevTools:generate-v85",
+        "//dotnet/src/webdriver/DevTools:generate-v86",
+    ],
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -86,7 +91,12 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+        "//dotnet/src/webdriver/DevTools:generate-v84",
+        "//dotnet/src/webdriver/DevTools:generate-v85",
+        "//dotnet/src/webdriver/DevTools:generate-v86",
+    ],
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -119,7 +129,12 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+        "//dotnet/src/webdriver/DevTools:generate-v84",
+        "//dotnet/src/webdriver/DevTools:generate-v85",
+        "//dotnet/src/webdriver/DevTools:generate-v86",
+    ],
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
@@ -162,7 +177,12 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+        "//dotnet/src/webdriver/DevTools:generate-v84",
+        "//dotnet/src/webdriver/DevTools:generate-v85",
+        "//dotnet/src/webdriver/DevTools:generate-v86",
+    ],
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [

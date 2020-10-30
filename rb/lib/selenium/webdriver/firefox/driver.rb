@@ -29,7 +29,6 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::HasAddons
         include DriverExtensions::HasWebStorage
-        include DriverExtensions::TakesScreenshot
 
         def browser
           :firefox

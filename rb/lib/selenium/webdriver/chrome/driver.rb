@@ -30,7 +30,6 @@ module Selenium
         include DriverExtensions::HasNetworkConditions
         include DriverExtensions::HasWebStorage
         include DriverExtensions::HasLocation
-        include DriverExtensions::TakesScreenshot
         include DriverExtensions::DownloadsFiles
         include DriverExtensions::HasDevTools
         include DriverExtensions::HasAuthentication
