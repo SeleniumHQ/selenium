@@ -41,6 +41,13 @@ public class DockerFlags implements HasRoles {
   private URL dockerUrl;
 
   @Parameter(
+    names = {"--docker-host"},
+    description = "Host name where the docker daemon is running"
+  )
+  @ConfigValue(section = "docker", name = "host", example = "\"tcp://localhost:2375\"")
+  private String dockerHost;
+
+  @Parameter(
       names = {"--docker", "-D"},
       description = "Docker configs which map image name to stereotype capabilities (example " +
                     "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}')",
