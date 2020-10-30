@@ -59,6 +59,20 @@ public class DockerFlags implements HasRoles {
     example = "[\"selenium/standalone-firefox:latest\", \"{\\\"browserName\\\": \\\"firefox\\\"}\"]")
   private List<String> images2Capabilities;
 
+  @Parameter(
+    names = {"--docker-video-image"},
+    description = "Docker image to be used when video recording is enabled"
+  )
+  @ConfigValue(section = "docker", name = "video-image", example = "\"selenium/video:ffmpeg-4.3.1-20201030\"")
+  private String videoImage;
+
+  @Parameter(
+    names = {"--docker-video-path"},
+    description = "Absolute path where videos will be stored"
+  )
+  @ConfigValue(section = "docker", name = "video-path", example = "\"/absolute/path/to/video/storage\"")
+  private String videoPath;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(NODE_ROLE);
