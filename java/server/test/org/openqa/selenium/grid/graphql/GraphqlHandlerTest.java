@@ -51,8 +51,6 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -177,11 +175,12 @@ public class GraphqlHandlerTest {
 
     assertThat(result)
         .describedAs(result.toString())
-        .isEqualTo(Map.of("data", Map.of("session",
-                                         Map.of("id", sessionId,
-                                                "capabilities", graphqlSession.getCapabilities(),
-                                                "startTime", graphqlSession.getStartTime(),
-                                                "uri", graphqlSession.getUri().toString()))));
+        .isEqualTo(Map.of(
+            "data", Map.of("session",
+                           Map.of("id", sessionId,
+                                  "capabilities", graphqlSession.getCapabilities(),
+                                  "startTime", graphqlSession.getStartTime(),
+                                  "uri", graphqlSession.getUri().toString()))));
   }
 
   @Test
@@ -222,10 +221,11 @@ public class GraphqlHandlerTest {
 
     assertThat(result)
         .describedAs(result.toString())
-        .isEqualTo(Map.of("data", Map.of("session",
-                                         Map.of("nodeId", graphqlSession.getNodeId(),
-                                                "nodeUri",
-                                                graphqlSession.getNodeUri().toString()))));
+        .isEqualTo(Map.of(
+            "data", Map.of("session",
+                           Map.of("nodeId", graphqlSession.getNodeId(),
+                                  "nodeUri",
+                                  graphqlSession.getNodeUri().toString()))));
   }
 
   @Test
@@ -270,12 +270,13 @@ public class GraphqlHandlerTest {
 
     assertThat(result)
         .describedAs(result.toString())
-        .isEqualTo(Map.of("data", Map.of("session",
-                                         Map.of("slot",
-                                                Map.of("id", graphqlSlot.getId(),
-                                                       "stereotype", graphqlSlot.getStereotype(),
-                                                       "lastStarted",
-                                                       graphqlSlot.getLastStarted())))));
+        .isEqualTo(Map.of(
+            "data", Map.of("session",
+                           Map.of("slot",
+                                  Map.of("id", graphqlSlot.getId(),
+                                         "stereotype", graphqlSlot.getStereotype(),
+                                         "lastStarted",
+                                         graphqlSlot.getLastStarted())))));
   }
 
   @Test
@@ -302,9 +303,8 @@ public class GraphqlHandlerTest {
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> result = executeQuery(handler, query);
 
-    LinkedHashMap<String, Object> dataMap = (LinkedHashMap<String, Object>) result.get("data");
-    LinkedHashMap<String, Object> sessionMap =
-        (LinkedHashMap<String, Object>) dataMap.get("session");
+    Map<String, Object> dataMap = (Map<String, Object>) result.get("data");
+    Map<String, Object> sessionMap = (Map<String, Object>) dataMap.get("session");
 
     assertThat(sessionMap.containsKey("sessionDurationMillis")).isTrue();
   }
@@ -331,16 +331,14 @@ public class GraphqlHandlerTest {
     Map<String, Object> result = executeQuery(handler, query);
     assertThat(result.get("data")).isNull();
 
-    ArrayList<LinkedHashMap<String, Object>> errors =
-        (ArrayList<LinkedHashMap<String, Object>>) result.get("errors");
+    List<Map<String, Object>> errors = (List<Map<String, Object>>) result.get("errors");
 
     assertThat(errors).isNotNull();
     assertThat(errors).element(0).isNotNull();
 
-    LinkedHashMap<String, Object> error = errors.get(0);
+    Map<String, Object> error = errors.get(0);
 
-    LinkedHashMap<String, Object> extensions =
-        (LinkedHashMap<String, Object>) error.get("extensions");
+    Map<String, Object> extensions = (Map<String, Object>) error.get("extensions");
 
     String sessionId = (String) extensions.get("sessionId");
     assertThat(sessionId).isEqualTo(randomSessionId);
@@ -367,8 +365,7 @@ public class GraphqlHandlerTest {
     Map<String, Object> result = executeQuery(handler, query);
     assertThat(result.get("data")).isNull();
 
-    ArrayList<LinkedHashMap<String, Object>> errors =
-        (ArrayList<LinkedHashMap<String, Object>>) result.get("errors");
+    List<Map<String, Object>> errors = (List<Map<String, Object>>) result.get("errors");
 
     assertThat(errors).isNotNull();
     assertThat(errors).element(0).isNotNull();

@@ -83,9 +83,10 @@ public class Session {
   }
 
   public org.openqa.selenium.grid.graphql.Slot getSlot() {
-    return new org.openqa.selenium.grid.graphql.Slot(slot.getId().getSlotId(),
-                                                     slot.getStereotype(),
-                                                     slot.getLastStarted());
+    return new org.openqa.selenium.grid.graphql.Slot(
+        slot.getId().getSlotId(),
+        slot.getStereotype(),
+        slot.getLastStarted());
   }
 
 }
