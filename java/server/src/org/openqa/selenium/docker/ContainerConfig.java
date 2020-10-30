@@ -26,22 +26,22 @@ import org.openqa.selenium.internal.Require;
 import java.util.Map;
 
 @Beta
-public class ContainerInfo {
+public class ContainerConfig {
 
   private final Image image;
   // Port bindings, keyed on the container port, with values being host ports
   private final Multimap<String, Map<String, Object>> portBindings;
 
-  private ContainerInfo(Image image, Multimap<String, Map<String, Object>> portBindings) {
+  private ContainerConfig(Image image, Multimap<String, Map<String, Object>> portBindings) {
     this.image = Require.nonNull("Container image", image);
     this.portBindings = Require.nonNull("Port bindings", portBindings);
   }
 
-  public static ContainerInfo image(Image image) {
-    return new ContainerInfo(image, HashMultimap.create());
+  public static ContainerConfig image(Image image) {
+    return new ContainerConfig(image, HashMultimap.create());
   }
 
-  public ContainerInfo map(Port containerPort, Port hostPort) {
+  public ContainerConfig map(Port containerPort, Port hostPort) {
     Require.nonNull("Container port", containerPort);
     Require.nonNull("Host port", hostPort);
 
@@ -55,12 +55,12 @@ public class ContainerInfo {
         containerPort.getPort() + "/" + containerPort.getProtocol(),
         ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
-    return new ContainerInfo(image, updatedBindings);
+    return new ContainerConfig(image, updatedBindings);
   }
 
   @Override
   public String toString() {
-    return "ContainerInfo{" +
+    return "ContainerConfig{" +
       "image=" + image +
       ", portBindings=" + portBindings +
       '}';

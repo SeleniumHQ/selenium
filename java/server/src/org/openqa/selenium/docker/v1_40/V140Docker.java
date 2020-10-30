@@ -19,7 +19,7 @@ package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerId;
-import org.openqa.selenium.docker.ContainerInfo;
+import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.DockerProtocol;
 import org.openqa.selenium.docker.Image;
@@ -84,12 +84,12 @@ public class V140Docker implements DockerProtocol {
   }
 
   @Override
-  public Container create(ContainerInfo info) {
-    Require.nonNull("Container info", info);
+  public Container create(ContainerConfig config) {
+    Require.nonNull("Container config", config);
 
-    LOG.info("Creating container: " + info);
+    LOG.info("Creating container: " + config);
 
-    return createContainer.apply(info);
+    return createContainer.apply(config);
   }
 
   @Override
