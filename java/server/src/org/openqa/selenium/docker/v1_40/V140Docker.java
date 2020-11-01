@@ -20,6 +20,7 @@ package org.openqa.selenium.docker.v1_40;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerConfig;
+import org.openqa.selenium.docker.ContainerInfo;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.DockerProtocol;
 import org.openqa.selenium.docker.Image;
@@ -41,6 +42,7 @@ public class V140Docker implements DockerProtocol {
   private final StopContainer stopContainer;
   private final DeleteContainer deleteContainer;
   private final ContainerExists containerExists;
+  private final InspectContainer inspectContainer;
 
   public V140Docker(HttpHandler client) {
     Require.nonNull("HTTP client", client);
@@ -52,6 +54,7 @@ public class V140Docker implements DockerProtocol {
     stopContainer = new StopContainer(client);
     deleteContainer = new DeleteContainer(client);
     containerExists = new ContainerExists(client);
+    inspectContainer = new InspectContainer(client);
   }
 
   @Override
@@ -127,5 +130,14 @@ public class V140Docker implements DockerProtocol {
     LOG.info("Deleting container: " + id);
 
     deleteContainer.apply(id);
+  }
+
+  @Override
+  public ContainerInfo inspectContainer(ContainerId id) throws DockerException {
+    Require.nonNull("Container id", id);
+
+    LOG.info("Inspecting container: " + id);
+
+    return inspectContainer.apply(id);
   }
 }

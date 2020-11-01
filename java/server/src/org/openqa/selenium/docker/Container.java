@@ -61,4 +61,10 @@ public class Container {
       protocol.deleteContainer(id);
     }
   }
+
+  public ContainerInfo inspect() {
+    LOG.info("Inspecting " + getId());
+
+    return protocol.inspectContainer(getId());
+  }
 }
