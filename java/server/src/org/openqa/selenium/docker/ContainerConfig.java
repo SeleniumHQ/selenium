@@ -23,7 +23,9 @@ import com.google.common.collect.Multimap;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Beta
 public class ContainerConfig {
@@ -31,14 +33,21 @@ public class ContainerConfig {
   private final Image image;
   // Port bindings, keyed on the container port, with values being host ports
   private final Multimap<String, Map<String, Object>> portBindings;
+  private final Map<String, String> envVars;
+  private final Map<String, String> volumeBinds;
 
-  private ContainerConfig(Image image, Multimap<String, Map<String, Object>> portBindings) {
-    this.image = Require.nonNull("Container image", image);
-    this.portBindings = Require.nonNull("Port bindings", portBindings);
+
+  public ContainerConfig(Image image,
+    Multimap<String, Map<String, Object>> portBindings, Map<String, String> envVars,
+    Map<String, String> volumeBinds) {
+    this.image = image;
+    this.portBindings = portBindings;
+    this.envVars = envVars;
+    this.volumeBinds = volumeBinds;
   }
 
   public static ContainerConfig image(Image image) {
-    return new ContainerConfig(image, HashMultimap.create());
+    return new ContainerConfig(image, HashMultimap.create(), ImmutableMap.of(), ImmutableMap.of());
   }
 
   public ContainerConfig map(Port containerPort, Port hostPort) {
@@ -55,7 +64,19 @@ public class ContainerConfig {
         containerPort.getPort() + "/" + containerPort.getProtocol(),
         ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
-    return new ContainerConfig(image, updatedBindings);
+    return new ContainerConfig(image, updatedBindings, envVars, volumeBinds);
+  }
+
+  public ContainerConfig env(Map<String, String> envVars) {
+    Require.nonNull("Container env vars", envVars);
+
+    return new ContainerConfig(image, portBindings, envVars, volumeBinds);
+  }
+
+  public ContainerConfig bind(Map<String, String> volumeBinds) {
+    Require.nonNull("Container volume binds", volumeBinds);
+
+    return new ContainerConfig(image, portBindings, envVars, volumeBinds);
   }
 
   @Override
@@ -63,15 +84,27 @@ public class ContainerConfig {
     return "ContainerConfig{" +
       "image=" + image +
       ", portBindings=" + portBindings +
+      ", envVars=" + envVars +
+      ", volumeBinds=" + volumeBinds +
       '}';
   }
 
   private Map<String, Object> toJson() {
+    List<String> envVars = this.envVars.keySet().stream()
+      .map(key -> String.format("%s=%s", key, this.envVars.get(key)))
+      .collect(Collectors.toList());
+
+    List<String> volumeBinds = this.volumeBinds.keySet().stream()
+      .map(key -> String.format("%s:%s", key, this.volumeBinds.get(key)))
+      .collect(Collectors.toList());
+
     Map<String, Object> hostConfig = ImmutableMap.of(
-        "PortBindings", portBindings.asMap());
+        "PortBindings", portBindings.asMap(),
+        "Binds", volumeBinds);
 
     return ImmutableMap.of(
-        "Image", image.getId(),
-        "HostConfig", hostConfig);
+      "Image", image.getId(),
+      "Env", envVars,
+      "HostConfig", hostConfig);
   }
 }
