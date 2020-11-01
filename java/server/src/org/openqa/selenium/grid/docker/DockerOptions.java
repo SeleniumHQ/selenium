@@ -172,7 +172,7 @@ public class DockerOptions {
   }
 
   private Path getStoragePath() {
-    String storagePath = config.get(DOCKER_SECTION, "video-path").orElse(null);
+    String storagePath = config.get(DOCKER_SECTION, "video-path").orElse("");
     if (Files.isDirectory(Path.of(storagePath))) {
       return Path.of(storagePath);
     }
