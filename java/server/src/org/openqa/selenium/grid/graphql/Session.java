@@ -18,23 +18,39 @@
 package org.openqa.selenium.grid.graphql;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
+import java.net.URI;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class Session {
 
+  private static final DateTimeFormatter DATE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withZone(ZoneId.systemDefault());
+
   private final String id;
   private final Capabilities capabilities;
   private final Instant startTime;
+  private final URI uri;
+  private final String nodeId;
+  private final URI nodeUri;
+  private final Slot slot;
   private static final Json JSON = new Json();
 
-  public Session(String id, Capabilities capabilities, Instant startTime) {
-    this.id = Require.nonNull("Node id", id);
-    this.capabilities = Require.nonNull("Node capabilities", capabilities);
+  public Session(String id, Capabilities capabilities, Instant startTime, URI uri, String nodeId,
+                 URI nodeUri, Slot slot) {
+    this.id = Require.nonNull("Session id", id);
+    this.capabilities = Require.nonNull("Session capabilities", capabilities);
     this.startTime = Require.nonNull("Session Start time", startTime);
+    this.uri = Require.nonNull("Session uri", uri);
+    this.nodeId = Require.nonNull("Node id", nodeId);
+    this.nodeUri = Require.nonNull("Node uri", nodeUri);
+    this.slot = Require.nonNull("Slot", slot);
   }
 
   public String getId() {
@@ -46,7 +62,31 @@ public class Session {
   }
 
   public String getStartTime() {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-    return dtf.format(startTime);
+    return DATE_TIME_FORMATTER.format(startTime);
   }
+
+  public URI getUri() {
+    return uri;
+  }
+
+  public String getNodeId() {
+    return nodeId;
+  }
+
+  public URI getNodeUri() {
+    return nodeUri;
+  }
+
+  public String getSessionDurationMillis() {
+    long duration = Duration.between(startTime, Instant.now()).toMillis();
+    return String.valueOf(duration);
+  }
+
+  public org.openqa.selenium.grid.graphql.Slot getSlot() {
+    return new org.openqa.selenium.grid.graphql.Slot(
+        slot.getId().getSlotId(),
+        slot.getStereotype(),
+        slot.getLastStarted());
+  }
+
 }
