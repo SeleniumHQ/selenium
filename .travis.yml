@@ -61,7 +61,7 @@ matrix:
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
-    - env: BZL="build --profile=/tmp/bazelprofile //java/..." SONAR=1
+    - env: BZL="build //java/..." SONAR=1
       <<: *java
     - env: BZL="test --test_size_filters=small --test_tag_filters=-lint //java/..."
       <<: *java
