@@ -1,7 +1,10 @@
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load("//common:defs.bzl", "copy_file")
-load("//dotnet:nuget.bzl", "nuget_package")
-load("//dotnet:assembly-info.bzl", "generated_assembly_info")
+load(
+    "//dotnet:defs.bzl",
+    "generated_assembly_info",
+    "nuget_package",
+    "nuget_push")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",

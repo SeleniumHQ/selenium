@@ -1,5 +1,4 @@
-load("//dotnet:executable-assembly.bzl", "csharp_executable")
-load("//dotnet:assembly-info.bzl", "generated_assembly_info")
+load("//dotnet:defs.bzl", "csharp_executable", "generated_assembly_info")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",

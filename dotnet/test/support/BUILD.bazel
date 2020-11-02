@@ -1,4 +1,4 @@
-load("//dotnet:nunit-test.bzl", "nunit_test")
+load("//dotnet:defs.bzl", "nunit_test")
 
 nunit_test(
     name = "support",

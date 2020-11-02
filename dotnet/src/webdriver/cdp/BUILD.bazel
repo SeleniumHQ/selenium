@@ -1,4 +1,4 @@
-load("//dotnet:generate-devtools.bzl", "generate_devtools")
+load("//dotnet:defs.bzl", "generate_devtools")
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v84",

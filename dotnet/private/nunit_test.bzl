@@ -3,7 +3,7 @@ Rules for compiling NUnit tests.
 """
 
 load("@d2l_rules_csharp//csharp/private:providers.bzl", "AnyTargetFrameworkInfo")
-load("//dotnet:executable-assembly.bzl", "create_executable_assembly")
+load("//dotnet/private:executable_assembly.bzl", "create_executable_assembly")
 
 def _nunit_test_impl(ctx):
     extra_srcs = [ctx.file._nunit_shim]
