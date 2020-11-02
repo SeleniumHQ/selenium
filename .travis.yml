@@ -79,6 +79,9 @@ matrix:
     - env: CHROME=1 BZL="test --test_tag_filters=chrome //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...  //javascript/chrome-driver/..."
       <<: *java
       <<: *chrome
+    - env: MARIONETTE=1 BZL_TEST="tests(//java/server/...) except attr(tags, lint, tests(//java/server/...))"
+      <<: *java
+      <<: *firefox-nightly
     - env: TASK=javadocs
       <<: *java
     - env: TOXENV=flake8
