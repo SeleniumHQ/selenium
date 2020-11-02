@@ -37,6 +37,8 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -95,7 +97,7 @@ public class DockerOptions {
   }
 
   private boolean isEnabled(HttpClient.Factory clientFactory) {
-    if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
+    if (config.getAll(DOCKER_SECTION, "configs").isEmpty()) {
       return false;
     }
 
@@ -133,13 +135,23 @@ public class DockerOptions {
     Docker docker = new Docker(client);
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
+    Image videoImage = getVideoImage(docker);
+    if (isVideoRecordingAvailable()) {
+      loadImages(docker, videoImage.getName());
+    }
+    Path storagePath = getStoragePath();
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
     ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
     kinds.forEach((name, caps) -> {
       Image image = docker.getImage(name);
       for (int i = 0; i < maxContainerCount; i++) {
-        factories.put(caps, new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
+        if (isVideoRecordingAvailable()) {
+          factories.put(caps,
+              new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps, videoImage, storagePath));
+        } else {
+          factories.put(caps, new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
+        }
       }
       LOG.info(String.format(
           "Mapping %s to docker image %s %d times",
@@ -148,6 +160,23 @@ public class DockerOptions {
           maxContainerCount));
     });
     return factories.build().asMap();
+  }
+
+  private boolean isVideoRecordingAvailable() {
+    return config.get(DOCKER_SECTION, "video-image").isPresent() && config.get(DOCKER_SECTION, "video-path").isPresent();
+  }
+
+  private Image getVideoImage(Docker docker) {
+    Optional<String> videoImage = config.get(DOCKER_SECTION, "video-image");
+    return videoImage.map(docker::getImage).orElse(null);
+  }
+
+  private Path getStoragePath() {
+    String storagePath = config.get(DOCKER_SECTION, "video-path").orElse("");
+    if (Files.isDirectory(Path.of(storagePath))) {
+      return Path.of(storagePath);
+    }
+    return null;
   }
 
   private void loadImages(Docker docker, String... imageNames) {

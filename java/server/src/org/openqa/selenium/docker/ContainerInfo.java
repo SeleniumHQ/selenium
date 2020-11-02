@@ -17,61 +17,48 @@
 
 package org.openqa.selenium.docker;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.internal.Require;
 
-import java.util.Map;
+import java.util.Objects;
 
-@Beta
 public class ContainerInfo {
 
-  private final Image image;
-  // Port bindings, keyed on the container port, with values being host ports
-  private final Multimap<String, Map<String, Object>> portBindings;
+  private final String ip;
+  private final ContainerId id;
 
-  private ContainerInfo(Image image, Multimap<String, Map<String, Object>> portBindings) {
-    this.image = Require.nonNull("Container image", image);
-    this.portBindings = Require.nonNull("Port bindings", portBindings);
+  public ContainerInfo(ContainerId id, String ip) {
+    this.ip = Require.nonNull("Container ip address", ip);
+    this.id = Require.nonNull("Container id", id);
   }
 
-  public static ContainerInfo image(Image image) {
-    return new ContainerInfo(image, HashMultimap.create());
+  public String getIp() {
+    return ip;
   }
 
-  public ContainerInfo map(Port containerPort, Port hostPort) {
-    Require.nonNull("Container port", containerPort);
-    Require.nonNull("Host port", hostPort);
-
-    if (!hostPort.getProtocol().equals(containerPort.getProtocol())) {
-      throw new DockerException(
-          String.format("Port protocols must match: %s -> %s", hostPort, containerPort));
-    }
-
-    Multimap<String, Map<String, Object>> updatedBindings = HashMultimap.create(portBindings);
-    updatedBindings.put(
-        containerPort.getPort() + "/" + containerPort.getProtocol(),
-        ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
-
-    return new ContainerInfo(image, updatedBindings);
+  public ContainerId getId() {
+    return id;
   }
 
   @Override
   public String toString() {
     return "ContainerInfo{" +
-      "image=" + image +
-      ", portBindings=" + portBindings +
+      "ip=" + ip +
+      ", id=" + id +
       '}';
   }
 
-  private Map<String, Object> toJson() {
-    Map<String, Object> hostConfig = ImmutableMap.of(
-        "PortBindings", portBindings.asMap());
-
-    return ImmutableMap.of(
-        "Image", image.getId(),
-        "HostConfig", hostConfig);
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof ContainerInfo)) {
+      return false;
+    }
+    ContainerInfo that = (ContainerInfo) o;
+    return Objects.equals(this.ip, that.ip) && Objects.equals(this.id, that.id);
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(ip, id);
+  }
+
 }

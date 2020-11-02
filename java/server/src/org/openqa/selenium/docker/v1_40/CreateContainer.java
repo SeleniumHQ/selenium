@@ -19,7 +19,7 @@ package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerId;
-import org.openqa.selenium.docker.ContainerInfo;
+import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.DockerProtocol;
 import org.openqa.selenium.internal.Require;
@@ -51,7 +51,7 @@ class CreateContainer {
     this.client = Require.nonNull("HTTP client", client);
   }
 
-  public Container apply(ContainerInfo info) {
+  public Container apply(ContainerConfig info) {
     HttpResponse res = DockerMessages.throwIfNecessary(
       client.execute(
         new HttpRequest(POST, "/v1.40/containers/create")
