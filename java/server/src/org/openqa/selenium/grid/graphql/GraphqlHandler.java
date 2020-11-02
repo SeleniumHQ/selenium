@@ -123,7 +123,8 @@ public class GraphqlHandler implements HttpHandler {
       .scalar(Types.Uri)
       .scalar(Types.Url)
       .type("GridQuery", typeWiring -> typeWiring
-        .dataFetcher("grid", new GridData(distributor, publicUri)))
+          .dataFetcher("grid", new GridData(distributor, publicUri))
+          .dataFetcher("session", new SessionData(distributor)))
       .build();
   }
 

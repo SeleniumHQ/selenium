@@ -186,7 +186,7 @@ public class DockerSessionFactory implements SessionFactory {
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
       Container videoContainer = null;
-      if (isVideoRecordingAvailable) {
+      if (isVideoRecordingAvailable && recordVideoForSession(sessionRequest.getCapabilities())) {
         Map<String, String> envVars = new HashMap<>();
         envVars.put("DISPLAY_CONTAINER_NAME", containerInfo.getIp());
         envVars.put("FILE_NAME", String.format("%s.mp4", id));
@@ -221,6 +221,15 @@ public class DockerSessionFactory implements SessionFactory {
         result.getDialect(),
         Instant.now()));
     }
+  }
+
+  private boolean recordVideoForSession(Capabilities sessionRequestCapabilities) {
+      Object rawSeleniumOptions = sessionRequestCapabilities.getCapability("se:options");
+      if (rawSeleniumOptions instanceof Map) {
+          @SuppressWarnings("unchecked") Map<String, Object> seleniumOptions = (Map<String, Object>) rawSeleniumOptions;
+          return Boolean.parseBoolean(seleniumOptions.getOrDefault("recordVideo", false).toString());
+      }
+      return false;
   }
 
   private void waitForServerToStart(HttpClient client, Duration duration) {

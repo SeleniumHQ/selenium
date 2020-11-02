@@ -41,6 +41,10 @@ build --curses=no
 build --color=no
 build --show_timestamps
 
+# Profiling
+build --profile /tmp/bazelprofile
+test --profile /tmp/bazelprofile
+
 EOM
 
 

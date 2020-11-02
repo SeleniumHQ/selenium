@@ -4,7 +4,6 @@ services:
 env:
   global:
     - PYTEST_ADDOPTS="--verbose --instafail"
-    - FF_ESR_BINARY=$HOME/firefox-52.9.0esr/firefox/firefox-bin
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 git:
   depth: 10
@@ -36,9 +35,6 @@ _browsers:
   firefox: &firefox-latest
     addons:
       firefox: latest
-  firefox-esr: &firefox-esr
-    addons:
-      firefox: "52.9.0esr"
   firefox-nightly: &firefox-nightly
     addons:
       firefox: latest-nightly
@@ -65,7 +61,7 @@ matrix:
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
-    - env: BZL="build --profile=/tmp/bazelprofile //java/..." SONAR=1
+    - env: BZL="build //java/..." SONAR=1
       <<: *java
     - env: BZL="test --test_size_filters=small --test_tag_filters=-lint //java/..."
       <<: *java

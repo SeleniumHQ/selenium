@@ -38,6 +38,10 @@ public class SlotId {
     return nodeId;
   }
 
+  public UUID getSlotId() {
+    return uuid;
+  }
+
   @Override
   public String toString() {
     return "SlotId{nodeId=" + nodeId + ", id=" + uuid + '}';
