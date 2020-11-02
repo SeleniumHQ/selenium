@@ -4,7 +4,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 def selenium_java_deps():
     jetty_version = "9.4.31.v20200723"
     netty_version = "4.1.52.Final"
-    opentelemetry_version = "0.8.0"
+    opentelemetry_version = "0.9.1"
 
     maven_install(
         artifacts = [
@@ -58,7 +58,7 @@ def selenium_java_deps():
             ),
             "net.bytebuddy:byte-buddy:1.10.14",
             "net.jodah:failsafe:2.4.0",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.43.0",
+            "net.sourceforge.htmlunit:htmlunit-core-js:2.44.0",
             "org.apache.commons:commons-exec:1.3",
             "org.assertj:assertj-core:3.17.2",
             "org.asynchttpclient:async-http-client:2.12.1",
