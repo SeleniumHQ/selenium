@@ -1,3 +1,87 @@
+v4.0.0a7
+========
+ * 4.0.0a6 was skipped for the .NET bindings and not released publicly.
+ * Enabled the ability to push shipping releases to the NuGet repository
+   from the Bazel command line.
+ * Introduced a version-independent implementation of CDP for .NET. This 
+   version introduces a facade around Chromium's Developer Tools Protocol,
+   which will present developers with a stable, version-independent API for
+   the use cases most relevant to Selenium. It is still possible for users
+   to have access to the version-specific API by calling the
+   `GetVersionSpecificDomains<T>` method on the DevTools session object
+   created when the user calls `IDevTools::CreateDevToolsSession`. Note
+   that using this method will tie any consuming code to one and only one
+   version of a Chromium-based browser, and the consuming code may need
+   source-code changes and recompilation when new versions of the browser
+   are released. Note that at this time, only local execution of CDP code
+   is supported. Remote proxying of CDP calls through the Selenium Grid
+   is planned, but not yet implemented. Also, certain helper methods to
+   enable common desired scenarios for Selenium users that may be present
+   in other language bindings still need to be created for .NET.
+ * Enabled dynamic generation of the .NET API for the DevTools Protocol
+   during the Bazel build process.
+ * (on behalf of J.D. Purcell) Fixed SendKeys regressions related to multiple
+   file uploading. Fixes issue #8635.
+ * (on behalf of GFHuang) Make FluentWait.Until method cancellable, adding a
+   CancellationToken argument to allow the user to cancel the wait.
+ * (on behalf of Ivan Krutov) Modified to correctly close zip archive in file
+   uploads for .NET.
+ * (on behalf of Dvoryadkin Pavel) Modified to detect all files when uploading
+   multiple files via RemoteWebDriver. Fixes issue #8540.
+ * (on behalf of haqer1) Fixed typo in tests for visibility.
+ * (on behalf of Brandon Walderman) Fixed browserName typo for Edge WebView2.
+   Fixes issue #8455.
+ * Updated custom Firefox profile generation, as the default WebDriver
+   preferences JSON file for creating a custom Firefox profile was being
+   referred to by the wrong resource identifier.
+ * Updated .NET Bazel build process. This version makes changes to the
+   .csproj files in the project to shell out to other Bazel targets for
+   building non-.NET dependencies in the project. It also updates those build
+   steps to be more friendly to non-Windows operating systems. These changes
+   should also allow the .NET bindings to go from a clean directory in a new
+   clone to a fully built and configured .NET bindings with properly embedded
+   resources, providing that the machine is correctly configured to build the
+   project from the command line with Bazel. This eliminates a barrier to
+   entry with respect to using a .NET IDE (Visual Studio and Visual Studio
+   for Mac) to build the bindings without taking some manual steps first
+   (like building the JavaScript automation atoms and the web server for
+   running tests against).
+ * The .NET tests now support being run under both the .NET Framework
+   and .NET Core. This also now allows the user to run the tests using
+   Bazel, and can run against any of the supported browsers. By default,
+   the tests run using .NET Core. On non-Windows OSes, this will use .NET
+   Core by default, but if one explicitly wants to use the .NET Framework,
+   it will use Mono to execute the tests (Mono must be installed for this
+   to work). To run the tests at the command line, use the following command:
+
+       bazel test //dotnet/test/common:<browser> --enable_runfiles
+
+   where <browser> is one of the following values:
+
+    * chrome
+    * chromedev
+    * firefox
+    * firefoxnightly
+    * ie
+    * edge
+    * edgelegacy
+    * safari
+    * safaritechpreview
+
+   To specify to run the driver using the .NET Framework, append:
+
+       --define framework=netfx
+
+   to the command line.
+
+   To specify where the browser driver (chromedriver, geckodriver,
+   IEDriverServer, etc.) can be found, append the following to the
+   command line:
+
+       --test_arg=--params=DriverServiceLocation=<path>
+
+   where <path> is the path to the executable.
+
 v4.0.0a5
 ========
  * Fixed Bazel build process to create correct assemblies.
