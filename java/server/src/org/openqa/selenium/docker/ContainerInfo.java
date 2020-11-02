@@ -19,52 +19,46 @@ package org.openqa.selenium.docker;
 
 import org.openqa.selenium.internal.Require;
 
-import java.time.Duration;
-import java.util.logging.Logger;
+import java.util.Objects;
 
-public class Container {
+public class ContainerInfo {
 
-  private static final Logger LOG = Logger.getLogger(Container.class.getName());
-  private final DockerProtocol protocol;
+  private final String ip;
   private final ContainerId id;
 
-  public Container(DockerProtocol protocol, ContainerId id) {
-    this.protocol = Require.nonNull("Protocol", protocol);
+  public ContainerInfo(ContainerId id, String ip) {
+    this.ip = Require.nonNull("Container ip address", ip);
     this.id = Require.nonNull("Container id", id);
-    LOG.info("Created container " + id);
+  }
+
+  public String getIp() {
+    return ip;
   }
 
   public ContainerId getId() {
     return id;
   }
 
-  public void start() {
-    LOG.info("Starting " + getId());
-    protocol.startContainer(id);
+  @Override
+  public String toString() {
+    return "ContainerInfo{" +
+      "ip=" + ip +
+      ", id=" + id +
+      '}';
   }
 
-  public void stop(Duration timeout) {
-    Require.nonNull("Timeout to wait for", timeout);
-
-    if (protocol.exists(id)) {
-      LOG.info("Stopping " + getId());
-
-      protocol.stopContainer(id, timeout);
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof ContainerInfo)) {
+      return false;
     }
+    ContainerInfo that = (ContainerInfo) o;
+    return Objects.equals(this.ip, that.ip) && Objects.equals(this.id, that.id);
   }
 
-  public void delete() {
-    // Check to see if the container exists
-    if (protocol.exists(id)) {
-      LOG.info("Removing " + getId());
-
-      protocol.deleteContainer(id);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(ip, id);
   }
 
-  public ContainerInfo inspect() {
-    LOG.info("Inspecting " + getId());
-
-    return protocol.inspectContainer(getId());
-  }
 }
