@@ -86,6 +86,7 @@ const WebSocket = require('ws')
 const cdp = require('./devtools/CDPConnection')
 const remote = require('./remote')
 const cdpTargets = ['page', 'browser']
+const fs = require('fs')
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -775,7 +776,7 @@ class Driver extends webdriver.WebDriver {
    * @param connection CDP Connection
    */
   async register(username, password, connection) {
-    await connection.execute("Network.setCacheDisabled", 1, {
+    await connection.execute("Network.setCacheDisabled", this.getRandomNumber(1, 10), {
       cacheDisabled: true,
     }, null);
 
@@ -784,7 +785,7 @@ class Driver extends webdriver.WebDriver {
 
       if (params.method === 'Fetch.authRequired') {
         const requestParams = params['params']
-        connection.execute('Fetch.continueWithAuth', 1, {
+        connection.execute('Fetch.continueWithAuth', this.getRandomNumber(1, 10), {
           requestId: requestParams['requestId'],
           authChallengeResponse: {
             response: 'ProvideCredentials',
@@ -793,7 +794,7 @@ class Driver extends webdriver.WebDriver {
         }})
       } else if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
-        connection.execute('Fetch.continueRequest', 1, {
+        connection.execute('Fetch.continueRequest', this.getRandomNumber(1, 10), {
           requestId: requestPausedParams['requestId'],
         })
       }
@@ -811,7 +812,7 @@ class Driver extends webdriver.WebDriver {
    * @returns {Promise<void>}
    */
   async onLogEvent(connection, callback) {
-    await connection.execute('Runtime.enable', 1, {}, null)
+    await connection.execute('Runtime.enable', this.getRandomNumber(1, 10), {}, null)
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -854,7 +855,7 @@ class Driver extends webdriver.WebDriver {
    * @returns {Promise<void>}
    */
   async onLogException(connection, callback) {
-    await connection.execute('Runtime.enable', 1, {}, null)
+    await connection.execute('Runtime.enable', this.getRandomNumber(1, 10), {}, null)
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -870,6 +871,49 @@ class Driver extends webdriver.WebDriver {
       }
     })
   }
+
+  /**
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async logMutationEvents(connection, callback) {
+    await connection.execute('Runtime.enable', this.getRandomNumber(1, 10), {}, null)
+    await connection.execute('Page.enable', this.getRandomNumber(1, 10), {}, null)
+
+    await connection.execute('Runtime.addBinding', this.getRandomNumber(1, 10), {
+      name: '__webdriver_attribute',
+    }, null)
+
+    const mutationListener = fs.readFileSync('../../cdp-support/mutation-listener.js', 'utf-8').toString()
+
+    this.executeScript(mutationListener)
+
+    await connection.execute('Page.addScriptToEvaluateOnNewDocument', this.getRandomNumber(1, 10), {
+      source: mutationListener,
+    }, null)
+
+    this._wsConnection.on('message', async (message) => {
+      const params = JSON.parse(message)
+      if (params.method === 'Runtime.bindingCalled') {
+        let payload = JSON.parse(params['params']['payload'])
+        let elements = await this.findElements({css: "*[data-__webdriver_id=" + payload['target']})
+
+        if (elements.length === 0) {
+          return
+        }
+
+        let event = {
+          element: elements[0],
+          attribute_name: payload['name'],
+          current_value: payload['value'],
+          old_value: payload['oldValue']
+        }
+        callback(event)
+      }
+    })
+  }
+
   /**
    * Sends a DevTools command to change the browser's download directory.
    *
@@ -966,6 +1010,10 @@ class Driver extends webdriver.WebDriver {
       ),
       'Driver.stopCasting(' + deviceName + ')'
     )
+  }
+
+  getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 }
 
