@@ -63,14 +63,14 @@ matrix:
       <<: *firefox-latest
     - env: BZL="build //java/..." SONAR=1
       <<: *java
-    - env: BZL="test --test_size_filters=small --test_tag_filters=-lint //java/..."
+    - env: BZL_TEST="attr(size, small, tests(//java/...)) except attr(tags, lint, tests(//java/...))"
       <<: *java
-    - env: BZL="test --test_tag_filters=lint //java/..."
+    - env: BZL_TEST="attr(tags, lint, tests(//java/...))"
       <<: *java
-    - env: MARIONETTE=1 BZL="test --test_tag_filters=firefox //java/..."
+    - env: MARIONETTE=1 BZL_TEST="attr(tags, firefox, tests(//java/...))"
       <<: *java
       <<: *firefox-nightly
-    - env: CHROME=1 BZL="test --test_tag_filters=chrome //java/..."
+    - env: CHROME=1 BZL_TEST="attr(tags, chrome, tests(//java/...))"
       <<: *java
       <<: *chrome
     - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/..."

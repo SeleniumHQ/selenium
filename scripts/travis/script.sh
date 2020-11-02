@@ -22,6 +22,11 @@ if [[ ! -z $TASK ]]; then
   fi
 fi
 
+if [[ ! -z "$BZL_TEST" ]]; then
+  bazel query "$BZL_TEST" | xargs bazel test
+  bazel analyze-profile /tmp/bazelprofile
+fi
+
 if [[ ! -z "$BZL" ]]; then
   if [[ $BZL == test\ //javascript/* ]]; then
      if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^javascript/' >/dev/null; then
