@@ -1,5 +1,5 @@
 def _generate_devtools_impl(ctx):
-    outdir = ctx.actions.declare_directory("generated/{}".format(ctx.attr.out))
+    outdir = ctx.actions.declare_directory("{}".format(ctx.attr.out))
 
     args = ctx.actions.args()
     args.add_all("-s", [ctx.attr.src.files.to_list()[0]])
@@ -10,6 +10,7 @@ def _generate_devtools_impl(ctx):
 
     ctx.actions.run(
         executable = ctx.executable.generator,
+        progress_message = "Generating {} DevTools Protocol bindings for .NET".format(ctx.attr.out),
         arguments = [args],
         outputs = [
             outdir,

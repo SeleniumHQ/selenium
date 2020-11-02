@@ -31,8 +31,8 @@ def _generate_execution_script_file(ctx, target):
         environment += "export PROGRAMFILES=%s\n" % dotnet_sdk_location
         environment += "export USERPROFILE=%s\n" % dotnet_sdk_location
         environment += "export DOTNET_CLI_TELEMETRY_OPTOUT=1\n"
-    #else:
-    #    environment += "@echo off\n"
+    else:
+        environment += "@echo off\n"
 
     shell_content = environment + execution_line
 

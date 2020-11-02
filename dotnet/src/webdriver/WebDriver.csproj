@@ -81,8 +81,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="cdp\**" />
     <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="cdp\**" />
     <EmbeddedResource Remove="obj\**" />
+    <None Remove="cdp\**" />
     <None Remove="obj\**" />
   </ItemGroup>
 
@@ -92,9 +95,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\devtools\generated\v84\**\*.cs" LinkBase="DevTools\generated\v84" />
-    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\devtools\generated\v85\**\*.cs" LinkBase="DevTools\generated\v85" />
-    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\devtools\generated\v86\**\*.cs" LinkBase="DevTools\generated\v86" />
+    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v84\**\*.cs" LinkBase="DevTools\generated\v84" />
+    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v85\**\*.cs" LinkBase="DevTools\generated\v85" />
+    <Compile Include="..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v86\**\*.cs" LinkBase="DevTools\generated\v86" />
   </ItemGroup>
 
   <ItemGroup>

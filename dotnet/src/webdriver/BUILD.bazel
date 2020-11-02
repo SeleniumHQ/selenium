@@ -2,7 +2,7 @@ load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load("//common:defs.bzl", "copy_file")
 load("//dotnet:merge-assemblies.bzl", "merged_assembly")
 load("//dotnet:assembly-info.bzl", "generated_assembly_info")
-load("//dotnet:nuget.bzl", "nuget_package")
+load("//dotnet:nuget.bzl", "nuget_package", "nuget_push")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -45,9 +45,9 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/DevTools:generate-v84",
-        "//dotnet/src/webdriver/DevTools:generate-v85",
-        "//dotnet/src/webdriver/DevTools:generate-v86",
+        "//dotnet/src/webdriver/cdp:generate-v84",
+        "//dotnet/src/webdriver/cdp:generate-v85",
+        "//dotnet/src/webdriver/cdp:generate-v86",
     ],
     out = "WebDriver",
     resources = [
@@ -93,15 +93,16 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/DevTools:generate-v84",
-        "//dotnet/src/webdriver/DevTools:generate-v85",
-        "//dotnet/src/webdriver/DevTools:generate-v86",
+        "//dotnet/src/webdriver/cdp:generate-v84",
+        "//dotnet/src/webdriver/cdp:generate-v85",
+        "//dotnet/src/webdriver/cdp:generate-v86",
     ],
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
         "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
         "{}".format(standard_version),
@@ -131,9 +132,9 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/DevTools:generate-v84",
-        "//dotnet/src/webdriver/DevTools:generate-v85",
-        "//dotnet/src/webdriver/DevTools:generate-v86",
+        "//dotnet/src/webdriver/cdp:generate-v84",
+        "//dotnet/src/webdriver/cdp:generate-v85",
+        "//dotnet/src/webdriver/cdp:generate-v86",
     ],
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
@@ -141,6 +142,7 @@ generated_assembly_info(
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
         "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
         "{}".format(framework),
@@ -179,9 +181,9 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/DevTools:generate-v84",
-        "//dotnet/src/webdriver/DevTools:generate-v85",
-        "//dotnet/src/webdriver/DevTools:generate-v86",
+        "//dotnet/src/webdriver/cdp:generate-v84",
+        "//dotnet/src/webdriver/cdp:generate-v85",
+        "//dotnet/src/webdriver/cdp:generate-v86",
     ],
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
@@ -189,6 +191,7 @@ generated_assembly_info(
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
         "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
         "{}".format(standard_version),
@@ -266,4 +269,10 @@ nuget_package(
         ":netstandard2.0-strongnamed",
         ":netstandard2.1-strongnamed",
     ],
+)
+
+nuget_push(
+    name = "publish",
+    src = ":package",
+    api_key = "//dotnet:nuget-api-key",
 )

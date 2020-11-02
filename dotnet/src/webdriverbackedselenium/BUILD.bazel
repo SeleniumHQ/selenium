@@ -214,3 +214,9 @@ nuget_package(
         ":copy-netstandard2.1-strongnamed",
     ],
 )
+
+nuget_push(
+    name = "publish",
+    src = ":package",
+    api_key = "//dotnet:nuget-api-key",
+)

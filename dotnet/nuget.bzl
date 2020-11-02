@@ -1,3 +1,56 @@
+load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
+
+def _nuget_push_impl(ctx):
+    args = [
+        "push",
+    ]
+
+    apikey = ctx.attr.api_key[BuildSettingInfo].value
+    package_to_publish = ctx.attr.src.files.to_list()[0].path
+
+    output_file = ctx.actions.declare_file("done.txt")
+
+    args.append(ctx.expand_location(ctx.attr.src.files.to_list()[0].path))
+    args.append("-Source")
+    args.append(ctx.attr.package_repository_url)
+    args.append("-SkipDuplicate")
+    args.append("-ApiKey")
+    args.append(apikey)
+    args.append("> {}".format(output_file.path))
+
+    ctx.actions.run(
+        executable = ctx.executable.nuget_exe,
+        progress_message = "Publishing {}".format(package_to_publish),
+        arguments = args,
+        inputs = ctx.attr.src.files.to_list() + ctx.files.deps,
+        outputs = [output_file],
+    )
+
+    return DefaultInfo(files = depset([
+        output_file,
+    ]))
+
+
+nuget_push = rule(
+    implementation = _nuget_push_impl,
+    attrs = {
+        "src": attr.label(
+            allow_single_file = True,
+        ),
+        "deps": attr.label_list(),
+        "package_repository_url": attr.string(
+            default = "https://nuget.org",
+        ),
+        "api_key": attr.label(default = ":nuget-api-key"),
+        "nuget_exe": attr.label(
+            executable = True,
+            cfg = "host",
+            default = Label("//third_party/dotnet/nuget:nuget.exe"),
+            allow_single_file = True,
+        ),
+    },
+)
+
 def _nuget_package_impl(ctx):
     args = [
         "pack",
@@ -29,6 +82,7 @@ def _nuget_package_impl(ctx):
 
     ctx.actions.run(
         executable = ctx.executable.nuget_exe,
+        progress_message = "Packaging {}".format(package_file.path),
         arguments = args,
         inputs = ctx.attr.src.files.to_list() + ctx.files.deps,
         outputs = [
