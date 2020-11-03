@@ -183,7 +183,8 @@ class WebDriver(RemoteWebDriver):
         capabilities.update(options.to_capabilities())
 
         executor = FirefoxRemoteConnection(
-            remote_server_addr=self.service.service_url)
+            remote_server_addr=self.service.service_url,
+            ignore_proxy=options._ignore_local_proxy)
         RemoteWebDriver.__init__(
             self,
             command_executor=executor,
