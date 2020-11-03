@@ -59,6 +59,7 @@ class ChromiumDriver(RemoteWebDriver):
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 
+        _ignore_proxy = None
         if options is None:
             # desired_capabilities stays as passed in
             if desired_capabilities is None:
@@ -68,6 +69,8 @@ class ChromiumDriver(RemoteWebDriver):
                 desired_capabilities = options.to_capabilities()
             else:
                 desired_capabilities.update(options.to_capabilities())
+            if options._ignore_local_proxy:
+                _ignore_proxy = options._ignore_local_proxy
 
         self.vendor_prefix = vendor_prefix
 
@@ -83,7 +86,7 @@ class ChromiumDriver(RemoteWebDriver):
                 command_executor=ChromiumRemoteConnection(
                     remote_server_addr=self.service.service_url,
                     browser_name=browser_name, vendor_prefix=vendor_prefix,
-                    keep_alive=keep_alive, ignore_proxy=options._ignore_local_proxy),
+                    keep_alive=keep_alive, ignore_proxy=_ignore_proxy),
                 desired_capabilities=desired_capabilities)
         except Exception:
             self.quit()
