@@ -20,10 +20,10 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import io.grpc.Context;
-import io.opentelemetry.common.AttributeValue;
 import io.opentelemetry.common.Attributes;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.SpanContext;
+import io.opentelemetry.trace.StatusCanonicalCode;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
@@ -97,35 +97,35 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
           Require.nonNull("Event Attribute Value", value);
           switch (value.getAttributeType()) {
             case BOOLEAN:
-              otAttributes.setAttribute(key, AttributeValue.booleanAttributeValue(value.getBooleanValue()));
+              otAttributes.setAttribute(key, value.getBooleanValue());
               break;
 
             case BOOLEAN_ARRAY:
-              otAttributes.setAttribute(key, AttributeValue.arrayAttributeValue(value.getBooleanArrayValue()));
+              otAttributes.setAttribute(key, value.getBooleanArrayValue());
               break;
 
             case DOUBLE:
-              otAttributes.setAttribute(key, AttributeValue.doubleAttributeValue(value.getNumberValue().doubleValue()));
+              otAttributes.setAttribute(key, value.getNumberValue().doubleValue());
               break;
 
             case DOUBLE_ARRAY:
-              otAttributes.setAttribute(key, AttributeValue.arrayAttributeValue(value.getDoubleArrayValue()));
+              otAttributes.setAttribute(key, value.getDoubleArrayValue());
               break;
 
             case LONG:
-              otAttributes.setAttribute(key, AttributeValue.longAttributeValue(value.getNumberValue().longValue()));
+              otAttributes.setAttribute(key, value.getNumberValue().longValue());
               break;
 
             case LONG_ARRAY:
-              otAttributes.setAttribute(key, AttributeValue.arrayAttributeValue(value.getLongArrayValue()));
+              otAttributes.setAttribute(key, value.getLongArrayValue());
               break;
 
             case STRING:
-              otAttributes.setAttribute(key, AttributeValue.stringAttributeValue(value.getStringValue()));
+              otAttributes.setAttribute(key, value.getStringValue());
               break;
 
             case STRING_ARRAY:
-              otAttributes.setAttribute(key, AttributeValue.arrayAttributeValue(value.getStringArrayValue()));
+              otAttributes.setAttribute(key, value.getStringArrayValue());
               break;
 
             default:
@@ -139,37 +139,38 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     return this;
   }
 
-  private static final Map<Status.Kind, io.opentelemetry.trace.Status> statuses
-      = new ImmutableMap.Builder<Status.Kind, io.opentelemetry.trace.Status>()
-      .put(Status.Kind.ABORTED, io.opentelemetry.trace.Status.ABORTED)
-      .put(Status.Kind.CANCELLED, io.opentelemetry.trace.Status.CANCELLED)
-      .put(Status.Kind.NOT_FOUND, io.opentelemetry.trace.Status.NOT_FOUND)
-      .put(Status.Kind.OK, io.opentelemetry.trace.Status.OK)
-      .put(Status.Kind.RESOURCE_EXHAUSTED, io.opentelemetry.trace.Status.RESOURCE_EXHAUSTED)
-      .put(Status.Kind.UNKNOWN, io.opentelemetry.trace.Status.UNKNOWN)
-      .put(Status.Kind.INVALID_ARGUMENT,io.opentelemetry.trace.Status.INVALID_ARGUMENT)
-      .put(Status.Kind.DEADLINE_EXCEEDED,io.opentelemetry.trace.Status.DEADLINE_EXCEEDED)
-      .put(Status.Kind.ALREADY_EXISTS,io.opentelemetry.trace.Status.ALREADY_EXISTS)
-      .put(Status.Kind.PERMISSION_DENIED,io.opentelemetry.trace.Status.PERMISSION_DENIED)
-      .put(Status.Kind.OUT_OF_RANGE,io.opentelemetry.trace.Status.OUT_OF_RANGE)
-      .put(Status.Kind.UNIMPLEMENTED,io.opentelemetry.trace.Status.UNIMPLEMENTED)
-      .put(Status.Kind.INTERNAL,io.opentelemetry.trace.Status.INTERNAL)
-      .put(Status.Kind.UNAVAILABLE,io.opentelemetry.trace.Status.UNAVAILABLE)
-      .put(Status.Kind.UNAUTHENTICATED,io.opentelemetry.trace.Status.UNAUTHENTICATED)
+  private static final Map<Status.Kind, StatusCanonicalCode> statuses
+      = new ImmutableMap.Builder<Status.Kind, StatusCanonicalCode>()
+      .put(Status.Kind.ABORTED, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.CANCELLED, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.NOT_FOUND, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.OK, StatusCanonicalCode.OK)
+      .put(Status.Kind.RESOURCE_EXHAUSTED, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.UNKNOWN, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.INVALID_ARGUMENT, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.DEADLINE_EXCEEDED, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.ALREADY_EXISTS, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.PERMISSION_DENIED, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.OUT_OF_RANGE, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.UNIMPLEMENTED, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.INTERNAL, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.UNAVAILABLE, StatusCanonicalCode.ERROR)
+      .put(Status.Kind.UNAUTHENTICATED, StatusCanonicalCode.ERROR)
       .build();
 
   @Override
   public Span setStatus(Status status) {
     Require.nonNull("Status", status);
 
-    io.opentelemetry.trace.Status otStatus = statuses.get(status.getKind());
-    if (otStatus == null) {
+    StatusCanonicalCode statusCanonicalCode = statuses.get(status.getKind());
+    if (statusCanonicalCode == null) {
       throw new IllegalArgumentException("Unrecognized status kind: " + status.getKind());
     }
 
-    otStatus.withDescription(status.getDescription());
-
-    span.setStatus(otStatus);
+    span.setStatus(statusCanonicalCode,
+                   "Kind: " + status.getKind().toString()
+                   + " Description:"
+                   + status.getDescription());
 
     return this;
   }
@@ -185,9 +186,9 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     SpanContext context = span.getContext();
 
     return "OpenTelemetrySpan{traceId=" +
-      context.getTraceId() +
+      context.getTraceIdAsHexString() +
       ",spanId=" +
-      context.getSpanId() +
+      context.getSpanIdAsHexString() +
       "}";
   }
 
@@ -205,8 +206,8 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     SpanContext thisContext = this.span.getContext();
     SpanContext thatContext = that.span.getContext();
 
-    return Objects.equals(thisContext.getSpanId(), thatContext.getSpanId()) &&
-      Objects.equals(thisContext.getTraceId(), thatContext.getTraceId());
+    return Objects.equals(thisContext.getSpanIdAsHexString(), thatContext.getSpanIdAsHexString()) &&
+      Objects.equals(thisContext.getTraceIdAsHexString(), thatContext.getTraceIdAsHexString());
   }
 
   @Override

@@ -26,7 +26,6 @@ import io.opentelemetry.trace.Tracer;
 import io.opentelemetry.trace.TracingContextUtils;
 
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.tracing.SpanId;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
 import java.util.Objects;
@@ -45,8 +44,8 @@ public class OpenTelemetryContext implements TraceContext {
   }
 
   @Override
-  public SpanId getId() {
-    return new SpanId(spanContext.getSpanId());
+  public String getId() {
+    return spanContext.getSpanIdAsHexString();
   }
 
   @SuppressWarnings("MustBeClosedChecker")
@@ -54,7 +53,7 @@ public class OpenTelemetryContext implements TraceContext {
   public OpenTelemetrySpan createSpan(String name) {
     Require.nonNull("Name", name);
 
-    Span span = tracer.spanBuilder(name).setParent(spanContext).startSpan();
+    Span span = tracer.spanBuilder(name).setParent(context).startSpan();
     Context prev = Context.current();
 
     // Now update the context
@@ -98,12 +97,11 @@ public class OpenTelemetryContext implements TraceContext {
 
   @Override
   public String toString() {
-
     return "OpenTelemetryContext{" +
       "tracer=" + tracer +
       ", context=" + this.context +
-      ", span id=" + spanContext.getSpanId() +
-      ", trace id=" + spanContext.getTraceId() +
+      ", span id=" + spanContext.getSpanIdAsHexString() +
+      ", trace id=" + spanContext.getTraceIdAsHexString() +
       '}';
   }
 }
