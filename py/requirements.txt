@@ -1,5 +1,6 @@
 attrs
 dataclasses
+debugpy
 h11
 idna
 importlib_metadata
