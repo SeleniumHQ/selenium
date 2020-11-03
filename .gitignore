@@ -26,6 +26,7 @@ javascript/webdriver/devtools/types/
 .idea/workspace.xml
 .idea/dictionaries/
 .idea/scopes/
+.idea/sonarlint/
 .idea/qaplug_profiles.xml
 out
 cpp/IEDriver/sizzle.h
