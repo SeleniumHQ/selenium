@@ -1153,7 +1153,7 @@ class WebDriver(BaseWebDriver):
         if isinstance(by, RelativeBy):
             _pkg = '.'.join(__name__.split('.')[:-1])
             raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
-            find_element_js = "return (%s).apply(null, arguments);" % raw_function
+            find_element_js = "return ({}).apply(null, arguments);".format(raw_function)
             return self.execute_script(find_element_js, by.to_dict())
 
         if self.w3c:
