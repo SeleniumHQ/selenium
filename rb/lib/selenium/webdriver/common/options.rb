@@ -89,7 +89,8 @@ module Selenium
           value.as_json
         elsif value.is_a?(Hash)
           value.each_with_object({}) do |(key, val), hash|
-            hash[convert_json_key(key, camelize: camelize_keys)] = generate_as_json(val, camelize_keys: camelize_keys)
+            key = convert_json_key(key, camelize: camelize_keys)
+            hash[key] = generate_as_json(val, camelize_keys: key != 'prefs')
           end
         elsif value.is_a?(Array)
           value.map { |val| generate_as_json(val, camelize_keys: camelize_keys) }

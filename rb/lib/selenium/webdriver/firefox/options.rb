@@ -151,17 +151,6 @@ module Selenium
                                  Profile.from_name(profile)
                                end
         end
-
-        def generate_as_json(value, camelize_keys: true)
-          if value.is_a?(Hash)
-            value.each_with_object({}) do |(key, val), hash|
-              key = convert_json_key(key, camelize: camelize_keys)
-              hash[key] = generate_as_json(val, camelize_keys: key != 'prefs')
-            end
-          else
-            super
-          end
-        end
       end # Options
     end # Firefox
   end # WebDriver
