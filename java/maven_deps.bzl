@@ -3,7 +3,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
     jetty_version = "9.4.31.v20200723"
-    netty_version = "4.1.52.Final"
+    netty_version = "4.1.53.Final"
     opentelemetry_version = "0.9.1"
 
     maven_install(
@@ -12,7 +12,7 @@ def selenium_java_deps():
             "com.github.javaparser:javaparser-core:3.16.1",
             "com.github.spotbugs:spotbugs:4.1.3",
             "com.google.code.gson:gson:2.8.6",
-            "com.google.guava:guava:29.0-jre",
+            "com.google.guava:guava:30.0-jre",
             "com.google.auto:auto-common:0.11",
             "com.google.auto.service:auto-service:1.0-rc7",
             "com.google.auto.service:auto-service-annotations:1.0-rc7",
@@ -56,7 +56,7 @@ def selenium_java_deps():
                     "org.hamcrest:hamcrest-library",
                 ],
             ),
-            "net.bytebuddy:byte-buddy:1.10.14",
+            "net.bytebuddy:byte-buddy:1.10.18",
             "net.jodah:failsafe:2.4.0",
             "net.sourceforge.htmlunit:htmlunit-core-js:2.44.0",
             "org.apache.commons:commons-exec:1.3",
