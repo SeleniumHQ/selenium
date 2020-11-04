@@ -146,9 +146,9 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "8a51514f4a6341b5ab68512ab5b4d5d30be37af9795731402c586cb5d56f2bb7",
-    strip_prefix = "rules_docker-569d39130460987aebff3aa32cc2256c8f923630",
-    urls = ["https://github.com/AutomatedTester/rules_docker/archive/569d39130460987aebff3aa32cc2256c8f923630.zip"],
+    sha256 = "2fc3fe7be1daed0dcb249cced962ee10a1303de20b0d8837f2d99150fcbfca2e",
+    strip_prefix = "rules_docker-feaaebdd3162fb643494af07698f56ca9aba1241",
+    urls = ["https://github.com/bazelbuild/rules_docker/archive/feaaebdd3162fb643494af07698f56ca9aba1241.zip"],
 )
 
 load(
