@@ -24,8 +24,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -45,7 +43,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.TearDownFixture;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
@@ -79,6 +76,24 @@ public class ConsolePageTest {
 
     assertNotNull(element);
     assertEquals("100% free", element.getText());
+  }
+
+  @Test
+  public void testNodePage() {
+    Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+
+    driver.get("localhost:" + port + "/ui/index.html#/console");
+    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(@href,'node')]"))));
+
+    assertNotNull(element);
+
+    element.click();
+
+    WebElement nodePage = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[text()='root']"))));
+
+    assertNotNull(nodePage);
   }
 
   private static Server<?> createStandalone() {
