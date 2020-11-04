@@ -67,7 +67,7 @@ public interface HttpClient extends HttpHandler {
      * {@see create}
      */
     static Factory createDefault() {
-      return create(System.getProperty("webdriver.http.factory", "reactor"));
+      return create(System.getProperty("webdriver.http.factory", "netty"));
     }
 
     /**
