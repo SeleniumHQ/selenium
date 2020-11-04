@@ -1,3 +1,15 @@
+trunk
+=========================
+Firefox:
+  * Fixed an issue whereby using the new capabilities structure in local drivers
+  would cause the W3C check to complain that `browser_name` was an invalid
+  capability key name (issue #8832)
+
+All Browsers:
+  * Refactor to `#generate_as_json` which now will check if the structure is
+  "Hash-like" first. So that camelCasing on keys will occur earlier in the
+  conditional check
+
 4.0.0.alpha6 (2020-05-28)
 =========================
 
