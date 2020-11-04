@@ -23,12 +23,14 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.util.ReferenceCountUtil;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -62,6 +64,18 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
       io.netty.handler.codec.http.HttpRequest nettyRequest =
         (io.netty.handler.codec.http.HttpRequest) msg;
+
+      if (nettyRequest.headers()
+          .contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        FullHttpRequest request = (FullHttpRequest) nettyRequest;
+        HttpRequest remoteHttpRequest = createRequest(ctx, request);
+
+        if (remoteHttpRequest == null) {
+          return;
+        }
+        ctx.fireChannelRead(remoteHttpRequest);
+        return;
+      }
 
       if (HttpUtil.is100ContinueExpected(nettyRequest)) {
         ctx.write(new HttpResponse().setStatus(100));

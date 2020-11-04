@@ -42,9 +42,9 @@ public class Http2StreamInitializer extends ChannelInboundHandlerAdapter {
 
   private void addHttp2SpecificHandlers(ChannelPipeline pipeline) {
     pipeline.addLast("http2-codec", new Http2StreamFrameToHttpObjectCodec(true));
-    pipeline.addLast("se-request", new Http2RequestConverter());
-    pipeline.addLast("se-response", new Http2ResponseConverter());
-    pipeline.addLast("se-handler", new SeleniumHttp2Handler(handler));
+    pipeline.addLast("se-request", new RequestConverter());
+    pipeline.addLast("se-response", new ResponseConverter());
+    pipeline.addLast("se-handler", new SeleniumHandler(handler));
   }
 
 }

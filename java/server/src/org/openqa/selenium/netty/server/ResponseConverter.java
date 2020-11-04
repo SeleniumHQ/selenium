@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.netty.server;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,9 +26,14 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpChunkedInput;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.stream.ChunkedStream;
+
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.InputStream;
@@ -40,6 +46,8 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
   private static final int CHUNK_SIZE = 1024 * 1024;
+  private static final String STREAM_ID_HEADER =
+      HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString();
 
   @Override
   public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)
@@ -50,6 +58,25 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     }
 
     HttpResponse seResponse = (HttpResponse) msg;
+
+    String streamId = seResponse.getHeader(STREAM_ID_HEADER);
+
+    if (streamId != null) {
+      byte[] bytes = Contents.bytes(seResponse.getContent());
+      ByteBuf byteBuf = Unpooled.wrappedBuffer(bytes);
+
+      FullHttpResponse response = new DefaultFullHttpResponse(
+          HTTP_1_1,
+          HttpResponseStatus
+              .valueOf(seResponse.getStatus()),
+          byteBuf);
+
+      copyHeaders(seResponse, response);
+      HttpUtil.setContentLength(response, response.content().readableBytes());
+
+      ctx.writeAndFlush(response);
+      return;
+    }
 
     // We may not know how large the response is, but figure it out if we can.
     byte[] ary = new byte[CHUNK_SIZE];
@@ -88,7 +115,8 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     }
   }
 
-  private void copyHeaders(HttpResponse seResponse, DefaultHttpResponse first) {
+  private void copyHeaders(HttpResponse seResponse,
+                           io.netty.handler.codec.http.HttpResponse first) {
     for (String name : seResponse.getHeaderNames()) {
       if (CONTENT_LENGTH.contentEqualsIgnoreCase(name) || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
         continue;

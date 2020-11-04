@@ -19,6 +19,8 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http2.HttpConversionUtil;
+
 import org.openqa.selenium.grid.web.ErrorHandler;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -32,6 +34,8 @@ class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
   private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
   private final HttpHandler seleniumHandler;
+  private static final String STREAM_ID_HEADER =
+      HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString();
 
   public SeleniumHandler(HttpHandler seleniumHandler) {
     super(HttpRequest.class);
@@ -42,10 +46,14 @@ class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
   protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) {
     EXECUTOR.submit(() -> {
       HttpResponse res;
+      String streamId = msg.getHeader(STREAM_ID_HEADER);
       try {
         res = seleniumHandler.execute(msg);
       } catch (Throwable e) {
         res = new ErrorHandler(e).execute(msg);
+      }
+      if (streamId != null) {
+        res.setHeader(STREAM_ID_HEADER, streamId);
       }
       ctx.writeAndFlush(res);
     });
