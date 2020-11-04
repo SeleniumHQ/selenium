@@ -19,9 +19,15 @@ package org.openqa.selenium.grid.sessionqueue.config;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
+@ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig",
+    description = "New session queue config")
 public class NewSessionQueueOptions {
 
   private static final String SESSIONS_QUEUE_SECTION = "sessionqueue";
@@ -35,6 +41,7 @@ public class NewSessionQueueOptions {
 
   public NewSessionQueueOptions(Config config) {
     this.config = config;
+    new JMXHelper().register(this);
   }
 
   public Duration getSessionRequestTimeout() {
@@ -55,6 +62,16 @@ public class NewSessionQueueOptions {
       return Duration.ofSeconds(DEFAULT_RETRY_INTERVAL);
     }
     return Duration.ofSeconds(interval);
+  }
+
+  @ManagedAttribute(name = "RequestTimeoutSeconds")
+  public long getRequestTimeoutSeconds() {
+    return getSessionRequestTimeout().get(ChronoUnit.SECONDS);
+  }
+
+  @ManagedAttribute(name = "RetryIntervalSeconds")
+  public long getRetryIntervalSeconds() {
+    return getSessionRequestRetryInterval().get(ChronoUnit.SECONDS);
   }
 
   public NewSessionQueue getSessionQueue() {

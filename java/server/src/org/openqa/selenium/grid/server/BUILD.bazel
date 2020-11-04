@@ -20,6 +20,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/web",
+        "//java/server/src/org/openqa/selenium/remote/server/jmx",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
         artifact("javax.servlet:javax.servlet-api"),

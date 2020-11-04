@@ -31,6 +31,7 @@ import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
@@ -53,6 +54,9 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
@@ -91,6 +95,8 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
+@ManagedService(objectName = "org.seleniumhq.grid:type=Node,name=LocalNode",
+    description = "Node running the webdriver sessions.")
 public class LocalNode extends Node {
 
   private static final Json JSON = new Json();
@@ -174,6 +180,8 @@ public class LocalNode extends Node {
         }
       }
     }));
+
+    new JMXHelper().register(this);
   }
 
   @Override
@@ -182,9 +190,51 @@ public class LocalNode extends Node {
   }
 
   @VisibleForTesting
+  @ManagedAttribute(name = "CurrentSessions")
   public int getCurrentSessionCount() {
     // It seems wildly unlikely we'll overflow an int
     return Math.toIntExact(currentSessions.size());
+  }
+
+  @ManagedAttribute(name = "MaxSessions")
+  public int getMaxSessionCount() {
+    return maxSessionCount;
+  }
+
+  @ManagedAttribute(name = "Status")
+  public Availability getAvailability() {
+    return isDraining() ? DRAINING : UP;
+  }
+
+  @ManagedAttribute(name = "TotalSlots")
+  public int getTotalSlots() {
+    return factories.size();
+  }
+
+  @ManagedAttribute(name = "UsedSlots")
+  public long getUsedSlots() {
+    return factories.stream().filter(sessionSlot -> !sessionSlot.isAvailable()).count();
+  }
+
+  @ManagedAttribute(name = "Load")
+  public float getLoad() {
+    long inUse = factories.stream().filter(sessionSlot -> !sessionSlot.isAvailable()).count();
+    return inUse / (float) maxSessionCount * 100f;
+  }
+
+  @ManagedAttribute(name = "RemoteNodeUri")
+  public URI getExternalURI() {
+    return externalUri;
+  }
+
+  @ManagedAttribute(name = "GridUri")
+  public URI getGridURI() {
+    return gridUri;
+  }
+
+  @ManagedAttribute(name = "NodeId")
+  public String getNodeId() {
+    return getId().toString();
   }
 
   @Override

@@ -23,13 +23,20 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+@ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=BaseServerConfig",
+    description = "Server config")
 public class BaseServerOptions {
 
   private static final String SERVER_SECTION = "server";
@@ -40,12 +47,14 @@ public class BaseServerOptions {
 
   public BaseServerOptions(Config config) {
     this.config = config;
+    new JMXHelper().register(this);
   }
 
   public Optional<String> getHostname() {
     return config.get(SERVER_SECTION, "hostname");
   }
 
+  @ManagedAttribute(name = "Port")
   public int getPort() {
     if (port == -1) {
       int newPort = config.getInt(SERVER_SECTION, "port")
@@ -61,6 +70,7 @@ public class BaseServerOptions {
     return port;
   }
 
+  @ManagedAttribute(name = "MaxServerThreads")
   public int getMaxServerThreads() {
     int count = config.getInt(SERVER_SECTION, "max-threads")
         .orElse(200);
@@ -91,6 +101,15 @@ public class BaseServerOptions {
       return new URI((isSecure() || isSelfSigned()) ? "https" : "http", null, host, port, null, null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
+    }
+  }
+
+  @ManagedAttribute(name = "URL")
+  public URL getExternalUrl() {
+    try {
+      return getExternalUri().toURL();
+    } catch (MalformedURLException e) {
+      throw new ConfigException("Cannot convert URI to URL" + e.getMessage());
     }
   }
 
