@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.sessionqueue;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.post;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
@@ -65,7 +66,7 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
             .to(() -> new AddToSessionQueue(tracer, this)),
         post("/se/grid/newsessionqueuer/session/retry/{requestId}")
             .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params))),
-        Route.get("/se/grid/newsessionqueuer/session/{requestId}")
+        get("/se/grid/newsessionqueuer/session/{requestId}")
             .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params))),
         delete("/se/grid/newsessionqueuer/queue")
             .to(() -> new ClearSessionQueue(tracer, this)));
