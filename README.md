@@ -35,7 +35,7 @@ before submitting your pull requests.
 ## Building
 
 In order to build Selenium, you'll generally use the `./go` command. `./go` is a Rake script,
-which wraps the main build too, `bazel`.
+which wraps the main build tool, `bazel`.
 
 ### Bazel
 
@@ -101,11 +101,13 @@ To list all available targets, you can append the `-T` flag:
 
 ## Requirements
 
+* [Bazelisk](https://github.com/bazelbuild/bazelisk), a Bazel wrapper that automatically downloads
+  the version of Bazel specified in `.bazelversion` file and transparently passes through all
+  command-line arguments to the real Bazel binary.
 * The latest version of the [Java 11 OpenJDK](https://openjdk.java.net/)
 * `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE).
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
-* [Bazel](https://docs.bazel.build/versions/master/install.html)
 * [Python](https://www.python.org/)
 * `python` on the PATH
 * [The Requests Library](http://python-requests.org) for Python: `pip install requests`
@@ -115,6 +117,14 @@ The following command should work:
 ```bash
 xcode-select --install
 ```
+
+* Windows users should have the latest version of Visual Studio command line tools and build tools installed
+  * `BAZEL_VS` environment variable should point to the location of the build tools,
+     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools`
+  * `BAZEL_VC` environment variable should point to the location of the command line tools,
+     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC`
+  * `BAZEL_VC_FULL_VERSION` environment variable should contain the version of the installed command line tools,
+     e.g. `14.27.29110`
 
 Although the build system is based on rake, it's **strongly advised**
 to rely on the version of JRuby in `third_party/` that is invoked by
