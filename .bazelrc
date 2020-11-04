@@ -26,3 +26,5 @@ build --test_env=DISPLAY
 build --test_env=MOZ_HEADLESS
 build --test_env=DASHBOARD_URL
 build --test_env=LOCALAPPDATA
+
+test --test_timeout=180
