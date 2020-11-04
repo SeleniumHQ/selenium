@@ -117,10 +117,11 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   @Override
   public boolean offerFirst(HttpRequest request, RequestId requestId) {
     Require.nonNull("New Session request", request);
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
     boolean added = false;
     SessionRequest sessionRequest = new SessionRequest(requestId, request);
+
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
     try {
       added = sessionRequests.offerFirst(sessionRequest);
       return added;
