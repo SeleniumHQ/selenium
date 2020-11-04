@@ -44,7 +44,7 @@ public abstract class NewSessionQueue implements HasReadyState {
 
   public abstract boolean offerFirst(HttpRequest request, RequestId requestId);
 
-  public abstract Optional<HttpRequest> poll();
+  public abstract Optional<HttpRequest> remove(RequestId requestId);
 
   public abstract int clear();
 

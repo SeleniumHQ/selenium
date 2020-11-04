@@ -89,8 +89,9 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public Optional<HttpRequest> remove() {
-    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/session");
+  public Optional<HttpRequest> remove(RequestId reqId) {
+    HttpRequest upstream =
+        new HttpRequest(GET, "/se/grid/newsessionqueuer/session/" + reqId.toString());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
 

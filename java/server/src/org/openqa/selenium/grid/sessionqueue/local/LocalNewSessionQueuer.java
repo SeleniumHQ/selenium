@@ -77,8 +77,8 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public Optional<HttpRequest> remove() {
-    return sessionRequests.poll();
+  public Optional<HttpRequest> remove(RequestId id) {
+    return sessionRequests.remove(id);
   }
 
   @Override

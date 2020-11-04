@@ -64,13 +64,15 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
         post("/se/grid/newsessionqueuer/session")
             .to(() -> new AddToSessionQueue(tracer, this)),
         post("/se/grid/newsessionqueuer/session/retry/{requestId}")
-            .to(params -> new AddBackToSessionQueue(tracer, this,
-                                                    new RequestId(
-                                                        UUID.fromString(params.get("requestId"))))),
-        Route.get("/se/grid/newsessionqueuer/session")
-            .to(() -> new RemoveFromSessionQueue(tracer, this)),
+            .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params))),
+        Route.get("/se/grid/newsessionqueuer/session/{requestId}")
+            .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params))),
         delete("/se/grid/newsessionqueuer/queue")
             .to(() -> new ClearSessionQueue(tracer, this)));
+  }
+
+  private RequestId requestIdFrom(Map<String, String> params) {
+    return new RequestId(UUID.fromString(params.get("requestId")));
   }
 
   public void validateSessionRequest(HttpRequest request) {
@@ -110,7 +112,7 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
   public abstract boolean retryAddToQueue(HttpRequest request, RequestId reqId);
 
-  public abstract Optional<HttpRequest> remove();
+  public abstract Optional<HttpRequest> remove(RequestId reqId);
 
   public abstract int clearQueue();
 

@@ -118,7 +118,7 @@ public class NewSessionQueuerTest {
     AtomicBoolean isPresent = new AtomicBoolean(false);
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.local.remove();
+      Optional<HttpRequest> sessionRequest = this.local.remove(reqId);
       isPresent.set(sessionRequest.isPresent());
       Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       try {
@@ -160,7 +160,7 @@ public class NewSessionQueuerTest {
     AtomicBoolean isPresent = new AtomicBoolean(false);
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.local.remove();
+      Optional<HttpRequest> sessionRequest = this.local.remove(reqId);
       isPresent.set(sessionRequest.isPresent());
       bus.fire(
           new NewSessionRejectedEvent(
@@ -180,7 +180,7 @@ public class NewSessionQueuerTest {
     AtomicBoolean isPresent = new AtomicBoolean(false);
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.remote.remove();
+      Optional<HttpRequest> sessionRequest = this.remote.remove(reqId);
       isPresent.set(sessionRequest.isPresent());
       bus.fire(
           new NewSessionRejectedEvent(
@@ -197,7 +197,7 @@ public class NewSessionQueuerTest {
 
   @Test
   public void shouldBeAbleToRemoveFromQueue() {
-    Optional<HttpRequest> httpRequest = local.remove();
+    Optional<HttpRequest> httpRequest = local.remove(new RequestId(UUID.randomUUID()));
 
     assertFalse(httpRequest.isPresent());
   }
@@ -211,7 +211,7 @@ public class NewSessionQueuerTest {
     int count = local.clearQueue();
 
     assertEquals(count, 1);
-    assertFalse(local.remove().isPresent());
+    assertFalse(local.remove(requestId).isPresent());
   }
 
   @Test
@@ -223,7 +223,7 @@ public class NewSessionQueuerTest {
     int count = remote.clearQueue();
 
     assertEquals(count, 1);
-    assertFalse(remote.remove().isPresent());
+    assertFalse(remote.remove(requestId).isPresent());
   }
 
   @Test
@@ -241,12 +241,12 @@ public class NewSessionQueuerTest {
 
     assertThat(result.get()).isTrue();
     assertEquals(count, 1);
-    assertFalse(remote.remove().isPresent());
+    assertFalse(remote.remove(requestId).isPresent());
   }
 
   @Test
   public void shouldBeAbleToRemoveFromQueueRemotely() {
-    Optional<HttpRequest> httpRequest = remote.remove();
+    Optional<HttpRequest> httpRequest = remote.remove(new RequestId(UUID.randomUUID()));
 
     assertFalse(httpRequest.isPresent());
   }
@@ -273,7 +273,7 @@ public class NewSessionQueuerTest {
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
       // Keep a count of event fired
       count++;
-      Optional<HttpRequest> sessionRequest = this.remote.remove();
+      Optional<HttpRequest> sessionRequest = this.remote.remove(reqId);
       isPresent.set(sessionRequest.isPresent());
 
       if (count == 1) {
@@ -323,7 +323,7 @@ public class NewSessionQueuerTest {
   public void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime() {
 
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.local.remove();
+      Optional<HttpRequest> sessionRequest = this.local.remove(reqId);
       ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
       try {
         SessionId sessionId = new SessionId(UUID.randomUUID());
@@ -387,12 +387,6 @@ public class NewSessionQueuerTest {
         Duration.ofSeconds(4),
         Duration.ofSeconds(2));
 
-    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
-
-    HttpClient client = new PassthroughHttpClient(local);
-    remote = new RemoteNewSessionQueuer(tracer, client);
-
-
     HttpRequest request = createRequest(payload, POST, "/session");
     request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER,
                       Long.toString(1539091064));
@@ -412,7 +406,7 @@ public class NewSessionQueuerTest {
   }
 
   @Test
-  public void shouldBeAbleToTimeoutARequestOnPoll() {
+  public void shouldBeAbleToTimeoutARequestOnRemove() {
     Tracer tracer = DefaultTestTracer.createTracer();
     LocalNewSessionQueue sessionQueue = new LocalNewSessionQueue(
         tracer,
@@ -427,7 +421,7 @@ public class NewSessionQueuerTest {
 
     AtomicBoolean isPresent = new AtomicBoolean();
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> request = remote.remove();
+      Optional<HttpRequest> request = remote.remove(reqId);
       isPresent.set(request.isPresent());
       bus.fire(
           new NewSessionRejectedEvent(
