@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.log;
 
 import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.common.AttributeConsumer;
+import io.opentelemetry.common.AttributeKey;
 import io.opentelemetry.common.Attributes;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
@@ -28,7 +30,6 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.trace.Status;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -112,7 +113,7 @@ public class LoggingOptions {
 
   private Tracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
-    TracerSdkProvider tracerFactory = OpenTelemetrySdk.getTracerProvider();
+    TracerSdkProvider tracerFactory = (TracerSdkProvider) OpenTelemetrySdk.getTracerManagement();
 
     List<SpanProcessor> exporters = new LinkedList<>();
     exporters.add(SimpleSpanProcessor.newBuilder(new SpanExporter() {
@@ -122,9 +123,9 @@ public class LoggingOptions {
         spans.forEach(span -> {
           LOG.fine(String.valueOf(span));
 
-          String traceId = span.getTraceId().toLowerBase16();
-          String spanId = span.getSpanId().toLowerBase16();
-          Status status = span.getStatus();
+          String traceId = span.getTraceId();
+          String spanId = span.getSpanId();
+          SpanData.Status status = span.getStatus();
           List<Event> eventList = span.getEvents();
           eventList.forEach(event -> {
             Map<String, Object> map = new HashMap<>();
@@ -136,38 +137,12 @@ public class LoggingOptions {
 
             Attributes attributes = event.getAttributes();
             Map<String, Object> attributeMap = new HashMap<>();
-            attributes.forEach((key, value) -> {
-              Object attributeValue;
-              switch (value.getType()) {
-                case LONG:
-                  attributeValue = value.getLongValue();
-                  break;
-                case DOUBLE:
-                  attributeValue = value.getDoubleValue();
-                  break;
-                case STRING:
-                  attributeValue = value.getStringValue();
-                  break;
-                case BOOLEAN:
-                  attributeValue = value.getBooleanValue();
-                  break;
-                case STRING_ARRAY:
-                  attributeValue = value.getStringArrayValue();
-                  break;
-                case LONG_ARRAY:
-                  attributeValue = value.getLongArrayValue();
-                  break;
-                case DOUBLE_ARRAY:
-                  attributeValue = value.getDoubleArrayValue();
-                  break;
-                case BOOLEAN_ARRAY:
-                  attributeValue = value.getBooleanArrayValue();
-                  break;
-                default:
-                  throw new IllegalArgumentException(
-                      "Unrecognized event attribute value type: " + value.getType());
+
+            attributes.forEach(new AttributeConsumer() {
+              @Override
+              public <T> void consume(AttributeKey<T> key, T value) {
+                attributeMap.put(key.getKey(), value);
               }
-              attributeMap.put(key, attributeValue);
             });
             map.put("attributes", attributeMap);
             String jsonString = getJsonString(map);

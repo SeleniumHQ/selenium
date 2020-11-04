@@ -18,7 +18,7 @@
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.common.AttributeValue;
+import io.opentelemetry.common.AttributeKey;
 import io.opentelemetry.common.Attributes;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
@@ -26,6 +26,7 @@ import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
+import io.opentelemetry.trace.StatusCanonicalCode;
 import org.junit.Test;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -72,14 +73,15 @@ public class TracerTest {
     }
 
     Set<SpanData> values = allSpans.stream()
-      .filter(data -> data.getAttributes().get("cheese") != null)
+      .filter(data -> data.getAttributes().get(AttributeKey.stringKey("cheese")) != null)
       .collect(Collectors.toSet());
 
     assertThat(values).hasSize(1);
     assertThat(values).element(0)
-        .extracting(SpanData::getStatus).isEqualTo(io.opentelemetry.trace.Status.NOT_FOUND);
+        .extracting(SpanData::getStatus).extracting(SpanData.Status::getCanonicalCode).isEqualTo(
+        StatusCanonicalCode.ERROR);
     assertThat(values).element(0)
-        .extracting(el -> el.getAttributes().get("cheese").getStringValue()).isEqualTo("gouda");
+        .extracting(el -> el.getAttributes().get(AttributeKey.stringKey("cheese"))).isEqualTo("gouda");
 
   }
 
@@ -168,7 +170,7 @@ public class TracerTest {
     String attribute = "testBoolean";
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(attribute, AttributeValue.booleanAttributeValue(false));
+    attributes.setAttribute(attribute, false);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -192,8 +194,8 @@ public class TracerTest {
     Boolean[] booleanArray = new Boolean[]{true, false};
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(arrayKey, AttributeValue.arrayAttributeValue(booleanArray));
-    attributes.setAttribute(varArgsKey, AttributeValue.arrayAttributeValue(true, false, true));
+    attributes.setAttribute(arrayKey, booleanArray);
+    attributes.setAttribute(varArgsKey, true, false, true);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -217,7 +219,7 @@ public class TracerTest {
     Double attributeValue = 1.1;
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(attribute, AttributeValue.doubleAttributeValue(attributeValue));
+    attributes.setAttribute(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -241,8 +243,8 @@ public class TracerTest {
     Double[] doubleArray = new Double[]{4.5, 2.5};
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(arrayKey, AttributeValue.arrayAttributeValue(doubleArray));
-    attributes.setAttribute(varArgsKey, AttributeValue.arrayAttributeValue(2.2, 5.3));
+    attributes.setAttribute(arrayKey, doubleArray);
+    attributes.setAttribute(varArgsKey, 2.2, 5.3);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -266,7 +268,7 @@ public class TracerTest {
     Long attributeValue = 500L;
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(attribute, AttributeValue.longAttributeValue(attributeValue));
+    attributes.setAttribute(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -290,8 +292,8 @@ public class TracerTest {
     Long[] longArray = new Long[]{400L, 200L};
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(arrayKey, AttributeValue.arrayAttributeValue(longArray));
-    attributes.setAttribute(varArgsKey, AttributeValue.arrayAttributeValue(250L, 5L));
+    attributes.setAttribute(arrayKey, longArray);
+    attributes.setAttribute(varArgsKey, 250L, 5L);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -315,7 +317,7 @@ public class TracerTest {
     String attributeValue = "attributeValue";
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(attribute, AttributeValue.stringAttributeValue(attributeValue));
+    attributes.setAttribute(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -339,8 +341,8 @@ public class TracerTest {
     String[] strArray = new String[]{"hey", "hello"};
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(arrayKey, AttributeValue.arrayAttributeValue(strArray));
-    attributes.setAttribute(varArgsKey, AttributeValue.arrayAttributeValue("hi", "hola"));
+    attributes.setAttribute(arrayKey, strArray);
+    attributes.setAttribute(varArgsKey, "hi", "hola");
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -364,8 +366,8 @@ public class TracerTest {
     String attributeValue = "Hey";
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute(attribute, AttributeValue.stringAttributeValue(attributeValue));
-    attributes.setAttribute(attribute, AttributeValue.stringAttributeValue(attributeValue));
+    attributes.setAttribute(attribute, attributeValue);
+    attributes.setAttribute(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -391,10 +393,10 @@ public class TracerTest {
     Boolean[] booleanArray = new Boolean[]{true, false};
 
     Attributes.Builder attributes = Attributes.newBuilder();
-    attributes.setAttribute("testFloat", AttributeValue.doubleAttributeValue(5.5f));
-    attributes.setAttribute("testInt", AttributeValue.longAttributeValue(10));
-    attributes.setAttribute("testStringArray", AttributeValue.arrayAttributeValue(stringArray));
-    attributes.setAttribute("testBooleanArray", AttributeValue.arrayAttributeValue(booleanArray));
+    attributes.setAttribute("testFloat", 5.5f);
+    attributes.setAttribute("testInt", 10);
+    attributes.setAttribute("testStringArray", stringArray);
+    attributes.setAttribute("testBooleanArray", booleanArray);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
 
@@ -547,7 +549,7 @@ public class TracerTest {
   }
 
   private Tracer createTracer(List<SpanData> exportTo) {
-    TracerSdkProvider provider = OpenTelemetrySdk.getTracerProvider();
+    TracerSdkProvider provider = (TracerSdkProvider) OpenTelemetrySdk.getTracerManagement();
     provider.addSpanProcessor(SimpleSpanProcessor.newBuilder(new SpanExporter() {
       @Override
       public CompletableResultCode export(Collection<SpanData> spans) {
