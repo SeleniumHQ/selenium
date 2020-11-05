@@ -203,7 +203,7 @@ public class EndToEndTest {
     int publish = PortProber.findFreePort();
     int subscribe = PortProber.findFreePort();
 
-    String[] rawConfig = new String[]{
+    String[] rawConfig = new String[] {
       "[events]",
       "publish = \"tcp://localhost:" + publish + "\"",
       "subscribe = \"tcp://localhost:" + subscribe + "\"",
@@ -227,12 +227,12 @@ public class EndToEndTest {
 
     Server<?> eventServer = new EventBusCommand()
       .asServer(new CompoundConfig(
-          new TomlConfig(new StringReader(String.join("\n", new String[] {
-              "[events]",
-              "publish = \"tcp://localhost:" + publish + "\"",
-              "subscribe = \"tcp://localhost:" + subscribe + "\"",
-              "bind = true"}))),
-          setRandomPort(sharedConfig)))
+        new TomlConfig(new StringReader(String.join("\n", new String[] {
+          "[events]",
+          "publish = \"tcp://localhost:" + publish + "\"",
+          "subscribe = \"tcp://localhost:" + subscribe + "\"",
+          "bind = true"}))),
+        setRandomPort(sharedConfig)))
       .start();
     waitUntilReady(eventServer);
 
@@ -241,34 +241,32 @@ public class EndToEndTest {
 
     Server<?> sessionMapServer = new SessionMapServer().asServer(setRandomPort(sharedConfig)).start();
     Config sessionMapConfig = new TomlConfig(new StringReader(String.join(
-        "\n",
-        new String[] {
-            "[sessions]",
-            "hostname = \"localhost\"",
-            "port = " + sessionMapServer.getUrl().getPort()
-        }
+      "\n",
+      new String[] {
+        "[sessions]",
+        "hostname = \"localhost\"",
+        "port = " + sessionMapServer.getUrl().getPort()
+      }
     )));
 
     Server<?> distributorServer = new DistributorServer()
       .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig)))
       .start();
-  Config distributorConfig = new TomlConfig(new StringReader(String.join(
+    Config distributorConfig = new TomlConfig(new StringReader(String.join(
       "\n",
-      new String[]{
-          "[distributor]",
-          "hostname = \"localhost\"",
-          "port = " + distributorServer.getUrl().getPort()
+      new String[] {
+        "[distributor]",
+        "hostname = \"localhost\"",
+        "port = " + distributorServer.getUrl().getPort()
       }
     )));
 
     Server<?> router = new RouterServer()
-      .asServer(
-          setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
       .start();
 
     Server<?> nodeServer = new NodeServer()
-      .asServer(
-          setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
       .start();
     waitUntilReady(nodeServer);
 

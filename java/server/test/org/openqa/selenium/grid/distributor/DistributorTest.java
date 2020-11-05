@@ -431,7 +431,7 @@ public class DistributorTest {
 
   @Test
   public void registeringTheWrongRegistrationSecretDoesNotWork()
-      throws URISyntaxException, InterruptedException {
+    throws URISyntaxException, InterruptedException {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
@@ -440,8 +440,8 @@ public class DistributorTest {
     bus.addListener(new EventListener<>(rejected, Object.class, obj -> latch.countDown()));
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, new Secret("pickles"))
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
-        .build();
+      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .build();
 
     local.add(node);
 
@@ -611,7 +611,7 @@ public class DistributorTest {
         .build();
     handler.addHandler(alwaysUp);
 
-    Distributor distributor = new LocalDistributor(
+    LocalDistributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -817,7 +817,7 @@ public class DistributorTest {
         .build();
     handler.addHandler(node);
 
-    Distributor distributor = new LocalDistributor(
+    LocalDistributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -844,7 +844,7 @@ public class DistributorTest {
     }
   }
 
-  private Set<Node> createNodeSet(Distributor distributor, int count, Capabilities... capabilities) {
+  private Set<Node> createNodeSet(Distributor distributor, int count, Capabilities...capabilities) {
     Set<Node> nodeSet = new HashSet<>();
     for (int i=0; i<count; i++) {
       URI uri = createUri();
@@ -893,7 +893,7 @@ public class DistributorTest {
 
     //TODO This should probably be a map of browser -> all nodes that support <browser>
     //Store our "expected results" sets for the various browser-specific nodes
-    Set<Node> edgeNodes = createNodeSet(distributor,3, edgeCapabilities, chromeCapabilities, firefoxCapabilities);
+    Set<Node> edgeNodes = createNodeSet(distributor, 3, edgeCapabilities, chromeCapabilities, firefoxCapabilities);
 
     //chromeNodes is all these new nodes PLUS all the Edge nodes from before
     Set<Node> chromeNodes = createNodeSet(distributor,5, chromeCapabilities, firefoxCapabilities);
