@@ -22,7 +22,7 @@ import sys
 import time
 
 import pytest
-#from _pytest.skipping import MarkEvaluator
+# from _pytest.skipping import MarkEvaluator
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
@@ -94,7 +94,7 @@ def driver(request):
         request.addfinalizer(fin)
 
     # skip driver instantiation if xfail(run=False)
-    #if not request.config.getoption('runxfail'):
+    # if not request.config.getoption('runxfail'):
     #    if request.node._evalxfail.istrue():
     #        if request.node._evalxfail.get('run') is False:
     #            yield
