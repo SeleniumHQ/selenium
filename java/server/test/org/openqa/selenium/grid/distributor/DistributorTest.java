@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -83,11 +82,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -241,16 +238,16 @@ public class DistributorTest {
         queuer,
         registrationSecret);
     Distributor distributor = new RemoteDistributor(
-        tracer,
-        new PassthroughHttpClient.Factory(local),
-        new URL("http://does.not.exist"),
-        registrationSecret);
+      tracer,
+      new PassthroughHttpClient.Factory(local),
+      new URL("http://does.not.exist"),
+      registrationSecret);
     distributor.add(node);
     distributor.remove(node.getId());
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> local.newSession(createRequest(payload)));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
   }
 
@@ -851,7 +848,7 @@ public class DistributorTest {
   private Set<Node> createNodeSet(Distributor distributor, int count,
                                   Capabilities... capabilities) {
     Set<Node> nodeSet = new HashSet<>();
-    for (int i = 0; i < count; i++) {
+    for (int i=0; i<count; i++) {
       URI uri = createUri();
       LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret);
       for (Capabilities caps: capabilities) {
@@ -898,45 +895,36 @@ public class DistributorTest {
 
     //TODO This should probably be a map of browser -> all nodes that support <browser>
     //Store our "expected results" sets for the various browser-specific nodes
-    Set<Node>
-        edgeNodes =
-        createNodeSet(distributor, 3, edgeCapabilities, chromeCapabilities, firefoxCapabilities);
+    Set<Node> edgeNodes = createNodeSet(distributor,3, edgeCapabilities, chromeCapabilities, firefoxCapabilities);
 
     //chromeNodes is all these new nodes PLUS all the Edge nodes from before
-    Set<Node> chromeNodes = createNodeSet(distributor, 5, chromeCapabilities, firefoxCapabilities);
+    Set<Node> chromeNodes = createNodeSet(distributor,5, chromeCapabilities, firefoxCapabilities);
     chromeNodes.addAll(edgeNodes);
 
     //all nodes support firefox, so add them to the firefoxNodes set
-    Set<Node> firefoxNodes = createNodeSet(distributor, 3, firefoxCapabilities);
+    Set<Node> firefoxNodes = createNodeSet(distributor,3, firefoxCapabilities);
     firefoxNodes.addAll(edgeNodes);
     firefoxNodes.addAll(chromeNodes);
 
     //Assign 5 Chrome and 5 Firefox sessions to the distributor, make sure they don't go to the Edge node
-    for (int i = 0; i < 5; i++) {
+    for (int i=0; i<5; i++) {
       try (NewSessionPayload chromePayload = NewSessionPayload.create(chromeCapabilities);
            NewSessionPayload firefoxPayload = NewSessionPayload.create(firefoxCapabilities)) {
 
         Session chromeSession = distributor.newSession(createRequest(chromePayload)).getSession();
 
-        assertThat(
-            //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
+        assertThat( //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
             chromeSession.getUri()).isIn(
             chromeNodes
-                .stream().map(Node::getStatus)
-                .collect(Collectors.toList())     //List of getStatus() from the Set
-                .stream().map(NodeStatus::getUri).collect(Collectors.toList())
-            //List of getUri() from the Set
+                .stream().map(Node::getStatus).collect(Collectors.toList())         //List of getStatus() from the Set
+                .stream().map(NodeStatus::getUri).collect(Collectors.toList())     //List of getUri() from the Set
         );
 
         Session firefoxSession = distributor.newSession(createRequest(firefoxPayload)).getSession();
         LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
 
-        boolean
-            inFirefoxNodes =
-            firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
-        boolean
-            inChromeNodes =
-            chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
+        boolean inFirefoxNodes = firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
+        boolean inChromeNodes = chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
         //This could be either, or, or both
         assertTrue(inFirefoxNodes || inChromeNodes);
       }

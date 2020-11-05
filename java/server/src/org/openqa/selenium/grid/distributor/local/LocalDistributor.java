@@ -23,7 +23,6 @@ import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -117,7 +116,6 @@ public class LocalDistributor extends Distributor {
       NewSessionQueuer sessionRequests,
       Secret registrationSecret) {
     super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
-
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);

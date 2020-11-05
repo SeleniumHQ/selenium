@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -263,7 +262,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         return Either.left(exception);
       }
     } catch (SessionNotCreatedException e) {
-
       span.setAttribute("error", true);
       span.setStatus(Status.ABORTED);
 

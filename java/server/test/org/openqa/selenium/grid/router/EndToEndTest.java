@@ -204,36 +204,36 @@ public class EndToEndTest {
     int subscribe = PortProber.findFreePort();
 
     String[] rawConfig = new String[]{
-        "[events]",
-        "publish = \"tcp://localhost:" + publish + "\"",
-        "subscribe = \"tcp://localhost:" + subscribe + "\"",
-        "bind = false",
-        "",
-        "[network]",
-        "relax-checks = true",
-        "",
-        "[node]",
-        "detect-drivers = false",
-        "driver-factories = [",
-        String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
-        String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
-        "]",
-        "",
-        "[server]",
-        "registration-secret = \"colby\""
+      "[events]",
+      "publish = \"tcp://localhost:" + publish + "\"",
+      "subscribe = \"tcp://localhost:" + subscribe + "\"",
+      "bind = false",
+      "",
+      "[network]",
+      "relax-checks = true",
+      "",
+      "[node]",
+      "detect-drivers = false",
+      "driver-factories = [",
+      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
+      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
+      "]",
+      "",
+      "[server]",
+      "registration-secret = \"colby\""
     };
 
     Config sharedConfig = new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
 
     Server<?> eventServer = new EventBusCommand()
-        .asServer(new CompoundConfig(
-            new TomlConfig(new StringReader(String.join("\n", new String[] {
-                "[events]",
-                "publish = \"tcp://localhost:" + publish + "\"",
-                "subscribe = \"tcp://localhost:" + subscribe + "\"",
-                "bind = true"}))),
-            setRandomPort(sharedConfig)))
-        .start();
+      .asServer(new CompoundConfig(
+          new TomlConfig(new StringReader(String.join("\n", new String[] {
+              "[events]",
+              "publish = \"tcp://localhost:" + publish + "\"",
+              "subscribe = \"tcp://localhost:" + subscribe + "\"",
+              "bind = true"}))),
+          setRandomPort(sharedConfig)))
+      .start();
     waitUntilReady(eventServer);
 
     Server<?> newSessionQueueServer = new NewSessionQueuerServer().asServer(setRandomPort(sharedConfig)).start();
@@ -250,38 +250,38 @@ public class EndToEndTest {
     )));
 
     Server<?> distributorServer = new DistributorServer()
-        .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig)))
-        .start();
-    Config distributorConfig = new TomlConfig(new StringReader(String.join(
-        "\n",
-        new String[]{
-            "[distributor]",
-            "hostname = \"localhost\"",
-            "port = " + distributorServer.getUrl().getPort()
-        }
+      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig)))
+      .start();
+  Config distributorConfig = new TomlConfig(new StringReader(String.join(
+      "\n",
+      new String[]{
+          "[distributor]",
+          "hostname = \"localhost\"",
+          "port = " + distributorServer.getUrl().getPort()
+      }
     )));
 
     Server<?> router = new RouterServer()
-        .asServer(
-            setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
-        .start();
+      .asServer(
+          setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+      .start();
 
     Server<?> nodeServer = new NodeServer()
-        .asServer(
-            setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
-        .start();
+      .asServer(
+          setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+      .start();
     waitUntilReady(nodeServer);
 
     waitUntilReady(router);
 
     return new TestData(
-        router,
-        router::stop,
-        nodeServer::stop,
-        distributorServer::stop,
-        sessionMapServer::stop,
-        newSessionQueueServer::stop,
-        eventServer::stop);
+      router,
+      router::stop,
+      nodeServer::stop,
+      distributorServer::stop,
+      sessionMapServer::stop,
+      newSessionQueueServer::stop,
+      eventServer::stop);
   }
 
   private static void waitUntilReady(Server<?> server) {
