@@ -74,7 +74,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import static java.time.Duration.ofSeconds;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

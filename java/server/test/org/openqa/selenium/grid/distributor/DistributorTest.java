@@ -914,8 +914,8 @@ public class DistributorTest {
         assertThat( //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
                 chromeSession.getUri()).isIn(
                 chromeNodes
-                  .stream().map(Node::getStatus).collect(Collectors.toList())       //List of getStatus() from the Set
-                  .stream().map(NodeStatus::getUri).collect(Collectors.toList())    //List of getUri() from the Set
+                    .stream().map(Node::getStatus).collect(Collectors.toList())       //List of getStatus() from the Set
+                    .stream().map(NodeStatus::getUri).collect(Collectors.toList())    //List of getUri() from the Set
         );
 
         Session firefoxSession = distributor.newSession(createRequest(firefoxPayload)).getSession();
