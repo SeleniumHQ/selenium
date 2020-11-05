@@ -137,7 +137,7 @@ public class DistributorTest {
         registrationSecret);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> local.newSession(createRequest(payload)));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
   }
 
@@ -157,7 +157,7 @@ public class DistributorTest {
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(node),
@@ -230,7 +230,7 @@ public class DistributorTest {
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
-    LocalDistributor local = new LocalDistributor(
+    Distributor local = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(node),
@@ -440,8 +440,7 @@ public class DistributorTest {
     bus.addListener(new EventListener<>(rejected, Object.class, obj -> latch.countDown()));
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, new Secret("pickles"))
-        .add(caps, new TestSessionFactory(
-            (id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
         .build();
 
     local.add(node);
@@ -453,7 +452,7 @@ public class DistributorTest {
 
   @Test
   public void registeringTheCorrectRegistrationSecretWorks()
-      throws URISyntaxException, InterruptedException {
+    throws URISyntaxException, InterruptedException {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
@@ -494,7 +493,7 @@ public class DistributorTest {
     handler.addHandler(medium);
     handler.addHandler(heavy);
     handler.addHandler(massive);
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -528,7 +527,7 @@ public class DistributorTest {
     handler.addHandler(sessions);
     handler.addHandler(leastRecent);
 
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -612,7 +611,7 @@ public class DistributorTest {
         .build();
     handler.addHandler(alwaysUp);
 
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -645,7 +644,7 @@ public class DistributorTest {
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     CombinedHandler handler = new CombinedHandler();
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -681,7 +680,7 @@ public class DistributorTest {
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     CombinedHandler handler = new CombinedHandler();
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -737,7 +736,7 @@ public class DistributorTest {
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     handler.addHandler(handler);
 
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -778,7 +777,7 @@ public class DistributorTest {
         .build();
     handler.addHandler(node);
 
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -818,7 +817,7 @@ public class DistributorTest {
         .build();
     handler.addHandler(node);
 
-    LocalDistributor distributor = new LocalDistributor(
+    Distributor distributor = new LocalDistributor(
         tracer,
         bus,
         new PassthroughHttpClient.Factory(handler),
@@ -845,8 +844,7 @@ public class DistributorTest {
     }
   }
 
-  private Set<Node> createNodeSet(Distributor distributor, int count,
-                                  Capabilities... capabilities) {
+  private Set<Node> createNodeSet(Distributor distributor, int count, Capabilities... capabilities) {
     Set<Node> nodeSet = new HashSet<>();
     for (int i=0; i<count; i++) {
       URI uri = createUri();
@@ -914,10 +912,10 @@ public class DistributorTest {
         Session chromeSession = distributor.newSession(createRequest(chromePayload)).getSession();
 
         assertThat( //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
-            chromeSession.getUri()).isIn(
-            chromeNodes
-                .stream().map(Node::getStatus).collect(Collectors.toList())         //List of getStatus() from the Set
-                .stream().map(NodeStatus::getUri).collect(Collectors.toList())     //List of getUri() from the Set
+                chromeSession.getUri()).isIn(
+                chromeNodes
+                  .stream().map(Node::getStatus).collect(Collectors.toList())       //List of getStatus() from the Set
+                  .stream().map(NodeStatus::getUri).collect(Collectors.toList())    //List of getUri() from the Set
         );
 
         Session firefoxSession = distributor.newSession(createRequest(firefoxPayload)).getSession();
