@@ -48,6 +48,10 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task EnableNetworkCaching();
 
+        public abstract Task EnableNetwork();
+
+        public abstract Task DisableNetwork();
+
         /// <summary>
         /// Asynchronously enables the fetch domain for all URL patterns.
         /// </summary>
@@ -78,18 +82,18 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Asynchronously continues an intercepted network call using authentication.
         /// </summary>
-        /// <param name="requestData">The <see cref="HttpRequestData"/> of the network request.</param>
+        /// <param name="requestId">The ID of the network request for which to continue with authentication.</param>
         /// <param name="userName">The user name with which to authenticate.</param>
         /// <param name="password">The password with which to authenticate.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task ContinueWithAuth(HttpRequestData requestData, string userName, string password);
+        public abstract Task ContinueWithAuth(string requestId, string userName, string password);
 
         /// <summary>
         /// Asynchronously cancels authorization of an intercepted network request.
         /// </summary>
-        /// <param name="requestData">The <see cref="HttpRequestData"/> of the network request.</param>
+        /// <param name="requestId">The ID of the network request for which to cancel authentication.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task CancelAuth(HttpRequestData requestData);
+        public abstract Task CancelAuth(string requestId);
 
         /// <summary>
         /// Raises the AuthRequired event.

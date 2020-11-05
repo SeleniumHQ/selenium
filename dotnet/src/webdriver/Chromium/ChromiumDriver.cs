@@ -168,7 +168,7 @@ namespace OpenQA.Selenium.Chromium
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public IDevToolsSession CreateDevToolsSession()
+        public DevToolsSession CreateDevToolsSession()
         {
             if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
             {

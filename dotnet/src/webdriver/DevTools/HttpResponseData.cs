@@ -27,6 +27,8 @@ namespace OpenQA.Selenium.DevTools
     /// </summary>
     public class HttpResponseData
     {
+        private Dictionary<string, string> headers = new Dictionary<string, string>();
+
         /// <summary>
         /// The numeric status code of the HTTP response.
         /// </summary>
@@ -40,6 +42,6 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// The headers of the HTTP response.
         /// </summary>
-        public Dictionary<string, string> Headers { get; set; }
+        public Dictionary<string, string> Headers => this.headers;
     }
 }

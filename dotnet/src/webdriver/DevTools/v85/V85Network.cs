@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools.V85.Fetch;
 using OpenQA.Selenium.DevTools.V85.Network;
@@ -61,6 +62,16 @@ namespace OpenQA.Selenium.DevTools.V85
         public override async Task EnableNetworkCaching()
         {
             await network.SetCacheDisabled(new SetCacheDisabledCommandSettings() { CacheDisabled = false });
+        }
+
+        public override async Task EnableNetwork()
+        {
+            await network.Enable(new Network.EnableCommandSettings());
+        }
+
+        public override async Task DisableNetwork()
+        {
+            await network.Disable();
         }
 
         /// <summary>
@@ -115,8 +126,7 @@ namespace OpenQA.Selenium.DevTools.V85
 
             if (!string.IsNullOrEmpty(responseData.Body))
             {
-                // TODO: base64 encode?
-                commandSettings.Body = responseData.Body;
+                commandSettings.Body = Convert.ToBase64String(Encoding.UTF8.GetBytes(responseData.Body));
             }
 
             await fetch.FulfillRequest(commandSettings);
@@ -135,14 +145,15 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <summary>
         /// Asynchronously continues an intercepted network call using authentication.
         /// </summary>
-        /// <param name="requestData">The <see cref="HttpRequestData"/> of the network request.</param>
+        /// <param name="requestId">The ID of the network request for which to continue with authentication.</param>
         /// <param name="userName">The user name with which to authenticate.</param>
         /// <param name="password">The password with which to authenticate.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public override async Task ContinueWithAuth(HttpRequestData requestData, string userName, string password)
+        public override async Task ContinueWithAuth(string requestId, string userName, string password)
         {
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
+                RequestId = requestId,
                 AuthChallengeResponse = new OpenQA.Selenium.DevTools.V85.Fetch.AuthChallengeResponse()
                 {
                     Response = OpenQA.Selenium.DevTools.V85.Fetch.AuthChallengeResponseResponseValues.ProvideCredentials,
@@ -155,12 +166,13 @@ namespace OpenQA.Selenium.DevTools.V85
         /// <summary>
         /// Asynchronously cancels authorization of an intercepted network request.
         /// </summary>
-        /// <param name="requestData">The <see cref="HttpRequestData"/> of the network request.</param>
+        /// <param name="requestId">The ID of the network request for which to cancel authentication.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public override async Task CancelAuth(HttpRequestData requestData)
+        public override async Task CancelAuth(string requestId)
         {
             await fetch.ContinueWithAuth(new ContinueWithAuthCommandSettings()
             {
+                RequestId = requestId,
                 AuthChallengeResponse = new OpenQA.Selenium.DevTools.V85.Fetch.AuthChallengeResponse()
                 {
                     Response = OpenQA.Selenium.DevTools.V85.Fetch.AuthChallengeResponseResponseValues.CancelAuth
@@ -173,7 +185,7 @@ namespace OpenQA.Selenium.DevTools.V85
             AuthRequiredEventArgs wrapped = new AuthRequiredEventArgs()
             {
                 RequestId = e.RequestId,
-                Uri = e.AuthChallenge.Origin
+                Uri = e.Request.Url
             };
 
             this.OnAuthRequired(wrapped);
