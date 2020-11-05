@@ -219,7 +219,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.send(setCacheDisabled(true));
 
-    devTools.addListener(responseReceived(), responseReceived -> assertEquals(false, responseReceived.getResponse().getFromDiskCache()));
+    devTools.addListener(responseReceived(), responseReceived -> assertEquals(false, responseReceived.getResponse().getFromDiskCache().get()));
 
     driver.get(appServer.whereIs("simpleTest.html"));
 
