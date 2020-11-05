@@ -66,13 +66,15 @@ public class ConsolePageTest {
   }
 
   @Test
-  public void testConsolePage() {
+  public void testConsolePage() throws InterruptedException {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
 
     driver.get("localhost:" + port + "/ui/index.html#/console");
-    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[text()='100% free']"))));
+    Thread.sleep(Duration.ofSeconds(4).toMillis());
+
+    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[text() = '100% free']"))));
 
     assertNotNull(element);
     assertEquals("100% free", element.getText());
