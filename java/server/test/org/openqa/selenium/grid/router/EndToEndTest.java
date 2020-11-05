@@ -237,6 +237,14 @@ public class EndToEndTest {
 
     Server<?> newSessionQueueServer = new NewSessionQueuerServer().asServer(setRandomPort(sharedConfig)).start();
     waitUntilReady(newSessionQueueServer);
+    Config newSessionQueueServerConfig = new TomlConfig(new StringReader(String.join(
+        "\n",
+        new String[] {
+            "[sessionqueuer]",
+            "hostname = \"localhost\"",
+            "port = " + newSessionQueueServer.getUrl().getPort()
+        }
+    )));
 
     Server<?> sessionMapServer = new SessionMapServer().asServer(setRandomPort(sharedConfig)).start();
     Config sessionMapConfig = new TomlConfig(new StringReader(String.join(
@@ -249,7 +257,7 @@ public class EndToEndTest {
     )));
 
     Server<?> distributorServer = new DistributorServer()
-      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig)))
+      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, newSessionQueueServerConfig)))
       .start();
     Config distributorConfig = new TomlConfig(new StringReader(String.join(
       "\n",
