@@ -92,8 +92,10 @@ const RingSystem = React.memo(
 
 		// To calculate the ring offset positions
 		Object.values(progresses).forEach((x) => {
-			totalProgress += x.progress;
-			offsets.push(totalProgress);
+		  if (!isNaN(x.progress)) {
+			  totalProgress += x.progress;
+			  offsets.push(totalProgress);
+			}
 		});
 		// Add one 100 at the end for the logic in the loop in ringIndexFromCoords
 		offsets.push(100);

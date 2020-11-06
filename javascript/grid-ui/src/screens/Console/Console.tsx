@@ -147,7 +147,6 @@ function paginationReducer(
 			newState.allNodes.forEach((node, i) => {
 				node.status = updates![i].status;
 			});
-			console.log(newState.allNodes.map((node) => node.status));
 			return newState;
 
 		case PaginationDispatchTypes.filterNodes:
@@ -261,7 +260,6 @@ export default function Console(props: {
 		// parsing capabilities from string to capabilities[]
 		const nodes = gridInfo.grid.nodes.map((node: NodeType) => {
 			const capStr = (node.capabilities as unknown) as string;
-			console.log(capStr);
 			if (capStr === "") return { ...node, capabilities: [] };
 			let json: { [key: string]: number } = JSON.parse(capStr);
 			let capabilities = Object.keys(json).map((key) => {
@@ -274,7 +272,6 @@ export default function Console(props: {
 			});
 			let caps = (capabilities as unknown) as CapabilitiesType[];
 			const newnode: NodeType = { ...node, capabilities: caps };
-			console.log(caps);
 			return newnode;
 		});
 

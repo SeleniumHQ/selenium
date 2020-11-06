@@ -6,6 +6,7 @@ java_test_suite(
     size = "medium",
     srcs = [
         "ConsolePageTest.java",
+        "HubConsolePageTest.java"
     ],
     deps = [
         "//java/server/src/org/openqa/selenium/grid",
