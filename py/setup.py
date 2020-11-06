@@ -32,7 +32,7 @@ setup_args = {
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
-    'python_requires': '~=3.7.*',
+    'python_requires': '~=3.7',
     'classifiers': ['Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
                     'License :: OSI Approved :: Apache Software License',
