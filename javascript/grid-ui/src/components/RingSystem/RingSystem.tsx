@@ -239,6 +239,7 @@ const RingSystem = React.memo(
 					{/* https://stackoverflow.com/a/23714832/8608146 */}
 					{children}
 					<div
+					  id="ring-system"
 						css={css`
 							position: absolute;
 							left: 50%;

@@ -74,7 +74,7 @@ public class ConsolePageTest {
     driver.get("localhost:" + port + "/ui/index.html#/console");
     Thread.sleep(Duration.ofSeconds(4).toMillis());
 
-    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[text() = '100% free']"))));
+    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("ring-system"))));
 
     assertNotNull(element);
     assertEquals("100% free", element.getText());
