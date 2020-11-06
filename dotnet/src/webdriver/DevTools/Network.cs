@@ -1,4 +1,4 @@
-// <copyright file="INetwork.cs" company="WebDriver Committers">
+// <copyright file="Network.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -48,8 +48,16 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task EnableNetworkCaching();
 
+        /// <summary>
+        /// Asynchronously enables the network domain.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task EnableNetwork();
 
+        /// <summary>
+        /// Asynchronously diables the fetch domain.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task DisableNetwork();
 
         /// <summary>
