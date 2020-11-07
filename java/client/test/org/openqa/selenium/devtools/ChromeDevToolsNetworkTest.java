@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.devtools;
 
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.v84.network.Network;
 import org.openqa.selenium.devtools.v84.network.model.BlockedReason;
 import org.openqa.selenium.devtools.v84.network.model.ConnectionType;
@@ -37,6 +37,7 @@ import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -84,7 +85,6 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
   @Test
   public void getSetDeleteAndClearAllCookies() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     List<Cookie> allCookies = devTools.send(getAllCookies());
@@ -131,46 +131,66 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
   }
 
   @Test
+  @NotYetImplemented(CHROME)
   public void sendRequestWithUrlFiltersAndExtraHeadersAndVerifyRequests() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.send(setBlockedURLs(singletonList("*://*/*.css")));
 
     devTools.send(setExtraHTTPHeaders(new Headers(ImmutableMap.of("headerName", "headerValue"))));
 
+    AtomicReference<BlockedReason> blockedReason = new AtomicReference<>();
     devTools.addListener(loadingFailed(), loadingFailed -> {
       if (loadingFailed.getType().equals(ResourceType.STYLESHEET)) {
-        assertEquals(loadingFailed.getBlockedReason(), BlockedReason.INSPECTOR);
+        blockedReason.set(loadingFailed.getBlockedReason().get());
       }
     });
 
-    devTools.addListener(requestWillBeSent(), requestWillBeSent -> assertEquals(requestWillBeSent.getRequest().getHeaders().get("headerName"),
-                      "headerValue"));
+    AtomicReference<Object> header = new AtomicReference<>();
+    devTools.addListener(requestWillBeSent(), requestWillBeSent ->
+        header.set(requestWillBeSent.getRequest().getHeaders().get("headerName")));
 
-    devTools.addListener(dataReceived(),
-                         dataReceived -> Assert.assertNotNull(dataReceived.getRequestId()));
+    AtomicReference<RequestId> requestId = new AtomicReference<>();
+    devTools.addListener(dataReceived(), dataReceived ->
+        requestId.set(dataReceived.getRequestId()));
 
     driver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));
 
+    wait.until(d -> blockedReason.get() != null);
+    wait.until(d -> header.get() != null);
+    wait.until(d -> requestId.get() != null);
+
+    assertEquals(blockedReason.get(), BlockedReason.INSPECTOR);
+    assertEquals(header.get(),"headerValue");
   }
 
   @Test
   public void emulateNetworkConditionOffline() {
-
     devTools.send(enable(Optional.of(100000000), Optional.empty(), Optional.empty()));
 
-    devTools.send(
-        emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(ConnectionType.CELLULAR3G)));
+    try {
+      devTools.send(
+          emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(ConnectionType.CELLULAR3G)));
 
-    devTools.addListener(loadingFailed(), loadingFailed -> assertEquals(loadingFailed.getErrorText(), "net::ERR_INTERNET_DISCONNECTED"));
+      AtomicReference<String> errorMessage = new AtomicReference<>();
+      devTools.addListener(loadingFailed(),
+                           loadingFailed -> errorMessage.set(loadingFailed.getErrorText()));
 
-    driver.get(appServer.whereIs("simpleTest.html"));
+      try {
+        driver.get(appServer.whereIs("simpleTest.html"));
+      } catch (WebDriverException ignore) {
+        // it can throw a WebDriverException with a message "net::ERR_INTERNET_DISCONNECTED"
+      }
+      wait.until(d -> errorMessage.get() != null);
+      assertEquals(errorMessage.get(), "net::ERR_INTERNET_DISCONNECTED");
+    } finally {
+      devTools.send(
+          emulateNetworkConditions(false, 0, -1, -1, Optional.of(ConnectionType.NONE)));
+    }
   }
 
   @Test
   public void verifyRequestReceivedFromCacheAndResponseBody() {
-
     final RequestId[] requestIdFromCache = new RequestId[1];
     devTools.send(enable(Optional.empty(), Optional.of(100000000), Optional.empty()));
 
@@ -182,17 +202,15 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     devTools.addListener(loadingFinished(),
                          dataReceived -> Assert.assertNotNull(dataReceived.getRequestId()));
 
-    driver.get(appServer.whereIsSecure("simpleTest.html"));
-    driver.get(appServer.whereIsSecure("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
 
     Network.GetResponseBodyResponse responseBody = devTools.send(getResponseBody(requestIdFromCache[0]));
     Assert.assertNotNull(responseBody);
-
   }
 
   @Test
   public void verifySearchInResponseBody() {
-
     final RequestId[] requestIds = new RequestId[1];
     devTools.send(enable(Optional.empty(), Optional.of(100000000), Optional.empty()));
 
@@ -205,26 +223,23 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     driver.get(appServer.whereIs("simpleTest.html"));
 
     assertTrue(devTools.send(
-      searchInResponseBody(requestIds[0], "/", Optional.empty(), Optional.empty())).size()
-      > 0);
-
+      searchInResponseBody(requestIds[0], "/", Optional.empty(), Optional.empty())).size() > 0);
   }
 
   @Test
   public void verifyCacheDisabledAndClearCache() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.of(100000000)));
 
     driver.get(appServer.whereIs("simpleTest.html"));
 
     devTools.send(setCacheDisabled(true));
 
-    devTools.addListener(responseReceived(), responseReceived -> assertEquals(false, responseReceived.getResponse().getFromDiskCache().get()));
+    devTools.addListener(responseReceived(), responseReceived ->
+        assertEquals(false, responseReceived.getResponse().getFromDiskCache().get()));
 
     driver.get(appServer.whereIs("simpleTest.html"));
 
     devTools.send(clearBrowserCache());
-
   }
 
   @Test
@@ -248,7 +263,6 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
   @Test
   public void verifyResponseReceivedEventAndNetworkDisable() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
     devTools.addListener(responseReceived(), Assert::assertNotNull);
     driver.get(appServer.whereIs("simpleTest.html"));
@@ -257,7 +271,6 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
   @Test
   public void verifyWebSocketOperations() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.addListener(webSocketCreated(), Assert::assertNotNull);
@@ -267,12 +280,10 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     devTools.addListener(webSocketFrameSent(), Assert::assertNotNull);
 
     driver.get(appServer.whereIs("simpleTest.html"));
-
   }
 
   @Test
   public void verifyRequestPostData() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     final RequestId[] requestIds = new RequestId[1];
@@ -289,21 +300,17 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     driver.findElement(By.xpath("/html/body/form/input")).click();
 
     Assert.assertNotNull(devTools.send(getRequestPostData(requestIds[0])));
-
   }
 
   @Test
   public void byPassServiceWorker() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.send(setBypassServiceWorker(true));
-
   }
 
   @Test
   public void dataSizeLimitsForTest() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.send(setDataSizeLimitsForTest(10000, 100000));
@@ -311,40 +318,33 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
   @Test
   public void verifyEventSourceMessage() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.addListener(eventSourceMessageReceived(), Assert::assertNotNull);
 
     driver.get(appServer.whereIs("simpleTest.html"));
-
   }
 
   @Test
   public void verifySignedExchangeReceived() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.addListener(signedExchangeReceived(), Assert::assertNotNull);
 
     driver.get(appServer.whereIsSecure("simpleTest.html"));
-
   }
 
   @Test
   public void verifyResourceChangedPriority() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.addListener(resourceChangedPriority(), Assert::assertNotNull);
 
     driver.get(appServer.whereIsSecure("simpleTest.html"));
-
   }
 
   @Test
   public void interceptRequestAndContinue() {
-
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.addListener(requestIntercepted(),
@@ -363,7 +363,6 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     devTools.send(setRequestInterception(ImmutableList.of(requestPattern)));
 
     driver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));
-
   }
 
 }
