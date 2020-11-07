@@ -145,20 +145,20 @@ public class Standalone extends TemplateGridServerCommand {
 
     NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
     NewSessionQueue sessionRequests = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        newSessionQueueOptions.getSessionRequestRetryInterval(),
-        newSessionQueueOptions.getSessionRequestTimeout());
+      tracer,
+      bus,
+      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeout());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
     combinedHandler.addHandler(queuer);
 
     Distributor distributor = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
-        sessions,
-        queuer,
-        registrationSecret);
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
     combinedHandler.addHandler(distributor);
 
     Routable router = new Router(tracer, clientFactory, sessions, distributor)

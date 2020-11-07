@@ -104,18 +104,18 @@ public class AddingNodesTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(1, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.of(1, SECONDS),
+      Duration.of(2, SECONDS));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor local = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
-        sessions,
-        queuer,
-        registrationSecret);
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
 
     handler.addHandler(local);
     distributor = new RemoteDistributor(tracer, clientFactory, externalUrl, registrationSecret);
@@ -152,24 +152,24 @@ public class AddingNodesTest {
     Secret registrationSecret = new Secret("my_secret");
 
     Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
-        .build();
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+      .build();
     handler.addHandler(node);
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(1, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.of(1, SECONDS),
+      Duration.of(2, SECONDS));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor secretDistributor = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
-        sessions,
-        queuer,
-        registrationSecret);
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
 
     bus.fire(new NodeStatusEvent(node.getStatus()));
 

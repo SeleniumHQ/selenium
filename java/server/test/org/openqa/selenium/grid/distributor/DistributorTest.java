@@ -118,12 +118,13 @@ public class DistributorTest {
         Duration.of(2, SECONDS),
         Duration.of(2, SECONDS));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    local = new LocalDistributor(tracer,
-                                 bus,
-                                 HttpClient.Factory.createDefault(),
-                                 sessions,
-                                 queuer,
-                                 registrationSecret);
+    local = new LocalDistributor(
+      tracer,
+      bus,
+      HttpClient.Factory.createDefault(),
+      sessions,
+      queuer,
+      registrationSecret);
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
   }
@@ -914,8 +915,8 @@ public class DistributorTest {
         assertThat( //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
                 chromeSession.getUri()).isIn(
                 chromeNodes
-                    .stream().map(Node::getStatus).collect(Collectors.toList())       //List of getStatus() from the Set
-                    .stream().map(NodeStatus::getUri).collect(Collectors.toList())    //List of getUri() from the Set
+                    .stream().map(Node::getStatus).collect(Collectors.toList())     //List of getStatus() from the Set
+                    .stream().map(NodeStatus::getUri).collect(Collectors.toList())  //List of getUri() from the Set
         );
 
         Session firefoxSession = distributor.newSession(createRequest(firefoxPayload)).getSession();
@@ -966,6 +967,7 @@ public class DistributorTest {
       throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("http://example.com");
+
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .advanced()
@@ -982,6 +984,7 @@ public class DistributorTest {
   public void disabledNodeShouldNotAcceptNewRequests()
       throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
+
     URI uri = new URI("http://example.com");
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))

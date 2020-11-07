@@ -135,8 +135,9 @@ public class LocalDistributor extends Distributor {
       if (sessionRequest.isPresent()) {
         handleNewSessionRequest(sessionRequest.get(), reqId);
       } else {
-        fireSessionRejectedEvent("Unable to poll request from the new session request queue.",
-                                 reqId);
+        fireSessionRejectedEvent(
+          "Unable to poll request from the new session request queue.",
+          reqId);
       }
     }));
   }
@@ -196,12 +197,13 @@ public class LocalDistributor extends Distributor {
     NewSessionQueuer sessionRequests =
         new NewSessionQueuerOptions(config).getSessionQueuer(
             "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer");
-    return new LocalDistributor(tracer,
-                                bus,
-                                clientFactory,
-                                sessions,
-                                sessionRequests,
-                                secretOptions.getRegistrationSecret());
+    return new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      sessionRequests,
+      secretOptions.getRegistrationSecret());
   }
 
   @Override

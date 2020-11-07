@@ -139,20 +139,20 @@ public class Hub extends TemplateGridServerCommand {
 
     NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
     NewSessionQueue sessionRequests = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        newSessionQueueOptions.getSessionRequestTimeout(),
-        newSessionQueueOptions.getSessionRequestRetryInterval());
+      tracer,
+      bus,
+      newSessionQueueOptions.getSessionRequestTimeout(),
+      newSessionQueueOptions.getSessionRequestRetryInterval());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
     handler.addHandler(queuer);
 
     Distributor distributor = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
-        sessions,
-        queuer,
-        secretOptions.getRegistrationSecret());
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      secretOptions.getRegistrationSecret());
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
