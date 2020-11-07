@@ -89,9 +89,12 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
           return super.execute(command);
         } catch (Throwable t) {
           Throwable rootCause = Throwables.getRootCause(t);
-          if (rootCause instanceof ConnectException &&
-              "Connection refused".equals(rootCause.getMessage()) &&
-              !service.isRunning()) {
+          if (rootCause instanceof IllegalStateException
+              && "Closed".equals(rootCause.getMessage())) {
+            return null;
+          }
+          if (rootCause instanceof ConnectException
+              && "Connection refused".equals(rootCause.getMessage())) {
             throw new WebDriverException("The driver server has unexpectedly died!", t);
           }
           Throwables.throwIfUnchecked(t);
@@ -107,12 +110,8 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
       try {
         Response response = (Response) CompletableFuture.anyOf(commandComplete, processFinished)
             .get(service.getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
-        if (response != null) {
-          service.stop();
-          return response;
-        } else {
-          return null;
-        }
+        service.stop();
+        return response;
       } catch (ExecutionException | TimeoutException e) {
         throw new WebDriverException("Timed out waiting for driver server to stop.", e);
       } catch (InterruptedException e) {
