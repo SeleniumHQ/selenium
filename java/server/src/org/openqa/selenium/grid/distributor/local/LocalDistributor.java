@@ -60,9 +60,7 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -76,7 +74,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

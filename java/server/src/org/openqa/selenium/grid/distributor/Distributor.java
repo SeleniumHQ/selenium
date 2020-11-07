@@ -198,8 +198,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         SessionNotCreatedException exception = new SessionNotCreatedException("No capabilities found");
         EXCEPTION.accept(attributeMap, exception);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue("Unable to create session. No capabilities found: "
-            + exception.getMessage()));
+          EventAttribute.setValue("Unable to create session. No capabilities found: " +
+            exception.getMessage()));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         return Either.left(exception);
       }
