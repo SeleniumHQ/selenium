@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_library")
 
 java_library(
@@ -14,5 +15,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/client/src/org/openqa/selenium/remote/http",
+        artifact("com.google.guava:guava"),
     ],
 )
