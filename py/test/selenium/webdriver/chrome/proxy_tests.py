@@ -1,7 +1,6 @@
 import os
 import urllib3
 
-from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium import webdriver
 
 

@@ -17,8 +17,6 @@
 
 from selenium.webdriver import Chrome
 
-from selenium.webdriver.common.bidi.console import Console
-
 
 def test_execute_cdp_cmd():
     driver = Chrome()

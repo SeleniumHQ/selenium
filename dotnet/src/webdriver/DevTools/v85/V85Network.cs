@@ -208,5 +208,38 @@ namespace OpenQA.Selenium.DevTools.V85
 
             this.OnRequestPaused(wrapped);
         }
+
+        private async void OnNetworkResponseReceived(object sender, Network.ResponseReceivedEventArgs e)
+        {
+            HttpResponseData responseData = new HttpResponseData()
+            {
+                StatusCode = e.Response.Status,
+                Url = e.Response.Url,
+                ResourceType = e.Type.ToString()
+            };
+
+            foreach (var header in e.Response.Headers)
+            {
+                responseData.Headers.Add(header.Key, header.Value);
+            }
+
+            var body = await network.GetResponseBody(new Network.GetResponseBodyCommandSettings() { RequestId = e.RequestId });
+            if (body.Base64Encoded)
+            {
+                responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(body.Body));
+            }
+            else
+            {
+                responseData.Body = body.Body;
+            }
+
+            ResponseReceivedEventArgs wrapped = new ResponseReceivedEventArgs()
+            {
+                RequestId = e.RequestId,
+                ResponseData = responseData
+            };
+
+            this.OnResponseReceived(wrapped);
+        }
     }
 }

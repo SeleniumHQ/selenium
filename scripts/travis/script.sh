@@ -37,7 +37,7 @@ if [[ ! -z "$BZL" ]]; then
        bazel $BZL
      fi
   else
-    bazel $BZL
+    timeout 40m bazel $BZL
   fi
   bazel analyze-profile /tmp/bazelprofile
 fi
