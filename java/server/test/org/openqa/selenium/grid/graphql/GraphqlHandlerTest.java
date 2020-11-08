@@ -61,7 +61,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -94,10 +93,10 @@ public class GraphqlHandlerTest {
     payload = NewSessionPayload.create(caps);
 
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        events,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      events,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
 
     distributor = new LocalDistributor(

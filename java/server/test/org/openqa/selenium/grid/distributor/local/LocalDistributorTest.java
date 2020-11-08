@@ -53,7 +53,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,8 +61,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -94,10 +93,10 @@ public class LocalDistributorTest {
   @Test
   public void testAddNodeToDistributor() {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, ChronoUnit.SECONDS),
-        Duration.of(2, ChronoUnit.SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -123,10 +122,10 @@ public class LocalDistributorTest {
   public void testShouldNotAddNodeWithWrongSecret() {
     Secret secret = new Secret("my_secret");
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, ChronoUnit.SECONDS),
-        Duration.of(2, ChronoUnit.SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor secretDistributor = new LocalDistributor(
         tracer,
@@ -146,10 +145,10 @@ public class LocalDistributorTest {
   @Test
   public void testRemoveNodeFromDistributor() {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, ChronoUnit.SECONDS),
-        Duration.of(2, ChronoUnit.SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -175,10 +174,10 @@ public class LocalDistributorTest {
   @Test
   public void testAddSameNodeTwice() {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, ChronoUnit.SECONDS),
-        Duration.of(2, ChronoUnit.SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -201,8 +200,8 @@ public class LocalDistributorTest {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
       bus,
-      Duration.of(2, ChronoUnit.SECONDS),
-      Duration.of(2, ChronoUnit.SECONDS));
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalDistributor distributor = new LocalDistributor(
       tracer,
@@ -254,7 +253,7 @@ public class LocalDistributorTest {
     List<Future<SessionId>> futures = Executors.newFixedThreadPool(3).invokeAll(callables);
 
     for (Future<SessionId> future : futures) {
-      SessionId id = future.get(2, SECONDS);
+      SessionId id = future.get(2, TimeUnit.SECONDS);
 
       // Now send a random command.
       HttpResponse res = node.execute(new HttpRequest(GET, String.format("/session/%s/url", id)));
@@ -266,10 +265,10 @@ public class LocalDistributorTest {
   @Test
   public void testDrainNodeFromDistributor() {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, ChronoUnit.SECONDS),
-        Duration.of(2, ChronoUnit.SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -302,10 +301,10 @@ public class LocalDistributorTest {
     assertThat(localNode.isDraining()).isFalse();
 
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, ChronoUnit.SECONDS),
-        Duration.of(2, ChronoUnit.SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor distributor = new LocalDistributor(
       tracer,

@@ -61,7 +61,6 @@ import java.time.Duration;
 import java.time.Instant;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -91,10 +90,10 @@ public class NewSessionCreationTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        events,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      events,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
 
     Distributor distributor = new LocalDistributor(

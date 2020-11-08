@@ -74,7 +74,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -86,7 +85,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
@@ -113,10 +111,10 @@ public class DistributorTest {
     bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     local = new LocalDistributor(
       tracer,
@@ -149,10 +147,10 @@ public class DistributorTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
@@ -184,10 +182,10 @@ public class DistributorTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -221,10 +219,10 @@ public class DistributorTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -259,10 +257,10 @@ public class DistributorTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
@@ -291,10 +289,10 @@ public class DistributorTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
@@ -333,10 +331,10 @@ public class DistributorTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
@@ -374,10 +372,10 @@ public class DistributorTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
@@ -478,10 +476,10 @@ public class DistributorTest {
     // * sorted with most heavily used first
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     Node lightest = createNode(caps, 10, 0);
@@ -517,10 +515,10 @@ public class DistributorTest {
   public void shouldUseLastSessionCreatedTimeAsTieBreaker() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Node leastRecent = createNode(caps, 5, 0);
 
@@ -591,10 +589,10 @@ public class DistributorTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     handler.addHandler(sessions);
 
@@ -638,10 +636,10 @@ public class DistributorTest {
   public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     CombinedHandler handler = new CombinedHandler();
@@ -674,10 +672,10 @@ public class DistributorTest {
   public void shouldReleaseSlotOnceSessionEnds() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     CombinedHandler handler = new CombinedHandler();
@@ -730,10 +728,10 @@ public class DistributorTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     handler.addHandler(handler);
 
@@ -763,10 +761,10 @@ public class DistributorTest {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     handler.addHandler(sessions);
 
@@ -804,10 +802,10 @@ public class DistributorTest {
     handler.addHandler(sessions);
     AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     URI uri = createUri();
@@ -872,10 +870,10 @@ public class DistributorTest {
     handler.addHandler(sessions);
 
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(2, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     LocalDistributor distributor = new LocalDistributor(
