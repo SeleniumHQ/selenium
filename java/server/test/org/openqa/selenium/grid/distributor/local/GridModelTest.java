@@ -31,7 +31,6 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 public class GridModelTest {
 
@@ -41,10 +40,10 @@ public class GridModelTest {
   private final SessionMap sessions = new LocalSessionMap(tracer, events);
   private final Secret secret = new Secret("cheese");
   LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-      tracer,
-      events,
-      Duration.of(2, ChronoUnit.SECONDS),
-      Duration.of(2, ChronoUnit.SECONDS));
+    tracer,
+    events,
+    Duration.ofSeconds(2),
+    Duration.ofSeconds(2));
   LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
   private final Distributor distributor = new LocalDistributor(
       tracer,

@@ -72,7 +72,6 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
@@ -106,8 +105,8 @@ public class AddingNodesTest {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
       bus,
-      Duration.of(1, SECONDS),
-      Duration.of(2, SECONDS));
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor local = new LocalDistributor(
       tracer,
@@ -160,8 +159,8 @@ public class AddingNodesTest {
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
       bus,
-      Duration.of(1, SECONDS),
-      Duration.of(2, SECONDS));
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor secretDistributor = new LocalDistributor(
       tracer,
@@ -193,10 +192,10 @@ public class AddingNodesTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(1, SECONDS),
-        Duration.of(2, SECONDS));
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     Distributor secretDistributor = new LocalDistributor(
         tracer,
