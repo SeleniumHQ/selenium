@@ -23,6 +23,8 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/security",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/test/org/openqa/selenium/grid/testing",
         artifact("com.google.guava:guava"),
