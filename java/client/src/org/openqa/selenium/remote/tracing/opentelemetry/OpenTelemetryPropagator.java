@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import io.grpc.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.trace.DefaultSpan;
-import io.opentelemetry.trace.SpanId;
 import io.opentelemetry.trace.Tracer;
 import io.opentelemetry.trace.TracingContextUtils;
 import org.openqa.selenium.internal.Require;
