@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.docker;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -54,9 +55,9 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -82,7 +83,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Capabilities stereotype;
   private boolean isVideoRecordingAvailable;
   private Image videoImage;
-  private Path storagePath;
+  private String storagePath;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -102,7 +103,7 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   public DockerSessionFactory(Tracer tracer, HttpClient.Factory clientFactory, Docker docker, URI dockerUri,
-    Image browserImage, Capabilities stereotype, Image videoImage, Path storagePath) {
+    Image browserImage, Capabilities stereotype, Image videoImage, String storagePath) {
     this(tracer, clientFactory, docker, dockerUri, browserImage, stereotype);
     this.isVideoRecordingAvailable = true;
     this.videoImage = videoImage;
@@ -187,11 +188,10 @@ public class DockerSessionFactory implements SessionFactory {
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
       Container videoContainer = null;
       if (isVideoRecordingAvailable && recordVideoForSession(sessionRequest.getCapabilities())) {
-        Map<String, String> envVars = new HashMap<>();
-        envVars.put("DISPLAY_CONTAINER_NAME", containerInfo.getIp());
-        envVars.put("FILE_NAME", String.format("%s.mp4", id));
-        Map<String, String> volumeBinds = new HashMap<>();
-        volumeBinds.put(storagePath.toString(), "/videos");
+        Map<String, String> envVars = ImmutableMap.of(
+          "DISPLAY_CONTAINER_NAME", containerInfo.getIp(),
+          "FILE_NAME", String.format("%s.mp4", id));
+        Map<String, String> volumeBinds = Collections.singletonMap(storagePath, "/videos");
         videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
         videoContainer.start();
       }

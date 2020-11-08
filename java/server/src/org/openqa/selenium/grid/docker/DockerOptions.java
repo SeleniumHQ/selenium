@@ -37,8 +37,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -139,7 +137,6 @@ public class DockerOptions {
     if (isVideoRecordingAvailable()) {
       loadImages(docker, videoImage.getName());
     }
-    Path storagePath = getStoragePath();
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
     ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
@@ -148,7 +145,7 @@ public class DockerOptions {
       for (int i = 0; i < maxContainerCount; i++) {
         if (isVideoRecordingAvailable()) {
           factories.put(caps,
-              new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps, videoImage, storagePath));
+              new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps, videoImage, getStoragePath()));
         } else {
           factories.put(caps, new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
         }
@@ -171,12 +168,8 @@ public class DockerOptions {
     return videoImage.map(docker::getImage).orElse(null);
   }
 
-  private Path getStoragePath() {
-    String storagePath = config.get(DOCKER_SECTION, "video-path").orElse("");
-    if (Files.isDirectory(Path.of(storagePath))) {
-      return Path.of(storagePath);
-    }
-    return null;
+  private String getStoragePath() {
+    return config.get(DOCKER_SECTION, "video-path").orElse("");
   }
 
   private void loadImages(Docker docker, String... imageNames) {
