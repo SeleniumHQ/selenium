@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 import static java.util.Base64.getEncoder;
 
@@ -32,7 +31,6 @@ public class SecretOptions {
 
   private static final String SERVER_SECTION = "server";
 
-  private static final Logger LOG = Logger.getLogger(SecretOptions.class.getName());
   private final Config config;
 
   public SecretOptions(Config config) {

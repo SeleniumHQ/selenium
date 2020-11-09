@@ -25,7 +25,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Collections;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
