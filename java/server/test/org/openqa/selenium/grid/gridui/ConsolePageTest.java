@@ -75,7 +75,7 @@ public class ConsolePageTest {
   public void shouldReportAllNodesFreeWhenGridIsStartedWithoutLoad() {
     driver.get(whereIs(server, "/ui/index.html#/console"));
 
-    WebElement ring = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("ring-system")));
+    WebElement ring = wait.until(visibilityOfElementLocated(By.id("ring-system")));
 
     assertEquals("100% free", ring.getText());
   }
