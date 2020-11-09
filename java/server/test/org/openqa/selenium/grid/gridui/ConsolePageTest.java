@@ -89,7 +89,7 @@ public class ConsolePageTest {
 
     element.click();
 
-    WebElement nodePage = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[text()='root']"))));
+    wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("node-info"))));
   }
 
   private static Server<?> createStandalone() {
