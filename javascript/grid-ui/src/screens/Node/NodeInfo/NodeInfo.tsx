@@ -126,7 +126,7 @@ const NodeInfo = React.memo(
 					</IconButton>
 				</CardActions>
 				<Collapse in={expanded} timeout="auto" unmountOnExit>
-					<CardContent>
+					<CardContent id="node-info">
 						<ReactJson src={node} theme="monokai" />
 					</CardContent>
 				</Collapse>
