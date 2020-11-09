@@ -35,7 +35,6 @@ else:
     from urllib import urlopen
 
 drivers = (
-    'BlackBerry',
     'Chrome',
     'Edge',
     'Firefox',
@@ -105,8 +104,6 @@ def driver(request):
 
     global driver_instance
     if driver_instance is None:
-        if driver_class == 'BlackBerry':
-            kwargs.update({'device_password': 'password'})
         if driver_class == 'Firefox':
             kwargs.update({'capabilities': {'marionette': False}})
             options = get_options(driver_class, request.config)
