@@ -156,21 +156,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public CreateSessionResponse newSession(HttpRequest request) {
-    Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
-      createNewSessionResponse(request);
-    if (sessionResponse.isRight()) {
-      return sessionResponse.right();
-    } else {
-      SessionNotCreatedException exception = sessionResponse.left();
-      if (exception instanceof RetrySessionRequestException) {
-        throw new SessionNotCreatedException(exception.getMessage(), exception);
-      }
-      throw sessionResponse.left();
-    }
-  }
-
-  public Either<SessionNotCreatedException, CreateSessionResponse> createNewSessionResponse(
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(
     HttpRequest request) throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.create_session_response");

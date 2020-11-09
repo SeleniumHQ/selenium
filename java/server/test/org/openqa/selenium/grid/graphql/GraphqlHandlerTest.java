@@ -174,8 +174,7 @@ public class GraphqlHandlerTest {
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
-
-    Session session = distributor.newSession(createRequest(payload)).getSession();
+    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
     assertThat(session).isNotNull();
     String sessionId = session.getId().toString();
@@ -222,8 +221,7 @@ public class GraphqlHandlerTest {
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
-
-    Session session = distributor.newSession(createRequest(payload)).getSession();
+    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
     assertThat(session).isNotNull();
     String sessionId = session.getId().toString();
@@ -269,8 +267,7 @@ public class GraphqlHandlerTest {
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
-
-    Session session = distributor.newSession(createRequest(payload)).getSession();
+    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
     assertThat(session).isNotNull();
     String sessionId = session.getId().toString();
@@ -322,8 +319,7 @@ public class GraphqlHandlerTest {
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
-
-    Session session = distributor.newSession(createRequest(payload)).getSession();
+    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
     assertThat(session).isNotNull();
     String sessionId = session.getId().toString();
