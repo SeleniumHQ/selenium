@@ -75,7 +75,6 @@ public class ConsolePageTest {
 
     WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("ring-system"))));
 
-    assertNotNull(element);
     assertEquals("100% free", element.getText());
   }
 
@@ -88,13 +87,9 @@ public class ConsolePageTest {
     driver.get("localhost:" + port + "/ui/index.html#/console");
     WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(@href,'node')]"))));
 
-    assertNotNull(element);
-
     element.click();
 
     WebElement nodePage = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[text()='root']"))));
-
-    assertNotNull(nodePage);
   }
 
   private static Server<?> createStandalone() {

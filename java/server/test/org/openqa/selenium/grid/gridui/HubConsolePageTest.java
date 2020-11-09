@@ -58,7 +58,6 @@ public class HubConsolePageTest {
 
     WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("ring-system"))));
 
-    assertNotNull(element);
     assertEquals("0% free", element.getText());
   }
 
