@@ -39,6 +39,9 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
+import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -55,6 +58,7 @@ import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUER_ROLE;
 import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Route.get;
 
@@ -75,7 +79,11 @@ public class RouterServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(DISTRIBUTOR_ROLE, HTTPD_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE);
+    return ImmutableSet.of(
+        DISTRIBUTOR_ROLE,
+        HTTPD_ROLE, ROUTER_ROLE,
+        SESSION_MAP_ROLE,
+        SESSION_QUEUER_ROLE);
   }
 
   @Override
@@ -104,6 +112,12 @@ public class RouterServer extends TemplateGridServerCommand {
     SessionMapOptions sessionsOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionsOptions.getSessionMap();
 
+    NewSessionQueuerOptions sessionQueuerOptions = new NewSessionQueuerOptions(config);
+    URL sessionQueuerUrl = fromUri(sessionQueuerOptions.getSessionQueuerUri());
+    NewSessionQueuer queuer = new RemoteNewSessionQueuer(
+        tracer,
+        clientFactory.createClient(sessionQueuerUrl));
+
     BaseServerOptions serverOptions = new BaseServerOptions(config);
     SecretOptions secretOptions = new SecretOptions(config);
 
@@ -118,7 +132,7 @@ public class RouterServer extends TemplateGridServerCommand {
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
 
     Route handler = Route.combine(
-      new Router(tracer, clientFactory, sessions, distributor).with(networkOptions.getSpecComplianceChecks()),
+      new Router(tracer, clientFactory, sessions, queuer, distributor).with(networkOptions.getSpecComplianceChecks()),
       Route.post("/graphql").to(() -> graphqlHandler),
       get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
 

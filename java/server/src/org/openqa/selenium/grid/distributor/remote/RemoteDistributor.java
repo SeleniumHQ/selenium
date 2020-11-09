@@ -77,18 +77,6 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public CreateSessionResponse newSession(HttpRequest request)
-      throws SessionNotCreatedException {
-    HttpRequest upstream = new HttpRequest(POST, "/se/grid/distributor/session");
-    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
-    upstream.setContent(request.getContent());
-
-    HttpResponse response = client.with(addSecret).execute(upstream);
-
-    return Values.get(response, CreateSessionResponse.class);
-  }
-
-  @Override
   public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
