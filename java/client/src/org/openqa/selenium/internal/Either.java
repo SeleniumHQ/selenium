@@ -18,8 +18,8 @@
 package org.openqa.selenium.internal;
 
 public class Either<A, B> {
-  private A left = null;
-  private B right = null;
+  private final A left;
+  private final B right;
 
   private Either(A a, B b) {
     left = a;
@@ -27,11 +27,11 @@ public class Either<A, B> {
   }
 
   public static <A, B> Either<A, B> left(A a) {
-    return new Either<A, B>(a, null);
+    return new Either<>(a, null);
   }
 
-  public A left() {
-    return left;
+  public static <A, B> Either<A, B> right(B b) {
+    return new Either<>(null, b);
   }
 
   public boolean isLeft() {
@@ -42,11 +42,11 @@ public class Either<A, B> {
     return right != null;
   }
 
-  public B right() {
-    return right;
+  public A left() {
+    return left;
   }
 
-  public static <A, B> Either<A, B> right(B b) {
-    return new Either<A, B>(null, b);
+  public B right() {
+    return right;
   }
 }
