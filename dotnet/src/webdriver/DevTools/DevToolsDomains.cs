@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace OpenQA.Selenium.DevTools
@@ -32,15 +33,14 @@ namespace OpenQA.Selenium.DevTools
         private static readonly int DefaultVersionRange = 5;
 
         // This is the list of known supported DevTools version implementation.
-        // Note carefully that it is sorted in reverse order, most recent
-        // version first, as that is more likely to match. When new versions
-        // are implemented for support, new types must be added to this list.
-        private static readonly List<Type> SupportedDevToolsVersions = new List<Type>()
+        // When new versions are implemented for support, new types must be
+        // added to this dictionary.
+        private static readonly Dictionary<int, Type> SupportedDevToolsVersions = new Dictionary<int, Type>()
         {
-            typeof(V87.V87Domains),
-            typeof(V86.V86Domains),
-            typeof(V85.V85Domains),
-            typeof(V84.V84Domains)
+            { 87, typeof(V87.V87Domains) },
+            { 86, typeof(V86.V86Domains) },
+            { 85, typeof(V85.V85Domains) },
+            { 84, typeof(V84.V84Domains) }
         };
 
         /// <summary>
@@ -111,22 +111,24 @@ namespace OpenQA.Selenium.DevTools
 
         private static Type MatchDomainsVersion(int desiredVersion, int versionRange)
         {
-            // Use reflection to look for a DevToolsVersion static field on every known domain implementation type
-            foreach (Type candidateType in SupportedDevToolsVersions)
+            // Return fast on an exact match
+            if (SupportedDevToolsVersions.ContainsKey(desiredVersion))
             {
-                PropertyInfo info = candidateType.GetProperty("DevToolsVersion", BindingFlags.Static | BindingFlags.Public);
-                if (info != null)
+                return SupportedDevToolsVersions[desiredVersion];
+            }
+
+            // Get the list of supported versions and sort descending
+            List<int> supportedVersions = new List<int>(SupportedDevToolsVersions.Keys);
+            supportedVersions.Sort((first, second) => second.CompareTo(first));
+
+            foreach (int supportedVersion in supportedVersions)
+            {
+                // Match the version with the desired version within the
+                // version range, using "The Price Is Right" style matching
+                // (that is, closest without going over).
+                if (desiredVersion >= supportedVersion && desiredVersion - supportedVersion < versionRange)
                 {
-                    object propertyValue = info.GetValue(null);
-                    if (propertyValue != null)
-                    {
-                        // Match the version with the desired version within the version range
-                        int candidateVersion = (int)propertyValue;
-                        if (desiredVersion - candidateVersion < versionRange)
-                        {
-                            return candidateType;
-                        }
-                    }
+                    return SupportedDevToolsVersions[supportedVersion];
                 }
             }
 
