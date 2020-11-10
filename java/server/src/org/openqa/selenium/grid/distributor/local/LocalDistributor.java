@@ -150,7 +150,7 @@ public class LocalDistributor extends Distributor {
 
       attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
       Either<SessionNotCreatedException, CreateSessionResponse> response =
-          createNewSessionResponse(sessionRequest);
+          newSession(sessionRequest);
       if (response.isRight()) {
         CreateSessionResponse sessionResponse = response.right();
         NewSessionResponse newSessionResponse =

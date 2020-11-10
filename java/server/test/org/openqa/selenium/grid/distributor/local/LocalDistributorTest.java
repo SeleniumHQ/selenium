@@ -244,7 +244,7 @@ public class LocalDistributorTest {
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       callables.add(() -> {
-        CreateSessionResponse res = distributor.newSession(req);
+        CreateSessionResponse res = distributor.newSession(req).right();
         assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
         return res.getSession().getId();
       });

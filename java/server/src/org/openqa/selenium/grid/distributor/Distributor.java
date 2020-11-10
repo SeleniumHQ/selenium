@@ -142,13 +142,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
     Json json = new Json();
     routes = Route.combine(
-      post("/session").to(() -> req -> {
-        CreateSessionResponse sessionResponse = newSession(req);
-        return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
-      }),
-      post("/se/grid/distributor/session")
-          .to(() -> new CreateSession(this))
-          .with(requiresSecret),
       post("/se/grid/distributor/node")
           .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
           .with(requiresSecret),
@@ -163,21 +156,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public CreateSessionResponse newSession(HttpRequest request) {
-    Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
-      createNewSessionResponse(request);
-    if (sessionResponse.isRight()) {
-      return sessionResponse.right();
-    } else {
-      SessionNotCreatedException exception = sessionResponse.left();
-      if (exception instanceof RetrySessionRequestException) {
-        throw new SessionNotCreatedException(exception.getMessage(), exception);
-      }
-      throw sessionResponse.left();
-    }
-  }
-
-  public Either<SessionNotCreatedException, CreateSessionResponse> createNewSessionResponse(
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(
     HttpRequest request) throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.create_session_response");
