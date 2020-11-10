@@ -34,7 +34,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -97,8 +96,8 @@ public class SessionQueueGridTest {
     NewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
       bus,
-      Duration.of(5, ChronoUnit.SECONDS),
-      Duration.of(10, ChronoUnit.SECONDS));
+      Duration.ofSeconds(5),
+      Duration.ofSeconds(10));
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     handler.addHandler(queuer);
 

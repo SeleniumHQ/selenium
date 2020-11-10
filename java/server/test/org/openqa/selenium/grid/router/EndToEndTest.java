@@ -140,8 +140,8 @@ public class EndToEndTest {
       "port = " + PortProber.findFreePort(),
       "registration-secret = \"provolone\"",
       "[sessionqueue]",
-      "session-request-timeout = " + 2,
-      "session-retry-interval = " + 1
+      "session-request-timeout = 2",
+      "session-retry-interval = 1"
     };
     Config config = new MemoizedConfig(
       new TomlConfig(new StringReader(String.join("\n", rawConfig))));
