@@ -104,6 +104,7 @@ public class DistributorTest {
   private Capabilities stereotype;
   private Capabilities caps;
   private final Secret registrationSecret = new Secret("hellim");
+  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
 
   @Before
   public void setUp() {
@@ -309,6 +310,8 @@ public class DistributorTest {
         queuer,
         registrationSecret);
     distributor.add(node);
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
     distributor.drain(node.getId());
 
     latch.await(5, TimeUnit.SECONDS);
@@ -352,6 +355,8 @@ public class DistributorTest {
         registrationSecret);
     distributor.add(node);
 
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
     NewSessionPayload payload = NewSessionPayload.create(caps);
     distributor.newSession(createRequest(payload));
 
@@ -393,6 +398,8 @@ public class DistributorTest {
         queuer,
         registrationSecret);
     distributor.add(node);
+
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     NewSessionPayload payload = NewSessionPayload.create(caps);
     CreateSessionResponse firstResponse = distributor.newSession(createRequest(payload));
@@ -503,6 +510,8 @@ public class DistributorTest {
         .add(medium)
         .add(lightest)
         .add(massive);
+
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       Session session = distributor.newSession(createRequest(payload)).getSession();
@@ -633,7 +642,9 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
+  public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() throws URISyntaxException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -642,19 +653,20 @@ public class DistributorTest {
       Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
-    CombinedHandler handler = new CombinedHandler();
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
+      .add(caps, new TestSessionFactory((id, c) -> new Session(
+        id, nodeUri, stereotype, c, Instant.now())))
+      .build();
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory(handler),
+        new PassthroughHttpClient.Factory(node),
         sessions,
         queuer,
         registrationSecret);
-    handler.addHandler(distributor);
 
-    Node node = createNode(caps, 1, 0);
-    handler.addHandler(node);
     distributor.add(node);
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     // Use up the one slot available
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
@@ -669,7 +681,9 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldReleaseSlotOnceSessionEnds() {
+  public void shouldReleaseSlotOnceSessionEnds() throws URISyntaxException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -678,19 +692,21 @@ public class DistributorTest {
       Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
-    CombinedHandler handler = new CombinedHandler();
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
+      .add(caps, new TestSessionFactory((id, c) -> new Session(
+        id, nodeUri, stereotype, c, Instant.now())))
+      .build();
+
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory(handler),
+        new PassthroughHttpClient.Factory(node),
         sessions,
         queuer,
         registrationSecret);
-    handler.addHandler(distributor);
-
-    Node node = createNode(caps, 1, 0);
-    handler.addHandler(node);
     distributor.add(node);
+
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     // Use up the one slot available
     Session session;
@@ -702,9 +718,7 @@ public class DistributorTest {
     sessions.get(session.getId());
 
     node.stop(session.getId());
-
     // Now wait for the session map to say the session is gone.
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(2));
     wait.until(obj -> {
       try {
         sessions.get(session.getId());
@@ -756,8 +770,9 @@ public class DistributorTest {
   }
 
   @Test
-  public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
-    CombinedHandler handler = new CombinedHandler();
+  public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() throws URISyntaxException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
@@ -766,25 +781,23 @@ public class DistributorTest {
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    handler.addHandler(sessions);
 
-    URI uri = createUri();
-    Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, caps) -> {
-          throw new SessionNotCreatedException("OMG");
-        }))
-        .build();
-    handler.addHandler(node);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
+      .add(caps, new TestSessionFactory((id, caps) -> {
+        throw new SessionNotCreatedException("OMG");
+      }))
+      .build();
 
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory(handler),
+        new PassthroughHttpClient.Factory(node),
         sessions,
         queuer,
         registrationSecret);
-    handler.addHandler(distributor);
     distributor.add(node);
+
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
