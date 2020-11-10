@@ -64,7 +64,7 @@ public abstract class NewSessionQueue implements HasReadyState {
     return duration.compareTo(requestTimeout) > 0;
   }
 
-  public NewSessionQueue(Tracer tracer, Duration retryInterval, Duration requestTimeout) {
+  protected NewSessionQueue(Tracer tracer, Duration retryInterval, Duration requestTimeout) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
     this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
