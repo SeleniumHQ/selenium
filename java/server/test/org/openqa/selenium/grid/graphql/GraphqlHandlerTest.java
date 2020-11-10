@@ -48,6 +48,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -146,6 +148,8 @@ public class GraphqlHandlerTest {
       })
       .build();
     distributor.add(node);
+    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { nodes { uri } } }");
@@ -169,6 +173,9 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
+    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
     Session session = distributor.newSession(createRequest(payload)).getSession();
 
     assertThat(session).isNotNull();
@@ -215,6 +222,9 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
+    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
     Session session = distributor.newSession(createRequest(payload)).getSession();
 
     assertThat(session).isNotNull();
@@ -260,6 +270,9 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
+    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
     Session session = distributor.newSession(createRequest(payload)).getSession();
 
     assertThat(session).isNotNull();
@@ -311,6 +324,9 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
+    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
     Session session = distributor.newSession(createRequest(payload)).getSession();
 
     assertThat(session).isNotNull();
@@ -341,6 +357,8 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
+    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     String randomSessionId = UUID.randomUUID().toString();
     String query = "{ session (id: \"" + randomSessionId + "\") { sessionDurationMillis } }";
@@ -376,6 +394,8 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
+    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     String query = "{ session (id: \"\") { sessionDurationMillis } }";
 
