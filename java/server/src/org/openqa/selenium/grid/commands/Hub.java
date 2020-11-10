@@ -141,8 +141,8 @@ public class Hub extends TemplateGridServerCommand {
     NewSessionQueue sessionRequests = new LocalNewSessionQueue(
       tracer,
       bus,
-      newSessionQueueOptions.getSessionRequestTimeout(),
-      newSessionQueueOptions.getSessionRequestRetryInterval());
+      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeout());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
     handler.addHandler(queuer);
 
