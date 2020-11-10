@@ -46,6 +46,7 @@ import java.util.ServiceLoader;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 public class NodeOptions {
@@ -93,28 +94,20 @@ public class NodeOptions {
   }
 
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    Optional<List<String>> additionalDriverFactories = config.getAll("node", "driver-factories");
-    if (!additionalDriverFactories.isPresent()) {
-      return;
-    }
-
-    List<String> allConfigs = additionalDriverFactories.get();
-    if (allConfigs.size() % 2 != 0) {
-      throw new ConfigException("Expected each driver class to be mapped to a config");
-    }
-
-    for (int i = 0; i < allConfigs.size(); i++) {
-      String clazz = allConfigs.get(i);
-      i++;
-      if (i == allConfigs.size()) {
-        throw new ConfigException("Unable to find JSON config");
+    config.getAll("node", "driver-factories").ifPresent(allConfigs -> {
+      if (allConfigs.size() % 2 != 0) {
+        throw new ConfigException("Expected each driver class to be mapped to a config");
       }
-      Capabilities stereotype = JSON.toType(allConfigs.get(i), Capabilities.class);
 
-      SessionFactory sessionFactory = createSessionFactory(clazz, stereotype);
+      Map<String, String> configMap = IntStream.range(0, allConfigs.size()/2).boxed()
+        .collect(Collectors.toMap(i -> allConfigs.get(2*i), i -> allConfigs.get(2*i + 1)));
 
-      sessionFactories.put(stereotype, sessionFactory);
-    }
+      configMap.forEach((clazz, config) -> {
+        Capabilities stereotype = JSON.toType(config, Capabilities.class);
+        SessionFactory sessionFactory = createSessionFactory(clazz, stereotype);
+        sessionFactories.put(stereotype, sessionFactory);
+      });
+    });
   }
 
   private SessionFactory createSessionFactory(String clazz, Capabilities stereotype) {
