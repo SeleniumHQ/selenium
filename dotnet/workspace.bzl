@@ -58,7 +58,7 @@ def selenium_register_dotnet():
     import_nuget_package(
         name = "humanizer",
         file = "third_party/dotnet/nuget/packages/humanizer.core.2.8.26.nupkg",
-        #sha256 = "555b42765a0adefcfd6cfab486a1da195716bb72066ed26ac098e8ea45681ded",
+        sha256 = "555b42765a0adefcfd6cfab486a1da195716bb72066ed26ac098e8ea45681ded",
     )
 
     import_nuget_package(

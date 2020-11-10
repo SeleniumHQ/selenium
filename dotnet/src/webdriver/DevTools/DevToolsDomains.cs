@@ -34,9 +34,10 @@ namespace OpenQA.Selenium.DevTools
         // This is the list of known supported DevTools version implementation.
         // Note carefully that it is sorted in reverse order, most recent
         // version first, as that is more likely to match. When new versions
-        // are implemented for support, 
+        // are implemented for support, new types must be added to this list.
         private static readonly List<Type> SupportedDevToolsVersions = new List<Type>()
         {
+            typeof(V87.V87Domains),
             typeof(V86.V86Domains),
             typeof(V85.V85Domains),
             typeof(V84.V84Domains)
