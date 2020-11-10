@@ -574,7 +574,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   /**
    * Determines whether an element or its parents have `display: none` set
    * @param {!Node} e the element
-   * @return {boolean}
+   * @return {!boolean}
    */
   function displayed(e) {
     if (bot.dom.isElement(e)) {
@@ -609,7 +609,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       return false;
     }
 
-    return parent && displayed(parent);
+    return !!parent && displayed(parent);
   }
 
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);

@@ -79,19 +79,6 @@ load("@maven//:defs.bzl", "pinned_maven_install")
 pinned_maven_install()
 
 http_archive(
-    name = "io_bazel_rules_closure",
-    sha256 = "2e95ba060acd74f3662547a38814ffff60317be047b7168d25498aea52f3e732",
-    strip_prefix = "rules_closure-b3d4ec3879620edcadd3422b161cebb37c59b6c5",
-    urls = [
-        "https://github.com/bazelbuild/rules_closure/archive/b3d4ec3879620edcadd3422b161cebb37c59b6c5.tar.gz",
-    ],
-)
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
-
-closure_repositories()
-
-http_archive(
     name = "d2l_rules_csharp",
     sha256 = "4e8e9a93a5436d81c0a410148bef9e3e44860cd7dc567dd4732ab5b269a5e1f8",
     strip_prefix = "rules_csharp-8c9e87762f619c7b4ea60d03b76afadecbce4ea6",
@@ -138,6 +125,21 @@ pip_install(
     name = "dev_requirements",
     requirements = "//py:requirements.txt",
 )
+
+http_archive(
+    name = "io_bazel_rules_closure",
+    sha256 = "d66deed38a0bb20581c15664f0ab62270af5940786855c7adc3087b27168b529",
+    strip_prefix = "rules_closure-0.11.0",
+    urls = [
+        "https://github.com/bazelbuild/rules_closure/archive/0.11.0.tar.gz",
+    ],
+)
+
+load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_dependencies", "rules_closure_toolchains")
+
+rules_closure_dependencies()
+
+rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
