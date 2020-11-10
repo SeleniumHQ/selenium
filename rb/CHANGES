@@ -1,14 +1,39 @@
-trunk
+4.0.0.alpha7 (2020-11-10)
 =========================
+
+Chrome:
+  * Fixed a link to download ChromeDriver when it's not found (thanks @masakazutakewaka).
+  * Fixed an issue when passing instance of Profile to an Options in capabilities
+    (thanks @masakazutakewaka).
+
+DevTools:
+  * Added support for multiple version of CDP. Currently supported versions are
+    84-87. The proper version is automatically selected when the browser is started
+    based on its version. The implementation is Chromium-based and is confirmed
+    to work in Chrome and Edge at least.
+  * Added support for basic authentication (see HasAuthentication).
+  * Added support for listening to JavaScript console messages (see HasLogEvents).
+  * Added support for listening to JavaScript exceptions (see HasLogEvents).
+  * Added support for listening to DOM mutations (see HasLogEvents).
+
+Edge:
+  * Switched default Edge implementation to Chromium-based. To use older versions
+    of Edge, pass :edge_html when initializing the driver.
+
 Firefox:
   * Fixed an issue whereby using the new capabilities structure in local drivers
-  would cause the W3C check to complain that `browser_name` was an invalid
-  capability key name (issue #8832)
+    would cause the W3C check to complain that `browser_name` was an invalid
+    capability key name (thanks @luke-hill)
 
-All Browsers:
-  * Refactor to `#generate_as_json` which now will check if the structure is
-  "Hash-like" first. So that camelCasing on keys will occur earlier in the
-  conditional check
+Ruby:
+  * Added support for taking screenshots of individual elements using Element#screenshot
+    (thanks @johndouthat).
+  * Fixed deprecation message of using Net::HTTP::Proxy (thanks @masakazutakewaka).
+  * Fixed false negative detection of Linux on WSL2 (thanks @snsten).
+  * Support ChildProcess 4.x versions (thanks @boutil).
+
+Safari:
+  * Fixed browser name in capabilities for Safari Technology Preview.
 
 4.0.0.alpha6 (2020-05-28)
 =========================
