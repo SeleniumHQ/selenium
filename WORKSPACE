@@ -64,6 +64,43 @@ load("@bazel_toolchains//rules:rbe_repo.bzl", "rbe_autoconfig")
 rbe_autoconfig(name = "rbe_default")
 
 http_archive(
+    name = "rules_python",
+    patches = ["//py:rules_python_wheel_directory_check.patch"],
+    sha256 = "4d8ed66d5f57a0b6b90e495ca8e29e5c5fa353b93f093e7c31c595a4631ff293",
+    strip_prefix = "rules_python-5c948dcfd4ca79c2ed3a87636c46abba9f5836e9",
+    url = "https://github.com/bazelbuild/rules_python/archive/5c948dcfd4ca79c2ed3a87636c46abba9f5836e9.zip",
+)
+
+# This call should always be present.
+load("@rules_python//python:repositories.bzl", "py_repositories")
+
+py_repositories()
+
+# This one is only needed if you're using the packaging rules.
+load("@rules_python//python:pip.bzl", "pip_install", "pip_repositories")
+
+pip_install(
+    name = "dev_requirements",
+    requirements = "//py:requirements.txt",
+)
+
+http_archive(
+    name = "rules_proto",
+    sha256 = "8e7d59a5b12b233be5652e3d29f42fba01c7cbab09f6b3a8d0a57ed6d1e9a0da",
+    strip_prefix = "rules_proto-7e4afce6fe62dbff0a4a03450143146f9f2d7488",
+    urls = [
+        "https://github.com/bazelbuild/rules_proto/archive/7e4afce6fe62dbff0a4a03450143146f9f2d7488.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/7e4afce6fe62dbff0a4a03450143146f9f2d7488.tar.gz",
+    ],
+)
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
+rules_proto_dependencies()
+
+rules_proto_toolchains()
+
+http_archive(
     name = "rules_jvm_external",
     sha256 = "d85951a92c0908c80bd8551002d66cb23c3434409c814179c0ff026b53544dab",
     strip_prefix = "rules_jvm_external-3.3",
@@ -103,27 +140,6 @@ npm_install(
     name = "npm",
     package_json = "//:package.json",
     package_lock_json = "//:package-lock.json",
-)
-
-http_archive(
-    name = "rules_python",
-    patches = ["//py:rules_python_wheel_directory_check.patch"],
-    sha256 = "4d8ed66d5f57a0b6b90e495ca8e29e5c5fa353b93f093e7c31c595a4631ff293",
-    strip_prefix = "rules_python-5c948dcfd4ca79c2ed3a87636c46abba9f5836e9",
-    url = "https://github.com/bazelbuild/rules_python/archive/5c948dcfd4ca79c2ed3a87636c46abba9f5836e9.zip",
-)
-
-# This call should always be present.
-load("@rules_python//python:repositories.bzl", "py_repositories")
-
-py_repositories()
-
-# This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_install", "pip_repositories")
-
-pip_install(
-    name = "dev_requirements",
-    requirements = "//py:requirements.txt",
 )
 
 http_archive(
