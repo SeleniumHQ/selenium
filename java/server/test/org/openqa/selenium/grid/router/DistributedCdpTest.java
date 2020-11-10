@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.router.httpd.RouterServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.httpd.SessionMapServer;
+import org.openqa.selenium.grid.sessionqueue.httpd.NewSessionQueuerServer;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
@@ -84,11 +85,21 @@ public class DistributedCdpTest {
       mergeArgs(eventBusFlags, "--bind-bus", "false", "--port", "" + sessionsPort)).run();
     waitUntilUp(sessionsPort);
 
+    int queuerPort = PortProber.findFreePort();
+    new NewSessionQueuerServer().configure(
+      System.out,
+      System.err,
+      mergeArgs(eventBusFlags, "--bind-bus", "false", "--port", "" + queuerPort)).run();
+    waitUntilUp(sessionsPort);
+
     int distributorPort = PortProber.findFreePort();
     new DistributorServer().configure(
       System.out,
       System.err,
-      mergeArgs(eventBusFlags, "--bind-bus", "false", "--port", "" + distributorPort, "-s", "http://localhost:" + sessionsPort)).run();
+      mergeArgs(eventBusFlags,
+        "--bind-bus", "false", "--port", "" + distributorPort,
+        "-s", "http://localhost:" + sessionsPort,
+        "--sessionqueuer", "http://localhost:" + queuerPort)).run();
     waitUntilUp(distributorPort);
 
     int routerPort = PortProber.findFreePort();
