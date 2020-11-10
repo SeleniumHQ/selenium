@@ -104,9 +104,13 @@ task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:ube
 JAVA_RELEASE_TARGETS = %w[
   //java/client/src/org/openqa/selenium/chrome:chrome-maven-artifacts
   //java/client/src/org/openqa/selenium/chromium:chromium-maven-artifacts
+  //java/client/src/org/openqa/selenium/devtools/v84:v84-maven-artifacts
+  //java/client/src/org/openqa/selenium/devtools/v85:v85-maven-artifacts
+  //java/client/src/org/openqa/selenium/devtools/v86:v86-maven-artifacts
+  //java/client/src/org/openqa/selenium/devtools/v87:v87-maven-artifacts
   //java/client/src/org/openqa/selenium/devtools:devtools-maven-artifacts
-  //java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml-maven-artifacts
-  //java/client/src/org/openqa/selenium/edge:edgeium-maven-artifacts
+  //java/client/src/org/openqa/selenium/edge:edge-maven-artifacts
+  //java/client/src/org/openqa/selenium/edgehtml:edgehtml-maven-artifacts
   //java/client/src/org/openqa/selenium/firefox/xpi:xpi-maven-artifacts
   //java/client/src/org/openqa/selenium/firefox:firefox-maven-artifacts
   //java/client/src/org/openqa/selenium/ie:ie-maven-artifacts
@@ -120,6 +124,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/client/src/org/openqa/selenium:client-combined-maven-artifacts
   //java/client/src/org/openqa/selenium:core-maven-artifacts
   //java/server/src/com/thoughtworks/selenium/webdriven:webdriven-maven-artifacts
+  //java/server/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc-maven-artifacts
   //java/server/src/org/openqa/selenium/grid/sessionmap/redis:redis-maven-artifacts
   //java/server/src/org/openqa/selenium/grid:grid-maven-artifacts
 ]
