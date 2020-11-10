@@ -107,7 +107,9 @@ namespace OpenQA.Selenium.DevTools
             T versionSpecificDomains = this.domains.VersionSpecificDomains as T;
             if (versionSpecificDomains == null)
             {
-                throw new InvalidOperationException("Type is invalid for conversion");
+                string errorTemplate = "The type is invalid for conversion. You requested domains of type '{0}', but the version-specific domains for this session are '{1}'";
+                string exceptionMessage = string.Format(CultureInfo.InvariantCulture, errorTemplate, typeof(T).ToString(), this.domains.GetType().ToString());
+                throw new InvalidOperationException(exceptionMessage);
             }
 
             return versionSpecificDomains;
