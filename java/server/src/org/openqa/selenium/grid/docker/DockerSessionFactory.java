@@ -271,7 +271,7 @@ public class DockerSessionFactory implements SessionFactory {
   private Dimension getScreenResolution(Capabilities sessionRequestCapabilities) {
     Optional<Object> screenResolution =
       ofNullable(getCapability(sessionRequestCapabilities, "screenResolution"));
-    if (screenResolution.isEmpty()) {
+    if (!screenResolution.isPresent()) {
       return null;
     }
     try {

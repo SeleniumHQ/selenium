@@ -64,11 +64,14 @@ public class NodeStatus {
   }
 
   public boolean hasCapacity() {
-    return slots.stream().anyMatch(slot -> slot.getSession().isEmpty());
+
+    return slots.stream().anyMatch(slot -> !slot.getSession().isPresent());
   }
 
   public boolean hasCapacity(Capabilities caps) {
-    return slots.stream().anyMatch(slot -> slot.getSession().isEmpty() && slot.isSupporting(caps));
+
+    return slots.stream()
+      .anyMatch(slot -> !slot.getSession().isPresent() && slot.isSupporting(caps));
   }
 
   public NodeId getId() {
