@@ -39,7 +39,6 @@ if [[ ! -z "$BZL" ]]; then
   else
     timeout 40m bazel $BZL
   fi
-  bazel analyze-profile /tmp/bazelprofile
 fi
 
 if [[ ! -z "$NPM" ]]; then
