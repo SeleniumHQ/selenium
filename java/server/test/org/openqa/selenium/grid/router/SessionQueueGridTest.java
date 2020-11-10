@@ -89,42 +89,42 @@ public class SessionQueueGridTest {
     URI nodeUri = new URI("http://localhost:4444");
     CombinedHandler handler = new CombinedHandler();
     clientFactory = new RoutableHttpClientFactory(
-        nodeUri.toURL(), handler,
-        HttpClient.Factory.createDefault());
+      nodeUri.toURL(), handler,
+      HttpClient.Factory.createDefault());
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     NewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        Duration.of(5, ChronoUnit.SECONDS),
-        Duration.of(10, ChronoUnit.SECONDS));
+      tracer,
+      bus,
+      Duration.of(5, ChronoUnit.SECONDS),
+      Duration.of(10, ChronoUnit.SECONDS));
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     handler.addHandler(queuer);
 
     Secret registrationSecret = new Secret("hereford hop");
     Distributor distributor = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
-        sessions,
-        queuer,
-        registrationSecret);
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
     handler.addHandler(distributor);
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
-            id,
-            nodeUri,
-            new ImmutableCapabilities(),
-            caps,
-            Instant.now())))
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
-            id,
-            nodeUri,
-            new ImmutableCapabilities(),
-            caps,
-            Instant.now()))).build();
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
+        id,
+        nodeUri,
+        new ImmutableCapabilities(),
+        caps,
+        Instant.now())))
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
+        id,
+        nodeUri,
+        new ImmutableCapabilities(),
+        caps,
+        Instant.now()))).build();
     handler.addHandler(localNode);
     distributor.add(localNode);
 
@@ -143,8 +143,8 @@ public class SessionQueueGridTest {
     try {
       Callable<HttpResponse> sessionCreationTask = () -> createSession(caps);
       List<Future<HttpResponse>> futureList = fixedThreadPoolService.invokeAll(Arrays.asList(
-          sessionCreationTask,
-          sessionCreationTask));
+        sessionCreationTask,
+        sessionCreationTask));
 
       for (Future<HttpResponse> future : futureList) {
         HttpResponse httpResponse = future.get(10, SECONDS);
@@ -182,9 +182,9 @@ public class SessionQueueGridTest {
       Callable<HttpResponse> sessionCreationTask = () -> createSession(caps);
 
       List<Future<HttpResponse>> futureList = fixedThreadPoolService.invokeAll(Arrays.asList(
-          sessionCreationTask,
-          sessionCreationTask,
-          sessionCreationTask));
+        sessionCreationTask,
+        sessionCreationTask,
+        sessionCreationTask));
 
       Callable<HttpResponse> clearTask = () -> {
         HttpRequest request = new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
@@ -232,17 +232,17 @@ public class SessionQueueGridTest {
 
   private static Server<?> createServer(HttpHandler handler) {
     return new NettyServer(
-        new BaseServerOptions(
-            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444)))),
-        handler);
+      new BaseServerOptions(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444)))),
+      handler);
   }
 
   private HttpResponse createSession(ImmutableMap<String, String> caps) {
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-        ImmutableMap.of(
-            "capabilities", ImmutableMap.of(
-                "alwaysMatch", caps))));
+      ImmutableMap.of(
+        "capabilities", ImmutableMap.of(
+          "alwaysMatch", caps))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     return client.execute(request);
