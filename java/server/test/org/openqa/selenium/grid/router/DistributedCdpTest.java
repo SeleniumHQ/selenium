@@ -69,7 +69,9 @@ public class DistributedCdpTest {
 
     int eventPublishPort = PortProber.findFreePort();
     int eventSubscribePort = PortProber.findFreePort();
-    String[] eventBusFlags = new String[]{"--publish-events", "tcp://*:" + eventPublishPort, "--subscribe-events", "tcp://*:" + eventSubscribePort};
+    String[] eventBusFlags = new String[]{
+      "--publish-events", "tcp://*:" + eventPublishPort,
+      "--subscribe-events", "tcp://*:" + eventSubscribePort};
 
     int eventBusPort = PortProber.findFreePort();
     new EventBusCommand().configure(
@@ -106,20 +108,28 @@ public class DistributedCdpTest {
     new RouterServer().configure(
       System.out,
       System.err,
-      "--port", "" + routerPort, "-s", "http://localhost:" + sessionsPort, "-d", "http://localhost:" + distributorPort).run();
+      "--port", "" + routerPort,
+      "-s", "http://localhost:" + sessionsPort,
+      "-d", "http://localhost:" + distributorPort,
+      "--sessionqueuer", "http://localhost:" + queuerPort).run();
     waitUntilUp(routerPort);
 
     int nodePort = PortProber.findFreePort();
     new NodeServer().configure(
       System.out,
       System.err,
-      mergeArgs(eventBusFlags, "--port", "" + nodePort, "-I", getBrowserShortName(), "--public-url", "http://localhost:" + routerPort)).run();
+      mergeArgs(
+        eventBusFlags,
+        "--port", "" + nodePort,
+        "-I", getBrowserShortName(),
+        "--public-url", "http://localhost:" + routerPort)).run();
     waitUntilUp(nodePort);
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(new URL("http://localhost:" + routerPort));
     new FluentWait<>(client).withTimeout(ofSeconds(10)).until(c -> {
-      HttpResponse res = c.execute(new HttpRequest(GET, "/status")
-                                       .addHeader("Content-Type", "application/json; charset=utf-8"));
+      HttpResponse res = c.execute(
+        new HttpRequest(GET, "/status")
+          .addHeader("Content-Type", "application/json; charset=utf-8"));
       if (!res.isSuccessful()) {
         return false;
       }
@@ -135,7 +145,8 @@ public class DistributedCdpTest {
       req -> new HttpResponse().setContent(Contents.utf8String("I like cheese")))
       .start();
 
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:" + routerPort), browser.getCapabilities());
+    WebDriver driver = new RemoteWebDriver(
+      new URL("http://localhost:" + routerPort), browser.getCapabilities());
     driver = new Augmenter().augment(driver);
 
     CountDownLatch latch = new CountDownLatch(1);
@@ -145,7 +156,13 @@ public class DistributedCdpTest {
       devTools.addListener(Network.loadingFinished(), res -> latch.countDown());
       devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
-      devTools.send(Page.navigate(server.getUrl().toString(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+      devTools.send(
+        Page.navigate(
+          server.getUrl().toString(),
+          Optional.empty(),
+          Optional.empty(),
+          Optional.empty(),
+          Optional.empty()));
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
   }
