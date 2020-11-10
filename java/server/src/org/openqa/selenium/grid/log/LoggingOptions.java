@@ -99,16 +99,17 @@ public class LoggingOptions {
 
     LOG.info("Using OpenTelemetry for tracing");
 
-    if (tracer != null) {
-      return tracer;
-    }
-
-    synchronized (LoggingOptions.class) {
-      if (tracer == null) {
-        tracer = createTracer();
+    Tracer localTracer = tracer;
+    if (localTracer == null) {
+      synchronized (LoggingOptions.class) {
+        localTracer = tracer;
+        if (localTracer == null) {
+          localTracer = createTracer();
+          tracer = localTracer;
+        }
       }
     }
-    return tracer;
+    return localTracer;
   }
 
   private Tracer createTracer() {
