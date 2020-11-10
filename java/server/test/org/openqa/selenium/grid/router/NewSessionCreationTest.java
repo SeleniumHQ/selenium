@@ -39,6 +39,9 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.EnsureSpecCompliantHeaders;
 import org.openqa.selenium.netty.server.NettyServer;
@@ -54,6 +57,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -85,7 +89,21 @@ public class NewSessionCreationTest {
     assumeThat(geckoDriverInfo.isAvailable()).isTrue();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, registrationSecret);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      events,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        events,
+        clientFactory,
+        sessions,
+        queuer,
+        registrationSecret);
+
     Routable router = new Router(tracer, clientFactory, sessions, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 

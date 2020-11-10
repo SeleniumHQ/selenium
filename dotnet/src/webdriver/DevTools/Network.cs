@@ -1,4 +1,4 @@
-// <copyright file="INetwork.cs" company="WebDriver Committers">
+// <copyright file="Network.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -37,6 +37,11 @@ namespace OpenQA.Selenium.DevTools
         public event EventHandler<RequestPausedEventArgs> RequestPaused;
 
         /// <summary>
+        /// Occurs when a network response is received.
+        /// </summary>
+        public event EventHandler<ResponseReceivedEventArgs> ResponseReceived;
+
+        /// <summary>
         /// Asynchronously disables network caching.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
@@ -48,8 +53,16 @@ namespace OpenQA.Selenium.DevTools
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task EnableNetworkCaching();
 
+        /// <summary>
+        /// Asynchronously enables the network domain.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task EnableNetwork();
 
+        /// <summary>
+        /// Asynchronously diables the fetch domain.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task DisableNetwork();
 
         /// <summary>
@@ -116,6 +129,18 @@ namespace OpenQA.Selenium.DevTools
             if (this.RequestPaused != null)
             {
                 this.RequestPaused(this, e);
+            }
+        }
+
+        /// <summary>
+        /// Raises the ResponseReceived event.
+        /// </summary>
+        /// <param name="e">An <see cref="ResponseReceivedEventArgs"/> that contains the event data.</param>
+        protected virtual void OnResponseReceived(ResponseReceivedEventArgs e)
+        {
+            if (this.ResponseReceived != null)
+            {
+                this.ResponseReceived(this, e);
             }
         }
     }

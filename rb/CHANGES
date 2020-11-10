@@ -709,11 +709,11 @@ Ruby:
   * Fix bug in auto detection of drivers which allowed selection of non-executable binaries
 
 W3C:
-  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney) 
-  * Implement element #property method (thanks lmtierney) 
+  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney)
+  * Implement element #property method (thanks lmtierney)
 
 Chrome:
-  * Fix bug in switches (thanks danvine) 
+  * Fix bug in switches (thanks danvine)
 
 3.0.1 (2016-11-06)
 ===================
@@ -735,7 +735,7 @@ Ruby:
   * Add support for latest driver options
   * Add support for :port parameter for launching driver
   * Add support for :service_args parameter for driver command line switches
-  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto ) 
+  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto )
 
 Firefox:
   * Add support for :firefox_options in geckodriver

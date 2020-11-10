@@ -8,6 +8,7 @@ BROWSER_VERSIONS = [
     "v84",
     "v85",
     "v86",
+    "v87",
 ]
 
 copy_file(

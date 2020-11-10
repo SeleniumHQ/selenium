@@ -1,6 +1,13 @@
 load("//java:version.bzl", "SE_VERSION")
 load("//java:defs.bzl", "java_dist_zip", "java_export", "java_import", "java_library", "javadoc")
 
+CDP_VERSIONS = [
+    "v84",
+    "v85",
+    "v86",
+    "v87",
+]
+
 filegroup(
     name = "template-pom",
     srcs = ["pom.xml"],
@@ -32,6 +39,8 @@ java_export(
     ],
 )
 
+CDP_DEPS = ["//java/client/src/org/openqa/selenium/devtools/%s" % v for v in CDP_VERSIONS]
+
 java_export(
     name = "client-combined",
     maven_coordinates = "org.seleniumhq.selenium:selenium-java:" + SE_VERSION,
@@ -48,7 +57,7 @@ java_export(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
-    ],
+    ] + CDP_DEPS,
 )
 
 javadoc(

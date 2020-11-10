@@ -15,17 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.edge;
+package org.openqa.selenium.internal;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
+public class Either<A, B> {
+  private final A left;
+  private final B right;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    EdgeOptionsFunctionalTest.class
-})
-public class EdgeDriverTests {
+  private Either(A a, B b) {
+    left = a;
+    right = b;
+  }
 
+  public static <A, B> Either<A, B> left(A a) {
+    return new Either<>(a, null);
+  }
+
+  public static <A, B> Either<A, B> right(B b) {
+    return new Either<>(null, b);
+  }
+
+  public boolean isLeft() {
+    return left != null;
+  }
+
+  public boolean isRight() {
+    return right != null;
+  }
+
+  public A left() {
+    return left;
+  }
+
+  public B right() {
+    return right;
+  }
 }

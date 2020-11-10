@@ -46,7 +46,8 @@ class Service(object):
 
         self.start_error_message = start_error_message
         self.log_file = log_file
-        self.creationflags = 0 # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
+        # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
+        self.creationflags = 0
         self.env = env or os.environ
 
     @property

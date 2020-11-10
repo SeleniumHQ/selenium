@@ -59,17 +59,16 @@ public class NodeStatus {
     }
   }
 
+  public boolean hasCapability(Capabilities caps) {
+    return slots.stream().anyMatch(slot -> slot.isSupporting(caps));
+  }
+
   public boolean hasCapacity() {
-    return slots.stream().anyMatch(slot -> !slot.getSession().isPresent());
+    return slots.stream().anyMatch(slot -> slot.getSession().isEmpty());
   }
 
   public boolean hasCapacity(Capabilities caps) {
-    long count = slots.stream()
-      .filter(slot -> !slot.getSession().isPresent())
-      .filter(slot -> slot.isSupporting(caps))
-      .count();
-
-    return count > 0;
+    return slots.stream().anyMatch(slot -> slot.getSession().isEmpty() && slot.isSupporting(caps));
   }
 
   public NodeId getId() {

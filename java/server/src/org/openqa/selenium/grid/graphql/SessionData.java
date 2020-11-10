@@ -42,6 +42,18 @@ public class SessionData implements DataFetcher {
     distributorStatus = Suppliers.memoize(distributor::getStatus);
   }
 
+  private static class SessionInSlot {
+    private final org.openqa.selenium.grid.data.Session session;
+    private final NodeStatus node;
+    private final Slot slot;
+
+    SessionInSlot(org.openqa.selenium.grid.data.Session session, NodeStatus node, Slot slot) {
+      this.session = session;
+      this.node = node;
+      this.slot = slot;
+    }
+  }
+
   @Override
   public Object get(DataFetchingEnvironment environment) {
     String sessionId = environment.getArgument("id");
@@ -52,38 +64,35 @@ public class SessionData implements DataFetcher {
 
     Set<NodeStatus> nodeStatuses = distributorStatus.get().getNodes();
 
-    Optional<org.openqa.selenium.grid.data.Session> currentSession = Optional.empty();
-    NodeStatus currentSessionNode = null;
-    Slot currentSessionSlot = null;
+    SessionInSlot currentSession = findSession(sessionId, nodeStatuses);
 
-    for (NodeStatus status : nodeStatuses) {
-      for (Slot slot : status.getSlots()) {
-        Optional<org.openqa.selenium.grid.data.Session> session = slot.getSession();
-
-        if (session.isPresent()
-            && sessionId.equals(session.get().getId().toString())) {
-          currentSession = Optional.of(session.get());
-          currentSessionNode = status;
-          currentSessionSlot = slot;
-          break;
-        }
-      }
-    }
-
-    if (currentSession.isPresent()) {
-      org.openqa.selenium.grid.data.Session session = currentSession.get();
+    if (currentSession != null) {
+      org.openqa.selenium.grid.data.Session session = currentSession.session;
 
       return new org.openqa.selenium.grid.graphql.Session(
-          session.getId().toString(),
-          session.getCapabilities(),
-          session.getStartTime(),
-          session.getUri(),
-          currentSessionNode.getId().toString(),
-          currentSessionNode.getUri(),
-          currentSessionSlot);
+        session.getId().toString(),
+        session.getCapabilities(),
+        session.getStartTime(),
+        session.getUri(),
+        currentSession.node.getId().toString(),
+        currentSession.node.getUri(),
+        currentSession.slot);
     } else {
       throw new SessionNotFoundException("No ongoing session found with the requested session id.",
                                          sessionId);
     }
+  }
+
+  private SessionInSlot findSession(String sessionId, Set<NodeStatus> nodeStatuses) {
+    for (NodeStatus status : nodeStatuses) {
+      for (Slot slot : status.getSlots()) {
+        Optional<org.openqa.selenium.grid.data.Session> session = slot.getSession();
+
+        if (session.isPresent() && sessionId.equals(session.get().getId().toString())) {
+          return new SessionInSlot(session.get(), status, slot);
+        }
+      }
+    }
+    return null;
   }
 }

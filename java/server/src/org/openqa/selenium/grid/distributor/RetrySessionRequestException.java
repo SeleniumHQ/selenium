@@ -15,16 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.opera;
+package org.openqa.selenium.grid.distributor;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
+import org.openqa.selenium.SessionNotCreatedException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    OperaOptionsFunctionalTest.class
-})
-public class OperaBlinkDriverTests {
+public class RetrySessionRequestException extends SessionNotCreatedException {
+  public RetrySessionRequestException(String msg) {
+    super(msg);
+  }
+
+  public RetrySessionRequestException(String msg, Throwable cause) {
+    super(msg, cause);
+  }
 }

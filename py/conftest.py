@@ -22,7 +22,7 @@ import sys
 import time
 
 import pytest
-#from _pytest.skipping import MarkEvaluator
+# from _pytest.skipping import MarkEvaluator
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
@@ -35,7 +35,6 @@ else:
     from urllib import urlopen
 
 drivers = (
-    'BlackBerry',
     'Chrome',
     'Edge',
     'Firefox',
@@ -86,6 +85,15 @@ def driver(request):
     marker = request.node.get_closest_marker('xfail_{0}'.format(driver_class.lower()))
 
     if marker is not None:
+        if "run" in marker.kwargs:
+            if marker.kwargs["run"] is False:
+                pytest.skip()
+                yield
+                return
+        if "raises" in marker.kwargs:
+            marker.kwargs.pop("raises")
+        pytest.xfail(**marker.kwargs)
+
         def fin():
             global driver_instance
             if driver_instance is not None:
@@ -93,20 +101,11 @@ def driver(request):
             driver_instance = None
         request.addfinalizer(fin)
 
-    # skip driver instantiation if xfail(run=False)
-    #if not request.config.getoption('runxfail'):
-    #    if request.node._evalxfail.istrue():
-    #        if request.node._evalxfail.get('run') is False:
-    #            yield
-    #            return
-
     driver_path = request.config.option.executable
     options = None
 
     global driver_instance
     if driver_instance is None:
-        if driver_class == 'BlackBerry':
-            kwargs.update({'device_password': 'password'})
         if driver_class == 'Firefox':
             kwargs.update({'capabilities': {'marionette': False}})
             options = get_options(driver_class, request.config)
