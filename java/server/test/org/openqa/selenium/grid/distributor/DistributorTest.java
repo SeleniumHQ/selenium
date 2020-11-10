@@ -104,6 +104,7 @@ public class DistributorTest {
   private Capabilities stereotype;
   private Capabilities caps;
   private final Secret registrationSecret = new Secret("hellim");
+  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
 
   @Before
   public void setUp() {
@@ -309,7 +310,6 @@ public class DistributorTest {
         queuer,
         registrationSecret);
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     distributor.drain(node.getId());
@@ -355,7 +355,6 @@ public class DistributorTest {
         registrationSecret);
     distributor.add(node);
 
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     NewSessionPayload payload = NewSessionPayload.create(caps);
@@ -400,7 +399,6 @@ public class DistributorTest {
         registrationSecret);
     distributor.add(node);
 
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     NewSessionPayload payload = NewSessionPayload.create(caps);
@@ -513,7 +511,6 @@ public class DistributorTest {
         .add(lightest)
         .add(massive);
 
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
@@ -669,7 +666,6 @@ public class DistributorTest {
         registrationSecret);
 
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     // Use up the one slot available
@@ -710,7 +706,6 @@ public class DistributorTest {
         registrationSecret);
     distributor.add(node);
 
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     // Use up the one slot available
@@ -802,7 +797,6 @@ public class DistributorTest {
         registrationSecret);
     distributor.add(node);
 
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {

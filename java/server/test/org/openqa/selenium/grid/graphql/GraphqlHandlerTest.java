@@ -79,6 +79,7 @@ public class GraphqlHandlerTest {
   private ImmutableCapabilities caps;
   private ImmutableCapabilities stereotype;
   private NewSessionPayload payload;
+  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
 
   public GraphqlHandlerTest() throws URISyntaxException {
   }
@@ -148,7 +149,6 @@ public class GraphqlHandlerTest {
       })
       .build();
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
@@ -173,7 +173,6 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     Session session = distributor.newSession(createRequest(payload)).getSession();
@@ -222,7 +221,6 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     Session session = distributor.newSession(createRequest(payload)).getSession();
@@ -270,7 +268,6 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     Session session = distributor.newSession(createRequest(payload)).getSession();
@@ -324,7 +321,6 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     Session session = distributor.newSession(createRequest(payload)).getSession();
@@ -357,7 +353,6 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     String randomSessionId = UUID.randomUUID().toString();
@@ -394,7 +389,6 @@ public class GraphqlHandlerTest {
             Instant.now()))).build();
 
     distributor.add(node);
-    Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     String query = "{ session (id: \"\") { sessionDurationMillis } }";
