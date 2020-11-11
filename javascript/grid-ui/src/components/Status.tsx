@@ -46,7 +46,7 @@ export const LABEL_COLORS: { [key in StatusType]: string } = {
 	[StatusType.UNAVAILABLE]: "#8b8b8b",
 };
 
-export const Status = React.Component(
+export const Status = React.memo(
 	(props: { status: string; selected?: number }) => {
 		let { status, selected = -1 } = props;
 

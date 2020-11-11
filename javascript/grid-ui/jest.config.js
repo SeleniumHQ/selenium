@@ -4,6 +4,7 @@ export default {
   ],
   testMatch: [
     "<rootDir>/src/tests/*.test.ts",
+    "<rootDir>/src/tests/*.test.tsx"
   ],
   transform: {
     "^.+\\.(ts|tsx)$": "ts-jest"
@@ -11,5 +12,8 @@ export default {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   snapshotSerializers: ["enzyme-to-json/serializer"],
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
-  testEnvironment: "node"
+  testEnvironment: "node",
+  moduleNameMapper: {
+    ".+\\.(svg|png|jpg)$": "identity-obj-proxy"
+  }
 }

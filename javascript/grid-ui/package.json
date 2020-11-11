@@ -69,6 +69,7 @@
 		"enzyme": "^3.11.0",
 		"enzyme-adapter-react-16": "^1.15.5",
 		"enzyme-to-json": "^3.6.1",
+		"identity-obj-proxy": "^3.0.0",
 		"jest": "^26.6.3",
 		"jest-cli": "^26.6.3",
 		"ts-jest": "^26.4.4",
