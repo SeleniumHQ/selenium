@@ -125,7 +125,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
     Optional<List<String>> allOptions = config.getAll(section, optionName);
     if (allOptions.isPresent() && !allOptions.get().isEmpty()) {
       if (repeats) {
-        return allOptions.stream()
+        return allOptions.get().stream()
           .map(value -> quotable ? "\"" + value + "\"" : String.valueOf(value))
           .collect(Collectors.joining(", ", "[", "]"));
       }

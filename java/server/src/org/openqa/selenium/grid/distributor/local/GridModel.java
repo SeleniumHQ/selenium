@@ -60,12 +60,12 @@ public class GridModel {
   public GridModel(EventBus events) {
     this.events = Require.nonNull("Event bus", events);
 
-    events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
-    events.addListener(NodeDrainComplete.listener(this::remove));
-    events.addListener(NodeRemovedEvent.listener(this::remove));
-    events.addListener(NodeStatusEvent.listener(status -> refresh(status)));
+    this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
+    this.events.addListener(NodeDrainComplete.listener(this::remove));
+    this.events.addListener(NodeRemovedEvent.listener(this::remove));
+    this.events.addListener(NodeStatusEvent.listener(this::refresh));
 
-    events.addListener(SessionClosedEvent.listener(this::release));
+    this.events.addListener(SessionClosedEvent.listener(this::release));
   }
 
   public GridModel add(NodeStatus node) {
@@ -188,7 +188,7 @@ public class GridModel {
 
       if (!UP.equals(node.availability)) {
         LOG.warning(String.format(
-          "Asked to reserve a slot on node %s, but not is %s",
+          "Asked to reserve a slot on node %s, but node is %s",
           slotId.getOwningNodeId(),
           node.availability));
         return false;

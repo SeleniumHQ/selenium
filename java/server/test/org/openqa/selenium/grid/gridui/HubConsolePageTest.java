@@ -1,114 +1,106 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.grid.gridui;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.grid.commands.Hub;
-import org.openqa.selenium.grid.commands.Standalone;
-import org.openqa.selenium.grid.config.*;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.MemoizedConfig;
+import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.StringReader;
 import java.time.Duration;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.grid.gridui.Urls.whereIs;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class HubConsolePageTest {
 
-  private static final int hubPort = PortProber.findFreePort();
-  private static final int standalonePort = PortProber.findFreePort();
-
-  private Server<?> hubServer;
-  private Server<?> standaloneServer;
+  private Server<?> hub;
+  private WebDriver driver;
+  private Wait<WebDriver> wait;
 
   @Before
   public void setFields() {
-    this.hubServer = createHub();
-    this.standaloneServer = createStandalone();
+    int publish = PortProber.findFreePort();
+    int subscribe = PortProber.findFreePort();
+
+    hub = createHub(publish, subscribe);
+
+    driver = new WebDriverBuilder().get();
+
+    wait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   @After
   public void stopServers() {
-    this.hubServer.stop();
-    this.standaloneServer.stop();
+    safelyCall(() -> driver.quit());
+    safelyCall(() -> hub.stop());
   }
 
   @Test
-  public void testNoNodePage() {
-    Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
-    WebDriver driver = new RemoteWebDriver(standaloneServer.getUrl(), caps);
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+  public void shouldReportNoCapacityWhenNoNodesAreRegistered() {
+    driver.get(whereIs(hub, "/ui/index.html#/"));
 
-    driver.get("localhost:" + hubPort + "/ui/index.html#/");
-
-    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("ring-system"))));
+    WebElement element = wait.until(visibilityOfElementLocated(By.id("ring-system")));
 
     assertEquals("0% free", element.getText());
   }
 
-  private static Server<?> createHub() {
-    int publish = PortProber.findFreePort();
-    int subscribe = PortProber.findFreePort();
-
+  private static Server<?> createHub(int publish, int subscribe) {
     String[] rawConfig = new String[] {
       "[events]",
+      "bind = true",
       "publish = \"tcp://localhost:" + publish + "\"",
       "subscribe = \"tcp://localhost:" + subscribe + "\"",
       "",
-      "[network]",
-      "relax-checks = true",
-      "",
-      "[node]",
-      "detect-drivers = true",
       "[server]",
-      "registration-secret = \"feta\""
+      "port = " + PortProber.findFreePort(),
+      "registration-secret = \"cheddar\""
     };
 
-    TomlConfig baseConfig = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
-    Config hubConfig = new CompoundConfig(
-      new MapConfig(ImmutableMap.of("events", ImmutableMap.of("bind", true))),
-      baseConfig);
+    Config hubConfig = new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
 
-    Server<?> hubServer = new Hub().asServer(setRandomPort(hubConfig)).start();
+    Server<?> hubServer = new Hub().asServer(hubConfig).start();
 
     waitUntilReady(hubServer, Boolean.FALSE);
 
     return hubServer;
-  }
-
-  private static Server<?> createStandalone() {
-    String[] rawConfig = new String[]{
-      "[network]",
-      "relax-checks = true",
-      "[node]",
-      "detect-drivers = true",
-      "[server]",
-      "port = " + standalonePort,
-      "registration-secret = \"provolone\""
-    };
-    Config config = new MemoizedConfig(
-      new TomlConfig(new StringReader(String.join("\n", rawConfig))));
-
-    Server<?> server = new Standalone().asServer(config).start();
-
-    waitUntilReady(server, Boolean.TRUE);
-
-    return server;
   }
 
   private static void waitUntilReady(Server<?> server, Boolean state) {
@@ -117,16 +109,8 @@ public class HubConsolePageTest {
     new FluentWait<>(client)
       .withTimeout(Duration.ofSeconds(5))
       .until(c -> {
-        HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-        Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return state.equals(status.get("ready"));
+        HttpResponse response = c.execute(new HttpRequest(GET, "/readyz"));
+        return response.isSuccessful();
       });
-  }
-
-  private static Config setRandomPort(Config config) {
-    return new MemoizedConfig(
-      new CompoundConfig(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", hubPort))),
-        config));
   }
 }

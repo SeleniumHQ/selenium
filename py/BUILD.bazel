@@ -85,7 +85,7 @@ py_wheel(
     strip_path_prefixes = [
         "py",
     ],
-    version = "4.0.0.a6",
+    version = "4.0.0.a7",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium-pkg",

@@ -51,6 +51,7 @@ generated_assembly_info(
         "//dotnet/src/webdriver/cdp:generate-v84",
         "//dotnet/src/webdriver/cdp:generate-v85",
         "//dotnet/src/webdriver/cdp:generate-v86",
+        "//dotnet/src/webdriver/cdp:generate-v87",
     ],
     out = "WebDriver",
     resources = [
@@ -99,6 +100,7 @@ generated_assembly_info(
         "//dotnet/src/webdriver/cdp:generate-v84",
         "//dotnet/src/webdriver/cdp:generate-v85",
         "//dotnet/src/webdriver/cdp:generate-v86",
+        "//dotnet/src/webdriver/cdp:generate-v87",
     ],
     out = "WebDriver",
     resources = [
@@ -138,6 +140,7 @@ generated_assembly_info(
         "//dotnet/src/webdriver/cdp:generate-v84",
         "//dotnet/src/webdriver/cdp:generate-v85",
         "//dotnet/src/webdriver/cdp:generate-v86",
+        "//dotnet/src/webdriver/cdp:generate-v87",
     ],
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
@@ -187,6 +190,7 @@ generated_assembly_info(
         "//dotnet/src/webdriver/cdp:generate-v84",
         "//dotnet/src/webdriver/cdp:generate-v85",
         "//dotnet/src/webdriver/cdp:generate-v86",
+        "//dotnet/src/webdriver/cdp:generate-v87",
     ],
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",

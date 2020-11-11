@@ -15,6 +15,7 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_MISSING_CONST_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     visibility = ["//javascript/remote:__pkg__"],
     deps = [
@@ -26,6 +27,9 @@ closure_js_library(
 closure_js_library(
     name = "key",
     srcs = ["key.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     visibility = ["//javascript:__subpackages__"],
 )
 
@@ -33,6 +37,9 @@ closure_js_library(
     name = "all_js_for_testing",
     testonly = 1,
     srcs = glob(["**/*.js"]),
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     visibility = ["//javascript:__pkg__"],
     deps = ["@io_bazel_rules_closure//closure/library"],
 )

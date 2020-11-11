@@ -102,7 +102,7 @@ public class RouterTest {
         registrationSecret);
     handler.addHandler(distributor);
 
-    router = new Router(tracer, clientFactory, sessions, distributor);
+    router = new Router(tracer, clientFactory, sessions, queuer, distributor);
   }
 
   @Test

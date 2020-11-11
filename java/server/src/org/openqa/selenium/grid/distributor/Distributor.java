@@ -73,7 +73,6 @@ import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -142,13 +141,6 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
     Json json = new Json();
     routes = Route.combine(
-      post("/session").to(() -> req -> {
-        CreateSessionResponse sessionResponse = newSession(req);
-        return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
-      }),
-      post("/se/grid/distributor/session")
-          .to(() -> new CreateSession(this))
-          .with(requiresSecret),
       post("/se/grid/distributor/node")
           .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
           .with(requiresSecret),
@@ -163,21 +155,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public CreateSessionResponse newSession(HttpRequest request) {
-    Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
-      createNewSessionResponse(request);
-    if (sessionResponse.isRight()) {
-      return sessionResponse.right();
-    } else {
-      SessionNotCreatedException exception = sessionResponse.left();
-      if (exception instanceof RetrySessionRequestException) {
-        throw new SessionNotCreatedException(exception.getMessage(), exception);
-      }
-      throw sessionResponse.left();
-    }
-  }
-
-  public Either<SessionNotCreatedException, CreateSessionResponse> createNewSessionResponse(
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(
     HttpRequest request) throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.create_session_response");
@@ -269,8 +247,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
         EventAttribute.setValue("Unable to create session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-
-      return Either.left(e);
+      SessionNotCreatedException exception = new RetrySessionRequestException(e.getMessage());
+      return Either.left(exception);
     } catch (IOException e) {
       span.setAttribute("error", true);
       span.setStatus(Status.UNKNOWN);

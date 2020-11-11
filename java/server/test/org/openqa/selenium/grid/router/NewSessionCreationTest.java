@@ -104,7 +104,7 @@ public class NewSessionCreationTest {
         queuer,
         registrationSecret);
 
-    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
     Server<?> server = new NettyServer(

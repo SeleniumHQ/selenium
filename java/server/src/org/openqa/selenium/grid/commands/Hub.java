@@ -141,8 +141,8 @@ public class Hub extends TemplateGridServerCommand {
     NewSessionQueue sessionRequests = new LocalNewSessionQueue(
       tracer,
       bus,
-      newSessionQueueOptions.getSessionRequestTimeout(),
-      newSessionQueueOptions.getSessionRequestRetryInterval());
+      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeout());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
     handler.addHandler(queuer);
 
@@ -155,7 +155,7 @@ public class Hub extends TemplateGridServerCommand {
       secretOptions.getRegistrationSecret());
     handler.addHandler(distributor);
 
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
     GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
     HttpHandler readinessCheck = req -> {
       boolean ready = router.isReady() && bus.isReady();

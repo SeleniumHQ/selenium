@@ -26,6 +26,7 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     visibility = [
         "//javascript/atoms/fragments:__pkg__",
@@ -46,11 +47,17 @@ closure_js_library(
 closure_js_library(
     name = "bot",
     srcs = ["bot.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
 )
 
 closure_js_library(
     name = "color",
     srcs = ["color.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     deps = [
         "@io_bazel_rules_closure//closure/library",
     ],
@@ -70,6 +77,7 @@ closure_js_library(
         "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":bot",
@@ -89,6 +97,7 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":errors",
@@ -105,6 +114,7 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":bot",
@@ -128,6 +138,7 @@ closure_js_library(
         "JSC_MISSING_CONST_PROPERTY",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
 )
 
@@ -139,6 +150,7 @@ closure_js_library(
         "JSC_MISSING_CONST_PROPERTY",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":bot",
@@ -157,6 +169,7 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     visibility = [
         "//javascript/webdriver/atoms/inject:__pkg__",
@@ -177,6 +190,7 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":bot",
@@ -194,6 +208,7 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     visibility = [
         "//javascript/atoms/fragments:__pkg__",
@@ -211,6 +226,9 @@ closure_js_library(
 closure_js_library(
     name = "json",
     srcs = ["json.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     deps = [
         ":useragent",
         "@io_bazel_rules_closure//closure/library",
@@ -228,6 +246,7 @@ closure_js_library(
         "JSC_LATE_PROVIDE_ERROR",
         "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":bot",
@@ -246,6 +265,7 @@ closure_js_library(
     suppress = [
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = ["@io_bazel_rules_closure//closure/library"],
 )
@@ -255,6 +275,9 @@ closure_js_library(
     srcs = [
         "frame.js",
         "window.js",
+    ],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":bot",
@@ -272,6 +295,7 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":bot",
@@ -285,6 +309,9 @@ closure_js_library(
     name = "test_util",
     testonly = 1,
     srcs = ["test/test_util.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     deps = [
         ":useragent",
         "@io_bazel_rules_closure//closure/library",

@@ -99,16 +99,17 @@ public class LoggingOptions {
 
     LOG.info("Using OpenTelemetry for tracing");
 
-    if (tracer != null) {
-      return tracer;
-    }
-
-    synchronized (LoggingOptions.class) {
-      if (tracer == null) {
-        tracer = createTracer();
+    Tracer localTracer = tracer;
+    if (localTracer == null) {
+      synchronized (LoggingOptions.class) {
+        localTracer = tracer;
+        if (localTracer == null) {
+          localTracer = createTracer();
+          tracer = localTracer;
+        }
       }
     }
-    return tracer;
+    return localTracer;
   }
 
   private Tracer createTracer() {
@@ -200,42 +201,33 @@ public class LoggingOptions {
     String encoding = getLogEncoding();
 
     if (isUsingPlainLogs()) {
-      String message;
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter());
-      try {
-        if (encoding != null) {
-          handler.setEncoding(encoding);
-          message = String.format("Using encoding %s", encoding);
-        } else {
-          message = "Using the system default encoding";
-        }
-      } catch (UnsupportedEncodingException e) {
-        message =
-            String.format("Using the system default encoding. Unsupported encoding %s", encoding);
-      }
-      logger.addHandler(handler);
-      logger.log(Level.INFO, message);
+      configureLogEncoding(logger, encoding, handler);
     }
 
     if (isUsingStructuredLogging()) {
-      String message;
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
-      try {
-        if (encoding != null) {
-          handler.setEncoding(encoding);
-          message = String.format("Using encoding %s", encoding);
-        } else {
-          message = "Using the system default encoding";
-        }
-      } catch (UnsupportedEncodingException e) {
-        message =
-            String.format("Using the system default encoding. Unsupported encoding %s", encoding);
-      }
-      logger.addHandler(handler);
-      logger.log(Level.INFO, message);
+      configureLogEncoding(logger, encoding, handler);
     }
+  }
+
+  private void configureLogEncoding(Logger logger, String encoding, Handler handler) {
+    String message;
+    try {
+      if (encoding != null) {
+        handler.setEncoding(encoding);
+        message = String.format("Using encoding %s", encoding);
+      } else {
+        message = "Using the system default encoding";
+      }
+    } catch (UnsupportedEncodingException e) {
+      message =
+          String.format("Using the system default encoding. Unsupported encoding %s", encoding);
+    }
+    logger.addHandler(handler);
+    logger.log(Level.INFO, message);
   }
 
   private OutputStream getOutputStream() {

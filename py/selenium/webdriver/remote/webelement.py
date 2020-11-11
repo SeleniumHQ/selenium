@@ -534,10 +534,10 @@ class WebElement(BaseWebElement):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
-            local_files = list(map(lambda keys_to_send:
-                                   self.parent.file_detector.is_local_file(keys_to_send),
-                                   ''.join(*value).split('\n')))
-            if None not in local_files:
+            local_files = list(map(lambda keys_to_send: 
+                self.parent.file_detector.is_local_file(keys_to_send),
+                ''.join(value).split('\n')))
+            if not None in local_files:
                 remote_files = []
                 for file in local_files:
                     remote_files.append(self._upload(file))

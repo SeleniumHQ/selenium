@@ -17,93 +17,88 @@
 
 package org.openqa.selenium.grid.gridui;
 
-import static org.junit.Assert.assertNotNull;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.grid.commands.Standalone;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.MemoizedConfig;
-import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import static org.junit.Assert.assertEquals;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.io.StringReader;
 import java.time.Duration;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.grid.gridui.Urls.whereIs;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 public class ConsolePageTest {
 
-  private static final int port = PortProber.findFreePort();
-
   private Server<?> server;
+  private WebDriver driver;
+  private Wait<WebDriver> wait;
 
   @Before
-  public void setFields() {
-    this.server = createStandalone();
+  public void setup() {
+    server = createStandalone();
+
+    driver = new WebDriverBuilder().get();
+
+    wait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   @After
-  public void stopServers() {
-    this.server.stop();
+  public void tearDown() {
+    safelyCall(() -> driver.quit());
+    safelyCall(() -> server.stop());
   }
 
   @Test
-  public void testConsolePage() {
-    Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
-    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+  public void shouldReportAllNodesFreeWhenGridIsStartedWithoutLoad() {
+    driver.get(whereIs(server, "/ui/index.html#/console"));
 
-    driver.get("localhost:" + port + "/ui/index.html#/console");
+    WebElement ring = wait.until(visibilityOfElementLocated(By.id("ring-system")));
 
-    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("ring-system"))));
-
-    assertEquals("100% free", element.getText());
+    assertEquals("100% free", ring.getText());
   }
 
   @Test
-  public void testNodePage() {
-    Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
-    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+  public void shouldDoSomethingExciting() {
+    driver.get(whereIs(server, "/ui/index.html#/console"));
 
-    driver.get("localhost:" + port + "/ui/index.html#/console");
-    WebElement element = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(@href,'node')]"))));
-
+    WebElement element = wait.until(visibilityOfElementLocated(By.xpath("//a[contains(@href,'node')]")));
     element.click();
 
-    wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("node-info"))));
+    wait.until(visibilityOf(driver.findElement(By.id("node-info"))));
   }
 
-  private static Server<?> createStandalone() {
-    String[] rawConfig = new String[]{
-        "[network]",
-        "relax-checks = true",
-        "[node]",
-        "detect-drivers = true",
-        "[server]",
-        "port = " + port,
-        "registration-secret = \"provolone\""
-    };
+  private Server<?> createStandalone() {
+    int port = PortProber.findFreePort();
+
     Config config = new MemoizedConfig(
-        new TomlConfig(new StringReader(String.join("\n", rawConfig))));
+      new MapConfig(Map.of(
+        "server", Map.of(
+          "port", port),
+        "node", Map.of(
+          "detect-drivers", true))));
 
     Server<?> server = new Standalone().asServer(config).start();
 
@@ -112,7 +107,7 @@ public class ConsolePageTest {
     return server;
   }
 
-  private static void waitUntilReady(Server<?> server) {
+  private void waitUntilReady(Server<?> server) {
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
     new FluentWait<>(client)
@@ -120,7 +115,8 @@ public class ConsolePageTest {
         .until(c -> {
           HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
           Map<String, Object> status = Values.get(response, MAP_TYPE);
-          return Boolean.TRUE.equals(status.get("ready"));
+          return status != null && Boolean.TRUE.equals(status.get("ready"));
         });
   }
+
 }
