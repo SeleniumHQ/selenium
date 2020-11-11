@@ -12,14 +12,14 @@
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^9.5.0",
 		"@testing-library/user-event": "^7.2.1",
-		"@types/react-modal": "^3.10.6",
-		"@types/react-router-dom": "^5.1.5",
 		"@tippyjs/react": "^4.1.0",
-		"@types/jest": "^26.0.0",
+		"@types/enzyme-adapter-react-16": "^1.0.6",
 		"@types/keyboardjs": "^2.5.0",
 		"@types/react": "^16.9.38",
 		"@types/react-dom": "^16.9.8",
+		"@types/react-modal": "^3.10.6",
 		"@types/react-router": "^5.1.8",
+		"@types/react-router-dom": "^5.1.5",
 		"apollo-boost": "^0.4.9",
 		"findandreplacedomtext": "^0.4.6",
 		"graphql": "^15.1.0",
@@ -36,20 +36,19 @@
 		"react-modal": "^3.11.2",
 		"react-router-dom": "^5.2.0",
 		"react-scripts": "3.4.3",
-		"source-map-explorer": "^2.4.2",
-		"typescript": "^3.9.5"
+		"source-map-explorer": "^2.4.2"
 	},
 	"scripts": {
 		"start": "node node_modules/react-scripts/bin/react-scripts start",
 		"build": "node node_modules/react-scripts/bin/react-scripts build && python scripts/rmSourcemaps.py",
 		"analyze": "source-map-explorer 'build/static/js/*.js'",
-		"test": "node node_modules/react-scripts/bin/react-scripts test",
+		"test": "jest",
 		"eject": "node node_modules/react-scripts/bin/react-scripts eject"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
 	},
-  "homepage": "/ui",
+	"homepage": "/ui",
 	"browserslist": {
 		"production": [
 			">0.2%",
@@ -61,5 +60,18 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
+	},
+	"devDependencies": {
+		"@types/enzyme": "^3.10.8",
+		"@types/jest": "^26.0.15",
+		"@types/node": "^14.14.7",
+		"babel-jest": "^26.6.3",
+		"enzyme": "^3.11.0",
+		"enzyme-adapter-react-16": "^1.15.5",
+		"enzyme-to-json": "^3.6.1",
+		"jest": "^26.6.3",
+		"jest-cli": "^26.6.3",
+		"ts-jest": "^26.4.4",
+		"typescript": "^3.9.7"
 	}
 }
