@@ -76,6 +76,7 @@ py_package(
 py_wheel(
     name = "selenium-wheel",
     distribution = "selenium",
+    description_file = "README.rst",
     python_tag = "py3",
     requires = [
         "urllib3[secure]",
