@@ -40,7 +40,6 @@ public class V140Docker implements DockerProtocol {
   private final CreateContainer createContainer;
   private final StartContainer startContainer;
   private final StopContainer stopContainer;
-  private final DeleteContainer deleteContainer;
   private final ContainerExists containerExists;
   private final InspectContainer inspectContainer;
 
@@ -52,7 +51,6 @@ public class V140Docker implements DockerProtocol {
     createContainer = new CreateContainer(this, client);
     startContainer = new StartContainer(client);
     stopContainer = new StopContainer(client);
-    deleteContainer = new DeleteContainer(client);
     containerExists = new ContainerExists(client);
     inspectContainer = new InspectContainer(client);
   }
@@ -121,15 +119,6 @@ public class V140Docker implements DockerProtocol {
     LOG.info("Stopping container: " + id);
 
     stopContainer.apply(id, timeout);
-  }
-
-  @Override
-  public void deleteContainer(ContainerId id) throws DockerException {
-    Require.nonNull("Container id", id);
-
-    LOG.info("Deleting container: " + id);
-
-    deleteContainer.apply(id);
   }
 
   @Override

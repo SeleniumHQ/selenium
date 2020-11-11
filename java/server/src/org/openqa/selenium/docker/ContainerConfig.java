@@ -35,6 +35,7 @@ public class ContainerConfig {
   private final Multimap<String, Map<String, Object>> portBindings;
   private final Map<String, String> envVars;
   private final Map<String, String> volumeBinds;
+  private final boolean autoRemove;
 
 
   public ContainerConfig(Image image,
@@ -44,6 +45,7 @@ public class ContainerConfig {
     this.portBindings = portBindings;
     this.envVars = envVars;
     this.volumeBinds = volumeBinds;
+    this.autoRemove = true;
   }
 
   public static ContainerConfig image(Image image) {
@@ -86,6 +88,7 @@ public class ContainerConfig {
       ", portBindings=" + portBindings +
       ", envVars=" + envVars +
       ", volumeBinds=" + volumeBinds +
+      ", autoRemove=" + autoRemove +
       '}';
   }
 
@@ -100,6 +103,7 @@ public class ContainerConfig {
 
     Map<String, Object> hostConfig = ImmutableMap.of(
         "PortBindings", portBindings.asMap(),
+        "AutoRemove", autoRemove,
         "Binds", volumeBinds);
 
     return ImmutableMap.of(

@@ -160,7 +160,6 @@ public class DockerSessionFactory implements SessionFactory {
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
-        container.delete();
         LOG.warning(String.format(
             "Unable to connect to docker server (container id: %s)", container.getId()));
         return Optional.empty();
@@ -186,7 +185,6 @@ public class DockerSessionFactory implements SessionFactory {
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
-        container.delete();
         LOG.log(Level.WARNING, "Unable to create session: " + e.getMessage(), e);
         return Optional.empty();
       }

@@ -53,15 +53,6 @@ public class Container {
     }
   }
 
-  public void delete() {
-    // Check to see if the container exists
-    if (protocol.exists(id)) {
-      LOG.info("Removing " + getId());
-
-      protocol.deleteContainer(id);
-    }
-  }
-
   public ContainerInfo inspect() {
     LOG.info("Inspecting " + getId());
 

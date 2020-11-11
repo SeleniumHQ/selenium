@@ -56,9 +56,7 @@ class DockerSession extends ProtocolConvertingSession {
   public void stop() {
     if (videoContainer != null) {
       videoContainer.stop(Duration.ofSeconds(10));
-      videoContainer.delete();
     }
     container.stop(Duration.ofMinutes(1));
-    container.delete();
   }
 }
