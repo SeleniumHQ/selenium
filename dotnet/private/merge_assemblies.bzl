@@ -11,14 +11,18 @@ load(
 def _merged_assembly_impl(ctx):
     providers = {}
     name = ctx.label.name
-
     deps = ctx.attr.deps
-    result = ctx.outputs.out
-
     target_framework = ctx.attr.target_framework
+    input_assembly = ctx.attr.src_assembly.files.to_list()[0]
+
+    output_file_name = ctx.attr.out
+    if (output_file_name == ""):
+        output_file_name = input_assembly.basename
+
+    output_assembly = ctx.actions.declare_file("merged/{}/{}/{}".format(name, target_framework, output_file_name))
+    output_pdb = ctx.actions.declare_file("merged/{}/{}/{}".format(name, target_framework, input_assembly.basename.replace(input_assembly.extension, "pdb")))
 
     args = [
-        "-ndebug",
         "-v4",
         "-xmldocs",
         "-internalize",
@@ -28,31 +32,31 @@ def _merged_assembly_impl(ctx):
         key_path = ctx.expand_location(ctx.attr.keyfile.files.to_list()[0].path)
         args.append("-keyfile:{}".format(key_path))
 
-    args.append("-out={}".format(ctx.outputs.out.path))
-    args.append(ctx.attr.src_assembly.files.to_list()[0].path)
+    args.append("-out={}".format(output_assembly.path))
+    args.append(input_assembly.path)
     (refs, runfiles, native_dlls) = collect_transitive_info(deps, target_framework)
     for ref in refs.to_list():
         args.append(ref.path)
 
     ctx.actions.run(
         executable = ctx.executable.merge_tool,
-        progress_message = "Merging assembiles into {}".format(ctx.outputs.out.path),
+        progress_message = "Merging assembiles into {}".format(output_assembly.path),
         arguments = args,
         inputs = ctx.attr.src_assembly.files,
-        outputs = [ctx.outputs.out],
+        outputs = [output_assembly, output_pdb],
     )
 
     runfiles = ctx.runfiles(
-        files = [ctx.outputs.out],
+        files = [output_pdb]
     )
 
     for dep in ctx.files.deps:
         runfiles = runfiles.merge(dep[DefaultInfo].default_runfiles)
 
     providers[target_framework] = CSharpAssemblyInfo[target_framework](
-        out = ctx.outputs.out,
+        out = output_assembly,
         refout = None,
-        pdb = None,
+        pdb = output_pdb,
         native_dlls = native_dlls,
         deps = deps,
         transitive_refs = refs,
@@ -65,6 +69,7 @@ def _merged_assembly_impl(ctx):
     returned_info = providers.values()
     returned_info.append(
         DefaultInfo(
+            files = depset([output_assembly]),
             runfiles = runfiles,
         ),
     )
@@ -75,7 +80,7 @@ merged_assembly = rule(
     attrs = {
         "src_assembly": attr.label(),
         "deps": attr.label_list(),
-        "out": attr.output(mandatory = True),
+        "out": attr.string(default = ""),
         "keyfile": attr.label(allow_single_file = True),
         "target_framework": attr.string(mandatory = True),
         "merge_tool": attr.label(
