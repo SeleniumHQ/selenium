@@ -71,22 +71,22 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Initializes the supplied DevTools session's domains for the specified browser version.
         /// </summary>
-        /// <param name="versionInfo">The <see cref="DevToolsVersionInfo"/> object containing the browser version information.</param>
+        /// <param name="protocolVersion">The version of the DevTools Protocol to use.</param>
         /// <param name="session">The <see cref="DevToolsSession"/> for which to initialiize the domains.</param>
         /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
-        public static DevToolsDomains InitializeDomains(DevToolsVersionInfo versionInfo, DevToolsSession session)
+        public static DevToolsDomains InitializeDomains(int protocolVersion, DevToolsSession session)
         {
-            return InitializeDomains(versionInfo, session, DefaultVersionRange);
+            return InitializeDomains(protocolVersion, session, DefaultVersionRange);
         }
 
         /// <summary>
         /// Initializes the supplied DevTools session's domains for the specified browser version within the specified number of versions.
         /// </summary>
-        /// <param name="versionInfo">The <see cref="DevToolsVersionInfo"/> object containing the browser version information.</param>
+        /// <param name="protocolVersion">The version of the DevTools Protocol to use.</param>
         /// <param name="session">The <see cref="DevToolsSession"/> for which to initialiize the domains.</param>
         /// <param name="versionRange">The range of versions within which to match the provided version number. Defaults to 5 versions.</param>
         /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
-        public static DevToolsDomains InitializeDomains(DevToolsVersionInfo versionInfo, DevToolsSession session, int versionRange)
+        public static DevToolsDomains InitializeDomains(int protocolVersion, DevToolsSession session, int versionRange)
         {
             if (versionRange < 0)
             {
@@ -94,16 +94,11 @@ namespace OpenQA.Selenium.DevTools
             }
 
             DevToolsDomains domains = null;
-            int browserMajorVersion = 0;
-            bool versionParsed = int.TryParse(versionInfo.BrowserMajorVersion, out browserMajorVersion);
-            if (versionParsed)
+            Type domainType = MatchDomainsVersion(protocolVersion, versionRange);
+            ConstructorInfo constructor = domainType.GetConstructor(new Type[] { typeof(DevToolsSession) });
+            if (constructor != null)
             {
-                Type domainType = MatchDomainsVersion(browserMajorVersion, versionRange);
-                ConstructorInfo constructor = domainType.GetConstructor(new Type[] { typeof(DevToolsSession) });
-                if (constructor != null)
-                {
-                    domains = constructor.Invoke(new object[] { session }) as DevToolsDomains;
-                }
+                domains = constructor.Invoke(new object[] { session }) as DevToolsDomains;
             }
 
             return domains;
