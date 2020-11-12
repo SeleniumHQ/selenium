@@ -5,7 +5,7 @@ def _copy_cmd(ctx, file_list, target_dir):
         return dest_list
 
     shell_content = ""
-    batch_file_name = "%s-staging.bat" % (target_dir)
+    batch_file_name = "%s-copy-files.bat" % (ctx.label.name)
     bat = ctx.actions.declare_file(batch_file_name)
     src_file_list = []
     for (src_file, relative_dest_file) in file_list:

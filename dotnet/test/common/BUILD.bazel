@@ -65,19 +65,19 @@ config_setting(
     visibility = ["//visibility:public"],
     deps = select({
         ":netframework": [
-            "//dotnet/src/webdriver:net47assembly",
+            "//dotnet/src/webdriver:net47",
             "@json.net//:Newtonsoft.Json",
             "@benderproxy//:BenderProxy",
             "@moq//:Moq",
         ],
         ":netcore": [
-            "//dotnet/src/webdriver:netstandard2.0assembly",
+            "//dotnet/src/webdriver:netstandard2.0",
             "@json.net//:Newtonsoft.Json",
             "@benderproxy//:BenderProxy",
             "@moq//:Moq",
         ],
         "//conditions:default": [
-            "//dotnet/src/webdriver:netstandard2.0assembly",
+            "//dotnet/src/webdriver:netstandard2.0",
             "@json.net//:Newtonsoft.Json",
             "@benderproxy//:BenderProxy",
             "@moq//:Moq",
