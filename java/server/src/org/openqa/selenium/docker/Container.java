@@ -28,10 +28,12 @@ public class Container {
   private static final Logger LOG = Logger.getLogger(Container.class.getName());
   private final DockerProtocol protocol;
   private final ContainerId id;
+  private boolean running;
 
   public Container(DockerProtocol protocol, ContainerId id) {
     this.protocol = Require.nonNull("Protocol", protocol);
     this.id = Require.nonNull("Container id", id);
+    this.running = false;
     LOG.info("Created container " + id);
   }
 
@@ -42,16 +44,20 @@ public class Container {
   public void start() {
     LOG.info("Starting " + getId());
     protocol.startContainer(id);
+    this.running = true;
   }
 
   public void stop(Duration timeout) {
     Require.nonNull("Timeout to wait for", timeout);
 
-    LOG.info("Stopping " + getId());
-    try {
-      protocol.stopContainer(id, timeout);
-    } catch (RuntimeException e) {
-      LOG.log(Level.WARNING, "Unable to stop container: " + e.getMessage(), e);
+    if (this.running) {
+      LOG.info("Stopping " + getId());
+      try {
+        protocol.stopContainer(id, timeout);
+        this.running = false;
+      } catch (RuntimeException e) {
+        LOG.log(Level.WARNING, "Unable to stop container: " + e.getMessage(), e);
+      }
     }
   }
 
