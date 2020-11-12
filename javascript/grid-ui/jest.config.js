@@ -3,7 +3,6 @@ export default {
     "<rootDir>/src"
   ],
   testMatch: [
-    "<rootDir>/src/tests/*.test.ts",
     "<rootDir>/src/tests/*.test.tsx"
   ],
   transform: {
