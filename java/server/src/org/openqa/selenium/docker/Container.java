@@ -20,6 +20,7 @@ package org.openqa.selenium.docker;
 import org.openqa.selenium.internal.Require;
 
 import java.time.Duration;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Container {
@@ -46,10 +47,11 @@ public class Container {
   public void stop(Duration timeout) {
     Require.nonNull("Timeout to wait for", timeout);
 
-    if (protocol.exists(id)) {
-      LOG.info("Stopping " + getId());
-
+    LOG.info("Stopping " + getId());
+    try {
       protocol.stopContainer(id, timeout);
+    } catch (RuntimeException e) {
+      LOG.log(Level.WARNING, "Unable to stop container: " + e.getMessage(), e);
     }
   }
 

@@ -40,7 +40,6 @@ public class V140Docker implements DockerProtocol {
   private final CreateContainer createContainer;
   private final StartContainer startContainer;
   private final StopContainer stopContainer;
-  private final ContainerExists containerExists;
   private final InspectContainer inspectContainer;
 
   public V140Docker(HttpHandler client) {
@@ -51,7 +50,6 @@ public class V140Docker implements DockerProtocol {
     createContainer = new CreateContainer(this, client);
     startContainer = new StartContainer(client);
     stopContainer = new StopContainer(client);
-    containerExists = new ContainerExists(client);
     inspectContainer = new InspectContainer(client);
   }
 
@@ -100,15 +98,6 @@ public class V140Docker implements DockerProtocol {
     LOG.info("Starting container: " + id);
 
     startContainer.apply(id);
-  }
-
-  @Override
-  public boolean exists(ContainerId id) {
-    Require.nonNull("Container id", id);
-
-    LOG.fine(String.format("Checking whether %s is running", id));
-
-    return containerExists.apply(id);
   }
 
   @Override

@@ -133,7 +133,8 @@ public class DockerSessionFactory implements SessionFactory {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
                        EventAttribute.setValue(this.getClass().getName()));
       LOG.info("Creating container, mapping container port 4444 to " + port);
-      Map<String, String> browserContainerEnvVars = getBrowserContainerEnvVars(sessionRequest.getCapabilities());
+      Map<String, String> browserContainerEnvVars =
+        getBrowserContainerEnvVars(sessionRequest.getCapabilities());
         Container container = docker.create(
           image(browserImage)
             .env(browserContainerEnvVars)
@@ -156,7 +157,9 @@ public class DockerSessionFactory implements SessionFactory {
 
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Unable to connect to docker server. Stopping container: " + e.getMessage()));
+                         EventAttribute.setValue(
+                           "Unable to connect to docker server. Stopping container: " +
+                           e.getMessage()));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
