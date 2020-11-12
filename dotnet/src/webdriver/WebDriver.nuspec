@@ -4,7 +4,7 @@
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2019 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2020 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>Selenium WebDriver</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -30,10 +30,10 @@
       <group targetFramework=".NETFramework4.7" />
       <group targetFramework=".NETFramework4.8" />
       <group targetFramework=".NETStandard2.0">
-        <dependency id="Newtonsoft.Json" version="12.0.2" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="12.0.3" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="Newtonsoft.Json" version="12.0.2" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="12.0.3" exclude="Build,Analyzers" />
       </group>
     </dependencies>
     <frameworkAssemblies>
@@ -41,7 +41,6 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**/WebDriver.dll" target="lib" />
-    <file src="**/WebDriver.xml" target="lib" />
+    <file src="**" target="lib" />
   </files>
 </package>

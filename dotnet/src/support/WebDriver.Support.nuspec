@@ -4,7 +4,7 @@
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2019 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2020 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>WebDriver Support</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -49,7 +49,6 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**/WebDriver.Support.dll" target="lib" />
-    <file src="**/WebDriver.Support.xml" target="lib" />
+    <file src="**" target="lib" />
   </files>
 </package>

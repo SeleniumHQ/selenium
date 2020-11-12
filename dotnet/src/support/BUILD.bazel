@@ -1,5 +1,4 @@
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
-load("//common:defs.bzl", "copy_file")
 load(
     "//dotnet:defs.bzl",
     "generated_assembly_info",
@@ -67,7 +66,7 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:{}assembly".format(standard_version),
+        "//dotnet/src/webdriver:{}".format(standard_version),
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -112,7 +111,7 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:{}assembly-strongnamed".format(standard_version),
+        "//dotnet/src/webdriver:{}-strongnamed".format(standard_version),
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -121,6 +120,11 @@ nuget_package(
     src = "WebDriver.Support.nuspec",
     package_id = "Selenium.Support",
     package_version = "{}".format(SE_VERSION),
+    create_symbol_package = True,
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
     deps = [
         ":net45",
         ":net46",
@@ -131,32 +135,22 @@ nuget_package(
     ],
 )
 
-[copy_file(
-    name = "copy-{}-strongnamed".format(framework),
-    src = ":{}-strongnamed".format(framework),
-    out = "strongnamed/{}/WebDriver.Support.dll".format(framework),
-    visibility = ["//visibility:public"],
-) for framework in SUPPORTED_NET_FRAMEWORKS]
-
-[copy_file(
-    name = "copy-{}-strongnamed".format(standard_version),
-    src = ":{}-strongnamed".format(standard_version),
-    out = "strongnamed/{}/WebDriver.Support.dll".format(standard_version),
-    visibility = ["//visibility:public"],
-) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
-
 nuget_package(
     name = "package-strongnamed",
     src = "WebDriver.Support.nuspec",
     package_id = "Selenium.Support.StrongNamed",
     package_version = "{}".format(SE_VERSION),
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
     deps = [
-        ":copy-net45-strongnamed",
-        ":copy-net46-strongnamed",
-        ":copy-net47-strongnamed",
-        ":copy-net48-strongnamed",
-        ":copy-netstandard2.0-strongnamed",
-        ":copy-netstandard2.1-strongnamed",
+        ":net45-strongnamed",
+        ":net46-strongnamed",
+        ":net47-strongnamed",
+        ":net48-strongnamed",
+        ":netstandard2.0-strongnamed",
+        ":netstandard2.1-strongnamed",
     ],
 )
 
