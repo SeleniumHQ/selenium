@@ -129,7 +129,6 @@ namespace OpenQA.Selenium
         /// </summary>
         public bool IsRunning
         {
-            [SecurityPermission(SecurityAction.Demand)]
             get { return this.driverServiceProcess != null && !this.driverServiceProcess.HasExited; }
         }
 
@@ -252,7 +251,6 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Starts the DriverService if it is not already running.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand)]
         public void Start()
         {
             if (this.driverServiceProcess != null)
@@ -355,7 +353,6 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Stops the DriverService.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand)]
         private void Stop()
         {
             if (this.IsRunning)
