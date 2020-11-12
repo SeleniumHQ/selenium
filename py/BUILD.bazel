@@ -77,6 +77,22 @@ py_wheel(
     name = "selenium-wheel",
     distribution = "selenium",
     description_file = "README.rst",
+    homepage = "www.selenium.dev",
+    license = "Apache 2.0",
+    classifiers = [
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: POSIX',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: MacOS :: MacOS X',
+        'Topic :: Software Development :: Testing',
+        'Topic :: Software Development :: Libraries',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9'
+    ],
     python_tag = "py3",
     requires = [
         "urllib3[secure]",
