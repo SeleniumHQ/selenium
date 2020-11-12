@@ -34,13 +34,10 @@ before submitting your pull requests.
 
 ## Building
 
-In order to build Selenium, you'll generally use the `./go` command. `./go` is a Rake script,
-which wraps the main build tool, `bazel`.
-
 ### Bazel
 
 [Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
-downloads, generates the Selenium binaries, executes tests, and does it all rather quickly.
+downloads, generate the Selenium binaries, executes tests, and does it all rather quickly.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
 the java and javascript folders to build without errors, you should be confident that you have the
@@ -48,9 +45,9 @@ correct binaries on your system.
 
 ### Before Building
 
-Ensure that you have Chrome installed and the
-[`chromedriver`](https://chromedriver.chromium.org/downloads) that matches
-your Chrome version available on your `$PATH`. You may have to update this from time to time.
+Ensure that you have Firefox installed and the latest
+[`geckodriver`](https://github.com/mozilla/geckodriver/releases/) on your `$PATH`.
+You may have to update this from time to time.
 
 ### Common Build Targets
 
@@ -75,29 +72,20 @@ executes without errors, you should be able to create a PR of your changes. (See
 
 * Bazel files are called BUILD.bazel
 * [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) build files are called
-*build.desc*. This is an older build system, still in use in the project
-* There is also a main Rakefile
+*build.desc*. This is an older build system, still in use in the project for Ruby bindings mostly.
 
 The order the modules are built is determined by the build system. If you want to build an
 individual module (assuming all dependent modules have previously been built), try the following:
 
 ```sh
-./go javascript/atoms:test:run
+bazel test javascript/atoms:test
 ```
 
 In this case, `javascript/atoms` is the module directory,
-`test` is a target in that directory's `build.desc` file
-and `run` is the action to run on that target.
+`test` is a target in that directory's `BUILD.bazel` file.
 
 As you see *build targets* scroll past in the log,
-you may want to run them individually. crazyfun can run them individually,
-by target name, as long as `:run` is appended (see above).
-
-To list all available targets, you can append the `-T` flag:
-
-```sh
-./go -T
-```
+you may want to run them individually.
 
 ## Requirements
 
@@ -126,14 +114,9 @@ xcode-select --install
   * `BAZEL_VC_FULL_VERSION` environment variable should contain the version of the installed command line tools,
      e.g. `14.27.29110`
 
-Although the build system is based on rake, it's **strongly advised**
-to rely on the version of JRuby in `third_party/` that is invoked by
-`go`.  The only developer type who would want to deviate from this is
-the “build maintainer” who's experimenting with a JRuby upgrade.
-
 ### Optional Requirements
 
-* Python 3.5+ (if you want to run Python tests for this version)
+* Python 3.7+ (if you want to run Python tests for this version)
 * Ruby 2.0
 
 ### Internet Explorer Driver
@@ -194,12 +177,7 @@ developing much of the JavaScript, so now navigate to
 [http://localhost:2310/javascript/atoms/test](http://localhost:2310/javascript/atoms/test).
 
 The tests in this directory are normal HTML files with names ending
-with `_test.html`.  Click on one to load the page and run the test. You
-can run all the JavaScript tests using:
-
-```sh
-./go test_javascript
-```
+with `_test.html`.  Click on one to load the page and run the test.
 
 ## Maven POM files
 
@@ -208,26 +186,7 @@ repository](https://repo1.maven.org/maven2/org/seleniumhq/selenium/).
 
 ## Build Output
 
-`./go` only makes a top-level `build` directory.  Outputs are placed
-under that relative to the target name. Which is probably best
-described with an example.  For the target:
-
-```sh
-./go //java/client/src/org/openqa/selenium:selenium-api
-```
-
-The output is found under:
-
-```sh
-build/java/client/src/org/openqa/selenium/selenium-api.jar
-```
-
-If you watch the build, each step should print where its output is
-going.  Java test outputs appear in one of two places: either under
-`build/test_logs` for [JUnit](http://junit.org/) or in
-`build/build_log.xml` for [TestNG](http://testng.org/doc/index.html)
-tests.  If you'd like the build to be chattier, just append `log=true`
-to the build command line.
+`bazel` makes a top-level group of directories with the  `bazel-` prefix on each directory.
 
 ## Help with `go`
 
