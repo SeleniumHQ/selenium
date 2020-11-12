@@ -27,6 +27,7 @@
     <repository url="https://github.com/SeleniumHQ/selenium" />
     <license type="expression">Apache-2.0</license>
     <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
+    <icon>images\icon.png</icon>
     <tags>selenium webdriver remote control rc browser automation</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
@@ -53,6 +54,8 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**" target="lib" />
+    <file src="**/Selenium.WebDriverBackedSelenium.dll" target="lib" />
+    <file src="**/Selenium.WebDriverBackedSelenium.pdb" target="lib" />
+    <file src="../icon.png" target="images\"/>
   </files>
 </package>

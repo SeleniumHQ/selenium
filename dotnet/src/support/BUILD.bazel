@@ -1,3 +1,4 @@
+load("//common:defs.bzl", "copy_file")
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load(
     "//dotnet:defs.bzl",
@@ -115,6 +116,12 @@ generated_assembly_info(
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
+copy_file(
+    name = "logo",
+    src = "//common/images:selenium_logo_small.png",
+    out = "icon.png"
+)
+
 nuget_package(
     name = "package",
     src = "WebDriver.Support.nuspec",
@@ -132,6 +139,7 @@ nuget_package(
         ":net48",
         ":netstandard2.0",
         ":netstandard2.1",
+        ":logo",
     ],
 )
 
@@ -151,6 +159,7 @@ nuget_package(
         ":net48-strongnamed",
         ":netstandard2.0-strongnamed",
         ":netstandard2.1-strongnamed",
+        ":logo",
     ],
 )
 
