@@ -2,12 +2,6 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_library", "java_selenium_test_suite", "java_test_suite")
 
 
-load("@apple_rules_lint//lint:defs.bzl", "package_lint_config")
-
-package_lint_config({
-    "java-spotbugs": "//java/client/test/org/openqa/selenium:test-spotbugs-config",
-})
-
 SMALL_TESTS = [
     "ArchitectureTest.java",
     "ByTest.java",
