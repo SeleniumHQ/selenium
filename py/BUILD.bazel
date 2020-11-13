@@ -328,6 +328,7 @@ py_test_suite(
     srcs = glob([
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/marionette/**/*.py",
+        "test/selenium/webdriver/firefox/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
     args = [
