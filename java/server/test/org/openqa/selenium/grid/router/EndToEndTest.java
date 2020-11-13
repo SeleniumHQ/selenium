@@ -73,7 +73,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -148,7 +147,7 @@ public class EndToEndTest {
 
     Server<?> server = new Standalone().asServer(config).start();
 
-    waitUntilReady(server);
+    waitUntilReady(server, Duration.ofSeconds(5));
 
     return new TestData(server, server::stop);
   }
@@ -192,9 +191,9 @@ public class EndToEndTest {
     Server<?> hub = new Hub().asServer(setRandomPort(hubConfig)).start();
 
     Server<?> node = new NodeServer().asServer(setRandomPort(baseConfig)).start();
-    waitUntilReady(node);
+    waitUntilReady(node, Duration.ofSeconds(5));
 
-    waitUntilReady(hub);
+    waitUntilReady(hub, Duration.ofSeconds(5));
 
     return new TestData(hub, hub::stop, node::stop);
   }
@@ -242,10 +241,10 @@ public class EndToEndTest {
           "bind = true"}))),
         setRandomPort(sharedConfig)))
       .start();
-    waitUntilReady(eventServer);
+    waitUntilReady(eventServer, Duration.ofSeconds(5));
 
     Server<?> newSessionQueueServer = new NewSessionQueuerServer().asServer(setRandomPort(sharedConfig)).start();
-    waitUntilReady(newSessionQueueServer);
+    waitUntilReady(newSessionQueueServer, Duration.ofSeconds(5));
     Config newSessionQueueServerConfig = new TomlConfig(new StringReader(String.join(
         "\n",
         new String[] {
@@ -295,9 +294,9 @@ public class EndToEndTest {
           distributorConfig,
           newSessionQueueServerConfig)))
       .start();
-    waitUntilReady(nodeServer);
+    waitUntilReady(nodeServer, Duration.ofSeconds(5));
 
-    waitUntilReady(router);
+    waitUntilReady(router, Duration.ofSeconds(5));
 
     return new TestData(
       router,
@@ -309,13 +308,21 @@ public class EndToEndTest {
       eventServer::stop);
   }
 
-  private static void waitUntilReady(Server<?> server) {
+  private static void waitUntilReady(Server<?> server, Duration duration) {
+    waitUntilReady(server, duration, false);
+  }
+
+  private static void waitUntilReady(Server<?> server, Duration duration, boolean printOutput) {
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
     new FluentWait<>(client)
-      .withTimeout(Duration.ofSeconds(5))
+      .withTimeout(duration)
+      .pollingEvery(Duration.ofSeconds(1))
       .until(c -> {
         HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+        if (printOutput) {
+          System.out.println(Contents.string(response));
+        }
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status.get("ready"));
       });
@@ -388,18 +395,7 @@ public class EndToEndTest {
     // Kill the session, and wait until the grid says it's ready
     driver.quit();
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
-    new FluentWait<>("").withTimeout(ofSeconds(200)).until(obj -> {
-      try {
-        HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-        System.out.println(Contents.string(response));
-        Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return Boolean.TRUE.equals(status.get("ready"));
-      } catch (UncheckedIOException e) {
-        e.printStackTrace();
-        return false;
-      }
-    });
+    waitUntilReady(server, Duration.ofSeconds(200), true);
 
     // And now we're good to go.
     driver = new RemoteWebDriver(server.getUrl(), caps);
