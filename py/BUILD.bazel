@@ -96,6 +96,7 @@ py_wheel(
         'Programming Language :: Python :: 3.9'
     ],
     python_tag = "py3",
+    python_requires = "~=3.7",
     requires = [
         "urllib3[secure]",
         "trio",
