@@ -144,10 +144,21 @@ public class DockerOptions {
       Image image = docker.getImage(name);
       for (int i = 0; i < maxContainerCount; i++) {
         if (isVideoRecordingAvailable()) {
-          factories.put(caps,
-              new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps, videoImage, getStoragePath()));
+          factories.put(
+            caps,
+            new DockerSessionFactory(
+              tracer,
+              clientFactory,
+              docker,
+              getDockerUri(),
+              image,
+              caps,
+              videoImage,
+              getStoragePath()));
         } else {
-          factories.put(caps, new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
+          factories.put(
+            caps,
+            new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
         }
       }
       LOG.info(String.format(
@@ -160,7 +171,8 @@ public class DockerOptions {
   }
 
   private boolean isVideoRecordingAvailable() {
-    return config.get(DOCKER_SECTION, "video-image").isPresent() && config.get(DOCKER_SECTION, "video-path").isPresent();
+    return config.get(DOCKER_SECTION, "video-image").isPresent()
+           && config.get(DOCKER_SECTION, "video-path").isPresent();
   }
 
   private Image getVideoImage(Docker docker) {
@@ -175,7 +187,8 @@ public class DockerOptions {
   private void loadImages(Docker docker, String... imageNames) {
     CompletableFuture<Void> cd = CompletableFuture.allOf(
         Arrays.stream(imageNames)
-            .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name))).toArray(CompletableFuture[]::new));
+            .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name)))
+          .toArray(CompletableFuture[]::new));
 
     try {
       cd.get();
