@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.config;
 
 import org.openqa.selenium.internal.Require;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,9 @@ public class MemoizedConfig implements Config {
       new Key(section, option, typeOfX.toGenericString(), defaultClassName),
       ignored -> {
         try {
-          return delegate.getClass(section, option, typeOfX, defaultClassName);
+          String clazz = delegate.get(section, option).orElse(defaultClassName);
+          Method create = delegate.getCreateMethod(clazz, typeOfX);
+          return typeOfX.cast(create.invoke(null, this));
         } catch (Exception e) {
           thrown.set(e);
           return null;

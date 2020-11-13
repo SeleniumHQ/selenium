@@ -51,6 +51,15 @@ public interface Config {
     Logger.getLogger(Config.class.getName()).fine(String.format("Creating %s as instance of %s", clazz, typeOfClass));
 
     try {
+      Method create = getCreateMethod(clazz, typeOfClass);
+      return typeOfClass.cast(create.invoke(null, this));
+    } catch (ReflectiveOperationException e) {
+      throw new IllegalArgumentException("Unable to find class: " + clazz, e);
+    }
+  }
+
+  default <X> Method getCreateMethod(String clazz, Class<X> typeOfClass) {
+    try {
       // Use the context class loader since this is what the `--ext`
       // flag modifies.
       Class<?> ClassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
@@ -58,18 +67,18 @@ public interface Config {
 
       if (!Modifier.isStatic(create.getModifiers())) {
         throw new IllegalArgumentException(String.format(
-            "Class %s's `create(Config)` method must be static", clazz));
+          "Class %s's `create(Config)` method must be static", clazz));
       }
 
       if (!typeOfClass.isAssignableFrom(create.getReturnType())) {
         throw new IllegalArgumentException(String.format(
-            "Class %s's `create(Config)` method must be static", clazz));
+          "Class %s's `create(Config)` method must be static", clazz));
       }
 
-      return typeOfClass.cast(create.invoke(null, this));
+      return create;
     } catch (NoSuchMethodException e) {
       throw new IllegalArgumentException(String.format(
-          "Class %s must have a static `create(Config)` method", clazz));
+        "Class %s must have a static `create(Config)` method", clazz));
     } catch (ReflectiveOperationException e) {
       throw new IllegalArgumentException("Unable to find class: " + clazz, e);
     }
