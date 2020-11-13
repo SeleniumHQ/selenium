@@ -66,15 +66,10 @@ rbe_autoconfig(name = "rbe_default")
 http_archive(
     name = "rules_python",
     patches = ["//py:rules_python_wheel_directory_check.patch"],
-    sha256 = "4d8ed66d5f57a0b6b90e495ca8e29e5c5fa353b93f093e7c31c595a4631ff293",
-    strip_prefix = "rules_python-5c948dcfd4ca79c2ed3a87636c46abba9f5836e9",
-    url = "https://github.com/bazelbuild/rules_python/archive/5c948dcfd4ca79c2ed3a87636c46abba9f5836e9.zip",
+    sha256 = "e7dcbceb163a5b45489f49629242a78deaff8fcbebfe5970fb7acf5a16dbe2b8",
+    strip_prefix = "rules_python-aa27a3fe7e1a6c73028effe1c78e87d2e7fab641",
+    url = "https://github.com/bazelbuild/rules_python/archive/aa27a3fe7e1a6c73028effe1c78e87d2e7fab641.zip",
 )
-
-# This call should always be present.
-load("@rules_python//python:repositories.bzl", "py_repositories")
-
-py_repositories()
 
 # This one is only needed if you're using the packaging rules.
 load("@rules_python//python:pip.bzl", "pip_install", "pip_repositories")
