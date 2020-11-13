@@ -50,8 +50,10 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
-        "//third_party/py:certifi",
-        "//third_party/py:urllib3",
+        requirement("trio"),
+        requirement("trio_websocket"),
+        requirement("urllib3"),
+        requirement("certifi"),
     ],
 )
 
@@ -188,8 +190,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -241,8 +241,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -281,8 +279,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -321,8 +317,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -361,8 +355,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -403,8 +395,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -443,8 +433,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -484,8 +472,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -526,8 +512,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
@@ -568,8 +552,6 @@ py_test_suite(
         requirement("pytest-trio"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
-        requirement("trio"),
-        requirement("trio_websocket"),
         requirement("zipp"),
     ],
 )
