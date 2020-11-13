@@ -40,7 +40,6 @@ drivers = (
     'Edge',
     'Firefox',
     'Ie',
-    'Marionette',
     'Remote',
     'Safari',
     'WebKitGTK',
@@ -117,10 +116,6 @@ def driver(request):
     global driver_instance
     if driver_instance is None:
         if driver_class == 'Firefox':
-            kwargs.update({'capabilities': {'marionette': False}})
-            options = get_options(driver_class, request.config)
-        if driver_class == 'Marionette':
-            driver_class = 'Firefox'
             options = get_options(driver_class, request.config)
         if driver_class == 'Remote':
             capabilities = DesiredCapabilities.FIREFOX.copy()
