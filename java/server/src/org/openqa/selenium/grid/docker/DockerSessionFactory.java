@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Dialect;
@@ -55,6 +56,10 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -86,7 +91,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Capabilities stereotype;
   private boolean isVideoRecordingAvailable;
   private Image videoImage;
-  private String storagePath;
+  private String assetsPath;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -106,11 +111,11 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   public DockerSessionFactory(Tracer tracer, HttpClient.Factory clientFactory, Docker docker, URI dockerUri,
-    Image browserImage, Capabilities stereotype, Image videoImage, String storagePath) {
+    Image browserImage, Capabilities stereotype, Image videoImage, String assetsPath) {
     this(tracer, clientFactory, docker, dockerUri, browserImage, stereotype);
     this.isVideoRecordingAvailable = true;
     this.videoImage = videoImage;
-    this.storagePath = storagePath;
+    this.assetsPath = assetsPath;
   }
 
   @Override
@@ -198,11 +203,16 @@ public class DockerSessionFactory implements SessionFactory {
       if (isVideoRecordingAvailable && recordVideoForSession(sessionRequest.getCapabilities())) {
         Map<String, String> envVars = getVideoContainerEnvVars(
           sessionRequest.getCapabilities(),
-          containerInfo.getIp(),
-          id.toString());
-        Map<String, String> volumeBinds = Collections.singletonMap(storagePath, "/videos");
-        videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
-        videoContainer.start();
+          containerInfo.getIp());
+        Optional<Path> sessionAssetsPath = createSessionAssetsPath(assetsPath, id);
+        if (sessionAssetsPath.isPresent()) {
+          Map<String, String> volumeBinds =
+            Collections.singletonMap(sessionAssetsPath.get().toString(), "/videos");
+          saveSessionCapabilities(sessionRequest.getCapabilities(), sessionAssetsPath.get());
+          videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
+          videoContainer.start();
+          LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
+        }
       }
 
       Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
@@ -246,10 +256,9 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   private Map<String, String> getVideoContainerEnvVars(Capabilities sessionRequestCapabilities,
-    String containerIp, String fileName) {
+    String containerIp) {
     Map<String, String> envVars = new HashMap<>();
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
-    envVars.put("FILE_NAME", String.format("%s.mp4", fileName));
     Optional<Dimension> screenResolution =
       ofNullable(getScreenResolution(sessionRequestCapabilities));
     screenResolution.ifPresent(dimension -> envVars
@@ -307,6 +316,29 @@ public class DockerSessionFactory implements SessionFactory {
       return seleniumOptions.get(capabilityName);
     }
     return null;
+  }
+
+  private Optional<Path> createSessionAssetsPath(String assetsPath, SessionId id) {
+    try {
+      return Optional.of(Files.createDirectories(Paths.get(assetsPath, id.toString())));
+    } catch (IOException e) {
+      LOG.log(Level.WARNING,
+              "Failed to create path to store session assets, no assets will be stored", e);
+    }
+    return Optional.empty();
+  }
+
+  private void saveSessionCapabilities(Capabilities sessionRequestCapabilities, Path assetsPath) {
+    String capsToJson = new Json().toJson(sessionRequestCapabilities);
+    try {
+      Files.write(
+        Paths.get(assetsPath.toString(), "metadata.json"),
+        capsToJson.getBytes(Charset.defaultCharset()));
+    } catch (IOException e) {
+      LOG.log(Level.WARNING,
+              "Failed to save session capabilities as metadata", e);
+      e.printStackTrace();
+    }
   }
 
   private void waitForServerToStart(HttpClient client, Duration duration) {

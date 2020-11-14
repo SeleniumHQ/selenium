@@ -154,7 +154,7 @@ public class DockerOptions {
               image,
               caps,
               videoImage,
-              getStoragePath()));
+              getAssetsPath()));
         } else {
           factories.put(
             caps,
@@ -172,7 +172,7 @@ public class DockerOptions {
 
   private boolean isVideoRecordingAvailable() {
     return config.get(DOCKER_SECTION, "video-image").isPresent()
-           && config.get(DOCKER_SECTION, "video-path").isPresent();
+           && config.get(DOCKER_SECTION, "assets-path").isPresent();
   }
 
   private Image getVideoImage(Docker docker) {
@@ -180,8 +180,8 @@ public class DockerOptions {
     return videoImage.map(docker::getImage).orElse(null);
   }
 
-  private String getStoragePath() {
-    return config.get(DOCKER_SECTION, "video-path").orElse("");
+  private String getAssetsPath() {
+    return config.get(DOCKER_SECTION, "assets-path").orElse("");
   }
 
   private void loadImages(Docker docker, String... imageNames) {
