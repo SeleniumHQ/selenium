@@ -167,8 +167,19 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
         public DevToolsSession CreateDevToolsSession()
+        {
+            return CreateDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+        }
+
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession CreateDevToolsSession(int devToolsProtocolVersion)
         {
             if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
             {
@@ -190,7 +201,7 @@ namespace OpenQA.Selenium.Chromium
             try
             {
                 DevToolsSession session = new DevToolsSession(debuggerAddress);
-                session.Start().ConfigureAwait(false).GetAwaiter().GetResult();
+                session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                 return session;
             }
             catch (Exception e)

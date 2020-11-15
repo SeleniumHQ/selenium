@@ -27,7 +27,5 @@ public interface DockerProtocol {
   Container create(ContainerConfig info);
   void startContainer(ContainerId id) throws DockerException;
   void stopContainer(ContainerId id, Duration timeout) throws DockerException;
-  boolean exists(ContainerId id);
-  void deleteContainer(ContainerId id) throws DockerException;
   ContainerInfo inspectContainer(ContainerId id) throws DockerException;
 }

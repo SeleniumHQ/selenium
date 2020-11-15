@@ -152,7 +152,6 @@ bot.locators.relative.near_ = function(selector, opt_distance) {
     distance = 50;
   }
 
-
   /**
    * @param {!Element} compareTo
    * @return {boolean}
@@ -251,6 +250,13 @@ bot.locators.relative.STRATEGIES_ = {
   'near': bot.locators.relative.near_,
 };
 
+bot.locators.relative.RESOLVERS_ = {
+  'left': bot.locators.relative.resolve_,
+  'right': bot.locators.relative.resolve_,
+  'above': bot.locators.relative.resolve_,
+  'below': bot.locators.relative.resolve_,
+  'near': bot.locators.relative.resolve_,
+};
 
 /**
  * @param {!IArrayLike<!Element>} allElements
@@ -292,7 +298,55 @@ bot.locators.relative.filterElements_ = function(allElements, filters) {
     },
     null);
 
-  return toReturn;
+  // We want to sort the returned elements by proximity to the last "anchor"
+  // element in the filters.
+  var finalFilter = goog.array.last(filters);
+  var name = finalFilter["kind"];
+  var resolver = bot.locators.relative.RESOLVERS_[name];
+  if (!!!resolver) {
+    return toReturn;
+  }
+  var lastAnchor = resolver.apply(null, finalFilter["args"]);
+  if (!!!lastAnchor) {
+    return toReturn;
+  }
+
+  return bot.locators.relative.sortByProximity_(lastAnchor, toReturn);
+};
+
+
+/**
+ * @param {!Element} anchor
+ * @param {!Array<!Element>} elements
+ * @return {!Array<!Element>}
+ * @private
+ */
+bot.locators.relative.sortByProximity_ = function(anchor, elements) {
+  console.log("Anchor is", anchor);
+  var anchorRect = bot.dom.getClientRect(anchor);
+  var anchorCenter = {
+    x: anchorRect.left + (Math.max(1, anchorRect.width) / 2),
+    y: anchorRect.top + (Math.max(1, anchorRect.height) / 2)
+  };
+
+  var distance = function(e) {
+    var rect = bot.dom.getClientRect(e);
+    var center = {
+      x: rect.left + (Math.max(1, rect.width) / 2),
+      y: rect.height + (Math.max(1, rect.height) / 2)
+    };
+
+    var x = Math.pow(Math.abs(anchorCenter.x - center.x), 2);
+    var y = Math.pow(Math.abs(anchorCenter.y - center.y), 2);
+
+    return Math.sqrt(x + y);
+  };
+
+  goog.array.sort(elements, function(left, right) {
+    return distance(left) - distance(right);
+  });
+
+  return elements;
 };
 
 

@@ -13,10 +13,12 @@ def test_bad_proxy_doesnt_interfere():
 
     options.ignore_local_proxy_environment_variables()
 
-    chrome_kwargs = {'options': options, 'keep_alive': False}
+    chrome_kwargs = {'options': options}
     driver = webdriver.Chrome(**chrome_kwargs)
 
     assert hasattr(driver, 'command_executor')
     assert hasattr(driver.command_executor, '_proxy_url')
-    assert type(driver.command_executor) == urllib3.PoolManager
+    assert type(driver.command_executor._conn) == urllib3.PoolManager
+    os.environ.pop('https_proxy')
+    os.environ.pop('http_proxy')
     driver.quit()

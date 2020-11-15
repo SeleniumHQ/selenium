@@ -19,6 +19,13 @@ namespace OpenQA.Selenium.DevToolsGenerator
         public bool ForceDownload { get; set; }
 
         [Option(
+            'q',
+            "quiet",
+            Default = false,
+            HelpText = "Suppresses console output.")]
+        public bool Quiet { get; set; }
+
+        [Option(
             "force",
             Default = false,
             HelpText = "Forces the output directory to be overwritten")]

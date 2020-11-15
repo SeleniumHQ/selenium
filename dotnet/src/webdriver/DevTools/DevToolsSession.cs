@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
@@ -36,6 +37,8 @@ namespace OpenQA.Selenium.DevTools
     ///</summary>
     public class DevToolsSession : IDevToolsSession
     {
+        public const int AutoDetectDevToolsProtocolVersion = 0;
+
         private readonly string debuggerEndpoint;
         private string websocketAddress;
         private readonly TimeSpan closeConnectionWaitTimeSpan = TimeSpan.FromSeconds(2);
@@ -242,8 +245,9 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Asynchronously starts the session.
         /// </summary>
+        /// <param name="protocolVersion">The version of the protocol to use in communicating with the browswer.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task Start()
+        internal async Task Start(int protocolVersion)
         {
             string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.debuggerEndpoint);
             string rawVersionInfo = string.Empty;
@@ -256,7 +260,16 @@ namespace OpenQA.Selenium.DevTools
             var versionInfo = JsonConvert.DeserializeObject<DevToolsVersionInfo>(rawVersionInfo);
             websocketAddress = versionInfo.WebSocketDebuggerUrl;
 
-            this.domains = DevToolsDomains.InitializeDomains(versionInfo, this);
+            if (protocolVersion == AutoDetectDevToolsProtocolVersion)
+            {
+                bool versionParsed = int.TryParse(versionInfo.BrowserMajorVersion, out protocolVersion);
+                if (!versionParsed)
+                {
+                    throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to parse version number received from browser. Reported browser version string is '{0}'", versionInfo.Browser));
+                }
+            }
+
+            this.domains = DevToolsDomains.InitializeDomains(protocolVersion, this);
 
             string targetId = null;
             var targets = await this.domains.Target.GetTargets();

@@ -104,38 +104,12 @@ def test_that_boolean_prefs_are_written_in_the_correct_format():
     assert profile.default_preferences["sample.bool.preference"] is True
 
 
-def test_that_we_delete_the_profile(capabilities):
-    driver = Firefox(capabilities=capabilities)
-    path = driver.firefox_profile.path
-    driver.quit()
-    assert not os.path.exists(path)
-
-
 def test_profiles_do_not_share_preferences():
     profile1 = FirefoxProfile()
     profile1.accept_untrusted_certs = False
     profile2 = FirefoxProfile()
     # Default is true. Should remain so.
     assert profile2.default_preferences["webdriver_accept_untrusted_certs"] is True
-
-
-def test_add_extension_web_extension_with_id(capabilities, webserver):
-    current_directory = os.path.dirname(os.path.realpath(__file__))
-    root_directory = os.path.join(current_directory, '..', '..', '..', '..', '..')
-    # TODO: This file should probably live in a common directory.
-    extension_path = os.path.join(root_directory, 'javascript', 'node', 'selenium-webdriver',
-                                  'lib', 'test', 'data', 'firefox', 'webextension.xpi')
-
-    profile = FirefoxProfile()
-    profile.add_extension(extension_path)
-
-    driver = Firefox(capabilities=capabilities, firefox_profile=profile)
-    profile_path = driver.firefox_profile.path
-    extension_path_in_profile = os.path.join(profile_path, 'extensions', 'webextensions-selenium-example@example.com')
-    assert os.path.exists(extension_path_in_profile)
-    driver.get(webserver.where_is('simpleTest.html'))
-    driver.find_element(By.ID, 'webextensions-selenium-example')
-    driver.quit()
 
 
 def test_add_extension_web_extension_without_id(capabilities, webserver):

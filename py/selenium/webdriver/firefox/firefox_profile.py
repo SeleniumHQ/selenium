@@ -23,6 +23,7 @@ import re
 import shutil
 import sys
 import tempfile
+import warnings
 import zipfile
 from io import BytesIO
 from xml.dom import minidom
@@ -54,6 +55,8 @@ class FirefoxProfile(object):
            This defaults to None and will create a new
            directory when object is created.
         """
+        warnings.warn('firefox_profile has been deprecated, please use an Options object',
+                      DeprecationWarning, stacklevel=2)
         if not FirefoxProfile.DEFAULT_PREFERENCES:
             with open(os.path.join(os.path.dirname(__file__),
                                    WEBDRIVER_PREFERENCES)) as default_prefs:
