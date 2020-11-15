@@ -337,7 +337,6 @@ public class DockerSessionFactory implements SessionFactory {
     } catch (IOException e) {
       LOG.log(Level.WARNING,
               "Failed to save session capabilities as metadata", e);
-      e.printStackTrace();
     }
   }
 
