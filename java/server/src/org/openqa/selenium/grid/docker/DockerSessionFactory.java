@@ -200,15 +200,15 @@ public class DockerSessionFactory implements SessionFactory {
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
       Container videoContainer = null;
-      if (isVideoRecordingAvailable && recordVideoForSession(sessionRequest.getCapabilities())) {
+      if (isVideoRecordingAvailable && recordVideoForSession(capabilities)) {
         Map<String, String> envVars = getVideoContainerEnvVars(
-          sessionRequest.getCapabilities(),
+          capabilities,
           containerInfo.getIp());
         Optional<Path> sessionAssetsPath = createSessionAssetsPath(assetsPath, id);
         if (sessionAssetsPath.isPresent()) {
           Map<String, String> volumeBinds =
             Collections.singletonMap(sessionAssetsPath.get().toString(), "/videos");
-          saveSessionCapabilities(sessionRequest.getCapabilities(), sessionAssetsPath.get());
+          saveSessionCapabilities(capabilities, sessionAssetsPath.get());
           videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
           videoContainer.start();
           LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
@@ -332,11 +332,11 @@ public class DockerSessionFactory implements SessionFactory {
     String capsToJson = new Json().toJson(sessionRequestCapabilities);
     try {
       Files.write(
-        Paths.get(assetsPath.toString(), "metadata.json"),
+        Paths.get(assetsPath.toString(), "sessionCapabilities.json"),
         capsToJson.getBytes(Charset.defaultCharset()));
     } catch (IOException e) {
       LOG.log(Level.WARNING,
-              "Failed to save session capabilities as metadata", e);
+              "Failed to save session capabilities", e);
     }
   }
 
