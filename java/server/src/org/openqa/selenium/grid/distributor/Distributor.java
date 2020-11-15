@@ -198,9 +198,11 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .anyMatch(nodeStatus -> nodeStatus.hasCapability(firstRequest.getCapabilities()));
 
         if (!hostsWithCaps) {
-          throw new SessionNotCreatedException(
-            "No host supports the capabilities required: " + payload.stream()
-              .map(Capabilities::toString).collect(Collectors.joining(", ")));
+          String errorMessage = String.format(
+            "No host supports the capabilities required: %s",
+            payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
+          SessionNotCreatedException exception = new SessionNotCreatedException(errorMessage);
+          return Either.left(exception);
         }
 
         // Find a host that supports the capabilities present in the new session
