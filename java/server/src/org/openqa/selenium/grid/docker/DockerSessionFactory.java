@@ -188,8 +188,10 @@ public class DockerSessionFactory implements SessionFactory {
         span.setStatus(Status.CANCELLED);
 
         EXCEPTION.accept(attributeMap, e);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Unable to create session. Stopping and  container: " + e.getMessage()));
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute
+            .setValue("Unable to create session. Stopping and  container: " + e.getMessage()));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
@@ -199,16 +201,16 @@ public class DockerSessionFactory implements SessionFactory {
 
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
+      Optional<Path> sessionAssetsPath = createSessionAssetsPath(assetsPath, id);
+      sessionAssetsPath.ifPresent(path -> saveSessionCapabilities(capabilities, path));
       Container videoContainer = null;
       if (isVideoRecordingAvailable && recordVideoForSession(capabilities)) {
         Map<String, String> envVars = getVideoContainerEnvVars(
           capabilities,
           containerInfo.getIp());
-        Optional<Path> sessionAssetsPath = createSessionAssetsPath(assetsPath, id);
         if (sessionAssetsPath.isPresent()) {
           Map<String, String> volumeBinds =
             Collections.singletonMap(sessionAssetsPath.get().toString(), "/videos");
-          saveSessionCapabilities(capabilities, sessionAssetsPath.get());
           videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
           videoContainer.start();
           LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
