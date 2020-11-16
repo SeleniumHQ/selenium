@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
