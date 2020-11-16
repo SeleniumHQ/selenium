@@ -13,6 +13,6 @@ export default {
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
   testEnvironment: "node",
   moduleNameMapper: {
-    ".+\\.(svg|png|jpg)$": "identity-obj-proxy"
+    ".+\\.(svg|png|jpg|css)$": "identity-obj-proxy"
   }
 }
