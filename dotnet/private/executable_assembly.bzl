@@ -18,7 +18,7 @@ def _generate_execution_script_file(ctx, target):
     if ctx.attr.is_windows:
         shell_file_extension = "bat"
         execution_line = "%~dp0" + assembly_file_name + " %*"
-    if is_core_framework(tfm):
+    if is_core_framework(tfm) or tfm == "net5.0":
         execution_line = "dotnet " + execution_line
     else:
         execution_line = "mono " + execution_line
