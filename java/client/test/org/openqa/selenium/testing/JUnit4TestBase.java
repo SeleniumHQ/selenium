@@ -50,12 +50,12 @@ import java.util.stream.Stream;
 public abstract class JUnit4TestBase {
 
   private static final Logger logger = Logger.getLogger(JUnit4TestBase.class.getName());
+  private static final ThreadLocal<WebDriver> storedDriver = new ThreadLocal<>();
 
-  private Browser current = Browser.detect();
+  private final Browser current = Browser.detect();
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
-  private static ThreadLocal<WebDriver> storedDriver = new ThreadLocal<>();
   protected WebDriver driver;
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;
@@ -88,7 +88,7 @@ public abstract class JUnit4TestBase {
     .around(new SwitchToTopRule())
     .around(new NotYetImplementedRule());
 
-  private class TraceMethodNameRule extends TestWatcher {
+  private static class TraceMethodNameRule extends TestWatcher {
     @Override
     protected void starting(Description description) {
       super.starting(description);
