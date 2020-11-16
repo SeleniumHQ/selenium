@@ -14,8 +14,8 @@ class ClassCreation {
     try {
       // Use the context class loader since this is what the `--ext`
       // flag modifies.
-      Class<?> ClassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
-      Method create = ClassClazz.getMethod("create", org.openqa.selenium.grid.config.Config.class);
+      Class<?> сlassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
+      Method create = сlassClazz.getMethod("create", org.openqa.selenium.grid.config.Config.class);
 
       if (!Modifier.isStatic(create.getModifiers())) {
         throw new IllegalArgumentException(String.format(
