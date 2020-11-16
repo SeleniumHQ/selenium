@@ -70,7 +70,6 @@ public class V87Events extends Events<ConsoleAPICalled, ExceptionThrown> {
       .map(obj -> new RemoteObject(
         obj.getType().toString(),
         obj.getValue().orElse(null)))
-      .map(obj -> (Object) obj)
       .collect(ImmutableList.toImmutableList());
 
     return new ConsoleEvent(
