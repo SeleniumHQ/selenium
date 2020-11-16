@@ -76,7 +76,7 @@ public abstract class JUnit4TestBase {
 
     assertThat(hostName).isNotEqualTo(alternateHostName);
   }
-  
+
   @Rule
   public TestRule chain = RuleChain
     .outerRule(new TraceMethodNameRule())
@@ -103,13 +103,13 @@ public abstract class JUnit4TestBase {
     protected void starting(Description description) {
       super.starting(description);
       NoDriverBeforeTest killSharedDriver = description.getAnnotation(NoDriverBeforeTest.class);
-      if (killSharedDriver != null && matches(current, killSharedDriver.value())) {
+      if (killSharedDriver != null && current.matches(killSharedDriver.value())) {
         System.out.println("Destroying driver before test " + description);
         removeDriver();
         return;
       }
       NeedsFreshDriver annotation = description.getAnnotation(NeedsFreshDriver.class);
-      if (annotation != null && matches(current, annotation.value())) {
+      if (annotation != null && current.matches(annotation.value())) {
         System.out.println("Restarting driver before test " + description);
         removeDriver();
       }
@@ -124,7 +124,7 @@ public abstract class JUnit4TestBase {
     protected void succeeded(Description description) {
       super.finished(description);
       NoDriverAfterTest annotation = description.getAnnotation(NoDriverAfterTest.class);
-      if (annotation != null && !annotation.failedOnly() && matches(current, annotation.value())) {
+      if (annotation != null && !annotation.failedOnly() && current.matches(annotation.value())) {
         System.out.println("Restarting driver after succeeded test " + description);
         removeDriver();
       }
@@ -134,7 +134,7 @@ public abstract class JUnit4TestBase {
     protected void failed(Throwable e, Description description) {
       super.finished(description);
       NoDriverAfterTest annotation = description.getAnnotation(NoDriverAfterTest.class);
-      if (annotation != null && matches(current, annotation.value())) {
+      if (annotation != null && current.matches(annotation.value())) {
         System.out.println("Restarting driver after failed test " + description);
         removeDriver();
       }
@@ -163,7 +163,7 @@ public abstract class JUnit4TestBase {
     }
 
     private boolean notImplemented(Stream<NotYetImplemented> nyi) {
-      return nyi.anyMatch(driver -> matches(current, new Browser[]{driver.value()}));
+      return nyi.anyMatch(driver -> current.matches(driver.value()));
     }
 
     @Override
@@ -254,16 +254,4 @@ public abstract class JUnit4TestBase {
     storedDriver.remove();
   }
 
-  private static boolean matches(Browser current, Browser[] drivers) {
-    for (Browser item : drivers) {
-      if (item == Browser.ALL) {
-        return true;
-      }
-
-      if (item == current) {
-        return true;
-      }
-    }
-    return false;
-  }
 }

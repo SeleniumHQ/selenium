@@ -93,4 +93,17 @@ public enum Browser {
   public Capabilities getCapabilities() {
     return canonicalCapabilities;
   }
+
+  public boolean matches(Browser... others) {
+    for (Browser item : others) {
+      if (item == Browser.ALL) {
+        return true;
+      }
+
+      if (item == this) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
