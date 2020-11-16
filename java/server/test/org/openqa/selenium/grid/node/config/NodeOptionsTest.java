@@ -27,6 +27,7 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.firefox.GeckoDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
@@ -36,6 +37,7 @@ import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -153,6 +155,69 @@ public class NodeOptionsTest {
     });
 
     assertThat(reported).isEmpty();
+  }
+
+  @Test
+  public void canConfigureNodeWithDefaultCapabilities() {
+    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+    assumeTrue("GeckoDriver  needs to be available", new GeckoDriverInfo().isAvailable());
+    Config config = new MapConfig(singletonMap(
+      "node",
+      singletonMap("capabilities", "{\"browserName\": \"chrome\"} {\"browserName\": \"firefox\"}")));
+
+    List<WebDriverInfo> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(info -> {
+      reported.add(info);
+      return Collections.emptySet();
+    });
+
+    assertThat(reported).is(supporting("chrome"));
+    assertThat(reported).is(supporting("firefox"));
+  }
+
+  @Test
+  public void canConfigureNodeWithDefaultCapsAndDriverFactoryClasses() {
+    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+
+    Capabilities driverFactoryClassCaps = new ImmutableCapabilities("browserName", "cheese");
+    StringBuilder driverFactoryRawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(driverFactoryRawCaps)) {
+      out.setPrettyPrint(false).write(driverFactoryClassCaps);
+    }
+
+    Capabilities defaultCaps = new ImmutableCapabilities("browserName", "chrome");
+    StringBuilder defaultRawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(defaultRawCaps)) {
+      out.setPrettyPrint(false).write(defaultCaps);
+    }
+
+    String[] rawConfig = new String[]{
+      "[node]",
+      "detect-drivers = false",
+      "capabilities = [",
+      String.format("\"%s\"", defaultRawCaps.toString().replace("\"", "\\\"")),
+      "]",
+      "driver-factories = [",
+      String.format("\"%s\",", HelperFactory.class.getName()),
+      String.format("\"%s\"", driverFactoryRawCaps.toString().replace("\"", "\\\"")),
+      "]"
+    };
+
+    TomlConfig config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    List<WebDriverInfo> reported = new ArrayList<>();
+    NodeOptions options = new NodeOptions(config);
+    Map<Capabilities, Collection<SessionFactory>> factories =
+      options.getSessionFactories(info -> {
+        reported.add(info);
+        return Collections.emptySet();
+      });
+
+    assertThat(reported).is(supporting("chrome"));
+    assertThat(factories).hasSize(1);
+    Collection<SessionFactory> sessionFactories = factories.get(driverFactoryClassCaps);
+    assertThat(sessionFactories).size().isEqualTo(1);
+    assertThat(sessionFactories.iterator().next()).isInstanceOf(SessionFactory.class);
   }
 
   @Test

@@ -65,6 +65,20 @@ public class NodeFlags implements HasRoles {
   public List<String> driverFactory2Config;
 
   @Parameter(
+    names = {"--capabilities"},
+    description = "List of default capabilities that a node should have. " +
+      "Drivers will not be auto-detected if default config is present. " +
+      "However, classes mentioned in \"--driver-factory\" config will be added." +
+      "`--capabilities '{\"browserName\": \"chrome\"}')",
+    arity = 1,
+    variableArity = true)
+  @ConfigValue(
+    section = "node",
+    name = "capabilities",
+    example = "[{\"browserName\": \"chrome\"}]")
+  public List<String> defaultCapabilities;
+
+  @Parameter(
     names = {"--public-url"},
     description = "Public URL of the Grid as a whole (typically the address of the hub or the router)")
   @ConfigValue(section = "node", name = "grid-url", example = "\"https://grid.example.com\"")

@@ -71,6 +71,10 @@ public class NodeOptions {
     });
   }
 
+  public Optional<List<String>> getDefaultCaps() {
+    return config.getAll("node","capabilities");
+  }
+
   public Node getNode() {
     return config.getClass("node", "implementation", Node.class, DEFAULT_IMPL);
   }
@@ -82,15 +86,61 @@ public class NodeOptions {
       config.getInt("node", "max-concurrent-sessions").orElse(Runtime.getRuntime().availableProcessors()),
       Runtime.getRuntime().availableProcessors());
 
-    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(maxSessions, factoryFactory);
-
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories = ImmutableMultimap.builder();
 
+    // Add default capabilities drivers if default capabilities are present.
+    // Avoid detecting all drivers.
+    if (getDefaultCaps().isPresent()) {
+      List<String> allCapabilities = getDefaultCaps().get();
+      addDefaultDrivers(maxSessions, allCapabilities, factoryFactory, sessionFactories);
+    } else {
+      Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(maxSessions, factoryFactory);
+      addSpecificDrivers(allDrivers, sessionFactories);
+      addDetectedDrivers(allDrivers, sessionFactories);
+    }
+
     addDriverFactoriesFromConfig(sessionFactories);
-    addSpecificDrivers(allDrivers, sessionFactories);
-    addDetectedDrivers(allDrivers, sessionFactories);
 
     return sessionFactories.build().asMap();
+  }
+
+  private void addDefaultDrivers(
+    int maxSessions, List<String> defaultConfigCapabilities,
+    Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory,
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+
+    // Convert all string config values into capabilities and store the browser names.
+    List<String> browserNames = new ArrayList<>();
+    for (String caps : defaultConfigCapabilities) {
+      Capabilities stereotype = JSON.toType(caps, Capabilities.class);
+      browserNames.add(stereotype.getBrowserName().toLowerCase());
+    }
+
+    // Discover drivers based on default capabilities browsers.
+    // Avoid discovering all drivers.
+    List<WebDriverInfo> infos =
+      StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+        .filter(WebDriverInfo::isAvailable)
+        .filter(info -> browserNames.contains(info.getDisplayName().toLowerCase()))
+        .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
+        .collect(Collectors.toList());
+
+    List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
+    ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
+
+    infos.forEach(info -> {
+      Capabilities caps = info.getCanonicalCapabilities();
+      builders.stream()
+        .filter(builder -> builder.score(caps) > 0)
+        .forEach(builder -> {
+          for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
+            Capabilities canonicalCaps = info.getCanonicalCapabilities();
+            Collection<SessionFactory> sessionFactoryCollection = factoryFactory.apply(info);
+            sessionFactories.putAll(canonicalCaps, sessionFactoryCollection );
+            report(Map.entry(info, sessionFactoryCollection));
+          }
+        });
+    });
   }
 
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
