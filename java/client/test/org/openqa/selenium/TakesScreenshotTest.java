@@ -20,7 +20,9 @@ package org.openqa.selenium;
 import com.google.common.collect.Sets;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -73,6 +75,9 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
 public class TakesScreenshotTest extends JUnit4TestBase {
+
+  @Rule
+  public final TestName testName = new TestName();
 
   private TakesScreenshot screenshooter;
   private File tempFile = null;

@@ -17,14 +17,10 @@
 
 package org.openqa.selenium.testing;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
-import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -45,6 +41,9 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.time.Duration;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase {
@@ -77,10 +76,7 @@ public abstract class JUnit4TestBase {
 
     assertThat(hostName).isNotEqualTo(alternateHostName);
   }
-
-  @Rule
-  public TestName testName = new TestName();
-
+  
   @Rule
   public TestRule chain = RuleChain
     .outerRule(new TraceMethodNameRule())
@@ -200,9 +196,9 @@ public abstract class JUnit4TestBase {
   }
 
   private void createDriver() {
-    System.out.println("CREATING DRIVER");
+    logger.info("CREATING DRIVER");
     driver = actuallyCreateDriver();
-    System.out.println("CREATED " + driver);
+    logger.info("CREATED " + driver);
     wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
