@@ -235,11 +235,21 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
   }
 
   protected Response execute(CommandPayload payload) {
-    return parent.execute(payload);
+    try {
+      return parent.execute(payload);
+    } catch (WebDriverException ex) {
+      ex.addInfo("Element", this.toString());
+      throw ex;
+    }
   }
 
   protected Response execute(String command, Map<String, ?> parameters) {
-    return parent.execute(command, parameters);
+    try {
+      return parent.execute(command, parameters);
+    } catch (WebDriverException ex) {
+      ex.addInfo("Element", this.toString());
+      throw ex;
+    }
   }
 
   @Override

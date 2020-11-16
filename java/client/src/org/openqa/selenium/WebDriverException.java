@@ -21,6 +21,7 @@ import org.openqa.selenium.net.HostIdentifier;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,26 +59,25 @@ public class WebDriverException extends RuntimeException {
   }
 
   private String createMessage(String originalMessageString) {
-    String supportMessage = getSupportUrl() == null ?
-        "" : "For documentation on this error, please visit: " + getSupportUrl();
+    String supportMessage = Optional.ofNullable(getSupportUrl())
+      .map(url -> String.format("For documentation on this error, please visit: %s", url))
+      .orElse("");
 
     return Stream.of(
-        originalMessageString == null ? "" : originalMessageString,
-        supportMessage,
-        getBuildInformation().toString(),
-        getSystemInformation(),
-        getAdditionalInformation()
+      originalMessageString == null ? "" : originalMessageString,
+      supportMessage,
+      getBuildInformation().toString(),
+      getSystemInformation(),
+      getAdditionalInformation()
     ).filter(s -> !(s == null || s.equals(""))).collect(Collectors.joining("\n"));
   }
 
   public String getSystemInformation() {
-    return String.format("System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-        HOST_NAME,
-        HOST_ADDRESS,
-        System.getProperty("os.name"),
-        System.getProperty("os.arch"),
-        System.getProperty("os.version"),
-        System.getProperty("java.version"));
+    return String.format(
+      "System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
+      HOST_NAME, HOST_ADDRESS,
+      System.getProperty("os.name"), System.getProperty("os.arch"),
+      System.getProperty("os.version"), System.getProperty("java.version"));
   }
 
   public String getSupportUrl() {
@@ -90,13 +90,13 @@ public class WebDriverException extends RuntimeException {
 
   public static String getDriverName(StackTraceElement[] stackTraceElements) {
     return Stream.of(stackTraceElements)
-        .filter(e -> e.getClassName().endsWith("Driver"))
-        .map(e -> {
-          String[] bits = e.getClassName().split("\\.");
-          return bits[bits.length - 1];
-        })
-        .reduce((first, last) -> last)
-        .orElse("unknown");
+      .filter(e -> e.getClassName().endsWith("Driver"))
+      .map(e -> {
+        String[] bits = e.getClassName().split("\\.");
+        return bits[bits.length - 1];
+      })
+      .reduce((first, last) -> last)
+      .orElse("unknown");
   }
 
   public void addInfo(String key, String value) {
@@ -105,12 +105,12 @@ public class WebDriverException extends RuntimeException {
 
   public String getAdditionalInformation() {
     extraInfo.computeIfAbsent(
-        DRIVER_INFO, key -> "driver.version: " + getDriverName(getStackTrace()));
+      DRIVER_INFO, key -> "driver.version: " + getDriverName(getStackTrace()));
 
     return extraInfo.entrySet().stream()
-        .map(entry -> entry.getValue() != null && entry.getValue().startsWith(entry.getKey())
-                      ? entry.getValue()
-                      : entry.getKey() + ": " + entry.getValue())
-        .collect(Collectors.joining("\n"));
+      .map(entry -> entry.getValue() != null && entry.getValue().startsWith(entry.getKey())
+                    ? entry.getValue()
+                    : entry.getKey() + ": " + entry.getValue())
+      .collect(Collectors.joining("\n"));
   }
 }

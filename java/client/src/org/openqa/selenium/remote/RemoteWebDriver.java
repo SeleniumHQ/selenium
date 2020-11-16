@@ -508,8 +508,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // Unwrap the response value by converting any JSON objects of the form
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = getElementConverter().apply(response.getValue());
+      if (value instanceof WebDriverException) {
+        ((WebDriverException) value).addInfo("Command", command.toString());
+      }
       response.setValue(value);
     } catch (WebDriverException e) {
+      e.addInfo("Command", command.toString());
       throw e;
     } catch (Exception e) {
       log(sessionId, command.getName(), command, When.EXCEPTION);
