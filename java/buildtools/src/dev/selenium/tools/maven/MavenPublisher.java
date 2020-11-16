@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.tools.maven;
+package dev.selenium.tools.maven;
 
 import com.google.common.base.Splitter;
 import com.google.common.hash.Hashing;

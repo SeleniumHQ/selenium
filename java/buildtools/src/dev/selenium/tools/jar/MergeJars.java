@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.tools.jar;
+package dev.selenium.tools.jar;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

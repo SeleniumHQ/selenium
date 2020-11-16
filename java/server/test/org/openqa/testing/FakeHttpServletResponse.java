@@ -35,7 +35,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   private final StringWriter stringWriter = new StringWriter();
   private final ServletOutputStream servletOutputStream =
       new StringServletOutputStream(stringWriter);
-  private final PrintWriter printWriter = new PrintWriter(servletOutputStream, false, UTF_8);
+  private final PrintWriter printWriter = new PrintWriter(servletOutputStream, false);
   private int status = HttpServletResponse.SC_OK;
 
   @Override

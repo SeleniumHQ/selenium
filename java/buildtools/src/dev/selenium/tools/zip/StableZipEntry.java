@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.tools.zip;
+package dev.selenium.tools.zip;
 
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;

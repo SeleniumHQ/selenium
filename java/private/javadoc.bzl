@@ -50,7 +50,7 @@ javadoc = rule(
         "transitive": attr.bool(),
         "third_party_prefixes": attr.string_list(),
         "_javadoc": attr.label(
-            default = "//java/client/src/org/openqa/selenium/tools/javadoc",
+            default = "//java/buildtools/src/dev/selenium/tools/javadoc",
             cfg = "host",
             executable = True,
         ),

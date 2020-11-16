@@ -57,6 +57,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,6 +69,8 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import com.google.common.collect.ImmutableMap;
 
 public class GraphqlHandlerTest {
 
@@ -117,7 +120,7 @@ public class GraphqlHandlerTest {
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { uri } }");
 
-    assertThat(topLevel).isEqualTo(Map.of("data", Map.of("grid", Map.of("uri", publicUri.toString()))));
+    assertThat(topLevel).isEqualTo(Collections.singletonMap("data", Collections.singletonMap("grid", Collections.singletonMap("uri", publicUri.toString()))));
   }
 
   @Test
@@ -128,7 +131,7 @@ public class GraphqlHandlerTest {
 
     assertThat(topLevel)
       .describedAs(topLevel.toString())
-      .isEqualTo(Map.of("data", Map.of("grid", Map.of("nodes", List.of()))));
+      .isEqualTo(Collections.singletonMap("data", Collections.singletonMap("grid", Collections.singletonMap("nodes", Collections.emptyMap()))));
   }
 
   @Test
@@ -156,7 +159,7 @@ public class GraphqlHandlerTest {
 
     assertThat(topLevel)
       .describedAs(topLevel.toString())
-      .isEqualTo(Map.of("data", Map.of("grid", Map.of("nodes", List.of(Map.of("uri", nodeUri))))));
+      .isEqualTo(Collections.singletonMap("data", Collections.singletonMap("grid", Collections.singletonMap("nodes", Collections.singletonList(Collections.singletonMap("uri", nodeUri))))));
   }
 
   @Test
@@ -198,9 +201,9 @@ public class GraphqlHandlerTest {
 
     assertThat(result)
         .describedAs(result.toString())
-        .isEqualTo(Map.of(
-            "data", Map.of("session",
-                           Map.of("id", sessionId,
+        .isEqualTo(Collections.singletonMap(
+            "data", Collections.singletonMap("session",
+                           ImmutableMap.of("id", sessionId,
                                   "capabilities", graphqlSession.getCapabilities(),
                                   "startTime", graphqlSession.getStartTime(),
                                   "uri", graphqlSession.getUri().toString()))));
@@ -245,9 +248,9 @@ public class GraphqlHandlerTest {
 
     assertThat(result)
         .describedAs(result.toString())
-        .isEqualTo(Map.of(
-            "data", Map.of("session",
-                           Map.of("nodeId", graphqlSession.getNodeId(),
+        .isEqualTo(Collections.singletonMap(
+            "data", Collections.singletonMap("session",
+                           ImmutableMap.of("nodeId", graphqlSession.getNodeId(),
                                   "nodeUri",
                                   graphqlSession.getNodeUri().toString()))));
   }
@@ -295,13 +298,13 @@ public class GraphqlHandlerTest {
 
     assertThat(result)
         .describedAs(result.toString())
-        .isEqualTo(Map.of(
-            "data", Map.of("session",
-                           Map.of("slot",
-                                  Map.of("id", graphqlSlot.getId(),
-                                         "stereotype", graphqlSlot.getStereotype(),
-                                         "lastStarted",
-                                         graphqlSlot.getLastStarted())))));
+        .isEqualTo(Collections.singletonMap(
+            "data", Collections.singletonMap("session",
+                           Collections.singletonMap("slot",
+                                  ImmutableMap.of("id", graphqlSlot.getId(),
+                                                  "stereotype", graphqlSlot.getStereotype(),
+                                                  "lastStarted",
+                                                  graphqlSlot.getLastStarted())))));
   }
 
   @Test
@@ -402,7 +405,7 @@ public class GraphqlHandlerTest {
   private Map<String, Object> executeQuery(HttpHandler handler, String query) {
     HttpResponse res = handler.execute(
       new HttpRequest(GET, "/graphql")
-        .setContent(Contents.asJson(Map.of("query", query))));
+        .setContent(Contents.asJson(Collections.singletonMap("query", query))));
 
     return new Json().toType(Contents.string(res), MAP_TYPE);
   }

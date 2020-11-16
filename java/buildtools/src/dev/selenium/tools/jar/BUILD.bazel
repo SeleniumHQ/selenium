@@ -9,6 +9,7 @@ java_binary(
         "-target",
         "11",
     ],
+    main_class = "dev.selenium.tools.jar.MergeJars",
     visibility = [
         "//visibility:public",
     ],

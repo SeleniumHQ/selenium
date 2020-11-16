@@ -43,6 +43,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,7 +59,7 @@ import com.google.common.collect.ImmutableMap;
 public class ProxyCdpTest {
 
   private final HttpHandler nullHandler = req -> new HttpResponse();
-  private final Config emptyConfig = new MapConfig(Map.of());
+  private final Config emptyConfig = new MapConfig(Collections.emptyMap());
   private Server<?> proxyServer;
   private SessionMap sessions;
 

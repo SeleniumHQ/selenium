@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/java/buildtools/buildtools.iml" filepath="$PROJECT_DIR$/java/buildtools/buildtools.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common-web.iml" filepath="$PROJECT_DIR$/common/common-web.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
       <module fileurl="file://$PROJECT_DIR$/javascript/javascript.iml" filepath="$PROJECT_DIR$/javascript/javascript.iml" />

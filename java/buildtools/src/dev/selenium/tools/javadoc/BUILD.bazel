@@ -9,12 +9,12 @@ java_binary(
         "-target",
         "11",
     ],
-    main_class = "org.openqa.selenium.tools.javadoc.JavadocJarMaker",
+    main_class = "dev.selenium.tools.javadoc.JavadocJarMaker",
     visibility = [
         "//visibility:public",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/io",
-        "//java/client/src/org/openqa/selenium/tools/zip",
+        "//java/buildtools/src/dev/selenium/tools/zip",
     ],
 )

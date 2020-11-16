@@ -10,7 +10,7 @@ java_binary(
         "-target",
         "11",
     ],
-    main_class = "org.openqa.selenium.tools.maven.MavenPublisher",
+    main_class = "dev.selenium.tools.maven.MavenPublisher",
     visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium/remote",

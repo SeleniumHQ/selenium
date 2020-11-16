@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.tools.modules;
+package dev.selenium.tools.modules;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
@@ -37,7 +37,7 @@ import net.bytebuddy.jar.asm.ClassWriter;
 import net.bytebuddy.jar.asm.ModuleVisitor;
 
 import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.tools.zip.StableZipEntry;
+import dev.selenium.tools.zip.StableZipEntry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

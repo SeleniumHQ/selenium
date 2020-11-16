@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.tools.javadoc;
+package dev.selenium.tools.javadoc;
 
 import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.tools.zip.StableZipEntry;
+import dev.selenium.tools.zip.StableZipEntry;
 
 import javax.tools.DocumentationTool;
 import javax.tools.JavaFileObject;
