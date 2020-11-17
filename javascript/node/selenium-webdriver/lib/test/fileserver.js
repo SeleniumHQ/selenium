@@ -87,6 +87,7 @@ const Pages = (function () {
   addPage('redirectPage', 'redirect')
   addPage('resultPage', 'resultPage.html')
   addPage('richTextPage', 'rich_text.html')
+  addPage('printPage', 'printPage.html')
   addPage('selectableItemsPage', 'selectableItems.html')
   addPage('selectPage', 'selectPage.html')
   addPage('simpleTestPage', 'simpleTest.html')

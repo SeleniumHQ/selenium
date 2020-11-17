@@ -600,6 +600,25 @@ class IWebDriver {
    *     instance.
    */
   switchTo() {}
+
+  /**
+   *
+   * Takes a PDF of the current page. The driver makes a best effort to
+   * return a PDF based on the provided parameters.
+   *
+   * @param {{orientation: (string|undefined),
+   *         scale: (number|undefined),
+   *         background: (boolean|undefined)
+   *         width: (number|undefined)
+   *         height: (number|undefined)
+   *         top: (number|undefined)
+   *         bottom: (number|undefined)
+   *         left: (number|undefined)
+   *         right: (number|undefined)
+   *         shrinkToFit: (boolean|undefined)
+   *         pageRanges: (<Array>|undefined)}} options.
+   */
+  printPage(options) {} // eslint-disable-line
 }
 
 /**
@@ -1048,6 +1067,148 @@ class WebDriver {
   /** @override */
   switchTo() {
     return new TargetLocator(this)
+  }
+
+  validatePrintPageParams(keys, object) {
+    let page = {}
+    let margin = {}
+    let data
+    Object.keys(keys).forEach(function (key) {
+      data = keys[key]
+      let obj = {
+        orientation: function () {
+          if (data && data !== 'landscape' && data !== 'portrait') {
+            throw new error.InvalidArgumentError(
+              `Invalid argument '${data}'. It should be either 'landscape' (or) 'portrait'`
+            )
+          } else {
+            object.orientation = data
+          }
+        },
+
+        scale: function () {
+          if (data >= 0.1 && data <= 2 && typeof data === 'number' && data) {
+            object.scale = data
+          } else {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. It should be in between > 0.1 and < 2`
+            )
+          }
+        },
+
+        background: function () {
+          if (data && data !== true && data !== false) {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. It should be either "true" (or) "false"`
+            )
+          } else {
+            object.background = data
+          }
+        },
+
+        width: function () {
+          if (data && typeof data === 'number' && data > 0) {
+            page.width = data
+            object.page = page
+          } else {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. The width should be of type 'integer' and > 0`
+            )
+          }
+        },
+
+        height: function () {
+          if (data && typeof data === 'number' && data > 0) {
+            page.height = data
+            object.page = page
+          } else {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. The height should be of type 'integer' and > 0`
+            )
+          }
+        },
+
+        top: function () {
+          if (data && typeof data === 'number' && data > 0) {
+            margin.top = data
+            object.margin = margin
+          } else {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. It should be of type 'integer' and > 0`
+            )
+          }
+        },
+
+        left: function () {
+          if (data && typeof data === 'number' && data > 0) {
+            margin.left = data
+            object.margin = margin
+          } else {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. It should be of type 'integer' and > 0`
+            )
+          }
+        },
+
+        bottom: function () {
+          if (data && typeof data === 'number' && data > 0) {
+            margin.bottom = data
+            object.margin = margin
+          } else {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. It should be of type 'integer' and > 0`
+            )
+          }
+        },
+
+        right: function () {
+          if (data && typeof data === 'number' && data > 0) {
+            margin.right = data
+            object.margin = margin
+          } else {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. It should be of type 'integer' and > 0`
+            )
+          }
+        },
+
+        shrinkToFit: function () {
+          if (data && data !== true && data !== false) {
+            throw new error.InvalidArgumentError(
+              `Invalid value '${data}' for argument '${key}'. It should be either "true" (or) "false"`
+            )
+          } else {
+            object.shrinkToFit = data
+          }
+        },
+
+        pageRanges: function () {
+          object.pageRanges = data
+        },
+      }
+
+      if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+        throw new error.InvalidArgumentError(`Invalid Argument '${key}'`)
+      } else {
+        obj[key]()
+      }
+    })
+
+    return object
+  }
+
+  /** @override */
+  printPage(options = {}) {
+    let keys = options
+    let params = {}
+    let resultObj
+
+    let self = this
+    resultObj = self.validatePrintPageParams(keys, params)
+
+    return this.execute(
+      new command.Command(command.Name.PRINT_PAGE).setParameters(resultObj)
+    )
   }
 }
 
