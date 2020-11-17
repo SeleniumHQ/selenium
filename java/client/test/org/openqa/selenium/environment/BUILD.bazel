@@ -55,6 +55,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.google.guava:guava"),
+        artifact("org.assertj:assertj-core"),
         artifact("org.eclipse.jetty:jetty-http"),
         artifact("org.eclipse.jetty:jetty-server"),
         artifact("org.eclipse.jetty:jetty-servlet"),

@@ -21,8 +21,6 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.web.PathResource;
-import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
@@ -38,13 +36,11 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -69,13 +65,11 @@ public class NettyAppServer implements AppServer {
   }
 
   private static Route emulateJettyAppServer() {
-    Path common = locate("common/src/web").toAbsolutePath();
-
     return Route.combine(
-      new ResourceHandler(new PathResource(common)),
+      new CommonWebResources(),
       get("/encoding").to(EncodingHandler::new),
       matching(req -> req.getUri().startsWith("/page/")).to(PageHandler::new),
-      get("/redirect").to(() -> new RedirectHandler()),
+      get("/redirect").to(RedirectHandler::new),
       get("/sleep").to(SleepingHandler::new),
       post("/upload").to(UploadHandler::new));
   }

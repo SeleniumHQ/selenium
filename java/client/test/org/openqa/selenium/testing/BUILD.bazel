@@ -32,6 +32,7 @@ java_library(
         "JUnit4TestBase.java",
         "Pages.java",
         "Safely.java",
+        "SeleniumTestRule.java",
         "SeleniumTestRunner.java",
         "StaticResources.java",
         "TearDownFixture.java",
