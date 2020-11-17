@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import { shallow, mount } from 'enzyme';
 import NodeRow  from '../components/Node/NodeRow';
 import NodeType from '../models/node';
