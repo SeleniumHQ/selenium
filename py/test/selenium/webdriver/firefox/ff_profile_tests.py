@@ -30,7 +30,6 @@ except NameError:
     unicode = str
 
 from selenium.webdriver import Firefox, FirefoxProfile
-from selenium.webdriver.common.by import By
 
 
 def test_that_we_can_accept_a_profile(capabilities, webserver):
