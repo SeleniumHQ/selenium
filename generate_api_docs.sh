@@ -2,7 +2,7 @@
 ./go javadocs || exit
 
 # Python
-./go //py:setup //py:init py_docs || exit
+./go //py:setup //py:init //py:docs || exit
 
 # Ruby
 ./go //rb:docs || exit
