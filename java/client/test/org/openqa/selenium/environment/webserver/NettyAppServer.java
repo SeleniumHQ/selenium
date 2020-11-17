@@ -24,9 +24,9 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.web.PathResource;
 import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.jre.server.JreServer;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -51,19 +51,19 @@ import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.matching;
 import static org.openqa.selenium.remote.http.Route.post;
 
-public class JreAppServer implements AppServer {
+public class NettyAppServer implements AppServer {
 
   private final Server<?> server;
 
-  public JreAppServer() {
+  public NettyAppServer() {
     this(emulateJettyAppServer());
   }
 
-  public JreAppServer(HttpHandler handler) {
+  public NettyAppServer(HttpHandler handler) {
     Require.nonNull("Handler", handler);
 
     int port = PortProber.findFreePort();
-    server = new JreServer(
+    server = new NettyServer(
       new BaseServerOptions(new MapConfig(singletonMap("server", singletonMap("port", port)))),
       handler);
   }
@@ -162,7 +162,7 @@ public class JreAppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    JreAppServer server = new JreAppServer();
+    NettyAppServer server = new NettyAppServer();
     server.start();
 
     System.out.println(server.whereIs("/"));

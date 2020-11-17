@@ -19,7 +19,7 @@ package org.openqa.selenium.net;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.environment.webserver.JreAppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.MalformedURLException;
@@ -36,12 +36,12 @@ public class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
   private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-  private JreAppServer server;
+  private NettyAppServer server;
   private URL url;
 
   @Before
   public void buildServer() throws MalformedURLException {
-    JreAppServer server = new JreAppServer(req -> new HttpResponse()
+    NettyAppServer server = new NettyAppServer(req -> new HttpResponse()
       .setStatus(200)
       .setContent(utf8String("<h1>Working</h1>")));
     this.server = server;
