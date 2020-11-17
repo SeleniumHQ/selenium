@@ -12,10 +12,8 @@ load("//java:defs.bzl", "java_test_suite")
 #        "with-module-info.jar",
 #    ],
 #    javacopts = [
-#        "-source",
-#        "9",
-#        "-target",
-#        "9",
+#        "--release",
+#        "11",
 #    ],
 #    deps = [
 #        "//java/buildtools/src/dev/selenium/tools/modules:ModuleGenerator",

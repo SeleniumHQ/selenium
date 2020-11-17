@@ -36,9 +36,7 @@ java_library(
         "@com_google_javascript_closure_library",
     ],
     javacopts = [
-        "-source",
-        "11",
-        "-target",
+        "--release",
         "11",
     ],
     visibility = [

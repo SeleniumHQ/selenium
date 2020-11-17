@@ -4,8 +4,7 @@ try-import .bazelrc.local
 build --java_toolchain=@bazel_tools//tools/jdk:toolchain_java11
 
 # We target java 8 by default
-build --javacopt="-source 8"
-build --javacopt="-target 8"
+build --javacopt="--release 8"
 
 # Require java dependencies to be used and first-order
 build --strict_java_deps=strict

@@ -5,9 +5,7 @@ java_binary(
     name = "MavenPublisher",
     srcs = ["MavenPublisher.java"],
     javacopts = [
-        "-source",
-        "11",
-        "-target",
+        "--release",
         "11",
     ],
     main_class = "dev.selenium.tools.maven.MavenPublisher",
