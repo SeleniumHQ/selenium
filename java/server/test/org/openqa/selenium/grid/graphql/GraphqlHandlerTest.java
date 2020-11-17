@@ -131,7 +131,7 @@ public class GraphqlHandlerTest {
 
     assertThat(topLevel)
       .describedAs(topLevel.toString())
-      .isEqualTo(Collections.singletonMap("data", Collections.singletonMap("grid", Collections.singletonMap("nodes", Collections.emptyMap()))));
+      .isEqualTo(Collections.singletonMap("data", Collections.singletonMap("grid", Collections.singletonMap("nodes", Collections.emptyList()))));
   }
 
   @Test
