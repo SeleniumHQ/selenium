@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":10,"i2":6,"i3":10,"i4":6,"i5":6,"i6":10,"i7":10,"i8":6,"i9":6,"i10":10};
+var data = {"i0":6,"i1":6,"i2":10,"i3":6,"i4":6,"i5":10,"i6":10,"i7":6,"i8":6,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -257,52 +257,47 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createNewSessionResponse(org.openqa.selenium.remote.http.HttpRequest)">createNewSessionResponse</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>abstract boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#drain(org.openqa.selenium.grid.data.NodeId)">drain</a></span>&#8203;(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>protected abstract java.util.Set&lt;<a href="../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAvailableNodes()">getAvailableNodes</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>abstract <a href="../data/DistributorStatus.html" title="class in org.openqa.selenium.grid.data">DistributorStatus</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatus()">getStatus</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a></code></td>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newSession(org.openqa.selenium.remote.http.HttpRequest)">newSession</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>abstract void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.NodeId)">remove</a></span>&#8203;(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>protected abstract java.util.function.Supplier&lt;<a href="../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reserve(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.CreateSessionRequest)">reserve</a></span>&#8203;(<a href="../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slot,
        <a href="../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#test(org.openqa.selenium.remote.http.HttpRequest)">test</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;httpRequest)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -400,17 +395,8 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockList">
 <li class="blockList">
 <h4>newSession</h4>
-<pre class="methodSignature">public&nbsp;<a href="../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&nbsp;newSession&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</pre>
-</li>
-</ul>
-<a id="createNewSessionResponse(org.openqa.selenium.remote.http.HttpRequest)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createNewSessionResponse</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;createNewSessionResponse&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)
-                                                                                        throws <a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></pre>
+<pre class="methodSignature">public&nbsp;<a href="../../internal/Either.html" title="class in org.openqa.selenium.internal">Either</a>&lt;<a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a>,&#8203;<a href="../data/CreateSessionResponse.html" title="class in org.openqa.selenium.grid.data">CreateSessionResponse</a>&gt;&nbsp;newSession&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)
+                                                                          throws <a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../../SessionNotCreatedException.html" title="class in org.openqa.selenium">SessionNotCreatedException</a></code></dd>
