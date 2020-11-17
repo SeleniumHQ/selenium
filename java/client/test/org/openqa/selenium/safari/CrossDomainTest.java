@@ -41,12 +41,6 @@ public class CrossDomainTest extends JUnit4TestBase {
   private static AppServer otherServer;
   private static Pages otherPages;
 
-  @AfterClass
-  public static void quitDriver() {
-    removeDriver();
-  }
-
-
   @BeforeClass
   public static void startSecondServer() {
     otherServer = new JettyAppServer();
@@ -71,7 +65,7 @@ public class CrossDomainTest extends JUnit4TestBase {
     driver.findElement(By.tagName("body"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
-        .isThrownBy(body1::getTagName);
+      .isThrownBy(body1::getTagName);
   }
 
   @Test
@@ -88,12 +82,12 @@ public class CrossDomainTest extends JUnit4TestBase {
     setupCrossDomainFrameTest();
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> ((JavascriptExecutor) driver).executeScript(
-            "return window.top.document.body.tagName"));
+      .isThrownBy(() -> ((JavascriptExecutor) driver).executeScript(
+        "return window.top.document.body.tagName"));
 
     // Make sure we can recover from the above.
     assertThat(((JavascriptExecutor) driver).executeScript(
-        "return window.document.body.tagName.toLowerCase();")).isEqualTo("body");
+      "return window.document.body.tagName.toLowerCase();")).isEqualTo("body");
   }
 
   private void setupCrossDomainFrameTest() {
@@ -101,7 +95,7 @@ public class CrossDomainTest extends JUnit4TestBase {
 
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     ((JavascriptExecutor) driver).executeScript(
-        "arguments[0].src = arguments[1];", iframe, otherPages.iframePage);
+      "arguments[0].src = arguments[1];", iframe, otherPages.iframePage);
 
     assertThat(isTop()).isTrue();
     driver.switchTo().frame(iframe);

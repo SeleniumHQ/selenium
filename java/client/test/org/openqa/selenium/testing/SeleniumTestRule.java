@@ -78,8 +78,8 @@ public class SeleniumTestRule implements TestRule {
     Instances current = instances.get();
 
     if (current == null ||
-      current.driver == null ||
-      (current.driver instanceof RemoteWebDriver && ((RemoteWebDriver) current.driver).getSessionId() == null)) {
+        current.driver == null ||
+        (current.driver instanceof RemoteWebDriver && ((RemoteWebDriver) current.driver).getSessionId() == null)) {
       StaticResources.ensureAvailable();
       WebDriver driver = new WebDriverBuilder().get(capabilities);
       instances.set(new Instances(driver, regularWait, shortWait));
@@ -208,7 +208,7 @@ public class SeleniumTestRule implements TestRule {
     @Override
     public Statement apply(final Statement base, final Description description) {
       if (notImplemented(description.getAnnotation(NotYetImplementedList.class)) ||
-        notImplemented(description.getAnnotation(NotYetImplemented.class))) {
+          notImplemented(description.getAnnotation(NotYetImplemented.class))) {
         return new Statement() {
           @Override
           public void evaluate() throws Throwable {
