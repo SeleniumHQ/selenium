@@ -20,6 +20,8 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.common.AttributeKey;
 import io.opentelemetry.common.Attributes;
+import io.opentelemetry.context.propagation.ContextPropagators;
+import io.opentelemetry.context.propagation.DefaultContextPropagators;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
@@ -27,6 +29,7 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.trace.StatusCanonicalCode;
+import io.opentelemetry.trace.propagation.HttpTraceContext;
 import org.junit.Test;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -568,8 +571,11 @@ public class TracerTest {
     }).build());
 
     io.opentelemetry.trace.Tracer otTracer = provider.get("get");
+    ContextPropagators propagators = DefaultContextPropagators.builder()
+      .addTextMapPropagator(HttpTraceContext.getInstance()).build();
+
     return new OpenTelemetryTracer(
       otTracer,
-      OpenTelemetry.getPropagators().getTextMapPropagator());
+      propagators.getTextMapPropagator());
   }
 }

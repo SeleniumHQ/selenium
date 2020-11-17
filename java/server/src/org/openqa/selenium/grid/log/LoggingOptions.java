@@ -21,6 +21,8 @@ import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.common.AttributeConsumer;
 import io.opentelemetry.common.AttributeKey;
 import io.opentelemetry.common.Attributes;
+import io.opentelemetry.context.propagation.ContextPropagators;
+import io.opentelemetry.context.propagation.DefaultContextPropagators;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
@@ -30,6 +32,7 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
+import io.opentelemetry.trace.propagation.HttpTraceContext;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -177,9 +180,14 @@ public class LoggingOptions {
       exporter -> exporters.add(SimpleSpanProcessor.newBuilder(exporter).build()));
     tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
 
+    // OpenTelemetry default propagators are no-op since version 0.9.0.
+    // Hence, required propagators need to defined and added.
+    ContextPropagators propagators = DefaultContextPropagators.builder()
+      .addTextMapPropagator(HttpTraceContext.getInstance()).build();
+
     return new OpenTelemetryTracer(
       tracerFactory.get("default"),
-      OpenTelemetry.getPropagators().getTextMapPropagator());
+      propagators.getTextMapPropagator());
   }
 
   public void configureLogging() {
