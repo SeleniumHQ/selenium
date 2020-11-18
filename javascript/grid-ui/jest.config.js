@@ -3,7 +3,7 @@ export default {
     "<rootDir>/src"
   ],
   testMatch: [
-    "<rootDir>/src/tests/*.test.tsx"
+    "<rootDir>/src/tests/**/*.test.tsx"
   ],
   transform: {
     "^.+\\.(ts|tsx)$": "ts-jest"

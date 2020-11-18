@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import Ring from '../components/RingSystem/Ring/Ring';
+import Ring from '../../components/RingSystem/Ring/Ring';
 
 test('Ring component', () => {
   let parentFunc = function() {

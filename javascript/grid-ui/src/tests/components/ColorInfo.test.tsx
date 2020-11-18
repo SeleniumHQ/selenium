@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import ColorInfo from '../components/RingSystem/ColorInfo/ColorInfo';
+import ColorInfo from '../../components/RingSystem/ColorInfo/ColorInfo';
 
 test('ColorInfo with no progress', () => {
   const colorInfo = shallow(

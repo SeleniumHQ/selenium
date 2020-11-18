@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import NodeRow  from '../components/Node/NodeRow';
-import NodeType from '../models/node';
+import NodeRow  from '../../components/Node/NodeRow';
+import NodeType from '../../models/node';
 
 test('NodeRow', () => {
   let setFunc = function(state) {

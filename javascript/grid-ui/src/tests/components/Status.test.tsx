@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { Status } from '../components/Status';
+import { Status } from '../../components/Status';
 
 test('Status component for UP', () => {
   const statusComp = shallow(<Status status={'UP'} selected={0}/>);
