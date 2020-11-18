@@ -89,6 +89,27 @@ public class TracerTest {
   }
 
   @Test
+  public void shouldBeAbleToInjectContext() {
+    List<SpanData> allSpans = new ArrayList<>();
+    Tracer tracer = createTracer(allSpans);
+
+    HttpRequest cheeseReq = new HttpRequest(GET, "/cheeses");
+
+    assertThat(cheeseReq.getHeaderNames()).size().isEqualTo(0);
+
+    try (Span span = tracer.getCurrentContext().createSpan("parent")) {
+      span.setAttribute("cheese", "gouda");
+      span.setStatus(Status.NOT_FOUND);
+      tracer.getPropagator().inject(tracer.getCurrentContext(),
+        cheeseReq,
+        (req, key, value) -> req.setHeader("cheese", "gouda"));
+    }
+
+    assertThat(cheeseReq.getHeaderNames()).size().isEqualTo(1);
+    assertThat(cheeseReq.getHeaderNames()).element(0).isEqualTo("cheese");
+  }
+
+  @Test
   public void shouldBeAbleToCreateASpanWithAEvent() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
