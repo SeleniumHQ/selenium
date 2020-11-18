@@ -81,7 +81,8 @@ public class RouterServer extends TemplateGridServerCommand {
   public Set<Role> getConfigurableRoles() {
     return ImmutableSet.of(
         DISTRIBUTOR_ROLE,
-        HTTPD_ROLE, ROUTER_ROLE,
+        HTTPD_ROLE,
+        ROUTER_ROLE,
         SESSION_MAP_ROLE,
         SESSION_QUEUER_ROLE);
   }
