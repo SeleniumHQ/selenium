@@ -55,6 +55,7 @@ DEFAULT_PORT = 8000
 
 class HtmlOnlyHandler(BaseHTTPRequestHandler):
     """Http handler."""
+
     def do_GET(self):
         """GET method handler."""
         try:
@@ -86,6 +87,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 class SimpleWebServer(object):
     """A very basic web server."""
+
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.stop_serving = False
         host = host
@@ -121,8 +123,6 @@ class SimpleWebServer(object):
             urllib_request.URLopener().open("http://%s:%d" % (self.host, self.port))
         except IOError:
             pass
-        LOGGER.info("Shutting down the webserver")
-        self.thread.join()
 
     def where_is(self, path):
         return "http://%s:%d/%s" % (self.host, self.port, path)

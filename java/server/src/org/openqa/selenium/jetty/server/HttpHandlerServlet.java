@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static org.openqa.selenium.grid.server.JeeInterop.execute;
 
-class HttpHandlerServlet extends HttpServlet {
+public class HttpHandlerServlet extends HttpServlet {
 
   private final HttpHandler handler;
 
