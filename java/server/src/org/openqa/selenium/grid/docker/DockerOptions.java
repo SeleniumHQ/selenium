@@ -180,8 +180,18 @@ public class DockerOptions {
     return videoImage.map(docker::getImage).orElse(null);
   }
 
-  private String getAssetsPath() {
-    return config.get(DOCKER_SECTION, "assets-path").orElse("");
+  private DockerSessionAssetsPath getAssetsPath() {
+    Optional<String> hostAssetsPath = config.get(DOCKER_SECTION, "assets-path");
+    Optional<String> containerAssetsPath = config.get(DOCKER_SECTION, "container-assets-path");
+    if (hostAssetsPath.isPresent() && containerAssetsPath.isPresent()) {
+      return new DockerSessionAssetsPath(hostAssetsPath.get(), containerAssetsPath.get());
+    } else if (hostAssetsPath.isPresent()) {
+      // If only the host assets path is present, we assume this is not running inside a container.
+      return new DockerSessionAssetsPath(hostAssetsPath.get(), hostAssetsPath.get());
+    }
+    // We should not reach this point because the invocation to this method is
+    // guarded by `isVideoRecordingAvailable()`
+    return null;
   }
 
   private void loadImages(Docker docker, String... imageNames) {

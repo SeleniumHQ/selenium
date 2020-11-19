@@ -13,6 +13,7 @@ java_test_suite(
         artifact("io.opentelemetry:opentelemetry-sdk"),
         artifact("io.opentelemetry:opentelemetry-sdk-common"),
         artifact("io.opentelemetry:opentelemetry-sdk-tracing"),
+        artifact("io.opentelemetry:opentelemetry-context-prop"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],

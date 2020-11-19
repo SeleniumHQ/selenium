@@ -68,10 +68,23 @@ public class DockerFlags implements HasRoles {
 
   @Parameter(
     names = {"--docker-assets-path"},
-    description = "Absolute path where videos will be stored"
+    description = "Absolute path where assets will be stored"
   )
   @ConfigValue(section = "docker", name = "assets-path", example = "\"/absolute/path/to/assets/path\"")
   private String assetsPath;
+
+  @Parameter(
+    names = {"--docker-container-assets-path"},
+    description = "Absolute path where assets inside the container will be stored. Use it when " +
+                  "running inside a Docker container.",
+    hidden = true
+  )
+  @ConfigValue(
+    section = "docker",
+    name = "container-assets-path",
+    example = "\"/absolute/path/to/container/assets/path\""
+  )
+  private String containerAssetsPath;
 
   @Override
   public Set<Role> getRoles() {
