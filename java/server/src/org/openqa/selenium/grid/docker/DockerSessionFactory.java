@@ -208,17 +208,17 @@ public class DockerSessionFactory implements SessionFactory {
 
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
-      Optional<Path> containerAssetsPath = assetsPath.createContainerSessionAssetsPath(id);
-      containerAssetsPath.ifPresent(path -> saveSessionCapabilities(capabilities, path));
       Container videoContainer = null;
-      if (isVideoRecordingAvailable && recordVideoForSession(capabilities)) {
-        Map<String, String> envVars = getVideoContainerEnvVars(
-          capabilities,
-          containerInfo.getIp());
-        Optional<Path> hostAssetsPath = assetsPath.createHostSessionAssetsPath(id);
-        if (hostAssetsPath.isPresent()) {
+      if (isVideoRecordingAvailable) {
+        Optional<Path> containerAssetsPath = assetsPath.createContainerSessionAssetsPath(id);
+        containerAssetsPath.ifPresent(path -> saveSessionCapabilities(capabilities, path));
+        if (containerAssetsPath.isPresent() && recordVideoForSession(capabilities)) {
+          Map<String, String> envVars = getVideoContainerEnvVars(
+            capabilities,
+            containerInfo.getIp());
+          String hostAssetsPath = assetsPath.getHostSessionAssetsPath(id);
           Map<String, String> volumeBinds =
-            Collections.singletonMap(hostAssetsPath.get().toString(), "/videos");
+            Collections.singletonMap(hostAssetsPath, "/videos");
           videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
           videoContainer.start();
           LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));

@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.docker;
 
 import org.openqa.selenium.remote.SessionId;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,24 +40,20 @@ public class DockerSessionAssetsPath {
     this.containerAssetsPath = containerAssetsPath;
   }
 
-  public Optional<Path> createHostSessionAssetsPath(SessionId id) {
-    return createSessionAssetsPath(this.hostAssetsPath, id);
+  public String getHostSessionAssetsPath(SessionId id) {
+    return this.hostAssetsPath + File.separator + id;
   }
 
   public Optional<Path> createContainerSessionAssetsPath(SessionId id) {
-    return createSessionAssetsPath(this.containerAssetsPath, id);
-  }
-
-  private Optional<Path> createSessionAssetsPath(String assetsPath, SessionId id) {
-    if (assetsPath == null || assetsPath.isEmpty()) {
+    if (this.containerAssetsPath == null || this.containerAssetsPath.isEmpty()) {
       return Optional.empty();
     }
     try {
-      return Optional.of(Files.createDirectories(Paths.get(assetsPath, id.toString())));
+      return Optional.of(Files.createDirectories(Paths.get(this.containerAssetsPath, id.toString())));
     } catch (IOException e) {
       LOG.log(Level.WARNING,
               "Failed to create path to store session assets, no assets will be stored: " +
-              assetsPath, e);
+              this.containerAssetsPath, e);
     }
     return Optional.empty();
   }
