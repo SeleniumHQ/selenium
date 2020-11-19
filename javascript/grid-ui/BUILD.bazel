@@ -1,6 +1,7 @@
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin")
 load("@npm//react-scripts:index.bzl", "react_scripts")
+load("@npm//jest-cli:index.bzl", "jest_test")
 load("//common:defs.bzl", "zip_file")
 
 _RUNTIME_DEPS = [
@@ -77,4 +78,19 @@ zip_file(
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
     ],
+)
+
+jest_test(
+    name = "test",
+    args = [
+        "--no-cache",
+        "--no-watchman",
+        "--ci",
+        "--colors",
+        "--config",
+        "jest.config.js"
+    ],
+    data = [
+        "//:jest.config.js"
+    ]
 )

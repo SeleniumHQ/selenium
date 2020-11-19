@@ -43,7 +43,7 @@
 		"start": "node node_modules/react-scripts/bin/react-scripts start",
 		"build": "node node_modules/react-scripts/bin/react-scripts build && python scripts/rmSourcemaps.py",
 		"analyze": "source-map-explorer 'build/static/js/*.js'",
-		"test": "jest",
+		"test": "node node_modules/react-scripts/bin/react-scripts test --watchAll=false",
 		"eject": "node node_modules/react-scripts/bin/react-scripts eject"
 	},
 	"eslintConfig": {
