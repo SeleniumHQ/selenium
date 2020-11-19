@@ -180,6 +180,11 @@
   </Match>
 
   <Match>
+    <Class name="org.openqa.selenium.testing.JUnit4TestBase"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
     <Class name="org.openqa.selenium.testing.StaticResources"/>
     <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
   </Match>
