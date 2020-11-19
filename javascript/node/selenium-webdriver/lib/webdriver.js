@@ -1077,109 +1077,49 @@ class WebDriver {
       data = keys[key]
       let obj = {
         orientation: function () {
-          if (data && data !== 'landscape' && data !== 'portrait') {
-            throw new error.InvalidArgumentError(
-              `Invalid argument '${data}'. It should be either 'landscape' (or) 'portrait'`
-            )
-          } else {
-            object.orientation = data
-          }
+          object.orientation = data
         },
 
         scale: function () {
-          if (data >= 0.1 && data <= 2 && typeof data === 'number' && data) {
-            object.scale = data
-          } else {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. It should be in between > 0.1 and < 2`
-            )
-          }
+          object.scale = data
         },
 
         background: function () {
-          if (data && data !== true && data !== false) {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. It should be either "true" (or) "false"`
-            )
-          } else {
-            object.background = data
-          }
+          object.background = data
         },
 
         width: function () {
-          if (data && typeof data === 'number' && data > 0) {
-            page.width = data
-            object.page = page
-          } else {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. The width should be of type 'integer' and > 0`
-            )
-          }
+          page.width = data
+          object.page = page
         },
 
         height: function () {
-          if (data && typeof data === 'number' && data > 0) {
-            page.height = data
-            object.page = page
-          } else {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. The height should be of type 'integer' and > 0`
-            )
-          }
+          page.height = data
+          object.page = page
         },
 
         top: function () {
-          if (data && typeof data === 'number' && data > 0) {
-            margin.top = data
-            object.margin = margin
-          } else {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. It should be of type 'integer' and > 0`
-            )
-          }
+          margin.top = data
+          object.margin = margin
         },
 
         left: function () {
-          if (data && typeof data === 'number' && data > 0) {
-            margin.left = data
-            object.margin = margin
-          } else {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. It should be of type 'integer' and > 0`
-            )
-          }
+          margin.left = data
+          object.margin = margin
         },
 
         bottom: function () {
-          if (data && typeof data === 'number' && data > 0) {
-            margin.bottom = data
-            object.margin = margin
-          } else {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. It should be of type 'integer' and > 0`
-            )
-          }
+          margin.bottom = data
+          object.margin = margin
         },
 
         right: function () {
-          if (data && typeof data === 'number' && data > 0) {
-            margin.right = data
-            object.margin = margin
-          } else {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. It should be of type 'integer' and > 0`
-            )
-          }
+          margin.right = data
+          object.margin = margin
         },
 
         shrinkToFit: function () {
-          if (data && data !== true && data !== false) {
-            throw new error.InvalidArgumentError(
-              `Invalid value '${data}' for argument '${key}'. It should be either "true" (or) "false"`
-            )
-          } else {
-            object.shrinkToFit = data
-          }
+          object.shrinkToFit = data
         },
 
         pageRanges: function () {
