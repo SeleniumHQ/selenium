@@ -28,6 +28,7 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.jetty.server.HttpHandlerServlet;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
@@ -52,6 +53,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.openqa.selenium.remote.http.Route;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -138,21 +140,26 @@ public class JettyAppServer implements AppServer {
 
     server.setHandler(handlers);
 
-    addServlet(defaultContext, "/redirect", RedirectServlet.class);
     addServlet(defaultContext, "/page/*", PageServlet.class);
 
     addServlet(defaultContext, "/manifest/*", ManifestServlet.class);
     // Serves every file under DEFAULT_CONTEXT_PATH/utf8 as UTF-8 to the browser
     addServlet(defaultContext, "/utf8/*", Utf8Servlet.class);
 
-    addServlet(defaultContext, "/upload", UploadServlet.class);
-    addServlet(defaultContext, "/encoding", EncodingServlet.class);
-    addServlet(defaultContext, "/sleep", SleepingServlet.class);
     addServlet(defaultContext, "/cookie", CookieServlet.class);
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
-    addServlet(defaultContext, "/basicAuth", BasicAuth.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
     addServlet(defaultContext, "/createPage", CreatePageServlet.class);
+
+    // Default route
+    Route route = Route.combine(
+      Route.get("/basicAuth").to(BasicAuthHandler::new),
+      Route.get("/encoding").to(EncodingHandler::new),
+      Route.get("/redirect").to(RedirectHandler::new),
+      Route.get("/sleep").to(SleepingHandler::new),
+      Route.post("/upload").to(UploadHandler::new)
+    );
+    defaultContext.addServlet(new ServletHolder(new HttpHandlerServlet(route)), "/*");
   }
 
   private void addJsResourceHandler(String handlerPath, String dirPath) {
