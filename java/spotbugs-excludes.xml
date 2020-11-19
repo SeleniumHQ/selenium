@@ -39,11 +39,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.environment.webserver.CookieServlet"/>
-    <Bug pattern="HRS_REQUEST_PARAMETER_TO_COOKIE"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.environment.webserver.KillSwitchServlet"/>
     <Bug pattern="DM_EXIT"/>
   </Match>
