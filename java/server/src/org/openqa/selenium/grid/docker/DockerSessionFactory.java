@@ -210,11 +210,12 @@ public class DockerSessionFactory implements SessionFactory {
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
       Container videoContainer = null;
       if (isVideoRecordingAvailable) {
+        Capabilities mergedCapabilities = capabilities.merge(sessionRequest.getCapabilities());
         Optional<Path> containerAssetsPath = assetsPath.createContainerSessionAssetsPath(id);
-        containerAssetsPath.ifPresent(path -> saveSessionCapabilities(capabilities, path));
+        containerAssetsPath.ifPresent(path -> saveSessionCapabilities(mergedCapabilities, path));
         if (containerAssetsPath.isPresent() && recordVideoForSession(capabilities)) {
           Map<String, String> envVars = getVideoContainerEnvVars(
-            capabilities,
+            mergedCapabilities,
             containerInfo.getIp());
           String hostAssetsPath = assetsPath.getHostSessionAssetsPath(id);
           Map<String, String> volumeBinds =
