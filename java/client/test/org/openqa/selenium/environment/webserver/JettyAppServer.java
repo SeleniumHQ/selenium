@@ -146,7 +146,6 @@ public class JettyAppServer implements AppServer {
     // Serves every file under DEFAULT_CONTEXT_PATH/utf8 as UTF-8 to the browser
     addServlet(defaultContext, "/utf8/*", Utf8Servlet.class);
 
-    addServlet(defaultContext, "/cookie", CookieServlet.class);
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
     addServlet(defaultContext, "/createPage", CreatePageServlet.class);
@@ -154,6 +153,7 @@ public class JettyAppServer implements AppServer {
     // Default route
     Route route = Route.combine(
       Route.get("/basicAuth").to(BasicAuthHandler::new),
+      Route.get("/cookie").to(CookieHandler::new),
       Route.get("/encoding").to(EncodingHandler::new),
       Route.get("/redirect").to(RedirectHandler::new),
       Route.get("/sleep").to(SleepingHandler::new),
