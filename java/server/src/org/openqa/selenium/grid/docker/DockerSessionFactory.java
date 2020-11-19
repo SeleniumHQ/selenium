@@ -91,7 +91,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final Capabilities stereotype;
   private boolean isVideoRecordingAvailable;
   private Image videoImage;
-  private String assetsPath;
+  private DockerSessionAssetsPath assetsPath;
 
   public DockerSessionFactory(
       Tracer tracer,
@@ -110,8 +110,15 @@ public class DockerSessionFactory implements SessionFactory {
     this.isVideoRecordingAvailable = false;
   }
 
-  public DockerSessionFactory(Tracer tracer, HttpClient.Factory clientFactory, Docker docker, URI dockerUri,
-    Image browserImage, Capabilities stereotype, Image videoImage, String assetsPath) {
+  public DockerSessionFactory(
+    Tracer tracer,
+    HttpClient.Factory clientFactory,
+    Docker docker,
+    URI dockerUri,
+    Image browserImage,
+    Capabilities stereotype,
+    Image videoImage,
+    DockerSessionAssetsPath assetsPath) {
     this(tracer, clientFactory, docker, dockerUri, browserImage, stereotype);
     this.isVideoRecordingAvailable = true;
     this.videoImage = videoImage;
@@ -201,16 +208,17 @@ public class DockerSessionFactory implements SessionFactory {
 
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
-      Optional<Path> sessionAssetsPath = createSessionAssetsPath(assetsPath, id);
-      sessionAssetsPath.ifPresent(path -> saveSessionCapabilities(capabilities, path));
+      Optional<Path> containerAssetsPath = assetsPath.createContainerSessionAssetsPath(id);
+      containerAssetsPath.ifPresent(path -> saveSessionCapabilities(capabilities, path));
       Container videoContainer = null;
       if (isVideoRecordingAvailable && recordVideoForSession(capabilities)) {
         Map<String, String> envVars = getVideoContainerEnvVars(
           capabilities,
           containerInfo.getIp());
-        if (sessionAssetsPath.isPresent()) {
+        Optional<Path> hostAssetsPath = assetsPath.createHostSessionAssetsPath(id);
+        if (hostAssetsPath.isPresent()) {
           Map<String, String> volumeBinds =
-            Collections.singletonMap(sessionAssetsPath.get().toString(), "/videos");
+            Collections.singletonMap(hostAssetsPath.get().toString(), "/videos");
           videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
           videoContainer.start();
           LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
@@ -318,16 +326,6 @@ public class DockerSessionFactory implements SessionFactory {
       return seleniumOptions.get(capabilityName);
     }
     return null;
-  }
-
-  private Optional<Path> createSessionAssetsPath(String assetsPath, SessionId id) {
-    try {
-      return Optional.of(Files.createDirectories(Paths.get(assetsPath, id.toString())));
-    } catch (IOException e) {
-      LOG.log(Level.WARNING,
-              "Failed to create path to store session assets, no assets will be stored", e);
-    }
-    return Optional.empty();
   }
 
   private void saveSessionCapabilities(Capabilities sessionRequestCapabilities, Path assetsPath) {
