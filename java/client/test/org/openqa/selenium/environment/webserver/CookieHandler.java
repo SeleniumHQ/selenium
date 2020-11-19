@@ -175,6 +175,9 @@ public class CookieHandler implements HttpHandler {
           case "secure":
             builder.isSecure(true);
             break;
+
+          default:
+            throw new RuntimeException("Unknown option: " + key);
         }
       });
 
