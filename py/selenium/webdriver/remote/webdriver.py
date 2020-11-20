@@ -1567,8 +1567,8 @@ class WebDriver(BaseWebDriver):
         import urllib3
 
         http = urllib3.PoolManager()
-        debugger_address = self.caps.get("{0}:chromeOptions".format(self.vendor_prefix)).get("debuggerAddress")
-        res = http.request('GET', "http://{0}/json/version".format(debugger_address))
+        debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
+        res = http.request('GET', f"http://{debugger_address}/json/version")
         data = json.loads(res.data)
 
         browser_version = data.get("Browser")
