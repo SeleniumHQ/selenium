@@ -213,22 +213,13 @@ public class NewSessionPayload implements Closeable {
 
       Map<String, Object> first = getOss();
       if (first == null) {
-        //noinspection unchecked
         first = stream().findFirst()
-            .orElse(new ImmutableCapabilities())
-            .asMap();
+          .orElse(new ImmutableCapabilities())
+          .asMap();
       }
       Map<String, Object> ossFirst = new HashMap<>(first);
       if (first.containsKey(CapabilityType.PROXY)) {
-        Map<String, Object> proxyMap;
-        Object rawProxy = first.get(CapabilityType.PROXY);
-        if (rawProxy instanceof Proxy) {
-          proxyMap = ((Proxy) rawProxy).toJson();
-        } else if (rawProxy instanceof Map) {
-          proxyMap = (Map<String, Object>) rawProxy;
-        } else {
-          proxyMap = new HashMap<>();
-        }
+        Map<String, Object> proxyMap = getProxyFromCapabilities(first);
         if (proxyMap.containsKey("noProxy")) {
           Map<String, Object> ossProxyMap = new HashMap<>(proxyMap);
           Object rawData = proxyMap.get("noProxy");
@@ -252,7 +243,6 @@ public class NewSessionPayload implements Closeable {
       // "alwaysMatch" field, so we do this.
       json.name("firstMatch");
       json.beginArray();
-      //noinspection unchecked
       getW3C().forEach(json::write);
       json.endArray();
 
@@ -261,6 +251,18 @@ public class NewSessionPayload implements Closeable {
       writeMetaData(json);
 
       json.endObject();
+    }
+  }
+
+  private Map<String, Object> getProxyFromCapabilities(Map<String, Object> capabilities) {
+    Object rawProxy = capabilities.get(CapabilityType.PROXY);
+    if (rawProxy instanceof Proxy) {
+      return ((Proxy) rawProxy).toJson();
+    } else if (rawProxy instanceof Map) {
+      //noinspection unchecked
+      return (Map<String, Object>) rawProxy;
+    } else {
+      return new HashMap<>();
     }
   }
 
@@ -426,15 +428,7 @@ public class NewSessionPayload implements Closeable {
     }
 
     if (capabilities.containsKey(PROXY)) {
-      Map<String, Object> proxyMap;
-      Object rawProxy = capabilities.get(CapabilityType.PROXY);
-      if (rawProxy instanceof Proxy) {
-        proxyMap = ((Proxy) rawProxy).toJson();
-      } else if (rawProxy instanceof Map) {
-        proxyMap = (Map<String, Object>) rawProxy;
-      } else {
-        proxyMap = new HashMap<>();
-      }
+      Map<String, Object> proxyMap = getProxyFromCapabilities(capabilities);
       if (proxyMap.containsKey("noProxy")) {
         Map<String, Object> w3cProxyMap = new HashMap<>(proxyMap);
         Object rawData = proxyMap.get("noProxy");
