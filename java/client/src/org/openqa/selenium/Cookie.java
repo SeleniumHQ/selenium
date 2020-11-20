@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class Cookie implements Serializable {
@@ -269,7 +270,7 @@ public class Cookie implements Serializable {
     if (!name.equals(cookie.name)) {
       return false;
     }
-    return !(value != null ? !value.equals(cookie.value) : cookie.value != null);
+    return Objects.equals(value, cookie.value);
   }
 
   @Override

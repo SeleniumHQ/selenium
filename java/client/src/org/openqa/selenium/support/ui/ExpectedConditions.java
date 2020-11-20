@@ -575,15 +575,12 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         try {
           return !(driver.findElement(locator).isDisplayed());
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
           // Returns true because the element is not present in DOM. The
           // try block checks if the element is present but is invisible.
           return true;
-        } catch (StaleElementReferenceException e) {
-          // Returns true because stale element reference implies that element
-          // is no longer visible.
-          return true;
         }
+
       }
 
       @Override

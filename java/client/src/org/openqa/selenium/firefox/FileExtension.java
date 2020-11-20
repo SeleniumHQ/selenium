@@ -194,7 +194,7 @@ public class FileExtension implements Extension {
 
       Node idNode = (Node) xpath.compile("//em:id").evaluate(doc, XPathConstants.NODE);
 
-      String id = null;
+      String id;
       if (idNode == null) {
         Node descriptionNode =
             (Node) xpath.compile("//RDF:Description").evaluate(doc, XPathConstants.NODE);

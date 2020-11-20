@@ -101,7 +101,7 @@ public class CdpEventTypes {
         ((JavascriptExecutor) driver).executeScript(script);
 
         tools.getDomains().javascript().addBindingCalledListener(
-          (Consumer<String>) json -> {
+          json -> {
             Map<String, Object> values = JSON.toType(json, MAP_TYPE);
             String id = (String) values.get("target");
 

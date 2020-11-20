@@ -403,7 +403,7 @@ public class NewSessionPayload implements Closeable {
       if (alwaysMatch == null) {
         alwaysMatch = ImmutableMap.of();
       }
-      Map<String, Object> always = alwaysMatch; // Keep the comoiler happy.
+      Map<String, Object> always = alwaysMatch; // Keep the compiler happy.
       if (firsts == null) {
         firsts = ImmutableList.of(ImmutableMap.of());
       }

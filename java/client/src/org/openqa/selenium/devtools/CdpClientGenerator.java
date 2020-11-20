@@ -936,7 +936,7 @@ public class CdpClientGenerator {
       ClassOrInterfaceDeclaration classDecl = new ClassOrInterfaceDeclaration().setName(capitalize(name));
 
       properties.stream().filter(property -> property.type instanceof EnumType).forEach(
-          property -> classDecl.addMember(((EnumType) property.type).toTypeDeclaration()));
+          property -> classDecl.addMember(property.type.toTypeDeclaration()));
 
       properties.forEach(property -> classDecl.addField(
           property.getJavaType(), property.getFieldName()).setPrivate(true).setFinal(true));
