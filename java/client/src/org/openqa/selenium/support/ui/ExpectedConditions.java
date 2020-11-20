@@ -1036,6 +1036,34 @@ public class ExpectedConditions {
   }
 
   /**
+   * An expectation for checking given WebElement has property with a specific value
+   *
+   * @param element   used to check its parameters
+   * @param property  property name
+   * @param value     used as expected property value
+   * @return Boolean true when element has property with the value
+   */
+  public static ExpectedCondition<Boolean> domPropertyToBe(final WebElement element,
+                                                           final String property,
+                                                           final String value) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentValue = null;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentValue = element.getDomProperty(property);
+        return value.equals(currentValue);
+      }
+
+      @Override
+      public String toString() {
+        return String.format(property + " to be \"%s\". Current " + property + ": \"%s\"", value,
+                             currentValue);
+      }
+    };
+  }
+
+  /**
    * An expectation for checking given WebElement has attribute with a specific value
    *
    * @param element   used to check its parameters

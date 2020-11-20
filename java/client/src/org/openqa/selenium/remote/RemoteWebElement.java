@@ -135,6 +135,13 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
   }
 
   @Override
+  public String getDomProperty(String name) {
+    return stringValueOf(
+      execute(DriverCommand.GET_ELEMENT_PROPERTY(id, name))
+        .getValue());
+  }
+
+  @Override
   public String getAttribute(String name) {
     return stringValueOf(
       execute(DriverCommand.GET_ELEMENT_ATTRIBUTE(id, name))
