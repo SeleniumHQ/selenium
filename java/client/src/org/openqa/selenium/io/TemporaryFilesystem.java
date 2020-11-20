@@ -156,7 +156,7 @@ TemporaryFilesystem {
    */
   boolean shouldReap() {
     String reap = System.getProperty("webdriver.reap_profile", "true");
-    return Boolean.valueOf(reap);
+    return Boolean.parseBoolean(reap);
   }
 
   public boolean deleteBaseDir() {
