@@ -38,7 +38,7 @@ public class Reference {
   private static final String DEFAULT_TAG = "latest";
 
   // Capturing groups used in patterns below
-  private static final String DOMAIN = "([\\w\\d-_.]+?(:(\\d+))?";
+  private static final String DOMAIN = "([\\w\\d-_.]+?(:(\\d+))?)";
   private static final String REPO = "([\\w\\d-_.]+?)";
   private static final String NAME = "([\\w\\d-_.]+?)";
   private static final String TAG = "([\\w\\d-_.]+?)";
@@ -59,6 +59,8 @@ public class Reference {
     .put(Pattern.compile(String.format("%s@%s", NAME, DIGEST)), m -> new Reference(DEFAULT_DOMAIN, DEFAULT_REPO, m.group(1), null, m.group(2)))
     .put(Pattern.compile(String.format("%s/%s:%s", REPO, NAME, TAG)), m -> new Reference(DEFAULT_DOMAIN, m.group(1), m.group(2), m.group(3), null))
     .put(Pattern.compile(String.format("%s/%s@%s", REPO, NAME, DIGEST)), m -> new Reference(DEFAULT_DOMAIN, m.group(1), m.group(2), null, m.group(3)))
+    .put(Pattern.compile(String.format("%s/%s/%s", DOMAIN, REPO, NAME)), m -> new Reference(m.group(1), m.group(4), m.group(5), DEFAULT_TAG, null))
+    .put(Pattern.compile(String.format("%s/%s/%s:%s", DOMAIN, REPO, NAME, TAG)), m -> new Reference(m.group(1), m.group(4), m.group(5), m.group(6), null))
     .build();
 
   private final String domain;
