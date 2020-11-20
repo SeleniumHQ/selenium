@@ -26,7 +26,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.UnhandledAlertException;
