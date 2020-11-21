@@ -128,7 +128,7 @@ public class JavadocJarMaker {
 
       Writer writer = new StringWriter();
       DocumentationTool.DocumentationTask task = tool.getTask(writer, fileManager, null, null, options, sources);
-      Boolean result = true; // task.call();
+      Boolean result = task.call();
       if (result == null || !result) {
         System.err.println("javadoc " + String.join(" ", options));
         System.err.println(writer);
