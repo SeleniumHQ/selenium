@@ -1,0 +1,22 @@
+name: Java workflow
+
+on:
+  push:
+    branches:
+      - trunk
+
+env:
+  NODE_VERSION: '13.x'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source tree
+      uses: actions/checkout@v1
+    - name: Setup bazelisk for Bazel builds
+      uses: holvonix-open/setup-bazelisk@v0.6.0
+    - name: Run Bazel build
+      run: |
+        bazel build //java/...
