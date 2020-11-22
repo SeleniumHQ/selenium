@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class IgnoreComparator {
-  private Set<Browser> ignored = new HashSet<>();
+  private final Set<Browser> ignored = new HashSet<>();
 
   // TODO(simon): reduce visibility
   public void addDriver(Browser driverToIgnore) {
@@ -46,11 +46,11 @@ public class IgnoreComparator {
   }
 
   private boolean shouldIgnore(Stream<Ignore> ignoreList) {
-    return ignoreList.anyMatch(driver ->
-        (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
-        && (!driver.travis() || TestUtilities.isOnTravis())
-        && (!driver.gitHubActions() || TestUtilities.isOnTravis())
-        && isOpen(driver.issue()));
+    return ignoreList.anyMatch(
+      driver -> (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
+                && (!driver.travis() || TestUtilities.isOnTravis())
+                && (!driver.gitHubActions() || TestUtilities.isOnGitHubActions())
+                && isOpen(driver.issue()));
   }
 
   private boolean isOpen(String issue) {
