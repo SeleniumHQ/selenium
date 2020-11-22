@@ -104,6 +104,12 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       }
     });
 
+    // If `source` is an instance of FirefoxOptions, we need to mirror those into this instance.
+    if (source instanceof FirefoxOptions) {
+      mirror((FirefoxOptions) source);
+      return;
+    }
+
     // If `source` has options, we need to mirror those into this instance. This may be either a
     // Map (if we're constructing from a serialized instance) or another FirefoxOptions. *sigh*
     Object raw = source.getCapability(FIREFOX_OPTIONS);
@@ -165,6 +171,17 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         }
       }
     }
+  }
+
+  private void mirror(FirefoxOptions that) {
+    addArguments(that.args);
+    that.preferences.forEach(this::addPreference);
+    setLegacy(that.legacy);
+
+    if (that.logLevel != null) { setLogLevel(that.logLevel); }
+    if (that.binary != null) { setCapability(BINARY, that.binary.asCapability()); }
+
+    if (that.profile != null) { setProfile(that.profile); }
   }
 
   public FirefoxOptions setLegacy(boolean legacy) {
@@ -309,6 +326,9 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   @Override
   public FirefoxOptions merge(Capabilities capabilities) {
     super.merge(capabilities);
+    if (capabilities instanceof FirefoxOptions) {
+      mirror((FirefoxOptions) capabilities);
+    }
     return this;
   }
 
