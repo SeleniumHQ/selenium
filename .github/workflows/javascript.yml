@@ -28,9 +28,11 @@ jobs:
         uses: ./.github/actions/setup-bazelisk
       - name: Install XVFB
         run: sudo apt-get install xvfb
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-#      - name: Start XVFB
-#        run: xvfb start
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Run JavaScript tests on Firefox
         run: bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
+        env:
+          DISPLAY: :99
