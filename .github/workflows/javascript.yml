@@ -27,6 +27,6 @@ jobs:
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
       - name: Start XVFB
-        run: xvfb start
+        run: /usr/bin/xvfb start
       - name: Run JavaScript tests on Firefox
         run: bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
