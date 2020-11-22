@@ -61,27 +61,12 @@ matrix:
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
-    - env: BZL="build //java/client/src/... //java/server/src/..." SONAR=1
-      <<: *java
-    - env: BZL_TEST="attr(size, small, tests(//java/...)) except attr(tags, lint, tests(//java/...))"
-      <<: *java
-    - env: BZL_TEST="attr(tags, lint, tests(//java/...))"
-      <<: *java
-    - env: MARIONETTE=1 BZL_TEST="attr(tags, firefox, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))"
-      <<: *java
-      <<: *firefox-nightly
-    - env: CHROME=1 BZL_TEST="attr(tags, chrome, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))"
-      <<: *java
-      <<: *chrome
     - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/..."
       <<: *java
       <<: *firefox-latest
     - env: CHROME=1 BZL="test --test_tag_filters=chrome //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...  //javascript/chrome-driver/..."
       <<: *java
       <<: *chrome
-    - env: CHROME=1 MARIONETTE=1 BZL_TEST="tests(//java/server/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/server/...))"
-      <<: *java
-      <<: *firefox-nightly
     - env: TASK=javadocs
       <<: *java
     - env: TOXENV=flake8
