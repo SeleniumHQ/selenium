@@ -22,10 +22,10 @@ jobs:
           node-version: 15
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
-      - name: Setup Chrome and chromedriver
+      - name: Setup Chrome and ChromeDriver
         uses: ./.github/actions/setup-chrome
       - name: Run JavaScript tests
-        run: ./scripts/travis/script.sh
+        run: bazel test //javascript/node/selenium-webdriver:tests
         env:
           MARIONETTE: 1
           SELENIUM_BROWSER: firefox
