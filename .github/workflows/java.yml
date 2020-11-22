@@ -62,7 +62,7 @@ jobs:
           query: attr(size, small, tests(//java/...)) except attr(tags, lint, tests(//java/...))
 
   lint:
-    needs: build
+    needs: small_tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -89,7 +89,7 @@ jobs:
           query: attr(tags, lint, tests(//java/...))
 
   chrome_tests:
-    needs: build
+    needs: small_tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -118,7 +118,7 @@ jobs:
           query: attr(tags, chrome, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
 
   firefox_tests:
-    needs: build
+    needs: small_tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -148,7 +148,7 @@ jobs:
 
 
   server_tests:
-    needs: build
+    needs: small_tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
