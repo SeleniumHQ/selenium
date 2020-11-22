@@ -28,9 +28,9 @@ jobs:
         uses: ./.github/actions/setup-bazelisk
       - name: Install XVFB
         run: sudo apt-get install xvfb
-#      - name: Start XVFB
-#        run: Xvfb :99 &
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Run JavaScript tests on Firefox
-        run: xvfb-run --server-num=99 bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
+        run: bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
         env:
           DISPLAY: :99
