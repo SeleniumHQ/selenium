@@ -174,4 +174,8 @@ public class TestUtilities {
   public static boolean isOnTravis() {
     return Boolean.parseBoolean(System.getenv("TRAVIS"));
   }
+
+  public static boolean isOnGitHubActions() {
+    return Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS"));
+  }
 }

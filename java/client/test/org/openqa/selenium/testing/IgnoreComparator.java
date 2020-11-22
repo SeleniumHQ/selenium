@@ -19,7 +19,6 @@ package org.openqa.selenium.testing;
 
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.service.IssueService;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.IOException;
@@ -50,6 +49,7 @@ public class IgnoreComparator {
     return ignoreList.anyMatch(driver ->
         (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
         && (!driver.travis() || TestUtilities.isOnTravis())
+        && (!driver.gitHubActions() || TestUtilities.isOnTravis())
         && isOpen(driver.issue()));
   }
 
