@@ -11,12 +11,169 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout source tree
-      uses: actions/checkout@v1
-    - name: Setup bazelisk for Bazel builds
-      uses: holvonix-open/setup-bazelisk@v0.6.0
-    - name: Run Bazel build
-      run: |
-        bazel build //java/...
+      - name: Checkout source tree
+        uses: actions/checkout@v1
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-build-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Build grid
+        uses: ./.github/actions/bazel
+        with:
+          command: build grid
+
+  small_tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v1
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-small-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-small-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Run small tests
+        uses: ./.github/actions/bazel-test
+        with:
+          query: attr(size, small, tests(//java/...)) except attr(tags, lint, tests(//java/...))
+
+  lint:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v1
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-lint-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-lint-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Run linter
+        uses: ./.github/actions/bazel-test
+        with:
+          query: attr(tags, lint, tests(//java/...))
+
+  chrome_tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v1
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-chrome-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-chrome-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Setup Chrome and chromedriver
+        uses: ./.github/actions/setup-chrome
+      - name: Run browser tests in Chrome
+        uses: ./.github/actions/bazel-test
+        with:
+          query: attr(tags, chrome, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
+
+  firefox_tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v1
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Setup Firefox and geckodriver
+        uses: ./.github/actions/setup-firefox
+      - name: Run browser tests in Firefox
+        uses: ./.github/actions/bazel-test
+        with:
+          query: attr(tags, firefox, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
+
+
+  server_tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v1
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Setup Chrome and chromedriver
+        uses: ./.github/actions/setup-chrome
+      - name: Setup Firefox and geckodriver
+        uses: ./.github/actions/setup-firefox
+      - name: Run server tests
+        uses: ./.github/actions/bazel-test
+        with:
+          query: tests(//java/server/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/server/...))
