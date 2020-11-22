@@ -26,7 +26,7 @@ jobs:
           java-version: 11
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
-      - name: Start XVFB
-        run: /usr/bin/xvfb start
+      - name: Install XVFB
+        run: apt-get install xvfb
       - name: Run JavaScript tests on Firefox
-        run: bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
+        run: xvfb-run --auto-servernum bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
