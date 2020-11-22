@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
