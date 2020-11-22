@@ -10,8 +10,6 @@ on:
 
 jobs:
   build:
-    # Skip job based on the commit message, only works in push to branches for now
-    if: contains(toJson(github.event.commits), '[skip ci]') == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree

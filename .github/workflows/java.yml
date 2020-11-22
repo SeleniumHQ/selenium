@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - trunk
+  pull_request:
+    branches:
+      - trunk
 
 env:
   NODE_VERSION: '13.x'
