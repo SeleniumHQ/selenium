@@ -22,9 +22,5 @@ jobs:
           node-version: 15
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
-      - name: Run JavaScript tests
-        run: bazel test //javascript/node/selenium-webdriver:tests
-        env:
-          MARIONETTE: 1
-          SELENIUM_BROWSER: firefox
-          NPM: test
+      - name: Run JavaScript tests on Firefox
+        run: bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
