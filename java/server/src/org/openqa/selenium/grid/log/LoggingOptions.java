@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.common.AttributeConsumer;
 import io.opentelemetry.common.AttributeKey;
 import io.opentelemetry.common.Attributes;
