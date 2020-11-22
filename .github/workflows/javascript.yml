@@ -31,7 +31,6 @@ jobs:
 #      - name: Start XVFB
 #        run: Xvfb :99 &
       - name: Run JavaScript tests on Firefox
-        run: xvfb-run --server-num=${DISPLAY_NUM} bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
+        run: xvfb-run --server-num=99 bazel test --test_env SELENIUM_BROWSER=firefox  //javascript/node/selenium-webdriver:tests
         env:
           DISPLAY: :99
-          DISPLAY_NUM: 99
