@@ -64,8 +64,6 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 public class JettyAppServer implements AppServer {
 
-  private static final String HOSTNAME_FOR_TEST_ENV_NAME = "HOSTNAME";
-  private static final String ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME = "ALTERNATIVE_HOSTNAME";
   private static final String FIXED_HTTP_PORT_ENV_NAME = "TEST_HTTP_PORT";
   private static final String FIXED_HTTPS_PORT_ENV_NAME = "TEST_HTTPS_PORT";
 
@@ -84,12 +82,7 @@ public class JettyAppServer implements AppServer {
   private final File tempPageDir;
 
   public JettyAppServer() {
-    this(detectHostname(), getHttpPort(), getHttpsPort());
-  }
-
-  public static String detectHostname() {
-    String hostnameFromProperty = System.getenv(HOSTNAME_FOR_TEST_ENV_NAME);
-    return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
+    this(AppServer.detectHostname(), getHttpPort(), getHttpsPort());
   }
 
   public JettyAppServer(String hostName, int httpPort, int httpsPort) {
@@ -140,15 +133,7 @@ public class JettyAppServer implements AppServer {
 
   @Override
   public String getAlternateHostName() {
-    String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
-    if (alternativeHostnameFromProperty != null) {
-      return alternativeHostnameFromProperty;
-    }
-    try {
-      return networkUtils.getNonLoopbackAddressOfThisMachine();
-    } catch (WebDriverException e) {
-      return networkUtils.getPrivateLocalAddress();
-    }
+    return AppServer.detectAlternateHostname();
   }
 
   @Override
@@ -300,7 +285,7 @@ public class JettyAppServer implements AppServer {
     int httpPort = getHttpPortFromEnv();
     int httpsPort = getHttpsPortFromEnv();
     System.out.printf("Starting server on HTTPS port %d and HTTPS port %d%n", httpPort, httpsPort);
-    new JettyAppServer(detectHostname(), httpPort, httpsPort).start();
+    new JettyAppServer(AppServer.detectHostname(), httpPort, httpsPort).start();
   }
 
 }

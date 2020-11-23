@@ -18,7 +18,6 @@
 package org.openqa.selenium.environment.webserver;
 
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -26,7 +25,6 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -49,8 +47,6 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
 public class NettyAppServer implements AppServer {
-
-  private static final String ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME = "ALTERNATIVE_HOSTNAME";
 
   private final Server<?> server;
 
@@ -150,22 +146,12 @@ public class NettyAppServer implements AppServer {
 
   @Override
   public String getHostName() {
-    return "localhost";
+    return AppServer.detectHostname();
   }
 
   @Override
   public String getAlternateHostName() {
-    String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
-    if (alternativeHostnameFromProperty != null) {
-      return alternativeHostnameFromProperty;
-    }
-
-    NetworkUtils networkUtils = new NetworkUtils();
-    try {
-      return networkUtils.getNonLoopbackAddressOfThisMachine();
-    } catch (WebDriverException e) {
-      return networkUtils.getPrivateLocalAddress();
-    }
+    return AppServer.detectAlternateHostname();
   }
 
   public static void main(String[] args) {

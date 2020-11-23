@@ -18,7 +18,6 @@
 package org.openqa.selenium.environment;
 
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.JettyAppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 
 public class InProcessTestEnvironment implements TestEnvironment {

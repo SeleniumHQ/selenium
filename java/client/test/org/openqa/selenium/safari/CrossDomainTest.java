@@ -17,23 +17,23 @@
 
 package org.openqa.selenium.safari;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.testing.Pages;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.JettyAppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.Pages;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @NeedsLocalEnvironment(reason = "Uses a local server")
 public class CrossDomainTest extends JUnit4TestBase {
@@ -43,7 +43,7 @@ public class CrossDomainTest extends JUnit4TestBase {
 
   @BeforeClass
   public static void startSecondServer() {
-    otherServer = new JettyAppServer();
+    otherServer = new NettyAppServer();
     otherServer.start();
 
     otherPages = new Pages(otherServer);
