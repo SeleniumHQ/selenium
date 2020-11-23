@@ -158,6 +158,6 @@ public class NettyAppServer implements AppServer {
     NettyAppServer server = new NettyAppServer();
     server.start();
 
-    System.out.println(server.whereIs("/"));
+    System.out.printf("Server started. Root URL: %s%n", server.whereIs("/"));
   }
 }

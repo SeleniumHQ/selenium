@@ -68,7 +68,7 @@ java_library(
 java_binary(
     name = "appserver",
     testonly = True,
-    main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
+    main_class = "org.openqa.selenium.environment.webserver.NettyAppServer",
     visibility = [
         "//:__pkg__",
         "//dotnet/test:__subpackages__",
