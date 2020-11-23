@@ -140,7 +140,6 @@ public class JettyAppServer implements AppServer {
     defaultContext.setInitParameter("webSrc", webSrc.toAbsolutePath().toString());
 
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
-    addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
 
     CreatePageHandler createPageHandler = new CreatePageHandler(
       tempPageDir.toPath(),
@@ -154,6 +153,7 @@ public class JettyAppServer implements AppServer {
       Route.get("/basicAuth").to(BasicAuthHandler::new),
       Route.get("/cookie").to(CookieHandler::new),
       Route.get("/encoding").to(EncodingHandler::new),
+      Route.matching(req -> req.getUri().startsWith("/generated/")).to(() -> new GeneratedJsTestHandler("/generated")),
       Route.matching(req -> req.getUri().startsWith("/page/") && req.getMethod() == GET).to(PageHandler::new),
       Route.post("/createPage").to(() -> createPageHandler),
       Route.get("/redirect").to(RedirectHandler::new),
