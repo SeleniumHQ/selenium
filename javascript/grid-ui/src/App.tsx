@@ -5,7 +5,6 @@ import { HttpLink } from "apollo-link-http";
 import ReactModal from "react-modal";
 import { ApolloProvider } from "react-apollo";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import fetch from 'node-fetch';
 
 // css import order is important
 /* 1 */ import "./css/theme.css";
@@ -22,7 +21,6 @@ import NodeType from "./models/node";
 const cache = new InMemoryCache();
 const link = new HttpLink({
 	uri: GridConfig.serverUri,
-  fetch
 });
 
 export const client = new ApolloClient({
@@ -40,7 +38,7 @@ declare global {
 	}
 }
 
-if (process.env.NODE_ENV !== 'test') ReactModal.setAppElement("#root");
+ReactModal.setAppElement("#root");
 
 function App() {
 	return (
