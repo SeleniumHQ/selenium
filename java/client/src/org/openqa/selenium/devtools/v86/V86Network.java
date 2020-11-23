@@ -84,7 +84,7 @@ public class V86Network extends Network<AuthRequired, RequestPaused> {
       new AuthChallengeResponse(
         AuthChallengeResponse.Response.PROVIDECREDENTIALS,
         Optional.of(credentials.username()),
-        Optional.ofNullable(credentials.username())));
+        Optional.ofNullable(credentials.password())));
   }
 
   @Override
