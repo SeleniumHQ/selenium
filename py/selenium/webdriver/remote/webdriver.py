@@ -1523,21 +1523,17 @@ class WebDriver(BaseWebDriver):
             global devtools
             session = cdp.get_session_context('page.enable')
             await session.execute(devtools.page.enable())
-            session = cdp.get_session_context('console.enable')
-            await session.execute(devtools.console.enable())
+            session = cdp.get_session_context('runtime.enable')
+            await session.execute(devtools.runtime.enable())
             console = {
                 "message": None,
-                "level": None
             }
-            async with session.wait_for(devtools.console.MessageAdded) as messages:
+            async with session.wait_for(devtools.runtime.ConsoleAPICalled) as messages:
                 yield console
-            if event_type == Console.ERROR:
-                if messages.value.message.level == "error":
-                    console["message"] = messages.value.message.text
-                    console["level"] = messages.value.message.level
-            elif event_type == Console.ALL:
-                console["message"] = messages.value.message.text
-                console["level"] = messages.value.message.level
+
+            if event_type == Console.ALL:
+                console["message"] = messages.value.args[0].value
+                # console["level"] = messages.value.message.level
 
     @asynccontextmanager
     async def _get_bidi_connection(self):
@@ -1567,7 +1563,10 @@ class WebDriver(BaseWebDriver):
         import urllib3
 
         http = urllib3.PoolManager()
-        debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
+        if self.caps.get("browserName") == "chrome":
+            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
+        else:
+            debugger_address = self.caps.get("moz:debuggerAddress")
         res = http.request('GET', f"http://{debugger_address}/json/version")
         data = json.loads(res.data)
 
