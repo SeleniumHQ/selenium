@@ -97,7 +97,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   public FirefoxOptions(Capabilities source) {
     // We need to initialize all our own fields before calling.
-    super();
+    this();
     source.asMap().forEach((key, value)-> {
       if (value != null) {
         setCapability(key, value);
