@@ -40,6 +40,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -49,6 +50,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Safely.safelyCall;
+
+import com.google.common.collect.ImmutableMap;
 
 public class ConsolePageTest {
 
@@ -94,11 +97,9 @@ public class ConsolePageTest {
     int port = PortProber.findFreePort();
 
     Config config = new MemoizedConfig(
-      new MapConfig(Map.of(
-        "server", Map.of(
-          "port", port),
-        "node", Map.of(
-          "detect-drivers", true))));
+      new MapConfig(ImmutableMap.of(
+        "server", Collections.singletonMap("port", port),
+        "node", Collections.singletonMap("detect-drivers", true))));
 
     Server<?> server = new Standalone().asServer(config).start();
 

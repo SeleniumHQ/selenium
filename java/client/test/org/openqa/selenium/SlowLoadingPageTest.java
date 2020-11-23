@@ -45,7 +45,7 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, travis = true)
+  @Ignore(value = CHROME, travis = true, gitHubActions = true)
   @Ignore(value = CHROMIUMEDGE)
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();

@@ -29,6 +29,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.ReferenceCountUtil;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -126,10 +127,13 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       return null;
     }
 
+    QueryStringDecoder decoder = new QueryStringDecoder(nettyRequest.uri());
 
     HttpRequest req = new HttpRequest(
       method,
-      nettyRequest.uri());
+      decoder.path());
+
+    decoder.parameters().forEach((key, values) -> values.forEach(value -> req.addQueryParameter(key, value)));
 
     nettyRequest.headers().entries().stream()
       .filter(entry -> entry.getKey() != null)

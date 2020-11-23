@@ -19,7 +19,6 @@ package org.openqa.selenium.environment.webserver;
 
 import org.openqa.selenium.json.Json;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
@@ -51,7 +50,7 @@ public class CreatePageServlet extends HttpServlet {
 
     Path tempPageDir = Paths.get(getServletContext().getInitParameter("tempPageDir"));
     Path target = Files.createTempFile(tempPageDir, "page", ".html");
-    try (Writer out = new FileWriter(target.toFile(), UTF_8)) {
+    try (Writer out = Files.newBufferedWriter(target, UTF_8)) {
       out.write(json.get("content"));
     }
 

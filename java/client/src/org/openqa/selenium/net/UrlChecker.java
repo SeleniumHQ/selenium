@@ -58,7 +58,7 @@ public class UrlChecker {
     long start = System.nanoTime();
     log.fine("Waiting for " + Arrays.toString(urls));
     try {
-      Future<Void> callback = EXECUTOR.submit((Callable<Void>) () -> {
+      Future<Void> callback = EXECUTOR.submit(() -> {
         HttpURLConnection connection = null;
 
         long sleepMillis = MIN_POLL_INTERVAL_MS;
@@ -103,7 +103,7 @@ public class UrlChecker {
     long start = System.nanoTime();
     log.fine("Waiting for " + url);
     try {
-      Future<Void> callback = EXECUTOR.submit((Callable<Void>) () -> {
+      Future<Void> callback = EXECUTOR.submit(() -> {
         HttpURLConnection connection = null;
 
         long sleepMillis = MIN_POLL_INTERVAL_MS;

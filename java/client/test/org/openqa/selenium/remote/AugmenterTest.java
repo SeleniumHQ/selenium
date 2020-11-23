@@ -195,7 +195,7 @@ public class AugmenterTest {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return List.of(((FindByMagic) context).findByMagic(magicWord));
+      return Collections.singletonList(((FindByMagic) context).findByMagic(magicWord));
     }
   }
 

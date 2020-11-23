@@ -41,7 +41,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
   private final Clock clock;
 
   /**
-   * Use this constructor in order to process custom annotaions.
+   * Use this constructor in order to process custom annotations.
    *
    * @param context The context to use when finding the element
    * @param timeOutInSeconds How long to wait for the element to appear. Measured in seconds.

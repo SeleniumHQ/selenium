@@ -24,7 +24,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.environment.webserver.BasicAuthHandler;
-import org.openqa.selenium.environment.webserver.JreAppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.support.devtools.NetworkInterceptor;
@@ -36,11 +36,11 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class CdpFacadeTest extends DevToolsTestBase {
 
-  private static JreAppServer server;
+  private static NettyAppServer server;
 
   @BeforeClass
   public static void startServer() {
-    server = new JreAppServer(new BasicAuthHandler());
+    server = new NettyAppServer(new BasicAuthHandler());
     server.start();
   }
 

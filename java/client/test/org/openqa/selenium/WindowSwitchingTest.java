@@ -35,8 +35,11 @@ import static org.openqa.selenium.testing.drivers.Browser.OPERABLINK;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -53,31 +56,27 @@ import java.util.stream.Collectors;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @Rule
-  public final TestRule switchToMainWindow = new TestWatcher() {
-    private String mainWindow;
+  private String mainWindow;
 
-    @Override
-    protected void starting(Description description) {
-      super.starting(description);
-      mainWindow = driver.getWindowHandle();
-    }
+  @Before
+  public void storeMainWindowHandle() {
+    mainWindow = driver.getWindowHandle();
+  }
 
-    @Override
-    protected void finished(Description description) {
-      try {
-        driver.getWindowHandles().stream().filter(handle -> ! mainWindow.equals(handle))
-            .forEach(handle -> driver.switchTo().window(handle).close());
-      } catch (Exception ignore) {
-        System.err.println("Ignoring: " + ignore.getMessage());
-      }
-      try {
-        driver.switchTo().window(mainWindow);
-      } catch (Exception ignore) {
-      }
-      super.finished(description);
+  @After
+  public void closeAllWindowsExceptForTheMainOne() {
+    try {
+      driver.getWindowHandles().stream().filter(handle -> ! mainWindow.equals(handle))
+        .forEach(handle -> driver.switchTo().window(handle).close());
+    } catch (Exception ignore) {
+      System.err.println("Ignoring: " + ignore.getMessage());
     }
-  };
+    try {
+      driver.switchTo().window(mainWindow);
+    } catch (Exception ignore) {
+      System.err.println("Ignoring: " + ignore.getMessage());
+    }
+  }
 
   @SwitchToTopAfterTest
   @NoDriverAfterTest(failedOnly = true)
@@ -109,7 +108,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testShouldThrowNoSuchWindowException() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchWindowException.class)
-        .isThrownBy(() -> driver.switchTo().window("invalid name"));
+      .isThrownBy(() -> driver.switchTo().window("invalid name"));
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -145,7 +144,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchWindowException.class).isThrownBy(driver::getTitle);
 
     assertThatExceptionOfType(NoSuchWindowException.class)
-        .isThrownBy(() -> driver.findElement(By.tagName("body")));
+      .isThrownBy(() -> driver.findElement(By.tagName("body")));
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -257,7 +256,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     String current = driver.getWindowHandle();
 
     assertThatExceptionOfType(NoSuchWindowException.class)
-        .isThrownBy(() -> driver.switchTo().window("i will never exist"));
+      .isThrownBy(() -> driver.switchTo().window("i will never exist"));
 
     String newHandle = driver.getWindowHandle();
     assertThat(newHandle).isEqualTo(current);

@@ -36,9 +36,7 @@ java_library(
         "@com_google_javascript_closure_library",
     ],
     javacopts = [
-        "-source",
-        "11",
-        "-target",
+        "--release",
         "11",
     ],
     visibility = [
@@ -55,8 +53,10 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//java/server/src/org/openqa/selenium/jre/server",
+        "//java/server/src/org/openqa/selenium/jetty/server",
+        "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.google.guava:guava"),
+        artifact("org.assertj:assertj-core"),
         artifact("org.eclipse.jetty:jetty-http"),
         artifact("org.eclipse.jetty:jetty-server"),
         artifact("org.eclipse.jetty:jetty-servlet"),

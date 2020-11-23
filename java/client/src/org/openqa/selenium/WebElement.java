@@ -94,6 +94,45 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   String getTagName();
 
   /**
+   * Get the value of the given property of the element. Will return the current value, even if
+   * this has been modified after the page has been loaded.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-property">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @param name The name of the property.
+   * @return The property's current value or null if the value is not set.
+   */
+  default String getDomProperty(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Get the value of the given attribute of the element. Will return the current value, even if
+   * this has been modified after the page has been loaded.
+   * <p>
+   * This method, unlike {@link #getAttribute(String)}, returns the value of the attribute with the
+   * given name but not the property with the same name.
+   * <p>
+   * The following are deemed to be "boolean" attributes, and will return either "true" or null:
+   * <p>
+   * async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+   * defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
+   * iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade,
+   * novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless,
+   * seeking, selected, truespeed, willvalidate
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @param name The name of the attribute.
+   * @return The attribute's current value or null if the value is not set.
+   */
+  default String getDomAttribute(String name) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
    * Get the value of the given attribute of the element. Will return the current value, even if
    * this has been modified after the page has been loaded.
    * <p>

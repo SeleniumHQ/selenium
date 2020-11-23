@@ -1,5 +1,7 @@
 load("//dotnet:defs.bzl", "nunit_test")
 
+exports_files(["appconfig.json"])
+
 SUPPORTED_BROWSERS = [
     ("chrome", "Chrome"),
     ("chromedev", "ChromeDev"),

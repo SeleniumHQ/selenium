@@ -26,22 +26,25 @@
     <icon>images\icon.png</icon>
     <tags>selenium webdriver support browser automation</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5">
+      <group targetFramework="net45">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETFramework4.6">
+      <group targetFramework="net46">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETFramework4.7">
+      <group targetFramework="net47">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETFramework4.8">
+      <group targetFramework="net48">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETStandard2.0">
+      <group targetFramework="netstandard2.0">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETStandard2.1">
+      <group targetFramework="netstandard2.1">
+        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net5.0">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
     </dependencies>

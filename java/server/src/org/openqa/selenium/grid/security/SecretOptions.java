@@ -39,7 +39,7 @@ public class SecretOptions {
 
   public Secret getRegistrationSecret() {
     String secret = "";
-    if ((isSecure() || isSelfSigned()) && config.get(SERVER_SECTION, "registration-secret").isEmpty()) {
+    if ((isSecure() || isSelfSigned()) && !config.get(SERVER_SECTION, "registration-secret").isPresent()) {
       try {
         secret = getEncoder().encodeToString(Arrays.copyOfRange(Files.readAllBytes(getCertificate().toPath()), 0, 32));
         return new Secret(secret);

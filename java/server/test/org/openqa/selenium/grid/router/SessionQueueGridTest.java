@@ -68,6 +68,7 @@ import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -232,7 +233,8 @@ public class SessionQueueGridTest {
   private static Server<?> createServer(HttpHandler handler) {
     return new NettyServer(
       new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444)))),
+        new MapConfig(
+          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
       handler);
   }
 

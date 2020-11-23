@@ -575,15 +575,12 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         try {
           return !(driver.findElement(locator).isDisplayed());
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
           // Returns true because the element is not present in DOM. The
           // try block checks if the element is present but is invisible.
           return true;
-        } catch (StaleElementReferenceException e) {
-          // Returns true because stale element reference implies that element
-          // is no longer visible.
-          return true;
         }
+
       }
 
       @Override
@@ -1031,6 +1028,34 @@ public class ExpectedConditions {
         return String
           .format("number of elements found by %s to be \"%s\". Current number: \"%s\"",
                   locator, number, currentNumber);
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking given WebElement has property with a specific value
+   *
+   * @param element   used to check its parameters
+   * @param property  property name
+   * @param value     used as expected property value
+   * @return Boolean true when element has property with the value
+   */
+  public static ExpectedCondition<Boolean> domPropertyToBe(final WebElement element,
+                                                           final String property,
+                                                           final String value) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentValue = null;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentValue = element.getDomProperty(property);
+        return value.equals(currentValue);
+      }
+
+      @Override
+      public String toString() {
+        return String.format(property + " to be \"%s\". Current " + property + ": \"%s\"", value,
+                             currentValue);
       }
     };
   }

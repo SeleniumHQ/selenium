@@ -44,7 +44,7 @@ public class Safely {
     }
 
     try {
-      CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+      CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{}));
     } finally {
       executor.shutdownNow();
     }

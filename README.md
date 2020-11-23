@@ -99,6 +99,7 @@ you may want to run them individually.
 * [Python](https://www.python.org/)
 * `python` on the PATH
 * [The Requests Library](http://python-requests.org) for Python: `pip install requests`
+* [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
 * MacOS users should have the latest version of Xcode installed, including the command-line tools.
 The following command should work:
 

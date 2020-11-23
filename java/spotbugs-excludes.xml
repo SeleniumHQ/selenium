@@ -39,11 +39,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.environment.webserver.CookieServlet"/>
-    <Bug pattern="HRS_REQUEST_PARAMETER_TO_COOKIE"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.environment.webserver.KillSwitchServlet"/>
     <Bug pattern="DM_EXIT"/>
   </Match>
@@ -181,6 +176,11 @@
 
   <Match>
     <Class name="org.openqa.selenium.testing.Pages"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.testing.JUnit4TestBase"/>
     <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
   </Match>
 

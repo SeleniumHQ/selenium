@@ -43,7 +43,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
   }
 
   public DefaultNetworkInterfaceProvider() {
-    Enumeration<java.net.NetworkInterface> interfaces = null;
+    Enumeration<java.net.NetworkInterface> interfaces;
     try {
       interfaces = java.net.NetworkInterface.getNetworkInterfaces();
     } catch (SocketException e) {
