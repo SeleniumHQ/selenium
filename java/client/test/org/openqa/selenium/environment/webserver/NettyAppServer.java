@@ -18,11 +18,15 @@
 package org.openqa.selenium.environment.webserver;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -30,8 +34,8 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Route;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
@@ -43,16 +47,25 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.matching;
-import static org.openqa.selenium.remote.http.Route.post;
 
 public class NettyAppServer implements AppServer {
+
+  private static final String ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME = "ALTERNATIVE_HOSTNAME";
 
   private final Server<?> server;
 
   public NettyAppServer() {
-    this(emulateJettyAppServer());
+    MemoizedConfig config = new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", PortProber.findFreePort()))));
+    BaseServerOptions options = new BaseServerOptions(config);
+
+    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("generated", "pages");
+
+    HttpHandler handler = new HandlersForTests(
+      options.getHostname().orElse("localhost"),
+      options.getPort(),
+      tempDir.toPath());
+
+    server = new NettyServer(options, handler);
   }
 
   public NettyAppServer(HttpHandler handler) {
@@ -62,16 +75,6 @@ public class NettyAppServer implements AppServer {
     server = new NettyServer(
       new BaseServerOptions(new MapConfig(singletonMap("server", singletonMap("port", port)))),
       handler);
-  }
-
-  private static Route emulateJettyAppServer() {
-    return Route.combine(
-      new CommonWebResources(),
-      get("/encoding").to(EncodingHandler::new),
-      matching(req -> req.getUri().startsWith("/page/")).to(PageHandler::new),
-      get("/redirect").to(RedirectHandler::new),
-      get("/sleep").to(SleepingHandler::new),
-      post("/upload").to(UploadHandler::new));
   }
 
   @Override
@@ -152,7 +155,17 @@ public class NettyAppServer implements AppServer {
 
   @Override
   public String getAlternateHostName() {
-    throw new UnsupportedOperationException("getAlternateHostName");
+    String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
+    if (alternativeHostnameFromProperty != null) {
+      return alternativeHostnameFromProperty;
+    }
+
+    NetworkUtils networkUtils = new NetworkUtils();
+    try {
+      return networkUtils.getNonLoopbackAddressOfThisMachine();
+    } catch (WebDriverException e) {
+      return networkUtils.getPrivateLocalAddress();
+    }
   }
 
   public static void main(String[] args) {
