@@ -39,9 +39,9 @@ public class CommonWebResources implements Routable {
 
   public CommonWebResources() {
     Resource resources = new MergedResource(new PathResource(locate("common/src/web")))
-      .alsoCheck(new PathResource(locate("javascript")))
-      .alsoCheck(new PathResource(locate("third_party/closure/goog")))
-      .alsoCheck(new PathResource(locate("third_party/js")));
+      .alsoCheck(new PathResource(locate("javascript").getParent()).limit("javascript"))
+      .alsoCheck(new PathResource(locate("third_party/closure/goog").getParent()).limit("goog"))
+      .alsoCheck(new PathResource(locate("third_party/js").getParent()).limit("js"));
 
     Path runfiles = InProject.findRunfilesRoot();
     if (runfiles != null) {
