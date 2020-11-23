@@ -140,8 +140,6 @@ public class JettyAppServer implements AppServer {
     defaultContext.setInitParameter("webSrc", webSrc.toAbsolutePath().toString());
 
     addServlet(defaultContext, "/manifest/*", ManifestServlet.class);
-    // Serves every file under DEFAULT_CONTEXT_PATH/utf8 as UTF-8 to the browser
-    addServlet(defaultContext, "/utf8/*", Utf8Servlet.class);
 
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
@@ -163,6 +161,7 @@ public class JettyAppServer implements AppServer {
       Route.get("/redirect").to(RedirectHandler::new),
       Route.get("/sleep").to(SleepingHandler::new),
       Route.post("/upload").to(UploadHandler::new),
+      Route.matching(req -> req.getUri().startsWith("/utf8/")).to(() -> new Utf8Handler(webSrc, "/utf8/")),
       Route.prefix(TEMP_SRC_CONTEXT_PATH).to(Route.combine(generatedPages))
     );
     Route prefixed = Route.prefix(DEFAULT_CONTEXT_PATH).to(route);
