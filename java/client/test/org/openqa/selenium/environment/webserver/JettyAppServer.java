@@ -17,25 +17,6 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.build.InProject.locate;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Contents.string;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.jetty.server.HttpHandlerServlet;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Connector;
@@ -53,8 +34,22 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.grid.web.PathResource;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.jetty.server.HttpHandlerServlet;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 
+import javax.servlet.Servlet;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -64,7 +59,14 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 
-import javax.servlet.Servlet;
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.build.InProject.locate;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class JettyAppServer implements AppServer {
 
@@ -84,13 +86,13 @@ public class JettyAppServer implements AppServer {
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
 
-  private int port;
-  private int securePort;
+  private final int port;
+  private final int securePort;
   private final Server server;
 
-  private ContextHandlerCollection handlers;
+  private final ContextHandlerCollection handlers;
   private final String hostName;
-  private File tempPageDir;
+  private final File tempPageDir;
 
   public JettyAppServer() {
     this(detectHostname(), getHttpPort(), getHttpsPort());
@@ -131,16 +133,11 @@ public class JettyAppServer implements AppServer {
 
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     tempPageDir = tempFs.createTempDir("pages", "test");
-    addResourceHandler(TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
     defaultContext.setInitParameter("tempPageDir", tempPageDir.getAbsolutePath());
     defaultContext.setInitParameter("hostname", hostName);
     defaultContext.setInitParameter("port", ""+port);
     defaultContext.setInitParameter("path", TEMP_SRC_CONTEXT_PATH);
     defaultContext.setInitParameter("webSrc", webSrc.toAbsolutePath().toString());
-
-    server.setHandler(handlers);
-
-    addServlet(defaultContext, "/page/*", PageServlet.class);
 
     addServlet(defaultContext, "/manifest/*", ManifestServlet.class);
     // Serves every file under DEFAULT_CONTEXT_PATH/utf8 as UTF-8 to the browser
@@ -148,18 +145,32 @@ public class JettyAppServer implements AppServer {
 
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
-    addServlet(defaultContext, "/createPage", CreatePageServlet.class);
+
+    CreatePageHandler createPageHandler = new CreatePageHandler(
+      tempPageDir.toPath(),
+      hostName,
+      httpPort,
+      TEMP_SRC_CONTEXT_PATH);
+    Routable generatedPages = new org.openqa.selenium.grid.web.ResourceHandler(new PathResource(tempPageDir.toPath()));
 
     // Default route
     Route route = Route.combine(
       Route.get("/basicAuth").to(BasicAuthHandler::new),
       Route.get("/cookie").to(CookieHandler::new),
       Route.get("/encoding").to(EncodingHandler::new),
+      Route.matching(req -> req.getUri().startsWith("/page/") && req.getMethod() == GET).to(PageHandler::new),
+      Route.post("/createPage").to(() -> createPageHandler),
       Route.get("/redirect").to(RedirectHandler::new),
       Route.get("/sleep").to(SleepingHandler::new),
-      Route.post("/upload").to(UploadHandler::new)
+      Route.post("/upload").to(UploadHandler::new),
+      Route.prefix(TEMP_SRC_CONTEXT_PATH).to(Route.combine(generatedPages))
     );
-    defaultContext.addServlet(new ServletHolder(new HttpHandlerServlet(route)), "/*");
+    Route prefixed = Route.prefix(DEFAULT_CONTEXT_PATH).to(route);
+    defaultContext.addServlet(new ServletHolder(new HttpHandlerServlet(Route.combine(route, prefixed))), "/*");
+
+    server.setHandler(handlers);
+
+    System.out.println("Listening on " + whereIs("/"));
   }
 
   private void addJsResourceHandler(String handlerPath, String dirPath) {
@@ -242,7 +253,9 @@ public class JettyAppServer implements AppServer {
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
       request.setContent(bytes(data));
       HttpResponse response = client.execute(request);
-      return string(response);
+      String url = string(response);
+      System.out.println("Created page at: " + url);
+      return url;
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -354,8 +367,7 @@ public class JettyAppServer implements AppServer {
   public static void main(String[] args) {
     int httpPort = getHttpPortFromEnv();
     int httpsPort = getHttpsPortFromEnv();
-    System.out.println(String.format("Starting server on HTTPS port %d and HTTPS port %d",
-                                     httpPort, httpsPort));
+    System.out.printf("Starting server on HTTPS port %d and HTTPS port %d%n", httpPort, httpsPort);
     new JettyAppServer(detectHostname(), httpPort, httpsPort).start();
   }
 
