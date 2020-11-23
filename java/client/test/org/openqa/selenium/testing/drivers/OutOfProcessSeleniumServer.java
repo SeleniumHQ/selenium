@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
@@ -61,8 +63,12 @@ public class OutOfProcessSeleniumServer {
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
     command = new CommandLine("java", Stream.concat(
-        Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
-        Stream.of(extraFlags)).toArray(String[]::new));
+      Stream.of("-jar", serverJar, mode, "--port", String.valueOf(port)),
+      Stream.of(extraFlags)).toArray(String[]::new));
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      File workingDir = findBinRoot(new File(".").getAbsoluteFile());
+      command.setWorkingDirectory(workingDir.getAbsolutePath());
+    }
 
     command.copyOutputTo(System.err);
     log.info("Starting selenium server: " + command.toString());
@@ -86,6 +92,14 @@ public class OutOfProcessSeleniumServer {
     WebDriverBuilder.addShutdownAction(this::stop);
 
     return this;
+  }
+
+  private File findBinRoot(File dir) {
+    if ("bin".equals(dir.getName())) {
+      return dir;
+    } else {
+      return findBinRoot(dir.getParentFile());
+    }
   }
 
   public void stop() {
