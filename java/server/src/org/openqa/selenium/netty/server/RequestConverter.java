@@ -45,6 +45,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import static io.netty.handler.codec.http.HttpMethod.HEAD;
 import static org.openqa.selenium.remote.http.Contents.memoize;
 
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
@@ -126,11 +127,15 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
     // Attempt to map the netty method
     HttpMethod method;
-    try {
-      method = HttpMethod.valueOf(nettyRequest.method().name());
-    } catch (IllegalArgumentException e) {
-      ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
-      return null;
+    if (nettyRequest.method().equals(HEAD)) {
+      method = HttpMethod.GET;
+    } else {
+      try {
+        method = HttpMethod.valueOf(nettyRequest.method().name());
+      } catch (IllegalArgumentException e) {
+        ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
+        return null;
+      }
     }
 
     QueryStringDecoder decoder = new QueryStringDecoder(nettyRequest.uri());
