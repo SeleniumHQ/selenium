@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class UrlCheckerTest {
 
@@ -85,9 +86,7 @@ public class UrlCheckerTest {
 
   @After
   public void cleanup() {
-    if (server != null) {
-      server.stop();
-    }
-    executorService.shutdown();
+    safelyCall(() -> server.stop());
+    safelyCall(executorService::shutdownNow);
   }
 }
