@@ -36,7 +36,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.grid.web.PathResource;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.jetty.server.HttpHandlerServlet;
 import org.openqa.selenium.json.Json;
@@ -46,12 +45,9 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Routable;
-import org.openqa.selenium.remote.http.Route;
 
 import javax.servlet.Servlet;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -63,10 +59,8 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class JettyAppServer implements AppServer {
 
@@ -78,11 +72,6 @@ public class JettyAppServer implements AppServer {
   private static final int DEFAULT_HTTP_PORT = 2310;
   private static final int DEFAULT_HTTPS_PORT = 2410;
   private static final String DEFAULT_CONTEXT_PATH = "/common";
-  private static final String FILEZ_CONTEXT_PATH = "/filez";
-  private static final String JS_SRC_CONTEXT_PATH = "/javascript";
-  private static final String TEMP_SRC_CONTEXT_PATH = "/temp";
-  private static final String CLOSURE_CONTEXT_PATH = "/third_party/closure/goog";
-  private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/js";
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
 
@@ -117,59 +106,17 @@ public class JettyAppServer implements AppServer {
 
     handlers = new ContextHandlerCollection();
 
-    Path webSrc = locate("common/src/web");
     ServletContextHandler defaultContext = new ServletContextHandler();
     handlers.addHandler(defaultContext);
 
-    // Only non-null when running with bazel test.
-    Path runfiles = InProject.findRunfilesRoot();
-//    if (runfiles != null) {
-//      addResourceHandler(FILEZ_CONTEXT_PATH, runfiles);
-//    }
-
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     tempPageDir = tempFs.createTempDir("pages", "test");
-    defaultContext.setInitParameter("tempPageDir", tempPageDir.getAbsolutePath());
-    defaultContext.setInitParameter("hostname", hostName);
-    defaultContext.setInitParameter("port", ""+port);
-    defaultContext.setInitParameter("path", TEMP_SRC_CONTEXT_PATH);
-    defaultContext.setInitParameter("webSrc", webSrc.toAbsolutePath().toString());
 
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
 
-    CreatePageHandler createPageHandler = new CreatePageHandler(
-      tempPageDir.toPath(),
-      hostName,
-      httpPort,
-      TEMP_SRC_CONTEXT_PATH);
-    Routable generatedPages = new org.openqa.selenium.grid.web.ResourceHandler(new PathResource(tempPageDir.toPath()));
-
-    // Default route
-    Route route = Route.combine(
-      Route.get("/basicAuth").to(BasicAuthHandler::new),
-      Route.get("/cookie").to(CookieHandler::new),
-      Route.get("/encoding").to(EncodingHandler::new),
-      Route.matching(req -> req.getUri().startsWith("/generated/")).to(() -> new GeneratedJsTestHandler("/generated")),
-      Route.matching(req -> req.getUri().startsWith("/page/") && req.getMethod() == GET).to(PageHandler::new),
-      Route.post("/createPage").to(() -> createPageHandler),
-      Route.get("/redirect").to(RedirectHandler::new),
-      Route.get("/sleep").to(SleepingHandler::new),
-      Route.post("/upload").to(UploadHandler::new),
-      Route.matching(req -> req.getUri().startsWith("/utf8/")).to(() -> new Utf8Handler(webSrc, "/utf8/")),
-      Route.prefix(TEMP_SRC_CONTEXT_PATH).to(Route.combine(generatedPages)),
-      new CommonWebResources());
-
-    // If we're not running inside `bazel test` this will be non-null
-//    if (runfiles != null) {
-//      route = Route.combine(
-//        route,
-//        Route.matching(req -> req.getUri().startsWith(FILEZ_CONTEXT_PATH)).to(new )
-//      )
-//      addResourceHandler(FILEZ_CONTEXT_PATH, runfiles);
-//    }
-
-    Route prefixed = Route.prefix(DEFAULT_CONTEXT_PATH).to(route);
-    defaultContext.addServlet(new ServletHolder(new HttpHandlerServlet(Route.combine(route, prefixed))), "/*");
+    defaultContext.addServlet(
+      new ServletHolder(new HttpHandlerServlet(new HandlersForTests(hostName, port, tempPageDir.toPath()))),
+      "/*");
 
     server.setHandler(handlers);
   }
