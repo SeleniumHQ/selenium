@@ -118,18 +118,14 @@ public class JettyAppServer implements AppServer {
     handlers = new ContextHandlerCollection();
 
     Path webSrc = locate("common/src/web");
-    ServletContextHandler defaultContext = addResourceHandler(
-        DEFAULT_CONTEXT_PATH, webSrc);
+    ServletContextHandler defaultContext = new ServletContextHandler();
+    handlers.addHandler(defaultContext);
 
     // Only non-null when running with bazel test.
     Path runfiles = InProject.findRunfilesRoot();
-    if (runfiles != null) {
-      addResourceHandler(FILEZ_CONTEXT_PATH, runfiles);
-    }
-
-    addJsResourceHandler(JS_SRC_CONTEXT_PATH, "javascript");
-    addJsResourceHandler(CLOSURE_CONTEXT_PATH, "third_party/closure/goog");
-    addJsResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, "third_party/js");
+//    if (runfiles != null) {
+//      addResourceHandler(FILEZ_CONTEXT_PATH, runfiles);
+//    }
 
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     tempPageDir = tempFs.createTempDir("pages", "test");
@@ -160,28 +156,22 @@ public class JettyAppServer implements AppServer {
       Route.get("/sleep").to(SleepingHandler::new),
       Route.post("/upload").to(UploadHandler::new),
       Route.matching(req -> req.getUri().startsWith("/utf8/")).to(() -> new Utf8Handler(webSrc, "/utf8/")),
-      Route.prefix(TEMP_SRC_CONTEXT_PATH).to(Route.combine(generatedPages))
-    );
+      Route.prefix(TEMP_SRC_CONTEXT_PATH).to(Route.combine(generatedPages)),
+      new CommonWebResources());
+
+    // If we're not running inside `bazel test` this will be non-null
+//    if (runfiles != null) {
+//      route = Route.combine(
+//        route,
+//        Route.matching(req -> req.getUri().startsWith(FILEZ_CONTEXT_PATH)).to(new )
+//      )
+//      addResourceHandler(FILEZ_CONTEXT_PATH, runfiles);
+//    }
+
     Route prefixed = Route.prefix(DEFAULT_CONTEXT_PATH).to(route);
     defaultContext.addServlet(new ServletHolder(new HttpHandlerServlet(Route.combine(route, prefixed))), "/*");
 
     server.setHandler(handlers);
-  }
-
-  private void addJsResourceHandler(String handlerPath, String dirPath) {
-    Path path;
-    try {
-      path = locate(dirPath);
-    } catch (WebDriverException e) {
-      // Ugly hack to get us started with bazel while sorting out missing data dependencies.
-      if (Boolean.getBoolean(getClass().getPackage().getName() + ".ignoreMissingJsRoots")
-          && e.getCause() instanceof FileNotFoundException) {
-        System.err.println("WARNING: failed to add resource handler " + handlerPath + ": " + e.getCause());
-        return;
-      }
-      throw e;
-    }
-    addResourceHandler(handlerPath, path);
   }
 
   private static Optional<Integer> getEnvValue(String key) {

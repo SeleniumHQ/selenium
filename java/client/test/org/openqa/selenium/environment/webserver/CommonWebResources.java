@@ -17,12 +17,16 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.grid.web.MergedResource;
 import org.openqa.selenium.grid.web.PathResource;
+import org.openqa.selenium.grid.web.Resource;
 import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
 
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
@@ -34,8 +38,21 @@ public class CommonWebResources implements Routable {
   private final Routable delegate;
 
   public CommonWebResources() {
-    Path common = locate("common/src/web").toAbsolutePath();
-    delegate = new ResourceHandler(new PathResource(common));
+    Resource resources = new MergedResource(new PathResource(locate("common/src/web")))
+      .alsoCheck(new PathResource(locate("javascript")))
+      .alsoCheck(new PathResource(locate("third_party/closure/goog")))
+      .alsoCheck(new PathResource(locate("third_party/js")));
+
+    Path runfiles = InProject.findRunfilesRoot();
+    if (runfiles != null) {
+      ResourceHandler handler = new ResourceHandler(new PathResource(runfiles));
+      delegate = Route.combine(
+        new ResourceHandler(resources),
+        Route.prefix("/filez").to(Route.combine(handler))
+      );
+    } else {
+      delegate = new ResourceHandler(resources);
+    }
   }
 
   @Override
