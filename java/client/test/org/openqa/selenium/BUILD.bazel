@@ -59,6 +59,10 @@ java_selenium_test_suite(
         ["*Test.java"],
         exclude = SMALL_TESTS,
     ),
+    javacopts = [
+        "--release",
+        "11",
+    ],
     deps = [
         ":helpers",
         "//java/client/src/org/openqa/selenium/remote",
@@ -92,6 +96,10 @@ java_library(
         "logging/*.java",
     ]) + [
         "interactions/touch/TouchTestBase.java",
+    ],
+    javacopts = [
+        "--release",
+        "11",
     ],
     visibility = [
         "//java/client/test:__subpackages__",

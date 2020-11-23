@@ -18,54 +18,51 @@
 package org.openqa.selenium;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.net.HostAndPort;
-import com.google.common.net.HttpHeaders;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExternalResource;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import org.openqa.selenium.testing.SeleniumTestRule;
+import org.openqa.selenium.testing.SeleniumTestRunner;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 
+import static com.google.common.net.HttpHeaders.REFERER;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 /**
  * Tests that "Referer" headers are generated as expected under various conditions.
@@ -91,24 +88,50 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
  * <p>Note: depending on the condition under test, the various pages may or may
  * not be served by the same server.
  */
-@Ignore(SAFARI)
-public class ReferrerTest extends JUnit4TestBase {
+@RunWith(SeleniumTestRunner.class)
+public class ReferrerTest {
 
+  @Rule
+  public SeleniumTestRule seleniumTestRule = new SeleniumTestRule();
+
+  private static final String PAGE_1 = "/page1.html";
+  private static final String PAGE_2 = "/page2.html";
+  private static final String PAGE_3 = "/page3.html";
   private static String page1;
   private static String page2;
   private static String page3;
-
-  @Rule public CustomDriverFactory customDriverFactory = new CustomDriverFactory();
-  @Rule public PacFileServerResource pacFileServer = new PacFileServerResource();
-  @Rule public ProxyServer proxyServer = new ProxyServer();
-  @Rule public TestServer testServer1 = new TestServer();
-  @Rule public TestServer testServer2 = new TestServer();
+  private TestServer server1;
+  private TestServer server2;
+  private ProxyServer proxyServer;
 
   @BeforeClass
-  public static void readPages() throws IOException {
-    page1 = new String(Files.readAllBytes(locate("common/src/web/proxy/page1.html")), UTF_8);
-    page2 = new String(Files.readAllBytes(locate("common/src/web/proxy/page2.html")), UTF_8);
-    page3 = new String(Files.readAllBytes(locate("common/src/web/proxy/page3.html")), UTF_8);
+  public static void readContents() throws IOException {
+    page1 = Files.readString(locate("common/src/web/proxy" + PAGE_1));
+    page2 = Files.readString(locate("common/src/web/proxy" + PAGE_2));
+    page3 = Files.readString(locate("common/src/web/proxy/page3.html"));
+  }
+
+  @Before
+  public void startServers() {
+    server1 = new TestServer();
+    server2 = new TestServer();
+    proxyServer = new ProxyServer();
+  }
+
+  @After
+  public void stopServers() {
+    safelyCall(() -> proxyServer.stop());
+    safelyCall(() -> server1.stop());
+    safelyCall(() -> server2.stop());
+  }
+
+  private WebDriver createDriver(String pacUrl) {
+    Proxy proxy = new Proxy();
+    proxy.setProxyAutoconfigUrl(pacUrl);
+
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
+
+    return seleniumTestRule.createNewDriver(caps);
   }
 
   /**
@@ -119,18 +142,15 @@ public class ReferrerTest extends JUnit4TestBase {
   @NotYetImplemented(EDGE)
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
-    testServer1.start();
+    String page1Url = server1.whereIs(PAGE_1 + "?next=" + encode(server1.whereIs(PAGE_2)));
+    String page2Url = server1.whereIs(PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3)));
 
-    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer1));
-    String page2Url = buildPage2Url(testServer1, buildPage3Url(testServer1));
-    String page3Url = buildPage3Url(testServer1);
+    performNavigation(seleniumTestRule.getDriver(), page1Url);
 
-    performNavigation(driver, page1Url);
-
-    assertThat(testServer1.getRequests()).containsExactly(
-        new HttpRequest(page1Url, null),
-        new HttpRequest(page2Url, page1Url),
-        new HttpRequest(page3Url, page2Url));
+    assertThat(server1.getRequests()).containsExactly(
+      new ExpectedRequest(PAGE_1, null),
+      new ExpectedRequest(PAGE_2, page1Url),
+      new ExpectedRequest(PAGE_3, page2Url));
   }
 
   /**
@@ -140,22 +160,17 @@ public class ReferrerTest extends JUnit4TestBase {
   @NotYetImplemented(EDGE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithoutAProxy() {
+    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server2.whereIs(PAGE_2));
+    String page2Url = server2.whereIs(PAGE_2) + "?next=" + encode(server1.whereIs(PAGE_3));
 
-    testServer1.start();
-    testServer2.start();
+    performNavigation(seleniumTestRule.getDriver(), page1Url);
 
-    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer2));
-    String page2Url = buildPage2Url(testServer2, buildPage3Url(testServer1));
-    String page3Url = buildPage3Url(testServer1);
+    assertThat(server1.getRequests()).containsExactly(
+      new ExpectedRequest(PAGE_1, null),
+      new ExpectedRequest(PAGE_3, page2Url));
 
-    performNavigation(driver, page1Url);
-
-    assertThat(testServer1.getRequests()).containsExactly(
-        new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url));
-
-    assertThat(testServer2.getRequests()).containsExactly(
-        new HttpRequest(page2Url, page1Url));
+    assertThat(server2.getRequests()).containsExactly(
+      new ExpectedRequest(PAGE_2, page1Url));
   }
 
   /**
@@ -166,23 +181,19 @@ public class ReferrerTest extends JUnit4TestBase {
   @Ignore(EDGE)
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
-    testServer1.start();
+    proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
+    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
 
-    pacFileServer.setPacFileContents(
-        "function FindProxyForURL(url, host) { return 'DIRECT'; }");
-    pacFileServer.start();
-    WebDriver driver = customDriverFactory.createDriver(pacFileServer.getBaseUrl());
-
-    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer1));
-    String page2Url = buildPage2Url(testServer1, buildPage3Url(testServer1));
-    String page3Url = buildPage3Url(testServer1);
+    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server1.whereIs(PAGE_2));
+    String page2Url = server1.whereIs(PAGE_2) + "?next=" + encode(server1.whereIs(PAGE_3));
 
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).containsExactly(
-        new HttpRequest(page1Url, null),
-        new HttpRequest(page2Url, page1Url),
-        new HttpRequest(page3Url, page2Url));
+    assertThat(server1.getRequests())
+      .containsExactly(
+        new ExpectedRequest(PAGE_1, null),
+        new ExpectedRequest(PAGE_2, page1Url),
+        new ExpectedRequest(PAGE_3, page2Url));
   }
 
   /**
@@ -193,26 +204,20 @@ public class ReferrerTest extends JUnit4TestBase {
   @Ignore(EDGE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithADirectProxy() {
-    testServer1.start();
-    testServer2.start();
+    proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
+    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
 
-    pacFileServer.setPacFileContents(
-        "function FindProxyForURL(url, host) { return 'DIRECT'; }");
-    pacFileServer.start();
-    WebDriver driver = customDriverFactory.createDriver(pacFileServer.getBaseUrl());
-
-    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer2));
-    String page2Url = buildPage2Url(testServer2, buildPage3Url(testServer1));
-    String page3Url = buildPage3Url(testServer1);
+    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server2.whereIs(PAGE_2));
+    String page2Url = server2.whereIs(PAGE_2) + "?next=" + encode(server1.whereIs(PAGE_3));
 
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).containsExactly(
-        new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url));
+    assertThat(server1.getRequests()).containsExactly(
+      new ExpectedRequest(PAGE_1, null),
+      new ExpectedRequest(PAGE_3, page2Url));
 
-    assertThat(testServer2.getRequests()).containsExactly(
-        new HttpRequest(page2Url, page1Url));
+    assertThat(server2.getRequests()).containsExactly(
+      new ExpectedRequest(PAGE_2, page1Url));
   }
 
   /**
@@ -223,31 +228,26 @@ public class ReferrerTest extends JUnit4TestBase {
   @Ignore(EDGE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
-    testServer1.start();
-    testServer2.start();
+    proxyServer.setPacFileContents(Joiner.on('\n').join(
+      "function FindProxyForURL(url, host) {",
+      "  if (host.indexOf('example') != -1) {",
+      "    return 'PROXY " + server2.getHostAndPort() + "';",
+      "  }",
+      "  return 'DIRECT';",
+      " }"));
+    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
 
-    pacFileServer.setPacFileContents(Joiner.on('\n').join(
-        "function FindProxyForURL(url, host) {",
-        "  if (host.indexOf('example') != -1) {",
-        "    return 'PROXY " + testServer2.getHostAndPort() + "';",
-        "  }",
-        "  return 'DIRECT';",
-        " }"));
-    pacFileServer.start();
-    WebDriver driver = customDriverFactory.createDriver(pacFileServer.getBaseUrl());
-
-    String page1Url = buildPage1Url(testServer1, "http://www.example.com" + buildPage2Url());
-    String page2Url = buildPage2Url("http://www.example.com", buildPage3Url(testServer1));
-    String page3Url = buildPage3Url(testServer1);
+    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode("http://www.example.com" + PAGE_2);
+    String page2Url = "http://www.example.com" + PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3));
 
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).containsExactly(
-        new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url));
+    assertThat(server1.getRequests()).containsExactly(
+      new ExpectedRequest(PAGE_1, null),
+      new ExpectedRequest(PAGE_3, page2Url));
 
-    assertThat(testServer2.getRequests()).containsExactly(
-        new HttpRequest(page2Url, page1Url));
+    assertThat(server2.getRequests()).containsExactly(
+      new ExpectedRequest("http://www.example.com" + PAGE_2, page1Url));
   }
 
   /**
@@ -259,29 +259,26 @@ public class ReferrerTest extends JUnit4TestBase {
   @Ignore(EDGE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
-    testServer1.start();
-    proxyServer.start();
     proxyServer.setPacFileContents(Joiner.on('\n').join(
-        "function FindProxyForURL(url, host) {",
-        "  if (host.indexOf('example') != -1) {",
-        "    return 'PROXY " + proxyServer.getHostAndPort() + "';",
-        "  }",
-        "  return 'DIRECT';",
-        " }"));
+      "function FindProxyForURL(url, host) {",
+      "  if (host.indexOf('example') != -1) {",
+      "    return 'PROXY " + proxyServer.getHostAndPort() + "';",
+      "  }",
+      "  return 'DIRECT';",
+      " }"));
+    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
 
-    String page1Url = buildPage1Url(testServer1, "http://www.example.com" + buildPage2Url());
-    String page2Url = buildPage2Url("http://www.example.com", buildPage3Url(testServer1));
-    String page3Url = buildPage3Url(testServer1);
+    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode("http://www.example.com" + PAGE_2);
+    String page2Url = "http://www.example.com" + PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3));
 
-    WebDriver driver = customDriverFactory.createDriver(proxyServer.getPacUrl());
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).containsExactly(
-        new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url));
+    assertThat(server1.getRequests()).containsExactly(
+      new ExpectedRequest(PAGE_1, null),
+      new ExpectedRequest(PAGE_3, page2Url));
 
     assertThat(proxyServer.getRequests()).containsExactly(
-        new HttpRequest(page2Url, page1Url));
+      new ExpectedRequest("http://www.example.com" + PAGE_2, page1Url));
   }
 
   /**
@@ -290,20 +287,13 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   @Test
   @Ignore(value = IE,
-      reason = "IEDriver does not disable automatic proxy caching, causing this test to fail, issue 6629")
+    reason = "IEDriver does not disable automatic proxy caching, causing this test to fail, issue 6629")
   @Ignore(MARIONETTE)
-  @Ignore(value = FIREFOX, travis=true)
+  @Ignore(value = FIREFOX, travis = true)
   @NeedsLocalEnvironment
   @Ignore(EDGE)
   @Ignore(value = CHROME, reason = "Flaky")
   public void navigationWhenProxyInterceptsASpecificUrl() {
-    testServer1.start();
-    proxyServer.start();
-
-    String page1Url = buildPage1Url(testServer1, buildPage2Url(testServer1));
-    String page2Url = buildPage2Url(testServer1, buildPage3Url(testServer1));
-    String page3Url = buildPage3Url(testServer1);
-
     // Have our proxy intercept requests for page 2.
     proxyServer.setPacFileContents(Joiner.on('\n').join(
         "function FindProxyForURL(url, host) {",
@@ -312,16 +302,28 @@ public class ReferrerTest extends JUnit4TestBase {
         "  }",
         "  return 'DIRECT';",
         " }"));
+    WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
 
-    WebDriver driver = customDriverFactory.createDriver(proxyServer.getPacUrl());
+
+    String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server1.whereIs(PAGE_2));
+    String page2Url = server1.whereIs(PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3)));
+
     performNavigation(driver, page1Url);
 
-    assertThat(testServer1.getRequests()).containsExactly(
-        new HttpRequest(page1Url, null),
-        new HttpRequest(page3Url, page2Url));
+    assertThat(server1.getRequests()).containsExactly(
+      new ExpectedRequest(PAGE_1, null),
+      new ExpectedRequest(PAGE_3, page2Url));
 
     assertThat(proxyServer.getRequests()).containsExactly(
-        new HttpRequest(page2Url, page1Url));
+      new ExpectedRequest(PAGE_2, page1Url));
+  }
+
+  private static String encode(String url) {
+    try {
+      return URLEncoder.encode(url, UTF_8.name());
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException("UTF-8 should always be supported!", e);
+    }
   }
 
   private void performNavigation(WebDriver driver, String firstUrl) {
@@ -343,264 +345,142 @@ public class ReferrerTest extends JUnit4TestBase {
     wait.until(titleIs("Page 3"));
   }
 
-  private static String buildPage1Url(ServerResource server, String nextUrl) {
-    return server.getBaseUrl() + "/page1.html?next=" + encode(nextUrl);
-  }
+  private static class ExpectedRequest {
+    private final String uri;
+    private final String referer;
 
-  private static String buildPage2Url(String server, String nextUrl) {
-    return server + "/page2.html?next=" + encode(nextUrl);
-  }
-
-  private static String buildPage2Url(ServerResource server, String nextUrl) {
-    return server.getBaseUrl() + "/page2.html?next=" + encode(nextUrl);
-  }
-
-  private static String buildPage2Url() {
-    return "/page2.html";  // Nothing special here.
-  }
-
-  private static String buildPage2Url(ServerResource server) {
-    return server.getBaseUrl() + "/page2.html";  // Nothing special here.
-  }
-
-  private static String buildPage3Url(ServerResource server) {
-    return server.getBaseUrl() + "/page3.html";  // Nothing special here.
-  }
-
-  private static String encode(String url) {
-    try {
-      return URLEncoder.encode(url, UTF_8.name());
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException("UTF-8 should always be supported!", e);
+    public ExpectedRequest(HttpRequest request) {
+      this(request.getUri(), request.getHeader(REFERER));
     }
-  }
 
-  /**
-   * Manages a custom WebDriver implementation as an {@link ExternalResource} rule.
-   */
-  private static class CustomDriverFactory extends ExternalResource {
-
-    WebDriver driver;
-
-    WebDriver createDriver(String pacUrl) {
-      Proxy proxy = new Proxy();
-      proxy.setProxyAutoconfigUrl(pacUrl);
-
-      Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
-
-      return driver = new WebDriverBuilder().get(caps);
+    public ExpectedRequest(String uri, String referer) {
+      this.uri = uri;
+      this.referer = referer;
     }
 
     @Override
-    protected void after() {
-      if (driver != null) {
-        driver.quit();
-      }
-    }
-  }
-
-  /**
-   * An {@link ExternalResource} for a basic HTTP server; ensures the server is shutdown when a
-   * test finishes.
-   */
-  private abstract static class ServerResource extends ExternalResource {
-    protected final Server server;
-    private final HostAndPort hostAndPort;
-
-    ServerResource() {
-      this.server = new Server();
-
-      ServerConnector http = new ServerConnector(server);
-      int port = PortProber.findFreePort();
-      http.setPort(port);
-      http.setIdleTimeout(500000);
-
-      this.server.addConnector(http);
-
-      this.hostAndPort = HostAndPort.fromParts(AppServer.detectHostname(), port);
-    }
-
-    void addHandler(Handler handler) {
-      this.server.setHandler(handler);
-    }
-
-    HostAndPort getHostAndPort() {
-      return Require.state("Host and port", hostAndPort).nonNull();
-    }
-
-    String getBaseUrl() {
-      return "http://" + getHostAndPort();
-    }
-
-    void start() {
-      try {
-        server.start();
-        new UrlChecker().waitUntilAvailable(10, TimeUnit.SECONDS, new URL(getBaseUrl()));
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
+    public String toString() {
+      return "ExpectedRequest{" +
+        "uri='" + uri + '\'' +
+        ", referer='" + referer + '\'' +
+        '}';
     }
 
     @Override
-    protected void after() {
-      try {
-        server.stop();
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+    public boolean equals(Object o) {
+      if (!(o instanceof ExpectedRequest)) {
+        return false;
       }
-    }
-  }
-
-  private static class PacFileServerResource extends ServerResource {
-
-    private String pacFileContents;
-
-    PacFileServerResource() {
-      addHandler(new AbstractHandler() {
-        @Override
-        public void handle(String s, Request baseRequest, HttpServletRequest request,
-                           HttpServletResponse response) throws IOException {
-          response.setContentType("application/x-javascript-config; charset=us-ascii");
-          response.setStatus(HttpServletResponse.SC_OK);
-          response.getWriter().println(getPacFileContents());
-          baseRequest.setHandled(true);
-        }
-      });
-    }
-
-    String getPacFileContents() {
-      return pacFileContents;
-    }
-
-    void setPacFileContents(String content) {
-      pacFileContents = content;
-    }
-  }
-
-  private static class TestServer extends ServerResource {
-
-    private final List<HttpRequest> requests;
-
-    TestServer() {
-      requests = new CopyOnWriteArrayList<>();
-      addHandler(new PageRequestHandler(requests));
-    }
-
-    List<HttpRequest> getRequests() {
-      return requests;
-    }
-  }
-
-  private static class ProxyServer extends ServerResource {
-
-    private final List<HttpRequest> requests;
-    private String pacFileContents;
-
-    ProxyServer() {
-      requests = new CopyOnWriteArrayList<>();
-      addHandler(new PageRequestHandler(requests) {
-        @Override
-        public void handle(String s, Request baseRequest, HttpServletRequest request,
-                           HttpServletResponse response) throws IOException, ServletException {
-          if (request.getRequestURI().equals("/pac.js")) {
-            response.setContentType("application/x-javascript-config; charset=us-ascii");
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().println(getPacFileContents());
-            baseRequest.setHandled(true);
-          } else {
-            super.handle(s, baseRequest, request, response);
-          }
-        }
-      });
-    }
-
-    String getPacUrl() {
-      return getBaseUrl() + "/pac.js";
-    }
-
-    List<HttpRequest> getRequests() {
-      return requests;
-    }
-
-    String getPacFileContents() {
-      return pacFileContents;
-    }
-
-    void setPacFileContents(String content) {
-      pacFileContents = content;
-    }
-  }
-
-  private static class PageRequestHandler extends AbstractHandler {
-    private final List<HttpRequest> requests;
-
-    PageRequestHandler(List<HttpRequest> requests) {
-      this.requests = requests;
+      ExpectedRequest that = (ExpectedRequest) o;
+      return this.uri.equals(that.uri) &&
+        Objects.equals(this.referer, that.referer);
     }
 
     @Override
-    public void handle(String s, Request baseRequest, HttpServletRequest request,
-                       HttpServletResponse response) throws IOException, ServletException {
-      if (request.getRequestURI().endsWith("/favicon.ico")) {
-        response.setStatus(204);
-        baseRequest.setHandled(true);
-        return;
+    public int hashCode() {
+      return Objects.hash(uri, referer);
+    }
+  }
+
+  private static class RecordingHandler implements HttpHandler {
+
+    private final List<ExpectedRequest> requests = new CopyOnWriteArrayList<>();
+
+    @Override
+    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+      if (req.getUri().endsWith("/favicon.ico")) {
+        return new HttpResponse().setStatus(204);
       }
 
       // Don't record / requests so we can poll the server for availability in start().
-      if (!"/".equals(request.getRequestURI())) {
-        requests.add(new HttpRequest(
-          request.getRequestURL() + (request.getQueryString() == null ? "" : "?" + request.getQueryString()),
-          request.getHeader(HttpHeaders.REFERER)));
+      if (!"/".equals(req.getUri())) {
+        requests.add(new ExpectedRequest(req));
       }
 
       String responseHtml;
-      if (request.getRequestURI().contains("/page1.html")) {
+      if (req.getUri().contains(PAGE_1)) {
         responseHtml = page1;
-      } else if (request.getRequestURI().contains("/page2.html")) {
+      } else if (req.getUri().contains(PAGE_2)) {
         responseHtml = page2;
       } else {
         responseHtml = page3;
       }
 
-      response.setContentType("text/html; charset=utf-8");
-      response.setStatus(HttpServletResponse.SC_OK);
-      response.getWriter().println(responseHtml);
-      baseRequest.setHandled(true);
+      return new HttpResponse()
+        .setHeader("Content-Type", "text/html; charset=utf-8")
+        .setContent(Contents.utf8String(responseHtml));
+    }
+
+    public List<ExpectedRequest> getRequests() {
+      return List.copyOf(requests);
     }
   }
 
-  /**
-   * Records basic information about a HTTP request.
-   */
-  private static class HttpRequest {
+  private static class TestServer {
+    private final AppServer server;
+    private final RecordingHandler handler = new RecordingHandler();
 
-    private final String uri;
-    private final String referrer;
-
-    HttpRequest(String uri, String referrer) {
-      this.uri = uri;
-      this.referrer = referrer;
+    public TestServer() {
+      server = new NettyAppServer(handler);
+      server.start();
     }
 
-    @Override
-    public int hashCode() {
-      return Objects.hashCode(uri, referrer);
+    public String whereIs(String relativeUrl) {
+      return server.whereIs(relativeUrl);
     }
 
-    @Override
-    public boolean equals(Object o) {
-      if (o instanceof HttpRequest) {
-        HttpRequest that = (HttpRequest) o;
-        return Objects.equal(this.uri, that.uri)
-            && Objects.equal(this.referrer, that.referrer);
-      }
-      return false;
+    public void stop() {
+      server.stop();
     }
 
-    @Override
-    public String toString() {
-      return String.format("[uri=%s, referrer=%s]", uri, referrer);
+    public List<ExpectedRequest> getRequests() {
+      return handler.getRequests();
+    }
+
+    public HostAndPort getHostAndPort() {
+      URI uri = URI.create(server.whereIs("/"));
+      return HostAndPort.fromParts(uri.getHost(), uri.getPort());
+    }
+  }
+
+  private static class ProxyServer {
+    private final AppServer server;
+    private final RecordingHandler handler = new RecordingHandler();
+    private String pacFileContents;
+
+    public ProxyServer() {
+      server = new NettyAppServer(
+        req -> {
+          if (pacFileContents != null && req.getUri().endsWith("/pac.js")) {
+            return new HttpResponse()
+              .setHeader("Content-Type", "application/x-javascript-config; charset=us-ascii")
+              .setContent(Contents.bytes(pacFileContents.getBytes(US_ASCII)));
+          }
+          return handler.execute(req);
+        }
+      );
+      server.start();
+    }
+
+    public void setPacFileContents(String pacFileContents) {
+      this.pacFileContents = pacFileContents;
+    }
+
+    public String whereIs(String relativeUrl) {
+      return server.whereIs(relativeUrl);
+    }
+
+    public List<ExpectedRequest> getRequests() {
+      return handler.getRequests();
+    }
+
+    public void stop() {
+      server.stop();
+    }
+
+    public HostAndPort getHostAndPort() {
+      URI uri = URI.create(server.whereIs("/"));
+      return HostAndPort.fromParts(uri.getHost(), uri.getPort());
     }
   }
 }
