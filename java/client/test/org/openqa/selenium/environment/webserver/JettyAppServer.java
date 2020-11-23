@@ -139,8 +139,6 @@ public class JettyAppServer implements AppServer {
     defaultContext.setInitParameter("path", TEMP_SRC_CONTEXT_PATH);
     defaultContext.setInitParameter("webSrc", webSrc.toAbsolutePath().toString());
 
-    addServlet(defaultContext, "/manifest/*", ManifestServlet.class);
-
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
 
@@ -168,8 +166,6 @@ public class JettyAppServer implements AppServer {
     defaultContext.addServlet(new ServletHolder(new HttpHandlerServlet(Route.combine(route, prefixed))), "/*");
 
     server.setHandler(handlers);
-
-    System.out.println("Listening on " + whereIs("/"));
   }
 
   private void addJsResourceHandler(String handlerPath, String dirPath) {
