@@ -78,3 +78,19 @@ zip_file(
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
     ],
 )
+
+jest_test(
+    name = "test",
+    args = [
+        "--no-cache",
+        "--no-watchman",
+        "--ci",
+        "--colors",
+        "--config",
+        "$(rootpath jest.config.js)"
+    ],
+    data = [
+        ":build",
+        "jest.config.js"
+    ]
+)
