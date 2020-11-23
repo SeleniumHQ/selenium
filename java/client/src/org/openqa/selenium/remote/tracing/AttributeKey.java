@@ -17,19 +17,21 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import io.opentelemetry.api.trace.attributes.SemanticAttributes;
+
 public enum AttributeKey {
 
-  EXCEPTION_EVENT("exception"),
-  EXCEPTION_TYPE("exception.type"),
-  EXCEPTION_MESSAGE("exception.message"),
-  EXCEPTION_STACKTRACE("exception.stacktrace"),
+  EXCEPTION_EVENT(SemanticAttributes.EXCEPTION_EVENT_NAME),
+  EXCEPTION_TYPE(SemanticAttributes.EXCEPTION_TYPE.getKey()),
+  EXCEPTION_MESSAGE(SemanticAttributes.EXCEPTION_MESSAGE.getKey()),
+  EXCEPTION_STACKTRACE(SemanticAttributes.EXCEPTION_STACKTRACE.getKey()),
 
   SPAN_KIND("span.kind"),
 
-  HTTP_METHOD("http.method"),
-  HTTP_URL("http.url"),
-  HTTP_STATUS_CODE("http.status_code"),
-  HTTP_TARGET_HOST("http.target_host"),
+  HTTP_METHOD(SemanticAttributes.HTTP_METHOD.getKey()),
+  HTTP_URL(SemanticAttributes.HTTP_URL.getKey()),
+  HTTP_STATUS_CODE(SemanticAttributes.HTTP_STATUS_CODE.getKey()),
+  HTTP_TARGET_HOST(SemanticAttributes.HTTP_TARGET.getKey()),
   HTTP_CLIENT_CLASS("http.client_class"),
   HTTP_HANDLER_CLASS("http.handler_class"),
 
@@ -44,11 +46,11 @@ public enum AttributeKey {
   SESSION_CAPABILITIES("session.capabilities"),
   SESSION_URI("session.uri"),
 
-  DATABASE_STATEMENT ("db.statement"),
-  DATABASE_OPERATION ("db.operation"),
-  DATABASE_USER ("db.user"),
-  DATABASE_CONNECTION_STRING ("db.connection_string"),
-  DATABASE_SYSTEM("db.system"),
+  DATABASE_STATEMENT (SemanticAttributes.DB_STATEMENT.getKey()),
+  DATABASE_OPERATION (SemanticAttributes.DB_OPERATION.getKey()),
+  DATABASE_USER (SemanticAttributes.DB_USER.getKey()),
+  DATABASE_CONNECTION_STRING (SemanticAttributes.DB_CONNECTION_STRING.getKey()),
+  DATABASE_SYSTEM(SemanticAttributes.DB_SYSTEM.getKey()),
 
   REQUEST_ID ("request.id");
 

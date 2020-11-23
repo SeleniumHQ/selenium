@@ -17,21 +17,22 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.common.AttributeConsumer;
-import io.opentelemetry.common.AttributeKey;
-import io.opentelemetry.common.Attributes;
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.common.AttributeConsumer;
+import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.DefaultContextPropagators;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-import io.opentelemetry.sdk.trace.TracerSdkProvider;
+import io.opentelemetry.sdk.trace.TracerSdkManagement;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.trace.propagation.HttpTraceContext;
+import io.opentelemetry.api.trace.propagation.HttpTraceContext;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -116,10 +117,10 @@ public class LoggingOptions {
 
   private Tracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
-    TracerSdkProvider tracerFactory = (TracerSdkProvider) OpenTelemetrySdk.getTracerManagement();
+    TracerSdkManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
 
     List<SpanProcessor> exporters = new LinkedList<>();
-    exporters.add(SimpleSpanProcessor.newBuilder(new SpanExporter() {
+    exporters.add(SimpleSpanProcessor.builder(new SpanExporter() {
       @Override
       public CompletableResultCode export(Collection<SpanData> spans) {
 
@@ -143,7 +144,7 @@ public class LoggingOptions {
 
             attributes.forEach(new AttributeConsumer() {
               @Override
-              public <T> void consume(AttributeKey<T> key, T value) {
+              public <T> void accept(AttributeKey<T> key, T value) {
                 attributeMap.put(key.getKey(), value);
               }
             });
@@ -176,8 +177,8 @@ public class LoggingOptions {
     // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
-      exporter -> exporters.add(SimpleSpanProcessor.newBuilder(exporter).build()));
-    tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
+      exporter -> exporters.add(SimpleSpanProcessor.builder(exporter).build()));
+    tracerManagement.addSpanProcessor(MultiSpanProcessor.create(exporters));
 
     // OpenTelemetry default propagators are no-op since version 0.9.0.
     // Hence, required propagators need to defined and added.
@@ -185,7 +186,7 @@ public class LoggingOptions {
       .addTextMapPropagator(HttpTraceContext.getInstance()).build();
 
     return new OpenTelemetryTracer(
-      tracerFactory.get("default"),
+      OpenTelemetry.getGlobalTracer("default"),
       propagators.getTextMapPropagator());
   }
 

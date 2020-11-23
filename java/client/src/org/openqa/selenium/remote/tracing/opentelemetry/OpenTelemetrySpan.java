@@ -19,12 +19,12 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
-import io.grpc.Context;
-import io.opentelemetry.common.Attributes;
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.SpanContext;
-import io.opentelemetry.trace.StatusCanonicalCode;
-import io.opentelemetry.trace.Tracer;
+import io.opentelemetry.context.Context;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.Tracer;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
@@ -35,10 +35,10 @@ import java.util.Objects;
 
 class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, Span {
 
-  private final io.opentelemetry.trace.Span span;
+  private final io.opentelemetry.api.trace.Span span;
   private final Scope scope;
 
-  public OpenTelemetrySpan(Tracer tracer, Context context, io.opentelemetry.trace.Span span, Scope scope) {
+  public OpenTelemetrySpan(Tracer tracer, Context context, io.opentelemetry.api.trace.Span span, Scope scope) {
     super(tracer, context);
     this.span = Require.nonNull("Span", span);
     this.scope = Require.nonNull("Scope", scope);
@@ -90,42 +90,42 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
   public Span addEvent(String name, Map<String, EventAttributeValue> attributeMap) {
     Require.nonNull("Name", name);
     Require.nonNull("Event Attribute Map", attributeMap);
-    Attributes.Builder otAttributes = Attributes.newBuilder();
+    Attributes.Builder otAttributes = Attributes.builder();
 
     attributeMap.forEach(
         (key, value) -> {
           Require.nonNull("Event Attribute Value", value);
           switch (value.getAttributeType()) {
             case BOOLEAN:
-              otAttributes.setAttribute(key, value.getBooleanValue());
+              otAttributes.put(key, value.getBooleanValue());
               break;
 
             case BOOLEAN_ARRAY:
-              otAttributes.setAttribute(key, value.getBooleanArrayValue());
+              otAttributes.put(key, value.getBooleanArrayValue());
               break;
 
             case DOUBLE:
-              otAttributes.setAttribute(key, value.getNumberValue().doubleValue());
+              otAttributes.put(key, value.getNumberValue().doubleValue());
               break;
 
             case DOUBLE_ARRAY:
-              otAttributes.setAttribute(key, value.getDoubleArrayValue());
+              otAttributes.put(key, value.getDoubleArrayValue());
               break;
 
             case LONG:
-              otAttributes.setAttribute(key, value.getNumberValue().longValue());
+              otAttributes.put(key, value.getNumberValue().longValue());
               break;
 
             case LONG_ARRAY:
-              otAttributes.setAttribute(key, value.getLongArrayValue());
+              otAttributes.put(key, value.getLongArrayValue());
               break;
 
             case STRING:
-              otAttributes.setAttribute(key, value.getStringValue());
+              otAttributes.put(key, value.getStringValue());
               break;
 
             case STRING_ARRAY:
-              otAttributes.setAttribute(key, value.getStringArrayValue());
+              otAttributes.put(key, value.getStringArrayValue());
               break;
 
             default:
@@ -139,35 +139,35 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     return this;
   }
 
-  private static final Map<Status.Kind, StatusCanonicalCode> statuses
-      = new ImmutableMap.Builder<Status.Kind, StatusCanonicalCode>()
-      .put(Status.Kind.ABORTED, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.CANCELLED, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.NOT_FOUND, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.OK, StatusCanonicalCode.OK)
-      .put(Status.Kind.RESOURCE_EXHAUSTED, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.UNKNOWN, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.INVALID_ARGUMENT, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.DEADLINE_EXCEEDED, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.ALREADY_EXISTS, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.PERMISSION_DENIED, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.OUT_OF_RANGE, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.UNIMPLEMENTED, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.INTERNAL, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.UNAVAILABLE, StatusCanonicalCode.ERROR)
-      .put(Status.Kind.UNAUTHENTICATED, StatusCanonicalCode.ERROR)
+  private static final Map<Status.Kind, StatusCode> statuses
+      = new ImmutableMap.Builder<Status.Kind, StatusCode>()
+      .put(Status.Kind.ABORTED, StatusCode.ERROR)
+      .put(Status.Kind.CANCELLED, StatusCode.ERROR)
+      .put(Status.Kind.NOT_FOUND, StatusCode.ERROR)
+      .put(Status.Kind.OK, StatusCode.OK)
+      .put(Status.Kind.RESOURCE_EXHAUSTED, StatusCode.ERROR)
+      .put(Status.Kind.UNKNOWN, StatusCode.ERROR)
+      .put(Status.Kind.INVALID_ARGUMENT, StatusCode.ERROR)
+      .put(Status.Kind.DEADLINE_EXCEEDED, StatusCode.ERROR)
+      .put(Status.Kind.ALREADY_EXISTS, StatusCode.ERROR)
+      .put(Status.Kind.PERMISSION_DENIED, StatusCode.ERROR)
+      .put(Status.Kind.OUT_OF_RANGE, StatusCode.ERROR)
+      .put(Status.Kind.UNIMPLEMENTED, StatusCode.ERROR)
+      .put(Status.Kind.INTERNAL, StatusCode.ERROR)
+      .put(Status.Kind.UNAVAILABLE, StatusCode.ERROR)
+      .put(Status.Kind.UNAUTHENTICATED, StatusCode.ERROR)
       .build();
 
   @Override
   public Span setStatus(Status status) {
     Require.nonNull("Status", status);
 
-    StatusCanonicalCode statusCanonicalCode = statuses.get(status.getKind());
-    if (statusCanonicalCode == null) {
+    StatusCode statusCode = statuses.get(status.getKind());
+    if (statusCode == null) {
       throw new IllegalArgumentException("Unrecognized status kind: " + status.getKind());
     }
 
-    span.setStatus(statusCanonicalCode,
+    span.setStatus(statusCode,
                    "Kind: " + status.getKind().toString()
                    + " Description:"
                    + status.getDescription());
@@ -183,7 +183,7 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
 
   @Override
   public String toString() {
-    SpanContext context = span.getContext();
+    SpanContext context = span.getSpanContext();
 
     return "OpenTelemetrySpan{traceId=" +
       context.getTraceIdAsHexString() +
@@ -203,8 +203,8 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     }
 
     OpenTelemetrySpan that = (OpenTelemetrySpan) o;
-    SpanContext thisContext = this.span.getContext();
-    SpanContext thatContext = that.span.getContext();
+    SpanContext thisContext = this.span.getSpanContext();
+    SpanContext thatContext = that.span.getSpanContext();
 
     return Objects.equals(thisContext.getSpanIdAsHexString(), thatContext.getSpanIdAsHexString()) &&
       Objects.equals(thisContext.getTraceIdAsHexString(), thatContext.getTraceIdAsHexString());
