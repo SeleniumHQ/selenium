@@ -18,6 +18,7 @@
 package org.openqa.selenium.environment.webserver;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -40,9 +41,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
@@ -65,12 +66,16 @@ public class NettyAppServer implements AppServer {
   }
 
   public NettyAppServer(HttpHandler handler) {
+    this(
+      new MapConfig(singletonMap("server", singletonMap("port", PortProber.findFreePort()))),
+      Require.nonNull("Handler", handler));
+  }
+
+  private NettyAppServer(Config config, HttpHandler handler) {
+    Require.nonNull("Config", config);
     Require.nonNull("Handler", handler);
 
-    int port = PortProber.findFreePort();
-    server = new NettyServer(
-      new BaseServerOptions(new MapConfig(singletonMap("server", singletonMap("port", port)))),
-      handler);
+    server = new NettyServer(new BaseServerOptions(new MemoizedConfig(config)), handler);
   }
 
   @Override
@@ -135,7 +140,7 @@ public class NettyAppServer implements AppServer {
 
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
-      request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
+      request.setHeader(CONTENT_TYPE, JSON_UTF_8);
       request.setContent(bytes(data));
       HttpResponse response = client.execute(request);
       return string(response);
@@ -155,7 +160,17 @@ public class NettyAppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    NettyAppServer server = new NettyAppServer();
+    MemoizedConfig config = new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", 2310))));
+    BaseServerOptions options = new BaseServerOptions(config);
+
+    HttpHandler handler = new HandlersForTests(
+      options.getHostname().orElse("localhost"),
+      options.getPort(),
+      TemporaryFilesystem.getDefaultTmpFS().createTempDir("netty", "server").toPath());
+
+    NettyAppServer server = new NettyAppServer(
+      config,
+      handler);
     server.start();
 
     System.out.printf("Server started. Root URL: %s%n", server.whereIs("/"));
