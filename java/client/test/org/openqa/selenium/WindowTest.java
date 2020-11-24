@@ -163,7 +163,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(travis = true)
+  @Ignore(travis = true, gitHubActions = true)
   public void canMinimizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
