@@ -1,6 +1,7 @@
 load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin")
 load("@npm//react-scripts:index.bzl", "react_scripts")
+load("@npm//jest-cli:index.bzl", "jest_test")
 load("//common:defs.bzl", "zip_file")
 
 _RUNTIME_DEPS = [
@@ -87,7 +88,7 @@ jest_test(
         "--ci",
         "--colors",
         "--config",
-        "$(rootpath jest.config.js)"
+        "$(location  jest.config.js)"
     ],
     data = [
         ":build",

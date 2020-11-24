@@ -26,5 +26,3 @@ alias(
     name = "selenium-server-standalone",
     actual = "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
 )
-
-exports_files(["jest.config.js"], visibility=["//visibility:public"])

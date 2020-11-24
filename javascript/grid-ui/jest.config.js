@@ -10,7 +10,7 @@ module.exports = {
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   snapshotSerializers: ["enzyme-to-json/serializer"],
-  setupFilesAfterEnv: ["<rootDir>/../../../../src/setupTests.ts"],
+  setupFilesAfterEnv: ["<rootDir>/../../../../src/setupTests.tsx"],
   testEnvironment: "jsdom",
   moduleNameMapper: {
     ".+\\.(svg|png|jpg|css)$": "identity-obj-proxy"
