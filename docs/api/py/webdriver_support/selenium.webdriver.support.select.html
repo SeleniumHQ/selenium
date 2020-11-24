@@ -1,0 +1,257 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.support.select &#8212; Selenium 3.141 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 3.141 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-selenium.webdriver.support.select">
+<span id="selenium-webdriver-support-select"></span><h1>selenium.webdriver.support.select<a class="headerlink" href="#module-selenium.webdriver.support.select" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="selenium.webdriver.support.select.Select">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.support.select.</code><code class="descname">Select</code><span class="sig-paren">(</span><em>webelement</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,
+then an UnexpectedTagNameException is thrown.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>webelement - element SELECT element to wrap</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Example:</dt>
+<dd><p class="first">from selenium.webdriver.support.ui import Select</p>
+<p class="last">Select(driver.find_element(By.TAG_NAME, “select”)).select_by_index(2)</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="selenium.webdriver.support.select.Select.all_selected_options">
+<code class="descname">all_selected_options</code><a class="headerlink" href="#selenium.webdriver.support.select.Select.all_selected_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all selected options belonging to this select tag</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.select.Select.deselect_all">
+<code class="descname">deselect_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.deselect_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear all selected entries. This is only valid when the SELECT supports multiple selections.
+throws NotImplementedError If the SELECT does not support multiple selections</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.select.Select.deselect_by_index">
+<code class="descname">deselect_by_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.deselect_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deselect the option at the given index. This is done by examing the “index” attribute of an
+element, and not merely by counting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>index - The option at this index will be deselected</li>
+</ul>
+<p class="last">throws NoSuchElementException If there is no option with specified index in SELECT</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.select.Select.deselect_by_value">
+<code class="descname">deselect_by_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.deselect_by_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deselect all options that have a value matching the argument. That is, when given “foo” this
+would deselect an option like:</p>
+<blockquote>
+<div>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>value - The value to match against</li>
+</ul>
+<p class="last">throws NoSuchElementException If there is no option with specified value in SELECT</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.select.Select.deselect_by_visible_text">
+<code class="descname">deselect_by_visible_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_visible_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.deselect_by_visible_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deselect all options that display text matching the argument. That is, when given “Bar” this
+would deselect an option like:</p>
+<p>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>text - The visible text to match against</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.support.select.Select.first_selected_option">
+<code class="descname">first_selected_option</code><a class="headerlink" href="#selenium.webdriver.support.select.Select.first_selected_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>The first selected option in this select tag (or the currently selected option in a
+normal select)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.support.select.Select.options">
+<code class="descname">options</code><a class="headerlink" href="#selenium.webdriver.support.select.Select.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all options belonging to this select tag</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.select.Select.select_by_index">
+<code class="descname">select_by_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.select_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the option at the given index. This is done by examing the “index” attribute of an
+element, and not merely by counting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>index - The option at this index will be selected</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>throws NoSuchElementException If there is no option with specified index in SELECT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.select.Select.select_by_value">
+<code class="descname">select_by_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.select_by_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select all options that have a value matching the argument. That is, when given “foo” this
+would select an option like:</p>
+<p>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>value - The value to match against</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>throws NoSuchElementException If there is no option with specified value in SELECT</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.support.select.Select.select_by_visible_text">
+<code class="descname">select_by_visible_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_visible_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.select_by_visible_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select all options that display text matching the argument. That is, when given “Bar” this
+would select an option like:</p>
+<blockquote>
+<div>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>text - The visible text to match against</li>
+</ul>
+<p class="last">throws NoSuchElementException If there is no option with specified text in SELECT</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver_support/selenium.webdriver.support.select.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 3.141 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

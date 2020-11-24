@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":1,"i1":1,"i2":1,"i3":1,"i4":1,"i5":1,"i6":1,"i7":1,"i8":1,"i9":1,"i10":1,"i11":1,"i12":1,"i13":1,"i14":1,"i15":1,"i16":1,"i17":1,"i18":1,"i19":1,"i20":1,"i21":1,"i22":1,"i23":1,"i24":1,"i25":1,"i26":1,"i27":1,"i28":1,"i29":1,"i30":1,"i31":33,"i32":1,"i33":33,"i34":1,"i35":33,"i36":1,"i37":1,"i38":1,"i39":1,"i40":1,"i41":1};
+var data = {"i0":1,"i1":1,"i2":1,"i3":1,"i4":1,"i5":1,"i6":1,"i7":1,"i8":1,"i9":1,"i10":1,"i11":1,"i12":1,"i13":1,"i14":1,"i15":1,"i16":1,"i17":1,"i18":1,"i19":1,"i20":1,"i21":1,"i22":1,"i23":1,"i24":1,"i25":1,"i26":1,"i27":1,"i28":1,"i29":1,"i30":1,"i31":1,"i32":33,"i33":1,"i34":33,"i35":1,"i36":33,"i37":1,"i38":1,"i39":1,"i40":1,"i41":1,"i42":1};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -890,77 +890,83 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_RECT(java.lang.String)">GET_ELEMENT_RECT</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_PROPERTY(java.lang.String,java.lang.String)">GET_ELEMENT_PROPERTY</a></span>&#8203;(java.lang.String&nbsp;id,
+                    java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_SIZE(java.lang.String)">GET_ELEMENT_SIZE</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_RECT(java.lang.String)">GET_ELEMENT_RECT</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i19" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_TAG_NAME(java.lang.String)">GET_ELEMENT_TAG_NAME</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_SIZE(java.lang.String)">GET_ELEMENT_SIZE</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_TEXT(java.lang.String)">GET_ELEMENT_TEXT</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_TAG_NAME(java.lang.String)">GET_ELEMENT_TAG_NAME</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i21" class="rowColor">
+<td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_TEXT(java.lang.String)">GET_ELEMENT_TEXT</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GET_ELEMENT_VALUE_OF_CSS_PROPERTY(java.lang.String,java.lang.String)">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</a></span>&#8203;(java.lang.String&nbsp;id,
                                  java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IME_ACTIVATE_ENGINE(java.lang.String)">IME_ACTIVATE_ENGINE</a></span>&#8203;(java.lang.String&nbsp;engine)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IS_ELEMENT_DISPLAYED(java.lang.String)">IS_ELEMENT_DISPLAYED</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IS_ELEMENT_ENABLED(java.lang.String)">IS_ELEMENT_ENABLED</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IS_ELEMENT_SELECTED(java.lang.String)">IS_ELEMENT_SELECTED</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#NEW_SESSION(org.openqa.selenium.Capabilities)">NEW_SESSION</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SEND_KEYS_TO_ELEMENT(java.lang.String,java.lang.CharSequence%5B%5D)">SEND_KEYS_TO_ELEMENT</a></span>&#8203;(java.lang.String&nbsp;id,
                     java.lang.CharSequence[]&nbsp;keysToSend)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_ALERT_VALUE(java.lang.String)">SET_ALERT_VALUE</a></span>&#8203;(java.lang.String&nbsp;keysToSend)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_CURRENT_WINDOW_POSITION(org.openqa.selenium.Point)">SET_CURRENT_WINDOW_POSITION</a></span>&#8203;(<a href="../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;targetPosition)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_CURRENT_WINDOW_SIZE(org.openqa.selenium.Dimension)">SET_CURRENT_WINDOW_SIZE</a></span>&#8203;(<a href="../Dimension.html" title="class in org.openqa.selenium">Dimension</a>&nbsp;targetSize)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_IMPLICIT_WAIT_TIMEOUT(long,java.util.concurrent.TimeUnit)">SET_IMPLICIT_WAIT_TIMEOUT</a></span>&#8203;(long&nbsp;time,
                          java.util.concurrent.TimeUnit&nbsp;unit)</code></th>
@@ -968,12 +974,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_IMPLICIT_WAIT_TIMEOUT(java.time.Duration)">SET_IMPLICIT_WAIT_TIMEOUT</a></span>&#8203;(java.time.Duration&nbsp;duration)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_PAGE_LOAD_TIMEOUT(long,java.util.concurrent.TimeUnit)">SET_PAGE_LOAD_TIMEOUT</a></span>&#8203;(long&nbsp;time,
                      java.util.concurrent.TimeUnit&nbsp;unit)</code></th>
@@ -981,12 +987,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_PAGE_LOAD_TIMEOUT(java.time.Duration)">SET_PAGE_LOAD_TIMEOUT</a></span>&#8203;(java.time.Duration&nbsp;duration)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_SCRIPT_TIMEOUT(long,java.util.concurrent.TimeUnit)">SET_SCRIPT_TIMEOUT</a></span>&#8203;(long&nbsp;time,
                   java.util.concurrent.TimeUnit&nbsp;unit)</code></th>
@@ -994,32 +1000,32 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 </td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SET_SCRIPT_TIMEOUT(java.time.Duration)">SET_SCRIPT_TIMEOUT</a></span>&#8203;(java.time.Duration&nbsp;duration)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i37" class="rowColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SUBMIT_ELEMENT(java.lang.String)">SUBMIT_ELEMENT</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SWITCH_TO_FRAME(java.lang.Object)">SWITCH_TO_FRAME</a></span>&#8203;(java.lang.Object&nbsp;frame)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i39" class="rowColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SWITCH_TO_NEW_WINDOW(org.openqa.selenium.WindowType)">SWITCH_TO_NEW_WINDOW</a></span>&#8203;(<a href="../WindowType.html" title="enum in org.openqa.selenium">WindowType</a>&nbsp;typeHint)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i40" class="altColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SWITCH_TO_WINDOW(java.lang.String)">SWITCH_TO_WINDOW</a></span>&#8203;(java.lang.String&nbsp;windowHandleOrName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i42" class="altColor">
 <td class="colFirst"><code>static <a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#UPLOAD_FILE(java.lang.String)">UPLOAD_FILE</a></span>&#8203;(java.lang.String&nbsp;file)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -1678,19 +1684,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 </li>
 </ul>
-<a id="GET_ELEMENT_ATTRIBUTE">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GET_ELEMENT_ATTRIBUTE</h4>
-<pre>static final&nbsp;java.lang.String GET_ELEMENT_ATTRIBUTE</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
 <a id="GET_ELEMENT_PROPERTY">
 <!--   -->
 </a>
@@ -1701,6 +1694,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_PROPERTY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="GET_ELEMENT_ATTRIBUTE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>GET_ELEMENT_ATTRIBUTE</h4>
+<pre>static final&nbsp;java.lang.String GET_ELEMENT_ATTRIBUTE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -2926,6 +2932,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>GET_ELEMENT_SIZE</h4>
 <pre class="methodSignature">static&nbsp;<a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&nbsp;GET_ELEMENT_SIZE&#8203;(java.lang.String&nbsp;id)</pre>
+</li>
+</ul>
+<a id="GET_ELEMENT_PROPERTY(java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>GET_ELEMENT_PROPERTY</h4>
+<pre class="methodSignature">static&nbsp;<a href="CommandPayload.html" title="class in org.openqa.selenium.remote">CommandPayload</a>&nbsp;GET_ELEMENT_PROPERTY&#8203;(java.lang.String&nbsp;id,
+                                           java.lang.String&nbsp;name)</pre>
 </li>
 </ul>
 <a id="GET_ELEMENT_ATTRIBUTE(java.lang.String,java.lang.String)">

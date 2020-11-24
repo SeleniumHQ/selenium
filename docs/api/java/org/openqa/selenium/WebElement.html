@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":18,"i7":18,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6,"i16":6,"i17":6};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -159,7 +159,7 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t5" class="tableTab"><span><a href="javascript:show(16);">Default Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -208,39 +208,53 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 </td>
 </tr>
 <tr id="i6" class="altColor">
+<td class="colFirst"><code>default java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDomAttribute(java.lang.String)">getDomAttribute</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
+<td class="colLast">
+<div class="block">Get the value of the given attribute of the element.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>default java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDomProperty(java.lang.String)">getDomProperty</a></span>&#8203;(java.lang.String&nbsp;name)</code></th>
+<td class="colLast">
+<div class="block">Get the value of the given property of the element.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="Point.html" title="class in org.openqa.selenium">Point</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLocation()">getLocation</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Where on the page is the top left-hand corner of the rendered element?</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="Rectangle.html" title="class in org.openqa.selenium">Rectangle</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRect()">getRect</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="Dimension.html" title="class in org.openqa.selenium">Dimension</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSize()">getSize</a></span>()</code></th>
 <td class="colLast">
 <div class="block">What is the width and height of the rendered element?</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTagName()">getTagName</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the tag name of this element.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getText()">getText</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the visible (i.e.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isDisplayed()">isDisplayed</a></span>()</code></th>
 <td class="colLast">
@@ -248,7 +262,7 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
  element's "style" attribute.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isEnabled()">isEnabled</a></span>()</code></th>
 <td class="colLast">
@@ -256,21 +270,21 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
  disabled input elements.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSelected()">isSelected</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Determine whether or not this element is selected or not.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendKeys(java.lang.CharSequence...)">sendKeys</a></span>&#8203;(java.lang.CharSequence...&nbsp;keysToSend)</code></th>
 <td class="colLast">
 <div class="block">Use this method to simulate typing into an element, which may set its value.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#submit()">submit</a></span>()</code></th>
 <td class="colLast">
@@ -396,6 +410,57 @@ extends <a href="SearchContext.html" title="interface in org.openqa.selenium">Se
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The tag name of this element.</dd>
+</dl>
+</li>
+</ul>
+<a id="getDomProperty(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDomProperty</h4>
+<pre class="methodSignature">default&nbsp;java.lang.String&nbsp;getDomProperty&#8203;(java.lang.String&nbsp;name)</pre>
+<div class="block">Get the value of the given property of the element. Will return the current value, even if
+ this has been modified after the page has been loaded.
+ <p>
+ See <a href="https://w3c.github.io/webdriver/#get-element-property">W3C WebDriver specification</a>
+ for more details.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - The name of the property.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The property's current value or null if the value is not set.</dd>
+</dl>
+</li>
+</ul>
+<a id="getDomAttribute(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDomAttribute</h4>
+<pre class="methodSignature">default&nbsp;java.lang.String&nbsp;getDomAttribute&#8203;(java.lang.String&nbsp;name)</pre>
+<div class="block">Get the value of the given attribute of the element. Will return the current value, even if
+ this has been modified after the page has been loaded.
+ <p>
+ This method, unlike <a href="#getAttribute(java.lang.String)"><code>getAttribute(String)</code></a>, returns the value of the attribute with the
+ given name but not the property with the same name.
+ <p>
+ The following are deemed to be "boolean" attributes, and will return either "true" or null:
+ <p>
+ async, autofocus, autoplay, checked, compact, complete, controls, declare, defaultchecked,
+ defaultselected, defer, disabled, draggable, ended, formnovalidate, hidden, indeterminate,
+ iscontenteditable, ismap, itemscope, loop, multiple, muted, nohref, noresize, noshade,
+ novalidate, nowrap, open, paused, pubdate, readonly, required, reversed, scoped, seamless,
+ seeking, selected, truespeed, willvalidate
+ <p>
+ See <a href="https://w3c.github.io/webdriver/#get-element-attribute">W3C WebDriver specification</a>
+ for more details.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - The name of the attribute.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The attribute's current value or null if the value is not set.</dd>
 </dl>
 </li>
 </ul>
