@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -51,7 +50,7 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 public class NettyAppServer implements AppServer {
 
-  private static Config sslConfig = new MapConfig(
+  private final static Config sslConfig = new MapConfig(
     singletonMap("server", singletonMap("https-self-signed", true)));
 
   private final Server<?> server;
@@ -136,13 +135,13 @@ public class NettyAppServer implements AppServer {
 
   @Override
   public String whereIsWithCredentials(String relativeUrl, String user, String password) {
-    return String.format
-        ("http://%s:%s@%s:%d/%s",
-         user,
-         password,
-         getHostName(),
-         server.getUrl().getPort(),
-         relativeUrl);
+    return String.format(
+      "http://%s:%s@%s:%d/%s",
+      user,
+      password,
+      getHostName(),
+      server.getUrl().getPort(),
+      relativeUrl);
   }
 
   private String createUrl(Server<?> server, String protocol, String hostName, String relativeUrl) {
@@ -152,11 +151,11 @@ public class NettyAppServer implements AppServer {
 
     try {
       return new URL(
-          protocol,
-          hostName,
-          server.getUrl().getPort(),
-          relativeUrl)
-          .toString();
+        protocol,
+        hostName,
+        server.getUrl().getPort(),
+        relativeUrl
+      ).toString();
     } catch (MalformedURLException e) {
       throw new UncheckedIOException(e);
     }
@@ -166,8 +165,8 @@ public class NettyAppServer implements AppServer {
   public String create(Page page) {
     try {
       byte[] data = new Json()
-          .toJson(ImmutableMap.of("content", page.toString()))
-          .getBytes(UTF_8);
+        .toJson(ImmutableMap.of("content", page.toString()))
+        .getBytes(UTF_8);
 
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
