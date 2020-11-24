@@ -183,8 +183,12 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 323));
-    enlargeBy(WebDriver.Window::fullscreen);
+    try {
+      changeSizeTo(new Dimension(640, 323));
+      enlargeBy(WebDriver.Window::fullscreen);
+    } finally {
+      driver.manage().window().setSize(new Dimension(640, 323));
+    }
   }
 
   @SwitchToTopAfterTest
