@@ -217,6 +217,7 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(value = CHROME, travis = true)
+  @Ignore(value = MARIONETTE, gitHubActions = true)
   @Ignore(SAFARI)
   @Ignore(EDGE)
   public void canFullscreenTheWindowFromIframe() {
