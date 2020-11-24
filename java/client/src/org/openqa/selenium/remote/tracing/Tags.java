@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import com.google.common.net.HttpHeaders;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -24,6 +25,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,7 +51,7 @@ public class Tags {
 
   public static final BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
     span.setAttribute(AttributeKey.HTTP_METHOD.getKey(), req.getMethod().toString());
-    span.setAttribute(AttributeKey.HTTP_URL.getKey(), req.getUri());
+    span.setAttribute(AttributeKey.HTTP_TARGET.getKey(), req.getUri());
   };
 
   public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
@@ -71,12 +73,53 @@ public class Tags {
   };
 
   public static final BiConsumer<Map<String, EventAttributeValue>, HttpRequest>
-      HTTP_REQUEST_EVENT =
-      (map, req) -> {
-        map.put(AttributeKey.HTTP_METHOD.getKey(),
-                EventAttribute.setValue(req.getMethod().toString()));
-        map.put(AttributeKey.HTTP_URL.getKey(), EventAttribute.setValue(req.getUri()));
-      };
+    HTTP_REQUEST_EVENT =
+    (map, req) -> {
+      map.put(AttributeKey.HTTP_METHOD.getKey(),
+        EventAttribute.setValue(req.getMethod().toString()));
+      map.put(AttributeKey.HTTP_TARGET.getKey(), EventAttribute.setValue(req.getUri()));
+
+      Optional<String> userAgent = Optional.ofNullable(req.getHeader(HttpHeaders.USER_AGENT));
+      if (userAgent.isPresent()) {
+        map.put(AttributeKey.HTTP_USER_AGENT.getKey(),
+          EventAttribute.setValue(userAgent.get()));
+      }
+
+      Optional<String> host = Optional.ofNullable(req.getHeader(HttpHeaders.HOST));
+      if (host.isPresent()) {
+        map.put(AttributeKey.HTTP_HOST.getKey(),
+          EventAttribute.setValue(host.get()));
+      }
+
+      Optional<String> contentLength =
+        Optional.ofNullable(req.getHeader(HttpHeaders.CONTENT_LENGTH));
+      if (contentLength.isPresent()) {
+        map.put(AttributeKey.HTTP_REQUEST_CONTENT_LENGTH.getKey(),
+          EventAttribute.setValue(contentLength.get()));
+      }
+
+      Optional<String> clientIpAddress =
+        Optional.ofNullable(req.getHeader(HttpHeaders.X_FORWARDED_FOR));
+      if (clientIpAddress.isPresent()) {
+        map.put(AttributeKey.HTTP_CLIENT_IP.getKey(),
+          EventAttribute.setValue(clientIpAddress.get()));
+      }
+
+      Optional<String> httpScheme =
+        Optional.ofNullable((String) req.getAttribute(AttributeKey.HTTP_SCHEME.getKey()));
+      if (httpScheme.isPresent()) {
+        map.put(AttributeKey.HTTP_SCHEME.getKey(),
+          EventAttribute.setValue(httpScheme.get()));
+      }
+
+      Optional<Integer> httpVersion =
+        Optional.ofNullable((Integer) req.getAttribute(AttributeKey.HTTP_FLAVOR.getKey()));
+      if (httpVersion.isPresent()) {
+        map.put(AttributeKey.HTTP_FLAVOR.getKey(),
+          EventAttribute.setValue(httpVersion.get()));
+      }
+
+    };
 
   public static final BiConsumer<Map<String, EventAttributeValue>, HttpResponse>
       HTTP_RESPONSE_EVENT =

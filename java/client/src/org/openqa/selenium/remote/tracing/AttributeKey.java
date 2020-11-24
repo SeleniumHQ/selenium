@@ -34,6 +34,13 @@ public enum AttributeKey {
   HTTP_TARGET_HOST(SemanticAttributes.HTTP_TARGET.getKey()),
   HTTP_CLIENT_CLASS("http.client_class"),
   HTTP_HANDLER_CLASS("http.handler_class"),
+  HTTP_USER_AGENT(SemanticAttributes.HTTP_USER_AGENT.getKey()),
+  HTTP_HOST(SemanticAttributes.HTTP_HOST.getKey()),
+  HTTP_TARGET(SemanticAttributes.HTTP_TARGET.getKey()),
+  HTTP_REQUEST_CONTENT_LENGTH(SemanticAttributes.HTTP_REQUEST_CONTENT_LENGTH.getKey()),
+  HTTP_CLIENT_IP(SemanticAttributes.HTTP_CLIENT_IP.getKey()),
+  HTTP_SCHEME(SemanticAttributes.HTTP_SCHEME.getKey()),
+  HTTP_FLAVOR(SemanticAttributes.HTTP_FLAVOR.getKey()),
 
   LOGGER_CLASS("logger"),
 

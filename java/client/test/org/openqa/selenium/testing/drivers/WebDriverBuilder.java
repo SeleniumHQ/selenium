@@ -66,9 +66,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         .setLegacy(true)
         .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
       .put(Browser.MARIONETTE, original -> new FirefoxOptions(original)
-        .setHeadless(
-          Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false")) ||
-          Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")))
+        .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false")))
       )
       .put(Browser.IE, original -> {
         InternetExplorerOptions options = new InternetExplorerOptions(original);
