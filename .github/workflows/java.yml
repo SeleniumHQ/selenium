@@ -115,10 +115,14 @@ jobs:
           java-version: '11'
       - name: Setup Chrome and chromedriver
         uses: ./.github/actions/setup-chrome
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Run browser tests in Chrome
         uses: ./.github/actions/bazel-test
         with:
           query: attr(tags, chrome, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
+        env:
+          DISPLAY: :99
 
   firefox_tests:
     needs: small_tests
@@ -144,10 +148,14 @@ jobs:
           java-version: '11'
       - name: Setup Firefox and geckodriver
         uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
           query: attr(tags, firefox, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
+        env:
+          DISPLAY: :99
 
 
   server_tests:
@@ -176,9 +184,11 @@ jobs:
         uses: ./.github/actions/setup-chrome
       - name: Setup Firefox and geckodriver
         uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Run server tests
-        env:
-          MOZ_HEADLESS: 1
         uses: ./.github/actions/bazel-test
         with:
           query: tests(//java/server/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/server/...))
+        env:
+          DISPLAY: :99
