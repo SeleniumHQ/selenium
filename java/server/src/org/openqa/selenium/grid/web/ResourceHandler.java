@@ -187,7 +187,7 @@ public class ResourceHandler implements Routable {
         break;
 
       default:
-        type = HTML_UTF_8;
+        type = MediaType.create("text", "html");
         break;
     }
 
