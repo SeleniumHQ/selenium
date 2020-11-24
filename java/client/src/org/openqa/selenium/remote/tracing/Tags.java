@@ -91,16 +91,32 @@ public class Tags {
           EventAttribute.setValue(host.get()));
       }
 
-      Optional<String> contentLength = Optional.ofNullable(req.getHeader(HttpHeaders.CONTENT_LENGTH));
+      Optional<String> contentLength =
+        Optional.ofNullable(req.getHeader(HttpHeaders.CONTENT_LENGTH));
       if (contentLength.isPresent()) {
         map.put(AttributeKey.HTTP_REQUEST_CONTENT_LENGTH.getKey(),
           EventAttribute.setValue(contentLength.get()));
       }
 
-      Optional<String> clientIpAddress = Optional.ofNullable(req.getHeader(HttpHeaders.X_FORWARDED_FOR));
+      Optional<String> clientIpAddress =
+        Optional.ofNullable(req.getHeader(HttpHeaders.X_FORWARDED_FOR));
       if (clientIpAddress.isPresent()) {
         map.put(AttributeKey.HTTP_CLIENT_IP.getKey(),
           EventAttribute.setValue(clientIpAddress.get()));
+      }
+
+      Optional<String> httpScheme =
+        Optional.ofNullable((String) req.getAttribute(AttributeKey.HTTP_SCHEME.getKey()));
+      if (httpScheme.isPresent()) {
+        map.put(AttributeKey.HTTP_SCHEME.getKey(),
+          EventAttribute.setValue(httpScheme.get()));
+      }
+
+      Optional<Integer> httpVersion =
+        Optional.ofNullable((Integer) req.getAttribute(AttributeKey.HTTP_FLAVOR.getKey()));
+      if (httpVersion.isPresent()) {
+        map.put(AttributeKey.HTTP_FLAVOR.getKey(),
+          EventAttribute.setValue(httpVersion.get()));
       }
 
     };

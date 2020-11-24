@@ -34,6 +34,7 @@ import io.netty.util.ReferenceCountUtil;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,6 +82,11 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       if (req == null) {
         return;
       }
+
+      req.setAttribute(AttributeKey.HTTP_SCHEME.getKey(),
+        nettyRequest.protocolVersion().protocolName());
+      req.setAttribute(AttributeKey.HTTP_FLAVOR.getKey(),
+        nettyRequest.protocolVersion().majorVersion());
 
       out = new PipedOutputStream();
       InputStream in = new PipedInputStream(out);
