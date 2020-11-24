@@ -2,7 +2,6 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    jetty_version = "9.4.31.v20200723"
     netty_version = "4.1.53.Final"
     opentelemetry_version = "0.10.0"
 
@@ -62,14 +61,6 @@ def selenium_java_deps():
             "org.apache.commons:commons-exec:1.3",
             "org.assertj:assertj-core:3.18.1",
             "org.asynchttpclient:async-http-client:2.12.1",
-            "org.eclipse.jetty:jetty-client:%s" % jetty_version,
-            "org.eclipse.jetty:jetty-http:%s" % jetty_version,
-            "org.eclipse.jetty:jetty-security:%s" % jetty_version,
-            "org.eclipse.jetty:jetty-server:%s" % jetty_version,
-            "org.eclipse.jetty:jetty-servlet:%s" % jetty_version,
-            "org.eclipse.jetty:jetty-servlets:%s" % jetty_version,
-            "org.eclipse.jetty:jetty-util:%s" % jetty_version,
-            "org.eclipse.jetty:jetty-xml:%s" % jetty_version,
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.5.1",

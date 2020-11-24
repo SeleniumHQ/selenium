@@ -17,20 +17,13 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import com.google.common.base.Strings;
 import com.google.common.net.MediaType;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 
 public class GeneratedJsTestHandler implements HttpHandler {
 

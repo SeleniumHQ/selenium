@@ -76,7 +76,6 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/remote",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//java/server/src/org/openqa/selenium/jetty/server",
         "//java/server/src/org/openqa/selenium/netty/server",
         "//java/server/test/org/openqa/selenium/grid/testing",
         artifact("com.google.guava:guava"),

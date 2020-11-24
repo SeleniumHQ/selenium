@@ -74,6 +74,7 @@ java_selenium_test_suite(
         "//java/client/test/org/openqa/selenium/testing/drivers",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/jre/server",
+        "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.google.guava:guava"),
         artifact("io.netty:netty-codec-haproxy"),
         artifact("io.netty:netty-codec-http"),
@@ -81,53 +82,6 @@ java_selenium_test_suite(
         artifact("junit:junit"),
         artifact("javax.servlet:javax.servlet-api"),
         artifact("org.assertj:assertj-core"),
-        artifact("org.eclipse.jetty:jetty-server"),
-        artifact("xyz.rogfam:littleproxy"),
-    ],
-)
-
-# TODO: replace with smaller suites
-java_library(
-    name = "tests",
-    testonly = True,
-    srcs = glob([
-        "*Test.java",
-        "html5/*.java",
-        "interactions/*.java",
-        "interactions/touch/*Test.java",
-        "logging/*.java",
-    ]) + [
-        "interactions/touch/TouchTestBase.java",
-    ],
-    javacopts = [
-        "--release",
-        "11",
-    ],
-    visibility = [
-        "//java/client/test:__subpackages__",
-    ],
-    deps = [
-        ":helpers",
-        "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/remote",
-        "//java/client/src/org/openqa/selenium/support",
-        "//java/client/test/org/openqa/selenium/build",
-        "//java/client/test/org/openqa/selenium/environment",
-        "//java/client/test/org/openqa/selenium/testing:annotations",
-        "//java/client/test/org/openqa/selenium/testing:test-base",
-        "//java/client/test/org/openqa/selenium/testing/drivers",
-        "//java/server/src/org/openqa/selenium/grid/config",
-        "//java/server/src/org/openqa/selenium/jre/server",
-        artifact("com.google.guava:guava"),
-        artifact("io.netty:netty-codec-haproxy"),
-        artifact("io.netty:netty-codec-http"),
-        artifact("io.netty:netty-transport"),
-        artifact("javax.servlet:javax.servlet-api"),
-        artifact("junit:junit"),
-        artifact("org.assertj:assertj-core"),
-        artifact("org.eclipse.jetty:jetty-server"),
-        artifact("org.mockito:mockito-core"),
         artifact("xyz.rogfam:littleproxy"),
     ],
 )
