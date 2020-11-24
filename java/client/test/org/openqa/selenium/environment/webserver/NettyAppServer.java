@@ -51,7 +51,8 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 public class NettyAppServer implements AppServer {
 
-  private static Config sslConfig = new MapConfig(Map.of("server", Map.of("https-self-signed", true)));
+  private static Config sslConfig = new MapConfig(
+    singletonMap("server", singletonMap("https-self-signed", true)));
 
   private final Server<?> server;
   private final Server<?> secure;
@@ -95,9 +96,8 @@ public class NettyAppServer implements AppServer {
   }
 
   private static Config createDefaultConfig() {
-    return new MemoizedConfig(
-      new MapConfig(Map.of("server", Map.of(
-        "port", PortProber.findFreePort()))));
+    return new MemoizedConfig(new MapConfig(
+      singletonMap("server", singletonMap("port", PortProber.findFreePort()))));
   }
 
   @Override

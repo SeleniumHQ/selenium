@@ -48,6 +48,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import static com.google.common.net.HttpHeaders.REFERER;
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -106,9 +107,9 @@ public class ReferrerTest {
 
   @BeforeClass
   public static void readContents() throws IOException {
-    page1 = Files.readString(locate("common/src/web/proxy" + PAGE_1));
-    page2 = Files.readString(locate("common/src/web/proxy" + PAGE_2));
-    page3 = Files.readString(locate("common/src/web/proxy/page3.html"));
+    page1 = new String(Files.readAllBytes(locate("common/src/web/proxy" + PAGE_1)));
+    page2 = new String(Files.readAllBytes(locate("common/src/web/proxy" + PAGE_2)));
+    page3 = new String(Files.readAllBytes(locate("common/src/web/proxy/page3.html")));
   }
 
   @Before
@@ -412,7 +413,7 @@ public class ReferrerTest {
     }
 
     public List<ExpectedRequest> getRequests() {
-      return List.copyOf(requests);
+      return requests.stream().collect(Collectors.toList());
     }
   }
 

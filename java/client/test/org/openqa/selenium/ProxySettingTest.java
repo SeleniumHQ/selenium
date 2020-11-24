@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -183,7 +184,8 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   private Server<?> createServer(HttpHandler handler) {
     Server<?> server = new JreServer(
-      new BaseServerOptions(new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())))),
+      new BaseServerOptions(new MapConfig(
+        singletonMap("server", singletonMap("port", PortProber.findFreePort())))),
       handler)
       .start();
 
