@@ -22,6 +22,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -120,6 +121,7 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, travis = true)
+  @Ignore(value = MARIONETTE, gitHubActions = true)
   @Ignore(EDGE)
   public void testCanMaximizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -133,6 +135,7 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(value = CHROME, travis = true)
+  @Ignore(value = MARIONETTE, gitHubActions = true)
   @Ignore(EDGE)
   public void testCanMaximizeTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -149,6 +152,7 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(value = CHROME, travis = true)
+  @Ignore(value = MARIONETTE, gitHubActions = true)
   @Ignore(EDGE)
   public void testCanMaximizeTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -176,6 +180,7 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, travis = true)
+  @Ignore(value = MARIONETTE, gitHubActions = true)
   @Ignore(SAFARI)
   @Ignore(EDGE)
   public void canFullscreenTheWindow() {
@@ -194,6 +199,7 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(value = CHROME, travis = true)
+  @Ignore(value = MARIONETTE, gitHubActions = true)
   @Ignore(SAFARI)
   @Ignore(EDGE)
   public void canFullscreenTheWindowFromFrame() {
