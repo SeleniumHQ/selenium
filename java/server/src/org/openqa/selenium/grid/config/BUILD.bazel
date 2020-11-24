@@ -5,6 +5,7 @@ java_library(
     name = "config",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/client/test/org/openqa/selenium:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa/selenium/cli:__pkg__",
         "//java/server/src/org/openqa/selenium/events:__subpackages__",

@@ -17,6 +17,28 @@
 
 package org.openqa.selenium.remote.internal;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import org.junit.Test;
+import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.net.URI;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.StreamSupport;
+
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,43 +47,12 @@ import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import org.junit.Test;
-import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 abstract public class HttpClientTestBase {
 
   protected abstract HttpClient.Factory createFactory();
 
   @Test
-  public void responseShouldCaptureASingleHeader() throws Exception {
+  public void responseShouldCaptureASingleHeader() {
     HashMultimap<String, String> headers = HashMultimap.create();
     headers.put("Cake", "Delicious");
 
@@ -78,7 +69,7 @@ abstract public class HttpClientTestBase {
    * this hard (notably when a legal value may contain a comma).
    */
   @Test
-  public void responseShouldKeepMultipleHeadersSeparate() throws Exception {
+  public void responseShouldKeepMultipleHeadersSeparate() {
     HashMultimap<String, String> headers = HashMultimap.create();
     headers.put("Cheese", "Cheddar");
     headers.put("Cheese", "Brie, Gouda");
@@ -105,7 +96,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldSendSimpleQueryParameters() throws Exception {
+  public void shouldSendSimpleQueryParameters() {
     HttpRequest request = new HttpRequest(GET, "/query");
     request.addQueryParameter("cheese", "cheddar");
 
@@ -116,7 +107,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldEncodeParameterNamesAndValues() throws Exception {
+  public void shouldEncodeParameterNamesAndValues() {
     HttpRequest request = new HttpRequest(GET, "/query");
     request.addQueryParameter("cheese type", "tasty cheese");
 
@@ -127,7 +118,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void canAddMoreThanOneQueryParameter() throws Exception {
+  public void canAddMoreThanOneQueryParameter() {
     HttpRequest request = new HttpRequest(GET, "/query");
     request.addQueryParameter("cheese", "cheddar");
     request.addQueryParameter("cheese", "gouda");
@@ -142,28 +133,15 @@ abstract public class HttpClientTestBase {
 
   @Test
   public void shouldAllowUrlsWithSchemesToBeUsed() throws Exception {
-    Server server = new Server(PortProber.findFreePort());
-    ServletContextHandler handler = new ServletContextHandler();
-    handler.setContextPath("");
-
-    class Canned extends HttpServlet {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try (PrintWriter writer = resp.getWriter()) {
-          writer.append("Hello, World!");
-        }
-      }
-    }
-    ServletHolder holder = new ServletHolder(new Canned());
-    handler.addServlet(holder, "/*");
-    server.setHandler(handler);
-
+    AppServer server = new NettyAppServer(
+      req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!")));
     server.start();
+
     try {
       // This is a terrible choice of URL
       HttpClient client = createFactory().createClient(new URL("http://example.com"));
 
-      URI uri = server.getURI();
+      URI uri = URI.create(server.whereIs("/"));
       HttpRequest request = new HttpRequest(
           GET,
           String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
@@ -177,19 +155,10 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldIncludeAUserAgentHeader() throws Exception {
+  public void shouldIncludeAUserAgentHeader() {
     HttpResponse response = executeWithinServer(
         new HttpRequest(GET, "/foo"),
-        new HttpServlet() {
-          @Override
-          protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-              throws IOException {
-            try (Writer writer = resp.getWriter()) {
-              writer.write(req.getHeader("user-agent"));
-            }
-          }
-        });
-
+        req -> new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent"))));
 
     String label = new BuildInfo().getReleaseLabel();
     Platform platform = Platform.getCurrent();
@@ -201,55 +170,34 @@ abstract public class HttpClientTestBase {
         family.toString().toLowerCase()));
   }
 
-  private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers)
-      throws Exception {
+  private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers) {
     return executeWithinServer(
         new HttpRequest(GET, "/foo"),
-        new HttpServlet() {
-          @Override
-          protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-            headers.forEach(resp::addHeader);
-            resp.setContentLengthLong(0);
-          }
+        req -> {
+          HttpResponse resp = new HttpResponse();
+          headers.forEach(resp::addHeader);
+          return resp;
         });
   }
 
-  private HttpResponse getQueryParameterResponse(HttpRequest request) throws Exception {
+  private HttpResponse getQueryParameterResponse(HttpRequest request) {
     return executeWithinServer(
-        request,
-        new HttpServlet() {
-          @Override
-          protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-              throws IOException {
-            try (Writer writer = resp.getWriter()) {
-              JsonOutput json = new Json().newOutput(writer);
-              json.beginObject();
-              req.getParameterMap()
-                  .forEach((key, value) -> {
-                    json.name(key);
-                    json.beginArray();
-                    Stream.of(value).forEach(json::write);
-                    json.endArray();
-                  });
-              json.endObject();
-            }
-          }
-        });
+      request,
+      req -> {
+        Map<String, Iterable<String>> params = new TreeMap<>();
+        req.getQueryParameterNames()
+          .forEach(name -> params.put(name, req.getQueryParameters(name)));
+
+        return new HttpResponse().setContent(Contents.asJson(params));
+      });
   }
 
-  private HttpResponse executeWithinServer(HttpRequest request, HttpServlet servlet)
-      throws Exception {
-    Server server = new Server(PortProber.findFreePort());
-    ServletContextHandler handler = new ServletContextHandler();
-    handler.setContextPath("");
-    ServletHolder holder = new ServletHolder(servlet);
-    handler.addServlet(holder, "/*");
-
-    server.setHandler(handler);
-
+  private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler) {
+    AppServer server = new NettyAppServer(handler);
     server.start();
+
     try {
-      HttpClient client = createFactory().createClient(fromUri(server.getURI()));
+      HttpClient client = createFactory().createClient(fromUri(URI.create(server.whereIs("/"))));
       return client.execute(request);
     } finally {
       server.stop();

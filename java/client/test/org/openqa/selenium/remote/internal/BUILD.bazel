@@ -16,6 +16,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
         artifact("org.eclipse.jetty:jetty-server"),
