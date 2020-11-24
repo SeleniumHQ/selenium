@@ -18,6 +18,7 @@
 package org.openqa.selenium.environment.webserver;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -49,10 +51,13 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 public class NettyAppServer implements AppServer {
 
+  private static Config sslConfig = new MapConfig(Map.of("server", Map.of("https-self-signed", true)));
+
   private final Server<?> server;
+  private final Server<?> secure;
 
   public NettyAppServer() {
-    MemoizedConfig config = new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", PortProber.findFreePort()))));
+    Config config = createDefaultConfig();
     BaseServerOptions options = new BaseServerOptions(config);
 
     File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("generated", "pages");
@@ -63,11 +68,21 @@ public class NettyAppServer implements AppServer {
       tempDir.toPath());
 
     server = new NettyServer(options, handler);
+
+    Config secureConfig = new CompoundConfig(sslConfig, createDefaultConfig());
+    BaseServerOptions secureOptions = new BaseServerOptions(secureConfig);
+
+    HttpHandler secureHandler = new HandlersForTests(
+      secureOptions.getHostname().orElse("localhost"),
+      secureOptions.getPort(),
+      tempDir.toPath());
+
+    secure = new NettyServer(secureOptions, secureHandler);
   }
 
   public NettyAppServer(HttpHandler handler) {
     this(
-      new MapConfig(singletonMap("server", singletonMap("port", PortProber.findFreePort()))),
+      createDefaultConfig(),
       Require.nonNull("Handler", handler));
   }
 
@@ -76,31 +91,47 @@ public class NettyAppServer implements AppServer {
     Require.nonNull("Handler", handler);
 
     server = new NettyServer(new BaseServerOptions(new MemoizedConfig(config)), handler);
+    secure = null;
+  }
+
+  private static Config createDefaultConfig() {
+    return new MemoizedConfig(
+      new MapConfig(Map.of("server", Map.of(
+        "port", PortProber.findFreePort()))));
   }
 
   @Override
   public void start() {
     server.start();
+    if (secure != null) {
+      secure.start();
+    }
   }
 
   @Override
   public void stop() {
     server.stop();
+    if (secure != null) {
+      secure.stop();
+    }
   }
 
   @Override
   public String whereIs(String relativeUrl) {
-    return createUrl("http", getHostName(), relativeUrl);
+    return createUrl(server, "http", getHostName(), relativeUrl);
   }
 
   @Override
   public String whereElseIs(String relativeUrl) {
-    return createUrl("http", getAlternateHostName(), relativeUrl);
+    return createUrl(server, "http", getAlternateHostName(), relativeUrl);
   }
 
   @Override
   public String whereIsSecure(String relativeUrl) {
-    return createUrl("https", getHostName(), relativeUrl);
+    if (secure == null) {
+      throw new IllegalStateException("Server not configured to return HTTPS url");
+    }
+    return createUrl(secure, "https", getHostName(), relativeUrl);
   }
 
   @Override
@@ -114,7 +145,7 @@ public class NettyAppServer implements AppServer {
          relativeUrl);
   }
 
-  private String createUrl(String protocol, String hostName, String relativeUrl) {
+  private String createUrl(Server<?> server, String protocol, String hostName, String relativeUrl) {
     if (!relativeUrl.startsWith("/")) {
       relativeUrl = "/" + relativeUrl;
     }
