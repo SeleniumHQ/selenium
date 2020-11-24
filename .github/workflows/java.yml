@@ -194,3 +194,29 @@ jobs:
           query: tests(//java/server/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/server/...))
         env:
           DISPLAY: :99
+
+  javadoc:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v1
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Generate javadoc
+        run: |
+          ./go --verbose javadocs
