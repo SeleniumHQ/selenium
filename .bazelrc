@@ -10,6 +10,10 @@ build --javacopt="--release 8"
 build --strict_java_deps=strict
 build --explicit_java_test_deps
 
+# Ensure builds are unpolluted by the user env
+build --incompatible_strict_action_env
+
+# For build stamping
 build --workspace_status_command=scripts/build-info.py
 
 # Make sure we get something helpful when tests fail
