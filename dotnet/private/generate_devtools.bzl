@@ -6,6 +6,7 @@ def _generate_devtools_impl(ctx):
     args.add_all("-b", [ctx.attr.browser_protocol.files.to_list()[0]])
     args.add_all("-j", [ctx.attr.js_protocol.files.to_list()[0]])
     args.add_all("-t", [ctx.attr.template.files.to_list()[0]])
+    args.add("-q")
     args.add_all("-o", [outdir.path])
 
     ctx.actions.run(

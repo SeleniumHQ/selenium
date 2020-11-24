@@ -49,7 +49,9 @@ import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.OFF;
 import static java.util.logging.Level.WARNING;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.byLessThan;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.Proxy.ProxyType.PAC;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.logging.LogType.BROWSER;
@@ -199,6 +201,16 @@ public class JsonTest {
   }
 
   @Test
+  public void canNotPopulateAnObjectOfAClassWithNoDefaultConstructor() {
+    String raw = "{\"value\": \"time\"}";
+
+    assertThatExceptionOfType(JsonException.class)
+      .isThrownBy(() -> new Json().toType(raw, NoDefaultConstructor.class))
+      .withMessageStartingWith(
+        "Unable to find type coercer for class %s", NoDefaultConstructor.class.getTypeName());
+  }
+
+  @Test
   public void willSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
     String raw = "{\"value\": \"time\", \"frob\": \"telephone\"}";
 
@@ -263,8 +275,8 @@ public class JsonTest {
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response converted = new Json().toType(json, Response.class);
 
-    Map<String, Object> value = (Map<String, Object>) converted.getValue();
-    assertThat(value).containsEntry("id", "three");
+    assertThat(converted).extracting("value").asInstanceOf(MAP)
+      .containsEntry("id", "three");
   }
 
   @Test
@@ -310,8 +322,7 @@ public class JsonTest {
     Object first = list.get(0);
     assertThat(first instanceof Map).isTrue();
 
-    Map<String, Object> map = (Map<String, Object>) first;
-    assertThat(map)
+    assertThat(first).asInstanceOf(MAP)
         .containsEntry("name", "foo")
         .containsEntry("value", "bar")
         .containsEntry("domain", "localhost")
@@ -530,6 +541,23 @@ public class JsonTest {
   public static class SimpleBean {
 
     private String value;
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+  }
+
+  public static class NoDefaultConstructor {
+
+    private String value;
+
+    public NoDefaultConstructor(String value) {
+      this.value = value;
+    }
 
     public String getValue() {
       return value;

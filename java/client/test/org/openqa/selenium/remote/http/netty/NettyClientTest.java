@@ -18,10 +18,9 @@
 package org.openqa.selenium.remote.http.netty;
 
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import org.openqa.selenium.remote.internal.HttpClientTestBase;
 
-public class NettyClientTest extends DomainSocketsTestBase {
-
+public class NettyClientTest extends HttpClientTestBase {
   @Override
   protected HttpClient.Factory createFactory() {
     return new NettyClient.Factory();

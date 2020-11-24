@@ -1,4 +1,5 @@
 attrs
+certifi
 dataclasses
 debugpy
 h11
@@ -19,4 +20,5 @@ sortedcontainers
 sniffio
 trio
 trio_websocket
+urllib3
 zipp

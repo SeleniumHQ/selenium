@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -42,16 +43,19 @@ public class Router implements HasReadyState, Routable {
   private final Routable routes;
   private final SessionMap sessions;
   private final Distributor distributor;
+  private final NewSessionQueuer queuer;
 
   public Router(
     Tracer tracer,
     HttpClient.Factory clientFactory,
     SessionMap sessions,
+    NewSessionQueuer queuer,
     Distributor distributor) {
     Require.nonNull("Tracer to use", tracer);
     Require.nonNull("HTTP client factory", clientFactory);
 
     this.sessions = Require.nonNull("Session map", sessions);
+    this.queuer = Require.nonNull("New Session Request Queuer", queuer);
     this.distributor = Require.nonNull("Distributor", distributor);
 
     routes =
@@ -59,6 +63,7 @@ public class Router implements HasReadyState, Routable {
         get("/status")
           .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
         sessions.with(new SpanDecorator(tracer, req -> "session_map")),
+        queuer.with(new SpanDecorator(tracer, req -> "session_queuer")),
         distributor.with(new SpanDecorator(tracer, req -> "distributor")),
         matching(req -> req.getUri().startsWith("/session/"))
           .to(() -> new HandleSession(tracer, clientFactory, sessions)));
@@ -67,7 +72,7 @@ public class Router implements HasReadyState, Routable {
   @Override
   public boolean isReady() {
     try {
-      return ImmutableSet.of(distributor, sessions).parallelStream()
+      return ImmutableSet.of(distributor, sessions, queuer).parallelStream()
         .map(HasReadyState::isReady)
         .reduce(true, Boolean::logicalAnd);
     } catch (RuntimeException e) {

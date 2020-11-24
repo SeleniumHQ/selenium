@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.environment.webserver.JreAppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
@@ -40,13 +40,13 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class NetworkInterceptorTest {
 
-  private JreAppServer appServer;
+  private NettyAppServer appServer;
   private WebDriver driver;
   private NetworkInterceptor interceptor;
 
   @Before
   public void setup() {
-    appServer = new JreAppServer(req -> new HttpResponse()
+    appServer = new NettyAppServer(req -> new HttpResponse()
         .setStatus(200)
         .addHeader("Content-Type", MediaType.XHTML_UTF_8.toString())
         .setContent(utf8String("<html><head><title>Hello, World!</title></head><body/></html>")));

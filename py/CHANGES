@@ -1,3 +1,29 @@
+Selenium 4.0 Alpha 7
+
+* BREAKING CHANGE: Dropped support for python < 3.7
+
+* Remove support for XBL in Firefox.
+* Correct formatting with JS fragment
+* Add debugpy to requirements
+* Fix uploading multiple files on remote driver (#7472) (#8734)
+* Correct docstring around find_element and find_elements. Fixes #8806
+* Add the ability to ignore local proxys that are available
+* add script pinning to python bindings
+* Deprecate desired_capabilities property in favour of capabilities property
+* Update tests to use requirements file
+* Allow driver fixtures to be used in Chrome only tests
+* Update testing to use the latest pytest
+* do not update already set preference (#8692)
+* Added new argument creationflags in Service class for common, chrome, and firefox (#8647)
+* add se namespacing to file upload endpoint for all bindings (#8588)
+* Correct dependency management for code generator
+* Update host to connect to get a port. Fixes #8503
+* Poll quicker for the driver when starting up. Fixes #8477
+* Add support for DevTools APIs
+* Improve WebKitGTK and WPEWebKit support
+* Fix browserName typo for Edge WebView2
+* Fix wheel generation for multiple python versions
+
 Selenium 4.0 Alpha 6 Post 2
 
 * Correct usage of Abstract Base class in some instances
@@ -785,3 +811,4 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+

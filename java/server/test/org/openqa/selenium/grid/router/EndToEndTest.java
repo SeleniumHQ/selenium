@@ -73,7 +73,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -138,14 +137,17 @@ public class EndToEndTest {
       "",
       "[server]",
       "port = " + PortProber.findFreePort(),
-      "registration-secret = \"provolone\""
+      "registration-secret = \"provolone\"",
+      "[sessionqueue]",
+      "session-request-timeout = 2",
+      "session-retry-interval = 1"
     };
     Config config = new MemoizedConfig(
       new TomlConfig(new StringReader(String.join("\n", rawConfig))));
 
     Server<?> server = new Standalone().asServer(config).start();
 
-    waitUntilReady(server);
+    waitUntilReady(server, Duration.ofSeconds(5));
 
     return new TestData(server, server::stop);
   }
@@ -175,7 +177,10 @@ public class EndToEndTest {
       "]",
       "",
       "[server]",
-      "registration-secret = \"feta\""
+      "registration-secret = \"feta\"",
+      "[sessionqueue]",
+      "session-request-timeout = 2",
+      "session-retry-interval = 1"
     };
 
     TomlConfig baseConfig = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
@@ -186,9 +191,9 @@ public class EndToEndTest {
     Server<?> hub = new Hub().asServer(setRandomPort(hubConfig)).start();
 
     Server<?> node = new NodeServer().asServer(setRandomPort(baseConfig)).start();
-    waitUntilReady(node);
+    waitUntilReady(node, Duration.ofSeconds(5));
 
-    waitUntilReady(hub);
+    waitUntilReady(hub, Duration.ofSeconds(5));
 
     return new TestData(hub, hub::stop, node::stop);
   }
@@ -219,7 +224,10 @@ public class EndToEndTest {
       "]",
       "",
       "[server]",
-      "registration-secret = \"colby\""
+      "registration-secret = \"colby\"",
+      "[sessionqueue]",
+      "session-request-timeout = 2",
+      "session-retry-interval = 1"
     };
 
     Config sharedConfig = new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
@@ -233,10 +241,18 @@ public class EndToEndTest {
           "bind = true"}))),
         setRandomPort(sharedConfig)))
       .start();
-    waitUntilReady(eventServer);
+    waitUntilReady(eventServer, Duration.ofSeconds(5));
 
     Server<?> newSessionQueueServer = new NewSessionQueuerServer().asServer(setRandomPort(sharedConfig)).start();
-    waitUntilReady(newSessionQueueServer);
+    waitUntilReady(newSessionQueueServer, Duration.ofSeconds(5));
+    Config newSessionQueueServerConfig = new TomlConfig(new StringReader(String.join(
+        "\n",
+        new String[] {
+            "[sessionqueuer]",
+            "hostname = \"localhost\"",
+            "port = " + newSessionQueueServer.getUrl().getPort()
+        }
+    )));
 
     Server<?> sessionMapServer = new SessionMapServer().asServer(setRandomPort(sharedConfig)).start();
     Config sessionMapConfig = new TomlConfig(new StringReader(String.join(
@@ -249,7 +265,10 @@ public class EndToEndTest {
     )));
 
     Server<?> distributorServer = new DistributorServer()
-      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig)))
+      .asServer(setRandomPort(new CompoundConfig(
+          sharedConfig,
+          sessionMapConfig,
+          newSessionQueueServerConfig)))
       .start();
     Config distributorConfig = new TomlConfig(new StringReader(String.join(
       "\n",
@@ -261,15 +280,23 @@ public class EndToEndTest {
     )));
 
     Server<?> router = new RouterServer()
-      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+      .asServer(setRandomPort(new CompoundConfig(
+          sharedConfig,
+          sessionMapConfig,
+          distributorConfig,
+          newSessionQueueServerConfig)))
       .start();
 
     Server<?> nodeServer = new NodeServer()
-      .asServer(setRandomPort(new CompoundConfig(sharedConfig, sessionMapConfig, distributorConfig)))
+      .asServer(setRandomPort(new CompoundConfig(
+          sharedConfig,
+          sessionMapConfig,
+          distributorConfig,
+          newSessionQueueServerConfig)))
       .start();
-    waitUntilReady(nodeServer);
+    waitUntilReady(nodeServer, Duration.ofSeconds(5));
 
-    waitUntilReady(router);
+    waitUntilReady(router, Duration.ofSeconds(5));
 
     return new TestData(
       router,
@@ -281,13 +308,21 @@ public class EndToEndTest {
       eventServer::stop);
   }
 
-  private static void waitUntilReady(Server<?> server) {
+  private static void waitUntilReady(Server<?> server, Duration duration) {
+    waitUntilReady(server, duration, false);
+  }
+
+  private static void waitUntilReady(Server<?> server, Duration duration, boolean printOutput) {
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
     new FluentWait<>(client)
-      .withTimeout(Duration.ofSeconds(5))
+      .withTimeout(duration)
+      .pollingEvery(Duration.ofSeconds(1))
       .until(c -> {
         HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+        if (printOutput) {
+          System.out.println(Contents.string(response));
+        }
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status.get("ready"));
       });
@@ -347,7 +382,8 @@ public class EndToEndTest {
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
     driver.get("http://www.google.com");
 
-    // The node is still open. Now create a second session. This should fail
+    // The node is still open. Now create a second session. It will be added to the queue.
+    // An retry will be attempted and once request times out, it should fail
     try {
       WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
       disposable.quit();
@@ -359,18 +395,7 @@ public class EndToEndTest {
     // Kill the session, and wait until the grid says it's ready
     driver.quit();
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
-    new FluentWait<>("").withTimeout(ofSeconds(200)).until(obj -> {
-      try {
-        HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-        System.out.println(Contents.string(response));
-        Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return Boolean.TRUE.equals(status.get("ready"));
-      } catch (UncheckedIOException e) {
-        e.printStackTrace();
-        return false;
-      }
-    });
+    waitUntilReady(server, Duration.ofSeconds(200), true);
 
     // And now we're good to go.
     driver = new RemoteWebDriver(server.getUrl(), caps);
@@ -402,6 +427,24 @@ public class EndToEndTest {
 
     Map<?, ?> caps = (Map<?, ?>) value.get("capabilities");
     assertEquals("cheese", caps.get("browserName"));
+  }
+
+  @Test
+  public void shouldRejectSessionRequestIfCapsNotSupported() {
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    driver.get("http://www.google.com");
+
+    try {
+      Capabilities unsupportedCaps = new ImmutableCapabilities("browserName", "brie");
+      WebDriver disposable = new RemoteWebDriver(server.getUrl(), unsupportedCaps);
+      disposable.quit();
+      fail("Should not have been able to create driver");
+    } catch (SessionNotCreatedException expected) {
+      // Fall through
+    }
+
+    driver.quit();
   }
 
   @Test

@@ -24,7 +24,6 @@ fi
 
 if [[ ! -z "$BZL_TEST" ]]; then
   bazel query "$BZL_TEST" | xargs bazel test
-  bazel analyze-profile /tmp/bazelprofile
 fi
 
 if [[ ! -z "$BZL" ]]; then
@@ -37,9 +36,8 @@ if [[ ! -z "$BZL" ]]; then
        bazel $BZL
      fi
   else
-    bazel $BZL
+    timeout 40m bazel $BZL
   fi
-  bazel analyze-profile /tmp/bazelprofile
 fi
 
 if [[ ! -z "$NPM" ]]; then

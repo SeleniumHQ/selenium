@@ -61,7 +61,7 @@ public class TestSessionFactory implements SessionFactory {
     SessionId id = new SessionId(UUID.randomUUID());
     Session session = sessionGenerator.apply(id, sessionRequest.getCapabilities());
 
-    URL url = null;
+    URL url;
     try {
       url = session.getUri().toURL();
     } catch (MalformedURLException e) {

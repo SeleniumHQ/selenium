@@ -1,3 +1,34 @@
+v4.0.0-alpha-7
+==============
+
+* Started to add new Grid UI.
+* Add support for BASIC and DIGEST authentication.
+* Add listener for DOM mutations.
+* Add support for listening out for console log events.
+* Experimental support for script pinning.
+* Support multiple versions of CDP simultaneously.
+* Fix getText atom for unicode charater middle of word (#8736)
+* Include original stack trace when throwing TimeoutException.
+* Removed okhttp implementation of the http client.
+* Add experimental "reactor" http client.
+* [graphql] Add graphql query to retrieve session information for a
+  given session id.
+* [grid] Support remoting CDP over the Grid.
+* [grid] Record video only when `recordVideo` is sent in `se:options`.
+* [grid] Securing 0mq when user provides a certificate.
+* [grid] All messages on the 0mq event bus now have a secret.
+* [grid] Provide a command line flag for creating SessionFactory
+  instances: `--driver-factory`.
+* Added a JDBC-backed implementation of the SessionMap.
+* [grid] Added a "New Session Queue" component.
+* [grid] Added support for draining a Node. Once all sessions are
+  complete, the node will shutdown.
+* [grid] Added a "One Shot Node" which starts draining once a session.
+  is started. This is designed for use in environments which will
+  restart nodes as required.
+* [grid] Add a `/readyz` endpoint that conforms to k8s expectations
+  for an HTTP readiness probe.
+
 v4.0.0-alpha-6
 ==============
 

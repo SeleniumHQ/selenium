@@ -29,19 +29,19 @@ lint_setup({
 
 http_archive(
     name = "platforms",
-    sha256 = "ae95e4bfcd9f66e9dc73a92cee0107fede74163f788e3deefe00f3aaae75c431",
-    strip_prefix = "platforms-681f1ee032566aa2d443cf0335d012925d9c58d4",
+    sha256 = "0fc19efca1dfc5c1448c98f050639e3a48beb0031701d55bea5eb546507970f2",
+    strip_prefix = "platforms-0.0.1",
     urls = [
-        "https://github.com/bazelbuild/platforms/archive/681f1ee032566aa2d443cf0335d012925d9c58d4.zip",
+        "https://github.com/bazelbuild/platforms/archive/0.0.1.tar.gz",
     ],
 )
 
 http_archive(
     name = "bazel_skylib",
-    sha256 = "97e70364e9249702246c0e9444bccdc4b847bed1eb03c5a3ece4f83dfe6abc44",
+    sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz",
-        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.2/bazel-skylib-1.0.2.tar.gz",
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
     ],
 )
 
@@ -51,16 +51,49 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "bazel_toolchains",
-    sha256 = "89a053218639b1c5e3589a859bb310e0a402dedbe4ee369560e66026ae5ef1f2",
-    strip_prefix = "bazel-toolchains-3.5.0",
+    sha256 = "8e0633dfb59f704594f19ae996a35650747adc621ada5e8b9fb588f808c89cb0",
+    strip_prefix = "bazel-toolchains-3.7.0",
     urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/releases/download/3.5.0/bazel-toolchains-3.5.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/3.7.0/bazel-toolchains-3.7.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/releases/download/3.7.0/bazel-toolchains-3.7.0.tar.gz",
     ],
 )
 
 load("@bazel_toolchains//rules:rbe_repo.bzl", "rbe_autoconfig")
 
 rbe_autoconfig(name = "rbe_default")
+
+http_archive(
+    name = "rules_python",
+    patches = ["//py:rules_python_wheel_directory_check.patch"],
+    sha256 = "e7dcbceb163a5b45489f49629242a78deaff8fcbebfe5970fb7acf5a16dbe2b8",
+    strip_prefix = "rules_python-aa27a3fe7e1a6c73028effe1c78e87d2e7fab641",
+    url = "https://github.com/bazelbuild/rules_python/archive/aa27a3fe7e1a6c73028effe1c78e87d2e7fab641.zip",
+)
+
+# This one is only needed if you're using the packaging rules.
+load("@rules_python//python:pip.bzl", "pip_install", "pip_repositories")
+
+pip_install(
+    name = "dev_requirements",
+    requirements = "//py:requirements.txt",
+)
+
+http_archive(
+    name = "rules_proto",
+    sha256 = "8e7d59a5b12b233be5652e3d29f42fba01c7cbab09f6b3a8d0a57ed6d1e9a0da",
+    strip_prefix = "rules_proto-7e4afce6fe62dbff0a4a03450143146f9f2d7488",
+    urls = [
+        "https://github.com/bazelbuild/rules_proto/archive/7e4afce6fe62dbff0a4a03450143146f9f2d7488.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/7e4afce6fe62dbff0a4a03450143146f9f2d7488.tar.gz",
+    ],
+)
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
+rules_proto_dependencies()
+
+rules_proto_toolchains()
 
 http_archive(
     name = "rules_jvm_external",
@@ -78,24 +111,11 @@ load("@maven//:defs.bzl", "pinned_maven_install")
 pinned_maven_install()
 
 http_archive(
-    name = "io_bazel_rules_closure",
-    sha256 = "2e95ba060acd74f3662547a38814ffff60317be047b7168d25498aea52f3e732",
-    strip_prefix = "rules_closure-b3d4ec3879620edcadd3422b161cebb37c59b6c5",
-    urls = [
-        "https://github.com/bazelbuild/rules_closure/archive/b3d4ec3879620edcadd3422b161cebb37c59b6c5.tar.gz",
-    ],
-)
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
-
-closure_repositories()
-
-http_archive(
     name = "d2l_rules_csharp",
-    sha256 = "4e8e9a93a5436d81c0a410148bef9e3e44860cd7dc567dd4732ab5b269a5e1f8",
-    strip_prefix = "rules_csharp-8c9e87762f619c7b4ea60d03b76afadecbce4ea6",
+    sha256 = "7b2a83621049904b6e898ffdbe7893a5b410aedf599d63f127ef81eac839b6c1",
+    strip_prefix = "rules_csharp-bf24e589bbadcc20f15a16e13f577a0abd42a1d1",
     urls = [
-        "https://github.com/Brightspace/rules_csharp/archive/8c9e87762f619c7b4ea60d03b76afadecbce4ea6.tar.gz",
+        "https://github.com/Brightspace/rules_csharp/archive/bf24e589bbadcc20f15a16e13f577a0abd42a1d1.tar.gz",
     ],
 )
 
@@ -105,8 +125,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "f2194102720e662dbf193546585d705e645314319554c6ce7e47d8b59f459e9c",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.2.2/rules_nodejs-2.2.2.tar.gz"],
+    sha256 = "452bef42c4b2fbe0f509a2699ffeb3ae2c914087736b16314dbd356f3641d7e5",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.3.0/rules_nodejs-2.3.0.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
@@ -118,25 +138,19 @@ npm_install(
 )
 
 http_archive(
-    name = "rules_python",
-    patches = ["//py:rules_python_wheel_directory_check.patch"],
-    sha256 = "4d8ed66d5f57a0b6b90e495ca8e29e5c5fa353b93f093e7c31c595a4631ff293",
-    strip_prefix = "rules_python-5c948dcfd4ca79c2ed3a87636c46abba9f5836e9",
-    url = "https://github.com/bazelbuild/rules_python/archive/5c948dcfd4ca79c2ed3a87636c46abba9f5836e9.zip",
+    name = "io_bazel_rules_closure",
+    sha256 = "d66deed38a0bb20581c15664f0ab62270af5940786855c7adc3087b27168b529",
+    strip_prefix = "rules_closure-0.11.0",
+    urls = [
+        "https://github.com/bazelbuild/rules_closure/archive/0.11.0.tar.gz",
+    ],
 )
 
-# This call should always be present.
-load("@rules_python//python:repositories.bzl", "py_repositories")
+load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_dependencies", "rules_closure_toolchains")
 
-py_repositories()
+rules_closure_dependencies()
 
-# This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_install", "pip_repositories")
-
-pip_install(
-    name = "dev_requirements",
-    requirements = "//py:requirements.txt",
-)
+rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
@@ -146,9 +160,9 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "8a51514f4a6341b5ab68512ab5b4d5d30be37af9795731402c586cb5d56f2bb7",
-    strip_prefix = "rules_docker-569d39130460987aebff3aa32cc2256c8f923630",
-    urls = ["https://github.com/AutomatedTester/rules_docker/archive/569d39130460987aebff3aa32cc2256c8f923630.zip"],
+    sha256 = "2fc3fe7be1daed0dcb249cced962ee10a1303de20b0d8837f2d99150fcbfca2e",
+    strip_prefix = "rules_docker-feaaebdd3162fb643494af07698f56ca9aba1241",
+    urls = ["https://github.com/bazelbuild/rules_docker/archive/feaaebdd3162fb643494af07698f56ca9aba1241.zip"],
 )
 
 load(

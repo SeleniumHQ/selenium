@@ -20,6 +20,7 @@ package org.openqa.selenium.docker;
 import org.openqa.selenium.internal.Require;
 
 import java.time.Duration;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Container {
@@ -27,10 +28,12 @@ public class Container {
   private static final Logger LOG = Logger.getLogger(Container.class.getName());
   private final DockerProtocol protocol;
   private final ContainerId id;
+  private boolean running;
 
   public Container(DockerProtocol protocol, ContainerId id) {
     this.protocol = Require.nonNull("Protocol", protocol);
     this.id = Require.nonNull("Container id", id);
+    this.running = false;
     LOG.info("Created container " + id);
   }
 
@@ -41,24 +44,20 @@ public class Container {
   public void start() {
     LOG.info("Starting " + getId());
     protocol.startContainer(id);
+    this.running = true;
   }
 
   public void stop(Duration timeout) {
     Require.nonNull("Timeout to wait for", timeout);
 
-    if (protocol.exists(id)) {
+    if (this.running) {
       LOG.info("Stopping " + getId());
-
-      protocol.stopContainer(id, timeout);
-    }
-  }
-
-  public void delete() {
-    // Check to see if the container exists
-    if (protocol.exists(id)) {
-      LOG.info("Removing " + getId());
-
-      protocol.deleteContainer(id);
+      try {
+        protocol.stopContainer(id, timeout);
+        this.running = false;
+      } catch (RuntimeException e) {
+        LOG.log(Level.WARNING, "Unable to stop container: " + e.getMessage(), e);
+      }
     }
   }
 

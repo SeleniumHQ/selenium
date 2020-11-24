@@ -34,3 +34,9 @@ then
   echo "Generating CDP code for version 86"
   bazel build //dotnet/src/webdriver/cdp:generate-v86
 fi
+
+if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v87/DevToolsSessionDomains.cs" ]]
+then
+  echo "Generating CDP code for version 87"
+  bazel build //dotnet/src/webdriver/cdp:generate-v87
+fi

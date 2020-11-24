@@ -29,10 +29,12 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.ReferenceCountUtil;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +45,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import static io.netty.handler.codec.http.HttpMethod.HEAD;
 import static org.openqa.selenium.remote.http.Contents.memoize;
 
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
@@ -80,6 +83,11 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       if (req == null) {
         return;
       }
+
+      req.setAttribute(AttributeKey.HTTP_SCHEME.getKey(),
+        nettyRequest.protocolVersion().protocolName());
+      req.setAttribute(AttributeKey.HTTP_FLAVOR.getKey(),
+        nettyRequest.protocolVersion().majorVersion());
 
       out = new PipedOutputStream();
       InputStream in = new PipedInputStream(out);
@@ -119,17 +127,24 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
     // Attempt to map the netty method
     HttpMethod method;
-    try {
-      method = HttpMethod.valueOf(nettyRequest.method().name());
-    } catch (IllegalArgumentException e) {
-      ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
-      return null;
+    if (nettyRequest.method().equals(HEAD)) {
+      method = HttpMethod.GET;
+    } else {
+      try {
+        method = HttpMethod.valueOf(nettyRequest.method().name());
+      } catch (IllegalArgumentException e) {
+        ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
+        return null;
+      }
     }
 
+    QueryStringDecoder decoder = new QueryStringDecoder(nettyRequest.uri());
 
     HttpRequest req = new HttpRequest(
       method,
-      nettyRequest.uri());
+      decoder.path());
+
+    decoder.parameters().forEach((key, values) -> values.forEach(value -> req.addQueryParameter(key, value)));
 
     nettyRequest.headers().entries().stream()
       .filter(entry -> entry.getKey() != null)

@@ -156,6 +156,8 @@ const Name = {
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
 
+  PRINT_PAGE: 'printPage',
+
   GET_TIMEOUT: 'getTimeout',
   SET_TIMEOUT: 'setTimeout',
 

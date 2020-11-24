@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,7 +57,7 @@ public class UrlChecker {
     long start = System.nanoTime();
     log.fine("Waiting for " + Arrays.toString(urls));
     try {
-      Future<Void> callback = EXECUTOR.submit((Callable<Void>) () -> {
+      Future<Void> callback = EXECUTOR.submit(() -> {
         HttpURLConnection connection = null;
 
         long sleepMillis = MIN_POLL_INTERVAL_MS;
@@ -103,7 +102,7 @@ public class UrlChecker {
     long start = System.nanoTime();
     log.fine("Waiting for " + url);
     try {
-      Future<Void> callback = EXECUTOR.submit((Callable<Void>) () -> {
+      Future<Void> callback = EXECUTOR.submit(() -> {
         HttpURLConnection connection = null;
 
         long sleepMillis = MIN_POLL_INTERVAL_MS;

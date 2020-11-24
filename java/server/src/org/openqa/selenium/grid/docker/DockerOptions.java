@@ -37,8 +37,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -97,7 +95,7 @@ public class DockerOptions {
   }
 
   private boolean isEnabled(HttpClient.Factory clientFactory) {
-    if (config.getAll(DOCKER_SECTION, "configs").isEmpty()) {
+    if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
       return false;
     }
 
@@ -139,7 +137,6 @@ public class DockerOptions {
     if (isVideoRecordingAvailable()) {
       loadImages(docker, videoImage.getName());
     }
-    Path storagePath = getStoragePath();
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
     ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
@@ -147,10 +144,21 @@ public class DockerOptions {
       Image image = docker.getImage(name);
       for (int i = 0; i < maxContainerCount; i++) {
         if (isVideoRecordingAvailable()) {
-          factories.put(caps,
-              new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps, videoImage, storagePath));
+          factories.put(
+            caps,
+            new DockerSessionFactory(
+              tracer,
+              clientFactory,
+              docker,
+              getDockerUri(),
+              image,
+              caps,
+              videoImage,
+              getAssetsPath()));
         } else {
-          factories.put(caps, new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
+          factories.put(
+            caps,
+            new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
         }
       }
       LOG.info(String.format(
@@ -163,7 +171,8 @@ public class DockerOptions {
   }
 
   private boolean isVideoRecordingAvailable() {
-    return config.get(DOCKER_SECTION, "video-image").isPresent() && config.get(DOCKER_SECTION, "video-path").isPresent();
+    return config.get(DOCKER_SECTION, "video-image").isPresent()
+           && config.get(DOCKER_SECTION, "assets-path").isPresent();
   }
 
   private Image getVideoImage(Docker docker) {
@@ -171,18 +180,25 @@ public class DockerOptions {
     return videoImage.map(docker::getImage).orElse(null);
   }
 
-  private Path getStoragePath() {
-    String storagePath = config.get(DOCKER_SECTION, "video-path").orElse("");
-    if (Files.isDirectory(Path.of(storagePath))) {
-      return Path.of(storagePath);
+  private DockerSessionAssetsPath getAssetsPath() {
+    Optional<String> hostAssetsPath = config.get(DOCKER_SECTION, "assets-path");
+    Optional<String> containerAssetsPath = config.get(DOCKER_SECTION, "container-assets-path");
+    if (hostAssetsPath.isPresent() && containerAssetsPath.isPresent()) {
+      return new DockerSessionAssetsPath(hostAssetsPath.get(), containerAssetsPath.get());
+    } else if (hostAssetsPath.isPresent()) {
+      // If only the host assets path is present, we assume this is not running inside a container.
+      return new DockerSessionAssetsPath(hostAssetsPath.get(), hostAssetsPath.get());
     }
+    // We should not reach this point because the invocation to this method is
+    // guarded by `isVideoRecordingAvailable()`
     return null;
   }
 
   private void loadImages(Docker docker, String... imageNames) {
     CompletableFuture<Void> cd = CompletableFuture.allOf(
         Arrays.stream(imageNames)
-            .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name))).toArray(CompletableFuture[]::new));
+            .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name)))
+          .toArray(CompletableFuture[]::new));
 
     try {
       cd.get();

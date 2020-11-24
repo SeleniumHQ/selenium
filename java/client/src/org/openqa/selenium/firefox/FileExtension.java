@@ -33,10 +33,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -129,7 +129,7 @@ public class FileExtension implements Extension {
   private String readIdFromManifestJson(File root) {
     final String MANIFEST_JSON_FILE = "manifest.json";
     File manifestJsonFile = new File(root, MANIFEST_JSON_FILE);
-    try (Reader reader = new FileReader(manifestJsonFile, UTF_8);
+    try (Reader reader = Files.newBufferedReader(manifestJsonFile.toPath(), UTF_8);
          JsonInput json = new Json().newInput(reader)) {
       String addOnId = null;
 
@@ -194,7 +194,7 @@ public class FileExtension implements Extension {
 
       Node idNode = (Node) xpath.compile("//em:id").evaluate(doc, XPathConstants.NODE);
 
-      String id = null;
+      String id;
       if (idNode == null) {
         Node descriptionNode =
             (Node) xpath.compile("//RDF:Description").evaluate(doc, XPathConstants.NODE);

@@ -40,6 +40,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_PROPERTY;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
@@ -156,6 +157,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
     defineCommand(ACTIONS, post(sessionId + "/actions"));
     defineCommand(CLEAR_ACTIONS_STATE, delete(sessionId + "/actions"));
+
+    String elementId = sessionId + "/element/:id";
+    defineCommand(GET_ELEMENT_PROPERTY, get(elementId + "/property/:name"));
 
     // Emulate the old Actions API since everyone still likes to call these things.
     alias(CLICK, ACTIONS);
@@ -431,7 +435,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   private String cssEscape(String using) {
     using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
     if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
-      using = "\\" + Integer.toString(30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+      using = "\\" + (30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
     }
     return using;
   }

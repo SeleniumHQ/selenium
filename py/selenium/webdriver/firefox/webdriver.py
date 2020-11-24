@@ -111,7 +111,7 @@ class WebDriver(RemoteWebDriver):
                           DeprecationWarning, stacklevel=2)
         self.binary = None
         if firefox_profile is not None:
-            warnings.warn('firefox_profile has been deprecated, please pass in a Service object',
+            warnings.warn('firefox_profile has been deprecated, please pass in an Options object',
                           DeprecationWarning, stacklevel=2)
         self.profile = None
 

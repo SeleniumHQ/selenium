@@ -42,9 +42,7 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
     devtools.send(disableRuntime());
     devtools.send(disablePage());
 
-    pinnedScripts.values().forEach(id -> {
-      removeScriptToEvaluateOnNewDocument(id.getActualId());
-    });
+    pinnedScripts.values().forEach(id -> removeScriptToEvaluateOnNewDocument(id.getActualId()));
 
     pinnedScripts.clear();
   }

@@ -41,21 +41,37 @@ namespace OpenQA.Selenium.DevToolsGenerator
                 .BuildServiceProvider();
 
             //Get the protocol Data.
-            Console.WriteLine("Loading protocol definition...");
+            if (!cliArguments.Quiet)
+            {
+                Console.WriteLine("Loading protocol definition...");
+            }
+
             var protocolDefinitionData = GetProtocolDefinitionData(cliArguments);
 
             var protocolDefinition = protocolDefinitionData.ToObject<ProtocolDefinition.ProtocolDefinition>(new JsonSerializer() { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
 
             //Begin the code generation process.
-            Console.WriteLine("Generating protocol definition code files...");
+            if (!cliArguments.Quiet)
+            {
+                Console.WriteLine("Generating protocol definition code files...");
+            }
+
             var protocolGenerator = serviceProvider.GetRequiredService<ICodeGenerator<ProtocolDefinition.ProtocolDefinition>>();
             var codeFiles = protocolGenerator.GenerateCode(protocolDefinition, null);
 
             //Delete the output folder if force is specified and it exists...
-            Console.WriteLine("Writing generated code files to {0}...", cliArguments.OutputPath);
+            if (!cliArguments.Quiet)
+            {
+                Console.WriteLine("Writing generated code files to {0}...", cliArguments.OutputPath);
+            }
+
             if (Directory.Exists(cliArguments.OutputPath) && cliArguments.ForceOverwrite)
             {
-                Console.WriteLine("Generating protocol definition project...");
+                if (!cliArguments.Quiet)
+                {
+                    Console.WriteLine("Generating protocol definition project...");
+                }
+
                 Directory.Delete(cliArguments.OutputPath, true);
             }
 
@@ -84,7 +100,11 @@ namespace OpenQA.Selenium.DevToolsGenerator
             }
 
             //Completed.
-            Console.WriteLine("All done!");
+            if (!cliArguments.Quiet)
+            {
+                Console.WriteLine("All done!");
+            }
+
             return 0;
         }
 

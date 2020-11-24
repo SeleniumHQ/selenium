@@ -189,6 +189,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(CHROME)
   @NotYetImplemented(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     assertThatCode(
@@ -213,6 +214,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(CHROME)
   @NotYetImplemented(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be

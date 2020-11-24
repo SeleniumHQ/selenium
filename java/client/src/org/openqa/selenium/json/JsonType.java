@@ -28,5 +28,4 @@ public enum JsonType {
   END_COLLECTION,
   STRING,
   END
-  ;
 }

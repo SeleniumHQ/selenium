@@ -43,7 +43,7 @@ class UuidCoercer extends TypeCoercer<UUID> {
           break;
 
         default:
-          throw new JsonException("Unable to coerce type to URL: " + jsonInput.peek());
+          throw new JsonException("Unable to coerce type to UUID: " + jsonInput.peek());
       }
 
       return UUID.fromString(toCoerce);

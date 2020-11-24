@@ -31,7 +31,7 @@ import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.ProxyNodeCdp;
-import org.openqa.selenium.grid.node.local.LocalNodeFactory;
+import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
@@ -41,6 +41,11 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.web.ClassPathResource;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.NoHandler;
@@ -69,6 +74,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 
@@ -89,7 +95,7 @@ public class Standalone extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE);
+    return ImmutableSet.of(HTTPD_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -136,10 +142,26 @@ public class Standalone extends TemplateGridServerCommand {
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     combinedHandler.addHandler(sessions);
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+
+    NewSessionQueueOptions newSessionQueueOptions = new NewSessionQueueOptions(config);
+    NewSessionQueue sessionRequests = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeout());
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests);
+    combinedHandler.addHandler(queuer);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
     combinedHandler.addHandler(distributor);
 
-    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
       .with(networkOptions.getSpecComplianceChecks());
 
     HttpHandler readinessCheck = req -> {
@@ -170,7 +192,7 @@ public class Standalone extends TemplateGridServerCommand {
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 
-    Node node = LocalNodeFactory.create(config);
+    Node node = new NodeOptions(config).getNode();
     combinedHandler.addHandler(node);
     distributor.add(node);
 

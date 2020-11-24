@@ -147,6 +147,7 @@ def testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView(driver,
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_chrome
 def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame(driver, pages):
     pages.load("scrolling_tests/page_with_nested_scrolling_frames.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))
@@ -158,6 +159,7 @@ def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_chrome
 def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "scrolling_frame"))

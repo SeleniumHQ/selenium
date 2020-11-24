@@ -17,8 +17,10 @@
 
 package org.openqa.testing;
 
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -35,7 +37,8 @@ public class FakeHttpServletResponse extends HeaderContainer
   private final StringWriter stringWriter = new StringWriter();
   private final ServletOutputStream servletOutputStream =
       new StringServletOutputStream(stringWriter);
-  private final PrintWriter printWriter = new PrintWriter(servletOutputStream, false, UTF_8);
+  private final Writer writer = new OutputStreamWriter(servletOutputStream, UTF_8);
+  private final PrintWriter printWriter = new PrintWriter(writer);
   private int status = HttpServletResponse.SC_OK;
 
   @Override

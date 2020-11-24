@@ -36,9 +36,7 @@ java_library(
         "@com_google_javascript_closure_library",
     ],
     javacopts = [
-        "-source",
-        "11",
-        "-target",
+        "--release",
         "11",
     ],
     visibility = [
@@ -55,20 +53,16 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//java/server/src/org/openqa/selenium/jre/server",
+        "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.google.guava:guava"),
-        artifact("org.eclipse.jetty:jetty-http"),
-        artifact("org.eclipse.jetty:jetty-server"),
-        artifact("org.eclipse.jetty:jetty-servlet"),
-        artifact("org.eclipse.jetty:jetty-util"),
-        artifact("javax.servlet:javax.servlet-api"),
+        artifact("org.assertj:assertj-core"),
     ],
 )
 
 java_binary(
     name = "appserver",
     testonly = True,
-    main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
+    main_class = "org.openqa.selenium.environment.webserver.NettyAppServer",
     visibility = [
         "//:__pkg__",
         "//dotnet/test:__subpackages__",

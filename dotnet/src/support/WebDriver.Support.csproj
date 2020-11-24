@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net5.0;net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>WebDriver.Support</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
     <BuildSystem>visual-studio</BuildSystem>

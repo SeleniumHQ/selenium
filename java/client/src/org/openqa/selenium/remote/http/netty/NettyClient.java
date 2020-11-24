@@ -92,8 +92,7 @@ public class NettyClient implements HttpClient {
     private void callAsyncClientShutdown() {
       try {
         httpClient.close();
-      } catch (IOException e) {
-        e.printStackTrace();
+      } catch (IOException ignore) {
       }
     }
 

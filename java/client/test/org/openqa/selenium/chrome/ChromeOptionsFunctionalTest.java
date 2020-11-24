@@ -29,6 +29,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -52,6 +53,9 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   @Test
   public void canStartChromeWithCustomOptions() {
     ChromeOptions options = new ChromeOptions();
+    if (TestUtilities.isOnTravis()) {
+      options.setHeadless(true);
+    }
     options.addArguments("user-agent=foo;bar");
     driver = new ChromeDriver(options);
 
@@ -74,6 +78,9 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   @Test
   public void canSetAcceptInsecureCerts() {
     ChromeOptions options = new ChromeOptions();
+    if (TestUtilities.isOnTravis()) {
+      options.setHeadless(true);
+    }
     options.setAcceptInsecureCerts(true);
     driver = new ChromeDriver(options);
 
@@ -84,6 +91,9 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   @Test
   public void canAddExtensionFromFile() {
     ChromeOptions options = new ChromeOptions();
+    if (TestUtilities.isOnTravis()) {
+      options.setHeadless(true);
+    }
     options.addExtensions(InProject.locate(EXT_PATH).toFile());
     driver = new ChromeDriver(options);
 
@@ -100,8 +110,11 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   @Test
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     ChromeOptions options = new ChromeOptions();
+    if (TestUtilities.isOnTravis()) {
+      options.setHeadless(true);
+    }
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(
-        Files.readAllBytes(InProject.locate(EXT_PATH))));
+      Files.readAllBytes(InProject.locate(EXT_PATH))));
     driver = new ChromeDriver(options);
 
     driver.get(pages.clicksPage);

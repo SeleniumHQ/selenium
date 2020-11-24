@@ -35,6 +35,9 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -45,23 +48,32 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
-import java.util.List;
+import java.time.Duration;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import com.google.common.collect.ImmutableMap;
 
 public class GraphqlHandlerTest {
 
@@ -73,6 +85,7 @@ public class GraphqlHandlerTest {
   private ImmutableCapabilities caps;
   private ImmutableCapabilities stereotype;
   private NewSessionPayload payload;
+  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
 
   public GraphqlHandlerTest() throws URISyntaxException {
   }
@@ -84,10 +97,24 @@ public class GraphqlHandlerTest {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    distributor = new LocalDistributor(tracer, events, clientFactory, sessions, registrationSecret);
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
     payload = NewSessionPayload.create(caps);
+
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      events,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+
+    distributor = new LocalDistributor(
+      tracer,
+      events,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
   }
 
   @Test
@@ -96,7 +123,11 @@ public class GraphqlHandlerTest {
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { uri } }");
 
-    assertThat(topLevel).isEqualTo(Map.of("data", Map.of("grid", Map.of("uri", publicUri.toString()))));
+    assertThat(topLevel).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "grid", singletonMap(
+            "uri", publicUri.toString()))));
   }
 
   @Test
@@ -105,9 +136,11 @@ public class GraphqlHandlerTest {
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { nodes { uri } } }");
 
-    assertThat(topLevel)
-      .describedAs(topLevel.toString())
-      .isEqualTo(Map.of("data", Map.of("grid", Map.of("nodes", List.of()))));
+    assertThat(topLevel).describedAs(topLevel.toString()).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "grid", singletonMap(
+            "nodes", Collections.emptyList()))));
   }
 
   @Test
@@ -128,13 +161,16 @@ public class GraphqlHandlerTest {
       })
       .build();
     distributor.add(node);
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { nodes { uri } } }");
 
-    assertThat(topLevel)
-      .describedAs(topLevel.toString())
-      .isEqualTo(Map.of("data", Map.of("grid", Map.of("nodes", List.of(Map.of("uri", nodeUri))))));
+    assertThat(topLevel).describedAs(topLevel.toString()).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "grid", singletonMap(
+            "nodes", singletonList(singletonMap("uri", nodeUri))))));
   }
 
   @Test
@@ -143,15 +179,16 @@ public class GraphqlHandlerTest {
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
-            id,
-            nodeUri,
-            stereotype,
-            caps,
-            Instant.now()))).build();
+      .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
+        id,
+        nodeUri,
+        stereotype,
+        caps,
+        Instant.now()))).build();
 
     distributor.add(node);
-    Session session = distributor.newSession(createRequest(payload)).getSession();
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
     assertThat(session).isNotNull();
     String sessionId = session.getId().toString();
@@ -161,26 +198,28 @@ public class GraphqlHandlerTest {
     Slot slot = slots.stream().findFirst().get();
 
     org.openqa.selenium.grid.graphql.Session graphqlSession =
-        new org.openqa.selenium.grid.graphql.Session(sessionId,
-                                                     session.getCapabilities(),
-                                                     session.getStartTime(),
-                                                     session.getUri(),
-                                                     node.getId().toString(),
-                                                     node.getUri(),
-                                                     slot);
-    String query = "{ session (id: \"" + sessionId + "\") { id, capabilities, startTime, uri } }";
+      new org.openqa.selenium.grid.graphql.Session(
+        sessionId,
+        session.getCapabilities(),
+        session.getStartTime(),
+        session.getUri(),
+        node.getId().toString(),
+        node.getUri(),
+        slot);
+    String query = String.format(
+      "{ session (id: \"%s\") { id, capabilities, startTime, uri } }", sessionId);
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> result = executeQuery(handler, query);
 
-    assertThat(result)
-        .describedAs(result.toString())
-        .isEqualTo(Map.of(
-            "data", Map.of("session",
-                           Map.of("id", sessionId,
-                                  "capabilities", graphqlSession.getCapabilities(),
-                                  "startTime", graphqlSession.getStartTime(),
-                                  "uri", graphqlSession.getUri().toString()))));
+    assertThat(result).describedAs(result.toString()).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "session", ImmutableMap.of(
+            "id", sessionId,
+            "capabilities", graphqlSession.getCapabilities(),
+            "startTime", graphqlSession.getStartTime(),
+            "uri", graphqlSession.getUri().toString()))));
   }
 
   @Test
@@ -189,15 +228,16 @@ public class GraphqlHandlerTest {
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
-            id,
-            nodeUri,
-            stereotype,
-            caps,
-            Instant.now()))).build();
+      .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
+        id,
+        nodeUri,
+        stereotype,
+        caps,
+        Instant.now()))).build();
 
     distributor.add(node);
-    Session session = distributor.newSession(createRequest(payload)).getSession();
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
     assertThat(session).isNotNull();
     String sessionId = session.getId().toString();
@@ -207,25 +247,25 @@ public class GraphqlHandlerTest {
     Slot slot = slots.stream().findFirst().get();
 
     org.openqa.selenium.grid.graphql.Session graphqlSession =
-        new org.openqa.selenium.grid.graphql.Session(sessionId,
-                                                     session.getCapabilities(),
-                                                     session.getStartTime(),
-                                                     session.getUri(),
-                                                     node.getId().toString(),
-                                                     node.getUri(),
-                                                     slot);
-    String query = "{ session (id: \"" + sessionId + "\") { nodeId, nodeUri } }";
+      new org.openqa.selenium.grid.graphql.Session(
+        sessionId,
+        session.getCapabilities(),
+        session.getStartTime(),
+        session.getUri(),
+        node.getId().toString(),
+        node.getUri(),
+        slot);
+    String query = String.format("{ session (id: \"%s\") { nodeId, nodeUri } }", sessionId);
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> result = executeQuery(handler, query);
 
-    assertThat(result)
-        .describedAs(result.toString())
-        .isEqualTo(Map.of(
-            "data", Map.of("session",
-                           Map.of("nodeId", graphqlSession.getNodeId(),
-                                  "nodeUri",
-                                  graphqlSession.getNodeUri().toString()))));
+    assertThat(result).describedAs(result.toString()).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "session", ImmutableMap.of(
+            "nodeId", graphqlSession.getNodeId(),
+            "nodeUri", graphqlSession.getNodeUri().toString()))));
   }
 
   @Test
@@ -234,15 +274,16 @@ public class GraphqlHandlerTest {
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
-            id,
-            nodeUri,
-            stereotype,
-            caps,
-            Instant.now()))).build();
+      .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
+        id,
+        nodeUri,
+        stereotype,
+        caps,
+        Instant.now()))).build();
 
     distributor.add(node);
-    Session session = distributor.newSession(createRequest(payload)).getSession();
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
     assertThat(session).isNotNull();
     String sessionId = session.getId().toString();
@@ -252,31 +293,31 @@ public class GraphqlHandlerTest {
     Slot slot = slots.stream().findFirst().get();
 
     org.openqa.selenium.grid.graphql.Session graphqlSession =
-        new org.openqa.selenium.grid.graphql.Session(sessionId,
-                                                     session.getCapabilities(),
-                                                     session.getStartTime(),
-                                                     session.getUri(),
-                                                     node.getId().toString(),
-                                                     node.getUri(),
-                                                     slot);
+      new org.openqa.selenium.grid.graphql.Session(
+        sessionId,
+        session.getCapabilities(),
+        session.getStartTime(),
+        session.getUri(),
+        node.getId().toString(),
+        node.getUri(),
+        slot);
 
     org.openqa.selenium.grid.graphql.Slot graphqlSlot = graphqlSession.getSlot();
 
-    String query =
-        "{ session (id: \"" + sessionId + "\") { slot { id, stereotype, lastStarted } } }";
+    String query = String.format(
+      "{ session (id: \"%s\") { slot { id, stereotype, lastStarted } } }", sessionId);
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> result = executeQuery(handler, query);
 
-    assertThat(result)
-        .describedAs(result.toString())
-        .isEqualTo(Map.of(
-            "data", Map.of("session",
-                           Map.of("slot",
-                                  Map.of("id", graphqlSlot.getId(),
-                                         "stereotype", graphqlSlot.getStereotype(),
-                                         "lastStarted",
-                                         graphqlSlot.getLastStarted())))));
+    assertThat(result).describedAs(result.toString()).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "session", singletonMap(
+            "slot", ImmutableMap.of(
+              "id", graphqlSlot.getId(),
+              "stereotype", graphqlSlot.getStereotype(),
+              "lastStarted", graphqlSlot.getLastStarted())))));
   }
 
   @Test
@@ -285,28 +326,29 @@ public class GraphqlHandlerTest {
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
-            id,
-            nodeUri,
-            stereotype,
-            caps,
-            Instant.now()))).build();
+      .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
+        id,
+        nodeUri,
+        stereotype,
+        caps,
+        Instant.now()))).build();
 
     distributor.add(node);
-    Session session = distributor.newSession(createRequest(payload)).getSession();
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
     assertThat(session).isNotNull();
     String sessionId = session.getId().toString();
 
-    String query = "{ session (id: \"" + sessionId + "\") { sessionDurationMillis } }";
+    String query = String.format("{ session (id: \"%s\") { sessionDurationMillis } }", sessionId);
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> result = executeQuery(handler, query);
 
-    Map<String, Object> dataMap = (Map<String, Object>) result.get("data");
-    Map<String, Object> sessionMap = (Map<String, Object>) dataMap.get("session");
-
-    assertThat(sessionMap.containsKey("sessionDurationMillis")).isTrue();
+    assertThat(result)
+      .containsOnlyKeys("data")
+      .extracting("data").asInstanceOf(MAP).containsOnlyKeys("session")
+      .extracting("session").asInstanceOf(MAP).containsOnlyKeys("sessionDurationMillis");
   }
 
   @Test
@@ -315,33 +357,28 @@ public class GraphqlHandlerTest {
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
-            id,
-            nodeUri,
-            stereotype,
-            caps,
-            Instant.now()))).build();
+      .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
+        id,
+        nodeUri,
+        stereotype,
+        caps,
+        Instant.now()))).build();
 
     distributor.add(node);
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     String randomSessionId = UUID.randomUUID().toString();
     String query = "{ session (id: \"" + randomSessionId + "\") { sessionDurationMillis } }";
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> result = executeQuery(handler, query);
-    assertThat(result.get("data")).isNull();
-
-    List<Map<String, Object>> errors = (List<Map<String, Object>>) result.get("errors");
-
-    assertThat(errors).isNotNull();
-    assertThat(errors).element(0).isNotNull();
-
-    Map<String, Object> error = errors.get(0);
-
-    Map<String, Object> extensions = (Map<String, Object>) error.get("extensions");
-
-    String sessionId = (String) extensions.get("sessionId");
-    assertThat(sessionId).isEqualTo(randomSessionId);
+    assertThat(result)
+      .containsEntry("data", null)
+      .containsKey("errors")
+      .extracting("errors").asInstanceOf(LIST).isNotEmpty()
+      .element(0).asInstanceOf(MAP).containsKey("extensions")
+      .extracting("extensions").asInstanceOf(MAP).containsKey("sessionId")
+      .extracting("sessionId").isEqualTo(randomSessionId);
   }
 
   @Test
@@ -350,31 +387,30 @@ public class GraphqlHandlerTest {
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
-            id,
-            nodeUri,
-            stereotype,
-            caps,
-            Instant.now()))).build();
+      .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
+        id,
+        nodeUri,
+        stereotype,
+        caps,
+        Instant.now()))).build();
 
     distributor.add(node);
+    wait.until(obj -> distributor.getStatus().hasCapacity());
 
     String query = "{ session (id: \"\") { sessionDurationMillis } }";
 
     GraphqlHandler handler = new GraphqlHandler(distributor, publicUri);
     Map<String, Object> result = executeQuery(handler, query);
-    assertThat(result.get("data")).isNull();
-
-    List<Map<String, Object>> errors = (List<Map<String, Object>>) result.get("errors");
-
-    assertThat(errors).isNotNull();
-    assertThat(errors).element(0).isNotNull();
+    assertThat(result)
+      .containsEntry("data", null)
+      .containsKey("errors")
+      .extracting("errors").asInstanceOf(LIST).isNotEmpty();
   }
 
   private Map<String, Object> executeQuery(HttpHandler handler, String query) {
     HttpResponse res = handler.execute(
       new HttpRequest(GET, "/graphql")
-        .setContent(Contents.asJson(Map.of("query", query))));
+        .setContent(Contents.asJson(singletonMap("query", query))));
 
     return new Json().toType(Contents.string(res), MAP_TYPE);
   }

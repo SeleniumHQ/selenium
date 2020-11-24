@@ -17,19 +17,22 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.common.AttributeConsumer;
-import io.opentelemetry.common.AttributeKey;
-import io.opentelemetry.common.Attributes;
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.common.AttributeConsumer;
+import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.context.propagation.ContextPropagators;
+import io.opentelemetry.context.propagation.DefaultContextPropagators;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-import io.opentelemetry.sdk.trace.TracerSdkProvider;
+import io.opentelemetry.sdk.trace.TracerSdkManagement;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
+import io.opentelemetry.api.trace.propagation.HttpTraceContext;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -99,24 +102,25 @@ public class LoggingOptions {
 
     LOG.info("Using OpenTelemetry for tracing");
 
-    if (tracer != null) {
-      return tracer;
-    }
-
-    synchronized (LoggingOptions.class) {
-      if (tracer == null) {
-        tracer = createTracer();
+    Tracer localTracer = tracer;
+    if (localTracer == null) {
+      synchronized (LoggingOptions.class) {
+        localTracer = tracer;
+        if (localTracer == null) {
+          localTracer = createTracer();
+          tracer = localTracer;
+        }
       }
     }
-    return tracer;
+    return localTracer;
   }
 
   private Tracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
-    TracerSdkProvider tracerFactory = (TracerSdkProvider) OpenTelemetrySdk.getTracerManagement();
+    TracerSdkManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
 
     List<SpanProcessor> exporters = new LinkedList<>();
-    exporters.add(SimpleSpanProcessor.newBuilder(new SpanExporter() {
+    exporters.add(SimpleSpanProcessor.builder(new SpanExporter() {
       @Override
       public CompletableResultCode export(Collection<SpanData> spans) {
 
@@ -140,7 +144,7 @@ public class LoggingOptions {
 
             attributes.forEach(new AttributeConsumer() {
               @Override
-              public <T> void consume(AttributeKey<T> key, T value) {
+              public <T> void accept(AttributeKey<T> key, T value) {
                 attributeMap.put(key.getKey(), value);
               }
             });
@@ -173,12 +177,17 @@ public class LoggingOptions {
     // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
-      exporter -> exporters.add(SimpleSpanProcessor.newBuilder(exporter).build()));
-    tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
+      exporter -> exporters.add(SimpleSpanProcessor.builder(exporter).build()));
+    tracerManagement.addSpanProcessor(MultiSpanProcessor.create(exporters));
+
+    // OpenTelemetry default propagators are no-op since version 0.9.0.
+    // Hence, required propagators need to defined and added.
+    ContextPropagators propagators = DefaultContextPropagators.builder()
+      .addTextMapPropagator(HttpTraceContext.getInstance()).build();
 
     return new OpenTelemetryTracer(
-      tracerFactory.get("default"),
-      OpenTelemetry.getPropagators().getTextMapPropagator());
+      OpenTelemetry.getGlobalTracer("default"),
+      propagators.getTextMapPropagator());
   }
 
   public void configureLogging() {
@@ -200,42 +209,33 @@ public class LoggingOptions {
     String encoding = getLogEncoding();
 
     if (isUsingPlainLogs()) {
-      String message;
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter());
-      try {
-        if (encoding != null) {
-          handler.setEncoding(encoding);
-          message = String.format("Using encoding %s", encoding);
-        } else {
-          message = "Using the system default encoding";
-        }
-      } catch (UnsupportedEncodingException e) {
-        message =
-            String.format("Using the system default encoding. Unsupported encoding %s", encoding);
-      }
-      logger.addHandler(handler);
-      logger.log(Level.INFO, message);
+      configureLogEncoding(logger, encoding, handler);
     }
 
     if (isUsingStructuredLogging()) {
-      String message;
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
-      try {
-        if (encoding != null) {
-          handler.setEncoding(encoding);
-          message = String.format("Using encoding %s", encoding);
-        } else {
-          message = "Using the system default encoding";
-        }
-      } catch (UnsupportedEncodingException e) {
-        message =
-            String.format("Using the system default encoding. Unsupported encoding %s", encoding);
-      }
-      logger.addHandler(handler);
-      logger.log(Level.INFO, message);
+      configureLogEncoding(logger, encoding, handler);
     }
+  }
+
+  private void configureLogEncoding(Logger logger, String encoding, Handler handler) {
+    String message;
+    try {
+      if (encoding != null) {
+        handler.setEncoding(encoding);
+        message = String.format("Using encoding %s", encoding);
+      } else {
+        message = "Using the system default encoding";
+      }
+    } catch (UnsupportedEncodingException e) {
+      message =
+          String.format("Using the system default encoding. Unsupported encoding %s", encoding);
+    }
+    logger.addHandler(handler);
+    logger.log(Level.INFO, message);
   }
 
   private OutputStream getOutputStream() {

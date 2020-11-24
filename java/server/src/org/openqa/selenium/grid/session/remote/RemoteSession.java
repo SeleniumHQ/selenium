@@ -59,7 +59,7 @@ import static org.openqa.selenium.remote.Dialect.OSS;
  */
 public abstract class RemoteSession implements ActiveSession {
 
-  protected final static Logger LOG = Logger.getLogger(ActiveSession.class.getName());
+  private static final Logger LOG = Logger.getLogger(ActiveSession.class.getName());
 
   private final SessionId id;
   private final Dialect downstream;

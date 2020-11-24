@@ -184,11 +184,14 @@ public interface DriverCommand {
   static CommandPayload GET_ELEMENT_SIZE(String id) {
     return new CommandPayload(GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
   }
+  String GET_ELEMENT_PROPERTY = "getElementProperty";
+  static CommandPayload GET_ELEMENT_PROPERTY(String id, String name) {
+    return new CommandPayload(GET_ELEMENT_PROPERTY, ImmutableMap.of("id", id, "name", name));
+  }
   String GET_ELEMENT_ATTRIBUTE = "getElementAttribute";
   static CommandPayload GET_ELEMENT_ATTRIBUTE(String id, String name) {
     return new CommandPayload(GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name));
   }
-  String GET_ELEMENT_PROPERTY = "getElementProperty";
   String GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty";
   static CommandPayload GET_ELEMENT_VALUE_OF_CSS_PROPERTY(String id, String name) {
     return new CommandPayload(GET_ELEMENT_VALUE_OF_CSS_PROPERTY, ImmutableMap.of("id", id, "propertyName", name));

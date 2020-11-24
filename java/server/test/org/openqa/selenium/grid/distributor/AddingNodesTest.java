@@ -43,6 +43,8 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -100,7 +102,20 @@ public class AddingNodesTest {
       HttpClient.Factory.createDefault());
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    Distributor local = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
+
     handler.addHandler(local);
     distributor = new RemoteDistributor(tracer, clientFactory, externalUrl, registrationSecret);
 
@@ -136,12 +151,24 @@ public class AddingNodesTest {
     Secret registrationSecret = new Secret("my_secret");
 
     Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
-        .build();
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+      .build();
     handler.addHandler(node);
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    Distributor secretDistributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    Distributor secretDistributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
 
     bus.fire(new NodeStatusEvent(node.getStatus()));
 
@@ -164,7 +191,19 @@ public class AddingNodesTest {
     handler.addHandler(node);
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    Distributor secretDistributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    Distributor secretDistributor = new LocalDistributor(
+        tracer,
+        bus,
+        clientFactory,
+        sessions,
+        queuer,
+        registrationSecret);
 
     bus.fire(new NodeStatusEvent(node.getStatus()));
 

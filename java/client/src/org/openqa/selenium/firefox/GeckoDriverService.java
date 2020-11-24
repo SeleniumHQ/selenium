@@ -217,14 +217,19 @@ public class GeckoDriverService extends FirefoxDriverService {
         GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment);
         String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
         if (firefoxLogFile != null) { // System property has higher precedence
-          if ("/dev/stdout".equals(firefoxLogFile)) {
-            service.sendOutputTo(System.out);
-          } else if ("/dev/stderr".equals(firefoxLogFile)) {
-            service.sendOutputTo(System.err);
-          } else if ("/dev/null".equals(firefoxLogFile)) {
-            service.sendOutputTo(ByteStreams.nullOutputStream());
-          } else {
-            service.sendOutputTo(new FileOutputStream(firefoxLogFile));
+          switch (firefoxLogFile) {
+            case "/dev/stdout":
+              service.sendOutputTo(System.out);
+              break;
+            case "/dev/stderr":
+              service.sendOutputTo(System.err);
+              break;
+            case "/dev/null":
+              service.sendOutputTo(ByteStreams.nullOutputStream());
+              break;
+            default:
+              service.sendOutputTo(new FileOutputStream(firefoxLogFile));
+              break;
           }
         } else {
           if (getLogFile() != null) {

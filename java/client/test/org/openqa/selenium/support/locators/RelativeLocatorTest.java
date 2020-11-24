@@ -41,7 +41,7 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     List<WebElement> elements = driver.findElements(withTagName("p").above(lowest));
     List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-    assertThat(ids).isEqualTo(Arrays.asList("above", "mid"));
+    assertThat(ids).isEqualTo(Arrays.asList("mid", "above"));
   }
 
   @Test

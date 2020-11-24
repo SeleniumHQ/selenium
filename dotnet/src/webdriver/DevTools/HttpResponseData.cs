@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 
 namespace OpenQA.Selenium.DevTools
@@ -27,19 +28,31 @@ namespace OpenQA.Selenium.DevTools
     /// </summary>
     public class HttpResponseData
     {
+        private Dictionary<string, string> headers = new Dictionary<string, string>();
+
         /// <summary>
-        /// The numeric status code of the HTTP response.
+        /// Gets or sets the URL of the HTTP response.
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
+        /// Gets or sets the numeric status code of the HTTP response.
         /// </summary>
         public long StatusCode { get; set; }
 
         /// <summary>
-        /// The body of the HTTP response.
+        /// Gets or sets the body of the HTTP response.
         /// </summary>
         public string Body { get; set; }
 
         /// <summary>
-        /// The headers of the HTTP response.
+        /// Gets or sets the type of resource for this response.
         /// </summary>
-        public Dictionary<string, string> Headers { get; set; }
+        public string ResourceType { get; set; }
+
+        /// <summary>
+        /// Gets the headers of the HTTP response.
+        /// </summary>
+        public Dictionary<string, string> Headers => this.headers;
     }
 }

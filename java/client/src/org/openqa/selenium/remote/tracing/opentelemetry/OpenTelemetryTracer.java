@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
-import io.grpc.Context;
+import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
-import io.opentelemetry.trace.Tracer;
+import io.opentelemetry.api.trace.Tracer;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;

@@ -4,6 +4,7 @@ SUPPORTED_DEVTOOLS_VERSIONS = [
     "v84",
     "v85",
     "v86",
+    "v87",
 ]
 
 [generate_devtools(

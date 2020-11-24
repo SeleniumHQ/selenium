@@ -22,6 +22,7 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -35,10 +36,12 @@ public class RemoveFromSessionQueue implements HttpHandler {
 
   private final Tracer tracer;
   private final NewSessionQueuer newSessionQueuer;
+  private final RequestId id;
 
-  RemoveFromSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer) {
+  RemoveFromSessionQueue(Tracer tracer, NewSessionQueuer newSessionQueuer, RequestId id) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.newSessionQueuer = Require.nonNull("New Session Queuer", newSessionQueuer);
+    this.id = id;
   }
 
   @Override
@@ -46,7 +49,7 @@ public class RemoveFromSessionQueue implements HttpHandler {
     try (Span span = newSpanAsChildOf(tracer, req, "sessionqueuer.remove")) {
       HTTP_REQUEST.accept(span, req);
 
-      Optional<HttpRequest> sessionRequest = newSessionQueuer.remove();
+      Optional<HttpRequest> sessionRequest = newSessionQueuer.remove(id);
       HttpResponse response = new HttpResponse();
 
       if (sessionRequest.isPresent()) {
