@@ -888,6 +888,13 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.MINIMIZE_WINDOW)
 
+    def print_page(self, options = {}):
+        """
+        Takes PDF of the current page.
+        The driver makes a best effort to return a PDF based on the provided parameters.
+        """
+        return self.execute(Command.PRINT_PAGE, options)
+
     @property
     def switch_to(self):
         """
@@ -1581,3 +1588,6 @@ class WebDriver(BaseWebDriver):
         version = re.search(r".*/(\d+)\.", browser_version).group(1)
 
         return version, websocket_url
+
+    def _get_print_page_options(self, options):
+        pass
