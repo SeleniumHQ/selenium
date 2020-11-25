@@ -82,6 +82,7 @@ zip_file(
 
 jest_test(
     name = "test",
+    size = "small",
     args = [
         "--no-cache",
         "--no-watchman",

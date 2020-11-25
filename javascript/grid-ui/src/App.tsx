@@ -22,7 +22,7 @@ import NodeType from "./models/node";
 const cache = new InMemoryCache();
 const link = new HttpLink({
 	uri: GridConfig.serverUri,
-  fetch
+  fetch: fetch
 });
 
 export const client = new ApolloClient({
