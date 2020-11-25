@@ -1,10 +1,10 @@
 {
   "devDependencies": {
     "@bazel/bazel": "^2.1.0",
-    "@bazel/buildifier": "^0.22.0",
-    "@bazel/ibazel": "^0.10.3",
-    "@bazel/jasmine": "^2.3.0",
-    "@bazel/typescript": "^2.2.2",
+    "@bazel/buildifier": "^3.5.0",
+    "@bazel/ibazel": "^0.14.0",
+    "@bazel/jasmine": "^2.3.1",
+    "@bazel/typescript": "^2.3.1",
     "eslint-plugin-node": "^11.1.0",
     "express": "^4.16.4",
     "jasmine": "^3.6.3",
