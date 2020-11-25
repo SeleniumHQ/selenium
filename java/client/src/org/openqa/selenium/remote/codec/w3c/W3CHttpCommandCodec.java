@@ -435,7 +435,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   private String cssEscape(String using) {
     using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
     if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
-      using = "\\" + Integer.toString(30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+      using = "\\" + (30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
     }
     return using;
   }

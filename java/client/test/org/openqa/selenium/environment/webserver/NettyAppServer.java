@@ -18,10 +18,14 @@
 package org.openqa.selenium.environment.webserver;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.grid.config.CompoundConfig;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
@@ -30,98 +34,128 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Route;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.matching;
-import static org.openqa.selenium.remote.http.Route.post;
 
 public class NettyAppServer implements AppServer {
 
+  private final static Config sslConfig = new MapConfig(
+    singletonMap("server", singletonMap("https-self-signed", true)));
+
   private final Server<?> server;
+  private final Server<?> secure;
 
   public NettyAppServer() {
-    this(emulateJettyAppServer());
+    Config config = createDefaultConfig();
+    BaseServerOptions options = new BaseServerOptions(config);
+
+    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("generated", "pages");
+
+    HttpHandler handler = new HandlersForTests(
+      options.getHostname().orElse("localhost"),
+      options.getPort(),
+      tempDir.toPath());
+
+    server = new NettyServer(options, handler);
+
+    Config secureConfig = new CompoundConfig(sslConfig, createDefaultConfig());
+    BaseServerOptions secureOptions = new BaseServerOptions(secureConfig);
+
+    HttpHandler secureHandler = new HandlersForTests(
+      secureOptions.getHostname().orElse("localhost"),
+      secureOptions.getPort(),
+      tempDir.toPath());
+
+    secure = new NettyServer(secureOptions, secureHandler);
   }
 
   public NettyAppServer(HttpHandler handler) {
-    Require.nonNull("Handler", handler);
-
-    int port = PortProber.findFreePort();
-    server = new NettyServer(
-      new BaseServerOptions(new MapConfig(singletonMap("server", singletonMap("port", port)))),
-      handler);
+    this(
+      createDefaultConfig(),
+      Require.nonNull("Handler", handler));
   }
 
-  private static Route emulateJettyAppServer() {
-    return Route.combine(
-      new CommonWebResources(),
-      get("/encoding").to(EncodingHandler::new),
-      matching(req -> req.getUri().startsWith("/page/")).to(PageHandler::new),
-      get("/redirect").to(RedirectHandler::new),
-      get("/sleep").to(SleepingHandler::new),
-      post("/upload").to(UploadHandler::new));
+  private NettyAppServer(Config config, HttpHandler handler) {
+    Require.nonNull("Config", config);
+    Require.nonNull("Handler", handler);
+
+    server = new NettyServer(new BaseServerOptions(new MemoizedConfig(config)), handler);
+    secure = null;
+  }
+
+  private static Config createDefaultConfig() {
+    return new MemoizedConfig(new MapConfig(
+      singletonMap("server", singletonMap("port", PortProber.findFreePort()))));
   }
 
   @Override
   public void start() {
     server.start();
+    if (secure != null) {
+      secure.start();
+    }
   }
 
   @Override
   public void stop() {
     server.stop();
+    if (secure != null) {
+      secure.stop();
+    }
   }
 
   @Override
   public String whereIs(String relativeUrl) {
-    return createUrl("http", getHostName(), relativeUrl);
+    return createUrl(server, "http", getHostName(), relativeUrl);
   }
 
   @Override
   public String whereElseIs(String relativeUrl) {
-    return createUrl("http", getAlternateHostName(), relativeUrl);
+    return createUrl(server, "http", getAlternateHostName(), relativeUrl);
   }
 
   @Override
   public String whereIsSecure(String relativeUrl) {
-    return createUrl("https", getHostName(), relativeUrl);
+    if (secure == null) {
+      throw new IllegalStateException("Server not configured to return HTTPS url");
+    }
+    return createUrl(secure, "https", getHostName(), relativeUrl);
   }
 
   @Override
   public String whereIsWithCredentials(String relativeUrl, String user, String password) {
-    return String.format
-        ("http://%s:%s@%s:%d/%s",
-         user,
-         password,
-         getHostName(),
-         server.getUrl().getPort(),
-         relativeUrl);
+    return String.format(
+      "http://%s:%s@%s:%d/%s",
+      user,
+      password,
+      getHostName(),
+      server.getUrl().getPort(),
+      relativeUrl);
   }
 
-  private String createUrl(String protocol, String hostName, String relativeUrl) {
+  private String createUrl(Server<?> server, String protocol, String hostName, String relativeUrl) {
     if (!relativeUrl.startsWith("/")) {
       relativeUrl = "/" + relativeUrl;
     }
 
     try {
       return new URL(
-          protocol,
-          hostName,
-          server.getUrl().getPort(),
-          relativeUrl)
-          .toString();
+        protocol,
+        hostName,
+        server.getUrl().getPort(),
+        relativeUrl
+      ).toString();
     } catch (MalformedURLException e) {
       throw new UncheckedIOException(e);
     }
@@ -131,12 +165,12 @@ public class NettyAppServer implements AppServer {
   public String create(Page page) {
     try {
       byte[] data = new Json()
-          .toJson(ImmutableMap.of("content", page.toString()))
-          .getBytes(UTF_8);
+        .toJson(ImmutableMap.of("content", page.toString()))
+        .getBytes(UTF_8);
 
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
-      request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
+      request.setHeader(CONTENT_TYPE, JSON_UTF_8);
       request.setContent(bytes(data));
       HttpResponse response = client.execute(request);
       return string(response);
@@ -147,18 +181,28 @@ public class NettyAppServer implements AppServer {
 
   @Override
   public String getHostName() {
-    return "localhost";
+    return AppServer.detectHostname();
   }
 
   @Override
   public String getAlternateHostName() {
-    throw new UnsupportedOperationException("getAlternateHostName");
+    return AppServer.detectAlternateHostname();
   }
 
   public static void main(String[] args) {
-    NettyAppServer server = new NettyAppServer();
+    MemoizedConfig config = new MemoizedConfig(new MapConfig(singletonMap("server", singletonMap("port", 2310))));
+    BaseServerOptions options = new BaseServerOptions(config);
+
+    HttpHandler handler = new HandlersForTests(
+      options.getHostname().orElse("localhost"),
+      options.getPort(),
+      TemporaryFilesystem.getDefaultTmpFS().createTempDir("netty", "server").toPath());
+
+    NettyAppServer server = new NettyAppServer(
+      config,
+      handler);
     server.start();
 
-    System.out.println(server.whereIs("/"));
+    System.out.printf("Server started. Root URL: %s%n", server.whereIs("/"));
   }
 }

@@ -46,7 +46,7 @@ public interface Span extends AutoCloseable, TraceContext {
     // The nice name is the name expected in an OT trace.
     private final String niceName;
 
-    private Kind(String niceName) {
+    Kind(String niceName) {
       this.niceName = niceName;
     }
 

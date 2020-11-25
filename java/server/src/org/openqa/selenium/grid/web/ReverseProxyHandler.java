@@ -74,6 +74,10 @@ public class ReverseProxyHandler implements HttpHandler {
 
       HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
 
+      for(String attributeName: req.getAttributeNames()) {
+        toUpstream.setAttribute(attributeName, req.getAttribute(attributeName));
+      }
+
       for (String name : req.getQueryParameterNames()) {
         for (String value : req.getQueryParameters(name)) {
           toUpstream.addQueryParameter(name, value);

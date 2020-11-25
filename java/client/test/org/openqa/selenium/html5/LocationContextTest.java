@@ -36,8 +36,6 @@ public class LocationContextTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldSetAndGetLatitude() {
     driver.get(pages.html5Page);
 
@@ -48,8 +46,6 @@ public class LocationContextTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldSetAndGetLongitude() {
     driver.get(pages.html5Page);
 

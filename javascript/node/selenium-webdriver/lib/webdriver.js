@@ -600,6 +600,25 @@ class IWebDriver {
    *     instance.
    */
   switchTo() {}
+
+  /**
+   *
+   * Takes a PDF of the current page. The driver makes a best effort to
+   * return a PDF based on the provided parameters.
+   *
+   * @param {{orientation: (string|undefined),
+   *         scale: (number|undefined),
+   *         background: (boolean|undefined)
+   *         width: (number|undefined)
+   *         height: (number|undefined)
+   *         top: (number|undefined)
+   *         bottom: (number|undefined)
+   *         left: (number|undefined)
+   *         right: (number|undefined)
+   *         shrinkToFit: (boolean|undefined)
+   *         pageRanges: (<Array>|undefined)}} options.
+   */
+  printPage(options) {} // eslint-disable-line
 }
 
 /**
@@ -1048,6 +1067,88 @@ class WebDriver {
   /** @override */
   switchTo() {
     return new TargetLocator(this)
+  }
+
+  validatePrintPageParams(keys, object) {
+    let page = {}
+    let margin = {}
+    let data
+    Object.keys(keys).forEach(function (key) {
+      data = keys[key]
+      let obj = {
+        orientation: function () {
+          object.orientation = data
+        },
+
+        scale: function () {
+          object.scale = data
+        },
+
+        background: function () {
+          object.background = data
+        },
+
+        width: function () {
+          page.width = data
+          object.page = page
+        },
+
+        height: function () {
+          page.height = data
+          object.page = page
+        },
+
+        top: function () {
+          margin.top = data
+          object.margin = margin
+        },
+
+        left: function () {
+          margin.left = data
+          object.margin = margin
+        },
+
+        bottom: function () {
+          margin.bottom = data
+          object.margin = margin
+        },
+
+        right: function () {
+          margin.right = data
+          object.margin = margin
+        },
+
+        shrinkToFit: function () {
+          object.shrinkToFit = data
+        },
+
+        pageRanges: function () {
+          object.pageRanges = data
+        },
+      }
+
+      if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+        throw new error.InvalidArgumentError(`Invalid Argument '${key}'`)
+      } else {
+        obj[key]()
+      }
+    })
+
+    return object
+  }
+
+  /** @override */
+  printPage(options = {}) {
+    let keys = options
+    let params = {}
+    let resultObj
+
+    let self = this
+    resultObj = self.validatePrintPageParams(keys, params)
+
+    return this.execute(
+      new command.Command(command.Name.PRINT_PAGE).setParameters(resultObj)
+    )
   }
 }
 

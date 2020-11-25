@@ -15,22 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.remote.http.netty;
 
-import static org.assertj.core.api.Assumptions.assumeThat;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
 
-import org.junit.Before;
-import org.openqa.selenium.chrome.ChromeDriver;
+public class NettyDomainSocketTest extends DomainSocketsTestBase {
 
-
-public abstract class ChromeDevToolsTestBase extends DevToolsTestBase {
-
-  protected ChromeDriver chromeDriver;
-
-  @Before
-  public void setUpChrome() {
-    assumeThat(driver).isInstanceOf(ChromeDriver.class);
-
-    chromeDriver = (ChromeDriver) driver;
+  @Override
+  protected HttpClient.Factory createFactory() {
+    return new NettyClient.Factory();
   }
 }

@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -115,17 +115,21 @@ jobs:
           java-version: '11'
       - name: Setup Chrome and chromedriver
         uses: ./.github/actions/setup-chrome
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Run browser tests in Chrome
         uses: ./.github/actions/bazel-test
         with:
           query: attr(tags, chrome, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
+        env:
+          DISPLAY: :99
 
   firefox_tests:
     needs: small_tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -144,10 +148,14 @@ jobs:
           java-version: '11'
       - name: Setup Firefox and geckodriver
         uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
           query: attr(tags, firefox, tests(//java/client/...)) except attr(tags, remote, tests(//java/client/...))
+        env:
+          DISPLAY: :99
 
 
   server_tests:
@@ -155,7 +163,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -176,9 +184,37 @@ jobs:
         uses: ./.github/actions/setup-chrome
       - name: Setup Firefox and geckodriver
         uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Run server tests
-        env:
-          MOZ_HEADLESS: 1
         uses: ./.github/actions/bazel-test
         with:
           query: tests(//java/server/...) except attr(tags, 'lint|ie|edge|edgehtml|safari', tests(//java/server/...))
+        env:
+          DISPLAY: :99
+
+  javadoc:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Generate javadoc
+        run: |
+          ./go --verbose javadocs

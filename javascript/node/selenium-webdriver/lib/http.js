@@ -432,6 +432,8 @@ const W3C_COMMAND_MAP = new Map([
     cmd.Name.TAKE_ELEMENT_SCREENSHOT,
     get('/session/:sessionId/element/:id/screenshot'),
   ],
+  // print page.
+  [cmd.Name.PRINT_PAGE, post('/session/:sessionId/print')],
   // Log extensions.
   [cmd.Name.GET_LOG, post('/session/:sessionId/se/log')],
   [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/se/log/types')],

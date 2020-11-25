@@ -426,7 +426,7 @@ suite(function (env) {
         for (let i = 0; i < elements.length; i++) {
           ids.push(await elements[i].getAttribute('id'))
         }
-        assert.deepEqual(ids, ['above', 'mid'])
+        assert.deepEqual(ids, ['mid', 'above'])
       })
 
       it('should combine filters', async function () {
