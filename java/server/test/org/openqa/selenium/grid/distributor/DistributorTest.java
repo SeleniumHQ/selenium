@@ -165,10 +165,15 @@ public class DistributorTest {
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
     sessionCaps.setCapability("sausages", "gravy");
     try (NewSessionPayload payload = NewSessionPayload.create(sessionCaps)) {
-      Session session = distributor.newSession(createRequest(payload)).right().getSession();
-
-      assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
-      assertThat(session.getUri()).isEqualTo(routableUri);
+      Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(createRequest(payload));
+      if (result.isRight()) {
+        Session session = result.right().getSession();
+        assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
+        assertThat(session.getUri()).isEqualTo(routableUri);
+      } else {
+        fail("Session creation failed", result.left());
+      }
     }
   }
 
@@ -201,11 +206,17 @@ public class DistributorTest {
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
     sessionCaps.setCapability("sausages", "gravy");
     try (NewSessionPayload payload = NewSessionPayload.create(sessionCaps)) {
-      Session returned = distributor.newSession(createRequest(payload)).right().getSession();
+      Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(createRequest(payload));
 
-      Session session = sessions.get(returned.getId());
-      assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
-      assertThat(session.getUri()).isEqualTo(routableUri);
+      if (result.isRight()) {
+        Session returned = result.right().getSession();
+        Session session = sessions.get(returned.getId());
+        assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
+        assertThat(session.getUri()).isEqualTo(routableUri);
+      } else {
+        fail("Session creation failed", result.left());
+      }
     }
   }
 
@@ -520,9 +531,15 @@ public class DistributorTest {
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Session session = distributor.newSession(createRequest(payload)).right().getSession();
+      Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(createRequest(payload));
 
-      assertThat(session.getUri()).isEqualTo(lightest.getStatus().getUri());
+      if (result.isRight()) {
+        Session session = result.right().getSession();
+        assertThat(session.getUri()).isEqualTo(lightest.getStatus().getUri());
+      } else {
+        fail("Session creation failed", result.left());
+      }
     }
   }
 
@@ -559,20 +576,32 @@ public class DistributorTest {
     handler.addHandler(middle);
     distributor.add(middle);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Session session = distributor.newSession(createRequest(payload)).right().getSession();
+      Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(createRequest(payload));
 
-      // Least lightly loaded is middle
-      assertThat(session.getUri()).isEqualTo(middle.getStatus().getUri());
+      if (result.isRight()) {
+        Session session = result.right().getSession();
+        // Least lightly loaded is middle
+        assertThat(session.getUri()).isEqualTo(middle.getStatus().getUri());
+      } else {
+        fail("Session creation failed", result.left());
+      }
     }
 
     Node mostRecent = createNode(caps, 5, 0);
     handler.addHandler(mostRecent);
     distributor.add(mostRecent);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Session session = distributor.newSession(createRequest(payload)).right().getSession();
+      Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(createRequest(payload));
+      if (result.isRight()) {
+        Session session = result.right().getSession();
 
-      // Least lightly loaded is most recent
-      assertThat(session.getUri()).isEqualTo(mostRecent.getStatus().getUri());
+        // Least lightly loaded is most recent
+        assertThat(session.getUri()).isEqualTo(mostRecent.getStatus().getUri());
+      } else {
+        fail("Session creation failed", result.left());
+      }
     }
 
     // All the nodes should be equally loaded.
@@ -582,9 +611,15 @@ public class DistributorTest {
 
     // All nodes are now equally loaded. We should be going in time order now
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Session session = distributor.newSession(createRequest(payload)).right().getSession();
+      Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(createRequest(payload));
+      if (result.isRight()) {
+        Session session = result.right().getSession();
 
-      assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getUri());
+        assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getUri());
+      } else {
+        fail("Session creation failed", result.left());
+      }
     }
   }
 
@@ -723,22 +758,27 @@ public class DistributorTest {
     // Use up the one slot available
     Session session;
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      session = distributor.newSession(createRequest(payload)).right().getSession();
-    }
-
-    // Make sure the session map has the session
-    sessions.get(session.getId());
-
-    node.stop(session.getId());
-    // Now wait for the session map to say the session is gone.
-    wait.until(obj -> {
-      try {
+      Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(createRequest(payload));
+      if (result.isRight()) {
+        session = result.right().getSession();
+        // Make sure the session map has the session
         sessions.get(session.getId());
-        return false;
-      } catch (NoSuchSessionException e) {
-        return true;
+
+        node.stop(session.getId());
+        // Now wait for the session map to say the session is gone.
+        wait.until(obj -> {
+          try {
+            sessions.get(session.getId());
+            return false;
+          } catch (NoSuchSessionException e) {
+            return true;
+          }
+        });
+      } else {
+        fail("Session creation failed", result.left());
       }
-    });
+    }
 
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
@@ -940,30 +980,50 @@ public class DistributorTest {
       try (NewSessionPayload chromePayload = NewSessionPayload.create(chromeCapabilities);
            NewSessionPayload firefoxPayload = NewSessionPayload.create(firefoxCapabilities)) {
 
-        Session chromeSession = distributor.newSession(createRequest(chromePayload)).right().getSession();
+        Either<SessionNotCreatedException, CreateSessionResponse> chromeResult =
+          distributor.newSession(createRequest(chromePayload));
 
-        assertThat( //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
-                chromeSession.getUri()).isIn(
-                chromeNodes
-                    .stream().map(Node::getStatus).collect(Collectors.toList())     //List of getStatus() from the Set
-                    .stream().map(NodeStatus::getUri).collect(Collectors.toList())  //List of getUri() from the Set
-        );
+        if (chromeResult.isRight()) {
+          Session chromeSession = chromeResult.right().getSession();
 
-        Session firefoxSession = distributor.newSession(createRequest(firefoxPayload)).right().getSession();
-        LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
+          assertThat( //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
+            chromeSession.getUri()).isIn(
+            chromeNodes
+              .stream().map(Node::getStatus).collect(Collectors.toList())     //List of getStatus() from the Set
+              .stream().map(NodeStatus::getUri).collect(Collectors.toList())  //List of getUri() from the Set
+          );
 
-        boolean inFirefoxNodes = firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
-        boolean inChromeNodes = chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
-        //This could be either, or, or both
-        assertTrue(inFirefoxNodes || inChromeNodes);
+          Either<SessionNotCreatedException, CreateSessionResponse> firefoxResult =
+            distributor.newSession(createRequest(firefoxPayload));
+
+          if (firefoxResult.isRight()) {
+            Session firefoxSession = firefoxResult.right().getSession();
+            LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
+
+            boolean inFirefoxNodes = firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
+            boolean inChromeNodes = chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
+            //This could be either, or, or both
+            assertTrue(inFirefoxNodes || inChromeNodes);
+          } else {
+            fail("Session creation failed", firefoxResult.left());
+          }
+        } else {
+          fail("Session creation failed", chromeResult.left());
+        }
       }
     }
 
     //The Chrome Nodes should be full at this point, but Firefox isn't... so send an Edge session and make sure it routes to an Edge node
     try (NewSessionPayload edgePayload = NewSessionPayload.create(edgeCapabilities)) {
-      Session edgeSession = distributor.newSession(createRequest(edgePayload)).right().getSession();
+      Either<SessionNotCreatedException, CreateSessionResponse> edgeResult =
+        distributor.newSession(createRequest(edgePayload));
+      if (edgeResult.isRight()) {
+        Session edgeSession = edgeResult.right().getSession();
 
-      assertTrue(edgeNodes.stream().anyMatch(node -> node.getUri().equals(edgeSession.getUri())));
+        assertTrue(edgeNodes.stream().anyMatch(node -> node.getUri().equals(edgeSession.getUri())));
+      } else {
+        fail("Session creation failed", edgeResult.left());
+      }
     }
   }
 

@@ -21,9 +21,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -39,6 +41,7 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.Contents;
@@ -66,6 +69,7 @@ import java.util.UUID;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -188,38 +192,45 @@ public class GraphqlHandlerTest {
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
-    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
-    assertThat(session).isNotNull();
-    String sessionId = session.getId().toString();
+    Either<SessionNotCreatedException, CreateSessionResponse> response =
+      distributor.newSession(createRequest(payload));
+    if (response.isRight()) {
+      Session session = response.right().getSession();
 
-    Set<Slot> slots = distributor.getStatus().getNodes().stream().findFirst().get().getSlots();
+      assertThat(session).isNotNull();
+      String sessionId = session.getId().toString();
 
-    Slot slot = slots.stream().findFirst().get();
+      Set<Slot> slots = distributor.getStatus().getNodes().stream().findFirst().get().getSlots();
 
-    org.openqa.selenium.grid.graphql.Session graphqlSession =
-      new org.openqa.selenium.grid.graphql.Session(
-        sessionId,
-        session.getCapabilities(),
-        session.getStartTime(),
-        session.getUri(),
-        node.getId().toString(),
-        node.getUri(),
-        slot);
-    String query = String.format(
-      "{ session (id: \"%s\") { id, capabilities, startTime, uri } }", sessionId);
+      Slot slot = slots.stream().findFirst().get();
 
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, publicUri);
-    Map<String, Object> result = executeQuery(handler, query);
+      org.openqa.selenium.grid.graphql.Session graphqlSession =
+        new org.openqa.selenium.grid.graphql.Session(
+          sessionId,
+          session.getCapabilities(),
+          session.getStartTime(),
+          session.getUri(),
+          node.getId().toString(),
+          node.getUri(),
+          slot);
+      String query = String.format(
+        "{ session (id: \"%s\") { id, capabilities, startTime, uri } }", sessionId);
 
-    assertThat(result).describedAs(result.toString()).isEqualTo(
-      singletonMap(
-        "data", singletonMap(
-          "session", ImmutableMap.of(
-            "id", sessionId,
-            "capabilities", graphqlSession.getCapabilities(),
-            "startTime", graphqlSession.getStartTime(),
-            "uri", graphqlSession.getUri().toString()))));
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, publicUri);
+      Map<String, Object> result = executeQuery(handler, query);
+
+      assertThat(result).describedAs(result.toString()).isEqualTo(
+        singletonMap(
+          "data", singletonMap(
+            "session", ImmutableMap.of(
+              "id", sessionId,
+              "capabilities", graphqlSession.getCapabilities(),
+              "startTime", graphqlSession.getStartTime(),
+              "uri", graphqlSession.getUri().toString()))));
+    } else {
+      fail("Session creation failed", response.left());
+    }
   }
 
   @Test
@@ -237,35 +248,43 @@ public class GraphqlHandlerTest {
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
-    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
-    assertThat(session).isNotNull();
-    String sessionId = session.getId().toString();
+    Either<SessionNotCreatedException, CreateSessionResponse> response =
+      distributor.newSession(createRequest(payload));
 
-    Set<Slot> slots = distributor.getStatus().getNodes().stream().findFirst().get().getSlots();
+    if (response.isRight()) {
+      Session session = response.right().getSession();
 
-    Slot slot = slots.stream().findFirst().get();
+      assertThat(session).isNotNull();
+      String sessionId = session.getId().toString();
 
-    org.openqa.selenium.grid.graphql.Session graphqlSession =
-      new org.openqa.selenium.grid.graphql.Session(
-        sessionId,
-        session.getCapabilities(),
-        session.getStartTime(),
-        session.getUri(),
-        node.getId().toString(),
-        node.getUri(),
-        slot);
-    String query = String.format("{ session (id: \"%s\") { nodeId, nodeUri } }", sessionId);
+      Set<Slot> slots = distributor.getStatus().getNodes().stream().findFirst().get().getSlots();
 
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, publicUri);
-    Map<String, Object> result = executeQuery(handler, query);
+      Slot slot = slots.stream().findFirst().get();
 
-    assertThat(result).describedAs(result.toString()).isEqualTo(
-      singletonMap(
-        "data", singletonMap(
-          "session", ImmutableMap.of(
-            "nodeId", graphqlSession.getNodeId(),
-            "nodeUri", graphqlSession.getNodeUri().toString()))));
+      org.openqa.selenium.grid.graphql.Session graphqlSession =
+        new org.openqa.selenium.grid.graphql.Session(
+          sessionId,
+          session.getCapabilities(),
+          session.getStartTime(),
+          session.getUri(),
+          node.getId().toString(),
+          node.getUri(),
+          slot);
+      String query = String.format("{ session (id: \"%s\") { nodeId, nodeUri } }", sessionId);
+
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, publicUri);
+      Map<String, Object> result = executeQuery(handler, query);
+
+      assertThat(result).describedAs(result.toString()).isEqualTo(
+        singletonMap(
+          "data", singletonMap(
+            "session", ImmutableMap.of(
+              "nodeId", graphqlSession.getNodeId(),
+              "nodeUri", graphqlSession.getNodeUri().toString()))));
+    } else {
+      fail("Session creation failed", response.left());
+    }
   }
 
   @Test
@@ -283,41 +302,49 @@ public class GraphqlHandlerTest {
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
-    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
-    assertThat(session).isNotNull();
-    String sessionId = session.getId().toString();
+    Either<SessionNotCreatedException, CreateSessionResponse> response =
+      distributor.newSession(createRequest(payload));
 
-    Set<Slot> slots = distributor.getStatus().getNodes().stream().findFirst().get().getSlots();
+    if (response.isRight()) {
+      Session session = response.right().getSession();
 
-    Slot slot = slots.stream().findFirst().get();
+      assertThat(session).isNotNull();
+      String sessionId = session.getId().toString();
 
-    org.openqa.selenium.grid.graphql.Session graphqlSession =
-      new org.openqa.selenium.grid.graphql.Session(
-        sessionId,
-        session.getCapabilities(),
-        session.getStartTime(),
-        session.getUri(),
-        node.getId().toString(),
-        node.getUri(),
-        slot);
+      Set<Slot> slots = distributor.getStatus().getNodes().stream().findFirst().get().getSlots();
 
-    org.openqa.selenium.grid.graphql.Slot graphqlSlot = graphqlSession.getSlot();
+      Slot slot = slots.stream().findFirst().get();
 
-    String query = String.format(
-      "{ session (id: \"%s\") { slot { id, stereotype, lastStarted } } }", sessionId);
+      org.openqa.selenium.grid.graphql.Session graphqlSession =
+        new org.openqa.selenium.grid.graphql.Session(
+          sessionId,
+          session.getCapabilities(),
+          session.getStartTime(),
+          session.getUri(),
+          node.getId().toString(),
+          node.getUri(),
+          slot);
 
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, publicUri);
-    Map<String, Object> result = executeQuery(handler, query);
+      org.openqa.selenium.grid.graphql.Slot graphqlSlot = graphqlSession.getSlot();
 
-    assertThat(result).describedAs(result.toString()).isEqualTo(
-      singletonMap(
-        "data", singletonMap(
-          "session", singletonMap(
-            "slot", ImmutableMap.of(
-              "id", graphqlSlot.getId(),
-              "stereotype", graphqlSlot.getStereotype(),
-              "lastStarted", graphqlSlot.getLastStarted())))));
+      String query = String.format(
+        "{ session (id: \"%s\") { slot { id, stereotype, lastStarted } } }", sessionId);
+
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, publicUri);
+      Map<String, Object> result = executeQuery(handler, query);
+
+      assertThat(result).describedAs(result.toString()).isEqualTo(
+        singletonMap(
+          "data", singletonMap(
+            "session", singletonMap(
+              "slot", ImmutableMap.of(
+                "id", graphqlSlot.getId(),
+                "stereotype", graphqlSlot.getStereotype(),
+                "lastStarted", graphqlSlot.getLastStarted())))));
+    } else {
+      fail("Session creation failed", response.left());
+    }
   }
 
   @Test
@@ -335,20 +362,28 @@ public class GraphqlHandlerTest {
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
-    Session session = distributor.newSession(createRequest(payload)).right().getSession();
 
-    assertThat(session).isNotNull();
-    String sessionId = session.getId().toString();
+    Either<SessionNotCreatedException, CreateSessionResponse> response =
+      distributor.newSession(createRequest(payload));
 
-    String query = String.format("{ session (id: \"%s\") { sessionDurationMillis } }", sessionId);
+    if (response.isRight()) {
+      Session session = response.right().getSession();
 
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, publicUri);
-    Map<String, Object> result = executeQuery(handler, query);
+      assertThat(session).isNotNull();
+      String sessionId = session.getId().toString();
 
-    assertThat(result)
-      .containsOnlyKeys("data")
-      .extracting("data").asInstanceOf(MAP).containsOnlyKeys("session")
-      .extracting("session").asInstanceOf(MAP).containsOnlyKeys("sessionDurationMillis");
+      String query = String.format("{ session (id: \"%s\") { sessionDurationMillis } }", sessionId);
+
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, publicUri);
+      Map<String, Object> result = executeQuery(handler, query);
+
+      assertThat(result)
+        .containsOnlyKeys("data")
+        .extracting("data").asInstanceOf(MAP).containsOnlyKeys("session")
+        .extracting("session").asInstanceOf(MAP).containsOnlyKeys("sessionDurationMillis");
+    } else {
+      fail("Session creation failed", response.left());
+    }
   }
 
   @Test
