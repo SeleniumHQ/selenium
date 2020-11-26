@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -37,6 +38,7 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.Contents;
@@ -64,6 +66,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -244,9 +247,16 @@ public class LocalDistributorTest {
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       callables.add(() -> {
-        CreateSessionResponse res = distributor.newSession(req).right();
-        assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
-        return res.getSession().getId();
+        Either<SessionNotCreatedException, CreateSessionResponse> result =
+          distributor.newSession(req);
+        if (result.isRight()) {
+          CreateSessionResponse res = result.right();
+          assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
+          return res.getSession().getId();
+        } else {
+          fail("Session creation failed", result.left());
+        }
+        return null;
       });
     }
 
