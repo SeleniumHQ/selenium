@@ -163,7 +163,7 @@ public class Hub extends TemplateGridServerCommand {
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
-    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
+    GraphqlHandler graphqlHandler = new GraphqlHandler(tracer, distributor, serverOptions.getExternalUri());
     HttpHandler readinessCheck = req -> {
       boolean ready = router.isReady() && bus.isReady();
       return new HttpResponse()

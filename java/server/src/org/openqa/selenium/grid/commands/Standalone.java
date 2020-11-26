@@ -171,7 +171,7 @@ public class Standalone extends TemplateGridServerCommand {
         .setContent(Contents.utf8String("Standalone is " + ready));
     };
 
-    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
+    GraphqlHandler graphqlHandler = new GraphqlHandler(tracer, distributor, serverOptions.getExternalUri());
 
     Routable ui;
     URL uiRoot = getClass().getResource("/javascript/grid-ui/build");
