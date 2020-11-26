@@ -130,7 +130,7 @@ public class RouterServer extends TemplateGridServerCommand {
       distributorUrl,
       secretOptions.getRegistrationSecret());
 
-    GraphqlHandler graphqlHandler = new GraphqlHandler(distributor, serverOptions.getExternalUri());
+    GraphqlHandler graphqlHandler = new GraphqlHandler(tracer, distributor, serverOptions.getExternalUri());
 
     Route handler = Route.combine(
       new Router(tracer, clientFactory, sessions, queuer, distributor).with(networkOptions.getSpecComplianceChecks()),

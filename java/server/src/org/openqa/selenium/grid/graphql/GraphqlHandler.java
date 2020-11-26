@@ -29,12 +29,18 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,18 +56,26 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 
 public class GraphqlHandler implements HttpHandler {
 
   public static final String GRID_SCHEMA = "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
   public static final Json JSON = new Json();
+  private final Tracer tracer;
   private final Distributor distributor;
   private final URI publicUri;
   private final GraphQL graphQl;
 
-  public GraphqlHandler(Distributor distributor, URI publicUri) {
-    this.distributor = Objects.requireNonNull(distributor);
-    this.publicUri = Objects.requireNonNull(publicUri);
+
+  public GraphqlHandler(Tracer tracer, Distributor distributor, URI publicUri) {
+    this.distributor = Require.nonNull("Distributor", distributor);
+    this.publicUri = Require.nonNull("Uri", publicUri);
+    this.tracer = Require.nonNull("Tracer", tracer);
 
     GraphQLSchema schema = new SchemaGenerator()
       .makeExecutableSchema(buildTypeDefinitionRegistry(), buildRuntimeWiring());
@@ -88,34 +102,66 @@ public class GraphqlHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);
+    try (Span span = newSpanAsChildOf(tracer, req, "grid.status")) {
+      HttpResponse response;
+      Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);
 
-    if (!(inputs.get("query") instanceof String)) {
-      return new HttpResponse()
+      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+      attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
+        EventAttribute.setValue(getClass().getName()));
+
+      HTTP_REQUEST.accept(span, req);
+      HTTP_REQUEST_EVENT.accept(attributeMap, req);
+
+      if (!(inputs.get("query") instanceof String)) {
+        response = new HttpResponse()
+          .setStatus(HTTP_INTERNAL_ERROR)
+          .setContent(Contents.utf8String("Unable to find query"));
+
+        HTTP_RESPONSE.accept(span, response);
+        HTTP_RESPONSE_EVENT.accept(attributeMap, response);
+
+        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+          EventAttribute.setValue("Unable to find query"));
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+        return response;
+      }
+
+      String query = (String) inputs.get("query");
+      @SuppressWarnings("unchecked") Map<String, Object> variables = inputs.get("variables") instanceof Map ?
+        (Map<String, Object>) inputs.get("variables") :
+        new HashMap<>();
+
+      ExecutionInput executionInput = ExecutionInput.newExecutionInput(query)
+        .variables(variables)
+        .build();
+
+      ExecutionResult result = graphQl.execute(executionInput);
+
+      if (result.isDataPresent()) {
+        response = new HttpResponse()
+          .addHeader("Content-Type", JSON_UTF_8)
+          .setContent(utf8String(JSON.toJson(result.toSpecification())));
+
+        HTTP_RESPONSE.accept(span, response);
+        HTTP_RESPONSE_EVENT.accept(attributeMap, response);
+        span.addEvent("Graphql query executed", attributeMap);
+
+        return response;
+      }
+
+      response = new HttpResponse()
         .setStatus(HTTP_INTERNAL_ERROR)
-        .setContent(Contents.utf8String("Unable to find query"));
+        .setContent(utf8String(JSON.toJson(result.getErrors())));
+      HTTP_RESPONSE.accept(span, response);
+      HTTP_RESPONSE_EVENT.accept(attributeMap, response);
+
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+        EventAttribute.setValue("Error while executing the query"));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+      return response;
     }
-
-    String query = (String) inputs.get("query");
-    @SuppressWarnings("unchecked") Map<String, Object> variables = inputs.get("variables") instanceof Map ?
-      (Map<String, Object>) inputs.get("variables") :
-      new HashMap<>();
-
-    ExecutionInput executionInput = ExecutionInput.newExecutionInput(query)
-      .variables(variables)
-      .build();
-
-    ExecutionResult result = graphQl.execute(executionInput);
-
-    if (result.isDataPresent()) {
-      return new HttpResponse()
-        .addHeader("Content-Type", JSON_UTF_8)
-        .setContent(utf8String(JSON.toJson(result.toSpecification())));
-    }
-
-    return new HttpResponse()
-      .setStatus(HTTP_INTERNAL_ERROR)
-      .setContent(utf8String(JSON.toJson(result.getErrors())));
   }
 
   private RuntimeWiring buildRuntimeWiring() {
