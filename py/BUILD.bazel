@@ -326,7 +326,6 @@ py_test_suite(
     name = "test-firefox",
     size = "large",
     srcs = glob([
-        "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/marionette/**/*.py",
         "test/selenium/webdriver/firefox/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
