@@ -200,6 +200,10 @@ public class LoggingOptions {
     Enumeration<String> names = logManager.getLoggerNames();
     while (names.hasMoreElements()) {
       Logger logger = logManager.getLogger(names.nextElement());
+      if (logger == null) {
+        continue;
+      }
+
       Arrays.stream(logger.getHandlers()).forEach(logger::removeHandler);
     }
 
