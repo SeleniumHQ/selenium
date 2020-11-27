@@ -38,9 +38,10 @@ import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_DOM_ATTRIBUTE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_PROPERTY;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_DOM_PROPERTY;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
@@ -159,7 +160,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(CLEAR_ACTIONS_STATE, delete(sessionId + "/actions"));
 
     String elementId = sessionId + "/element/:id";
-    defineCommand(GET_ELEMENT_PROPERTY, get(elementId + "/property/:name"));
+    defineCommand(GET_ELEMENT_DOM_PROPERTY, get(elementId + "/property/:name"));
+    defineCommand(GET_ELEMENT_DOM_ATTRIBUTE, get(elementId + "/attribute/:name"));
 
     // Emulate the old Actions API since everyone still likes to call these things.
     alias(CLICK, ACTIONS);

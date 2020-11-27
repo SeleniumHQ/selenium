@@ -50,7 +50,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_CONTEXT_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_PROPERTY;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
@@ -171,7 +170,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(FIND_ELEMENTS, post(sessionId + "/elements"));
 
     String elementId = sessionId + "/element/:id";
-    defineCommand(GET_ELEMENT_PROPERTY, get(elementId + "/property/:name"));
     defineCommand(CLICK_ELEMENT, post(elementId + "/click"));
     defineCommand(CLEAR_ELEMENT, post(elementId + "/clear"));
     defineCommand(GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get(elementId + "/css/:propertyName"));

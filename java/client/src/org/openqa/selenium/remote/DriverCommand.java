@@ -184,9 +184,13 @@ public interface DriverCommand {
   static CommandPayload GET_ELEMENT_SIZE(String id) {
     return new CommandPayload(GET_ELEMENT_SIZE, ImmutableMap.of("id", id));
   }
-  String GET_ELEMENT_PROPERTY = "getElementProperty";
-  static CommandPayload GET_ELEMENT_PROPERTY(String id, String name) {
-    return new CommandPayload(GET_ELEMENT_PROPERTY, ImmutableMap.of("id", id, "name", name));
+  String GET_ELEMENT_DOM_PROPERTY = "getElementDomProperty";
+  static CommandPayload GET_ELEMENT_DOM_PROPERTY(String id, String name) {
+    return new CommandPayload(GET_ELEMENT_DOM_PROPERTY, ImmutableMap.of("id", id, "name", name));
+  }
+  String GET_ELEMENT_DOM_ATTRIBUTE = "getElementDomAttribute";
+  static CommandPayload GET_ELEMENT_DOM_ATTRIBUTE(String id, String name) {
+    return new CommandPayload(GET_ELEMENT_DOM_ATTRIBUTE, ImmutableMap.of("id", id, "name", name));
   }
   String GET_ELEMENT_ATTRIBUTE = "getElementAttribute";
   static CommandPayload GET_ELEMENT_ATTRIBUTE(String id, String name) {
@@ -218,7 +222,7 @@ public interface DriverCommand {
   @Deprecated
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
+      SET_TIMEOUT, ImmutableMap.of("implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(Duration duration) {
@@ -228,7 +232,7 @@ public interface DriverCommand {
   @Deprecated
   static CommandPayload SET_SCRIPT_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
+      SET_TIMEOUT, ImmutableMap.of("script", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_SCRIPT_TIMEOUT(Duration duration) {
@@ -238,7 +242,7 @@ public interface DriverCommand {
   @Deprecated
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(long time, TimeUnit unit) {
     return new CommandPayload(
-        SET_TIMEOUT, ImmutableMap.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
+      SET_TIMEOUT, ImmutableMap.of("pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
   }
 
   static CommandPayload SET_PAGE_LOAD_TIMEOUT(Duration duration) {
@@ -315,19 +319,19 @@ public interface DriverCommand {
   String SET_CURRENT_WINDOW_POSITION = "setWindowPosition";
   static CommandPayload SET_CURRENT_WINDOW_POSITION(Point targetPosition) {
     return new CommandPayload(
-        SET_CURRENT_WINDOW_POSITION, ImmutableMap.of("x", targetPosition.x, "y", targetPosition.y));
+      SET_CURRENT_WINDOW_POSITION, ImmutableMap.of("x", targetPosition.x, "y", targetPosition.y));
   }
   String GET_CURRENT_WINDOW_POSITION = "getWindowPosition";
   static CommandPayload GET_CURRENT_WINDOW_POSITION() {
     return new CommandPayload(
-        GET_CURRENT_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current"));
+      GET_CURRENT_WINDOW_POSITION, ImmutableMap.of("windowHandle", "current"));
   }
 
   // W3C compatible Window API
   String SET_CURRENT_WINDOW_SIZE = "setCurrentWindowSize";
   static CommandPayload SET_CURRENT_WINDOW_SIZE(Dimension targetSize) {
     return new CommandPayload(
-        SET_CURRENT_WINDOW_SIZE, ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
+      SET_CURRENT_WINDOW_SIZE, ImmutableMap.of("width", targetSize.width, "height", targetSize.height));
   }
   String GET_CURRENT_WINDOW_SIZE = "getCurrentWindowSize";
   String MAXIMIZE_CURRENT_WINDOW = "maximizeCurrentWindow";

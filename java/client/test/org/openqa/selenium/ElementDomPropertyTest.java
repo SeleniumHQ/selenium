@@ -29,7 +29,7 @@ import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
-public class ElementPropertyTest extends JUnit4TestBase {
+public class ElementDomPropertyTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnNullWhenGettingTheValueOfAPropertyThatDoesNotExist() {
