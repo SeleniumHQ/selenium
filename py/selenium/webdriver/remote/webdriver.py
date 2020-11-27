@@ -1527,13 +1527,17 @@ class WebDriver(BaseWebDriver):
             await session.execute(devtools.runtime.enable())
             console = {
                 "message": None,
+                "level": None
             }
             async with session.wait_for(devtools.runtime.ConsoleAPICalled) as messages:
                 yield console
 
+            if event_type == Console.ERROR:
+                console["message"] = messages.value.args[0].value
+                console["level"] = messages.value.args[0].type_
             if event_type == Console.ALL:
                 console["message"] = messages.value.args[0].value
-                # console["level"] = messages.value.message.level
+                console["level"] = messages.value.args[0].type_
 
     @asynccontextmanager
     async def _get_bidi_connection(self):
