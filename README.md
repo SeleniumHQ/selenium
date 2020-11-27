@@ -229,15 +229,26 @@ wiki page for the last word on building the bits and pieces of Selenium.
 
 ## Running Browser Tests on Linux
 
-You can run browser tests on linux in xvfb or xnest. You also need to install
-the browser-specific drivers (`geckodriver`, `chromedriver`, etc.) - you need
-to download them separately and put them on your `PATH`.
+In order to run Browser tests, you first need to install the browser-specific drivers,
+such as [`geckodriver`](https://github.com/mozilla/geckodriver/releases),
+[`chromedriver`](https://chromedriver.chromium.org/), or
+[`edgedriver`](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/).
+These need to be on your `PATH`.
+
+By default, Bazel runs these tests in your current X-server UI. If you prefer, you can
+alternatively run them in a virtual or nested X-server.
 
 1. Run the X server `Xvfb :99` or `Xnest :99`
 2. Run a window manager, for example, `DISPLAY=:99 jwm`
 3. Run the tests you are interested in:
 ```sh
 bazel test --test_env=DISPLAY=:99 //java/... --test_tag_filters=chrome
+```
+
+An easy way to run tests in a virtual X-server is to use Bazel's `--run_under`
+functionality:
+```
+bazel test --run_under="xvfb-run -a" //java/... --test_tag_filters=chrome
 ```
 
 ## Bazel Installation/Troubleshooting
