@@ -78,9 +78,7 @@ public class NodeOptions {
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
     /* Danger! Java stereotype ahead! */ Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
 
-    int maxSessions = Math.min(
-      config.getInt("node", "max-concurrent-sessions").orElse(Runtime.getRuntime().availableProcessors()),
-      Runtime.getRuntime().availableProcessors());
+    int maxSessions = getMaxSessions();
 
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(maxSessions, factoryFactory);
 
@@ -91,6 +89,13 @@ public class NodeOptions {
     addDetectedDrivers(allDrivers, sessionFactories);
 
     return sessionFactories.build().asMap();
+  }
+
+  public int getMaxSessions() {
+    return Math.min(
+      config.getInt("node", "max-concurrent-sessions")
+        .orElse(Runtime.getRuntime().availableProcessors()),
+      Runtime.getRuntime().availableProcessors());
   }
 
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {

@@ -38,7 +38,7 @@ public class NodeFlags implements HasRoles {
     names = "--max-sessions",
     description = "Maximum number of concurrent sessions.")
   @ConfigValue(section = "node", name = "max-concurrent-sessions", example = "8")
-  public int maxSessions = Runtime.getRuntime().availableProcessors();
+  public int maxSessions;
 
   @Parameter(
       names = {"--detect-drivers"}, arity = 1,
