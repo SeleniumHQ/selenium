@@ -1148,7 +1148,8 @@ public class DistributorTest {
         .pollingEvery(Duration.ofMillis(100))
         .until(d -> {
           Set<NodeStatus> nodes = d.getStatus().getNodes();
-          return nodes.size() == nodeCount && nodes.stream().allMatch(NodeStatus::hasCapacity);
+          return nodes.size() == nodeCount && nodes.stream().allMatch(
+            node -> node.getAvailability() == UP && node.hasCapacity());
         });
     } catch (TimeoutException ex) {
       Set<NodeStatus> nodes = distributor.getStatus().getNodes();
