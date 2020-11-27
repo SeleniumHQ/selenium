@@ -18,16 +18,16 @@
     "typescript": "^3.9.7",
     "xml2js": "^0.4.23",
     "@types/enzyme": "^3.10.8",
-    "@types/jest": "^26.0.15",
+    "@types/jest": "^24.9.0",
     "@types/node": "^14.14.7",
-    "babel-jest": "^26.6.3",
+    "babel-jest": "^24.9.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "enzyme-to-json": "^3.6.1",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^26.6.3",
-    "jest-cli": "^26.6.3",
-    "ts-jest": "^26.4.4"
+    "jest": "^24.9.0",
+    "jest-cli": "^24.9.0",
+    "ts-jest": "^24.3.0"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.1.5",
