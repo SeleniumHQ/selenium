@@ -18,8 +18,7 @@
 goog.provide('bot.locators.id');
 
 goog.require('bot.dom');
-goog.require('goog.array');
-goog.require('goog.dom');
+
 
 
 /**
@@ -46,24 +45,27 @@ bot.locators.id.canUseQuerySelector_ = function (root, target) {
  *     such element could be found.
  */
 bot.locators.id.single = function (target, root) {
-  var dom = goog.dom.getDomHelper(root);
+  var dom = document;
 
-  var e = dom.getElement(target);
+  var e = dom.getElementById(target);
   if (!e) {
     return null;
   }
 
   // On IE getting by ID returns the first match by id _or_ name.
   if (bot.dom.getAttribute(e, 'id') == target &&
-    root != e && goog.dom.contains(root, e)) {
+    root != e && bot.dom.contains(root, e)) {
     return e;
   }
 
-  var elements = dom.getElementsByTagNameAndClass('*');
-  var element = goog.array.find(elements, function (element) {
-    return bot.dom.getAttribute(element, 'id') == target &&
-      root != element && goog.dom.contains(root, element);
-  });
+  var elements = dom.querySelectorAll('*');
+  var element = null;
+  for (e in elements.entries()) {
+    if (bot.dom.getAttribute(e, 'id') == target &&
+      root != e && bot.dom.contains(root, e)) {
+      element = e;
+    }
+  }
   return /**@type{Element}*/ (element);
 };
 
@@ -87,11 +89,9 @@ bot.locators.id.many = function (target, root) {
       return [];
     }
   }
-  var dom = goog.dom.getDomHelper(root);
-  var elements = dom.getElementsByTagNameAndClass('*', null, root);
-  return goog.array.filter(elements, function (e) {
-    return bot.dom.getAttribute(e, 'id') == target;
-  });
+  var dom = document;
+  var elements = dom.querySelector('*');
+  return elements.values().filter(e => bot.dom.getAttribute(e, 'id') == target);
 };
 
 /**

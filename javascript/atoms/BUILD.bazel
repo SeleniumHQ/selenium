@@ -247,6 +247,9 @@ closure_js_library(
         "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_USE_OF_GOOG_PROVIDE",
+        "JSC_INEXISTENT_PROPERTY",
+        "JSC_TYPE_MISMATCH",
+        "JSC_INVALID_CAST",
     ],
     deps = [
         ":bot",
