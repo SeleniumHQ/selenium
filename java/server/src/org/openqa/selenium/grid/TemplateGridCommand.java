@@ -75,11 +75,14 @@ public abstract class TemplateGridCommand implements CliCommand {
         return;
       }
 
+      // Order matters here. The configs precedence is: 1. Env vars, 2. System properties,
+      // 3. Configuration files (config.toml), 4. Cli flags and default values
+      // 5. Default role config
       Set<Config> allConfigs = new LinkedHashSet<>();
       allConfigs.add(new EnvConfig());
       allConfigs.add(new ConcatenatingConfig(getSystemPropertiesConfigPrefix(), '.', System.getProperties()));
-      allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags)));
       allConfigs.add(configFlags.readConfigFiles());
+      allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags)));
       allConfigs.add(getDefaultConfig());
 
       Config config = new MemoizedConfig(new CompoundConfig(allConfigs.toArray(new Config[0])));
