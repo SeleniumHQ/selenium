@@ -42,9 +42,10 @@ public class NodeFlags implements HasRoles {
 
   @Parameter(
       names = {"--detect-drivers"}, arity = 1,
-      description = "Autodetect which drivers are available on the current system, and add them to the node.")
+      description = "Autodetect which drivers are available on the current system, " +
+                    "and add them to the node. Defaults to true.")
   @ConfigValue(section = "node", name = "detect-drivers", example = "true")
-  public Boolean autoconfigure = true;
+  public Boolean autoconfigure;
 
   @Parameter(
     names = {"-I", "--driver-implementation"},

@@ -148,7 +148,7 @@ public class NodeOptions {
   private void addDetectedDrivers(
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(false)) {
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true)) {
       return;
     }
 
@@ -175,7 +175,7 @@ public class NodeOptions {
     int maxSessions,
     Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
 
-    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(false)) {
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true)) {
       return ImmutableMap.of();
     }
 
