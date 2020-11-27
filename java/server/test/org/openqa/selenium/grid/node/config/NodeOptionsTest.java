@@ -156,7 +156,7 @@ public class NodeOptionsTest {
   }
 
   @Test
-  public void doNotDetectDriversByDefault() {
+  public void detectDriversByDefault() {
     Config config = new MapConfig(emptyMap());
 
     List<WebDriverInfo> reported = new ArrayList<>();
@@ -165,7 +165,7 @@ public class NodeOptionsTest {
       return Collections.emptySet();
     });
 
-    assertThat(reported).isEmpty();
+    assertThat(reported).isNotEmpty();
   }
 
   @Test
