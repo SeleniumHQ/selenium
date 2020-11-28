@@ -531,9 +531,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
         ((WebDriverException) value).addInfo("Command", command.toString());
       }
       response.setValue(value);
-    } catch (WebDriverException e) {
-      e.addInfo("Command", command.toString());
-      throw e;
     } catch (Throwable e) {
       log(sessionId, command.getName(), command, When.EXCEPTION);
       if (command.getName().equals(DriverCommand.NEW_SESSION)) {
@@ -541,9 +538,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
           "Could not start a new session. Possible causes are invalid address of the remote server or browser start-up failure.",
           e);
       } else {
-        WebDriverException toThrow = new UnreachableBrowserException(
-          "Error communicating with the remote browser. It may have died.",
-          e);
+        WebDriverException toThrow =
+          e instanceof WebDriverException
+          ? (WebDriverException) e
+          : new UnreachableBrowserException(
+            "Error communicating with the remote browser. It may have died.", e);
+        toThrow.addInfo("Command", command.toString());
         if (getSessionId() != null) {
           toThrow.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
         }

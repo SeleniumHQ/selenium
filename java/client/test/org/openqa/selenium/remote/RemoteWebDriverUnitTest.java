@@ -920,7 +920,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleExceptionsThrownByCommandExecutor() throws IOException {
+  public void canHandleWebDriverExceptionThrownByCommandExecutor() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, webDriverExceptionResponder);
 
@@ -939,9 +939,47 @@ public class RemoteWebDriverUnitTest {
       .withMessageContaining(
         "Driver info: driver.version: RemoteWebDriver")
       .withMessageContaining(String.format(
+        "Session ID: %s", driver.getSessionId()))
+      .withMessageContaining(String.format(
+        "%s", driver.getCapabilities()))
+      .withMessageContaining(String.format(
         "Command: [%s, clickElement {id=%s}]", driver.getSessionId(), elementId))
       .withMessageContaining(String.format(
         "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", driver.getSessionId()));
+
+    verifyCommands(
+      executor, driver.getSessionId(),
+      new CommandPayload(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleGeneralExceptionThrownByCommandExecutor() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, exceptionResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities(
+      "browserName", "cheese", "platformName", "WINDOWS"));
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    String elementId = UUID.randomUUID().toString();
+    element.setId(elementId);
+    element.setFoundBy(driver, "id", "test");
+
+    assertThatExceptionOfType(WebDriverException.class)
+      .isThrownBy(element::click)
+      .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
+      .withMessageContaining("Build info: ")
+      .withMessageContaining(
+        "Driver info: driver.version: RemoteWebDriver")
+      .withMessageContaining(String.format(
+        "Session ID: %s", driver.getSessionId()))
+      .withMessageContaining(String.format(
+        "%s", driver.getCapabilities()))
+      .withMessageContaining(String.format(
+        "Command: [%s, clickElement {id=%s}]", driver.getSessionId(), elementId))
+      .withMessageContaining(String.format(
+        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", driver.getSessionId()))
+      .havingCause()
+      .withMessage("BOOM!!!");
 
     verifyCommands(
       executor, driver.getSessionId(),
