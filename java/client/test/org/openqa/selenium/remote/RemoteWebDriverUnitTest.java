@@ -47,6 +47,7 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -78,9 +79,9 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorCannotStartASession() throws IOException {
-    CommandExecutor executor = prepareExecutorMock(nullResponder, nullResponder);
-    assertThatExceptionOfType(UnreachableBrowserException.class)
+  public void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(exceptionalResponder);
+    assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
     verify(executor).execute(argThat(
@@ -1140,28 +1141,32 @@ public class RemoteWebDriverUnitTest {
         .isPresent();
   }
 
-  private Function<Command, Response> echoCapabilities = cmd -> {
+  private final Function<Command, Response> echoCapabilities = cmd -> {
     Response nullResponse = new Response();
     nullResponse.setValue(
-        ((Capabilities) cmd.getParameters().get("desiredCapabilities")).asMap()
-            .entrySet().stream()
-            .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toString())));
+      ((Capabilities) cmd.getParameters().get("desiredCapabilities")).asMap()
+        .entrySet().stream()
+        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toString())));
     nullResponse.setSessionId(UUID.randomUUID().toString());
     return nullResponse;
   };
 
-  private Function<Command, Response> nullResponder = cmd -> {
+  private final Function<Command, Response> nullResponder = cmd -> {
     Response nullResponse = new Response();
     nullResponse.setValue(null);
-    nullResponse.setSessionId(cmd.getSessionId().toString());
+    nullResponse.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
     return nullResponse;
+  };
+
+  private final Function<Command, Response> exceptionalResponder = cmd -> {
+    throw new InternalError("BOOM!!!");
   };
 
   private Function<Command, Response> valueResponder(Object value) {
     return cmd -> {
       Response nullResponse = new Response();
       nullResponse.setValue(value);
-      nullResponse.setSessionId(cmd.getSessionId().toString());
+      nullResponse.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
       return nullResponse;
     };
   }

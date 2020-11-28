@@ -59,6 +59,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -498,7 +499,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     long start = System.currentTimeMillis();
     String currentName = Thread.currentThread().getName();
     Thread.currentThread().setName(
-        String.format("Forwarding %s on session %s to remote", command.getName(), sessionId));
+      String.format("Forwarding %s on session %s to remote", command.getName(), sessionId));
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
@@ -518,22 +519,24 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     } catch (WebDriverException e) {
       e.addInfo("Command", command.toString());
       throw e;
-    } catch (Exception e) {
+    } catch (Throwable e) {
       log(sessionId, command.getName(), command, When.EXCEPTION);
-      String errorMessage = "Error communicating with the remote browser. " +
-          "It may have died.";
       if (command.getName().equals(DriverCommand.NEW_SESSION)) {
-        errorMessage = "Could not start a new session. Possible causes are " +
-            "invalid address of the remote server or browser start-up failure.";
+        throw new SessionNotCreatedException(
+          "Could not start a new session. Possible causes are invalid address of the remote server or browser start-up failure.",
+          e);
+      } else {
+        WebDriverException toThrow = new UnreachableBrowserException(
+          "Error communicating with the remote browser. It may have died.",
+          e);
+        if (getSessionId() != null) {
+          toThrow.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
+        }
+        if (getCapabilities() != null) {
+          toThrow.addInfo("Capabilities", getCapabilities().toString());
+        }
+        throw toThrow;
       }
-      UnreachableBrowserException ube = new UnreachableBrowserException(errorMessage, e);
-      if (getSessionId() != null) {
-        ube.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
-      }
-      if (getCapabilities() != null) {
-        ube.addInfo("Capabilities", getCapabilities().toString());
-      }
-      throw ube;
     } finally {
       Thread.currentThread().setName(currentName);
     }
