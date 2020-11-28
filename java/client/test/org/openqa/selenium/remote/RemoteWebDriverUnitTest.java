@@ -50,6 +50,7 @@ import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 
@@ -82,7 +83,7 @@ public class RemoteWebDriverUnitTest {
 
   @Test
   public void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() throws IOException {
-    CommandExecutor executor = prepareExecutorMock(exceptionalResponder);
+    CommandExecutor executor = prepareExecutorMock(exceptionResponder);
     assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
@@ -919,6 +920,35 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
+  public void canHandleExceptionsThrownByCommandExecutor() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(
+      echoCapabilities, webDriverExceptionResponder);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities(
+      "browserName", "cheese", "platformName", "WINDOWS"));
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    String elementId = UUID.randomUUID().toString();
+    element.setId(elementId);
+    element.setFoundBy(driver, "id", "test");
+
+    assertThatExceptionOfType(WebDriverException.class)
+      .isThrownBy(element::click)
+      .withMessageStartingWith("BOOM!!!")
+      .withMessageContaining("Build info: ")
+      .withMessageContaining(
+        "Driver info: driver.version: RemoteWebDriver")
+      .withMessageContaining(String.format(
+        "Command: [%s, clickElement {id=%s}]", driver.getSessionId(), elementId))
+      .withMessageContaining(String.format(
+        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", driver.getSessionId()));
+
+    verifyCommands(
+      executor, driver.getSessionId(),
+      new CommandPayload(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
   public void canHandleElementClearCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
@@ -1052,7 +1082,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGeTagNameCommand() throws IOException {
+  public void canHandleElementGetTagNameCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("div"));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1070,7 +1100,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGeLocationCommand() throws IOException {
+  public void canHandleElementGetLocationCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder(ImmutableMap.of("x", 10, "y", 20)));
 
@@ -1089,9 +1119,9 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGeSizeCommand() throws IOException {
+  public void canHandleElementGetSizeCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
-       echoCapabilities, valueResponder(ImmutableMap.of("width", 100, "height", 200)));
+      echoCapabilities, valueResponder(ImmutableMap.of("width", 100, "height", 200)));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
     RemoteWebElement element = new RemoteWebElement();
@@ -1107,7 +1137,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGeRectCommand() throws IOException {
+  public void canHandleElementGetRectCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(ImmutableMap.of("x", 10, "y", 20, "width", 100, "height", 200)));
@@ -1219,8 +1249,12 @@ public class RemoteWebDriverUnitTest {
     return null;
   };
 
-  private final Function<Command, Response> exceptionalResponder = cmd -> {
+  private final Function<Command, Response> exceptionResponder = cmd -> {
     throw new InternalError("BOOM!!!");
+  };
+
+  private final Function<Command, Response> webDriverExceptionResponder = cmd -> {
+    throw new WebDriverException("BOOM!!!");
   };
 
   private final Function<Command, Response> nullValueResponder = valueResponder(null);
