@@ -22,10 +22,10 @@ package org.openqa.selenium;
  */
 public class SessionNotCreatedException extends WebDriverException {
   public SessionNotCreatedException(String msg) {
-    super(msg);
+    super("Could not start a new session. " + msg);
   }
 
   public SessionNotCreatedException(String msg, Throwable cause) {
-    super(msg, cause);
+    super("Could not start a new session. " + msg, cause);
   }
 }
