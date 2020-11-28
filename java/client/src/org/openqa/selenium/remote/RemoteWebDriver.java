@@ -355,12 +355,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     if (value == null) { // see https://github.com/SeleniumHQ/selenium/issues/5809
       throw new NoSuchElementException(String.format("Cannot locate an element using %s=%s", by, using));
     }
-    WebElement element;
-    try {
-      element = (WebElement) value;
-    } catch (ClassCastException ex) {
-      throw new WebDriverException("Returned value cannot be converted to WebElement: " + value, ex);
+    if (!(value instanceof WebElement)) {
+      throw new WebDriverException("Returned value cannot be converted to WebElement: " + value);
     }
+    WebElement element = (WebElement) value;
     setFoundBy(this, element, by, using);
     return element;
   }

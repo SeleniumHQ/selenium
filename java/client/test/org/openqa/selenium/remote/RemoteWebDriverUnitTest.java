@@ -47,6 +47,7 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -294,6 +295,25 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
+  public void canHandleFindElementCommandWithNonStandardLocator() throws IOException {
+    WebElement element1 = mock(WebElement.class);
+    WebElement element2 = mock(WebElement.class);
+    By locator = new By() {
+      @Override
+      public List<WebElement> findElements(SearchContext context) {
+        return Arrays.asList(element1, element2);
+      }
+    };
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    WebElement found = driver.findElement(locator);
+
+    assertThat(found).isSameAs(element1);
+    verifyCommands(executor, driver.getSessionId());
+  }
+
+  @Test
   public void canHandleFindElementsOSSCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
@@ -327,6 +347,25 @@ public class RemoteWebDriverUnitTest {
       executor, driver.getSessionId(),
       new CommandPayload(DriverCommand.FIND_ELEMENTS, ImmutableMap.of(
         "using", "id", "value", "cheese")));
+  }
+
+  @Test
+  public void canHandleFindElementsCommandWithNonStandardLocator() throws IOException {
+    WebElement element1 = mock(WebElement.class);
+    WebElement element2 = mock(WebElement.class);
+    By locator = new By() {
+      @Override
+      public List<WebElement> findElements(SearchContext context) {
+        return Arrays.asList(element1, element2);
+      }
+    };
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    List<WebElement> found = driver.findElements(locator);
+
+    assertThat(found).containsExactly(element1, element2);
+    verifyCommands(executor, driver.getSessionId());
   }
 
   @Test
