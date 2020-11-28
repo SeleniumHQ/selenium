@@ -71,19 +71,20 @@ public class RemoteWebDriverUnitTest {
   private static final String ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf";
 
   @Test
-  public void whatIfExecutorIsNull() {
-    assertThatExceptionOfType(UnreachableBrowserException.class)
-        .isThrownBy(() -> new RemoteWebDriver((CommandExecutor) null, new ImmutableCapabilities()));
+  public void constructorShouldThrowIfExecutorIsNull() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> new RemoteWebDriver((CommandExecutor) null, new ImmutableCapabilities()))
+      .withMessage("RemoteWebDriver cannot work without a command executor");
   }
 
   @Test
-  public void whatIfExecutorCannotStartASession() throws IOException {
+  public void constructorShouldThrowIfExecutorCannotStartASession() throws IOException {
     CommandExecutor executor = prepareExecutorMock(nullResponder, nullResponder);
     assertThatExceptionOfType(UnreachableBrowserException.class)
-        .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
+      .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
     verify(executor).execute(argThat(
-        command -> command.getName().equals(DriverCommand.NEW_SESSION)));
+      command -> command.getName().equals(DriverCommand.NEW_SESSION)));
     verifyNoMoreInteractions(executor);
   }
 
@@ -1166,8 +1167,9 @@ public class RemoteWebDriverUnitTest {
   }
 
   @SafeVarargs
-  private final CommandExecutor prepareExecutorMock(
-      Function<Command, Response>... handlers) throws IOException {
+  private final CommandExecutor prepareExecutorMock(Function<Command, Response>... handlers)
+    throws IOException
+  {
     CommandExecutor executor = mock(CommandExecutor.class);
     OngoingStubbing<Response> callChain = when(executor.execute(any()));
     for (Function<Command, Response> handler : handlers) {

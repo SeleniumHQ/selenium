@@ -83,9 +83,9 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
 @Augmentable
-public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
-      HasInputDevices, HasCapabilities, Interactive, TakesScreenshot,
-      HasVirtualAuthenticator {
+public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputDevices,
+                                        HasCapabilities, Interactive, TakesScreenshot,
+                                        HasVirtualAuthenticator {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -114,13 +114,20 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this((URL) null, capabilities);
   }
 
+  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
+    this(new HttpCommandExecutor(remoteAddress), capabilities);
+  }
+
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
+    if (executor == null) {
+      throw new IllegalArgumentException("RemoteWebDriver cannot work without a command executor");
+    }
     this.executor = executor;
 
     init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
-      ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
+      ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
     }
 
     try {
@@ -134,10 +141,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       throw e;
     }
-  }
-
-  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
-    this(new HttpCommandExecutor(remoteAddress), capabilities);
   }
 
   @Beta
@@ -173,8 +176,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Set<String> logTypesToInclude = builder.build();
 
     LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToInclude);
-    LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(),
-        logTypesToInclude);
+    LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(
+      LoggingHandler.getInstance(), logTypesToInclude);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
   }
