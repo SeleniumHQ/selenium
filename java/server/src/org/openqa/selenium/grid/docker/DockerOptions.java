@@ -111,6 +111,7 @@ public class DockerOptions {
     HttpClient.Factory clientFactory) {
 
     if (!isEnabled(clientFactory)) {
+      LOG.warning("Unable to reach the Docker daemon.");
       return ImmutableMap.of();
     }
 
