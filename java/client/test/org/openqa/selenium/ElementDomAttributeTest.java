@@ -56,6 +56,8 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldReturnTheActualValueWhenGettingSrcAttributeOfAValidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validImgTag"));
@@ -64,6 +66,8 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldReturnTheActualValueWhenGettingHrefAttributeOfAValidAnchorTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validAnchorTag"));
@@ -91,6 +95,8 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldNotReturnTheValueOfTheIndexAttributeIfItIsMissing() {
     driver.get(pages.formPage);
     WebElement multiSelect = driver.findElement(By.id("multi"));
@@ -178,6 +184,8 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldNotReturnTheContentsOfATextAreaAsItsValue() {
     driver.get(pages.formPage);
     String value = driver.findElement(By.id("withText")).getDomAttribute("value");
@@ -185,6 +193,8 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldNotReturnInnerHtmlProperty() {
     driver.get(pages.simpleTestPage);
     String html = driver.findElement(By.id("wrappingtext")).getDomAttribute("innerHTML");
@@ -207,7 +217,9 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldReturnTextContentProperty() {
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
+  public void testShouldNotReturnTextContentProperty() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("hiddenline"));
     assertThat(element.getDomAttribute("textContent")).isNull();
@@ -275,6 +287,8 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testCanRetrieveTheCurrentValueOfATextFormFieldWithPresetText() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -284,6 +298,8 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
   public void testShouldNotReturnTextOfATextArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -300,6 +316,8 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "It returns a property")
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(MARIONETTE)
   public void testShouldReturnEmptyStringForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
