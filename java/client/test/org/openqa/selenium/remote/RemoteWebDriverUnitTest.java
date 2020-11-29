@@ -82,47 +82,39 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() throws IOException {
+  public void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() {
     CommandExecutor executor = prepareExecutorMock(exceptionResponder);
     assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
-    verify(executor).execute(argThat(
-      command -> command.getName().equals(DriverCommand.NEW_SESSION)));
-    verifyNoMoreInteractions(executor);
+    verifyCommands(executor, null); // no commands
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorReturnsNullOnAnAttemptToStartASession() throws IOException {
+  public void constructorShouldThrowIfExecutorReturnsNullOnAnAttemptToStartASession() {
     CommandExecutor executor = prepareExecutorMock(nullResponder);
     assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
-    verify(executor).execute(argThat(
-      command -> command.getName().equals(DriverCommand.NEW_SESSION)));
-    verifyNoMoreInteractions(executor);
+    verifyCommands(executor, null); // no commands
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorReturnsAResponseWithNullValueOnAnAttemptToStartASession() throws IOException {
+  public void constructorShouldThrowIfExecutorReturnsAResponseWithNullValueOnAnAttemptToStartASession() {
     CommandExecutor executor = prepareExecutorMock(nullValueResponder);
     assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
-    verify(executor).execute(argThat(
-      command -> command.getName().equals(DriverCommand.NEW_SESSION)));
-    verifyNoMoreInteractions(executor);
+    verifyCommands(executor, null); // no commands
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorReturnsSomethingButNotCapabilitiesOnAnAttemptToStartASession() throws IOException {
+  public void constructorShouldThrowIfExecutorReturnsSomethingButNotCapabilitiesOnAnAttemptToStartASession() {
     CommandExecutor executor = prepareExecutorMock(valueResponder("OK"));
     assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
 
-    verify(executor).execute(argThat(
-      command -> command.getName().equals(DriverCommand.NEW_SESSION)));
-    verifyNoMoreInteractions(executor);
+    verifyCommands(executor, null); // no commands
   }
 
   @Test
@@ -178,7 +170,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetCommand() throws IOException {
+  public void canHandleGetCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -191,7 +183,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetCurrentUrlCommand() throws IOException {
+  public void canHandleGetCurrentUrlCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("http://some.host.com"));
 
@@ -205,7 +197,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetTitleCommand() throws IOException {
+  public void canHandleGetTitleCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -219,7 +211,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetPageSourceCommand() throws IOException {
+  public void canHandleGetPageSourceCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -233,7 +225,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleExecuteScriptCommand() throws IOException {
+  public void canHandleExecuteScriptCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -249,7 +241,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleExecuteAsyncScriptCommand() throws IOException {
+  public void canHandleExecuteAsyncScriptCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -264,7 +256,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementOSSCommand() throws IOException {
+  public void canHandleFindElementOSSCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(ImmutableMap.of("ELEMENT", UUID.randomUUID().toString())));
@@ -280,7 +272,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementW3CCommand() throws IOException {
+  public void canHandleFindElementW3CCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString())));
@@ -296,7 +288,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementCommandWithNonStandardLocator() throws IOException {
+  public void canHandleFindElementCommandWithNonStandardLocator() {
     WebElement element1 = mock(WebElement.class);
     WebElement element2 = mock(WebElement.class);
     By locator = new By() {
@@ -311,11 +303,11 @@ public class RemoteWebDriverUnitTest {
     WebElement found = driver.findElement(locator);
 
     assertThat(found).isSameAs(element1);
-    verifyCommands(executor, driver.getSessionId());
+    verifyCommands(executor, driver.getSessionId() /* no commands */);
   }
 
   @Test
-  public void canHandleFindElementsOSSCommand() throws IOException {
+  public void canHandleFindElementsOSSCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(Arrays.asList(
@@ -333,7 +325,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementsW3CCommand() throws IOException {
+  public void canHandleFindElementsW3CCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(Arrays.asList(
@@ -351,7 +343,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementsCommandWithNonStandardLocator() throws IOException {
+  public void canHandleFindElementsCommandWithNonStandardLocator() {
     WebElement element1 = mock(WebElement.class);
     WebElement element2 = mock(WebElement.class);
     By locator = new By() {
@@ -414,7 +406,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetWindowHandleCommand() throws IOException {
+  public void canHandleGetWindowHandleCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -428,7 +420,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetWindowHandlesCommand() throws IOException {
+  public void canHandleGetWindowHandlesCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder(Arrays.asList("window 1", "window 2")));
 
@@ -442,7 +434,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleCloseCommand() throws IOException {
+  public void canHandleCloseCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -454,7 +446,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleQuitCommand() throws IOException {
+  public void canHandleQuitCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -468,7 +460,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleQuitCommandAfterQuit() throws IOException {
+  public void canHandleQuitCommandAfterQuit() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -485,7 +477,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToWindowCommand() throws IOException {
+  public void canHandleSwitchToWindowCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -498,7 +490,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToNewWindowCommand() throws IOException {
+  public void canHandleSwitchToNewWindowCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder(ImmutableMap.of("handle", "new window")));
 
@@ -514,7 +506,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToFrameByIndexCommand() throws IOException {
+  public void canHandleSwitchToFrameByIndexCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -550,7 +542,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToNonExistingFrameCommand() throws IOException {
+  public void canHandleSwitchToNonExistingFrameCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder(EMPTY_LIST));
 
@@ -567,7 +559,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToParentFrameCommand() throws IOException {
+  public void canHandleSwitchToParentFrameCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -580,7 +572,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToTopCommand() throws IOException {
+  public void canHandleSwitchToTopCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -593,7 +585,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToAlertCommand() throws IOException {
+  public void canHandleSwitchToAlertCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Alarm!"));
 
@@ -607,7 +599,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleAlertAcceptCommand() throws IOException {
+  public void canHandleAlertAcceptCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Alarm!"), nullValueResponder);
 
@@ -621,7 +613,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleAlertDismissCommand() throws IOException {
+  public void canHandleAlertDismissCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Alarm!"), nullValueResponder);
 
@@ -635,7 +627,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleAlertSendKeysCommand() throws IOException {
+  public void canHandleAlertSendKeysCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder("Are you sure?"), nullValueResponder);
 
@@ -649,7 +641,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleRefreshCommand() throws IOException {
+  public void canHandleRefreshCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -661,7 +653,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleBackCommand() throws IOException {
+  public void canHandleBackCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -673,7 +665,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleForwardCommand() throws IOException {
+  public void canHandleForwardCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -697,7 +689,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetCookiesCommand() throws IOException {
+  public void canHandleGetCookiesCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(Arrays.asList(
@@ -718,7 +710,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetCookieNamedCommand() throws IOException {
+  public void canHandleGetCookieNamedCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(Arrays.asList(
@@ -735,7 +727,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleAddCookieCommand() throws IOException {
+  public void canHandleAddCookieCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     Cookie cookie = new Cookie("x", "y");
@@ -748,7 +740,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleDeleteCookieCommand() throws IOException {
+  public void canHandleDeleteCookieCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     Cookie cookie = new Cookie("x", "y");
@@ -761,7 +753,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleDeleteAllCookiesCommand() throws IOException {
+  public void canHandleDeleteAllCookiesCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -773,7 +765,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetWindowSizeCommand() throws IOException {
+  public void canHandleGetWindowSizeCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(ImmutableMap.of("width", 400, "height", 600)));
@@ -788,7 +780,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetWindowSizeCommand() throws IOException {
+  public void canHandleSetWindowSizeCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -801,7 +793,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetWindowPositionCommand() throws IOException {
+  public void canHandleGetWindowPositionCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(ImmutableMap.of("x", 100, "y", 200)));
@@ -817,7 +809,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetWindowPositionCommand() throws IOException {
+  public void canHandleSetWindowPositionCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -830,7 +822,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleMaximizeCommand() throws IOException {
+  public void canHandleMaximizeCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -842,7 +834,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFullscreenCommand() throws IOException {
+  public void canHandleFullscreenCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -854,7 +846,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetImplicitWaitCommand() throws IOException {
+  public void canHandleSetImplicitWaitCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -866,7 +858,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetScriptTimeoutCommand() throws IOException {
+  public void canHandleSetScriptTimeoutCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -878,7 +870,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetPageLoadTimeoutCommand() throws IOException {
+  public void canHandleSetPageLoadTimeoutCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -890,7 +882,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleIME() throws IOException {
+  public void canHandleIME() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder(singletonList("cheese")));
 
@@ -904,7 +896,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementClickCommand() throws IOException {
+  public void canHandleElementClickCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -920,7 +912,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleWebDriverExceptionThrownByCommandExecutor() throws IOException {
+  public void canHandleWebDriverExceptionThrownByCommandExecutor() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, webDriverExceptionResponder);
 
@@ -953,7 +945,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGeneralExceptionThrownByCommandExecutor() throws IOException {
+  public void canHandleGeneralExceptionThrownByCommandExecutor() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, exceptionResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities(
@@ -987,7 +979,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementClearCommand() throws IOException {
+  public void canHandleElementClearCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1003,7 +995,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementSubmitCommand() throws IOException {
+  public void canHandleElementSubmitCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1019,7 +1011,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementSendKeysCommand() throws IOException {
+  public void canHandleElementSendKeysCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1037,7 +1029,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGetAttributeCommand() throws IOException {
+  public void canHandleElementGetAttributeCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("test"));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1055,7 +1047,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementIsSelectedCommand() throws IOException {
+  public void canHandleElementIsSelectedCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1071,7 +1063,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementIsEnabledCommand() throws IOException {
+  public void canHandleElementIsEnabledCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1087,7 +1079,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementIsDisplayedCommand() throws IOException {
+  public void canHandleElementIsDisplayedCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1103,7 +1095,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGeTextCommand() throws IOException {
+  public void canHandleElementGeTextCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("test"));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1120,7 +1112,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGetTagNameCommand() throws IOException {
+  public void canHandleElementGetTagNameCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("div"));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1138,7 +1130,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGetLocationCommand() throws IOException {
+  public void canHandleElementGetLocationCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder(ImmutableMap.of("x", 10, "y", 20)));
 
@@ -1157,7 +1149,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGetSizeCommand() throws IOException {
+  public void canHandleElementGetSizeCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities, valueResponder(ImmutableMap.of("width", 100, "height", 200)));
 
@@ -1175,7 +1167,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementGetRectCommand() throws IOException {
+  public void canHandleElementGetRectCommand() {
     CommandExecutor executor = prepareExecutorMock(
       echoCapabilities,
       valueResponder(ImmutableMap.of("x", 10, "y", 20, "width", 100, "height", 200)));
@@ -1194,7 +1186,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleElementCssPropertyCommand() throws IOException {
+  public void canHandleElementCssPropertyCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder("red"));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -1224,18 +1216,22 @@ public class RemoteWebDriverUnitTest {
     }
   }
 
-  private void verifyCommands(CommandExecutor executor, SessionId sid, CommandPayload... commands)
-    throws IOException
-  {
+  private void verifyCommands(CommandExecutor executor, SessionId sid, CommandPayload... commands) {
     InOrder inOrder = Mockito.inOrder(executor);
-    inOrder.verify(executor).execute(argThat(
-      command -> command.getName().equals(DriverCommand.NEW_SESSION)));
-    for (CommandPayload target : commands) {
-      int x = target instanceof MultiCommandPayload ? ((MultiCommandPayload) target).getTimes() : 1;
-      inOrder.verify(executor, times(x)).execute(argThat(
-        cmd -> cmd.getSessionId().equals(sid)
-               && cmd.getName().equals(target.getName())
-               && areEqual(cmd.getParameters(), target.getParameters())));
+    try {
+      inOrder.verify(executor).execute(argThat(
+        command -> command.getName().equals(DriverCommand.NEW_SESSION)));
+      for (CommandPayload target : commands) {
+        int
+          x =
+          target instanceof MultiCommandPayload ? ((MultiCommandPayload) target).getTimes() : 1;
+        inOrder.verify(executor, times(x)).execute(argThat(
+          cmd -> cmd.getSessionId().equals(sid)
+                 && cmd.getName().equals(target.getName())
+                 && areEqual(cmd.getParameters(), target.getParameters())));
+      }
+    } catch (IOException ex) {
+      throw new UncheckedIOException(ex);
     }
     verifyNoMoreInteractions(executor);
   }
