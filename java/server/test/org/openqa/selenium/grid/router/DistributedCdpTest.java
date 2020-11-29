@@ -22,8 +22,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.v84.network.Network;
-import org.openqa.selenium.devtools.v84.page.Page;
+import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.grid.commands.EventBusCommand;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.distributor.httpd.DistributorServer;
@@ -42,6 +41,8 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.support.devtools.NetworkInterceptor;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.testing.drivers.Browser;
 
@@ -49,7 +50,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import static java.time.Duration.ofSeconds;
@@ -149,20 +149,21 @@ public class DistributedCdpTest {
       new URL("http://localhost:" + routerPort), browser.getCapabilities());
     driver = new Augmenter().augment(driver);
 
+    String serverUri = server.getUrl().toString();
+
     CountDownLatch latch = new CountDownLatch(1);
     try (DevTools devTools = ((HasDevTools) driver).getDevTools()) {
       devTools.createSessionIfThereIsNotOne();
-      devTools.send(Page.enable());
-      devTools.addListener(Network.loadingFinished(), res -> latch.countDown());
-      devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
+      Network<?, ?> network = devTools.getDomains().network();
+      network.addRequestHandler(
+        Route.matching(req -> req.getUri().startsWith(serverUri))
+          .to(() -> req -> {
+            latch.countDown();
+            return NetworkInterceptor.PROCEED_WITH_REQUEST;
+          }));
 
-      devTools.send(
-        Page.navigate(
-          server.getUrl().toString(),
-          Optional.empty(),
-          Optional.empty(),
-          Optional.empty(),
-          Optional.empty()));
+      driver.get(server.getUrl().toString());
+
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
   }
