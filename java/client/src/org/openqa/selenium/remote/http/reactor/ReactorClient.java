@@ -24,6 +24,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.unix.DomainSocketAddress;
+
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -72,8 +74,8 @@ public class ReactorClient implements HttpClient {
 
   private static final Map<HttpMethod, io.netty.handler.codec.http.HttpMethod> METHOD_MAP =
     ImmutableMap.of(HttpMethod.DELETE, io.netty.handler.codec.http.HttpMethod.DELETE,
-      HttpMethod.GET, io.netty.handler.codec.http.HttpMethod.GET,
-      HttpMethod.POST, io.netty.handler.codec.http.HttpMethod.POST);
+                    HttpMethod.GET, io.netty.handler.codec.http.HttpMethod.GET,
+                    HttpMethod.POST, io.netty.handler.codec.http.HttpMethod.POST);
 
   private static final int MAX_CHUNK_SIZE = 1024 * 512; // 500k
 
@@ -93,9 +95,9 @@ public class ReactorClient implements HttpClient {
     switch (config.baseUri().getScheme()) {
       case "http":
       case "https":
-        int port = config.baseUri().getPort() == -1 ?
-          SCHEME_TO_PORT.get(config.baseUri().getScheme()) :
-          config.baseUri().getPort();
+        int port = config.baseUri().getPort() == -1
+                   ? SCHEME_TO_PORT.get(config.baseUri().getScheme())
+                   : config.baseUri().getPort();
         SocketAddress inetAddr = new InetSocketAddress(config.baseUri().getHost(), port);
         client = client.remoteAddress(() -> inetAddr)
           .tcpConfiguration(
@@ -136,28 +138,32 @@ public class ReactorClient implements HttpClient {
       Joiner.on('&').appendTo(uri, queryPairs);
     }
 
-    Tuple2<InputStream, HttpResponse> result = httpClient
-      .headers(h -> {
-        request.getHeaderNames().forEach(
-          name -> request.getHeaders(name).forEach(value -> h.set(name, value)));
-        if (request.getHeader("User-Agent") == null) {
-          h.set("User-Agent", AddSeleniumUserAgent.USER_AGENT);
-        }
-      })
-      .request(METHOD_MAP.get(request.getMethod()))
-      .uri(uri.toString())
-      .send((r, out) -> out.send(fromInputStream(request.getContent().get())))
-      .responseSingle((res, buf) -> {
-        HttpResponse toReturn = new HttpResponse();
-        toReturn.setStatus(res.status().code());
-        res.responseHeaders().entries().forEach(
-          entry -> toReturn.addHeader(entry.getKey(), entry.getValue()));
-        return buf.asInputStream()
-          .switchIfEmpty(Mono.just(new ByteArrayInputStream("".getBytes(UTF_8))))
-          .zipWith(Mono.just(toReturn));
-      }).block();
-    result.getT2().setContent(result::getT1);
-    return result.getT2();
+    try {
+      Tuple2<InputStream, HttpResponse> result = httpClient
+        .headers(h -> {
+          request.getHeaderNames().forEach(
+            name -> request.getHeaders(name).forEach(value -> h.set(name, value)));
+          if (request.getHeader("User-Agent") == null) {
+            h.set("User-Agent", AddSeleniumUserAgent.USER_AGENT);
+          }
+        })
+        .request(METHOD_MAP.get(request.getMethod()))
+        .uri(uri.toString())
+        .send((r, out) -> out.send(fromInputStream(request.getContent().get())))
+        .responseSingle((res, buf) -> {
+          HttpResponse toReturn = new HttpResponse();
+          toReturn.setStatus(res.status().code());
+          res.responseHeaders().entries().forEach(
+            entry -> toReturn.addHeader(entry.getKey(), entry.getValue()));
+          return buf.asInputStream()
+            .switchIfEmpty(Mono.just(new ByteArrayInputStream("".getBytes(UTF_8))))
+            .zipWith(Mono.just(toReturn));
+        }).block(config.readTimeout());
+      result.getT2().setContent(result::getT1);
+      return result.getT2();
+    } catch (IllegalStateException ex) {
+      throw new TimeoutException(ex);
+    }
   }
 
   private Flux<ByteBuf> fromInputStream(InputStream is) {
