@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +66,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -858,7 +858,7 @@ public class RemoteWebDriverUnitTest {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
-    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
     verifyCommands(
       executor, driver.getSessionId(),
@@ -870,7 +870,7 @@ public class RemoteWebDriverUnitTest {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
-    driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(10));
 
     verifyCommands(
       executor, driver.getSessionId(),
@@ -882,7 +882,7 @@ public class RemoteWebDriverUnitTest {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
-    driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
 
     verifyCommands(
       executor, driver.getSessionId(),
@@ -1211,8 +1211,8 @@ public class RemoteWebDriverUnitTest {
                          ImmutableMap.of("id", element.getId(), "propertyName", "color")));
   }
 
-  private class MultiCommandPayload extends CommandPayload {
-    private int times;
+  private static class MultiCommandPayload extends CommandPayload {
+    private final int times;
 
     MultiCommandPayload(int times, String name, Map<String, ?> parameters) {
       super(name, parameters);
@@ -1283,9 +1283,7 @@ public class RemoteWebDriverUnitTest {
       .isPresent();
   }
 
-  private final Function<Command, Response> nullResponder = cmd -> {
-    return null;
-  };
+  private final Function<Command, Response> nullResponder = cmd -> null;
 
   private final Function<Command, Response> exceptionResponder = cmd -> {
     throw new InternalError("BOOM!!!");
