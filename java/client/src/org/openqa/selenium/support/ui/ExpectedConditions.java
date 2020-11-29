@@ -1033,12 +1033,12 @@ public class ExpectedConditions {
   }
 
   /**
-   * An expectation for checking given WebElement has property with a specific value
+   * An expectation for checking given WebElement has DOM property with a specific value
    *
    * @param element   used to check its parameters
    * @param property  property name
    * @param value     used as expected property value
-   * @return Boolean true when element has property with the value
+   * @return Boolean true when element has DOM property with the value
    */
   public static ExpectedCondition<Boolean> domPropertyToBe(final WebElement element,
                                                            final String property,
@@ -1055,6 +1055,34 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String.format(property + " to be \"%s\". Current " + property + ": \"%s\"", value,
+                             currentValue);
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking given WebElement has DOM attribute with a specific value
+   *
+   * @param element   used to check its parameters
+   * @param attribute attribute name
+   * @param value     used as expected attribute value
+   * @return Boolean true when element has DOM attribute with the value
+   */
+  public static ExpectedCondition<Boolean> domAttributeToBe(final WebElement element,
+                                                            final String attribute,
+                                                            final String value) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentValue = null;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentValue = element.getDomAttribute(attribute);
+        return value.equals(currentValue);
+      }
+
+      @Override
+      public String toString() {
+        return String.format(attribute + " to be \"%s\". Current " + attribute + ": \"%s\"", value,
                              currentValue);
       }
     };
