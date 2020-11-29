@@ -22,9 +22,7 @@ package org.openqa.selenium.remote;
  */
 public interface BrowserType {
   String FIREFOX = "firefox";
-  String FIREFOX_PROXY = "firefoxproxy";
-  String FIREFOX_CHROME = "firefoxchrome";
-  String GOOGLECHROME = "googlechrome";
+  String CHROME = "chrome";
   String SAFARI = "safari";
   /**
    * @deprecated Use {@link #OPERA}
@@ -33,19 +31,6 @@ public interface BrowserType {
   String OPERA_BLINK = "operablink";
   String OPERA = "opera";
   String EDGE = "MicrosoftEdge";
-  String EDGEHTML = "EdgeHTML";
-  String IEXPLORE= "iexplore";
-  String IEXPLORE_PROXY= "iexploreproxy";
-  String SAFARI_PROXY = "safariproxy";
-  String CHROME = "chrome";
-  String KONQUEROR = "konqueror";
-  String MOCK = "mock";
-  String IE_HTA="iehta";
-
-  String ANDROID = "android";
   String HTMLUNIT = "htmlunit";
   String IE = "internet explorer";
-  String IPHONE = "iPhone";
-  String IPAD = "iPad";
-  String PHANTOMJS = "phantomjs";
 }
