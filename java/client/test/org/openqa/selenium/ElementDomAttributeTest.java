@@ -245,12 +245,6 @@ public class ElementDomAttributeTest extends JUnit4TestBase {
   public void testShouldCorrectlyReportValueOfColspan() {
     driver.get(pages.tables);
 
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-
     WebElement th1 = driver.findElement(By.id("th1"));
     WebElement td2 = driver.findElement(By.id("td2"));
 
