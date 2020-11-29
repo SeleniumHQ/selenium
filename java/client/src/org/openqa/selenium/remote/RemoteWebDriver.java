@@ -527,31 +527,24 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       // Unwrap the response value by converting any JSON objects of the form
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = getElementConverter().apply(response.getValue());
-      if (value instanceof WebDriverException) {
-        ((WebDriverException) value).addInfo("Command", command.toString());
-      }
       response.setValue(value);
     } catch (Throwable e) {
       log(sessionId, command.getName(), command, When.EXCEPTION);
+      WebDriverException toThrow;
       if (command.getName().equals(DriverCommand.NEW_SESSION)) {
-        throw new SessionNotCreatedException(
-          "Could not start a new session. Possible causes are invalid address of the remote server or browser start-up failure.",
+        toThrow = new SessionNotCreatedException(
+          "Could not start a new session. Possible causes are invalid address"
+          + " of the remote server or browser start-up failure.",
           e);
+      } else if (e instanceof WebDriverException) {
+        toThrow = (WebDriverException) e;
       } else {
-        WebDriverException toThrow =
-          e instanceof WebDriverException
-          ? (WebDriverException) e
-          : new UnreachableBrowserException(
-            "Error communicating with the remote browser. It may have died.", e);
-        toThrow.addInfo("Command", command.toString());
-        if (getSessionId() != null) {
-          toThrow.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
-        }
-        if (getCapabilities() != null) {
-          toThrow.addInfo("Capabilities", getCapabilities().toString());
-        }
-        throw toThrow;
+        toThrow = new UnreachableBrowserException(
+          "Error communicating with the remote browser. It may have died.", e);
       }
+      populateWebDriverException(toThrow);
+      toThrow.addInfo("Command", command.toString());
+      throw toThrow;
     } finally {
       Thread.currentThread().setName(currentName);
     }
@@ -559,24 +552,21 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     try {
       errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
     } catch (WebDriverException ex) {
-      if (command.getParameters() != null && command.getParameters().containsKey("using") && command.getParameters().containsKey("value")) {
-        ex.addInfo(
-            "*** Element info",
-            String.format(
-                "{Using=%s, value=%s}",
-                command.getParameters().get("using"),
-                command.getParameters().get("value")));
-      }
-      ex.addInfo(WebDriverException.DRIVER_INFO, this.getClass().getName());
-      if (getSessionId() != null) {
-        ex.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
-      }
-      if (getCapabilities() != null) {
-        ex.addInfo("Capabilities", getCapabilities().toString());
-      }
+      populateWebDriverException(ex);
+      ex.addInfo("Command", command.toString());
       throw ex;
     }
     return response;
+  }
+
+  private void populateWebDriverException(WebDriverException ex) {
+    ex.addInfo(WebDriverException.DRIVER_INFO, this.getClass().getName());
+    if (getSessionId() != null) {
+      ex.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
+    }
+    if (getCapabilities() != null) {
+      ex.addInfo("Capabilities", getCapabilities().toString());
+    }
   }
 
   protected Response execute(String driverCommand, Map<String, ?> parameters) {

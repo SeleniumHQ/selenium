@@ -929,7 +929,7 @@ public class RemoteWebDriverUnitTest {
       .withMessageStartingWith("BOOM!!!")
       .withMessageContaining("Build info: ")
       .withMessageContaining(
-        "Driver info: driver.version: RemoteWebDriver")
+        "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
       .withMessageContaining(String.format(
         "Session ID: %s", driver.getSessionId()))
       .withMessageContaining(String.format(
@@ -961,7 +961,7 @@ public class RemoteWebDriverUnitTest {
       .withMessageStartingWith("Error communicating with the remote browser. It may have died.")
       .withMessageContaining("Build info: ")
       .withMessageContaining(
-        "Driver info: driver.version: RemoteWebDriver")
+        "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
       .withMessageContaining(String.format(
         "Session ID: %s", driver.getSessionId()))
       .withMessageContaining(String.format(
