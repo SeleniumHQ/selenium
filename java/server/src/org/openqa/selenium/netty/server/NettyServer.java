@@ -74,7 +74,7 @@ public class NettyServer implements Server<NettyServer> {
     Require.nonNull("Handler", handler);
     this.websocketHandler = Require.nonNull("Factory for websocket connections", websocketHandler);
 
-    InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.getDefaultFactory());
+    InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
 
     boolean secure = options.isSecure();
     if (secure) {
