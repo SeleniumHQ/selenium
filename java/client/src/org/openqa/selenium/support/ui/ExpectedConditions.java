@@ -32,7 +32,6 @@ import org.openqa.selenium.WebElement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,8 +39,6 @@ import java.util.regex.Pattern;
  * Canned {@link ExpectedCondition}s which are generally useful within webdriver tests.
  */
 public class ExpectedConditions {
-
-  private static final Logger log = Logger.getLogger(ExpectedConditions.class.getName());
 
   private ExpectedConditions() {
     // Utility class
