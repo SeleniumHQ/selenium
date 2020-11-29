@@ -85,7 +85,10 @@ public class RemoteWebDriverUnitTest {
   public void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() {
     CommandExecutor executor = prepareExecutorMock(exceptionResponder);
     assertThatExceptionOfType(SessionNotCreatedException.class)
-      .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
+      .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()))
+      .withMessageContaining("Build info: ")
+      .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+      .withMessageContaining("Command: [null, newSession {desiredCapabilities=Capabilities {}}]");
 
     verifyCommands(executor, null); // no commands
   }
@@ -979,6 +982,72 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
+  public void canHandleWebDriverExceptionReturnedByCommandExecutor() {
+    CommandExecutor executor = prepareExecutorMock(
+      echoCapabilities, errorResponder("element click intercepted", new WebDriverException("BOOM!!!")));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities(
+      "browserName", "cheese"));
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    String elementId = UUID.randomUUID().toString();
+    element.setId(elementId);
+    element.setFoundBy(driver, "id", "test");
+
+    assertThatExceptionOfType(WebDriverException.class)
+      .isThrownBy(element::click)
+      .withMessageStartingWith("BOOM!!!")
+      .withMessageContaining("Build info: ")
+      .withMessageContaining(
+        "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+      .withMessageContaining(String.format(
+        "Session ID: %s", driver.getSessionId()))
+      .withMessageContaining(String.format(
+        "%s", driver.getCapabilities()))
+      .withMessageContaining(String.format(
+        "Command: [%s, clickElement {id=%s}]", driver.getSessionId(), elementId))
+      .withMessageContaining(String.format(
+        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]", driver.getSessionId()));
+
+    verifyCommands(
+      executor, driver.getSessionId(),
+      new CommandPayload(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
+  public void canHandleResponseWithErrorCodeButNoExceptionReturnedByCommandExecutor() {
+    CommandExecutor executor = prepareExecutorMock(
+      echoCapabilities, errorResponder("element click intercepted", "BOOM!!!"));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities(
+      "browserName", "cheese"));
+    RemoteWebElement element = new RemoteWebElement();
+    element.setParent(driver);
+    String elementId = UUID.randomUUID().toString();
+    element.setId(elementId);
+    element.setFoundBy(driver, "id", "test");
+
+    assertThatExceptionOfType(WebDriverException.class)
+      .isThrownBy(element::click)
+      .withMessageStartingWith("BOOM!!!")
+      .withMessageContaining("Build info: ")
+      .withMessageContaining(
+        "Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+      .withMessageContaining(String.format(
+        "Session ID: %s", driver.getSessionId()))
+      .withMessageContaining(String.format(
+        "%s", driver.getCapabilities()))
+      .withMessageContaining(String.format(
+        "Command: [%s, clickElement {id=%s}]", driver.getSessionId(), elementId))
+      .withMessageContaining(String.format(
+        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]", driver.getSessionId()));
+
+    verifyCommands(
+      executor, driver.getSessionId(),
+      new CommandPayload(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", element.getId())));
+  }
+
+  @Test
   public void canHandleElementClearCommand() {
     CommandExecutor executor = prepareExecutorMock(echoCapabilities, nullValueResponder);
 
@@ -1294,6 +1363,17 @@ public class RemoteWebDriverUnitTest {
   private Function<Command, Response> valueResponder(Object value) {
     return cmd -> {
       Response response = new Response();
+      response.setValue(value);
+      response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
+      return response;
+    };
+  }
+
+  private Function<Command, Response> errorResponder(String state, Object value) {
+    return cmd -> {
+      Response response = new Response();
+      response.setState(state);
+      response.setStatus(new ErrorCodes().toStatus(state, Optional.of(400)));
       response.setValue(value);
       response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
       return response;
