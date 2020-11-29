@@ -22,9 +22,11 @@ import com.google.common.collect.Multimap;
 import org.junit.Test;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -33,6 +35,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +45,7 @@ import java.util.stream.StreamSupport;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -77,8 +81,8 @@ abstract public class HttpClientTestBase {
     HttpResponse response = getResponseWithHeaders(headers);
 
     List<String> values = StreamSupport
-        .stream(response.getHeaders("Cheese").spliterator(), false)
-        .collect(toList());
+      .stream(response.getHeaders("Cheese").spliterator(), false)
+      .collect(toList());
 
     assertThat(values).contains("Cheddar");
     assertThat(values).contains("Brie, Gouda");
@@ -143,8 +147,8 @@ abstract public class HttpClientTestBase {
 
       URI uri = URI.create(server.whereIs("/"));
       HttpRequest request = new HttpRequest(
-          GET,
-          String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
+        GET,
+        String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
 
       HttpResponse response = client.execute(request);
 
@@ -157,27 +161,43 @@ abstract public class HttpClientTestBase {
   @Test
   public void shouldIncludeAUserAgentHeader() {
     HttpResponse response = executeWithinServer(
-        new HttpRequest(GET, "/foo"),
-        req -> new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent"))));
+      new HttpRequest(GET, "/foo"),
+      req -> new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent"))));
 
     String label = new BuildInfo().getReleaseLabel();
     Platform platform = Platform.getCurrent();
     Platform family = platform.family() == null ? platform : platform.family();
 
     assertThat(string(response)).isEqualTo(String.format(
-        "selenium/%s (java %s)",
-        label,
-        family.toString().toLowerCase()));
+      "selenium/%s (java %s)",
+      label,
+      family.toString().toLowerCase()));
+  }
+
+  @Test
+  public void shouldAllowConfigurationOfRequestTimeout() {
+    assertThatExceptionOfType(TimeoutException.class)
+      .isThrownBy(() -> executeWithinServer(
+        new HttpRequest(GET, "/foo"),
+        req -> {
+          try {
+            Thread.sleep(3000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          return new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent")));
+        },
+        ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(1))));
   }
 
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers) {
     return executeWithinServer(
-        new HttpRequest(GET, "/foo"),
-        req -> {
-          HttpResponse resp = new HttpResponse();
-          headers.forEach(resp::addHeader);
-          return resp;
-        });
+      new HttpRequest(GET, "/foo"),
+      req -> {
+        HttpResponse resp = new HttpResponse();
+        headers.forEach(resp::addHeader);
+        return resp;
+      });
   }
 
   private HttpResponse getQueryParameterResponse(HttpRequest request) {
@@ -198,6 +218,18 @@ abstract public class HttpClientTestBase {
 
     try {
       HttpClient client = createFactory().createClient(fromUri(URI.create(server.whereIs("/"))));
+      return client.execute(request);
+    } finally {
+      server.stop();
+    }
+  }
+
+  private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler, ClientConfig config) {
+    AppServer server = new NettyAppServer(handler);
+    server.start();
+
+    try {
+      HttpClient client = createFactory().createClient(config.baseUri(URI.create(server.whereIs("/"))));
       return client.execute(request);
     } finally {
       server.stop();
