@@ -1,4 +1,4 @@
-_DEFAULT_BROWSER = "firefox"
+DEFAULT_BROWSER = "firefox"
 
 _COMMON_TAGS = [
     "browser-test",
@@ -6,7 +6,7 @@ _COMMON_TAGS = [
     "requires-network",
 ]
 
-_BROWSERS = {
+BROWSERS = {
     "chrome": {
         "deps": ["//java/client/src/org/openqa/selenium/chrome"],
         "jvm_flags": ["-Dselenium.browser=chrome"],
@@ -53,14 +53,13 @@ _BROWSERS = {
 
 def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
     if browsers == None:
-        browsers = _BROWSERS.keys()
+        browsers = BROWSERS.keys()
 
     if len(browsers) == 0:
         fail("At least one browser must be specified.")
 
-    default_browser = _DEFAULT_BROWSER if _DEFAULT_BROWSER in browsers else browsers[0]
+    default_browser = DEFAULT_BROWSER if DEFAULT_BROWSER in browsers else browsers[0]
 
-    tests = []
     test_name = test_class.rpartition(".")[2]
 
     data = kwargs["data"] if "data" in kwargs else []
@@ -72,39 +71,37 @@ def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
     stripped_args.pop("jvm_flags", None)
     stripped_args.pop("tags", None)
 
-
     for browser in browsers:
-        if not browser in _BROWSERS:
+        if not browser in BROWSERS:
             fail("Unrecognized browser: " + browser)
 
-        test = test_name if browser == default_browser else "%s-%s" % (test_name, browser)
+        test = "%s-%s" % (name, browser)
 
         native.java_test(
             name = test,
             test_class = test_class,
             size = size,
-            jvm_flags = _BROWSERS[browser]["jvm_flags"] + jvm_flags,
-            tags = _BROWSERS[browser]["tags"] + tags,
+            jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags,
+            tags = BROWSERS[browser]["tags"] + tags,
             data = data,
             **stripped_args
         )
-        tests.append(test)
 
         if not "no-remote" in tags:
             native.java_test(
                 name = "%s-remote" % test,
                 test_class = test_class,
                 size = size,
-                jvm_flags = _BROWSERS[browser]["jvm_flags"] + jvm_flags + [
+                jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags + [
                     "-Dselenium.browser.remote=true",
                     "-Dselenium.browser.remote.path=$(location //java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
                 ],
-                tags = _BROWSERS[browser]["tags"] + tags + ["remote"],
+                tags = BROWSERS[browser]["tags"] + tags + ["remote"],
                 data = data + [
                     "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                 ],
                 **stripped_args
             )
-            tests.append("%s-remote" % test)
 
-    native.test_suite(name = "%s-all" % test_name, tests = tests, tags = ["manual"])
+    # Handy way to run everything
+    native.test_suite(name = name, tests = [":%s-%s" % (name, default_browser)], tags = tags + ["manual"])

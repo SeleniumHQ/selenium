@@ -1,25 +1,10 @@
 load(":library.bzl", "java_library")
-
-# Common package prefixes, in the order we want to check for them
-_PREFIXES = (".com.", ".org.", ".net.", ".io.")
-
-# By default bazel computes the name of test classes based on the
-# standard Maven directory structure, which we may not always use,
-# so try to compute the correct package name.
-def _package_name():
-    pkg = native.package_name().replace("/", ".")
-
-    for prefix in _PREFIXES:
-        idx = pkg.find(prefix)
-        if idx != -1:
-            return pkg[idx + 1:] + "."
-
-    return ""
+load(":package.bzl", "package_name")
 
 def _test_class_name(src_file):
     test_name = src_file[:-len(".java")]
 
-    pkg = _package_name()
+    pkg = package_name()
     if pkg != None:
         return pkg + "." + test_name.replace("/", ".")
     return test_name.replace("/", ".")
@@ -82,13 +67,15 @@ def java_test_suite(
         name,
         srcs,
         size = None,
+        suite_name = None,
         test_identifiers = ["Test.java"],
         deps = [],
         tags = [],
         **kwargs):
-    suite_name = "".join([p.capitalize() for p in name.replace("-", " ").replace("_", " ").split(" ")])
+    if not suite_name:
+        suite_name = "".join([p.capitalize() for p in name.replace("-", " ").replace("_", " ").split(" ")])
 
-    pkg = _package_name()
+    pkg = package_name()
     test_classes = [pkg + src[:-len(".java")].replace("/", ".") for src in srcs if _matches(test_identifiers, src)]
 
     additional_tags = [] if size == "small" else ["no-sandbox"]
