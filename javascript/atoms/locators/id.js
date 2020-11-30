@@ -91,7 +91,9 @@ bot.locators.id.many = function (target, root) {
   }
   var dom = document;
   var elements = dom.querySelector('*');
-  return elements.values().filter(e => bot.dom.getAttribute(e, 'id') == target);
+  return elements.values().filter(function (e) {
+    return bot.dom.getAttribute(e, 'id') == target;
+  });
 };
 
 /**
