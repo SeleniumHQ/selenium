@@ -105,5 +105,6 @@ java_test_suite(
     deps = [
         ":environment",
         ":test-base",
+        artifact("junit:junit"),
     ],
 )

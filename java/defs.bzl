@@ -8,7 +8,8 @@ load("//java/private:library.bzl", _java_export = "java_export", _java_library =
 load("//java/private:javadoc.bzl", _javadoc = "javadoc")
 load("//java/private:module.bzl", _java_module = "java_module")
 load("//java/private:spotbugs_config.bzl", _spotbugs_config = "spotbugs_config")
-load("//java/private:test.bzl", _java_selenium_test_suite = "java_selenium_test_suite", _java_test_suite = "java_test_suite")
+load("//java/private:suite.bzl", _java_test_suite = "java_test_suite")
+load("//java/private:test.bzl", _java_selenium_test_suite = "java_selenium_test_suite")
 
 java_binary = _java_binary
 java_dist_zip = _java_dist_zip
