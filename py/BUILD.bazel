@@ -98,9 +98,9 @@ py_wheel(
     python_tag = "py3",
     python_requires = "~=3.7",
     requires = [
-        "urllib3[secure]",
-        "trio",
-        "trio-websocket",
+        "urllib3[secure]==1.26.2",
+        "trio==0.17.0",
+        "trio-websocket==0.9.0",
     ],
     strip_path_prefixes = [
         "py",
