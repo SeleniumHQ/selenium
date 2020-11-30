@@ -87,33 +87,3 @@ class ArgOptions(BaseOptions):
     @property
     def default_capabilities(self):
         return {}
-
-class PrintOptions():
-
-    def __init__(self):
-        self._print_options = {}
-
-    @property
-    def print_options(self):
-        """
-        :Returns: A hash of print options configured
-        """
-        return self._print_options
-
-    def set_option(self, key, value):
-        """
-        Sets a print option in the hash
-        """
-        if key and value:
-            self._print_options[key] = value
-        else:
-            raise ValueError('key/value cannot be null')
-
-    def get_option(self, key):
-        """
-        Get value of the print option hash
-        """
-        if key:
-            self._print_options.get(key, None)
-        else:
-            raise KeyError('key cannot be null')
