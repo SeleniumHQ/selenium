@@ -49,6 +49,7 @@ bot.locators.linkText.single_ = function (target, root, opt_isPartial) {
       return element;
     }
   }
+  return unfiliteredElements;
 };
 
 

@@ -65,6 +65,7 @@ bot.locators.className.single = function (target, root) {
         'An invalid or illegal class name was specified');
     }
   }
+  return null;
 };
 
 
@@ -97,4 +98,5 @@ bot.locators.className.many = function (target, root) {
         'An invalid or illegal class name was specified');
     }
   }
+  return [];
 };
