@@ -19,17 +19,17 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task LoadInsecureWebsite()
         {
-            var domains = session.GetVersionSpecificDomains<V86.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V87.DevToolsSessionDomains>();
             await domains.Security.Enable();
 
-            await domains.Security.SetIgnoreCertificateErrors(new V86.Security.SetIgnoreCertificateErrorsCommandSettings()
+            await domains.Security.SetIgnoreCertificateErrors(new V87.Security.SetIgnoreCertificateErrorsCommandSettings()
             {
                 Ignore = false
             });
 
             string summary = null;
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<V86.Security.SecurityStateChangedEventArgs> securityStateChangedHandler = (sender, e) =>
+            EventHandler<V87.Security.SecurityStateChangedEventArgs> securityStateChangedHandler = (sender, e) =>
             {
                 summary = e.Summary;
                 sync.Set();
@@ -52,10 +52,10 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task LoadSecureWebsite()
         {
-            var domains = session.GetVersionSpecificDomains<V86.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V87.DevToolsSessionDomains>();
             await domains.Security.Enable();
 
-            await domains.Security.SetIgnoreCertificateErrors(new V86.Security.SetIgnoreCertificateErrorsCommandSettings()
+            await domains.Security.SetIgnoreCertificateErrors(new V87.Security.SetIgnoreCertificateErrorsCommandSettings()
             {
                 Ignore = true
             });
