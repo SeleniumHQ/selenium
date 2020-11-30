@@ -1,4 +1,3 @@
-load(":library.bzl", "java_library")
 load(":package.bzl", "package_name")
 
 def _test_class_name(src_file):
@@ -86,7 +85,7 @@ def java_test_suite(
             libargs.update({key: value})
 
     # Allow linting of sources we've written
-    java_library(
+    native.java_library(
         name = "%s-suite-lib" % name,
         testonly = True,
         srcs = srcs,
