@@ -36,7 +36,8 @@ public class SeleniumTestRule implements TestRule {
     this.regularWait = Require.nonNull("Regular wait duration", regularWait);
     this.shortWait = Require.nonNull("Short wait duration", shortWait);
 
-    this.chain = RuleChain.outerRule(new TraceMethodNameRule())
+    this.chain = RuleChain.outerRule(new CaptureLoggingRule())
+      .around(new TraceMethodNameRule())
       .around(new ManageDriverRule())
       .around(new SwitchToTopRule())
       .around(new NotYetImplementedRule());

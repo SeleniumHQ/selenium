@@ -28,6 +28,7 @@ java_library(
     name = "test-base",
     testonly = True,
     srcs = [
+        "CaptureLoggingRule.java",
         "IgnoreComparator.java",
         "JUnit4TestBase.java",
         "Pages.java",
