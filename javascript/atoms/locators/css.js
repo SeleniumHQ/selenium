@@ -22,9 +22,6 @@ goog.provide('bot.locators.css');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.userAgent');
-goog.require('goog.dom.NodeType');
-goog.require('goog.string');
-goog.require('goog.userAgent');
 
 
 /**
@@ -37,19 +34,12 @@ goog.require('goog.userAgent');
  *     such element could be found.
  */
 bot.locators.css.single = function (target, root) {
-  if (!goog.isFunction(root['querySelector']) &&
-    // IE8 in non-compatibility mode reports querySelector as an object.
-    goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
-    !goog.isObject(root['querySelector'])) {
-    throw Error('CSS selection is not supported');
-  }
-
   if (!target) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
       'No selector specified');
   }
 
-  target = goog.string.trim(target);
+  target = target.trim();
 
   var element;
   try {
@@ -59,7 +49,7 @@ bot.locators.css.single = function (target, root) {
       'An invalid or illegal selector was specified');
   }
 
-  return element && element.nodeType == goog.dom.NodeType.ELEMENT ?
+  return element && element.nodeType == 1 /**DOM 3 Element*/ ?
       /**@type {Element}*/ (element) : null;
 };
 
@@ -73,19 +63,12 @@ bot.locators.css.single = function (target, root) {
  * @return {!IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.css.many = function (target, root) {
-  if (!goog.isFunction(root['querySelectorAll']) &&
-    // IE8 in non-compatibility mode reports querySelector as an object.
-    goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
-    !goog.isObject(root['querySelector'])) {
-    throw Error('CSS selection is not supported');
-  }
-
   if (!target) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
       'No selector specified');
   }
 
-  target = goog.string.trim(target);
+  target = target.trim();
 
   try {
     return root.querySelectorAll(target);

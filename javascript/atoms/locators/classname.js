@@ -19,8 +19,6 @@ goog.provide('bot.locators.className');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('goog.dom');
-goog.require('goog.string');
 
 
 /**
@@ -51,7 +49,7 @@ bot.locators.className.single = function (target, root) {
       'No class name specified');
   }
 
-  target = goog.string.trim(target);
+  target = target.trim();
   if (target.indexOf(' ') !== -1) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
       'Compound class names not permitted');
@@ -67,9 +65,6 @@ bot.locators.className.single = function (target, root) {
         'An invalid or illegal class name was specified');
     }
   }
-  var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-      /*tagName=*/'*', /*className=*/target, root);
-  return elements.length ? elements[0] : null;
 };
 
 
@@ -86,7 +81,7 @@ bot.locators.className.many = function (target, root) {
       'No class name specified');
   }
 
-  target = goog.string.trim(target);
+  target = target.trim();
   if (target.indexOf(' ') !== -1) {
     throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
       'Compound class names not permitted');
@@ -102,6 +97,4 @@ bot.locators.className.many = function (target, root) {
         'An invalid or illegal class name was specified');
     }
   }
-  return goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
-      /*tagName=*/'*', /*className=*/target, root);
 };
