@@ -16,139 +16,142 @@
 # under the License.
 
 class PrintOptions():
+    ORIENTATION_VALUES = ['portrait', 'landscape']
 
     def __init__(self):
-        self.orientation_values = ['portrait', 'landscape']
         self._print_options = {}
         self._page = {}
         self._margin = {}
 
-    @property
     def to_dict(self):
         """
         :Returns: A hash of print options configured
         """
         return self._print_options
 
-    def set_orientation(self, value):
-        if value not in self.orientation_values:
-            raise ValueError('Orientation value must be one of ' + str(self.orientation_values))
+    @property
+    def orientation(self):
+        return self._print_options.get('orientation', None)
+
+    @orientation.setter
+    def orientation(self, value):
+        if value not in self.ORIENTATION_VALUES:
+            raise ValueError(f'Orientation value must be one of {self.ORIENTATION_VALUES}')
 
         self._print_options['orientation'] = value
 
-    def get_orientation(self):
-        return self._print_options.get('orientation', None)
+    @property
+    def scale(self):
+        return self._print_options.get('scale', None)
 
-    def set_scale(self, value):
-        if not isinstance(value, int) and not isinstance(value, float):
-            raise ValueError('Scale value should either be an integer or float')
+    @scale.setter
+    def scale(self, value):
+        self.__validate_num_property('Scale', value)
 
         if value < 0.1 or value > 2:
             raise ValueError('Scale value should be between 0.1 and 2')
 
         self._print_options['scale'] = value
 
-    def get_scale(self):
-        return self._print_options.get('scale', None)
+    @property
+    def background(self):
+        return self._print_options.get('background', None)
 
-    def set_background(self, value):
+    @background.setter
+    def background(self, value):
         if not isinstance(value, bool):
             raise ValueError('Set background value should be a boolean')
         self._print_options['background'] = value
 
-    def get_background(self):
-        return self._print_options.get('background', None)
+    @property
+    def page_width(self):
+        return self._page.get('width', None)
 
-    def set_width(self, value):
-        if not isinstance(value, float) and not isinstance(value, int):
-            raise ValueError('Width should be an integer or a float')
-
-        if value < 0:
-            raise ValueError('Width cannot be less then 0')
+    @page_width.setter
+    def page_width(self, value):
+        self.__validate_num_property('Page Width', value)
 
         self._page['width'] = value
         self._print_options['page'] = self._page
 
-    def get_width(self):
-        return self._page.get('width', None)
+    @property
+    def page_height(self):
+        return self._page.get('height', None)
 
-    def set_height(self, value):
-        if not isinstance(value, float) and not isinstance(value, int):
-            raise ValueError('Height should be an integer or a float')
-
-        if value < 0:
-            raise ValueError('Height cannot be less then 0')
+    @page_height.setter
+    def page_height(self, value):
+        self.__validate_num_property('Page Height', value)
 
         self._page['height'] = value
         self._print_options['page'] = self._page
 
-    def get_height(self):
-        return self._page.get('height', None)
+    @property
+    def margin_top(self):
+        return  self._margin.get('top', None)
 
-    def set_top(self, value):
-        if not isinstance(value, float) and not isinstance(value, int):
-            raise ValueError('Margin top should be an integer or a float')
-
-        if value < 0:
-            raise ValueError('Margin top cannot be less then 0')
+    @margin_top.setter
+    def margin_top(self, value):
+        self.__validate_num_property('Margin top', value)
 
         self._margin['top'] = value
         self._print_options['margin'] = self._margin
 
-    def get_top(self):
-        return  self._margin.get('top', None)
+    @property
+    def margin_left(self):
+        return self._margin.get('left', None)
 
-    def set_left(self, value):
-        if not isinstance(value, float) and not isinstance(value, int):
-            raise ValueError('Margin left should be an integer or a float')
-
-        if value < 0:
-            raise ValueError('Margin left cannot be less then 0')
+    @margin_left.setter
+    def margin_left(self, value):
+        self.__validate_num_property('Margin left', value)
 
         self._margin['left'] = value
         self._print_options['margin'] = self._margin
 
-    def get_left(self):
-        return self._margin.get('left', None)
+    @property
+    def margin_bottom(self):
+        return self._margin.get('bottom', None)
 
-    def set_bottom(self, value):
-        if not isinstance(value, float) and not isinstance(value, int):
-            raise ValueError('Margin bottom should be an integer or a float')
-
-        if value < 0:
-            raise ValueError('Margin bottom cannot be less then 0')
+    @margin_bottom.setter
+    def margin_bottom(self, value):
+        self.__validate_num_property('Margin bottom', value)
 
         self._margin['bottom'] = value
         self._print_options['margin'] = self._margin
 
-    def get_botton(self):
-        return self._margin.get('bottom', None)
+    @property
+    def margin_right(self):
+        return self._margin.get('right', None)
 
-    def set_right(self, value):
-        if not isinstance(value, float) and not isinstance(value, int):
-            raise ValueError('Margin right should be an integer or a float')
-
-        if value < 0:
-            raise ValueError('Margin right cannot be less then 0')
+    @margin_right.setter
+    def margin_right(self, value):
+        self.__validate_num_property('Margin right', value)
 
         self._margin['right'] = value
         self._print_options['margin'] = self._margin
 
-    def get_right(self):
-        return self._margin.get('right', None)
+    @property
+    def shrink_to_fit(self):
+        return self._print_options.get('shrinkToFit', None)
 
-    def set_shrink_to_fit(self, value):
+    @shrink_to_fit.setter
+    def shrink_to_fit(self, value):
         if not isinstance(value, bool):
             raise ValueError('Set shrink to fit value should be a boolean')
         self._print_options['shrinkToFit'] = value
 
-    def get_shrink_to_fit(self):
-        return self._print_options.get('shrinkToFit', None)
+    @property
+    def page_ranges(self):
+        return self._print_options.get('pageRanges', None)
 
-    def set_page_ranges(self, value):
+    @page_ranges.setter
+    def page_ranges(self, value):
         if not isinstance(value, list):
             raise ValueError('Page ranges should be a list')
         self._print_options['pageRanges'] = value
 
-    def get_page_ranges(self):
-        return self._print_options.get('pageRanges', None)
+    def __validate_num_property(self, property_name, value):
+        if not isinstance(value, float) and not isinstance(value, int):
+            raise ValueError(f'{property_name} should be an integer or a float')
+
+        if value < 0:
+            raise ValueError(f'{property_name} cannot be less then 0')

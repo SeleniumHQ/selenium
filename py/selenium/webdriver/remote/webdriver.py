@@ -895,7 +895,7 @@ class WebDriver(BaseWebDriver):
         """
         options = {}
         if print_options:
-            options = print_options.to_dict
+            options = print_options.to_dict()
 
         return self.execute(Command.PRINT_PAGE, options)['value']
 

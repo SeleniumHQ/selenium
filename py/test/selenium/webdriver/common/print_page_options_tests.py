@@ -24,60 +24,71 @@ def print_options():
     return PrintOptions()
 
 def test_set_orientation(print_options):
-    print_options.set_orientation('portrait')
-    assert print_options.get_orientation() == 'portrait'
+    print_options.orientation = 'portrait'
+    assert print_options.orientation == 'portrait'
 
 def test_raises_exception_if_orientation_is_invalid(print_options):
     with pytest.raises(ValueError):
-        print_options.set_orientation('foobar')
+        print_options.orientation = 'foobar'
 
 def test_set_scale(print_options):
-    print_options.set_scale(1)
-    assert print_options.get_scale() == 1
+    print_options.scale = 1
+    assert print_options.scale == 1
 
 def test_raises_exception_if_scale_is_outside_range(print_options):
     with pytest.raises(ValueError):
-        print_options.set_scale(3)
+        print_options.scale = 3
 
 def test_raises_exception_if_scale_is_not_an_integer(print_options):
     with pytest.raises(ValueError):
-        print_options.set_scale("1")
+        print_options.scale = "1"
 
 def test_set_background(print_options):
-    print_options.set_background(True)
-    assert print_options.get_background() is True
+    print_options.background = True
+    assert print_options.background is True
 
 def test_unset_value_to_be_none(print_options):
-    assert print_options.get_width() is None
+    assert print_options.page_width is None
 
 def test_set_width(print_options):
-    print_options.set_width(3)
-    assert print_options.get_width() == 3
+    print_options.page_width = 3
+    assert print_options.page_width == 3
 
 def test_raises_exception_if_set_invalid_width(print_options):
     with pytest.raises(ValueError):
-        print_options.set_width(-1)
+        print_options.page_width = -1
 
 def test_raises_exception_if_set_with_not_int(print_options):
     with pytest.raises(ValueError):
-        print_options.set_width("2")
+        print_options.page_width = "2"
 
 def test_set_height(print_options):
-    print_options.set_height(2)
-    assert print_options.get_height() == 2
+    print_options.page_height = 2
+    assert print_options.page_height == 2
 
 def test_set_shrink_to_fit(print_options):
-    print_options.set_shrink_to_fit(True)
-    assert print_options.get_shrink_to_fit() is True
+    print_options.shrink_to_fit = True
+    assert print_options.shrink_to_fit is True
 
 def test_raises_exception_if_set_shrink_to_fit_non_bool(print_options):
     with pytest.raises(ValueError):
-        print_options.set_shrink_to_fit('True')
+        print_options.shrink_to_fit = 'True'
 
 def test_set_page_ranges(print_options):
-    print_options.set_page_ranges(['1-2'])
-    assert print_options.get_page_ranges() == ['1-2']
+    print_options.page_ranges = ['1-2']
+    assert print_options.page_ranges == ['1-2']
 
 def test_raises_exception_if_page_ranges_not_list(print_options):
     with pytest.raises(ValueError):
-        print_options.set_page_ranges('foobar')
+        print_options.page_ranges = 'foobar'
+
+def test_margin_height(print_options):
+    print_options.margin_top = 2
+    assert print_options.margin_top == 2
+
+def test_raises_exception_if_margin_is_invalid(print_options):
+    with pytest.raises(ValueError):
+        print_options.margin_top = -1
+
+    with pytest.raises(ValueError):
+        print_options.margin_top = "2"

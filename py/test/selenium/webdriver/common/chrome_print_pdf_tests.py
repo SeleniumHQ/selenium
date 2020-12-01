@@ -30,7 +30,7 @@ chrome_driver = Chrome(options=options)
 def test_pdf_with_2_pages(pages):
     chrome_print_options = PrintOptions()
 
-    chrome_print_options.set_page_ranges(['1-2'])
+    chrome_print_options.page_ranges = ['1-2']
 
     chrome_driver.get(pages.url("printPage.html"))
 
@@ -48,9 +48,9 @@ def test_pdf_with_all_pages(pages):
 def test_valid_params(pages):
     chrome_print_options = PrintOptions()
 
-    chrome_print_options.set_page_ranges(['1-2'])
-    chrome_print_options.set_orientation('landscape')
-    chrome_print_options.set_width(30)
+    chrome_print_options.page_ranges = ['1-2']
+    chrome_print_options.orientation = 'landscape'
+    chrome_print_options.width = 30
     
     chrome_driver.get(pages.url("printPage.html"))
 

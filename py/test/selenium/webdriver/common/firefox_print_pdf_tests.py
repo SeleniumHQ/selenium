@@ -25,7 +25,7 @@ firefox_driver = Firefox()
 
 def test_pdf_with_2_pages(pages):
     firefox_print_options = PrintOptions()
-    firefox_print_options.set_page_ranges(['1-2'])
+    firefox_print_options.page_ranges = ['1-2']
 
     firefox_driver.get(pages.url("printPage.html"))
     firefox_base64code = firefox_driver.print_page(firefox_print_options)
@@ -41,9 +41,9 @@ def test_pdf_with_all_pages(pages):
 def test_valid_params(pages):
     firefox_print_options = PrintOptions()
 
-    firefox_print_options.set_page_ranges(['1-2'])
-    firefox_print_options.set_orientation('landscape')
-    firefox_print_options.set_width(30)
+    firefox_print_options.page_ranges = ['1-2']
+    firefox_print_options.orientation = 'landscape'
+    firefox_print_options.width = 30
     
     firefox_driver.get(pages.url("printPage.html"))
     firefox_base64code = firefox_driver.print_page(firefox_print_options)
