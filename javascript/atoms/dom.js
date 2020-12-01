@@ -95,8 +95,7 @@ bot.dom.isInteractable = function (element) {
  * @private
  */
 bot.dom.hasPointerEventsDisabled_ = function (element) {
-  if (goog.userAgent.IE ||
-    (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
+  if (goog.userAgent.IE) {
     // Don't support pointer events
     return false;
   }
@@ -313,12 +312,6 @@ bot.dom.isContentEditable = function (element) {
   // Check if browser supports contentEditable.
   if (!goog.isDef(element['contentEditable'])) {
     return false;
-  }
-
-  // Checking the element's isContentEditable property is preferred except for
-  // IE where that property is not reliable on IE versions 7, 8, and 9.
-  if (!goog.userAgent.IE && goog.isDef(element['isContentEditable'])) {
-    return element.isContentEditable;
   }
 
   // For IE and for browsers where contentEditable is supported but
@@ -825,16 +818,7 @@ bot.dom.getClientRect = function (elem) {
     var viewportSize = goog.dom.getViewportSize(goog.dom.getWindow(doc));
     return new goog.math.Rect(0, 0, viewportSize.width, viewportSize.height);
   } else {
-    var nativeRect;
-    try {
-      // TODO: in IE and Firefox, getBoundingClientRect includes stroke width,
-      // but getBBox does not.
-      nativeRect = elem.getBoundingClientRect();
-    } catch (e) {
-      // On IE < 9, calling getBoundingClientRect on an orphan element raises
-      // an "Unspecified Error". All other browsers return zeros.
-      return new goog.math.Rect(0, 0, 0, 0);
-    }
+    var nativeRect = elem.getBoundingClientRect();
 
     var rect = new goog.math.Rect(nativeRect.left, nativeRect.top,
       nativeRect.right - nativeRect.left, nativeRect.bottom - nativeRect.top);

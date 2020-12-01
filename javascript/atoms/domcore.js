@@ -27,9 +27,6 @@ goog.provide('bot.dom.core');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.userAgent');
-goog.require('goog.array');
-goog.require('goog.dom');
-goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 
 
@@ -40,8 +37,7 @@ goog.require('goog.dom.TagName');
  * <p>For boolean attributes such as "selected" or "checked", this method
  * returns the value of element.getAttribute(attributeName) cast to a String
  * when attribute is present. For modern browsers, this will be the string the
- * attribute is given in the HTML, but for IE8 it will be the name of the
- * attribute, and for IE7, it will be the string "true". To test whether a
+ * attribute is given in the HTML. To test whether a
  * boolean attribute is present, test whether the return value is non-null, the
  * same as one would for non-boolean attributes. Specifically, do *not* test
  * whether the boolean evaluation of the return value is true, because the value
@@ -63,23 +59,6 @@ bot.dom.core.getAttribute = function (element, attributeName) {
   // standardizeStyleAttribute method.
   if (attributeName == 'style') {
     return bot.dom.core.standardizeStyleAttribute_(element.style.cssText);
-  }
-
-  // In IE doc mode < 8, the "value" attribute of an <input> is only accessible
-  // as a property.
-  if (bot.userAgent.IE_DOC_PRE8 && attributeName == 'value' &&
-    bot.dom.core.isElement(element, goog.dom.TagName.INPUT)) {
-    return element['value'];
-  }
-
-  // In IE < 9, element.getAttributeNode will return null for some boolean
-  // attributes that are present, such as the selected attribute on <option>
-  // elements. This if-statement is sufficient if these cases are restricted
-  // to boolean attributes whose reflected property names are all lowercase
-  // (as attributeName is by this point), like "selected". We have not
-  // found a boolean attribute for which this does not work.
-  if (bot.userAgent.IE_DOC_PRE9 && element[attributeName] === true) {
-    return String(element.getAttribute(attributeName));
   }
 
   // When the attribute is not present, either attr will be null or
@@ -117,7 +96,7 @@ bot.dom.core.standardizeStyleAttribute_ = function (value) {
   var styleArray = value.split(
     bot.dom.core.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_);
   var css = [];
-  goog.array.forEach(styleArray, function (pair) {
+  styleArray.forEach(function (pair) {
     var i = pair.indexOf(':');
     if (i > 0) {
       var keyValue = [pair.slice(0, i), pair.slice(i + 1)];
@@ -141,14 +120,6 @@ bot.dom.core.standardizeStyleAttribute_ = function (value) {
  * @return {*} The value of the property.
  */
 bot.dom.core.getProperty = function (element, propertyName) {
-  // When an <option>'s value attribute is not set, its value property should be
-  // its text content, but IE < 8 does not adhere to that behavior, so fix it.
-  // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
-  if (bot.userAgent.IE_DOC_PRE8 && propertyName == 'value' &&
-    bot.dom.core.isElement(element, goog.dom.TagName.OPTION) &&
-    goog.isNull(bot.dom.core.getAttribute(element, 'value'))) {
-    return goog.dom.getRawTextContent(element);
-  }
   return element[propertyName];
 };
 
@@ -169,7 +140,7 @@ bot.dom.core.isElement = function (node, opt_tagName) {
   if (opt_tagName && (typeof opt_tagName !== 'string')) {
     opt_tagName = opt_tagName.toString();
   }
-  return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
+  return !!node && node.nodeType == 1 /**Element */ &&
     (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
 };
 
