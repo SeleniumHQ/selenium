@@ -17,16 +17,33 @@
 
 package org.openqa.selenium.docker;
 
-import java.time.Duration;
+import org.openqa.selenium.internal.Require;
 
-public interface DockerProtocol {
-  String version();
+import java.util.List;
 
-  Image getImage(String imageName) throws DockerException;
+public class ContainerLogs {
 
-  Container create(ContainerConfig info);
-  void startContainer(ContainerId id) throws DockerException;
-  void stopContainer(ContainerId id, Duration timeout) throws DockerException;
-  ContainerInfo inspectContainer(ContainerId id) throws DockerException;
-  ContainerLogs getContainerLogs(ContainerId id) throws DockerException;
+  private final List<String> logLines;
+  private final ContainerId id;
+
+  public ContainerLogs(ContainerId id, List<String> logLines) {
+    this.logLines = Require.nonNull("Container logs", logLines);
+    this.id = Require.nonNull("Container id", id);
+  }
+
+  public List<String> getLogs() {
+    return logLines;
+  }
+
+  public ContainerId getId() {
+    return id;
+  }
+
+  @Override
+  public String toString() {
+    return "ContainerInfo{" +
+      "containerLogs=" + logLines.toString() +
+      ", id=" + id +
+      '}';
+  }
 }
