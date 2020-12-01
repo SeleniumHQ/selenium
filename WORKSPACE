@@ -239,7 +239,3 @@ k8s_defaults(
     kind = "deployment",
     namespace = "selenium",
 )
-
-load("//common:repositories.bzl", "pin_browsers")
-
-pin_browsers()
