@@ -32,12 +32,14 @@ goog.require('goog.dom');
  *     such element could be found.
  */
 bot.locators.name.single = function (target, root) {
-  var dom = goog.dom.getDomHelper(root);
-  var allElements = dom.getElementsByTagNameAndClass('*', null, root);
-  var element = goog.array.find(allElements, function (element) {
-    return bot.dom.getAttribute(element, 'name') == target;
-  });
-  return /**@type{Element}*/ (element);
+  var dom = document;
+  var allElements = root.querySelectorAll('*');
+  for (const element of allElements) {
+    if (bot.dom.getAttribute(element, 'name') == target) {
+      return element;
+    }
+  }
+  return null;
 };
 
 
@@ -50,9 +52,14 @@ bot.locators.name.single = function (target, root) {
  * @return {!IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.name.many = function (target, root) {
-  var dom = goog.dom.getDomHelper(root);
-  var allElements = dom.getElementsByTagNameAndClass('*', null, root);
-  return goog.array.filter(allElements, function (element) {
-    return bot.dom.getAttribute(element, 'name') == target;
-  });
+  var dom = document;
+  var allElements = root.querySelectorAll('*');
+
+  var elements = [];
+  for (const element of allElements) {
+    if (bot.dom.getAttribute(element, 'name') == target) {
+      elements.push(element);
+    }
+  }
+  return elements;
 };
