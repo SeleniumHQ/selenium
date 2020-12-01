@@ -108,7 +108,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         Command command = new Command(
             null,
-            DriverCommand.NEW_SESSION(service.getDefaultCapabilities().merge(sessionRequest.getCapabilities())));
+            DriverCommand.NEW_SESSION(sessionRequest.getCapabilities().merge(service.getDefaultCapabilities())));
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 

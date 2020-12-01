@@ -108,9 +108,25 @@ public interface Capabilities {
   default Capabilities merge(Capabilities other) {
     HashMap<String, Object> map = new HashMap<>(asMap());
     if (other != null) {
-      map.putAll(other.asMap());
+      deepMerge(map, other.asMap());
     }
     return new ImmutableCapabilities(map);
+  }
+
+  @SuppressWarnings("unchecked")
+  static Map deepMerge(Map dst, Map src) {
+    if (dst != null && src != null) {
+      for (Object key : src.keySet()) {
+        if (src.get(key) instanceof Map && dst.get(key) instanceof Map) {
+          Map originalChild = (Map)dst.get(key);
+          Map newChild = (Map)src.get(key);
+          dst.put(key, deepMerge(originalChild, newChild));
+        } else {
+          dst.put(key, src.get(key));
+        }
+      }
+    }
+    return dst;
   }
 
   default Set<String> getCapabilityNames() {
