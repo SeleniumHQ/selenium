@@ -9,7 +9,7 @@ on:
       - trunk
 
 jobs:
-  build:
+  node_tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -26,10 +26,37 @@ jobs:
           java-version: 11
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Firefox and geckodriver
+        uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run JavaScript tests on Firefox
         run: bazel test //javascript/node/selenium-webdriver:tests
+        env:
+          DISPLAY: :99
+          SELENIUM_BROWSER: firefox
+
+  firefox_atom_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 10
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Firefox and geckodriver
+        uses: ./.github/actions/setup-firefox
+      - name: Start XVFB
+        run: Xvfb :99 &
+      - name: Run atom tests on Firefox
+        uses: ./.github/actions/bazel
+        with:
+          command: test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...
         env:
           DISPLAY: :99
           SELENIUM_BROWSER: firefox
