@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>gestures_test.html</title>
   <script src="test_bootstrap.js"></script>
@@ -35,12 +36,12 @@
         ];
       }
 
-      goog.events.listen(elem, goog.events.EventType.TOUCHSTART, function(e) {
+      goog.events.listen(elem, goog.events.EventType.TOUCHSTART, function (e) {
         assert('touchstart already fired', !startCoords.length);
         startCoords = handleCoords(e, 'touches');
       });
 
-      goog.events.listen(elem, goog.events.EventType.TOUCHMOVE, function(e) {
+      goog.events.listen(elem, goog.events.EventType.TOUCHMOVE, function (e) {
         assert('two touchmoves already fired', !secondMoveCoords.length);
         if (!firstMoveCoords.length) {
           firstMoveCoords = handleCoords(e, 'touches');
@@ -49,7 +50,7 @@
         }
       });
 
-      goog.events.listen(elem, goog.events.EventType.TOUCHEND, function(e) {
+      goog.events.listen(elem, goog.events.EventType.TOUCHEND, function (e) {
         assert('touchend already fired', !endCoords.length);
         endCoords = handleCoords(e, 'changedTouches');
       });
@@ -61,22 +62,22 @@
       }
 
       goog.events.listen(elem, goog.events.EventType.MSPOINTERDOWN,
-                         function(e) {
-        assert('MSPointerDown already fired', startCoords.length < 2);
-        startCoords.push(handlePointerCoords(e));
-      });
+        function (e) {
+          assert('MSPointerDown already fired', startCoords.length < 2);
+          startCoords.push(handlePointerCoords(e));
+        });
 
       goog.events.listen(elem, goog.events.EventType.MSPOINTERMOVE,
-                         function(e) {
-        assert('MSPointerMoves already fired', secondMoveCoords.length < 2);
-        if (firstMoveCoords.length < 2) {
-          firstMoveCoords.push(handlePointerCoords(e));
-        } else {
-          secondMoveCoords.push(handlePointerCoords(e));
-        }
-      });
+        function (e) {
+          assert('MSPointerMoves already fired', secondMoveCoords.length < 2);
+          if (firstMoveCoords.length < 2) {
+            firstMoveCoords.push(handlePointerCoords(e));
+          } else {
+            secondMoveCoords.push(handlePointerCoords(e));
+          }
+        });
 
-      goog.events.listen(elem, goog.events.EventType.MSPOINTERUP, function(e) {
+      goog.events.listen(elem, goog.events.EventType.MSPOINTERUP, function (e) {
         assert('MSPointerUp already fired', endCoords.length < 2);
         endCoords.push(handlePointerCoords(e));
       });
@@ -87,7 +88,7 @@
     function assertApproxEquals(comment, expected, actual) {
       // Android 4+ coerces real numbered coordinates to their floor values.
       if (goog.userAgent.product.ANDROID &&
-          bot.userAgent.isProductVersion(4)) {
+        bot.userAgent.isProductVersion(4)) {
         var expectedMinFloor = Math.floor(expected - EPSILON);
         var expectedMaxFloor = Math.floor(expected + EPSILON);
         assertTrue(actual >= expectedMinFloor);
@@ -98,7 +99,7 @@
     }
 
     function assertMultitouchPoints(start0X, start0Y, start1X, start1Y,
-        mid0X, mid0Y, mid1X, mid1Y, end0X, end0Y, end1X, end1Y) {
+      mid0X, mid0Y, mid1X, mid1Y, end0X, end0Y, end1X, end1Y) {
       assertApproxEquals('start 0 x', start0X, startCoords[0].x);
       assertApproxEquals('start 0 y', start0Y, startCoords[0].y);
       assertApproxEquals('start 1 x', start1X, startCoords[1].x);
@@ -165,11 +166,11 @@
                              /* mid */ 50 + midXOffset, 50, 50 - midXOffset, 50,
                              /* end */ 75, 25, 25, 75);
     }
-    </script>
+  </script>
 </head>
+
 <body>
-  <div id="multitouch"
-       style="position:fixed;
+  <div id="multitouch" style="position:fixed;
               left:0px;
               top:0px;
               width:100px;
@@ -178,4 +179,5 @@
     multitouch
   </div>
 </body>
+
 </html>

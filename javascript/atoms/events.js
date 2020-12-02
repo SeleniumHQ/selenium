@@ -48,8 +48,7 @@ goog.require('goog.userAgent.product');
  * @const
  * @type {boolean}
  */
-bot.events.SUPPORTS_TOUCH_EVENTS = !(goog.userAgent.IE &&
-  !bot.userAgent.isEngineVersion(10));
+bot.events.SUPPORTS_TOUCH_EVENTS = true;
 
 
 /**
@@ -58,10 +57,6 @@ bot.events.SUPPORTS_TOUCH_EVENTS = !(goog.userAgent.IE &&
  * @const
  */
 bot.events.BROKEN_TOUCH_API_ = (function () {
-  if (goog.userAgent.product.ANDROID) {
-    // Native touch api supported starting in version 4.0 (Ice Cream Sandwich).
-    return !bot.userAgent.isProductVersion(4);
-  }
   return !bot.userAgent.IOS;
 })();
 
@@ -218,14 +213,9 @@ bot.events.EventFactory_ = function (type, bubbles, cancelable) {
  */
 bot.events.EventFactory_.prototype.create = function (target, opt_args) {
   var doc = goog.dom.getOwnerDocument(target);
-  var event;
 
-  if (bot.userAgent.IE_DOC_PRE9 && doc.createEventObject) {
-    event = doc.createEventObject();
-  } else {
-    event = doc.createEvent('HTMLEvents');
-    event.initEvent(this.type_, this.bubbles_, this.cancelable_);
-  }
+  var event = doc.createEvent('HTMLEvents');
+  event.initEvent(this.type_, this.bubbles_, this.cancelable_);
 
   return event;
 };
@@ -368,12 +358,8 @@ bot.events.KeyboardEventFactory_.prototype.create = function (target, opt_args) 
       event.preventDefault();
     }
   } else {
-    if (bot.userAgent.IE_DOC_PRE9) {
-      event = doc.createEventObject();
-    } else {  // WebKit and IE 9+ in Standards mode.
-      event = doc.createEvent('Events');
-      event.initEvent(this.type_, this.bubbles_, this.cancelable_);
-    }
+    event = doc.createEvent('Events');
+    event.initEvent(this.type_, this.bubbles_, this.cancelable_);
     event.altKey = args.altKey;
     event.ctrlKey = args.ctrlKey;
     event.metaKey = args.metaKey;
@@ -423,11 +409,6 @@ goog.inherits(bot.events.TouchEventFactory_, bot.events.EventFactory_);
  * @override
  */
 bot.events.TouchEventFactory_.prototype.create = function (target, opt_args) {
-  if (!bot.events.SUPPORTS_TOUCH_EVENTS) {
-    throw new bot.Error(bot.ErrorCode.UNSUPPORTED_OPERATION,
-      'Browser does not support firing touch events.');
-  }
-
   var args = /** @type {!bot.events.TouchArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var view = goog.dom.getWindow(doc);
@@ -760,11 +741,8 @@ bot.events.fire = function (target, type, opt_args) {
     event['isTrusted'] = false;
   }
 
-  if (bot.userAgent.IE_DOC_PRE9 && target.fireEvent) {
-    return target.fireEvent('on' + factory.type_, event);
-  } else {
-    return target.dispatchEvent(event);
-  }
+  return target.dispatchEvent(event);
+
 };
 
 
