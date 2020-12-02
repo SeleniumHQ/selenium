@@ -17,14 +17,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require File.expand_path('../spec_helper', __dir__)
+
 module Selenium
   module WebDriver
-    class PrintOptions
-      def initialize
-        @orientation_value = ['portrait', 'landscape']
-        @print_options = {}
-        @page = {}
-        @margin = {}
+    describe PrintOptions do
+      subject(:print_options) { PrintOptions.new }
+
+      describe '#orientation' do
+        it 'allows setting orientation value' do
+          print_options.orientation('portrait')
+          # expect(print_options.print_options()[])
+        end
       end
     end
   end
