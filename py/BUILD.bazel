@@ -5,8 +5,6 @@ load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
 
 BROWSER_VERSIONS = [
-    "v84",
-    "v85",
     "v86",
     "v87",
     "v88",
