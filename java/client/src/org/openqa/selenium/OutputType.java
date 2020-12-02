@@ -84,26 +84,18 @@ public interface OutputType<T> {
     }
 
     private File save(byte[] data) {
-      OutputStream stream = null;
-
       try {
         File tmpFile = File.createTempFile("screenshot", ".png");
         tmpFile.deleteOnExit();
 
-        stream = new FileOutputStream(tmpFile);
-        stream.write(data);
-
-        return tmpFile;
+        try (OutputStream stream = new FileOutputStream(tmpFile)) {
+          stream.write(data);
+          return tmpFile;
+        } catch (IOException e) {
+          throw new WebDriverException(e);
+        }
       } catch (IOException e) {
         throw new WebDriverException(e);
-      } finally {
-        if (stream != null) {
-          try {
-            stream.close();
-          } catch (IOException e) {
-            // Nothing sane to do
-          }
-        }
       }
     }
 
