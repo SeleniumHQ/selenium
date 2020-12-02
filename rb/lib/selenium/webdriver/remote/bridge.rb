@@ -393,8 +393,8 @@ module Selenium
           execute :release_actions
         end
 
-        def print_page(print_options={})
-          execute :print_options, options
+        def print_page(options)
+          execute :print_page, options.print_options
         end
 
         def click_element(element)
