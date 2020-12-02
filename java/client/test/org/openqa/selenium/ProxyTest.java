@@ -62,43 +62,43 @@ public class ProxyTest {
     proxy.setProxyType(DIRECT);
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setAutodetect(true));
+      .isThrownBy(() -> proxy.setAutodetect(true));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSocksPassword(""));
+      .isThrownBy(() -> proxy.setSocksPassword(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSocksUsername(""));
+      .isThrownBy(() -> proxy.setSocksUsername(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSocksProxy(""));
+      .isThrownBy(() -> proxy.setSocksProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setFtpProxy(""));
+      .isThrownBy(() -> proxy.setFtpProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setHttpProxy(""));
+      .isThrownBy(() -> proxy.setHttpProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setNoProxy(""));
+      .isThrownBy(() -> proxy.setNoProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setProxyAutoconfigUrl(""));
+      .isThrownBy(() -> proxy.setProxyAutoconfigUrl(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setProxyType(SYSTEM));
+      .isThrownBy(() -> proxy.setProxyType(SYSTEM));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSslProxy(""));
+      .isThrownBy(() -> proxy.setSslProxy(""));
 
     final Proxy proxy2 = new Proxy();
     proxy2.setProxyType(AUTODETECT);
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy2.setProxyType(SYSTEM));
+      .isThrownBy(() -> proxy2.setProxyType(SYSTEM));
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(() -> proxy.setSocksVersion(5));
+      .isThrownBy(() -> proxy.setSocksVersion(5));
   }
 
   @Test
