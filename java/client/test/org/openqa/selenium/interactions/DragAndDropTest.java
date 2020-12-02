@@ -55,13 +55,13 @@ public class DragAndDropTest extends JUnit4TestBase {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
-    drag(img, expectedLocation, 150, 200);
+    expectedLocation = drag(img, expectedLocation, 150, 200);
     wait.until(elementLocationToBe(img, expectedLocation));
-    drag(img, expectedLocation, -50, -25);
+    expectedLocation = drag(img, expectedLocation, -50, -25);
     wait.until(elementLocationToBe(img, expectedLocation));
-    drag(img, expectedLocation, 0, 0);
+    expectedLocation = drag(img, expectedLocation, 0, 0);
     wait.until(elementLocationToBe(img, expectedLocation));
-    drag(img, expectedLocation, 1, -1);
+    expectedLocation = drag(img, expectedLocation, 1, -1);
     wait.until(elementLocationToBe(img, expectedLocation));
   }
 
@@ -126,7 +126,7 @@ public class DragAndDropTest extends JUnit4TestBase {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
-    drag(img, expectedLocation, 100, 100);
+    expectedLocation = drag(img, expectedLocation, 100, 100);
     assertThat(img.getLocation()).isEqualTo(expectedLocation);
   }
 
@@ -165,16 +165,15 @@ public class DragAndDropTest extends JUnit4TestBase {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
-    drag(img, expectedLocation, 100, 100);
+    expectedLocation= drag(img, expectedLocation, 100, 100);
     assertThat(img.getLocation()).isEqualTo(expectedLocation);
   }
 
-  private void drag(WebElement elem, Point expectedLocation,
-                    int moveRightBy, int moveDownBy) {
+  private Point drag(WebElement elem, Point expectedLocation, int moveRightBy, int moveDownBy) {
     new Actions(driver)
-        .dragAndDropBy(elem, moveRightBy, moveDownBy)
-        .perform();
-    expectedLocation.move(expectedLocation.x + moveRightBy, expectedLocation.y + moveDownBy);
+      .dragAndDropBy(elem, moveRightBy, moveDownBy)
+      .perform();
+    return expectedLocation.moveBy(moveRightBy, moveDownBy);
   }
 
   @Test
