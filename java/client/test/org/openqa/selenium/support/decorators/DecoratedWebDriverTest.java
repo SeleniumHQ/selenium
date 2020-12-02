@@ -64,12 +64,11 @@ public class DecoratedWebDriverTest {
     }
   }
 
-//  @Test
-//  public void shouldDecorate() {
-//    Fixture fixture = new Fixture();
-//    assertThat(fixture.decorated).isNotSameAs(fixture.original);
-//    assertThat(fixture.decorated.getOriginal()).isSameAs(fixture.original);
-//  }
+  @Test
+  public void shouldDecorate() {
+    Fixture fixture = new Fixture();
+    assertThat(fixture.decorated).isNotSameAs(fixture.original);
+  }
 
   @Test
   public void canConvertDecoratedToString() {
@@ -230,15 +229,6 @@ public class DecoratedWebDriverTest {
     verifyDecoratingFunction(WebDriver::manage, options, WebDriver.Options::deleteAllCookies);
   }
 
-//  @Test
-//  public void executeScriptNotSupported() {
-//    WebDriver original = mock(WebDriver.class);
-//    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(original);
-//
-//    assertThatExceptionOfType(UnsupportedOperationException.class)
-//      .isThrownBy(() -> decoratedDriver.executeScript("..."));
-//  }
-
   @Test
   public void executeScriptThatReturnsAPrimitive() {
     verifyFunction($ -> ((JavascriptExecutor) $).executeScript("..."), 1);
@@ -249,15 +239,6 @@ public class DecoratedWebDriverTest {
     WebElement element = mock(WebElement.class);
     verifyDecoratingFunction($ -> (WebElement) ((JavascriptExecutor) $).executeScript("..."), element, WebElement::click);
   }
-
-//  @Test
-//  public void executeAsyncScriptNotSupported() {
-//    WebDriver original = mock(WebDriver.class);
-//    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(original);
-//
-//    assertThatExceptionOfType(UnsupportedOperationException.class)
-//      .isThrownBy(() -> decoratedDriver.executeAsyncScript("..."));
-//  }
 
   @Test
   public void executeAsyncScriptThatReturnsAPrimitive() {
@@ -275,42 +256,15 @@ public class DecoratedWebDriverTest {
     verifyFunction($ -> ((TakesScreenshot) $).getScreenshotAs(OutputType.BASE64), "");
   }
 
-//  @Test
-//  public void getScreenshotAsNotSupported() {
-//    WebDriver original = mock(WebDriver.class);
-//    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(original);
-//
-//    assertThatExceptionOfType(UnsupportedOperationException.class)
-//      .isThrownBy(() -> decoratedDriver.getScreenshotAs(OutputType.BASE64));
-//  }
-
   @Test
   public void perform() {
     verifyFunction($ -> ((Interactive) $).perform(new ArrayList<>()));
   }
 
-//  @Test
-//  public void performNotSupported() {
-//    WebDriver original = mock(WebDriver.class);
-//    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(original);
-//
-//    assertThatExceptionOfType(UnsupportedOperationException.class)
-//      .isThrownBy(() -> decoratedDriver.perform(new ArrayList<>()));
-//  }
-
   @Test
   public void resetInputState() {
     verifyFunction($ -> ((Interactive) $).resetInputState());
   }
-
-//  @Test
-//  public void resetInputStateNotSupported() {
-//    WebDriver original = mock(WebDriver.class);
-//    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(original);
-//
-//    assertThatExceptionOfType(UnsupportedOperationException.class)
-//      .isThrownBy(decoratedDriver::resetInputState);
-//  }
 
   @Test
   public void addVirtualAuthenticator() {
@@ -318,28 +272,9 @@ public class DecoratedWebDriverTest {
     verifyFunction($ -> ((HasVirtualAuthenticator) $).addVirtualAuthenticator(options));
   }
 
-//  @Test
-//  public void addVirtualAuthenticatorNotSupported() {
-//    WebDriver original = mock(WebDriver.class);
-//    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(original);
-//
-//    assertThatExceptionOfType(UnsupportedOperationException.class)
-//      .isThrownBy(() -> decoratedDriver.addVirtualAuthenticator(new VirtualAuthenticatorOptions()));
-//  }
-
   @Test
   public void removeVirtualAuthenticator() {
     VirtualAuthenticator auth = mock(VirtualAuthenticator.class);
     verifyFunction($ -> ((HasVirtualAuthenticator) $).removeVirtualAuthenticator(auth));
   }
-
-//  @Test
-//  public void removeVirtualAuthenticatorNotSupported() {
-//    WebDriver original = mock(WebDriver.class);
-//    VirtualAuthenticator auth = mock(VirtualAuthenticator.class);
-//    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(original);
-//
-//    assertThatExceptionOfType(UnsupportedOperationException.class)
-//      .isThrownBy(() -> decoratedDriver.removeVirtualAuthenticator(auth));
-//  }
 }
