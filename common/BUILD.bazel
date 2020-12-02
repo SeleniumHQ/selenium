@@ -1,4 +1,18 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+
 package(default_visibility = ["//visibility:public"])
+
+bool_flag(
+    name = "pin_browsers",
+    build_setting_default = False
+)
+
+config_setting(
+    name = "use_pinned_browser",
+    flag_values = {
+        ":pin_browsers": "true",
+    },
+)
 
 config_setting(
     name = "linux",
@@ -30,6 +44,7 @@ config_setting(
     name = "use_local_chromedriver",
     flag_values = {
         "@local_drivers//:use_chromedriver": "true",
+        ":pin_browsers": "false",
     },
 )
 
@@ -42,6 +57,7 @@ config_setting(
     name = "use_local_geckodriver",
     flag_values = {
         "@local_drivers//:use_geckodriver": "true",
+        ":pin_browsers": "false",
     },
 )
 
@@ -54,5 +70,22 @@ config_setting(
     name = "use_local_msedgedriver",
     flag_values = {
         "@local_drivers//:use_msedgedriver": "true",
+        ":pin_browsers": "false",
     },
 )
+
+[
+    [
+        config_setting(
+            name = "use_pinned_%s_%s" % (platform, browser),
+            flag_values = {
+                ":pin_browsers": "true",
+            },
+            constraint_values = [
+                "@platforms//os:%s" % platform,
+            ],
+        )
+
+        for platform in ["linux", "macos", "windows"]]
+
+    for browser in ["chrome", "edge", "firefox"]]
