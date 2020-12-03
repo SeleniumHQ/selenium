@@ -17,45 +17,43 @@
 
 package org.openqa.selenium.docker.v1_40;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.openqa.selenium.docker.ContainerId;
-import org.openqa.selenium.docker.ContainerInfo;
+import org.openqa.selenium.docker.ContainerLogs;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
-class InspectContainer {
-  private static final Logger LOG = Logger.getLogger(InspectContainer.class.getName());
-  private static final Json JSON = new Json();
+class GetContainerLogs {
+  private static final Logger LOG = Logger.getLogger(GetContainerLogs.class.getName());
   private final HttpHandler client;
 
-  public InspectContainer(HttpHandler client) {
+  public GetContainerLogs(HttpHandler client) {
     this.client = Require.nonNull("HTTP client", client);
   }
 
-  public ContainerInfo apply(ContainerId id) {
+  public ContainerLogs apply(ContainerId id) {
     Require.nonNull("Container id", id);
 
+    String requestUrl =
+      String.format("/v1.40/containers/%s/logs?stdout=true&stderr=true", id);
+
     HttpResponse res = client.execute(
-      new HttpRequest(GET, String.format("/v1.40/containers/%s/json", id))
+      new HttpRequest(GET, requestUrl)
         .addHeader("Content-Length", "0")
         .addHeader("Content-Type", "text/plain"));
     if (res.getStatus() != HTTP_OK) {
       LOG.warning("Unable to inspect container " + id);
     }
-    Map<String, Object> rawInspectInfo = JSON.toType(Contents.string(res), MAP_TYPE);
-    @SuppressWarnings("unchecked")
-    Map<String, Object> networkSettings = (Map<String, Object>) rawInspectInfo.get("NetworkSettings");
-    String ip = (String) networkSettings.get("IPAddress");
-    return new ContainerInfo(id, ip);
+    List<String> logLines = Arrays.asList(Contents.string(res).split("\n"));
+    return new ContainerLogs(id, logLines);
   }
 }

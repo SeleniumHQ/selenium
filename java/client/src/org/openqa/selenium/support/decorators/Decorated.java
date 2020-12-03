@@ -15,18 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker;
+package org.openqa.selenium.support.decorators;
 
-import java.time.Duration;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-public interface DockerProtocol {
-  String version();
+public interface Decorated<T> {
 
-  Image getImage(String imageName) throws DockerException;
+  T getOriginal();
+  WebDriverDecorator getDecorator();
 
-  Container create(ContainerConfig info);
-  void startContainer(ContainerId id) throws DockerException;
-  void stopContainer(ContainerId id, Duration timeout) throws DockerException;
-  ContainerInfo inspectContainer(ContainerId id) throws DockerException;
-  ContainerLogs getContainerLogs(ContainerId id) throws DockerException;
+  void beforeCall(Method method, Object[] args);
+
+  Object call(Method method, Object[] args) throws Throwable;
+
+  void afterCall(Method method, Object result, Object[] args);
+
+  Object onError(Method method, InvocationTargetException e, Object[] args) throws Throwable;
+
 }

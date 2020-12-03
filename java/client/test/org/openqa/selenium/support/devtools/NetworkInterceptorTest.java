@@ -20,6 +20,7 @@ package org.openqa.selenium.support.devtools;
 import com.google.common.net.MediaType;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -44,6 +45,11 @@ public class NetworkInterceptorTest {
   private WebDriver driver;
   private NetworkInterceptor interceptor;
 
+  @BeforeClass
+  public static void shouldTestBeRunAtAll() {
+    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
+  }
+  
   @Before
   public void setup() {
     appServer = new NettyAppServer(req -> new HttpResponse()

@@ -15,60 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium;
+package org.openqa.selenium.docker;
 
-import java.util.Objects;
+import org.openqa.selenium.internal.Require;
 
-/**
- * A copy of java.awt.Point, to remove dependency on awt.
- */
-public class Point {
-  public int x;
-  public int y;
+import java.util.List;
 
-  public Point(int x, int y) {
-    this.x = x;
-    this.y = y;
+public class ContainerLogs {
+
+  private final List<String> logLines;
+  private final ContainerId id;
+
+  public ContainerLogs(ContainerId id, List<String> logLines) {
+    this.logLines = Require.nonNull("Container logs", logLines);
+    this.id = Require.nonNull("Container id", id);
   }
 
-  public int getX() {
-    return x;
+  public List<String> getLogs() {
+    return logLines;
   }
 
-  public int getY() {
-    return y;
-  }
-
-  public Point moveBy(int xOffset, int yOffset) {
-    return new Point(x + xOffset, y + yOffset);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof Point)) {
-      return false;
-    }
-
-    Point other = (Point) o;
-    return other.x == x && other.y == y;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(x, y);
-  }
-
-  /**
-   * @deprecated Use {{@link #moveBy(int, int)} instead}
-   */
-  @Deprecated
-  public void move(int newX, int newY) {
-    x = newX;
-    y = newY;
+  public ContainerId getId() {
+    return id;
   }
 
   @Override
   public String toString() {
-    return String.format("(%d, %d)", x, y);
+    return "ContainerInfo{" +
+      "containerLogs=" + logLines.toString() +
+      ", id=" + id +
+      '}';
   }
 }

@@ -1,3 +1,12 @@
+load(
+  "//java:browsers.bzl",
+  "chrome_data",
+  "chrome_jvm_flags",
+  "edge_data",
+  "edge_jvm_flags",
+  "firefox_data",
+  "firefox_jvm_flags")
+
 DEFAULT_BROWSER = "firefox"
 
 _COMMON_TAGS = [
@@ -9,12 +18,14 @@ _COMMON_TAGS = [
 BROWSERS = {
     "chrome": {
         "deps": ["//java/client/src/org/openqa/selenium/chrome"],
-        "jvm_flags": ["-Dselenium.browser=chrome"],
+        "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_jvm_flags,
+        "data": chrome_data,
         "tags": _COMMON_TAGS + ["chrome"],
     },
     "edge": {
         "deps": ["//java/client/src/org/openqa/selenium/edge"],
-        "jvm_flags": ["-Dselenium.browser=edge"],
+        "jvm_flags": ["-Dselenium.browser=edge"] + edge_jvm_flags,
+        "data": edge_data,
         "tags": _COMMON_TAGS + ["edge"],
     },
     "edgehtml": {
@@ -24,11 +35,13 @@ BROWSERS = {
                          "//common:windows": ["-Dselenium.skiptest=false"],
                          "//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
+        "data": [],
         "tags": _COMMON_TAGS + ["exclusive", "edgehtml"],
     },
     "firefox": {
         "deps": ["//java/client/src/org/openqa/selenium/firefox"],
-        "jvm_flags": ["-Dselenium.browser=ff"],
+        "jvm_flags": ["-Dselenium.browser=ff"] + firefox_jvm_flags,
+        "data": firefox_data,
         "tags": _COMMON_TAGS + ["firefox"],
     },
     "ie": {
@@ -38,6 +51,7 @@ BROWSERS = {
                          "//common:windows": ["-Dselenium.skiptest=false"],
                          "//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
+        "data": [],
         "tags": _COMMON_TAGS + ["exclusive", "ie"],
     },
     "safari": {
@@ -47,6 +61,7 @@ BROWSERS = {
                          "//common:macos": ["-Dselenium.skiptest=false"],
                          "//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
+        "data": [],
         "tags": _COMMON_TAGS + ["exclusive", "safari"],
     },
 }
@@ -83,7 +98,7 @@ def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
             size = size,
             jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags,
             tags = BROWSERS[browser]["tags"] + tags,
-            data = data,
+            data = BROWSERS[browser]["data"] + data,
             **stripped_args
         )
 
@@ -97,7 +112,7 @@ def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
                     "-Dselenium.browser.remote.path=$(location //java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
                 ],
                 tags = BROWSERS[browser]["tags"] + tags + ["remote"],
-                data = data + [
+                data = BROWSERS[browser]["data"] + data + [
                     "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                 ],
                 **stripped_args
