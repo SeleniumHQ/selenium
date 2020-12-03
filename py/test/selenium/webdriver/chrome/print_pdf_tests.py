@@ -25,7 +25,7 @@ PDF_MAGIC_NUMBER = 'JVBER'
 options = Options()
 options.add_argument("--headless") # chrome needs to be headless, print works only in headless
 
-chrome_driver = Chrome(options=options)
+chrome_driver = Chrome(options=options) # TODO: Add a fixture for headless chrome.
 
 def test_pdf_with_2_pages(pages):
     chrome_print_options = PrintOptions()

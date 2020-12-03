@@ -15,37 +15,38 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver import Firefox
 from selenium.webdriver.common.print_page_options import PrintOptions
 
 START_INDEX = 0
 END_INDEX = 5
 PDF_MAGIC_NUMBER = 'JVBER'
-firefox_driver = Firefox()
 
-def test_pdf_with_2_pages(pages):
+@pytest.mark.xfail_chrome(reason='chrome needs a headless driver instance.', run=False)
+def test_pdf_with_2_pages(driver, pages):
     firefox_print_options = PrintOptions()
     firefox_print_options.page_ranges = ['1-2']
 
-    firefox_driver.get(pages.url("printPage.html"))
-    firefox_base64code = firefox_driver.print_page(firefox_print_options)
+    driver.get(pages.url("printPage.html"))
+    firefox_base64code = driver.print_page(firefox_print_options)
 
     assert firefox_base64code[START_INDEX : END_INDEX] == PDF_MAGIC_NUMBER
 
-def test_pdf_with_all_pages(pages):
-    firefox_driver.get(pages.url("printPage.html"))
-    firefox_base64code = firefox_driver.print_page()
+@pytest.mark.xfail_chrome(reason='chrome needs a headless driver instance.', run=False)
+def test_pdf_with_all_pages(driver, pages):
+    driver.get(pages.url("printPage.html"))
+    firefox_base64code = driver.print_page()
 
     assert firefox_base64code[START_INDEX : END_INDEX] == PDF_MAGIC_NUMBER
 
-def test_valid_params(pages):
+@pytest.mark.xfail_chrome(reason='chrome needs a headless driver instance.', run=False)
+def test_valid_params(driver, pages):
     firefox_print_options = PrintOptions()
 
     firefox_print_options.page_ranges = ['1-2']
     firefox_print_options.orientation = 'landscape'
     firefox_print_options.width = 30
     
-    firefox_driver.get(pages.url("printPage.html"))
-    firefox_base64code = firefox_driver.print_page(firefox_print_options)
+    driver.get(pages.url("printPage.html"))
+    firefox_base64code = driver.print_page(firefox_print_options)
 
     assert firefox_base64code[START_INDEX : END_INDEX] == PDF_MAGIC_NUMBER
