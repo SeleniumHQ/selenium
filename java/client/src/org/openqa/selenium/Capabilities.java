@@ -37,28 +37,29 @@ public interface Capabilities {
   /**
    * @deprecated  Use {@link #getPlatformName()}
    */
+  @Deprecated
   default Platform getPlatform() {
     return getPlatformName();
   }
 
   default Platform getPlatformName() {
     return Stream.of("platform", "platformName")
-        .map(this::getCapability)
-        .filter(Objects::nonNull)
-        .map(cap -> {
-          if (cap instanceof Platform) {
-            return (Platform) cap;
-          }
+      .map(this::getCapability)
+      .filter(Objects::nonNull)
+      .map(cap -> {
+        if (cap instanceof Platform) {
+          return (Platform) cap;
+        }
 
-          try {
-            return Platform.fromString((String.valueOf(cap)));
-          } catch (WebDriverException e) {
-            return null;
-          }
-        })
-        .filter(Objects::nonNull)
-        .findFirst()
-        .orElse(null);
+        try {
+          return Platform.fromString((String.valueOf(cap)));
+        } catch (WebDriverException e) {
+          return null;
+        }
+      })
+      .filter(Objects::nonNull)
+      .findFirst()
+      .orElse(null);
   }
 
   /**
@@ -71,7 +72,7 @@ public interface Capabilities {
 
   default String getBrowserVersion() {
     return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(
-        Optional.ofNullable(getCapability("version")).orElse("")));
+      Optional.ofNullable(getCapability("version")).orElse("")));
   }
 
   /**
