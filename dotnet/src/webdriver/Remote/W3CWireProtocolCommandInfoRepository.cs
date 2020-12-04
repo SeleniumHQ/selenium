@@ -84,6 +84,8 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.GetElementAttribute, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/attribute/{name}"));
             this.TryAddCommand(DriverCommand.GetElementProperty, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/property/{name}"));
             this.TryAddCommand(DriverCommand.GetElementValueOfCssProperty, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/css/{name}"));
+            this.TryAddCommand(DriverCommand.GetComputedAccessibleLabel, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/computedlabel"));
+            this.TryAddCommand(DriverCommand.GetComputedAccessibleRole, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/computedrole"));
             this.TryAddCommand(DriverCommand.GetElementText, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/text"));
             this.TryAddCommand(DriverCommand.GetElementTagName, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/name"));
             this.TryAddCommand(DriverCommand.GetElementRect, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/rect"));
