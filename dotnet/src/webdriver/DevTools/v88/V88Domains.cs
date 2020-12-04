@@ -22,7 +22,7 @@ using System.Text;
 namespace OpenQA.Selenium.DevTools.V88
 {
     /// <summary>
-    /// Class containing the domain implementation for version 86 of the DevTools Protocol.
+    /// Class containing the domain implementation for version 88 of the DevTools Protocol.
     /// </summary>
     public class V88Domains : DevToolsDomains
     {

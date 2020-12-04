@@ -26,7 +26,7 @@ using OpenQA.Selenium.DevTools.V89.Target;
 namespace OpenQA.Selenium.DevTools.V89
 {
     /// <summary>
-    /// Class providing functionality for manipulating targets for version 86 of the DevTools Protocol
+    /// Class providing functionality for manipulating targets for version 89 of the DevTools Protocol
     /// </summary>
     public class V89Target : DevTools.Target
     {

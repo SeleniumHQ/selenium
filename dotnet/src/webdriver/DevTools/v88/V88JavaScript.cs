@@ -24,7 +24,7 @@ using OpenQA.Selenium.DevTools.V88.Runtime;
 namespace OpenQA.Selenium.DevTools.V88
 {
     /// <summary>
-    /// Class containing the JavaScript implementation for version 85 of the DevTools Protocol.
+    /// Class containing the JavaScript implementation for version 88 of the DevTools Protocol.
     /// </summary>
     public class V88JavaScript : JavaScript
     {

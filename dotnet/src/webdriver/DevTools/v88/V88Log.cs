@@ -25,7 +25,7 @@ using OpenQA.Selenium.DevTools.V88.Log;
 namespace OpenQA.Selenium.DevTools.V88
 {
     /// <summary>
-    /// Class containing the browser's log as referenced by version 86 of the DevTools Protocol.
+    /// Class containing the browser's log as referenced by version 88 of the DevTools Protocol.
     /// </summary>
     public class V88Log : DevTools.Log
     {

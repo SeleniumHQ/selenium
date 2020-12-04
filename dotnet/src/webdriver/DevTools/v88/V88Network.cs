@@ -26,7 +26,7 @@ using OpenQA.Selenium.DevTools.V88.Network;
 namespace OpenQA.Selenium.DevTools.V88
 {
     /// <summary>
-    /// Class providing functionality for manipulating network calls using version 86 of the DevTools Protocol
+    /// Class providing functionality for manipulating network calls using version 88 of the DevTools Protocol
     /// </summary>
     public class V88Network : DevTools.Network
     {
