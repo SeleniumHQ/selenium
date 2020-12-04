@@ -5,7 +5,7 @@
       "outputPath": "DevToolsSessionDomains.cs"
     }
   ],
-  "rootNamespace": "OpenQA.Selenium.DevTools.V86",
+  "rootNamespace": "OpenQA.Selenium.DevTools.{DEVTOOLS_VERSION}",
   "runtimeVersion": "",
   "includeExperimentalDomains": true
 }

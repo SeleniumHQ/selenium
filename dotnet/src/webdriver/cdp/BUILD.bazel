@@ -3,7 +3,7 @@ load("//dotnet:selenium-dotnet-version.bzl", "SUPPORTED_DEVTOOLS_VERSIONS")
 
 [generate_devtools(
     name = "generate-{}".format(devtools_version),
-    src = "{}/generator_settings.json".format(devtools_version),
+    protocol_version = "{}".format(devtools_version),
     out = "{}".format(devtools_version),
     browser_protocol = "//common/devtools/chromium/{}:browser_protocol".format(devtools_version),
     js_protocol = "//common/devtools/chromium/{}:js_protocol".format(devtools_version),
