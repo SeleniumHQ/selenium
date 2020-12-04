@@ -41,8 +41,6 @@ namespace OpenQA.Selenium.DevTools
             { 88, typeof(V88.V88Domains) },
             { 87, typeof(V87.V87Domains) },
             { 86, typeof(V86.V86Domains) },
-            { 85, typeof(V85.V85Domains) },
-            { 84, typeof(V84.V84Domains) }
         };
 
         /// <summary>

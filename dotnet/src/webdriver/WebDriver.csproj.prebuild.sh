@@ -17,18 +17,6 @@ then
   bazel build //javascript/atoms/fragments:find-elements.js
 fi
 
-if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v84/DevToolsSessionDomains.cs" ]]
-then
-  echo "Generating CDP code for version 84"
-  bazel build //dotnet/src/webdriver/cdp:generate-v84
-fi
-
-if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v85/DevToolsSessionDomains.cs" ]]
-then
-  echo "Generating CDP code for version 85"
-  bazel build //dotnet/src/webdriver/cdp:generate-v85
-fi
-
 if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v86/DevToolsSessionDomains.cs" ]]
 then
   echo "Generating CDP code for version 86"
