@@ -1,11 +1,5 @@
 load("//dotnet:defs.bzl", "generate_devtools")
-
-SUPPORTED_DEVTOOLS_VERSIONS = [
-    "v84",
-    "v85",
-    "v86",
-    "v87",
-]
+load("//dotnet:selenium-dotnet-version.bzl", "SUPPORTED_DEVTOOLS_VERSIONS")
 
 [generate_devtools(
     name = "generate-{}".format(devtools_version),
