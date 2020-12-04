@@ -23,21 +23,23 @@ module Selenium
   module WebDriver
     module Support
       describe CDPClientGenerator do
+        subject(:generator) { CDPClientGenerator.new }
+
         describe '#snake_case' do
           it 'converts from camel case' do
-            expect(subject.snake_case('setDataSizeLimitsForTest')).to eq('set_data_size_limits_for_test')
+            expect(generator.snake_case('setDataSizeLimitsForTest')).to eq('set_data_size_limits_for_test')
           end
 
           it 'converts acronyms' do
-            expect(subject.snake_case('setExtraHTTPHeaders')).to eq('set_extra_http_headers')
+            expect(generator.snake_case('setExtraHTTPHeaders')).to eq('set_extra_http_headers')
           end
 
           it 'converts pluralized acronyms' do
-            expect(subject.snake_case('setBlockedURLs')).to eq('set_blocked_urls')
+            expect(generator.snake_case('setBlockedURLs')).to eq('set_blocked_urls')
           end
 
           it 'makes an exception for JavaScript' do
-            expect(subject.snake_case('forciblyPurgeJavaScriptMemory')).to eq('forcibly_purge_javascript_memory')
+            expect(generator.snake_case('forciblyPurgeJavaScriptMemory')).to eq('forcibly_purge_javascript_memory')
           end
         end
       end # CDPClientGenerator
