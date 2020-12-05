@@ -299,6 +299,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string ElementScreenshot = "elementScreenshot";
 
         /// <summary>
+        /// Represents the Print command
+        /// </summary>
+        public static readonly string Print = "print";
+
+        /// <summary>
         /// Represents GetOrientation command
         /// </summary>
         public static readonly string GetOrientation = "getOrientation";

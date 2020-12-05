@@ -845,6 +845,18 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets a 
+        /// </summary>
+        /// <param name="printOptions"></param>
+        /// <returns></returns>
+        public PrintDocument Print(PrintOptions printOptions)
+        {
+            Response commandResponse = this.Execute(DriverCommand.Print, printOptions.ToDictionary());
+            string base64 = commandResponse.Value.ToString();
+            return new PrintDocument(base64);
+        }
+
+        /// <summary>
         /// Dispose the RemoteWebDriver Instance
         /// </summary>
         public void Dispose()

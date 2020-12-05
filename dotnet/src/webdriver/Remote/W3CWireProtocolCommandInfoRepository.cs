@@ -106,6 +106,7 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.SetAlertValue, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/alert/text"));
             this.TryAddCommand(DriverCommand.Screenshot, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/screenshot"));
             this.TryAddCommand(DriverCommand.ElementScreenshot, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/screenshot"));
+            this.TryAddCommand(DriverCommand.Print, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/print"));
 
             // Commands below here are not included in the W3C specification,
             // but are required for full fidelity of execution with Selenium's
