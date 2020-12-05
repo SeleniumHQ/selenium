@@ -38,3 +38,6 @@ build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
 
 test --test_timeout=180
+test --collect_code_coverage
+test --combined_report=lcov
+test --coverage_report_generator=@bazel_sonarqube//:sonarqube_coverage_generator

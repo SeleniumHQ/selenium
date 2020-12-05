@@ -243,3 +243,16 @@ k8s_defaults(
 load("//common:repositories.bzl", "pin_browsers")
 
 pin_browsers()
+
+http_archive(
+    name = "bazel_sonarqube",
+    sha256 = "e33f8222983b20cc4eb7d128db68bf83a63571d0b6e05b97bd3871b81f8fb9d9",
+    strip_prefix = "bazel-sonarqube-56537ff1cf4e6c28fba2b06e0f20d1f4e186645e",
+    urls = [
+        "https://github.com/Zetten/bazel-sonarqube/archive/56537ff1cf4e6c28fba2b06e0f20d1f4e186645e.zip",
+    ],
+)
+
+load("@bazel_sonarqube//:repositories.bzl", "bazel_sonarqube_repositories")
+
+bazel_sonarqube_repositories()
