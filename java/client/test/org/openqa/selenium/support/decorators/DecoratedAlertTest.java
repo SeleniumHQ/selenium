@@ -25,12 +25,15 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Category(UnitTests.class)
 public class DecoratedAlertTest {
 
   private static class Fixture {

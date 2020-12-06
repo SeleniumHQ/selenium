@@ -32,7 +32,10 @@ import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.Platform.XP;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class PlatformTest {
 
   @Test

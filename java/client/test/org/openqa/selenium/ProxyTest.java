@@ -29,13 +29,16 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class ProxyTest {
 
   @Test

@@ -25,9 +25,11 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -35,6 +37,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Category(UnitTests.class)
 public class DecoratedOptionsTest {
 
   private static class Fixture {

@@ -14,20 +14,14 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.net;
 
-import static org.assertj.core.api.Assertions.assertThat;
+package org.openqa.selenium.testing;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
-
-@Category(UnitTests.class)
-public class HostIdentifierTest {
-
-  @Test
-  public void itWorks() {
-    assertThat(HostIdentifier.getHostName()).isNotEmpty();
-    assertThat(HostIdentifier.getHostAddress()).isNotEmpty();
-  }
+/**
+ * A category interface to use in JUnit's @Category annotation.
+ * <p>
+ * Marks the tests that don't need a browser to run. Can be used to use "fast" tests as a safety net
+ * in  in the development environment.
+ */
+public interface UnitTests {
 }

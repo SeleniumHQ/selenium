@@ -26,13 +26,16 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.util.UUID;
 
+@Category(UnitTests.class)
 public class RemoteWebDriverInitializationTest {
   private boolean quitCalled = false;
 

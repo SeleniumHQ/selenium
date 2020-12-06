@@ -25,13 +25,16 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Category(UnitTests.class)
 public class DecoratedTimeoutsTest {
 
   private static class Fixture {

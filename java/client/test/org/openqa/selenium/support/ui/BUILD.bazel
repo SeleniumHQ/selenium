@@ -28,6 +28,7 @@ java_test_suite(
         ":clock",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),

@@ -21,8 +21,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class InterfacesTest {
 
   private interface SomeOtherInterface {}

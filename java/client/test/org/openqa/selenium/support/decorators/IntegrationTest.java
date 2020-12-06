@@ -24,12 +24,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.lang.reflect.Method;
 
+@Category(UnitTests.class)
 public class IntegrationTest {
 
   static class CountCalls extends WebDriverDecorator {

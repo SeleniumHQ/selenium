@@ -34,8 +34,11 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class ByTest {
 
   @Test

@@ -24,10 +24,13 @@ import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.IOException;
 
+@Category(UnitTests.class)
 public class TemporaryFilesystemTest {
   private File baseForTest;
   private TemporaryFilesystem tmpFs;

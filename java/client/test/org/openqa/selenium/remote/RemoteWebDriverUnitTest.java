@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
@@ -53,6 +54,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -70,6 +72,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+@Category(UnitTests.class)
 public class RemoteWebDriverUnitTest {
 
   private static final String ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf";
