@@ -526,6 +526,36 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Finds an element matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the element.</param>
+        /// <param name="value">The value to use to search for the element.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
+        public virtual IWebElement FindElement(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
+            return this.GetElementFromResponse(commandResponse);
+        }
+
+        /// <summary>
+        /// Finds all elements matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the elements.</param>
+        /// <param name="value">The value to use to search for the elements.</param>
+        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
+        public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
+            return this.GetElementsFromResponse(commandResponse);
+        }
+
+        /// <summary>
         /// Finds the first element in the page that matches the ID supplied
         /// </summary>
         /// <param name="id">ID of the element</param>
@@ -801,46 +831,13 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds an element matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the element.</param>
-        /// <param name="value">The value to use to search for the element.</param>
-        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
-        public virtual IWebElement FindElement(string mechanism, string value)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
-            return this.GetElementFromResponse(commandResponse);
-        }
-
-        /// <summary>
-        /// Finds all elements matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the elements.</param>
-        /// <param name="value">The value to use to search for the elements.</param>
-        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
-        public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
-            return this.GetElementsFromResponse(commandResponse);
-        }
-
-        /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
         public Screenshot GetScreenshot()
         {
-            // Get the screenshot as base64.
             Response screenshotResponse = this.Execute(DriverCommand.Screenshot, null);
             string base64 = screenshotResponse.Value.ToString();
-
-            // ... and convert it.
             return new Screenshot(base64);
         }
 
@@ -854,15 +851,6 @@ namespace OpenQA.Selenium.Remote
             Response commandResponse = this.Execute(DriverCommand.Print, printOptions.ToDictionary());
             string base64 = commandResponse.Value.ToString();
             return new PrintDocument(base64);
-        }
-
-        /// <summary>
-        /// Dispose the RemoteWebDriver Instance
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -893,6 +881,15 @@ namespace OpenQA.Selenium.Remote
         public void ResetInputState()
         {
             this.Execute(DriverCommand.CancelActions, null);
+        }
+
+        /// <summary>
+        /// Dispose the RemoteWebDriver Instance
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
