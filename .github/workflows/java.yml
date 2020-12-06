@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -45,6 +43,8 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
