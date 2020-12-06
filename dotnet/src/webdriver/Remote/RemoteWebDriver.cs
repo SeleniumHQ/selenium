@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, IHasCapabilities, IActionExecutor, IHasCommandExecutor, IAllowsFileDetection, IHasSessionId, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IHasCapabilities, IHasCommandExecutor, IAllowsFileDetection, IHasSessionId, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -842,10 +842,10 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets a 
+        /// Gets a <see cref="PrintDocument"/> object representing a PDF-formatted print representation of the page.
         /// </summary>
-        /// <param name="printOptions"></param>
-        /// <returns></returns>
+        /// <param name="printOptions">A <see cref="PrintOptions"/> object describing the options of the printed document.</param>
+        /// <returns>The <see cref="PrintDocument"/> object containing the PDF-formatted print representation of the page.</returns>
         public PrintDocument Print(PrintOptions printOptions)
         {
             Response commandResponse = this.Execute(DriverCommand.Print, printOptions.ToDictionary());
