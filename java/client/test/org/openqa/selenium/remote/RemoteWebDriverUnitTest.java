@@ -20,12 +20,12 @@ package org.openqa.selenium.remote;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
@@ -51,9 +51,10 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.testing.UnitTests;
+import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
+import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
@@ -659,6 +660,33 @@ public class RemoteWebDriverUnitTest {
     assertThat(engines).hasSize(1).contains("cheese");
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.IME_GET_AVAILABLE_ENGINES, emptyMap()));
+  }
+
+  @Test
+  public void canAddVirtualAuthenticator() {
+    WebDriverFixture fixture = new WebDriverFixture(
+      echoCapabilities, valueResponder("authId"));
+
+    VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
+    VirtualAuthenticator auth = fixture.driver.addVirtualAuthenticator(options);
+
+    assertThat(auth.getId()).isEqualTo("authId");
+    fixture.verifyCommands(
+      new CommandPayload(DriverCommand.ADD_VIRTUAL_AUTHENTICATOR, options.toMap()));
+  }
+
+  @Test
+  public void canRemoveVirtualAuthenticator() {
+    WebDriverFixture fixture = new WebDriverFixture(
+      echoCapabilities, nullValueResponder);
+    VirtualAuthenticator auth = mock(VirtualAuthenticator.class);
+    when(auth.getId()).thenReturn("authId");
+
+    fixture.driver.removeVirtualAuthenticator(auth);
+
+    fixture.verifyCommands(
+      new CommandPayload(DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
+                         singletonMap("authenticatorId", "authId")));
   }
 
   @Test
