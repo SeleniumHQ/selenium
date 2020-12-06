@@ -20,8 +20,16 @@ package org.openqa.selenium.remote;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
+import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.nullResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -30,9 +38,11 @@ import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.UUID;
 
 @Category(UnitTests.class)
@@ -42,10 +52,106 @@ public class RemoteWebDriverInitializationTest {
   @Test
   public void testQuitsIfStartSessionFails() {
     assertThatExceptionOfType(RuntimeException.class)
-        .isThrownBy(() -> new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class), new ImmutableCapabilities()))
-        .withMessageContaining("Stub session that should fail");
+      .isThrownBy(() -> new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class), new ImmutableCapabilities()))
+      .withMessageContaining("Stub session that should fail");
 
     assertThat(quitCalled).isTrue();
+  }
+
+  @Test
+  public void constructorShouldThrowIfExecutorIsNull() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> new RemoteWebDriver((CommandExecutor) null, new ImmutableCapabilities()))
+      .withMessage("RemoteWebDriver cannot work without a command executor");
+  }
+
+  @Test
+  public void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() {
+    CommandExecutor executor = WebDriverFixture.prepareExecutorMock(exceptionResponder);
+
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+      .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()))
+      .withMessageContaining("Build info: ")
+      .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
+      .withMessageContaining("Command: [null, newSession {desiredCapabilities=Capabilities {}}]");
+
+    verifyNoCommands(executor);
+  }
+
+  @Test
+  public void constructorShouldThrowIfExecutorReturnsNullOnAnAttemptToStartASession() {
+    CommandExecutor executor = WebDriverFixture.prepareExecutorMock(nullResponder);
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+      .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
+
+    verifyNoCommands(executor);
+  }
+
+  @Test
+  public void constructorShouldThrowIfExecutorReturnsAResponseWithNullValueOnAnAttemptToStartASession() {
+    CommandExecutor executor = WebDriverFixture.prepareExecutorMock(nullValueResponder);
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+      .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
+
+    verifyNoCommands(executor);
+  }
+
+  @Test
+  public void constructorShouldThrowIfExecutorReturnsSomethingButNotCapabilitiesOnAnAttemptToStartASession() {
+    CommandExecutor executor = WebDriverFixture.prepareExecutorMock(valueResponder("OK"));
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+      .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
+
+    verifyNoCommands(executor);
+  }
+
+  @Test
+  public void constructorStartsSessionAndPassesCapabilities() throws IOException {
+    CommandExecutor executor = WebDriverFixture.prepareExecutorMock(echoCapabilities, nullValueResponder);
+    ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "cheese browser");
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, capabilities);
+
+    verify(executor).execute(argThat(
+      command -> command.getName().equals(DriverCommand.NEW_SESSION)
+                 && command.getSessionId() == null
+                 && command.getParameters().get("desiredCapabilities") == capabilities
+    ));
+    verifyNoMoreInteractions(executor);
+    assertThat(driver.getSessionId()).isNotNull();
+  }
+
+  @Test
+  public void canHandlePlatformNameCapability() {
+    WebDriverFixture fixture = new WebDriverFixture(
+      new ImmutableCapabilities(
+        "browserName", "cheese browser", "platformName", Platform.MOJAVE),
+      echoCapabilities, nullValueResponder);
+
+    assertThat(fixture.driver.getCapabilities().getPlatformName())
+      .satisfies(p -> p.is(Platform.MOJAVE));
+  }
+
+  @Test
+  public void canHandlePlatformOSSCapability() {
+    WebDriverFixture fixture = new WebDriverFixture(
+      new ImmutableCapabilities(
+        "browserName", "cheese browser", "platform", Platform.MOJAVE),
+      echoCapabilities, nullValueResponder);
+
+    assertThat(fixture.driver.getCapabilities().getPlatformName())
+      .satisfies(p -> p.is(Platform.MOJAVE));
+  }
+
+  @Test
+  public void canHandleUnknownPlatformNameAndFallsBackToUnix() {
+    WebDriverFixture fixture = new WebDriverFixture(
+      new ImmutableCapabilities(
+        "browserName", "cheese browser", "platformName", "cheese platform"),
+      echoCapabilities, nullValueResponder);
+
+    assertThat(fixture.driver.getCapabilities().getPlatformName())
+      .satisfies(p -> p.is(Platform.UNIX)); // fallback
   }
 
   @Test
@@ -74,5 +180,14 @@ public class RemoteWebDriverInitializationTest {
     public void quit() {
       quitCalled = true;
     }
+  }
+
+  public void verifyNoCommands(CommandExecutor executor) {
+    try {
+      verify(executor).execute(argThat(cmd -> cmd.getName().equals(DriverCommand.NEW_SESSION)));
+    } catch (IOException ex) {
+      throw new UncheckedIOException(ex);
+    }
+    verifyNoMoreInteractions(executor);
   }
 }
