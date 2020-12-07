@@ -45,6 +45,7 @@ namespace OpenQA.Selenium.Chromium
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
 
         private readonly string optionsCapabilityName;
+        private DevToolsSession devToolsSession;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified
@@ -169,7 +170,7 @@ namespace OpenQA.Selenium.Chromium
         /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession CreateDevToolsSession()
+        public DevToolsSession GetDevToolsSession()
         {
             return CreateDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
         }
@@ -181,33 +182,51 @@ namespace OpenQA.Selenium.Chromium
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
         public DevToolsSession CreateDevToolsSession(int devToolsProtocolVersion)
         {
-            if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
+            if (this.devToolsSession == null)
             {
-                throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
+                if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
+                {
+                    throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
+                }
+
+                Dictionary<string, object> options = this.Capabilities.GetCapability(this.optionsCapabilityName) as Dictionary<string, object>;
+                if (options == null)
+                {
+                    throw new WebDriverException("Found " + this.optionsCapabilityName + " capability, but is not an object");
+                }
+
+                if (!options.ContainsKey("debuggerAddress"))
+                {
+                    throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
+                }
+
+                string debuggerAddress = options["debuggerAddress"].ToString();
+                try
+                {
+                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    this.devToolsSession = session;
+                }
+                catch (Exception e)
+                {
+                    throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                }
             }
 
-            Dictionary<string, object> options = this.Capabilities.GetCapability(this.optionsCapabilityName) as Dictionary<string, object>;
-            if (options == null)
+            return this.devToolsSession;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                throw new WebDriverException("Found " + this.optionsCapabilityName + " capability, but is not an object");
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                }
             }
 
-            if (!options.ContainsKey("debuggerAddress"))
-            {
-                throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
-            }
-
-            string debuggerAddress = options["debuggerAddress"].ToString();
-            try
-            {
-                DevToolsSession session = new DevToolsSession(debuggerAddress);
-                session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
-                return session;
-            }
-            catch (Exception e)
-            {
-                throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
-            }
+            base.Dispose(disposing);
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(ChromiumOptions options)
