@@ -22,10 +22,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.drivers.Browser;
 
 public class ElementAriaRoleTest extends JUnit4TestBase {
 
   @Test
+  @NotYetImplemented(Browser.MARIONETTE)
   public void shouldReturnExplicitlySpecifiedRole() {
     driver.get(appServer.create(
       new Page().withTitle("Testing Aria Role")
@@ -35,6 +38,7 @@ public class ElementAriaRoleTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(Browser.MARIONETTE)
   public void shouldReturnImplicitRoleDefinedByTagName() {
     driver.get(appServer.create(
       new Page().withTitle("Testing Aria Role")
@@ -44,6 +48,7 @@ public class ElementAriaRoleTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(Browser.MARIONETTE)
   public void shouldReturnExplicitRoleEvenIfItContradictsTagName() {
     driver.get(appServer.create(
       new Page().withTitle("Testing Aria Role")
