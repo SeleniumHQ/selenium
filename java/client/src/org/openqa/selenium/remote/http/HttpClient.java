@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.http;
 
 import java.net.URL;
-import java.time.Duration;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,10 +34,6 @@ public interface HttpClient extends HttpHandler {
 
   WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
 
-  default void setReadTimeout(Duration timeout) {
-    throw new UnsupportedOperationException("This client does not allow to change read timeout");
-  }
-
   interface Factory {
 
     /**
@@ -52,15 +47,15 @@ public interface HttpClient extends HttpHandler {
     static Factory create(String name) {
       ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class);
       Set<Factory> factories = StreamSupport.stream(loader.spliterator(), true)
-        .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
-        .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
-        .collect(Collectors.toSet());
+          .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
+          .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
+          .collect(Collectors.toSet());
       if (factories.isEmpty()) {
         throw new IllegalArgumentException("Unknown HttpClient factory " + name);
       }
       if (factories.size() > 1) {
         throw new IllegalStateException(String.format(
-          "There are multiple HttpClient factories by name %s, check your classpath", name));
+            "There are multiple HttpClient factories by name %s, check your classpath", name));
       }
       return factories.iterator().next();
     }

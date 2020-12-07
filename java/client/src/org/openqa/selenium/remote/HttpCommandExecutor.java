@@ -34,7 +34,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Duration;
 import java.util.Map;
 
 import static java.util.Collections.emptyMap;
@@ -69,22 +68,19 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    * @param addressOfRemoteServer URL of remote end Selenium server
    */
   public HttpCommandExecutor(
-    Map<String, CommandInfo> additionalCommands,
-    URL addressOfRemoteServer)
-  {
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer) {
     this(additionalCommands, addressOfRemoteServer, defaultClientFactory);
   }
 
   public HttpCommandExecutor(
-    Map<String, CommandInfo> additionalCommands,
-    URL addressOfRemoteServer,
-    HttpClient.Factory httpClientFactory)
-  {
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer,
+      HttpClient.Factory httpClientFactory) {
     try {
       remoteServer = addressOfRemoteServer == null
-                     ? new URL(System.getProperty("webdriver.remote.server",
-                                                  "http://localhost:4444/"))
-                     : addressOfRemoteServer;
+          ? new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"))
+          : addressOfRemoteServer;
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
     }
@@ -130,7 +126,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       if (!GET_ALL_SESSIONS.equals(command.getName())
           && !NEW_SESSION.equals(command.getName())) {
         throw new NoSuchSessionException(
-          "Session ID is null. Using WebDriver after calling quit()?");
+            "Session ID is null. Using WebDriver after calling quit()?");
       }
     }
 
@@ -153,7 +149,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
     if (commandCodec == null || responseCodec == null) {
       throw new WebDriverException(
-        "No command or response codec has been defined. Unable to proceed");
+          "No command or response codec has been defined. Unable to proceed");
     }
 
     HttpRequest httpRequest = commandCodec.encode(command);
@@ -184,15 +180,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     } catch (UnsupportedCommandException e) {
       if (e.getMessage() == null || "".equals(e.getMessage())) {
         throw new UnsupportedOperationException(
-          "No information from server. Command name was: " + command.getName(),
-          e.getCause());
+            "No information from server. Command name was: " + command.getName(),
+            e.getCause());
       }
       throw e;
     }
-  }
-
-  @Override
-  public synchronized void setCommandExecutionTimeout(Duration timeout) {
-    client.setReadTimeout(timeout);
   }
 }
