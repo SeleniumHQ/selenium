@@ -60,7 +60,7 @@ public class WebDriverFixture {
   }
 
   @SafeVarargs
-  final static CommandExecutor prepareExecutorMock(Function<Command, Response>... handlers) {
+  public static CommandExecutor prepareExecutorMock(Function<Command, Response>... handlers) {
     CommandExecutor executor = mock(CommandExecutor.class);
     try {
       OngoingStubbing<Response> callChain = when(executor.execute(any()));
