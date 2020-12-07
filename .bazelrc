@@ -37,4 +37,4 @@ build --test_env=PATH  # Remove once browser pinning works
 build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
 
-test --test_timeout=180
+test --test_timeout=1800
