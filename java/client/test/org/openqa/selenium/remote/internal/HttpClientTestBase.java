@@ -19,6 +19,9 @@ package org.openqa.selenium.remote.internal;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
@@ -54,6 +57,20 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 abstract public class HttpClientTestBase {
 
   protected abstract HttpClient.Factory createFactory();
+
+  static HttpHandler delegate;
+  static AppServer server;
+
+  @BeforeClass
+  public static void setUp() {
+    server = new NettyAppServer(req -> delegate.execute(req));
+    server.start();
+  }
+
+  @AfterClass
+  public static void tearDown() {
+    server.stop();
+  }
 
   @Test
   public void responseShouldCaptureASingleHeader() {
@@ -137,25 +154,19 @@ abstract public class HttpClientTestBase {
 
   @Test
   public void shouldAllowUrlsWithSchemesToBeUsed() throws Exception {
-    AppServer server = new NettyAppServer(
-      req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!")));
-    server.start();
+    delegate = req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!"));
 
-    try {
-      // This is a terrible choice of URL
-      HttpClient client = createFactory().createClient(new URL("http://example.com"));
+    // This is a terrible choice of URL
+    HttpClient client = createFactory().createClient(new URL("http://example.com"));
 
-      URI uri = URI.create(server.whereIs("/"));
-      HttpRequest request = new HttpRequest(
-        GET,
-        String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
+    URI uri = URI.create(server.whereIs("/"));
+    HttpRequest request = new HttpRequest(
+      GET,
+      String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
 
-      HttpResponse response = client.execute(request);
+    HttpResponse response = client.execute(request);
 
-      assertThat(string(response)).isEqualTo("Hello, World!");
-    } finally {
-      server.stop();
-    }
+    assertThat(string(response)).isEqualTo("Hello, World!");
   }
 
   @Test
@@ -213,26 +224,14 @@ abstract public class HttpClientTestBase {
   }
 
   private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler) {
-    AppServer server = new NettyAppServer(handler);
-    server.start();
-
-    try {
-      HttpClient client = createFactory().createClient(fromUri(URI.create(server.whereIs("/"))));
-      return client.execute(request);
-    } finally {
-      server.stop();
-    }
+    delegate = handler;
+    HttpClient client = createFactory().createClient(fromUri(URI.create(server.whereIs("/"))));
+    return client.execute(request);
   }
 
   private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler, ClientConfig config) {
-    AppServer server = new NettyAppServer(handler);
-    server.start();
-
-    try {
-      HttpClient client = createFactory().createClient(config.baseUri(URI.create(server.whereIs("/"))));
-      return client.execute(request);
-    } finally {
-      server.stop();
-    }
+    delegate = handler;
+    HttpClient client = createFactory().createClient(config.baseUri(URI.create(server.whereIs("/"))));
+    return client.execute(request);
   }
 }
