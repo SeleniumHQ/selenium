@@ -172,7 +172,7 @@ namespace OpenQA.Selenium.Chromium
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
         public DevToolsSession GetDevToolsSession()
         {
-            return CreateDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace OpenQA.Selenium.Chromium
         /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession CreateDevToolsSession(int devToolsProtocolVersion)
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
         {
             if (this.devToolsSession == null)
             {

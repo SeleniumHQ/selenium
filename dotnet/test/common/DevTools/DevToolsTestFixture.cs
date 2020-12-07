@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.DevTools
                 return;
             }
 
-            session = devTools.CreateDevToolsSession();
+            session = devTools.GetDevToolsSession();
         }
 
         [TearDown]

@@ -20,6 +20,6 @@ namespace OpenQA.Selenium.Remote
 {
     public interface IHasCommandExecutor
     {
-        public ICommandExecutor CommandExecutor { get; }
+        ICommandExecutor CommandExecutor { get; }
     }
 }
