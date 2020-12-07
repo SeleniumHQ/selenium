@@ -23,7 +23,9 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
@@ -50,11 +52,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.UnitTests;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
@@ -784,5 +790,25 @@ public class RemoteWebDriverUnitTest {
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.GET_CURRENT_URL, emptyMap()));
+  }
+
+  @Test
+  public void settingCommandExecutionTimeoutPassesItDownToHttpClient()
+    throws MalformedURLException
+  {
+    HttpClient client = mock(HttpClient.class);
+    when(client.execute(any())).thenReturn(new HttpResponse().setStatus(200).setContent(
+      Contents.asJson(singletonMap("value", ImmutableMap.of(
+        "sessionId", UUID.randomUUID().toString(),
+        "capabilities", new ImmutableCapabilities().asMap())))));
+
+    HttpClient.Factory factory = config -> client;
+    CommandExecutor executor = new HttpCommandExecutor(
+      emptyMap(), new URL("http://localhost:4444"), factory);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+
+    driver.setCommandExecutionTimeout(Duration.ofSeconds(3));
+    verify(client).setReadTimeout(Duration.ofSeconds(3));
   }
 }

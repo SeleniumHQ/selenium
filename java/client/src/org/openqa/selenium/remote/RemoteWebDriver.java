@@ -279,6 +279,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     this.executor = executor;
   }
 
+  public synchronized void setCommandExecutionTimeout(Duration timeout) {
+    executor.setCommandExecutionTimeout(timeout);
+  }
+
   @Override
   public Capabilities getCapabilities() {
     return capabilities;
@@ -316,9 +320,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       String base64EncodedPng = new String((byte[]) result, UTF_8);
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else {
-      throw new RuntimeException(String.format("Unexpected result for %s command: %s",
-          DriverCommand.SCREENSHOT,
-          result == null ? "null" : result.getClass().getName() + " instance"));
+      throw new RuntimeException(String.format(
+        "Unexpected result for %s command: %s",
+        DriverCommand.SCREENSHOT,
+        result == null ? "null" : result.getClass().getName() + " instance"));
     }
   }
 
@@ -438,14 +443,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   public Object executeScript(String script, Object... args) {
     if (!isJavascriptEnabled()) {
       throw new UnsupportedOperationException(
-          "You must be using an underlying instance of WebDriver that supports executing javascript");
+        "You must be using an underlying instance of WebDriver that supports executing javascript");
     }
 
     // Escape the quote marks
     script = script.replaceAll("\"", "\\\"");
 
-    List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
-        Collectors.toList());
+    List<Object> convertedArgs = Stream.of(args)
+      .map(new WebElementToJsonConverter())
+      .collect(Collectors.toList());
 
     return execute(DriverCommand.EXECUTE_SCRIPT(script, convertedArgs)).getValue();
   }
@@ -454,14 +460,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   public Object executeAsyncScript(String script, Object... args) {
     if (!isJavascriptEnabled()) {
       throw new UnsupportedOperationException("You must be using an underlying instance of " +
-          "WebDriver that supports executing javascript");
+                                              "WebDriver that supports executing javascript");
     }
 
     // Escape the quote marks
     script = script.replaceAll("\"", "\\\"");
 
-    List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
-        Collectors.toList());
+    List<Object> convertedArgs = Stream.of(args)
+      .map(new WebElementToJsonConverter())
+      .collect(Collectors.toList());
 
     return execute(DriverCommand.EXECUTE_ASYNC_SCRIPT(script, convertedArgs)).getValue();
   }
@@ -596,15 +603,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
 
   @Override
   public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options) {
-    String authenticatorId = (String)
-        execute(DriverCommand.ADD_VIRTUAL_AUTHENTICATOR, options.toMap()).getValue();
+    String authenticatorId = (String) execute(
+      DriverCommand.ADD_VIRTUAL_AUTHENTICATOR, options.toMap()).getValue();
     return new RemoteVirtualAuthenticator(authenticatorId);
   }
 
   @Override
   public void removeVirtualAuthenticator(VirtualAuthenticator authenticator) {
     execute(DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
-        ImmutableMap.of("authenticatorId", authenticator.getId()));
+            ImmutableMap.of("authenticatorId", authenticator.getId()));
   }
 
   /**
@@ -687,24 +694,24 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       }
 
       ((Collection<?>) returned).stream()
-          .map(o -> (Map<String, Object>) o)
-          .map(rawCookie -> {
-            // JSON object keys are defined in
-            // https://w3c.github.io/webdriver/#dfn-table-for-cookie-conversion.
-            Cookie.Builder builder =
-                new Cookie.Builder((String) rawCookie.get("name"), (String) rawCookie.get("value"))
-                    .path((String) rawCookie.get("path"))
-                    .domain((String) rawCookie.get("domain"))
-                    .isSecure(rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure"))
-                    .isHttpOnly(
-                        rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"))
-                    .sameSite((String) rawCookie.get("sameSite"));
+        .map(o -> (Map<String, Object>) o)
+        .map(rawCookie -> {
+          // JSON object keys are defined in
+          // https://w3c.github.io/webdriver/#dfn-table-for-cookie-conversion.
+          Cookie.Builder builder =
+            new Cookie.Builder((String) rawCookie.get("name"), (String) rawCookie.get("value"))
+              .path((String) rawCookie.get("path"))
+              .domain((String) rawCookie.get("domain"))
+              .isSecure(rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure"))
+              .isHttpOnly(
+                rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"))
+              .sameSite((String) rawCookie.get("sameSite"));
 
-            Number expiryNum = (Number) rawCookie.get("expiry");
-            builder.expiresOn(expiryNum == null ? null : new Date(SECONDS.toMillis(expiryNum.longValue())));
-            return builder.build();
-          })
-          .forEach(toReturn::add);
+          Number expiryNum = (Number) rawCookie.get("expiry");
+          builder.expiresOn(expiryNum == null ? null : new Date(SECONDS.toMillis(expiryNum.longValue())));
+          return builder.build();
+        })
+        .forEach(toReturn::add);
 
       return toReturn;
     }
@@ -903,10 +910,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     public WebDriver frame(String frameName) {
       String name = frameName.replaceAll("(['\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-/\\[\\]\\(\\)])", "\\\\$1");
       List<WebElement> frameElements = RemoteWebDriver.this.findElements(
-          By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
+        By.cssSelector("frame[name='" + name + "'],iframe[name='" + name + "']"));
       if (frameElements.size() == 0) {
         frameElements = RemoteWebDriver.this.findElements(
-            By.cssSelector("frame#" + name + ",iframe#" + name));
+          By.cssSelector("frame#" + name + ",iframe#" + name));
       }
       if (frameElements.size() == 0) {
         throw new NoSuchFrameException("No frame element found by name or id " + frameName);
@@ -1028,16 +1035,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     @Override
     public void addCredential(Credential credential) {
       execute(DriverCommand.ADD_CREDENTIAL,
-          new ImmutableMap.Builder<String, Object>()
-            .putAll(credential.toMap())
-            .put("authenticatorId", id)
-            .build());
+              new ImmutableMap.Builder<String, Object>()
+                .putAll(credential.toMap())
+                .put("authenticatorId", id)
+                .build());
     }
 
     @Override
     public List<Credential> getCredentials() {
-      List<Map<String, Object>> response = (List<Map<String, Object>>)
-        execute(DriverCommand.GET_CREDENTIALS, ImmutableMap.of("authenticatorId", id)).getValue();
+      List<Map<String, Object>> response = (List<Map<String, Object>>) execute(
+        DriverCommand.GET_CREDENTIALS, ImmutableMap.of("authenticatorId", id)).getValue();
       return response.stream().map(Credential::fromMap).collect(Collectors.toList());
     }
 
@@ -1049,7 +1056,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     @Override
     public void removeCredential(String credentialId) {
       execute(DriverCommand.REMOVE_CREDENTIAL,
-          ImmutableMap.of("authenticatorId", id, "credentialId", credentialId));
+              ImmutableMap.of("authenticatorId", id, "credentialId", credentialId));
     }
 
     @Override
@@ -1060,7 +1067,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     @Override
     public void setUserVerified(boolean verified) {
       execute(DriverCommand.SET_USER_VERIFIED,
-          ImmutableMap.of("authenticatorId", id, "isUserVerified", verified));
+              ImmutableMap.of("authenticatorId", id, "isUserVerified", verified));
     }
   }
 
@@ -1087,10 +1094,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     }
 
     return String.format(
-        "%s: %s on %s (%s)",
-        getClass().getSimpleName(),
-        caps.getBrowserName(),
-        platform,
-        getSessionId());
+      "%s: %s on %s (%s)",
+      getClass().getSimpleName(),
+      caps.getBrowserName(),
+      platform,
+      getSessionId());
   }
 }

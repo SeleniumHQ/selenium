@@ -32,6 +32,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.io.IOException;
@@ -39,25 +40,34 @@ import java.io.IOException;
 public class NettyClient implements HttpClient {
 
   private static final AsyncHttpClient httpClient =
-      Dsl.asyncHttpClient(
-          new DefaultAsyncHttpClientConfig.Builder()
-              .setThreadFactory(new DefaultThreadFactory("AsyncHttpClient", true))
-              .setUseInsecureTrustManager(true)
-              .setAggregateWebSocketFrameFragments(true)
-              .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
-              .setWebSocketMaxFrameSize(Integer.MAX_VALUE));
+    Dsl.asyncHttpClient(
+      new DefaultAsyncHttpClientConfig.Builder()
+        .setThreadFactory(new DefaultThreadFactory("AsyncHttpClient", true))
+        .setUseInsecureTrustManager(true)
+        .setAggregateWebSocketFrameFragments(true)
+        .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
+        .setWebSocketMaxFrameSize(Integer.MAX_VALUE));
 
-  private final HttpHandler handler;
-  private BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
+  private final NettyHttpHandler actualHandler;
+  private final HttpHandler handlerWithFiltersApplied;
+  private final BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
 
-  private NettyClient(HttpHandler handler, BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket) {
-    this.handler = Require.nonNull("Handler", handler);
+  private NettyClient(NettyHttpHandler actualHandler, HttpHandler handlerWithFiltersApplied,
+                      BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket)
+  {
+    this.actualHandler = Require.nonNull("Handler", actualHandler);
+    this.handlerWithFiltersApplied = Require.nonNull("Handler", handlerWithFiltersApplied);
     this.toWebSocket = Require.nonNull("WebSocket creation function", toWebSocket);
   }
 
   @Override
   public HttpResponse execute(HttpRequest request) {
-    return handler.execute(request);
+    return handlerWithFiltersApplied.execute(request);
+  }
+
+  @Override
+  public synchronized void setReadTimeout(Duration timeout) {
+    actualHandler.setReadTimeout(timeout);
   }
 
   @Override
@@ -73,7 +83,7 @@ public class NettyClient implements HttpClient {
     Require.nonNull("Filter", filter);
 
     // TODO: We should probably ensure that websocket requests are run through the filter.
-    return new NettyClient(handler.with(filter), toWebSocket);
+    return new NettyClient(actualHandler, handlerWithFiltersApplied.with(filter), toWebSocket);
   }
 
   @AutoService(HttpClient.Factory.class)
@@ -104,7 +114,11 @@ public class NettyClient implements HttpClient {
         return new NettyDomainSocketClient(config);
       }
 
-      return new NettyClient(new NettyHttpHandler(config, httpClient).with(config.filter()), NettyWebSocket.create(config, httpClient));
+      NettyHttpHandler handler = new NettyHttpHandler(config, httpClient);
+      return new NettyClient(
+        handler,
+        handler.with(config.filter()),
+        NettyWebSocket.create(config, httpClient));
     }
   }
 }

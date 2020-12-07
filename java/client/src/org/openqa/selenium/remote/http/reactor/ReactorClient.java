@@ -54,6 +54,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -81,9 +82,11 @@ public class ReactorClient implements HttpClient {
 
   private final ClientConfig config;
   private final reactor.netty.http.client.HttpClient httpClient;
+  private Duration readTimeout;
 
   private ReactorClient(ClientConfig config) {
     this.config = Require.nonNull("Client config", config);
+    this.readTimeout = config.readTimeout();
     this.httpClient = createClient();
   }
 
@@ -158,7 +161,7 @@ public class ReactorClient implements HttpClient {
           return buf.asInputStream()
             .switchIfEmpty(Mono.just(new ByteArrayInputStream("".getBytes(UTF_8))))
             .zipWith(Mono.just(toReturn));
-        }).block(config.readTimeout());
+        }).block(readTimeout);
       result.getT2().setContent(result::getT1);
       return result.getT2();
     } catch (IllegalStateException ex) {
@@ -194,6 +197,11 @@ public class ReactorClient implements HttpClient {
           log.log(Level.INFO, e.getMessage(), e);
         }
       });
+  }
+
+  @Override
+  public synchronized void setReadTimeout(Duration timeout) {
+    readTimeout = timeout;
   }
 
   @Override

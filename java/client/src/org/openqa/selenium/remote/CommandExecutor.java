@@ -18,9 +18,15 @@
 package org.openqa.selenium.remote;
 
 import java.io.IOException;
+import java.time.Duration;
 
 @FunctionalInterface
 public interface CommandExecutor {
 
   Response execute(Command command) throws IOException;
+
+  default void setCommandExecutionTimeout(Duration timeout) {
+    throw new UnsupportedOperationException(
+      "This command executor does not allow to change command execution timeout");
+  }
 }

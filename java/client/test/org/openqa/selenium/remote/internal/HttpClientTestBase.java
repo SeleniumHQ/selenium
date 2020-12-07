@@ -186,19 +186,42 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldAllowConfigurationOfRequestTimeout() {
+  public void shouldAllowConfigurationOfReadTimeout() {
     assertThatExceptionOfType(TimeoutException.class)
       .isThrownBy(() -> executeWithinServer(
         new HttpRequest(GET, "/foo"),
         req -> {
           try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
           } catch (InterruptedException e) {
             e.printStackTrace();
           }
-          return new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent")));
+          return new HttpResponse().setContent(Contents.utf8String("Hello, World!"));
         },
-        ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(1))));
+        ClientConfig.defaultConfig().readTimeout(Duration.ofMillis(500))));
+  }
+
+  @Test
+  public void shouldAllowToChangeReadTimeout() {
+    delegate = req -> {
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      return new HttpResponse().setContent(Contents.utf8String("Hello, World!"));
+    };
+    HttpClient client = createFactory().createClient(
+      ClientConfig.defaultConfig()
+        .readTimeout(Duration.ofMillis(500))
+        .baseUri(URI.create(server.whereIs("/"))));
+
+    assertThatExceptionOfType(TimeoutException.class)
+      .isThrownBy(() -> client.execute(new HttpRequest(GET, "/foo")));
+
+    client.setReadTimeout(Duration.ofSeconds(2));
+    HttpResponse response = client.execute(new HttpRequest(GET, "/foo"));
+    assertThat(string(response)).isEqualTo("Hello, World!");
   }
 
   private HttpResponse getResponseWithHeaders(final Multimap<String, String> headers) {

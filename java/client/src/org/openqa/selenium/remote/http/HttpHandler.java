@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import java.io.UncheckedIOException;
+import java.time.Duration;
 
 @FunctionalInterface
 public interface HttpHandler {
