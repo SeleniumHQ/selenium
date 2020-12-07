@@ -49,7 +49,7 @@ public enum Browser {
   private final Capabilities canonicalCapabilities;
   private final boolean supportsCdp;
 
-  private Browser(Capabilities canonicalCapabilities, boolean supportsCdp) {
+  Browser(Capabilities canonicalCapabilities, boolean supportsCdp) {
     this.canonicalCapabilities = ImmutableCapabilities.copyOf(canonicalCapabilities);
     this.supportsCdp = supportsCdp;
   }
@@ -61,7 +61,7 @@ public enum Browser {
       return null;
     }
 
-    if ("ff".equals(browserName.toLowerCase()) || "firefox".equals(browserName.toLowerCase())) {
+    if ("ff".equalsIgnoreCase(browserName) || "firefox".equalsIgnoreCase(browserName)) {
       if (System.getProperty("webdriver.firefox.marionette") == null ||
           Boolean.getBoolean("webdriver.firefox.marionette")) {
         return FIREFOX;
@@ -70,20 +70,19 @@ public enum Browser {
       }
     }
 
-    if ("edge".equals(browserName.toLowerCase())) {
+    if ("edge".equalsIgnoreCase(browserName)) {
       return EDGIUM;
     }
 
-    if ("edgehtml".equals(browserName.toLowerCase())) {
+    if ("edgehtml".equalsIgnoreCase(browserName)) {
       return EDGE_HTML;
     }
 
     try {
       return Browser.valueOf(browserName.toUpperCase());
     } catch (IllegalArgumentException e) {
+      throw new RuntimeException(String.format("Cannot determine driver from name %s", browserName), e);
     }
-
-    throw new RuntimeException(String.format("Cannot determine driver from name %s", browserName));
   }
 
   public boolean supportsCdp() {
