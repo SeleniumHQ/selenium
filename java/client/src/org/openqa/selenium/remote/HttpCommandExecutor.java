@@ -27,6 +27,7 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -60,6 +61,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     this(emptyMap(), addressOfRemoteServer);
   }
 
+  public HttpCommandExecutor(ClientConfig config) {
+    this(emptyMap(), config, defaultClientFactory);
+  }
+
   /**
    * Creates an {@link HttpCommandExecutor} that supports non-standard
    * {@code additionalCommands} in addition to the standard.
@@ -68,26 +73,42 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    * @param addressOfRemoteServer URL of remote end Selenium server
    */
   public HttpCommandExecutor(
-      Map<String, CommandInfo> additionalCommands,
-      URL addressOfRemoteServer) {
+    Map<String, CommandInfo> additionalCommands,
+    URL addressOfRemoteServer)
+  {
     this(additionalCommands, addressOfRemoteServer, defaultClientFactory);
   }
 
   public HttpCommandExecutor(
-      Map<String, CommandInfo> additionalCommands,
-      URL addressOfRemoteServer,
-      HttpClient.Factory httpClientFactory) {
+    Map<String, CommandInfo> additionalCommands,
+    URL addressOfRemoteServer,
+    HttpClient.Factory httpClientFactory)
+  {
+    this(additionalCommands,
+         ClientConfig.defaultConfig().baseUrl(addressOfRemoteServer),
+         httpClientFactory);
+  }
+
+  public HttpCommandExecutor(
+    Map<String, CommandInfo> additionalCommands,
+    ClientConfig config,
+    HttpClient.Factory httpClientFactory)
+  {
     try {
-      remoteServer = addressOfRemoteServer == null
-          ? new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"))
-          : addressOfRemoteServer;
+      if (config.baseUri() != null) {
+        remoteServer = config.baseUrl();
+      } else {
+        remoteServer = new URL(
+          System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
+        config = config.baseUrl(remoteServer);
+      }
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);
     }
 
     this.additionalCommands = additionalCommands;
     this.httpClientFactory = httpClientFactory;
-    this.client = httpClientFactory.createClient(remoteServer);
+    this.client = httpClientFactory.createClient(config);
   }
 
   /**
@@ -126,7 +147,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       if (!GET_ALL_SESSIONS.equals(command.getName())
           && !NEW_SESSION.equals(command.getName())) {
         throw new NoSuchSessionException(
-            "Session ID is null. Using WebDriver after calling quit()?");
+          "Session ID is null. Using WebDriver after calling quit()?");
       }
     }
 
@@ -149,7 +170,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
     if (commandCodec == null || responseCodec == null) {
       throw new WebDriverException(
-          "No command or response codec has been defined. Unable to proceed");
+        "No command or response codec has been defined. Unable to proceed");
     }
 
     HttpRequest httpRequest = commandCodec.encode(command);
@@ -180,8 +201,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     } catch (UnsupportedCommandException e) {
       if (e.getMessage() == null || "".equals(e.getMessage())) {
         throw new UnsupportedOperationException(
-            "No information from server. Command name was: " + command.getName(),
-            e.getCause());
+          "No information from server. Command name was: " + command.getName(),
+          e.getCause());
       }
       throw e;
     }

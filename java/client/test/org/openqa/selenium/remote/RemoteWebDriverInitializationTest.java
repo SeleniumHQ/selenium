@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,14 +37,22 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Duration;
 import java.util.UUID;
 
 @Category(UnitTests.class)
@@ -180,6 +190,30 @@ public class RemoteWebDriverInitializationTest {
     public void quit() {
       quitCalled = true;
     }
+  }
+
+  @Test
+  public void canPassClientConfig() throws MalformedURLException {
+    HttpClient client = mock(HttpClient.class);
+    when(client.execute(any())).thenReturn(new HttpResponse().setStatus(200).setContent(
+      Contents.asJson(singletonMap("value", ImmutableMap.of(
+        "sessionId", UUID.randomUUID().toString(),
+        "capabilities", new ImmutableCapabilities().asMap())))));
+
+    HttpClient.Factory factory = mock(HttpClient.Factory.class);
+    ArgumentCaptor<ClientConfig > config = ArgumentCaptor.forClass(ClientConfig.class);
+    when(factory.createClient(config.capture())).thenReturn(client);
+
+    CommandExecutor executor = new HttpCommandExecutor(
+      emptyMap(),
+      ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(1)),
+      factory);
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+
+    ClientConfig usedConfig = config.getValue();
+    assertThat(usedConfig.baseUrl()).isEqualTo(new URL("http://localhost:4444/"));
+    assertThat(usedConfig.readTimeout()).isEqualTo(Duration.ofSeconds(1));
   }
 
   public void verifyNoCommands(CommandExecutor executor) {
