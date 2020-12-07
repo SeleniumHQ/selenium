@@ -28,7 +28,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 public class ElementAccessibleNameTest extends JUnit4TestBase {
 
   @Test
-  @NotYetImplemented(Browser.MARIONETTE)
+  @NotYetImplemented(Browser.FIREFOX)
   public void shouldReturnAccessibleName() {
     driver.get(appServer.create(
       new Page().withTitle("Testing Aria Role")

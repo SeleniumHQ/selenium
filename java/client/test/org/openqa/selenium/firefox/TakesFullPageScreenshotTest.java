@@ -39,7 +39,7 @@ import java.util.TreeSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 
 /**
  * Test screenshot feature.
@@ -65,7 +65,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-@Ignore(FIREFOX) // Not supported in legacy Firefox driver
+@Ignore(LEGACY_FIREFOX_XPI) // Not supported in legacy Firefox driver
 public class TakesFullPageScreenshotTest extends JUnit4TestBase {
 
   @Rule

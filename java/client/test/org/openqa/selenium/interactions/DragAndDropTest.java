@@ -22,11 +22,11 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
   public void testDragAndDropRelative() {
-    assumeFalse(Browser.detect() == Browser.OPERA &&
+    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
                 TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.dragAndDropPage);
@@ -106,9 +106,9 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   @NotYetImplemented(CHROME)
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
@@ -131,7 +131,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
@@ -155,7 +155,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   // TODO(dawagner): Remove @NoDriverAfterTest when we can reliably do window resizing
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -208,8 +208,8 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
   @NotYetImplemented(SAFARI)
-  @Ignore(MARIONETTE)
-  @NotYetImplemented(EDGE)
+  @Ignore(FIREFOX)
+  @NotYetImplemented(EDGE_HTML)
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

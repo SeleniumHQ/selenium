@@ -35,14 +35,14 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 public enum Browser {
   ALL(new ImmutableCapabilities(), false),
   CHROME(new ChromeOptions(), true),
-  EDGE(new EdgeHtmlOptions(), false),
-  CHROMIUMEDGE(new EdgeOptions(), true),
+  EDGE_HTML(new EdgeHtmlOptions(), false),
+  EDGIUM(new EdgeOptions(), true),
   HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), false),
-  FIREFOX(new FirefoxOptions(), false),
+  LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), false),
   IE(new InternetExplorerOptions(), false),
-  MARIONETTE(new FirefoxOptions(), false),
+  FIREFOX(new FirefoxOptions(), false),
+  LEGACY_OPERA(new OperaOptions(), false),
   OPERA(new OperaOptions(), false),
-  OPERABLINK(new OperaOptions(), false),
   SAFARI(new SafariOptions(), false);
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());
@@ -64,18 +64,18 @@ public enum Browser {
     if ("ff".equals(browserName.toLowerCase()) || "firefox".equals(browserName.toLowerCase())) {
       if (System.getProperty("webdriver.firefox.marionette") == null ||
           Boolean.getBoolean("webdriver.firefox.marionette")) {
-        return MARIONETTE;
-      } else {
         return FIREFOX;
+      } else {
+        return LEGACY_FIREFOX_XPI;
       }
     }
 
     if ("edge".equals(browserName.toLowerCase())) {
-      return CHROMIUMEDGE;
+      return EDGIUM;
     }
 
     if ("edgehtml".equals(browserName.toLowerCase())) {
-      return EDGE;
+      return EDGE_HTML;
     }
 
     try {

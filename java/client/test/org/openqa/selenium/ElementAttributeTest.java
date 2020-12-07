@@ -21,12 +21,12 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -409,12 +409,12 @@ public class ElementAttributeTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
-  @NotYetImplemented(MARIONETTE)
-  @Ignore(FIREFOX)
+  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void shouldTreatDraggableAsEnumeratedButNotBoolean() {
     checkEnumeratedAttribute("draggable", "true", "false", "yes", "no", "", "blabla");
   }

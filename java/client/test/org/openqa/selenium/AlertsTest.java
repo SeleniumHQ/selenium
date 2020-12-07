@@ -25,12 +25,12 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
@@ -388,11 +388,11 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Hangs")
-  @Ignore(value = CHROMIUMEDGE, reason = "Hangs")
-  @Ignore(FIREFOX)
+  @Ignore(value = EDGIUM, reason = "Hangs")
+  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(SAFARI)
-  @Ignore(EDGE)
+  @Ignore(EDGE_HTML)
   @NoDriverAfterTest
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
@@ -412,10 +412,10 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
-  @Ignore(value = CHROMIUMEDGE, reason = "Edge does not trigger alerts on unload")
+  @Ignore(value = EDGIUM, reason = "Edge does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27+ does not trigger alerts on before unload",
                 isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -438,11 +438,11 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, reason = "Non W3C conformant")
+  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Non W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
   @Ignore(value = CHROME, reason = "Non W3C conformant")
-  @Ignore(value = CHROMIUMEDGE, reason = "Non W3C conformant")
-  @Ignore(EDGE)
+  @Ignore(value = EDGIUM, reason = "Non W3C conformant")
+  @Ignore(EDGE_HTML)
   public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
@@ -458,11 +458,11 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
-  @Ignore(value = CHROMIUMEDGE, reason = "Chrome does not trigger alerts on unload")
+  @Ignore(value = EDGIUM, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
   @Ignore(value = IE, reason = "IE driver automatically dismisses alerts on window close")
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27+ does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -494,9 +494,9 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
-  @NotYetImplemented(value = MARIONETTE,
+  @NotYetImplemented(value = FIREFOX,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.get(alertPage("cheese"));
 

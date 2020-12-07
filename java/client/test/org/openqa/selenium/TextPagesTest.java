@@ -20,10 +20,10 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Before;
@@ -53,9 +53,9 @@ public class TextPagesTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "creates DOM for displaying text pages")
   @Ignore(value = SAFARI, reason = "creates DOM for displaying text pages")
   @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
-  @Ignore(MARIONETTE)
-  @NotYetImplemented(EDGE)
+  @Ignore(EDGIUM)
+  @Ignore(FIREFOX)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 
