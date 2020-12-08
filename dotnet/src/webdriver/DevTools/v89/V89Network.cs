@@ -104,9 +104,42 @@ namespace OpenQA.Selenium.DevTools.V89
         /// Asynchronously continues an intercepted network request.
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public override async Task ContinueRequest(HttpRequestData requestData)
+        {
+            var commandSettings = new ContinueRequestCommandSettings()
+            {
+                RequestId = requestData.RequestId,
+                Method = requestData.Method,
+                Url = requestData.Url,
+            };
+
+            if (requestData.Headers.Count > 0)
+            {
+                List<HeaderEntry> headers = new List<HeaderEntry>();
+                foreach (KeyValuePair<string, string> headerPair in requestData.Headers)
+                {
+                    headers.Add(new HeaderEntry() { Name = headerPair.Key, Value = headerPair.Value });
+                }
+
+                commandSettings.Headers = headers.ToArray();
+            }
+
+            if (!string.IsNullOrEmpty(requestData.PostData))
+            {
+                commandSettings.PostData = requestData.PostData;
+            }
+
+            await fetch.ContinueRequest(commandSettings);
+        }
+
+        /// <summary>
+        /// Asynchronously continues an intercepted network request.
+        /// </summary>
+        /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
         /// <param name="responseData">The <see cref="HttpResponseData"/> with which to respond to the request</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public override async Task ContinueRequest(HttpRequestData requestData, HttpResponseData responseData)
+        public override async Task ContinueRequestWithResponse(HttpRequestData requestData, HttpResponseData responseData)
         {
             var commandSettings = new FulfillRequestCommandSettings()
             {

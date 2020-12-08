@@ -81,9 +81,16 @@ namespace OpenQA.Selenium.DevTools
         /// Asynchronously continues an intercepted network request.
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public abstract Task ContinueRequest(HttpRequestData requestData);
+
+        /// <summary>
+        /// Asynchronously continues an intercepted network request and returns the specified response.
+        /// </summary>
+        /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
         /// <param name="responseData">The <see cref="HttpResponseData"/> with which to respond to the request</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task ContinueRequest(HttpRequestData requestData, HttpResponseData responseData);
+        public abstract Task ContinueRequestWithResponse(HttpRequestData requestData, HttpResponseData responseData);
 
         /// <summary>
         /// Asynchronously contines an intercepted network call without modification.
