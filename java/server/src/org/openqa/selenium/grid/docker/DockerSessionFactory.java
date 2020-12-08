@@ -58,7 +58,6 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
@@ -89,26 +88,8 @@ public class DockerSessionFactory implements SessionFactory {
   private final URI dockerUri;
   private final Image browserImage;
   private final Capabilities stereotype;
-  private boolean isVideoRecordingAvailable;
-  private Image videoImage;
-  private DockerSessionAssetsPath assetsPath;
-
-  public DockerSessionFactory(
-      Tracer tracer,
-      HttpClient.Factory clientFactory,
-      Docker docker,
-      URI dockerUri,
-      Image browserImage,
-      Capabilities stereotype) {
-    this.tracer = Require.nonNull("Tracer", tracer);
-    this.clientFactory = Require.nonNull("HTTP client", clientFactory);
-    this.docker = Require.nonNull("Docker command", docker);
-    this.dockerUri = Require.nonNull("Docker URI", dockerUri);
-    this.browserImage = Require.nonNull("Docker browser image", browserImage);
-    this.stereotype = ImmutableCapabilities.copyOf(
-        Require.nonNull("Stereotype", stereotype));
-    this.isVideoRecordingAvailable = false;
-  }
+  private final Image videoImage;
+  private final DockerAssetsPath assetsPath;
 
   public DockerSessionFactory(
     Tracer tracer,
@@ -118,9 +99,14 @@ public class DockerSessionFactory implements SessionFactory {
     Image browserImage,
     Capabilities stereotype,
     Image videoImage,
-    DockerSessionAssetsPath assetsPath) {
-    this(tracer, clientFactory, docker, dockerUri, browserImage, stereotype);
-    this.isVideoRecordingAvailable = true;
+    DockerAssetsPath assetsPath) {
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.clientFactory = Require.nonNull("HTTP client", clientFactory);
+    this.docker = Require.nonNull("Docker command", docker);
+    this.dockerUri = Require.nonNull("Docker URI", dockerUri);
+    this.browserImage = Require.nonNull("Docker browser image", browserImage);
+    this.stereotype = ImmutableCapabilities.copyOf(
+      Require.nonNull("Stereotype", stereotype));
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
   }
@@ -145,15 +131,7 @@ public class DockerSessionFactory implements SessionFactory {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
                        EventAttribute.setValue(this.getClass().getName()));
       LOG.info("Creating container, mapping container port 4444 to " + port);
-      Map<String, String> browserContainerEnvVars =
-        getBrowserContainerEnvVars(sessionRequest.getCapabilities());
-      Map<String, String> devShmMount =
-        Collections.singletonMap("/dev/shm", "/dev/shm");
-        Container container = docker.create(
-          image(browserImage)
-            .env(browserContainerEnvVars)
-            .bind(devShmMount)
-            .map(Port.tcp(4444), Port.tcp(port)));
+      Container container = createBrowserContainer(port, sessionRequest.getCapabilities());
       container.start();
       ContainerInfo containerInfo = container.inspect();
 
@@ -211,22 +189,16 @@ public class DockerSessionFactory implements SessionFactory {
 
       SessionId id = new SessionId(response.getSessionId());
       Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
+      Capabilities mergedCapabilities = capabilities.merge(sessionRequest.getCapabilities());
+
       Container videoContainer = null;
-      if (isVideoRecordingAvailable) {
-        Capabilities mergedCapabilities = capabilities.merge(sessionRequest.getCapabilities());
-        Optional<Path> containerAssetsPath = assetsPath.createContainerSessionAssetsPath(id);
-        containerAssetsPath.ifPresent(path -> saveSessionCapabilities(mergedCapabilities, path));
-        if (containerAssetsPath.isPresent() && recordVideoForSession(mergedCapabilities)) {
-          Map<String, String> envVars = getVideoContainerEnvVars(
-            mergedCapabilities,
-            containerInfo.getIp());
-          String hostAssetsPath = assetsPath.getHostSessionAssetsPath(id);
-          Map<String, String> volumeBinds =
-            Collections.singletonMap(hostAssetsPath, "/videos");
-          videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
-          videoContainer.start();
-          LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
-        }
+      Optional<DockerAssetsPath> path = ofNullable(this.assetsPath);
+      if (path.isPresent()) {
+        // Seems we can store session assets
+        String containerPath = path.get().getContainerPath(id);
+        saveSessionCapabilities(mergedCapabilities, containerPath);
+        String hostPath = path.get().getHostPath(id);
+        videoContainer = startVideoContainer(mergedCapabilities, containerInfo.getIp(), hostPath);
       }
 
       Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
@@ -249,11 +221,23 @@ public class DockerSessionFactory implements SessionFactory {
         id,
         remoteAddress,
         stereotype,
-        capabilities,
+        mergedCapabilities,
         downstream,
         result.getDialect(),
         Instant.now()));
     }
+  }
+
+  private Container createBrowserContainer(int port, Capabilities sessionCapabilities) {
+    Map<String, String> browserContainerEnvVars =
+      getBrowserContainerEnvVars(sessionCapabilities);
+    Map<String, String> devShmMount =
+      Collections.singletonMap("/dev/shm", "/dev/shm");
+    return docker.create(
+          image(browserImage)
+            .env(browserContainerEnvVars)
+            .bind(devShmMount)
+            .map(Port.tcp(4444), Port.tcp(port)));
   }
 
   private Map<String, String> getBrowserContainerEnvVars(Capabilities sessionRequestCapabilities) {
@@ -267,6 +251,21 @@ public class DockerSessionFactory implements SessionFactory {
     Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionRequestCapabilities));
     timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
     return envVars;
+  }
+
+  private Container startVideoContainer(Capabilities sessionCapabilities,
+                                        String browserContainerIp, String hostPath) {
+    if (!recordVideoForSession(sessionCapabilities)) {
+      return null;
+    }
+    Map<String, String> envVars = getVideoContainerEnvVars(
+      sessionCapabilities,
+      browserContainerIp);
+    Map<String, String> volumeBinds = Collections.singletonMap(hostPath, "/videos");
+    Container videoContainer = docker.create(image(videoImage).env(envVars).bind(volumeBinds));
+    videoContainer.start();
+    LOG.info(String.format("Video container started (id: %s)", videoContainer.getId()));
+    return videoContainer;
   }
 
   private Map<String, String> getVideoContainerEnvVars(Capabilities sessionRequestCapabilities,
@@ -332,11 +331,12 @@ public class DockerSessionFactory implements SessionFactory {
     return null;
   }
 
-  private void saveSessionCapabilities(Capabilities sessionRequestCapabilities, Path assetsPath) {
+  private void saveSessionCapabilities(Capabilities sessionRequestCapabilities, String path) {
     String capsToJson = new Json().toJson(sessionRequestCapabilities);
     try {
+      Files.createDirectories(Paths.get(path));
       Files.write(
-        Paths.get(assetsPath.toString(), "sessionCapabilities.json"),
+        Paths.get(path, "sessionCapabilities.json"),
         capsToJson.getBytes(Charset.defaultCharset()));
     } catch (IOException e) {
       LOG.log(Level.WARNING,

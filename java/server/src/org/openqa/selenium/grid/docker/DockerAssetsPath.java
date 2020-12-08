@@ -28,33 +28,23 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DockerSessionAssetsPath {
+public class DockerAssetsPath {
 
-  private static final Logger LOG = Logger.getLogger(DockerSessionAssetsPath.class.getName());
+  private static final Logger LOG = Logger.getLogger(DockerAssetsPath.class.getName());
 
-  private final String hostAssetsPath;
-  private final String containerAssetsPath;
+  private final String hostPath;
+  private final String containerPath;
 
-  public DockerSessionAssetsPath(String hostAssetsPath, String containerAssetsPath) {
-    this.hostAssetsPath = hostAssetsPath;
-    this.containerAssetsPath = containerAssetsPath;
+  public DockerAssetsPath(String hostPath, String containerPath) {
+    this.hostPath = hostPath;
+    this.containerPath = containerPath;
   }
 
-  public String getHostSessionAssetsPath(SessionId id) {
-    return this.hostAssetsPath + File.separator + id;
+  public String getHostPath(SessionId id) {
+    return this.hostPath + File.separator + id;
   }
 
-  public Optional<Path> createContainerSessionAssetsPath(SessionId id) {
-    if (this.containerAssetsPath == null || this.containerAssetsPath.isEmpty()) {
-      return Optional.empty();
-    }
-    try {
-      return Optional.of(Files.createDirectories(Paths.get(this.containerAssetsPath, id.toString())));
-    } catch (IOException e) {
-      LOG.log(Level.WARNING,
-              "Failed to create path to store session assets, no assets will be stored: " +
-              this.containerAssetsPath, e);
-    }
-    return Optional.empty();
+  public String getContainerPath(SessionId id) {
+    return this.containerPath + File.separator + id;
   }
 }
