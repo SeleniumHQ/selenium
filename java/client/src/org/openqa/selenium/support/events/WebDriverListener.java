@@ -35,6 +35,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Classes that implement this interface are intended to be used with {@link EventFiringDecorator},
+ * read documentation for this class to find detailed usage description.
+ * <p>
+ * This interface provides empty default implementation for all methods that does nothing.
+ */
 @Beta
 public interface WebDriverListener {
 
