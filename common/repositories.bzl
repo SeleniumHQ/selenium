@@ -114,7 +114,7 @@ def _chrome():
         name = "linux_chrome",
         url = _versions["chrome"]["linux"]["url"],
         sha256 = _versions["chrome"]["linux"]["sha256"],
-        build_file_content = "exports_files([\"chrome\"])",
+        build_file_content = "exports_files([\"chrome-linux\"])",
     )
 
     http_archive(
