@@ -137,6 +137,24 @@ public abstract class By {
    */
   public abstract List<WebElement> findElements(SearchContext context);
 
+  protected WebDriver getWebDriver(SearchContext context) {
+    if (!(context instanceof WrapsDriver)) {
+      throw new IllegalArgumentException("Context does not wrap a webdriver: " + context);
+    }
+
+    return ((WrapsDriver) context).getWrappedDriver();
+  }
+
+  protected JavascriptExecutor getJavascriptExecutor(SearchContext context) {
+    WebDriver driver = getWebDriver(context);
+
+    if (!(context instanceof JavascriptExecutor)) {
+      throw new IllegalArgumentException("Context does not provide a mechanism to execute JS: " + context);
+    }
+
+    return (JavascriptExecutor) driver;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof By)) {

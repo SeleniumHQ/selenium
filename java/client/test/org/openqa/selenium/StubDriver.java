@@ -27,7 +27,7 @@ import org.openqa.selenium.logging.Logs;
 import java.util.List;
 import java.util.Set;
 
-public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen {
+public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen, JavascriptExecutor {
 
   @Override
   public void get(String url) {
@@ -114,4 +114,13 @@ public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen {
     return null;
   }
 
+  @Override
+  public Object executeScript(String script, Object... args) {
+    throw new UnsupportedOperationException("executeScript");
+  }
+
+  @Override
+  public Object executeAsyncScript(String script, Object... args) {
+    throw new UnsupportedOperationException("executeAsyncScript");
+  }
 }
