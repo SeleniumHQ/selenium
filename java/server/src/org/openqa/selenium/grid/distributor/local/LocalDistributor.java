@@ -156,44 +156,7 @@ public class LocalDistributor extends Distributor {
               Optional<HttpRequest> optionalHttpRequest = sessionRequests.remove(reqId);
               // Check if polling the queue did not return null
               if (optionalHttpRequest.isPresent()) {
-                HttpRequest sessionRequest = optionalHttpRequest.get();
-                try (Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue")) {
-                  Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-                  attributeMap.put(
-                    AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
-                  span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
-                  attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(reqId.toString()));
-
-                  attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
-                  Either<SessionNotCreatedException, CreateSessionResponse> response =
-                    newSession(sessionRequest);
-                  if (response.isRight()) {
-                    CreateSessionResponse sessionResponse = response.right();
-                    NewSessionResponse newSessionResponse =
-                      new NewSessionResponse(
-                        reqId,
-                        sessionResponse.getSession(),
-                        sessionResponse.getDownstreamEncodedResponse());
-
-                    bus.fire(new NewSessionResponseEvent(newSessionResponse));
-                  } else {
-                    SessionNotCreatedException exception = response.left();
-
-                    if (exception instanceof RetrySessionRequestException) {
-                      boolean retried = sessionRequests.retryAddToQueue(sessionRequest, reqId);
-
-                      attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
-                      span.addEvent("Retry adding to front of queue. All slots are busy.", attributeMap);
-
-                      if (!retried) {
-                        span.addEvent("Retry adding to front of queue failed.", attributeMap);
-                        fireSessionRejectedEvent(exception.getMessage(), reqId);
-                      }
-                    } else {
-                      fireSessionRejectedEvent(exception.getMessage(), reqId);
-                    }
-                  }
-                }
+                handleSession(optionalHttpRequest.get(), reqId);
               } else {
                 fireSessionRejectedEvent(
                   "Unable to poll request from the new session request queue.",
@@ -206,11 +169,51 @@ public class LocalDistributor extends Distributor {
         writeLock.unlock();
       }
     }
-  }
 
-  private void fireSessionRejectedEvent(String message, RequestId reqId) {
-    bus.fire(
+    private void handleSession(HttpRequest sessionRequest, RequestId reqId) {
+      try (Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue")) {
+        Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+        attributeMap.put(
+          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+        span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
+        attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(reqId.toString()));
+
+        attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
+        Either<SessionNotCreatedException, CreateSessionResponse> response =
+          newSession(sessionRequest);
+        if (response.isRight()) {
+          CreateSessionResponse sessionResponse = response.right();
+          NewSessionResponse newSessionResponse =
+            new NewSessionResponse(
+              reqId,
+              sessionResponse.getSession(),
+              sessionResponse.getDownstreamEncodedResponse());
+
+          bus.fire(new NewSessionResponseEvent(newSessionResponse));
+        } else {
+          SessionNotCreatedException exception = response.left();
+
+          if (exception instanceof RetrySessionRequestException) {
+            boolean retried = sessionRequests.retryAddToQueue(sessionRequest, reqId);
+
+            attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
+            span.addEvent("Retry adding to front of queue. All slots are busy.", attributeMap);
+
+            if (!retried) {
+              span.addEvent("Retry adding to front of queue failed.", attributeMap);
+              fireSessionRejectedEvent(exception.getMessage(), reqId);
+            }
+          } else {
+            fireSessionRejectedEvent(exception.getMessage(), reqId);
+          }
+        }
+      }
+    }
+
+    private void fireSessionRejectedEvent(String message, RequestId reqId) {
+      bus.fire(
         new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, message)));
+    }
   }
 
   public static Distributor create(Config config) {
