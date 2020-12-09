@@ -47,7 +47,7 @@ public class IntegrationTest {
     }
 
     @Override
-    public void afterCallGlobal(Decorated<?> target, Method method, Object result, Object[] args) {
+    public void afterCallGlobal(Decorated<?> target, Method method, Object[] args, Object result) {
       counterAfter++;
     }
 

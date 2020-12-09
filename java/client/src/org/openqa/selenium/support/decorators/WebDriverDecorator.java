@@ -91,9 +91,11 @@ public class WebDriverDecorator {
     return decorateResult(method.invoke(target.getOriginal(), args));
   }
 
-  public void afterCallGlobal(Decorated<?> target, Method method, Object res, Object[] args) {}
+  public void afterCallGlobal(Decorated<?> target, Method method, Object[] args, Object res) {}
 
-  public Object onErrorGlobal(Decorated<?> target, Method method, InvocationTargetException e, Object[] args) throws Throwable {
+  public Object onErrorGlobal(Decorated<?> target, Method method, Object[] args,
+                              InvocationTargetException e) throws Throwable
+  {
     throw e.getTargetException();
   }
 

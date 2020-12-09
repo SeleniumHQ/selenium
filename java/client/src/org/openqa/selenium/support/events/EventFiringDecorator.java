@@ -172,13 +172,14 @@ public class EventFiringDecorator extends WebDriverDecorator  {
   }
 
   @Override
-  public void afterCallGlobal(Decorated<?> target, Method method, Object result, Object[] args) {
-    super.afterCallGlobal(target, method, result, args);
+  public void afterCallGlobal(Decorated<?> target, Method method, Object[] args, Object result) {
+    super.afterCallGlobal(target, method, args, result);
     listeners.forEach(listener -> fireAfterEvents(listener, target, method, result, args));
   }
 
   @Override
-  public Object onErrorGlobal(Decorated<?> target, Method method, InvocationTargetException e, Object[] args) throws Throwable {
+  public Object onErrorGlobal(Decorated<?> target, Method method, Object[] args,
+                              InvocationTargetException e) throws Throwable {
     listeners.forEach(listener -> {
       try {
         listener.onError(target.getOriginal(), method, args, e);
@@ -186,7 +187,7 @@ public class EventFiringDecorator extends WebDriverDecorator  {
         logger.log(Level.WARNING, t.getMessage(), t);
       }
     });
-    return super.onErrorGlobal(target, method, e, args);
+    return super.onErrorGlobal(target, method, args, e);
   }
 
   private void fireBeforeEvents(WebDriverListener listener, Decorated<?> target, Method method, Object[] args) {
