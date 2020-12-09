@@ -35,11 +35,10 @@ import java.util.logging.Logger;
 
 /**
  * This decorator creates a wrapper around an arbitrary {@link WebDriver} instance that notifies
- * registered listeners about events happening in this WebDriver instance and related objects
- * ({@link WebElement}}s found by this driver, {@link Alert}s,
- * {@link org.openqa.selenium.WebDriver.Window}s etc).
+ * registered listeners about events happening in this WebDriver and derived objects, such as
+ * {@link WebElement}s and {@link Alert}.
  * <p>
- * Listeners should implement {@link WebDriverListener} interface. It supports three types of events:
+ * Listeners should implement {@link WebDriverListener}. It supports three types of events:
  * <ul>
  *   <li>"before"-event: a method is about to be called;</li>
  *   <li>"after"-event: a method was called successfully and returned some result;</li>
@@ -47,7 +46,7 @@ import java.util.logging.Logger;
  * </ul>
  * To use this decorator you have to prepare a listener, create a decorator using this listener,
  * decorate the original WebDriver instance with this decorator and use the new WebDriver
- * instance created by decorator instead of the original one:
+ * instance created by the decorator instead of the original one:
  * <code>
  *   WebDriver original = new FirefoxDriver();
  *   WebDriverListener listener = new MyListener();
@@ -64,7 +63,7 @@ import java.util.logging.Logger;
  * correspond to a single specific method, a "generic" event correspond to any method called in
  * a class or in any class.
  * <p>
- * To subscribe to a "specific" event a listener should implement a method with a name build after
+ * To subscribe to a "specific" event a listener should implement a method with a name derived from
  * the target method to be watched. The listener methods for "before"-events receive the parameters
  * passed to the decorated method. The listener methods for "after"-events receive the parameters
  * passed to the decorated method as well as the result returned by this method.
@@ -75,13 +74,13 @@ import java.util.logging.Logger;
  *       logger.log("About to open a page %s", url);
  *     }
  *     @Override
- *     public void afterGetText(String result, WebElement element) {
+ *     public void afterGetText(WebElement element, String result) {
  *       logger.log("Element %s has text '%s'", element, result);
  *     }
  *   };
  * </code>
  * <p>
- * To subscribe to a "generic" event a listener should implement a method with a name build after
+ * To subscribe to a "generic" event a listener should implement a method with a name derived from
  * the class to be watched:
  * <code>
  *   WebDriverListener listener = new WebDriverListener() {
@@ -91,7 +90,7 @@ import java.util.logging.Logger;
  *                  method, element, args);
  *     }
  *     @Override
- *     public void afterAnyWebElementCall(WebElement element, Method method, Object result, Object[] args) {
+ *     public void afterAnyWebElementCall(WebElement element, Method method, Object[] args, Object result) {
  *       logger.log("Method %s called in element %s with parameters %s returned %s",
  *                  method, element, args, result);
  *     }
@@ -107,7 +106,7 @@ import java.util.logging.Logger;
  *                  method, target, args);
  *     }
  *     @Override
- *     public void afterAnyCall(Object target, Method method, Object result, Object[] args) {
+ *     public void afterAnyCall(Object target, Method method, Object[] args, Object result) {
  *       logger.log("Method %s called in %s with parameters %s returned %s",
  *                  method, target, args, result);
  *     }
@@ -116,7 +115,7 @@ import java.util.logging.Logger;
  * <p>
  * A listener can subscribe to both "specific" and "generic" events at the same time. In this case
  * "before"-events are fired in order from the most generic to the most specific,
- * and "after"-events are generated in the opposite order, for example:
+ * and "after"-events are fired in the opposite order, for example:
  * <code>
  *   beforeAnyCall
  *   beforeAnyWebDriverCall
@@ -148,7 +147,7 @@ import java.util.logging.Logger;
  * <p>
  * Just be careful to not block the current thread in a listener method!
  * <p>
- * Actually, listeners can't affect driver behavior too much. They can't throw any exceptions
+ * Listeners can't affect driver behavior too much. They can't throw any exceptions
  * (they can, but the decorator suppresses these exceptions), can't prevent execution of
  * the decorated methods, can't modify parameters and results of the methods.
  * <p>
@@ -182,7 +181,7 @@ public class EventFiringDecorator extends WebDriverDecorator  {
   public Object onErrorGlobal(Decorated<?> target, Method method, InvocationTargetException e, Object[] args) throws Throwable {
     listeners.forEach(listener -> {
       try {
-        listener.onError(target.getOriginal(), method, e, args);
+        listener.onError(target.getOriginal(), method, args, e);
       } catch (Throwable t) {
         logger.log(Level.WARNING, t.getMessage(), t);
       }
@@ -237,16 +236,14 @@ public class EventFiringDecorator extends WebDriverDecorator  {
 
     boolean isVoid = method.getReturnType() == Void.TYPE
                      || method.getReturnType() == WebDriver.Timeouts.class;
-    int shift = isVoid  ? 0 : 1;
-
     int argsLength = args != null ? args.length : 0;
-    Object[] args2 = new Object[argsLength + 1 + shift];
-    if (! isVoid) {
-      args2[0] = res;
-    }
-    args2[shift] = target.getOriginal();
+    Object[] args2 = new Object[argsLength + 1 + (isVoid  ? 0 : 1)];
+    args2[0] = target.getOriginal();
     for (int i = 0; i < argsLength; i++) {
-      args2[i + 1 + shift] = args[i];
+      args2[i + 1] = args[i];
+    }
+    if (! isVoid) {
+      args2[args2.length - 1] = res;
     }
 
     Method m = findMatchingMethod(listener, methodName, args2);
@@ -256,26 +253,27 @@ public class EventFiringDecorator extends WebDriverDecorator  {
 
     try {
       if (target.getOriginal() instanceof WebDriver) {
-        listener.afterAnyWebDriverCall((WebDriver) target.getOriginal(), method, res, args);
+        listener.afterAnyWebDriverCall((WebDriver) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebElement) {
-        listener.afterAnyWebElementCall((WebElement) target.getOriginal(), method, res, args);
+        listener.afterAnyWebElementCall((WebElement) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Navigation) {
-        listener.afterAnyNavigationCall((WebDriver.Navigation) target.getOriginal(), method, res, args);
+        listener.afterAnyNavigationCall((WebDriver.Navigation) target.getOriginal(), method, args,
+                                        res);
       } else if (target.getOriginal() instanceof Alert) {
-        listener.afterAnyAlertCall((Alert) target.getOriginal(), method, res, args);
+        listener.afterAnyAlertCall((Alert) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Options) {
-        listener.afterAnyOptionsCall((WebDriver.Options) target.getOriginal(), method, res, args);
+        listener.afterAnyOptionsCall((WebDriver.Options) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Timeouts) {
-        listener.afterAnyTimeoutsCall((WebDriver.Timeouts) target.getOriginal(), method, res, args);
+        listener.afterAnyTimeoutsCall((WebDriver.Timeouts) target.getOriginal(), method, args, res);
       } else if (target.getOriginal() instanceof WebDriver.Window) {
-        listener.afterAnyWindowCall((WebDriver.Window) target.getOriginal(), method, res, args);
+        listener.afterAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args, res);
       }
     } catch (Throwable t) {
       logger.log(Level.WARNING, t.getMessage(), t);
     }
 
     try {
-      listener.afterAnyCall(target.getOriginal(), method, res, args);
+      listener.afterAnyCall(target.getOriginal(), method, args, res);
     } catch (Throwable t) {
       logger.log(Level.WARNING, t.getMessage(), t);
     }

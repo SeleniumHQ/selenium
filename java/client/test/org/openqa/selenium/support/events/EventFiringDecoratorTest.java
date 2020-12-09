@@ -23,11 +23,13 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -35,6 +37,8 @@ import org.openqa.selenium.testing.UnitTests;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Category(UnitTests.class)
 public class EventFiringDecoratorTest {
@@ -49,7 +53,7 @@ public class EventFiringDecoratorTest {
     }
 
     @Override
-    public void afterAnyCall(Object target, Method method, Object result, Object[] args) {
+    public void afterAnyCall(Object target, Method method, Object[] args, Object result) {
       acc.append("afterAnyCall ").append(method.getName()).append("\n");
     }
 
@@ -59,7 +63,7 @@ public class EventFiringDecoratorTest {
     }
 
     @Override
-    public void afterAnyWebDriverCall(WebDriver driver, Method method, Object result, Object[] args) {
+    public void afterAnyWebDriverCall(WebDriver driver, Method method, Object[] args, Object result) {
       acc.append("afterAnyWebDriverCall ").append(method.getName()).append("\n");
     }
   }
@@ -105,7 +109,7 @@ public class EventFiringDecoratorTest {
       }
 
       @Override
-      public void afterFindElement(WebElement result, WebDriver driver, By locator) {
+      public void afterFindElement(WebDriver driver, By locator, WebElement result) {
         acc.append("afterFindElement").append("\n");
       }
 
@@ -115,7 +119,8 @@ public class EventFiringDecoratorTest {
       }
 
       @Override
-      public void afterAnyWebElementCall(WebElement element, Method method, Object result, Object[] args) {
+      public void afterAnyWebElementCall(WebElement element, Method method, Object[] args,
+                                         Object result) {
         acc.append("afterAnyWebElementCall ").append(method.getName()).append("\n");
       }
 
@@ -163,7 +168,8 @@ public class EventFiringDecoratorTest {
       }
 
       @Override
-      public void afterAnyNavigationCall(WebDriver.Navigation navigation, Method method, Object result, Object[] args) {
+      public void afterAnyNavigationCall(WebDriver.Navigation navigation, Method method,
+                                         Object[] args, Object result) {
         acc.append("afterAnyNavigationCall ").append(method.getName()).append("\n");
       }
 
@@ -211,7 +217,7 @@ public class EventFiringDecoratorTest {
       }
 
       @Override
-      public void afterAnyAlertCall(Alert alert, Method method, Object result, Object[] args) {
+      public void afterAnyAlertCall(Alert alert, Method method, Object[] args, Object result) {
         acc.append("afterAnyAlertCall ").append(method.getName()).append("\n");
       }
 
@@ -244,6 +250,42 @@ public class EventFiringDecoratorTest {
                   "afterDismiss",
                   "afterAnyAlertCall dismiss",
                   "afterAnyCall dismiss"));
+  }
+
+  @Test
+  public void shouldAllowToExecuteJavaScript() {
+    WebDriver driver = mock(WebDriver.class, withSettings()
+      .extraInterfaces(JavascriptExecutor.class));
+    when(((JavascriptExecutor) driver).executeScript("sum", "2", "2")).thenReturn("4");
+
+    CollectorListener listener = new CollectorListener() {
+      @Override
+      public void beforeExecuteScript(WebDriver driver, String script, Object[] args) {
+        acc.append(script).append("(");
+        acc.append(Stream.of(args).map(Object::toString).collect(Collectors.joining(", ")));
+        acc.append(")\n");
+      }
+
+      @Override
+      public void afterExecuteScript(WebDriver driver, String script, Object[] args, Object result) {
+        acc.append(script).append("(");
+        acc.append(Stream.of(args).map(Object::toString).collect(Collectors.joining(", ")));
+        acc.append(") = ").append(result).append("\n");
+      }
+    };
+
+    WebDriver decorated = new EventFiringDecorator(listener).decorate(driver);
+
+    ((JavascriptExecutor) decorated).executeScript("sum", "2", "2");
+
+    assertThat(listener.acc.toString().trim()).isEqualTo(
+      String.join("\n",
+                  "beforeAnyCall executeScript",
+                  "beforeAnyWebDriverCall executeScript",
+                  "sum(2, 2)",
+                  "sum(2, 2) = 4",
+                  "afterAnyWebDriverCall executeScript",
+                  "afterAnyCall executeScript"));
   }
 
   @Test
@@ -296,7 +338,7 @@ public class EventFiringDecoratorTest {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
-      public void afterAnyCall(Object target, Method method, Object result, Object[] args) {
+      public void afterAnyCall(Object target, Method method, Object[] args, Object result) {
         throw new RuntimeException("listener");
       }
     };
@@ -311,7 +353,8 @@ public class EventFiringDecoratorTest {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
-      public void afterAnyWebDriverCall(WebDriver driver, Method method, Object result, Object[] args) {
+      public void afterAnyWebDriverCall(WebDriver driver, Method method, Object[] args,
+                                        Object result) {
         throw new RuntimeException("listener");
       }
     };
@@ -326,7 +369,7 @@ public class EventFiringDecoratorTest {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
-      public void afterGetWindowHandle(String result, WebDriver driver) {
+      public void afterGetWindowHandle(WebDriver driver, String result) {
         throw new RuntimeException("listener");
       }
     };
@@ -342,7 +385,7 @@ public class EventFiringDecoratorTest {
     when(driver.getWindowHandle()).thenThrow(new WebDriverException());
     WebDriverListener listener = new WebDriverListener() {
       @Override
-      public void onError(Object target, Method method, InvocationTargetException e, Object[] args) {
+      public void onError(Object target, Method method, Object[] args, InvocationTargetException e) {
         throw new RuntimeException("listener");
       }
     };
