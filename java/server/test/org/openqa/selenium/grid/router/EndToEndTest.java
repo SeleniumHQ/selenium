@@ -376,34 +376,6 @@ public class EndToEndTest {
   }
 
   @Test
-  public void exerciseDriver() {
-    // The node added only has a single node. Make sure we can start and stop sessions.
-    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
-    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
-
-    // The node is still open. Now create a second session. It will be added to the queue.
-    // An retry will be attempted and once request times out, it should fail
-    try {
-      WebDriver disposable = new RemoteWebDriver(server.getUrl(), caps);
-      disposable.quit();
-      fail("Should not have been able to create driver");
-    } catch (SessionNotCreatedException expected) {
-      // Fall through
-    }
-
-    // Kill the session, and wait until the grid says it's ready
-    driver.quit();
-
-    waitUntilReady(server, Duration.ofSeconds(200), true);
-
-    // And now we're good to go.
-    driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
-    driver.quit();
-  }
-
-  @Test
   public void shouldAllowPassthroughForW3CMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
@@ -431,10 +403,6 @@ public class EndToEndTest {
 
   @Test
   public void shouldRejectSessionRequestIfCapsNotSupported() {
-    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
-    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
-
     try {
       Capabilities unsupportedCaps = new ImmutableCapabilities("browserName", "brie");
       WebDriver disposable = new RemoteWebDriver(server.getUrl(), unsupportedCaps);
@@ -443,8 +411,6 @@ public class EndToEndTest {
     } catch (SessionNotCreatedException expected) {
       // Fall through
     }
-
-    driver.quit();
   }
 
   @Test

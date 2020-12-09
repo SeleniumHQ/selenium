@@ -79,7 +79,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -98,6 +103,10 @@ public class LocalDistributor extends Distributor {
   private final Secret registrationSecret;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
+  private final Queue<RequestId> requestIds = new ConcurrentLinkedQueue<>();
+  private final ScheduledExecutorService executorService =
+    Executors.newSingleThreadScheduledExecutor();
+  private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
@@ -125,18 +134,41 @@ public class LocalDistributor extends Distributor {
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
     bus.addListener(NodeDrainComplete.listener(this::remove));
+    bus.addListener(NewSessionRequestEvent.listener(requestIds::offer));
 
-    bus.addListener(NewSessionRequestEvent.listener(reqId -> {
-      Optional<HttpRequest> sessionRequest = this.sessionRequests.remove(reqId);
-      // Check if polling the queue did not return null
-      if (sessionRequest.isPresent()) {
-        handleNewSessionRequest(sessionRequest.get(), reqId);
-      } else {
-        fireSessionRejectedEvent(
-          "Unable to poll request from the new session request queue.",
-          reqId);
+    Runtime.getRuntime().addShutdownHook(shutdownHook);
+    NewSessionRunnable runnable = new NewSessionRunnable();
+    executorService.scheduleAtFixedRate(runnable, 0, 1000, TimeUnit.MILLISECONDS);
+  }
+
+  public class NewSessionRunnable implements Runnable {
+    @Override
+    public void run() {
+      Lock writeLock = lock.writeLock();
+      writeLock.lock();
+      try {
+        if (!requestIds.isEmpty()) {
+          boolean hasCapacity = nodes.keySet()
+            .stream().anyMatch(key -> nodes.get(key).getStatus().hasCapacity());
+          if (hasCapacity) {
+            RequestId id = requestIds.poll();
+            if (id != null) {
+              Optional<HttpRequest> sessionRequest = sessionRequests.remove(id);
+              // Check if polling the queue did not return null
+              if (sessionRequest.isPresent()) {
+                handleNewSessionRequest(sessionRequest.get(), id);
+              } else {
+                fireSessionRejectedEvent(
+                  "Unable to poll request from the new session request queue.",
+                  id);
+              }
+            }
+          }
+        }
+      } finally {
+        writeLock.unlock();
       }
-    }));
+    }
   }
 
   private void handleNewSessionRequest(HttpRequest sessionRequest, RequestId reqId) {
@@ -392,5 +424,10 @@ public class LocalDistributor extends Distributor {
     } finally {
       writeLock.unlock();
     }
+  }
+
+  public void callExecutorShutdown() {
+    LOG.info("Shutting down distributor executor service");
+    executorService.shutdownNow();
   }
 }

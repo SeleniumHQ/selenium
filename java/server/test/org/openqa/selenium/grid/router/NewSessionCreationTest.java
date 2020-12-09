@@ -26,6 +26,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
@@ -50,6 +51,7 @@ import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.EnsureSpecCompliantHeaders;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -71,6 +73,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -164,6 +167,79 @@ public class NewSessionCreationTest {
             "alwaysMatch", Browser.detect().getCapabilities())))));
 
     assertThat(res.isSuccessful()).isTrue();
+  }
+
+  @Test
+  public void exerciseDriver() throws URISyntaxException {
+    ChromeDriverInfo chromeDriverInfo = new ChromeDriverInfo();
+    assumeThat(chromeDriverInfo.isAvailable()).isTrue();
+    GeckoDriverInfo geckoDriverInfo = new GeckoDriverInfo();
+    assumeThat(geckoDriverInfo.isAvailable()).isTrue();
+
+    SessionMap sessions = new LocalSessionMap(tracer, events);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      events,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      events,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
+
+    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor);
+
+    Server<?> server = new NettyServer(
+      new BaseServerOptions(new MapConfig(ImmutableMap.of())), router).start();
+
+    URI uri = server.getUrl().toURI();
+    TestSessionFactory sessionFactory =
+      new TestSessionFactory((id, caps) -> new Session(
+        id,
+        uri,
+        Browser.detect().getCapabilities(),
+        caps,
+        Instant.now()));
+
+    Node node = LocalNode.builder(
+      tracer,
+      events,
+      uri,
+      uri,
+      registrationSecret)
+      .add(Browser.detect().getCapabilities(), sessionFactory)
+      .build();
+    distributor.add(node);
+
+    Capabilities capabilities = new ImmutableCapabilities(ImmutableMap.of(
+      "capabilities", ImmutableMap.of(
+        "alwaysMatch", Browser.detect().getCapabilities())));
+
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), capabilities);
+    driver.get("http://www.google.com");
+
+    // The node is still open. Now create a second session. It will be added to the queue.
+    // The session request will timeout.
+    try {
+      WebDriver disposable = new RemoteWebDriver(server.getUrl(), capabilities);
+      disposable.quit();
+      fail("Should not have been able to create driver");
+    } catch (SessionNotCreatedException expected) {
+      // Fall through
+    }
+
+    // Kill the session
+    driver.quit();
+
+    // And now we're good to go.
+    driver = new RemoteWebDriver(server.getUrl(), capabilities);
+    driver.get("http://www.google.com");
+    driver.quit();
   }
 
   @Test
