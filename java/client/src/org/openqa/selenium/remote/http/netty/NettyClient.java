@@ -59,13 +59,13 @@ public class NettyClient implements HttpClient {
         .setWebSocketMaxFrameSize(Integer.MAX_VALUE)
         .setConnectTimeout((int) config.connectionTimeout().toMillis());
 
-    String info = config.baseUrl().getUserInfo();
-    if (info != null && !info.equals("")) {
-      String[] parts = info.split(":", 2);
-      String user = parts[0];
-      String pass = parts.length > 1 ? parts[1] : null;
-      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true).build());
-    }
+//    String info = config.baseUrl().getUserInfo();
+//    if (info != null && !info.equals("")) {
+//      String[] parts = info.split(":", 2);
+//      String user = parts[0];
+//      String pass = parts.length > 1 ? parts[1] : null;
+//      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true).build());
+//    }
 
     return Dsl.asyncHttpClient(builder);
   }
