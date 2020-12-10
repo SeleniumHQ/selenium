@@ -202,6 +202,13 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
             "No host supports the capabilities required: %s",
             payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
           SessionNotCreatedException exception = new SessionNotCreatedException(errorMessage);
+          span.setAttribute("error", true);
+          span.setStatus(Status.ABORTED);
+
+          EXCEPTION.accept(attributeMap, exception);
+          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+            EventAttribute.setValue("Unable to create session: " + exception.getMessage()));
+          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
           return Either.left(exception);
         }
 
