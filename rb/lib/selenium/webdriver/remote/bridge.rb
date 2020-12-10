@@ -394,9 +394,7 @@ module Selenium
         end
 
         def print_page(options = {})
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          execute :print_page, options
+          execute :print_page, {}, {options: options}
         end
 
         def click_element(element)

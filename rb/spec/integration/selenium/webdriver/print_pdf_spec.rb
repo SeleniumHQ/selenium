@@ -17,33 +17,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'spec_helper'
+
 module Selenium
   module WebDriver
-    module Firefox
+    MAGIC_NUMBER = 'JVBER'
+    describe "PrintOptions" do
+      before do
+        driver.navigate.to url_for('printPage.html')
+      end
 
-      #
-      # Driver implementation for Firefox using GeckoDriver.
-      # @api private
-      #
+      it 'should return base64 for print command' do
+        expect(driver.print_page().include?(MAGIC_NUMBER)).to be true
+      end
 
-      class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasWebStorage
+      it 'should print with orientation' do
+        expect(driver.print_page(orientation: 'landscape').include?(MAGIC_NUMBER)).to be true
+      end
 
-        def browser
-          :firefox
-        end
-
-        def bridge_class
-          Bridge
-        end
-
-        def self.print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          bridge.print_page(options)
-        end
-      end # Driver
-    end # Firefox
-  end # WebDriver
-end # Selenium
+      it 'should print with valid params' do
+        expect(driver.print_page(orientation: 'landscape', page_ranges: ['1-2'], page: {width: 30}).include?(MAGIC_NUMBER)).to be true
+      end
+    end
+  end
+end
