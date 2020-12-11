@@ -22,9 +22,9 @@ import string
 import os
 import certifi
 import urllib3
+import platform
 
 from pybase64 import b64encode
-from platform import system
 
 try:
     from urllib import parse
@@ -102,7 +102,7 @@ class RemoteConnection(object):
          - keep_alive (Boolean) - Is this a keep-alive connection (default: False)
         """
 
-        system = system().lower()
+        system = platform.system().lower()
         if system == "darwin":
             system = "mac"
 
