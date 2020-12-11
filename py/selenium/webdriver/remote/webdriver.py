@@ -18,10 +18,10 @@
 """The WebDriver implementation."""
 
 from abc import ABCMeta
-import base64
+from base64 import b64decode
 import copy
 from contextlib import (contextmanager, asynccontextmanager)
-import importlib
+from importlib import import_module
 import pkgutil
 import warnings
 import sys
@@ -54,11 +54,10 @@ except NameError:
 
 cdp = None
 
-
 def import_cdp():
     global cdp
-    if cdp is None:
-        cdp = importlib.import_module("selenium.webdriver.common.bidi.cdp")
+    if not cdp:
+        cdp = import_module("selenium.webdriver.common.bidi.cdp")
 
 
 _W3C_CAPABILITY_NAMES = frozenset([
@@ -180,10 +179,10 @@ class WebDriver(BaseWebDriver):
         """
         capabilities = {}
         _ignore_local_proxy = False
-        if options is not None:
+        if options:
             capabilities = options.to_capabilities()
             _ignore_local_proxy = options._ignore_local_proxy
-        if desired_capabilities is not None:
+        if desired_capabilities:
             if not isinstance(desired_capabilities, dict):
                 raise WebDriverException("Desired Capabilities must be a dictionary")
             else:
@@ -240,7 +239,7 @@ class WebDriver(BaseWebDriver):
         try:
             yield
         finally:
-            if last_detector is not None:
+            if last_detector:
                 self.file_detector = last_detector
 
     @property
@@ -304,7 +303,7 @@ class WebDriver(BaseWebDriver):
 
         # if capabilities is none we are probably speaking to
         # a W3C endpoint
-        if self.caps is None:
+        if not self.caps:
             self.caps = response.get('capabilities')
 
         # Double check to see if we have a W3C Compliant browser
@@ -356,7 +355,7 @@ class WebDriver(BaseWebDriver):
         :Returns:
           The command's JSON response loaded into a dictionary object.
         """
-        if self.session_id is not None:
+        if self.session_id:
             if not params:
                 params = {'sessionId': self.session_id}
             elif 'sessionId' not in params:
@@ -1256,7 +1255,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_screenshot_as_png()
         """
-        return base64.b64decode(self.get_screenshot_as_base64().encode('ascii'))
+        return b64decode(self.get_screenshot_as_base64().encode('ascii'))
 
     def get_screenshot_as_base64(self):
         """
@@ -1310,7 +1309,7 @@ class WebDriver(BaseWebDriver):
         else:
             size = self.execute(command, {'windowHandle': windowHandle})
 
-        if size.get('value', None) is not None:
+        if size.get('value', None):
             size = size['value']
 
         return {k: size[k] for k in ('width', 'height')}
@@ -1412,7 +1411,7 @@ class WebDriver(BaseWebDriver):
         :Args:
          - detector: The detector to use. Must not be None.
         """
-        if detector is None:
+        if not detector:
             raise WebDriverException("You may not set a file detector that is null")
         if not isinstance(detector, FileDetector):
             raise WebDriverException("Detector has to be instance of FileDetector")
@@ -1560,13 +1559,13 @@ class WebDriver(BaseWebDriver):
         else:
             version, ws_url = self._get_cdp_details()
 
-        if ws_url is None:
+        if not ws_url:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
         cdp.import_devtools(version)
 
         global devtools
-        devtools = importlib.import_module("selenium.webdriver.common.devtools.v{}".format(version))
+        devtools = import_module("selenium.webdriver.common.devtools.v{}".format(version))
         async with cdp.open_cdp(ws_url) as conn:
             targets = await conn.execute(devtools.target.get_targets())
             target_id = targets[0].target_id

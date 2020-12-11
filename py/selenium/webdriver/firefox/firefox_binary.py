@@ -85,7 +85,7 @@ class FirefoxBinary(object):
     def _start_from_profile_path(self, path):
         self._firefox_env["XRE_PROFILE_PATH"] = path
 
-        if platform == 'linux':
+        if self.platform == 'linux':
             self._modify_link_library_path()
         command = [self._start_cmd, "-foreground"]
         if self.command_line:
