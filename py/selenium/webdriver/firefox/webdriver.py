@@ -19,7 +19,7 @@ try:
 except NameError:  # Python 3.x
     basestring = str
 
-from pybase64 import b64decode
+from base64 import b64decode
 import shutil
 from shutil import rmtree
 import warnings
