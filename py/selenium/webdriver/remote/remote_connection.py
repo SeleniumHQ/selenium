@@ -24,7 +24,7 @@ import certifi
 import urllib3
 import platform
 
-from pybase64 import b64encode
+from base64 import b64encode
 
 try:
     from urllib import parse
