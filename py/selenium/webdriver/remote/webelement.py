@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
-import hashlib
 import os
+from base64 import b64decode
+from hashlib import md5 as md5_hash
 import pkgutil
 import warnings
 import zipfile
@@ -637,7 +637,7 @@ class WebElement(BaseWebElement):
 
                 element_png = element.screenshot_as_png
         """
-        return base64.b64decode(self.screenshot_as_base64.encode('ascii'))
+        return b64decode(self.screenshot_as_base64.encode('ascii'))
 
     def screenshot(self, filename):
         """
@@ -762,7 +762,7 @@ class WebElement(BaseWebElement):
                              {"using": by, "value": value})['value']
 
     def __hash__(self):
-        return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
+        return int(md5_hash(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
         fp = BytesIO()
