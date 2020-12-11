@@ -59,7 +59,7 @@ class ProxyType:
                     attr_value['string'] is not None and \
                     attr_value['string'] == value:
                 return attr_value
-        raise Exception("No proxy type is found for %s" % (value))
+        raise Exception(f"No proxy type is found for {value}")
 
 
 class Proxy(object):
@@ -324,7 +324,7 @@ class Proxy(object):
 
     def _verify_proxy_type_compatibility(self, compatibleProxy):
         if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
-            raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % (compatibleProxy, self.proxyType))
+            raise Exception(f"Specified proxy type ({compatibleProxy}) not compatible with current setting ({self.proxyType})")
 
     def add_to_capabilities(self, capabilities):
         """

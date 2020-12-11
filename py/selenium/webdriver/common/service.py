@@ -17,10 +17,10 @@
 
 import errno
 import os
-import platform
 import subprocess
+from platform import system
 from subprocess import PIPE
-import time
+from time import sleep
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
@@ -72,7 +72,7 @@ class Service(object):
             cmd = [self.path]
             cmd.extend(self.command_line_args())
             self.process = subprocess.Popen(cmd, env=self.env,
-                                            close_fds=platform.system() != 'Windows',
+                                            close_fds=system() != 'Windows',
                                             stdout=self.log_file,
                                             stderr=self.log_file,
                                             stdin=PIPE,
@@ -103,7 +103,7 @@ class Service(object):
                 break
 
             count += 1
-            time.sleep(0.5)
+            sleep(0.5)
             if count == 60:
                 raise WebDriverException("Can not connect to the Service %s" % self.path)
 
@@ -136,7 +136,7 @@ class Service(object):
             if not self.is_connectable():
                 break
             else:
-                time.sleep(1)
+                sleep(1)
 
     def stop(self):
         """
