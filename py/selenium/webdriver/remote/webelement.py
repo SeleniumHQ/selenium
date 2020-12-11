@@ -16,7 +16,7 @@
 # under the License.
 
 import os
-from pybase64 import b64decode
+from base64 import b64decode
 from hashlib import md5 as md5_hash
 import pkgutil
 import warnings
