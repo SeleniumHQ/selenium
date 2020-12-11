@@ -19,8 +19,9 @@ try:
 except NameError:  # Python 3.x
     basestring = str
 
-import base64
+from base64 import b64decode
 import shutil
+from shutil import rmtree
 import warnings
 from contextlib import contextmanager
 
@@ -205,9 +206,9 @@ class WebDriver(RemoteWebDriver):
 
         if self.profile is not None:
             try:
-                shutil.rmtree(self.profile.path)
+                rmtree(self.profile.path)
                 if self.profile.tempfolder is not None:
-                    shutil.rmtree(self.profile.tempfolder)
+                    rmtree(self.profile.tempfolder)
             except Exception as e:
                 print(str(e))
 
@@ -257,7 +258,7 @@ class WebDriver(RemoteWebDriver):
                 driver.install_addon('/path/to/firebug.xpi')
         """
         payload = {"path": path}
-        if temporary is not None:
+        if temporary:
             payload["temporary"] = temporary
         return self.execute("INSTALL_ADDON", payload)["value"]
 
@@ -326,7 +327,7 @@ class WebDriver(RemoteWebDriver):
 
                 driver.get_full_page_screenshot_as_png()
         """
-        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
+        return b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
 
     def get_full_page_screenshot_as_base64(self):
         """
