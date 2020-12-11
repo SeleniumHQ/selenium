@@ -18,7 +18,7 @@
 """The WebDriver implementation."""
 
 from abc import ABCMeta
-from pybase64 import b64decode #pybase64 is faster and better than std base64
+from base64 import b64decode
 import copy
 from contextlib import (contextmanager, asynccontextmanager)
 from importlib import import_module
