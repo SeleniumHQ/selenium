@@ -50,7 +50,7 @@ module Selenium
         def print_page(**options)
           options[:page_ranges] &&= Array(options[:page_ranges])
 
-          bridge.print_page(options)
+          @bridge.print_page(options)
         end
 
         private

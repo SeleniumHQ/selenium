@@ -21,8 +21,9 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    MAGIC_NUMBER = 'JVBER'
     describe "PrintOptions" do
+      let(:magic_number) { 'JVBER' }
+
       before do
         options = Selenium::WebDriver::Chrome::Options.new
         options.add_argument('--headless')
@@ -32,15 +33,15 @@ module Selenium
       end
 
       it 'should return base64 for print command' do
-        expect(@driver.print_page().include?(MAGIC_NUMBER)).to be true
+        expect(@driver.print_page()).to include(magic_number)
       end
 
       it 'should print with orientation' do
-        expect(@driver.print_page(orientation: 'landscape').include?(MAGIC_NUMBER)).to be true
+        expect(@driver.print_page(orientation: 'landscape')).to include(magic_number)
       end
 
       it 'should print with valid params' do
-        expect(@driver.print_page(orientation: 'landscape', page_ranges: ['1-2'], page: {width: 30}).include?(MAGIC_NUMBER)).to be true
+        expect(@driver.print_page(orientation: 'landscape', page_ranges: ['1-2'], page: {width: 30})).to include(magic_number)
       end
     end
   end
