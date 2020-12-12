@@ -307,7 +307,7 @@ class WebDriver(BaseWebDriver):
             self.caps = response.get('capabilities')
 
         # Double check to see if we have a W3C Compliant browser
-        self.w3c = response.get('status') is None
+        self.w3c = not response.get('status') #using not automatically results in boolean
         self.command_executor.w3c = self.w3c
 
     def _wrap_value(self, value):
@@ -1492,7 +1492,7 @@ class WebDriver(BaseWebDriver):
 
                 async with driver.add_js_error_listener() as error:
                     driver.find_element(By.ID, "throwing-mouseover").click()
-                assert error is not None
+                assert bool(error)
                 assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
         """
         assert sys.version_info >= (3, 7)

@@ -103,7 +103,7 @@ class WebDriver(RemoteWebDriver):
         if executable_path != DEFAULT_EXECUTABLE_PATH:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if capabilities is not None or desired_capabilities is not None:
+        if capabilities or desired_capabilities:
             warnings.warn('capabilities and desired_capabilities have been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if firefox_binary:

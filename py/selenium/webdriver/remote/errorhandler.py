@@ -110,7 +110,7 @@ class ErrorHandler(object):
         :Raises: If the response contains an error message.
         """
         status = response.get('status', None)
-        if status is None or status == ErrorCode.SUCCESS:
+        if not status or status == ErrorCode.SUCCESS:
             return
         value = None
         message = response.get("message", "")

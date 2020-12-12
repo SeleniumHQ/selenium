@@ -54,10 +54,8 @@ class ProxyType:
         value = str(value).upper()
         for attr in dir(cls):
             attr_value = getattr(cls, attr)
-            if isinstance(attr_value, dict) and \
-                    'string' in attr_value and \
-                    attr_value['string'] is not None and \
-                    attr_value['string'] == value:
+            # `attr_value['string'] is not None` probably not required as `attr_value['string'] == value`
+            if isinstance(attr_value, dict) and 'string' in attr_value and attr_value['string'] == value:
                 return attr_value
         raise Exception(f"No proxy type is found for {value}")
 
