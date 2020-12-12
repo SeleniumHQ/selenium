@@ -125,7 +125,7 @@ class ErrorHandler(object):
                     if len(value.keys()) == 1:
                         value = value['value']
                     status = value.get('error', None)
-                    if status is None:
+                    if not status:
                         status = value["status"]
                         message = value["value"]
                         if not isinstance(message, basestring):
@@ -198,7 +198,7 @@ class ErrorHandler(object):
             exception_class = UnknownMethodException
         else:
             exception_class = WebDriverException
-        if value == '' or value is None:
+        if not value: #if value == '' or value == None, the condition will be executed
             value = response['value']
         if isinstance(value, basestring):
             raise exception_class(value)

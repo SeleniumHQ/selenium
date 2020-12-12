@@ -388,7 +388,7 @@ class WebDriver(BaseWebDriver):
                 title = driver.title
         """
         resp = self.execute(Command.GET_TITLE)
-        return resp['value'] if resp['value'] is not None else ""
+        return resp['value'] if resp['value'] else ""
 
     def find_element_by_id(self, id_):
         """Finds an element by id.
@@ -1387,7 +1387,7 @@ class WebDriver(BaseWebDriver):
         if not self.w3c:
             raise UnknownMethodException("set_window_rect is only supported for W3C compatible browsers")
 
-        if (x is None and y is None) and (height is None and width is None):
+        if (not x and not y) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
         return self.execute(Command.SET_WINDOW_RECT, {"x": x, "y": y,
