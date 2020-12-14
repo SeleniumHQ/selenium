@@ -33,7 +33,7 @@ module Selenium
       end
 
       it 'should return base64 for print command' do
-        expect(@driver.print_page()).to include(magic_number)
+        expect(@driver.print_page).to include(magic_number)
       end
 
       it 'should print with orientation' do
