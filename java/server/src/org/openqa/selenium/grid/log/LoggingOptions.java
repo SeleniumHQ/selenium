@@ -93,6 +93,35 @@ public class LoggingOptions {
     return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
   }
 
+  public Level getLoggingLevel() {
+    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(Level.INFO.getName());
+    Level level;
+
+    if (Level.ALL.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.ALL;
+    } else if (Level.CONFIG.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.CONFIG;
+    } else if (Level.FINE.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINE;
+    } else if (Level.FINER.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINER;
+    } else if (Level.FINEST.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINEST;
+    } else if (Level.INFO.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.INFO;
+    } else if (Level.OFF.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.OFF;
+    } else if (Level.SEVERE.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.SEVERE;
+    } else if (Level.WARNING.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.WARNING;
+    } else {
+      // Default logging level in case of incorrect input.
+      level = Level.INFO;
+    }
+    return level;
+  }
+
   public Tracer getTracer() {
     boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing").orElse(true);
     if (!tracingEnabled) {
@@ -151,7 +180,7 @@ public class LoggingOptions {
             map.put("attributes", attributeMap);
             String jsonString = getJsonString(map);
             if (status.isOk()) {
-              LOG.log(Level.INFO, jsonString);
+              LOG.log(Level.FINE, jsonString);
             } else {
               LOG.log(Level.WARNING, jsonString);
             }
@@ -209,18 +238,21 @@ public class LoggingOptions {
 
     // Now configure the root logger, since everything should flow up to that
     Logger logger = logManager.getLogger("");
+    logger.setLevel(getLoggingLevel());
     OutputStream out = getOutputStream();
     String encoding = getLogEncoding();
 
     if (isUsingPlainLogs()) {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter());
+      handler.setLevel(getLoggingLevel());
       configureLogEncoding(logger, encoding, handler);
     }
 
     if (isUsingStructuredLogging()) {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
+      handler.setLevel(getLoggingLevel());
       configureLogEncoding(logger, encoding, handler);
     }
   }
