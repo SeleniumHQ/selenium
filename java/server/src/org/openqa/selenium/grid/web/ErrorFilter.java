@@ -17,31 +17,38 @@
 
 package org.openqa.selenium.grid.web;
 
-import static com.google.common.net.MediaType.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.UncheckedIOException;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 
-public class ErrorHandler implements HttpHandler {
+public class ErrorFilter implements Filter {
 
-  private final Throwable throwable;
-  private final ErrorCodec errors = ErrorCodec.createDefault();
+  private final ErrorCodec errors;
 
-  public ErrorHandler(Throwable throwable) {
-    this.throwable = Require.nonNull("Exception", throwable);
+  public ErrorFilter() {
+    this(ErrorCodec.createDefault());
+  }
+
+  public ErrorFilter(ErrorCodec errors) {
+    this.errors = Require.nonNull("Error codec", errors);
   }
 
   @Override
-  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return new HttpResponse()
-      .setHeader("Cache-Control", "none")
-      .setHeader("Content-Type", JSON_UTF_8.toString())
-      .setStatus(errors.getHttpStatusCode(throwable))
-      .setContent(asJson(errors.encode(throwable)));
+  public HttpHandler apply(HttpHandler next) {
+    return req -> {
+      try {
+        return next.execute(req);
+      } catch (Throwable throwable) {
+        return new HttpResponse()
+          .setHeader("Cache-Control", "none")
+          .setHeader("Content-Type", Json.JSON_UTF_8)
+          .setStatus(errors.getHttpStatusCode(throwable))
+          .setContent(asJson(errors.encode(throwable)));
+      }
+    };
   }
 }
