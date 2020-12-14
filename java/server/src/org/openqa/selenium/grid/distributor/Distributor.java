@@ -202,7 +202,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
             "No host supports the capabilities required: %s",
             payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
           SessionNotCreatedException exception = new SessionNotCreatedException(errorMessage);
-          span.setAttribute("error", true);
+          span.setAttribute(AttributeKey.ERROR.getKey(), true);
           span.setStatus(Status.ABORTED);
 
           EXCEPTION.accept(attributeMap, exception);
@@ -249,7 +249,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         return Either.left(exception);
       }
     } catch (SessionNotCreatedException e) {
-      span.setAttribute("error", true);
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.ABORTED);
 
       EXCEPTION.accept(attributeMap, e);
@@ -259,7 +259,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       SessionNotCreatedException exception = new RetrySessionRequestException(e.getMessage());
       return Either.left(exception);
     } catch (IOException e) {
-      span.setAttribute("error", true);
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.UNKNOWN);
 
       EXCEPTION.accept(attributeMap, e);
