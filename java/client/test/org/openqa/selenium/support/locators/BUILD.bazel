@@ -6,6 +6,10 @@ java_selenium_test_suite(
     size = "medium",
     srcs = glob(["*Test.java"]),
     browsers = ["chrome"],
+    javacopts = [
+        "--release",
+        "11",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote",
