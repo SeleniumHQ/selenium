@@ -569,7 +569,7 @@ class Options extends Capabilities {
           return extension.toString('base64')
         }
         return io
-          .read(/** @type {string} */ (extension))
+          .read(/** @type {string} */(extension))
           .then((buffer) => buffer.toString('base64'))
       })
     }
@@ -622,7 +622,7 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() {}
+  setFileDetector() { }
 
   /**
    * Schedules a command to launch Chrome App with given ID.
@@ -791,7 +791,8 @@ class Driver extends webdriver.WebDriver {
             response: 'ProvideCredentials',
             username: username,
             password: password,
-        }})
+          }
+        })
       } else if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
         connection.execute('Fetch.continueRequest', this.getRandomNumber(1, 10), {
@@ -885,7 +886,14 @@ class Driver extends webdriver.WebDriver {
       name: '__webdriver_attribute',
     }, null)
 
-    const mutationListener = fs.readFileSync('../../cdp-support/mutation-listener.js', 'utf-8').toString()
+    const mutationListener
+    try {
+      // Depending on what is running the code it could appear in 2 different places which is why we try
+      // here and then the other location
+      mutationListener = fs.readFileSync('./javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js', 'utf-8').toString()
+    } catch {
+      mutationListener = fs.readFileSync('./lib/atoms/mutation-listener.js', 'utf-8').toString()
+    }
 
     this.executeScript(mutationListener)
 
@@ -897,7 +905,7 @@ class Driver extends webdriver.WebDriver {
       const params = JSON.parse(message)
       if (params.method === 'Runtime.bindingCalled') {
         let payload = JSON.parse(params['params']['payload'])
-        let elements = await this.findElements({css: "*[data-__webdriver_id=" + payload['target']})
+        let elements = await this.findElements({ css: "*[data-__webdriver_id=" + payload['target'] })
 
         if (elements.length === 0) {
           return
