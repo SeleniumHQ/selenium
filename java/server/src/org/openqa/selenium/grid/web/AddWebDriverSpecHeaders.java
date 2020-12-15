@@ -15,13 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.server;
+package org.openqa.selenium.grid.web;
 
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import static com.google.common.net.MediaType.JSON_UTF_8;
 
 public class AddWebDriverSpecHeaders implements Filter {
   @Override
@@ -33,7 +32,7 @@ public class AddWebDriverSpecHeaders implements Filter {
       }
 
       if (res.getHeader("Content-Type") == null) {
-        res.addHeader("Content-Type", JSON_UTF_8.toString());
+        res.addHeader("Content-Type", Json.JSON_UTF_8);
       }
       if (res.getHeader("Cache-Control") == null) {
         res.addHeader("Cache-Control", "none");
