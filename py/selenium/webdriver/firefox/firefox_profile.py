@@ -66,7 +66,7 @@ class FirefoxProfile(object):
             FirefoxProfile.DEFAULT_PREFERENCES['mutable'])
         self.profile_dir = profile_directory
         self.tempfolder = None
-        if self.profile_dir is None:
+        if not self.profile_dir:
             self.profile_dir = self._create_tempfolder()
         else:
             self.tempfolder = tempfile.mkdtemp()
@@ -340,14 +340,14 @@ class FirefoxProfile(object):
             rdf = get_namespace_id(doc, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
             description = doc.getElementsByTagName(rdf + 'Description').item(0)
-            if description is None:
+            if not description:
                 description = doc.getElementsByTagName('Description').item(0)
             for node in description.childNodes:
                 # Remove the namespace prefix from the tag for comparison
                 entry = node.nodeName.replace(em, "")
                 if entry in details.keys():
                     details.update({entry: get_text(node)})
-            if details.get('id') is None:
+            if not details.get('id'):
                 for i in range(description.attributes.length):
                     attribute = description.attributes.item(i)
                     if attribute.name == em + 'id':
@@ -360,7 +360,7 @@ class FirefoxProfile(object):
             details['unpack'] = details['unpack'].lower() == 'true'
 
         # If no ID is set, the add-on is invalid
-        if details.get('id') is None:
+        if not details.get('id'):
             raise AddonFormatError('Add-on id could not be found.')
 
         return details

@@ -20,7 +20,6 @@ except NameError:  # Python 3.x
     basestring = str
 
 from base64 import b64decode
-import shutil
 from shutil import rmtree
 import warnings
 from contextlib import contextmanager
@@ -104,14 +103,14 @@ class WebDriver(RemoteWebDriver):
         if executable_path != DEFAULT_EXECUTABLE_PATH:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if capabilities is not None or desired_capabilities is not None:
+        if capabilities or desired_capabilities:
             warnings.warn('capabilities and desired_capabilities have been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if firefox_binary is not None:
+        if firefox_binary:
             warnings.warn('firefox_binary has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         self.binary = None
-        if firefox_profile is not None:
+        if firefox_profile:
             warnings.warn('firefox_profile has been deprecated, please pass in an Options object',
                           DeprecationWarning, stacklevel=2)
         self.profile = None
@@ -124,7 +123,7 @@ class WebDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if service_args is not None:
+        if service_args:
             warnings.warn('service_args has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 
@@ -132,12 +131,12 @@ class WebDriver(RemoteWebDriver):
 
         # If desired capabilities is set, alias it to capabilities.
         # If both are set ignore desired capabilities.
-        if capabilities is None and desired_capabilities:
+        if not capabilities and desired_capabilities:
             capabilities = desired_capabilities
 
-        if capabilities is None:
+        if not capabilities:
             capabilities = DesiredCapabilities.FIREFOX.copy()
-        if options is None:
+        if not options:
             options = Options()
 
         capabilities = dict(capabilities)
@@ -146,20 +145,20 @@ class WebDriver(RemoteWebDriver):
             self.binary = capabilities["binary"]
 
         # options overrides capabilities
-        if options is not None:
-            if options.binary is not None:
+        if options:
+            if options.binary:
                 self.binary = options.binary
-            if options.profile is not None:
+            if options.profile:
                 self.profile = options.profile
 
         # firefox_binary and firefox_profile
         # override options
-        if firefox_binary is not None:
+        if firefox_binary:
             if isinstance(firefox_binary, basestring):
                 firefox_binary = FirefoxBinary(firefox_binary)
             self.binary = firefox_binary
             options.binary = firefox_binary
-        if firefox_profile is not None:
+        if firefox_profile:
             if isinstance(firefox_profile, basestring):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
@@ -171,7 +170,7 @@ class WebDriver(RemoteWebDriver):
         if capabilities.get("acceptInsecureCerts"):
             options.accept_insecure_certs = capabilities.get("acceptInsecureCerts")
 
-        if self.service is None:
+        if not self.service:
             self.service = Service(
                 executable_path,
                 service_args=service_args,
@@ -204,10 +203,10 @@ class WebDriver(RemoteWebDriver):
         else:
             self.binary.kill()
 
-        if self.profile is not None:
+        if self.profile:
             try:
                 rmtree(self.profile.path)
-                if self.profile.tempfolder is not None:
+                if self.profile.tempfolder:
                     rmtree(self.profile.tempfolder)
             except Exception as e:
                 print(str(e))

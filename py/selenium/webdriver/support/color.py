@@ -54,7 +54,7 @@ class Color(object):
 
             @property
             def groups(self):
-                return () if self.match_obj is None else self.match_obj.groups()
+                return () if not self.match_obj else self.match_obj.groups()
 
         m = Matcher()
 

@@ -139,7 +139,7 @@ class RemoteConnection(object):
             pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
             pool_manager_init_args['ca_certs'] = self._ca_certs
 
-        return urllib3.PoolManager(**pool_manager_init_args) if self._proxy_url is None else \
+        return urllib3.PoolManager(**pool_manager_init_args) if not self._proxy_url else \
             urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
 
     def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None, ignore_proxy=False):
@@ -434,7 +434,7 @@ class RemoteConnection(object):
             if 399 < statuscode <= 500:
                 return {'status': statuscode, 'value': data}
             content_type = []
-            if resp.getheader('Content-Type') is not None:
+            if resp.getheader('Content-Type'):
                 content_type = resp.getheader('Content-Type').split(';')
             if not any([x.startswith('image/png') for x in content_type]):
 

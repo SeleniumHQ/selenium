@@ -20,7 +20,7 @@ from selenium.common.exceptions import WebDriverException
 
 
 def with_tag_name(tag_name):
-    if tag_name is None:
+    if not tag_name:
         raise WebDriverException("tag_name can not be null")
     return RelativeBy({"css selector": tag_name})
 
@@ -32,35 +32,35 @@ class RelativeBy(object):
         self.filters = filters or []
 
     def above(self, element_or_locator=None):
-        if element_or_locator is None:
+        if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
 
         self.filters.append({"kind": "above", "args": [element_or_locator]})
         return self
 
     def below(self, element_or_locator=None):
-        if element_or_locator is None:
+        if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
 
         self.filters.append({"kind": "below", "args": [element_or_locator]})
         return self
 
     def to_left_of(self, element_or_locator=None):
-        if element_or_locator is None:
+        if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
 
         self.filters.append({"kind": "left", "args": [element_or_locator]})
         return self
 
     def to_right_of(self, element_or_locator):
-        if element_or_locator is None:
+        if not element_or_locator:
             raise WebDriverException("Element or locator must be given when calling above method")
 
         self.filters.append({"kind": "right", "args": [element_or_locator]})
         return self
 
     def near(self, element_or_locator_distance=None):
-        if element_or_locator_distance is None:
+        if not element_or_locator_distance:
             raise WebDriverException("Element or locator or distance must be given when calling above method")
 
         self.filters.append({"kind": "near", "args": [element_or_locator_distance]})

@@ -42,8 +42,7 @@ class OperaDriver(ChromiumDriver):
          - service_log_path - Where to log information from the driver.
            capabilities only, such as "proxy" or "loggingPref".
         """
-        executable_path = (executable_path if executable_path is not None
-                           else "operadriver")
+        executable_path = (executable_path if executable_path else "operadriver")
         ChromiumDriver.__init__(self,
                                 executable_path=executable_path,
                                 port=port,

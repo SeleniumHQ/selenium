@@ -109,7 +109,7 @@ class Service(object):
 
     def assert_process_still_running(self):
         return_code = self.process.poll()
-        if return_code is not None:
+        if return_code:
             raise WebDriverException(
                 'Service %s unexpectedly exited. Status code was: %s'
                 % (self.path, return_code)
@@ -148,7 +148,7 @@ class Service(object):
             except Exception:
                 pass
 
-        if self.process is None:
+        if not self.process:
             return
 
         try:

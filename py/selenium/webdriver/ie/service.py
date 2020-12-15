@@ -36,11 +36,11 @@ class Service(service.Service):
          - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
            Default is "stdout"."""
         self.service_args = []
-        if host is not None:
+        if host:
             self.service_args.append("--host=%s" % host)
-        if log_level is not None:
+        if log_level:
             self.service_args.append("--log-level=%s" % log_level)
-        if log_file is not None:
+        if log_file:
             self.service_args.append("--log-file=%s" % log_file)
 
         service.Service.__init__(self, executable_path, port=port,

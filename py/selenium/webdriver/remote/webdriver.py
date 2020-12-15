@@ -307,7 +307,7 @@ class WebDriver(BaseWebDriver):
             self.caps = response.get('capabilities')
 
         # Double check to see if we have a W3C Compliant browser
-        self.w3c = response.get('status') is None
+        self.w3c = not response.get('status') #using not automatically results in boolean
         self.command_executor.w3c = self.w3c
 
     def _wrap_value(self, value):
@@ -388,7 +388,7 @@ class WebDriver(BaseWebDriver):
                 title = driver.title
         """
         resp = self.execute(Command.GET_TITLE)
-        return resp['value'] if resp['value'] is not None else ""
+        return resp['value'] if resp['value'] else ""
 
     def find_element_by_id(self, id_):
         """Finds an element by id.
@@ -1387,7 +1387,7 @@ class WebDriver(BaseWebDriver):
         if not self.w3c:
             raise UnknownMethodException("set_window_rect is only supported for W3C compatible browsers")
 
-        if (x is None and y is None) and (height is None and width is None):
+        if (not x and not y) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
 
         return self.execute(Command.SET_WINDOW_RECT, {"x": x, "y": y,
@@ -1492,7 +1492,7 @@ class WebDriver(BaseWebDriver):
 
                 async with driver.add_js_error_listener() as error:
                     driver.find_element(By.ID, "throwing-mouseover").click()
-                assert error is not None
+                assert bool(error)
                 assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
         """
         assert sys.version_info >= (3, 7)

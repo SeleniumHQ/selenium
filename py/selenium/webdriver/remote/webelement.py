@@ -158,7 +158,7 @@ class WebElement(BaseWebElement):
         else:
             resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
             attribute_value = resp.get('value')
-            if attribute_value is not None:
+            if attribute_value:
                 if name != 'value' and attribute_value.lower() in ('true', 'false'):
                     attribute_value = attribute_value.lower()
         return attribute_value
