@@ -31,6 +31,11 @@ namespace OpenQA.Selenium.DevTools
         private Dictionary<string, string> headers = new Dictionary<string, string>();
 
         /// <summary>
+        /// Gets or sets the ID of the request that generated this response.
+        /// </summary>
+        public string RequestId { get; set; }
+
+        /// <summary>
         /// Gets or sets the URL of the HTTP response.
         /// </summary>
         public string Url { get; set; }
@@ -49,6 +54,11 @@ namespace OpenQA.Selenium.DevTools
         /// Gets or sets the type of resource for this response.
         /// </summary>
         public string ResourceType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reason for an error response.
+        /// </summary>
+        public string ErrorReason { get; set; }
 
         /// <summary>
         /// Gets the headers of the HTTP response.

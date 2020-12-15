@@ -23,13 +23,8 @@ namespace OpenQA.Selenium.DevTools
     /// <summary>
     /// Event arguments present when the ResponseReceived event is raised.
     /// </summary>
-    public class ResponseReceivedEventArgs : EventArgs
+    public class ResponsePausedEventArgs : EventArgs
     {
-        /// <summary>
-        /// Gets the request ID.
-        /// </summary>
-        public string RequestId { get; internal set; }
-
         /// <summary>
         /// Gets the <see cref="HttpRequestData"/> object for this request.
         /// </summary>
