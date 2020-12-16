@@ -1,4 +1,4 @@
-// <copyright file="IOptions.cs" company="WebDriver Committers">
+// <copyright file="HttpRequestData.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,39 +16,40 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Defines an interface allowing the user to set options on the browser.
+    /// Represents the response data for an intercepted HTTP call.
     /// </summary>
-    public interface IOptions
+    public class HttpRequestData
     {
         /// <summary>
-        /// Gets an object allowing the user to manipulate cookies on the page.
+        /// Gets the method of the HTTP request.
         /// </summary>
-        ICookieJar Cookies { get; }
+        public string Method { get; internal set; }
 
         /// <summary>
-        /// Gets an object allowing the user to manipulate the currently-focused browser window.
+        /// Gets the URL of the HTTP request.
         /// </summary>
-        /// <remarks>"Currently-focused" is defined as the browser window having the window handle
-        /// returned when IWebDriver.CurrentWindowHandle is called.</remarks>
-        IWindow Window { get; }
+        public string Url { get; internal set; }
 
         /// <summary>
-        /// Gets an object allowing the user to examine the logs for this driver instance.
+        /// Gets the POST data of the HTTP request.
         /// </summary>
-        ILogs Logs { get; }
+        public string PostData { get; internal set; }
 
         /// <summary>
-        /// Gets an object allowing the user to manage network communication by the browser.
+        /// Gets the headers of the HTTP request.
         /// </summary>
-        INetwork Network { get; }
+        public Dictionary<string, string> Headers { get; internal set; }
 
         /// <summary>
-        /// Provides access to the timeouts defined for this driver.
+        /// Gets the ID of the HTTP request.
         /// </summary>
-        /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
-        ITimeouts Timeouts();
+        public string RequestId { get; internal set; }
     }
 }

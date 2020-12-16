@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium
 {
     /// <summary>
     /// Represents the response data for an intercepted HTTP call.

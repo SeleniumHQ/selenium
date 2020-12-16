@@ -1,4 +1,4 @@
-// <copyright file="HttpRequestData.cs" company="WebDriver Committers">
+// <copyright file="PasswordCredentials.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,38 +18,44 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Represents the response data for an intercepted HTTP call.
+    /// A credentials provider that uses a user name and password for authentication.
     /// </summary>
-    public class HttpRequestData
+    public class PasswordCredentials : ICredentials
     {
         /// <summary>
-        /// Gets the method of the HTTP request.
+        /// Initializes a new instance of the <see cref="PasswordCredentials"/> class.
         /// </summary>
-        public string Method { get; internal set; }
+        public PasswordCredentials()
+            : this(null, null)
+        {
+        }
 
         /// <summary>
-        /// Gets the URL of the HTTP request.
+        /// Initializes a new instance of the <see cref="PasswordCredentials"/> class with the specified user name and password.
         /// </summary>
-        public string Url { get; internal set; }
+        /// <param name="userName">The user name for the credentials.</param>
+        /// <param name="password">The password for the credentials.</param>
+        public PasswordCredentials(string userName, string password)
+        {
+            UserName = userName;
+            Password = password;
+        }
 
         /// <summary>
-        /// Gets the POST data of the HTTP request.
+        /// Gets the user name.
         /// </summary>
-        public string PostData { get; internal set; }
+        public string UserName { get; private set; }
 
         /// <summary>
-        /// Gets the headers of the HTTP request.
+        /// Gets the password.
         /// </summary>
-        public Dictionary<string, string> Headers { get; internal set; }
-
-        /// <summary>
-        /// Gets the ID of the HTTP request.
-        /// </summary>
-        public string RequestId { get; internal set; }
+        public string Password { get; private set; }
     }
 }
