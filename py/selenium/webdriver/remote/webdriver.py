@@ -54,6 +54,7 @@ except NameError:
 
 cdp = None
 
+
 def import_cdp():
     global cdp
     if not cdp:
@@ -307,7 +308,7 @@ class WebDriver(BaseWebDriver):
             self.caps = response.get('capabilities')
 
         # Double check to see if we have a W3C Compliant browser
-        self.w3c = not response.get('status') #using not automatically results in boolean
+        self.w3c = not response.get('status')  # using not automatically results in boolean
         self.command_executor.w3c = self.w3c
 
     def _wrap_value(self, value):
@@ -887,7 +888,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.MINIMIZE_WINDOW)
 
-    def print_page(self, print_options = None):
+    def print_page(self, print_options=None):
         """
         Takes PDF of the current page.
         The driver makes a best effort to return a PDF based on the provided parameters.
@@ -1577,9 +1578,11 @@ class WebDriver(BaseWebDriver):
         import urllib3
 
         http = urllib3.PoolManager()
+        _firefox = False
         if self.caps.get("browserName") == "chrome":
             debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
         else:
+            _firefox = True
             debugger_address = self.caps.get("moz:debuggerAddress")
         res = http.request('GET', f"http://{debugger_address}/json/version")
         data = json.loads(res.data)
@@ -1588,6 +1591,11 @@ class WebDriver(BaseWebDriver):
         websocket_url = data.get("webSocketDebuggerUrl")
 
         import re
-        version = re.search(r".*/(\d+)\.", browser_version).group(1)
+        if _firefox:
+            # Mozilla Automation Team asked to only support 85
+            # until WebDriver Bidi is available.
+            version = 85
+        else:
+            version = re.search(r".*/(\d+)\.", browser_version).group(1)
 
         return version, websocket_url
