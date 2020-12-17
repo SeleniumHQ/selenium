@@ -394,7 +394,7 @@ class Options extends Capabilities {
    * - `enableTimeline`: Whether or not to collect events from Timeline domain.
    *     Note: when tracing is enabled, Timeline domain is implicitly disabled,
    *     unless `enableTimeline` is explicitly set to true.
-   * - `tracingCategories`: A comma-separated string of Chromium tracing
+   * - `traceCategories`: A comma-separated string of Chromium tracing
    *     categories for which trace events should be collected. An unspecified
    *     or empty string disables tracing.
    * - `bufferUsageReportingInterval`: The requested number of milliseconds
@@ -405,7 +405,7 @@ class Options extends Capabilities {
    * @param {{enableNetwork: boolean,
    *          enablePage: boolean,
    *          enableTimeline: boolean,
-   *          tracingCategories: string,
+   *          traceCategories: string,
    *          bufferUsageReportingInterval: number}} prefs The performance
    *     logging preferences.
    * @return {!Options} A self reference.
