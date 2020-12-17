@@ -31,7 +31,7 @@ public class ContainerLogs {
     this.id = Require.nonNull("Container id", id);
   }
 
-  public List<String> getLogs() {
+  public List<String> getLogLines() {
     return logLines;
   }
 
