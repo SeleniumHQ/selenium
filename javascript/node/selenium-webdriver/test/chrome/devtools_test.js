@@ -99,7 +99,7 @@ test.suite(
     describe('JS CDP events', function () {
       it('calls the event listener for console.log', async function () {
         const cdpConnection = await driver.createCDPConnection('page')
-        await driver.onLogEvent(cdpConnection, function(event) {
+        await driver.onLogEvent(cdpConnection, function (event) {
           assert.equal(event['args'][0]['value'], 'here')
         })
         await driver.executeScript('console.log("here")')
@@ -107,19 +107,24 @@ test.suite(
 
       it('calls the event listener for js exceptions', async function () {
         const cdpConnection = await driver.createCDPConnection('page')
-        await driver.onLogException(cdpConnection, function(event) {
-          assert.equal(event['exceptionDetails']['stackTrace']['callFrames'][0]['functionName'], 'onmouseover')
+        await driver.onLogException(cdpConnection, function (event) {
+          assert.equal(
+            event['exceptionDetails']['stackTrace']['callFrames'][0][
+              'functionName'
+            ],
+            'onmouseover'
+          )
         })
         await driver.get(test.Pages.javascriptPage)
-        let element = driver.findElement({id: 'throwing-mouseover'})
+        let element = driver.findElement({ id: 'throwing-mouseover' })
         await element.click()
       })
     })
 
-    describe('JS DOM events', function() {
-      it('calls the event listener on dom mutations', async function() {
+    describe('JS DOM events', function () {
+      it('calls the event listener on dom mutations', async function () {
         const cdpConnection = await driver.createCDPConnection('page')
-        await driver.logMutationEvents(cdpConnection, function(event) {
+        await driver.logMutationEvents(cdpConnection, function (event) {
           assert.equal(event['attribute_name'], 'style')
           assert.equal(event['current_value'], '')
           assert.equal(event['old_value'], 'display:none;')
@@ -127,22 +132,22 @@ test.suite(
 
         await driver.get(test.Pages.dynamicPage)
 
-        let element = driver.findElement({id: 'reveal'})
+        let element = driver.findElement({ id: 'reveal' })
         await element.click()
-        let revealed = driver.findElement({id: 'revealed'});
-        await driver.wait(until.elementIsVisible(revealed), 5000);
+        let revealed = driver.findElement({ id: 'revealed' })
+        await driver.wait(until.elementIsVisible(revealed), 5000)
       })
     })
 
     describe('Basic Auth Injection', function () {
-      const server = new Server(function(req, res) {
+      const server = new Server(function (req, res) {
         if (req.method == 'GET' && req.url == '/protected') {
           const denyAccess = function () {
             res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
             res.end('Access denied')
           }
 
-          const basicAuthRegExp = /^\s*basic\s+([a-z0-9\-\._~\+\/]+)=*\s*$/i
+          const basicAuthRegExp = /^\s*basic\s+([a-z0-9\-._~+/]+)=*\s*$/i
           const auth = req.headers.authorization
           const match = basicAuthRegExp.exec(auth || '')
           if (!match) {
@@ -164,7 +169,7 @@ test.suite(
 
       server.start()
 
-      it('denies entry if username and password do not match', async function() {
+      it('denies entry if username and password do not match', async function () {
         const pageCdpConnection = await driver.createCDPConnection('page')
 
         await driver.register('random', 'random', pageCdpConnection)
@@ -173,7 +178,7 @@ test.suite(
         assert.equal(source.includes('Access granted!'), false)
       })
 
-      it('grants access if username and password are a match', async function() {
+      it('grants access if username and password are a match', async function () {
         const pageCdpConnection = await driver.createCDPConnection('page')
 
         await driver.register('genie', 'bottle', pageCdpConnection)
