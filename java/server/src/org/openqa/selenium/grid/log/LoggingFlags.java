@@ -59,7 +59,7 @@ public class LoggingFlags implements HasRoles {
     "Log levels are described here https://docs.oracle.com/javase/7/docs/api/java/util/logging/Level.html ",
     names = "--log-level", arity = 1)
   @ConfigValue(section = "logging", name = "log-level", example = "INFO")
-  private String logLevel = Level.INFO.getName();
+  private String logLevel;
 
   @Override
   public Set<Role> getRoles() {

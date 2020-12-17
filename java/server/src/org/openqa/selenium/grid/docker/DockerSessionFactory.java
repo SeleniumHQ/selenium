@@ -114,7 +114,9 @@ public class DockerSessionFactory implements SessionFactory {
   @Override
   public boolean test(Capabilities capabilities) {
     return stereotype.getCapabilityNames().stream()
-        .map(name -> Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name)))
+        .map(
+          name ->
+            Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name)))
         .reduce(Boolean::logicalAnd)
         .orElse(false);
   }
@@ -170,7 +172,9 @@ public class DockerSessionFactory implements SessionFactory {
       try {
         result = new ProtocolHandshake().createSession(client, command);
         response = result.createResponse();
-        attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+        attributeMap.put(
+          AttributeKey.DRIVER_RESPONSE.getKey(),
+          EventAttribute.setValue(response.toString()));
       } catch (IOException | RuntimeException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
@@ -204,8 +208,12 @@ public class DockerSessionFactory implements SessionFactory {
       Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
                            result.getDialect() :
                            W3C;
-      attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
-      attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
+      attributeMap.put(
+        AttributeKey.DOWNSTREAM_DIALECT.getKey(),
+        EventAttribute.setValue(downstream.toString()));
+      attributeMap.put(
+        AttributeKey.DRIVER_RESPONSE.getKey(),
+        EventAttribute.setValue(response.toString()));
 
       span.addEvent("Docker driver service created session", attributeMap);
       LOG.fine(String.format(
