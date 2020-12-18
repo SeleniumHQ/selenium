@@ -10,7 +10,7 @@
     "webdriver",
     "webdriverjs"
   ],
-  "homepage": "https://github.com/SeleniumHQ/selenium",
+  "homepage": "https://github.com/SeleniumHQ/selenium/tree/trunk/javascript/node/selenium-webdriver#readme",
   "bugs": {
     "url": "https://github.com/SeleniumHQ/selenium/issues"
   },
