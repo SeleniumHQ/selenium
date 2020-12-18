@@ -1517,8 +1517,10 @@ class WebDriver(BaseWebDriver):
                 yield event
 
             payload = json.loads(evnt.value.payload)
-            elements = self.find_elements(By.CSS_SELECTOR, "*[data-__webdriver_id={}".format(payload['target']))
-            # event["element"] = elements[0]
+            elements: list = self.find_elements(By.CSS_SELECTOR, "*[data-__webdriver_id={}".format(payload['target']))
+            if not elements:
+                elements.append(None)
+            event["element"] = elements[0]
             event["attribute_name"] = payload['name']
             event["current_value"] = payload['value']
             event["old_value"] = payload['oldValue']
