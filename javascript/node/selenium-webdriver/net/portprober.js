@@ -52,21 +52,21 @@ function isFree(port, opt_host) {
 
 function findFreePort(opt_host) {
   return new Promise((resolve, reject) => {
-    const server = net.createServer();
-    server.on('listening', function() {
-      resolve(server.address().port);
-      server.close();
-    });
+    const server = net.createServer()
+    server.on('listening', function () {
+      resolve(server.address().port)
+      server.close()
+    })
     server.on('error', (e) => {
       if (e.code === 'EADDRINUSE' || e.code === 'EACCES') {
         resolve('Unable to find a free port')
       } else {
         reject(e)
       }
-    });
+    })
     // By providing 0 we let the operative system find an arbitrary port
-    server.listen(0, opt_host);
-  });
+    server.listen(0, opt_host)
+  })
 }
 
 // PUBLIC API

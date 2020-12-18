@@ -77,7 +77,7 @@ class Timeouts(object):
         self._script = self._convert(_script)
 
     def _convert(self, timeout):
-        if timeout is not None:
+        if timeout:
             if isinstance(timeout, (int, float)):
                 return int(float(timeout) * 1000)
             else:
@@ -85,11 +85,11 @@ class Timeouts(object):
 
     def _to_json(self):
         timeouts = {}
-        if self._implicit_wait is not None:
+        if self._implicit_wait:
             timeouts["implicit"] = self._implicit_wait
-        if self._page_load is not None:
+        if self._page_load:
             timeouts["pageLoad"] = self._page_load
-        if self._script is not None:
+        if self._script:
             timeouts["script"] = self._script
 
         return timeouts

@@ -17,6 +17,14 @@
 
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
+
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -30,13 +38,6 @@ import static org.openqa.selenium.By.ByPartialLinkText;
 import static org.openqa.selenium.By.ByTagName;
 import static org.openqa.selenium.By.ByXPath;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-
-import java.util.List;
-import java.util.Map;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 @Category(UnitTests.class)
 public class ByTest {
@@ -64,30 +65,6 @@ public class ByTest {
     verify(driver).findElements(By.xpath(".//*[@name = 'peas']"));
     verifyNoMoreInteractions(driver);
   }
-//
-//  @Test
-//  public void shouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
-//    final OnlyXPath driver = mock(OnlyXPath.class);
-//
-//    By.name("cheese").findElement(driver);
-//    By.name("peas").findElements(driver);
-//
-//    verify(driver).findElementByXPath(".//*[@name = 'cheese']");
-//    verify(driver).findElementsByXPath(".//*[@name = 'peas']");
-//    verifyNoMoreInteractions(driver);
-//  }
-
-//  @Test
-//  public void fallsBackOnXPathIfContextDoesNotImplementFallsById() {
-//    OnlyXPath driver = mock(OnlyXPath.class);
-//
-//    By.id("foo").findElement(driver);
-//    By.id("bar").findElements(driver);
-//
-//    verify(driver).findElementByXPath(".//*[@id = 'foo']");
-//    verify(driver).findElementsByXPath(".//*[@id = 'bar']");
-//    verifyNoMoreInteractions(driver);
-//  }
 
   @Test
   public void doesNotUseXPathIfContextFindsById() {
@@ -113,18 +90,6 @@ public class ByTest {
     verifyNoMoreInteractions(context);
   }
 
-//  @Test
-//  public void searchesByXPathIfCannotFindByTagName() {
-//    OnlyXPath context = mock(OnlyXPath.class);
-//
-//    By.tagName("foo").findElement(context);
-//    By.tagName("bar").findElements(context);
-//
-//    verify(context).findElementByXPath(".//foo");
-//    verify(context).findElementsByXPath(".//bar");
-//    verifyNoMoreInteractions(context);
-//  }
-
   @Test
   public void searchesByClassNameIfSupported() {
     AllDriver context = mock(AllDriver.class);
@@ -136,20 +101,6 @@ public class ByTest {
     verify(context).findElements(By.className("bar"));
     verifyNoMoreInteractions(context);
   }
-
-//  @Test
-//  public void searchesByXPathIfFindingByClassNameNotSupported() {
-//    OnlyXPath context = mock(OnlyXPath.class);
-//
-//    By.className("foo").findElement(context);
-//    By.className("bar").findElements(context);
-//
-//    verify(context).findElementByXPath(
-//        ".//*[contains(concat(' ',normalize-space(@class),' '),' foo ')]");
-//    verify(context).findElementsByXPath(
-//        ".//*[contains(concat(' ',normalize-space(@class),' '),' bar ')]");
-//    verifyNoMoreInteractions(context);
-//  }
 
   @Test
   public void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {

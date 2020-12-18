@@ -52,8 +52,8 @@ public class ClientConfig {
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
       null,
-      Duration.ofMinutes(2),
-      Duration.ofHours(3),
+      Duration.ofSeconds(10),
+      Duration.ofMinutes(3),
       new AddSeleniumUserAgent(),
       null);
   }

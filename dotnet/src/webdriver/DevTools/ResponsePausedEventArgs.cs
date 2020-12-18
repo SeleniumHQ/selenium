@@ -1,4 +1,4 @@
-// <copyright file="HttpRequestData.cs" company="WebDriver Committers">
+// <copyright file="ResponseReceivedEventArgs.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -17,39 +17,17 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.DevTools
 {
     /// <summary>
-    /// Represents the response data for an intercepted HTTP call.
+    /// Event arguments present when the ResponseReceived event is raised.
     /// </summary>
-    public class HttpRequestData
+    public class ResponsePausedEventArgs : EventArgs
     {
         /// <summary>
-        /// Gets the method of the HTTP request.
+        /// Gets the <see cref="HttpRequestData"/> object for this request.
         /// </summary>
-        public string Method { get; internal set; }
-
-        /// <summary>
-        /// Gets the URL of the HTTP request.
-        /// </summary>
-        public string Url { get; internal set; }
-
-        /// <summary>
-        /// Gets the POST data of the HTTP request.
-        /// </summary>
-        public string PostData { get; internal set; }
-
-        /// <summary>
-        /// Gets the headers of the HTTP request.
-        /// </summary>
-        public Dictionary<string, string> Headers { get; internal set; }
-
-        /// <summary>
-        /// Gets the ID of the HTTP request.
-        /// </summary>
-        public string RequestId { get; internal set; }
+        public HttpResponseData ResponseData { get; internal set; }
     }
 }

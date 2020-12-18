@@ -195,6 +195,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         }
       }
       if (QUIT.equals(command.getName())) {
+        client.close();
         httpClientFactory.cleanupIdleClients();
       }
       return response;

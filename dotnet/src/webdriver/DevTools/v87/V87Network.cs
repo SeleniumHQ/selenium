@@ -44,7 +44,6 @@ namespace OpenQA.Selenium.DevTools.V87
             this.fetch = fetch;
             fetch.AuthRequired += OnFetchAuthRequired;
             fetch.RequestPaused += OnFetchRequestPaused;
-            network.ResponseReceived += OnNetworkResponseReceived;
         }
 
         /// <summary>
@@ -85,7 +84,8 @@ namespace OpenQA.Selenium.DevTools.V87
             {
                 Patterns = new OpenQA.Selenium.DevTools.V87.Fetch.RequestPattern[]
                 {
-                    new OpenQA.Selenium.DevTools.V87.Fetch.RequestPattern() { UrlPattern = "*" }
+                    new OpenQA.Selenium.DevTools.V87.Fetch.RequestPattern() { UrlPattern = "*" },
+                    new OpenQA.Selenium.DevTools.V87.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Response }
                 },
                 HandleAuthRequests = true
             });
@@ -171,7 +171,7 @@ namespace OpenQA.Selenium.DevTools.V87
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the network call.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public override async Task ContinueWithoutModification(HttpRequestData requestData)
+        public override async Task ContinueRequestWithoutModification(HttpRequestData requestData)
         {
             await fetch.ContinueRequest(new ContinueRequestCommandSettings() { RequestId = requestData.RequestId });
         }
@@ -214,6 +214,34 @@ namespace OpenQA.Selenium.DevTools.V87
             });
         }
 
+        /// <summary>
+        /// Asynchronously adds the response body to the provided <see cref="HttpResponseData"/> object.
+        /// </summary>
+        /// <param name="responseData">The <see cref="HttpResponseData"/> object to which to add the response body.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public override async Task AddResponseBody(HttpResponseData responseData)
+        {
+            var bodyResponse = await fetch.GetResponseBody(new Fetch.GetResponseBodyCommandSettings() { RequestId = responseData.RequestId });
+            if (bodyResponse.Base64Encoded)
+            {
+                responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(bodyResponse.Body));
+            }
+            else
+            {
+                responseData.Body = bodyResponse.Body;
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously contines an intercepted network response without modification.
+        /// </summary>
+        /// <param name="responseData">The <see cref="HttpResponseData"/> of the network response.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public override async Task ContinueResponseWithoutModification(HttpResponseData responseData)
+        {
+            await fetch.ContinueRequest(new ContinueRequestCommandSettings() { RequestId = responseData.RequestId });
+        }
+
         private void OnFetchAuthRequired(object sender, Fetch.AuthRequiredEventArgs e)
         {
             AuthRequiredEventArgs wrapped = new AuthRequiredEventArgs()
@@ -227,9 +255,9 @@ namespace OpenQA.Selenium.DevTools.V87
 
         private void OnFetchRequestPaused(object sender, Fetch.RequestPausedEventArgs e)
         {
-            RequestPausedEventArgs wrapped = new RequestPausedEventArgs();
             if (e.ResponseErrorReason == null && e.ResponseStatusCode == null)
             {
+                RequestPausedEventArgs wrapped = new RequestPausedEventArgs();
                 wrapped.RequestData = new HttpRequestData()
                 {
                     RequestId = e.RequestId,
@@ -238,42 +266,27 @@ namespace OpenQA.Selenium.DevTools.V87
                     PostData = e.Request.PostData,
                     Headers = new Dictionary<string, string>(e.Request.Headers)
                 };
-            }
-
-            this.OnRequestPaused(wrapped);
-        }
-
-        private async void OnNetworkResponseReceived(object sender, Network.ResponseReceivedEventArgs e)
-        {
-            HttpResponseData responseData = new HttpResponseData()
-            {
-                StatusCode = e.Response.Status,
-                Url = e.Response.Url,
-                ResourceType = e.Type.ToString()
-            };
-
-            foreach(var header in e.Response.Headers)
-            {
-                responseData.Headers.Add(header.Key, header.Value);
-            }
-
-            var body = await network.GetResponseBody(new Network.GetResponseBodyCommandSettings() { RequestId = e.RequestId });
-            if (body.Base64Encoded)
-            {
-                responseData.Body = Encoding.UTF8.GetString(Convert.FromBase64String(body.Body));
+                this.OnRequestPaused(wrapped);
             }
             else
             {
-                responseData.Body = body.Body;
+                ResponsePausedEventArgs wrapped = new ResponsePausedEventArgs();
+                wrapped.ResponseData = new HttpResponseData()
+                {
+                    RequestId = e.RequestId,
+                    StatusCode = e.ResponseStatusCode.Value,
+                    Url = e.Request.Url,
+                    ResourceType = e.ResourceType.ToString(),
+                    ErrorReason = e.ResponseErrorReason.HasValue ? e.ResponseErrorReason.Value.ToString() : ""
+                };
+
+                foreach (var header in e.ResponseHeaders)
+                {
+                    wrapped.ResponseData.Headers.Add(header.Name, header.Value);
+                }
+
+                this.OnResponsePaused(wrapped);
             }
-
-            ResponseReceivedEventArgs wrapped = new ResponseReceivedEventArgs()
-            {
-                RequestId = e.RequestId,
-                ResponseData = responseData
-            };
-
-            this.OnResponseReceived(wrapped);
         }
     }
 }

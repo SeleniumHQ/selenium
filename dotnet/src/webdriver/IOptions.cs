@@ -36,9 +36,14 @@ namespace OpenQA.Selenium
         IWindow Window { get; }
 
         /// <summary>
-        /// Gets an object allowing the user to examing the logs for this driver instance.
+        /// Gets an object allowing the user to examine the logs for this driver instance.
         /// </summary>
         ILogs Logs { get; }
+
+        /// <summary>
+        /// Gets an object allowing the user to manage network communication by the browser.
+        /// </summary>
+        INetwork Network { get; }
 
         /// <summary>
         /// Provides access to the timeouts defined for this driver.
