@@ -22,6 +22,7 @@ from base64 import b64decode
 import copy
 from contextlib import (contextmanager, asynccontextmanager)
 from importlib import import_module
+import json
 import pkgutil
 import warnings
 import sys
@@ -710,13 +711,16 @@ class WebDriver(BaseWebDriver):
         warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
-    def pin_script(self, script):
+    def pin_script(self, script, script_key=None):
         """
 
         """
-        script_key = ScriptKey()
-        self.pinned_scripts[script_key.id] = script
-        return script_key
+        if not script_key:
+            _script_key = ScriptKey()
+        else:
+            _script_key = ScriptKey(script_key)
+        self.pinned_scripts[_script_key.id] = script
+        return _script_key
 
     def unpin(self, script_key):
         """
@@ -1482,6 +1486,42 @@ class WebDriver(BaseWebDriver):
                 driver.get_log('server')
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
+
+    @asynccontextmanager
+    async def log_mutation_events(self):
+        """
+        Listens for mutation events and emits them as it finds them
+
+        :Usage:
+             ::
+
+        """
+        _pkg = '.'.join(__name__.split('.')[:-1])
+        mutation_listener_js = pkgutil.get_data(_pkg, 'mutation-listener.js').decode('utf8').strip()
+
+        assert sys.version_info >= (3, 7)
+        global cdp
+        async with self._get_bidi_connection():
+            global devtools
+            page = cdp.get_session_context('page.enable')
+            await page.execute(devtools.page.enable())
+            runtime = cdp.get_session_context('runtime.enable')
+            await runtime.execute(devtools.runtime.enable())
+            await runtime.execute(devtools.runtime.add_binding("__webdriver_attribute"))
+            self.pin_script(mutation_listener_js)
+            script_key = await page.execute(devtools.page.add_script_to_evaluate_on_new_document(mutation_listener_js))
+            self.pin_script(mutation_listener_js, script_key)
+            self.execute_script(f"return {mutation_listener_js}")
+            event = {}
+            async with runtime.wait_for(devtools.runtime.BindingCalled) as evnt:
+                yield event
+
+            payload = json.loads(evnt.value.payload)
+            elements = self.find_elements(By.CSS_SELECTOR, "*[data-__webdriver_id={}".format(payload['target']))
+            # event["element"] = elements[0]
+            event["attribute_name"] = payload['name']
+            event["current_value"] = payload['value']
+            event["old_value"] = payload['oldValue']
 
     @asynccontextmanager
     async def add_js_error_listener(self):

@@ -30,6 +30,12 @@ copy_file(
 )
 
 copy_file(
+    name = "mutation-listener",
+    src = "//javascript/cdp-support:closure",
+    out = "selenium/webdriver/remote/mutation-listener.js"
+)
+
+copy_file(
     name = "firefox-driver-prefs",
     src = "//third_party/js/selenium:webdriver_json",
     out = "selenium/webdriver/firefox/webdriver_prefs.json",
@@ -46,6 +52,7 @@ py_library(
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
+        ":mutation-listener",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
