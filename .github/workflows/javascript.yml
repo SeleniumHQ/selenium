@@ -14,8 +14,16 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
-          fetch-depth: 10
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-node-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-node-tests-
+            ${{ runner.os }}-bazel-build-
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -41,8 +49,15 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
-          fetch-depth: 10
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-atom-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-atom-firefox-tests-
       - name: Setup Java
         uses: actions/setup-java@v1
         with:

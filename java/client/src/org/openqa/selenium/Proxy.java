@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Configuration parameters for using proxies in WebDriver. Generally you should pass an object of
@@ -48,6 +51,18 @@ public class Proxy {
     UNSPECIFIED
   }
 
+  private static final String PROXY_TYPE = "proxyType";
+  private static final String FTP_PROXY = "ftpProxy";
+  private static final String HTTP_PROXY = "httpProxy";
+  private static final String NO_PROXY = "noProxy";
+  private static final String SSL_PROXY = "sslProxy";
+  private static final String SOCKS_PROXY = "socksProxy";
+  private static final String SOCKS_VERSION = "socksVersion";
+  private static final String SOCKS_USERNAME = "socksUsername";
+  private static final String SOCKS_PASSWORD = "socksPassword";
+  private static final String PROXY_AUTOCONFIG_URL = "proxyAutoconfigUrl";
+  private static final String AUTODETECT = "autodetect";
+
   private ProxyType proxyType = ProxyType.UNSPECIFIED;
   private boolean autodetect = false;
   private String ftpProxy;
@@ -65,83 +80,70 @@ public class Proxy {
   }
 
   public Proxy(Map<String, ?> raw) {
-    if (raw.containsKey("proxyType") && raw.get("proxyType") != null) {
-      setProxyType(ProxyType.valueOf(((String) raw.get("proxyType")).toUpperCase()));
-    }
-    if (raw.containsKey("ftpProxy") && raw.get("ftpProxy") != null) {
-      setFtpProxy((String) raw.get("ftpProxy"));
-    }
-    if (raw.containsKey("httpProxy") && raw.get("httpProxy") != null) {
-      setHttpProxy((String) raw.get("httpProxy"));
-    }
-    if (raw.containsKey("noProxy") && raw.get("noProxy") != null) {
-      Object rawData = raw.get("noProxy");
+    Map<String, Consumer<Object>> setters = new HashMap<>();
+    setters.put(PROXY_TYPE, value -> setProxyType(ProxyType.valueOf(((String) value).toUpperCase())));
+    setters.put(FTP_PROXY, value -> setFtpProxy((String) value));
+    setters.put(HTTP_PROXY, value -> setHttpProxy((String) value));
+    setters.put(NO_PROXY, rawData -> {
       if (rawData instanceof List) {
         // w3c
-        setNoProxy(String.join(", ", (List) rawData));
+        setNoProxy(((List<?>) rawData).stream()
+                     .map(Object::toString)
+                     .collect(Collectors.joining(", ")));
       } else {
         // legacy
         setNoProxy((String) rawData);
       }
-    }
-    if (raw.containsKey("sslProxy") && raw.get("sslProxy") != null) {
-      setSslProxy((String) raw.get("sslProxy"));
-    }
-    if (raw.containsKey("socksProxy") && raw.get("socksProxy") != null) {
-      setSocksProxy((String) raw.get("socksProxy"));
-    }
-    if (raw.containsKey("socksVersion") && raw.get("socksVersion") != null) {
-      setSocksVersion(((Number) raw.get("socksVersion")).intValue());
-    }
-    if (raw.containsKey("socksUsername") && raw.get("socksUsername") != null) {
-      setSocksUsername((String) raw.get("socksUsername"));
-    }
-    if (raw.containsKey("socksPassword") && raw.get("socksPassword") != null) {
-      setSocksPassword((String) raw.get("socksPassword"));
-    }
-    if (raw.containsKey("proxyAutoconfigUrl") && raw.get("proxyAutoconfigUrl") != null) {
-      setProxyAutoconfigUrl((String) raw.get("proxyAutoconfigUrl"));
-    }
-    if (raw.containsKey("autodetect") && raw.get("autodetect") != null) {
-      setAutodetect((Boolean) raw.get("autodetect"));
-    }
+    });
+    setters.put(SSL_PROXY, value -> setSslProxy((String) value));
+    setters.put(SOCKS_PROXY, value -> setSocksProxy((String) value));
+    setters.put(SOCKS_VERSION, value -> setSocksVersion(((Number) value).intValue()));
+    setters.put(SOCKS_USERNAME, value -> setSocksUsername((String) value));
+    setters.put(SOCKS_PASSWORD, value -> setSocksPassword((String) value));
+    setters.put(PROXY_AUTOCONFIG_URL, value -> setProxyAutoconfigUrl((String) value));
+    setters.put(AUTODETECT, value -> setAutodetect((Boolean) value));
+    raw.forEach((key, value) -> {
+      if (key != null && value != null) {
+        setters.get(key).accept(value);
+      }
+    });
   }
 
   public Map<String, Object> toJson() {
     Map<String, Object> m = new HashMap<>();
 
     if (proxyType != ProxyType.UNSPECIFIED) {
-      m.put("proxyType", proxyType.toString());
+      m.put(PROXY_TYPE, proxyType.toString());
     }
     if (ftpProxy != null) {
-      m.put("ftpProxy", ftpProxy);
+      m.put(FTP_PROXY, ftpProxy);
     }
     if (httpProxy != null) {
-      m.put("httpProxy", httpProxy);
+      m.put(HTTP_PROXY, httpProxy);
     }
     if (noProxy != null) {
-      m.put("noProxy", Arrays.asList(noProxy.split(",\\s*")));
+      m.put(NO_PROXY, Arrays.asList(noProxy.split(",\\s*")));
     }
     if (sslProxy != null) {
-      m.put("sslProxy", sslProxy);
+      m.put(SSL_PROXY, sslProxy);
     }
     if (socksProxy != null) {
-      m.put("socksProxy", socksProxy);
+      m.put(SOCKS_PROXY, socksProxy);
     }
     if (socksVersion != null) {
-      m.put("socksVersion", socksVersion);
+      m.put(SOCKS_VERSION, socksVersion);
     }
     if (socksUsername != null) {
-      m.put("socksUsername", socksUsername);
+      m.put(SOCKS_USERNAME, socksUsername);
     }
     if (socksPassword != null) {
-      m.put("socksPassword", socksPassword);
+      m.put(SOCKS_PASSWORD, socksPassword);
     }
     if (proxyAutoconfigUrl != null) {
-      m.put("proxyAutoconfigUrl", proxyAutoconfigUrl);
+      m.put(PROXY_AUTOCONFIG_URL, proxyAutoconfigUrl);
     }
     if (autodetect) {
-      m.put("autodetect", true);
+      m.put(AUTODETECT, true);
     }
     return m;
   }
@@ -402,8 +404,8 @@ public class Proxy {
   private void verifyProxyTypeCompatibility(ProxyType compatibleProxy) {
     if (proxyType != ProxyType.UNSPECIFIED && proxyType != compatibleProxy) {
       throw new IllegalStateException(String.format(
-          "Specified proxy type (%s) not compatible with current setting (%s)",
-          compatibleProxy, proxyType));
+        "Specified proxy type (%s) not compatible with current setting (%s)",
+        compatibleProxy, proxyType));
     }
   }
 
@@ -442,22 +444,14 @@ public class Proxy {
         break;
     }
 
-    String p = getFtpProxy();
-    if (p != null) {
-      builder.append(", ftp=").append(p);
-    }
-    p = getHttpProxy();
-    if (p != null) {
-      builder.append(", http=").append(p);
-    }
-    p = getSocksProxy();
-    if (p != null) {
-      builder.append(", socks=").append(p);
-    }
-    p = getSslProxy();
-    if (p != null) {
-      builder.append(", ssl=").append(p);
-    }
+    Optional.ofNullable(getFtpProxy())
+      .ifPresent(p -> builder.append(", ftp=").append(p));
+    Optional.ofNullable(getHttpProxy())
+      .ifPresent(p -> builder.append(", http=").append(p));
+    Optional.ofNullable(getSocksProxy())
+      .ifPresent(p -> builder.append(", socks=").append(p));
+    Optional.ofNullable(getSslProxy())
+      .ifPresent(p -> builder.append(", ssl=").append(p));
 
     builder.append(")");
     return builder.toString();
@@ -488,16 +482,16 @@ public class Proxy {
   @Override
   public int hashCode() {
     return Objects.hash(
-        getProxyType(),
-        isAutodetect(),
-        getFtpProxy(),
-        getHttpProxy(),
-        getNoProxy(),
-        getSslProxy(),
-        getSocksProxy(),
-        getSocksVersion(),
-        getSocksUsername(),
-        getSocksPassword(),
-        getProxyAutoconfigUrl());
+      getProxyType(),
+      isAutodetect(),
+      getFtpProxy(),
+      getHttpProxy(),
+      getNoProxy(),
+      getSslProxy(),
+      getSocksProxy(),
+      getSocksVersion(),
+      getSocksUsername(),
+      getSocksPassword(),
+      getProxyAutoconfigUrl());
   }
 }

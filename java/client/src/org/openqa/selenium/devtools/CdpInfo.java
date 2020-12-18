@@ -27,7 +27,7 @@ public abstract class CdpInfo implements Comparable<CdpInfo> {
   private final int majorVersion;
   private final Function<DevTools, Domains> domains;
 
-  public CdpInfo(int majorVersion, Function<DevTools, Domains> domains) {
+  protected CdpInfo(int majorVersion, Function<DevTools, Domains> domains) {
     this.majorVersion = majorVersion;
     this.domains = Require.nonNull("Domain supplier", domains);
   }

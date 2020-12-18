@@ -61,8 +61,8 @@ ruby_library(name = "chrome",
 
 ruby_library(name = "remote",
   srcs = [
-      "lib/selenium/webdriver/remote/**/*.rb",
-      "lib/selenium/webdriver/remote.rb"
+    "lib/selenium/webdriver/remote/**/*.rb",
+    "lib/selenium/webdriver/remote.rb"
   ],
   resources = [
     {"//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar": "rb/selenium_server_deploy.jar"}

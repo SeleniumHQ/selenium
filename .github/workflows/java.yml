@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -38,11 +36,6 @@ jobs:
         uses: ./.github/actions/bazel
         with:
           command: build grid
-      - name: Sonar Scanner
-        uses: ./.github/actions/sonar-cloud
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   small_tests:
     needs: build
@@ -50,6 +43,8 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
@@ -70,6 +65,11 @@ jobs:
         uses: ./.github/actions/bazel-test
         with:
           query: attr(size, small, tests(//java/...)) except attr(tags, lint, tests(//java/...))
+      - name: Sonar Scanner
+        uses: ./.github/actions/sonar-cloud
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   lint:
     needs: small_tests

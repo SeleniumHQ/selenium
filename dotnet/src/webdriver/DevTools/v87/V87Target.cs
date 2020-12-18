@@ -1,4 +1,4 @@
-// <copyright file="V86Target.cs" company="WebDriver Committers">
+// <copyright file="V87Target.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -26,14 +26,14 @@ using OpenQA.Selenium.DevTools.V87.Target;
 namespace OpenQA.Selenium.DevTools.V87
 {
     /// <summary>
-    /// Class providing functionality for manipulating targets for version 86 of the DevTools Protocol
+    /// Class providing functionality for manipulating targets for version 87 of the DevTools Protocol
     /// </summary>
     public class V87Target : DevTools.Target
     {
         private TargetAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V86Target"/> class.
+        /// Initializes a new instance of the <see cref="V87Target"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Target domain.</param>
         public V87Target(TargetAdapter adapter)

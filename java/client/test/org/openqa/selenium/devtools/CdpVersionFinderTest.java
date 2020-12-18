@@ -20,7 +20,9 @@ package org.openqa.selenium.devtools;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +30,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+@Category(UnitTests.class)
 public class CdpVersionFinderTest {
 
   private Map<String, Object> chrome85;

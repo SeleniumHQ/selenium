@@ -15,15 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
 import logging
-import platform
 import socket
 import string
 
+import os
 import certifi
 import urllib3
-import os
+import platform
+
+from base64 import b64encode
 
 try:
     from urllib import parse
@@ -112,7 +113,7 @@ class RemoteConnection(object):
         }
 
         if parsed_url.username:
-            base64string = base64.b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
+            base64string = b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
             headers.update({
                 'Authorization': 'Basic {}'.format(base64string.decode())
             })
@@ -138,11 +139,11 @@ class RemoteConnection(object):
             pool_manager_init_args['cert_reqs'] = 'CERT_REQUIRED'
             pool_manager_init_args['ca_certs'] = self._ca_certs
 
-        return urllib3.PoolManager(**pool_manager_init_args) if self._proxy_url is None else \
+        return urllib3.PoolManager(**pool_manager_init_args) if not self._proxy_url else \
             urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
 
     def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None, ignore_proxy=False):
-        if resolve_ip is not None:
+        if resolve_ip:
             import warnings
             warnings.warn(
                 "'resolve_ip' option removed; ip addresses are now always resolved by urllib3.",
@@ -366,7 +367,9 @@ class RemoteConnection(object):
             Command.FULLSCREEN_WINDOW:
                 ('POST', '/session/$sessionId/window/fullscreen'),
             Command.MINIMIZE_WINDOW:
-                ('POST', '/session/$sessionId/window/minimize')
+                ('POST', '/session/$sessionId/window/minimize'),
+            Command.PRINT_PAGE:
+                ('POST', '/session/$sessionId/print')
         }
 
     def execute(self, command, params):
@@ -387,7 +390,7 @@ class RemoteConnection(object):
         if hasattr(self, 'w3c') and self.w3c and isinstance(params, dict) and 'sessionId' in params:
             del params['sessionId']
         data = utils.dump_json(params)
-        url = '%s%s' % (self._url, path)
+        url = f"{self._url}{path}"
         return self._request(command_info[0], url, body=data)
 
     def _request(self, method, url, body=None):
@@ -402,8 +405,7 @@ class RemoteConnection(object):
         :Returns:
           A dictionary with the server's parsed JSON response.
         """
-        LOGGER.debug('%s %s %s' % (method, url, body))
-
+        LOGGER.debug(f"{method} {url} {body}")
         parsed_url = parse.urlparse(url)
         headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
         resp = None
@@ -412,7 +414,6 @@ class RemoteConnection(object):
 
         if self.keep_alive:
             resp = self._conn.request(method, url, body=body, headers=headers)
-
             statuscode = resp.status
         else:
             conn = self._get_connection_manager()
@@ -433,7 +434,7 @@ class RemoteConnection(object):
             if 399 < statuscode <= 500:
                 return {'status': statuscode, 'value': data}
             content_type = []
-            if resp.getheader('Content-Type') is not None:
+            if resp.getheader('Content-Type'):
                 content_type = resp.getheader('Content-Type').split(';')
             if not any([x.startswith('image/png') for x in content_type]):
 

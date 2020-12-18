@@ -20,10 +20,13 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class HowTest {
 
   private static final String VALUE = "value";

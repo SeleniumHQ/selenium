@@ -29,7 +29,10 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class RouteTest {
 
   @Test

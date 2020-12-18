@@ -31,6 +31,7 @@ import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.api.trace.propagation.HttpTraceContext;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -42,6 +43,7 @@ import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +65,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
+@Category(UnitTests.class)
 public class TracerTest {
 
   @Test

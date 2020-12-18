@@ -1,4 +1,4 @@
-// <copyright file="V86Domains.cs" company="WebDriver Committers">
+// <copyright file="V87Domains.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -22,7 +22,7 @@ using System.Text;
 namespace OpenQA.Selenium.DevTools.V87
 {
     /// <summary>
-    /// Class containing the domain implementation for version 86 of the DevTools Protocol.
+    /// Class containing the domain implementation for version 87 of the DevTools Protocol.
     /// </summary>
     public class V87Domains : DevToolsDomains
     {

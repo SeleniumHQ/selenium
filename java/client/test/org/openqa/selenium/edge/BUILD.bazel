@@ -16,6 +16,7 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/edge",
         "//java/client/src/org/openqa/selenium/edgehtml",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),

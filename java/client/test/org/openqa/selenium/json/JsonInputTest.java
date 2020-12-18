@@ -32,10 +32,13 @@ import static org.openqa.selenium.json.JsonType.STRING;
 import static org.openqa.selenium.json.PropertySetting.BY_NAME;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.StringReader;
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class JsonInputTest {
 
   @Test

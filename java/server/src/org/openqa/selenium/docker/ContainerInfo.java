@@ -19,16 +19,20 @@ package org.openqa.selenium.docker;
 
 import org.openqa.selenium.internal.Require;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ContainerInfo {
 
   private final String ip;
   private final ContainerId id;
+  private final List<Map<String, Object>> mountedVolumes;
 
-  public ContainerInfo(ContainerId id, String ip) {
+  public ContainerInfo(ContainerId id, String ip, List<Map<String, Object>> mountedVolumes) {
     this.ip = Require.nonNull("Container ip address", ip);
     this.id = Require.nonNull("Container id", id);
+    this.mountedVolumes = Require.nonNull("Mounted volumes", mountedVolumes);
   }
 
   public String getIp() {
@@ -37,6 +41,10 @@ public class ContainerInfo {
 
   public ContainerId getId() {
     return id;
+  }
+
+  public List<Map<String, Object>> getMountedVolumes() {
+    return mountedVolumes;
   }
 
   @Override

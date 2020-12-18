@@ -176,7 +176,6 @@ def java_selenium_test_suite(
         size = "large",
         srcs = [":%s-suite-src" % name],
         deps = deps + ["%s-suite-lib" % name],
-        shard_count = len(srcs),
         data = data,
         jvm_flags = jvm_flags,
         tags = tags

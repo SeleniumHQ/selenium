@@ -31,17 +31,15 @@ module Selenium
 
         RESERVED_KEYWORDS = %w[end].freeze
 
-        def initialize
-          @browser_protocol = JSON.parse(File.read(BROWSER_PROTOCOL_PATH), symbolize_names: true)
-          @js_protocol = JSON.parse(File.read(JS_PROTOCOL_PATH), symbolize_names: true)
-          @template = ERB.new(File.read(TEMPLATE_PATH))
-        end
-
         def call(output_dir:, version:, **)
+          @template = ERB.new(File.read(TEMPLATE_PATH))
           @output_dir = output_dir
           @version = version
-          @browser_protocol[:domains].each(&method(:process_domain))
-          @js_protocol[:domains].each(&method(:process_domain))
+
+          browser_protocol = JSON.parse(File.read(BROWSER_PROTOCOL_PATH), symbolize_names: true)
+          js_protocol = JSON.parse(File.read(JS_PROTOCOL_PATH), symbolize_names: true)
+          browser_protocol[:domains].each(&method(:process_domain))
+          js_protocol[:domains].each(&method(:process_domain))
         end
 
         def process_domain(domain)
@@ -51,7 +49,8 @@ module Selenium
         end
 
         def snake_case(string)
-          name = string.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          name = string.gsub('JavaScript', 'Javascript')
+                       .gsub(/([A-Z]+)([A-Z][a-z]{2,})/, '\1_\2')
                        .gsub(/([a-z\d])([A-Z])/, '\1_\2')
                        .downcase
           # Certain CDP parameters conflict with Ruby keywords

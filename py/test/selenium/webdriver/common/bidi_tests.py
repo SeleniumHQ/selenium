@@ -18,7 +18,6 @@ from selenium.webdriver.common.by import By
 import pytest
 
 
-@pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 async def test_check_console_messages(driver, pages):
     pages.load("javascriptPage.html")
@@ -28,7 +27,6 @@ async def test_check_console_messages(driver, pages):
     assert messages["message"] == "I love cheese"
 
 
-@pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 async def test_check_error_console_messages(driver, pages):
     pages.load("javascriptPage.html")
