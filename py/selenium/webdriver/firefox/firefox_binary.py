@@ -43,6 +43,7 @@ class FirefoxBinary(object):
         # a while the pipe would fill up and Firefox would freeze.
         self._log_file = log_file or open(os.devnull, "wb")
         self.command_line = None
+        self.platform = system().lower()
         if not self._start_cmd:
             self._start_cmd = self._get_firefox_start_cmd()
         if not self._start_cmd.strip():
@@ -59,7 +60,6 @@ class FirefoxBinary(object):
         self._firefox_env["MOZ_CRASHREPORTER_DISABLE"] = "1"
         self._firefox_env["MOZ_NO_REMOTE"] = "1"
         self._firefox_env["NO_EM_RESTART"] = "1"
-        self.platform = system().lower()
 
     def add_command_line_options(self, *args):
         self.command_line = args
@@ -149,12 +149,12 @@ class FirefoxBinary(object):
     def _get_firefox_start_cmd(self):
         """Return the command to start firefox."""
         start_cmd = ""
-        if self.platform == "darwin": #small darwin due to lower() in self.platform
+        if self.platform == "darwin":  # small darwin due to lower() in self.platform
             start_cmd = "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
             # fallback to homebrew installation for mac users
             if not os.path.exists(start_cmd):
                 start_cmd = os.path.expanduser("~") + start_cmd
-        elif self.platform == "windows": #same
+        elif self.platform == "windows":  # same
             start_cmd = (self._find_exe_in_registry() or self._default_windows_location())
         elif self.platform == 'java' and os._name == 'nt':
             start_cmd = self._default_windows_location()
