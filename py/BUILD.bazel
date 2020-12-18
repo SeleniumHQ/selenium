@@ -215,7 +215,9 @@ py_test_suite(
         "test/selenium/webdriver/chrome/**/*.py",
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
-    ]),
+        ],
+        exclude=["test/selenium/webdriver/common/print_pdf_tests.py"]
+    ),
     args = [
         "--instafail",
         "--driver=Chrome",
@@ -224,6 +226,46 @@ py_test_suite(
         "no-sandbox",
     ],
     deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("zipp"),
+    ],
+)
+
+py_test_suite(
+    name="test-chrome-headless",
+    size="large",
+    srcs=glob([
+        "test/selenium/webdriver/chrome/**/*.py",
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+        ],
+    ),
+    args=[
+        "--instafail",
+        "--driver=Chrome",
+        "--headless=true"
+    ],
+    tags=[
+        "no-sandbox",
+    ],
+    deps=[
         ":init-tree",
         ":selenium",
         ":webserver",

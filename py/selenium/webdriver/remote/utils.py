@@ -47,7 +47,7 @@ def unzip_to_temp_dir(zip_file_name):
 
     zf = zipfile.ZipFile(zip_file_name)
 
-    if zf.testzip() is not None:
+    if zf.testzip():
         return None
 
     # Unzip the files into a temporary directory

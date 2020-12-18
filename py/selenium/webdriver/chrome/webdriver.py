@@ -58,7 +58,7 @@ class WebDriver(ChromiumDriver):
                           DeprecationWarning, stacklevel=2)
             options = chrome_options
 
-        if service is None:
+        if not service:
             service = Service(executable_path, port, service_args, service_log_path)
 
         super(WebDriver, self).__init__(DesiredCapabilities.CHROME['browserName'], "goog",

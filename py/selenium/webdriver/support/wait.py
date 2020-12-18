@@ -49,7 +49,7 @@ class WebDriverWait(object):
         if self._poll == 0:
             self._poll = POLL_FREQUENCY
         exceptions = list(IGNORED_EXCEPTIONS)
-        if ignored_exceptions is not None:
+        if ignored_exceptions:
             try:
                 exceptions.extend(iter(ignored_exceptions))
             except TypeError:  # ignored_exceptions is not iterable

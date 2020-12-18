@@ -1,4 +1,4 @@
-// <copyright file="ResponseReceivedEventArgs.cs" company="WebDriver Committers">
+// <copyright file="ICredentials.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,23 +16,13 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-
-namespace OpenQA.Selenium.DevTools
+namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Event arguments present when the ResponseReceived event is raised.
+    /// Marker interface describing a set of credentials to be used with network requests.
+    /// This allows the ability to expand beyond simple user name/password security mechanisms.
     /// </summary>
-    public class ResponseReceivedEventArgs : EventArgs
+    public interface ICredentials
     {
-        /// <summary>
-        /// Gets the request ID.
-        /// </summary>
-        public string RequestId { get; internal set; }
-
-        /// <summary>
-        /// Gets the <see cref="HttpRequestData"/> object for this request.
-        /// </summary>
-        public HttpResponseData ResponseData { get; internal set; }
     }
 }

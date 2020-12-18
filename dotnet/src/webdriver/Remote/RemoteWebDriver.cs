@@ -77,6 +77,7 @@ namespace OpenQA.Selenium.Remote
         private IApplicationCache appCache;
         private ILocationContext locationContext;
         private IFileDetector fileDetector = new DefaultFileDetector();
+        private RemoteNetwork network;
         private RemoteWebElementFactory elementFactory;
 
         /// <summary>
@@ -139,6 +140,7 @@ namespace OpenQA.Selenium.Remote
             this.StartClient();
             this.StartSession(desiredCapabilities);
             this.elementFactory = new RemoteWebElementFactory(this);
+            this.network = new RemoteNetwork(this);
 
             if (this.capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
             {
@@ -387,6 +389,11 @@ namespace OpenQA.Selenium.Remote
         public ICommandExecutor CommandExecutor
         {
             get { return this.executor; }
+        }
+
+        internal RemoteNetwork Network
+        {
+            get { return this.network; }
         }
 
         /// <summary>

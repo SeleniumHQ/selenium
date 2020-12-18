@@ -88,7 +88,14 @@ public class BaseServerOptions {
     int port = getPort();
 
     try {
-      return new URI((isSecure() || isSelfSigned()) ? "https" : "http", null, host, port, null, null, null);
+      return new URI(
+        (isSecure() || isSelfSigned()) ? "https" : "http",
+        null,
+        host,
+        port,
+        null,
+        null,
+        null);
     } catch (URISyntaxException e) {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
     }
@@ -99,7 +106,8 @@ public class BaseServerOptions {
   }
 
   public boolean isSecure() {
-    return config.get(SERVER_SECTION, "https-private-key").isPresent() && config.get(SERVER_SECTION, "https-certificate").isPresent();
+    return config.get(SERVER_SECTION, "https-private-key").isPresent()
+           && config.get(SERVER_SECTION, "https-certificate").isPresent();
   }
 
   public File getPrivateKey() {
@@ -107,15 +115,19 @@ public class BaseServerOptions {
     if (privateKey != null) {
       return new File(privateKey);
     }
-    throw new ConfigException("you must provide a private key via --https-private-key when using --https");
+    throw new ConfigException("Please provide a private key via --https-private-key " +
+                              "when using --https");
   }
 
   public File getCertificate() {
-    String certificatePath = config.get(SERVER_SECTION, "https-certificate").orElse(null);
+    String certificatePath = config
+      .get(SERVER_SECTION, "https-certificate")
+      .orElse(null);
     if (certificatePath != null) {
       return new File(certificatePath);
     }
-    throw new ConfigException("you must provide a certificate via --https-certificate when using --https");
+    throw new ConfigException("Please provide a certificate via --https-certificate " +
+                              "when using --https");
   }
 
   public boolean isSelfSigned() {
