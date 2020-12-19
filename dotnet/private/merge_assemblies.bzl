@@ -40,6 +40,7 @@ def _merged_assembly_impl(ctx):
 
     ctx.actions.run(
         executable = ctx.executable.merge_tool,
+        mnemonic = "MergeAssembly",
         progress_message = "Merging assembiles into {}".format(output_assembly.path),
         arguments = args,
         inputs = ctx.attr.src_assembly.files,

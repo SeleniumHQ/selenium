@@ -15,10 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 import pytest
 
 
-@pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 async def test_check_console_messages(driver, pages):
     pages.load("javascriptPage.html")
@@ -28,7 +30,6 @@ async def test_check_console_messages(driver, pages):
     assert messages["message"] == "I love cheese"
 
 
-@pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 async def test_check_error_console_messages(driver, pages):
     pages.load("javascriptPage.html")
@@ -47,3 +48,16 @@ async def test_collect_js_exceptions(driver, pages):
         driver.find_element(By.ID, "throwing-mouseover").click()
     assert exceptions is not None
     assert exceptions.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_safari
+async def test_collect_log_mutations(driver, pages):
+    async with driver.log_mutation_events() as event:
+        pages.load("dynamic.html")
+        driver.find_element(By.ID, "reveal").click()
+        WebDriverWait(driver, 5).until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
+
+    assert event["attribute_name"] == "style"
+    assert event["current_value"] == ""
+    assert event["old_value"] == "display:none;"

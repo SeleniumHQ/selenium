@@ -19,8 +19,8 @@ import uuid
 
 class ScriptKey:
 
-    def __init__(self):
-        self._id = uuid.uuid4()
+    def __init__(self, id=None):
+        self._id = id or uuid.uuid4()
 
     @property
     def id(self):

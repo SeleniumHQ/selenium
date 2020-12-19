@@ -20,17 +20,8 @@ package org.openqa.selenium.grid.docker;
 import org.openqa.selenium.remote.SessionId;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DockerAssetsPath {
-
-  private static final Logger LOG = Logger.getLogger(DockerAssetsPath.class.getName());
 
   private final String hostPath;
   private final String containerPath;

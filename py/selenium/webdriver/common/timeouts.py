@@ -18,7 +18,7 @@
 
 class Timeouts(object):
 
-    def __init__(self, implicit_wait=None, page_load=None, script=None):
+    def __init__(self, implicit_wait=0, page_load=0, script=0):
         """
         Create a new Timeout object.
 
@@ -77,19 +77,18 @@ class Timeouts(object):
         self._script = self._convert(_script)
 
     def _convert(self, timeout):
-        if timeout is not None:
-            if isinstance(timeout, (int, float)):
-                return int(float(timeout) * 1000)
-            else:
-                raise TypeError("Timeouts can only be an int or a float")
+        if isinstance(timeout, (int, float)):
+            return int(float(timeout) * 1000)
+        else:
+            raise TypeError("Timeouts can only be an int or a float")
 
     def _to_json(self):
         timeouts = {}
-        if self._implicit_wait is not None:
+        if self._implicit_wait:
             timeouts["implicit"] = self._implicit_wait
-        if self._page_load is not None:
+        if self._page_load:
             timeouts["pageLoad"] = self._page_load
-        if self._script is not None:
+        if self._script:
             timeouts["script"] = self._script
 
         return timeouts

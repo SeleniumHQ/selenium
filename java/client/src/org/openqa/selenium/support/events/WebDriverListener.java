@@ -39,7 +39,7 @@ import java.util.Set;
  * Classes that implement this interface are intended to be used with {@link EventFiringDecorator},
  * read documentation for this class to find detailed usage description.
  * <p>
- * This interface provides empty default implementation for all methods that does nothing.
+ * This interface provides empty default implementation for all methods that do nothing.
  */
 @Beta
 public interface WebDriverListener {
@@ -47,14 +47,14 @@ public interface WebDriverListener {
   // Global
 
   default void beforeAnyCall(Object target, Method method, Object[] args)  {}
-  default void afterAnyCall(Object target, Method method, Object result, Object[] args)  {}
+  default void afterAnyCall(Object target, Method method, Object[] args, Object result)  {}
 
-  default void onError(Object target, Method method, InvocationTargetException e, Object[] args) {}
+  default void onError(Object target, Method method, Object[] args, InvocationTargetException e) {}
 
   // WebDriver
 
   default void beforeAnyWebDriverCall(WebDriver driver, Method method, Object[] args)  {}
-  default void afterAnyWebDriverCall(WebDriver driver, Method method, Object result, Object[] args)  {}
+  default void afterAnyWebDriverCall(WebDriver driver, Method method, Object[] args, Object result)  {}
 
   default void beforeGet(WebDriver driver, String url) {}
   default void afterGet(WebDriver driver, String url) {}
@@ -63,16 +63,16 @@ public interface WebDriverListener {
   default void afterGetCurrentUrl(String result, WebDriver driver) {}
 
   default void beforeGetTitle(WebDriver driver) {}
-  default void afterGetTitle(String result, WebDriver driver) {}
+  default void afterGetTitle(WebDriver driver, String result) {}
 
   default void beforeFindElement(WebDriver driver, By locator) {}
-  default void afterFindElement(WebElement result, WebDriver driver, By locator) {}
+  default void afterFindElement(WebDriver driver, By locator, WebElement result) {}
 
   default void beforeFindElements(WebDriver driver, By locator) {}
-  default void afterFindElements(List<WebElement> result, WebDriver driver, By locator) {}
+  default void afterFindElements(WebDriver driver, By locator, List<WebElement> result) {}
 
   default void beforeGetPageSource(WebDriver driver) {}
-  default void afterGetPageSource(String result, WebDriver driver) {}
+  default void afterGetPageSource(WebDriver driver, String result) {}
 
   default void beforeClose(WebDriver driver) {}
   default void afterClose(WebDriver driver) {}
@@ -81,16 +81,16 @@ public interface WebDriverListener {
   default void afterQuit(WebDriver driver) {}
 
   default void beforeGetWindowHandles(WebDriver driver) {}
-  default void afterGetWindowHandles(Set<String> result, WebDriver driver) {}
+  default void afterGetWindowHandles(WebDriver driver, Set<String> result) {}
 
   default void beforeGetWindowHandle(WebDriver driver) {}
-  default void afterGetWindowHandle(String result, WebDriver driver) {}
+  default void afterGetWindowHandle(WebDriver driver, String result) {}
 
-  default void beforeExecuteScript(WebDriver driver, String script, Object... args) {}
-  default void afterExecuteScript(Object result, WebDriver driver, String script, Object... args) {}
+  default void beforeExecuteScript(WebDriver driver, String script, Object[] args) {}
+  default void afterExecuteScript(WebDriver driver, String script, Object[] args, Object result) {}
 
-  default void beforeExecuteAsyncScript(WebDriver driver, String script, Object... args) {}
-  default void afterExecuteAsyncScript(Object result, WebDriver driver, String script, Object... args) {}
+  default void beforeExecuteAsyncScript(WebDriver driver, String script, Object[] args) {}
+  default void afterExecuteAsyncScript(WebDriver driver, String script, Object[] args, Object result) {}
 
   default void beforePerform(WebDriver driver, Collection<Sequence> actions) {}
   default void afterPerform(WebDriver driver, Collection<Sequence> actions) {}
@@ -101,7 +101,7 @@ public interface WebDriverListener {
   // WebElement
 
   default void beforeAnyWebElementCall(WebElement element, Method method, Object[] args)  {}
-  default void afterAnyWebElementCall(WebElement element, Method method, Object result, Object[] args)  {}
+  default void afterAnyWebElementCall(WebElement element, Method method, Object[] args, Object result)  {}
 
   default void beforeClick(WebElement element) {}
   default void afterClick(WebElement element) {}
@@ -116,42 +116,42 @@ public interface WebDriverListener {
   default void afterClear(WebElement element) {}
 
   default void beforeGetTagName(WebElement element) {}
-  default void afterGetTagName(String result, WebElement element) {}
+  default void afterGetTagName(WebElement element, String result) {}
 
   default void beforeGetAttribute(WebElement element, String name) {}
-  default void afterGetAttribute(String result, WebElement element, String name) {}
+  default void afterGetAttribute(WebElement element, String name, String result) {}
 
   default void beforeIsSelected(WebElement element) {}
-  default void afterIsSelected(boolean result, WebElement element) {}
+  default void afterIsSelected(WebElement element, boolean result) {}
 
   default void beforeIsEnabled(WebElement element) {}
-  default void afterIsEnabled(boolean result, WebElement element) {}
+  default void afterIsEnabled(WebElement element, boolean result) {}
 
   default void beforeGetText(WebElement element) {}
-  default void afterGetText(String result, WebElement element) {}
+  default void afterGetText(WebElement element, String result) {}
 
   default void beforeFindElement(WebElement element, By locator) {}
-  default void afterFindElement(WebElement result, WebElement element, By locator) {}
+  default void afterFindElement(WebElement element, By locator, WebElement result) {}
 
   default void beforeFindElements(WebElement element, By locator) {}
-  default void afterFindElements(List<WebElement> result, WebElement element, By locator) {}
+  default void afterFindElements(WebElement element, By locator, List<WebElement> result) {}
 
   default void beforeIsDisplayed(WebElement element) {}
-  default void afterIsDisplayed(boolean result, WebElement element) {}
+  default void afterIsDisplayed(WebElement element, boolean result) {}
 
   default void beforeGetLocation(WebElement element) {}
-  default void afterGetLocation(Point result, WebElement element) {}
+  default void afterGetLocation(WebElement element, Point result) {}
 
   default void beforeGetSize(WebElement element) {}
-  default void afterGetSize(Dimension result, WebElement element) {}
+  default void afterGetSize(WebElement element, Dimension result) {}
 
   default void beforeGetCssValue(WebElement element, String propertyName) {}
-  default void afterGetCssValue(String result, WebElement element, String propertyName) {}
+  default void afterGetCssValue(WebElement element, String propertyName, String result) {}
 
   // Navigation
 
   default void beforeAnyNavigationCall(WebDriver.Navigation navigation, Method method, Object[] args)  {}
-  default void afterAnyNavigationCall(WebDriver.Navigation navigation, Method method, Object result, Object[] args)  {}
+  default void afterAnyNavigationCall(WebDriver.Navigation navigation, Method method, Object[] args, Object result)  {}
 
   default void beforeTo(WebDriver.Navigation navigation, String url) {}
   default void afterTo(WebDriver.Navigation navigation, String url) {}
@@ -171,7 +171,7 @@ public interface WebDriverListener {
   // Alert
 
   default void beforeAnyAlertCall(Alert alert, Method method, Object[] args)  {}
-  default void afterAnyAlertCall(Alert alert, Method method, Object result, Object[] args)  {}
+  default void afterAnyAlertCall(Alert alert, Method method, Object[] args, Object result)  {}
 
   default void beforeAccept(Alert alert) {}
   default void afterAccept(Alert alert) {}
@@ -180,7 +180,7 @@ public interface WebDriverListener {
   default void afterDismiss(Alert alert) {}
 
   default void beforeGetText(Alert alert) {}
-  default void afterGetText(String result, Alert alert) {}
+  default void afterGetText(Alert alert, String result) {}
 
   default void beforeSendKeys(Alert alert, String text) {}
   default void afterSendKeys(Alert alert, String text) {}
@@ -188,7 +188,7 @@ public interface WebDriverListener {
   // Options
 
   default void beforeAnyOptionsCall(WebDriver.Options options, Method method, Object[] args)  {}
-  default void afterAnyOptionsCall(WebDriver.Options options, Method method, Object result, Object[] args)  {}
+  default void afterAnyOptionsCall(WebDriver.Options options, Method method, Object[] args, Object result)  {}
 
   default void beforeAddCookie(WebDriver.Options options, Cookie cookie) {}
   default void afterAddCookie(WebDriver.Options options, Cookie cookie) {}
@@ -203,15 +203,15 @@ public interface WebDriverListener {
   default void afterDeleteAllCookies(WebDriver.Options options) {}
 
   default void beforeGetCookies(WebDriver.Options options) {}
-  default void afterGetCookies(Set<Cookie> result, WebDriver.Options options) {}
+  default void afterGetCookies(WebDriver.Options options, Set<Cookie> result) {}
 
   default void beforeGetCookieNamed(WebDriver.Options options, String name) {}
-  default void afterGetCookieNamed(Cookie result, WebDriver.Options options, String name) {}
+  default void afterGetCookieNamed(WebDriver.Options options, String name, Cookie result) {}
 
   // Timeouts
 
   default void beforeAnyTimeoutsCall(WebDriver.Timeouts timeouts, Method method, Object[] args)  {}
-  default void afterAnyTimeoutsCall(WebDriver.Timeouts timeouts, Method method, Object result, Object[] args)  {}
+  default void afterAnyTimeoutsCall(WebDriver.Timeouts timeouts, Method method, Object[] args, Object result)  {}
 
   default void beforeImplicitlyWait(WebDriver.Timeouts timeouts, Duration duration) {}
   default void afterImplicitlyWait(WebDriver.Timeouts timeouts, Duration duration) {}
@@ -225,16 +225,16 @@ public interface WebDriverListener {
   // Window
 
   default void beforeAnyWindowCall(WebDriver.Window window, Method method, Object[] args)  {}
-  default void afterAnyWindowCall(WebDriver.Window window, Method method, Object result, Object[] args)  {}
+  default void afterAnyWindowCall(WebDriver.Window window, Method method, Object[] args, Object result)  {}
 
   default void beforeGetSize(WebDriver.Window window) {}
-  default void afterGetSize(Dimension result, WebDriver.Window window) {}
+  default void afterGetSize(WebDriver.Window window, Dimension result) {}
 
   default void beforeSetSize(WebDriver.Window window, Dimension size) {}
   default void afterSetSize(WebDriver.Window window, Dimension size) {}
 
   default void beforeGetPosition(WebDriver.Window window) {}
-  default void afterGetPosition(Point result, WebDriver.Window window) {}
+  default void afterGetPosition(WebDriver.Window window, Point result) {}
 
   default void beforeSetPosition(WebDriver.Window window, Point position) {}
   default void afterSetPosition(WebDriver.Window window, Point position) {}
@@ -244,5 +244,4 @@ public interface WebDriverListener {
 
   default void beforeFullscreen(WebDriver.Window window) {}
   default void afterFullscreen(WebDriver.Window window) {}
-
 }

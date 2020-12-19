@@ -89,6 +89,7 @@ public class RelativeLocator {
       throw new UncheckedIOException(e);
     }
   }
+  private static final int CLOSE_IN_PIXELS = 100;
 
   /**
    * Start of a relative locator, finding elements by tag name.
@@ -169,7 +170,7 @@ public class RelativeLocator {
 
     public RelativeBy near(WebElement element) {
       Require.nonNull("Element to search near", element);
-      return near(element, 50);
+      return near(element, CLOSE_IN_PIXELS);
     }
 
     public RelativeBy near(WebElement element, int atMostDistanceInPixels) {
@@ -181,7 +182,7 @@ public class RelativeLocator {
 
     public RelativeBy near(By locator) {
       Require.nonNull("Locator", locator);
-      return near((Object) locator, 50);
+      return near((Object) locator, CLOSE_IN_PIXELS);
     }
 
     public RelativeBy near(By locator, int atMostDistanceInPixels) {
@@ -199,7 +200,7 @@ public class RelativeLocator {
         root,
         amend(ImmutableMap.of(
           "kind", "near",
-          "args", ImmutableList.of(asAtomLocatorParameter(locator), "distance", atMostDistanceInPixels))));
+          "args", ImmutableList.of(asAtomLocatorParameter(locator), atMostDistanceInPixels))));
     }
 
     @Override

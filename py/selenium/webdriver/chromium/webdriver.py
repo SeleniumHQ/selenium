@@ -48,7 +48,7 @@ class ChromiumDriver(RemoteWebDriver):
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-        if desired_capabilities is not None:
+        if desired_capabilities:
             warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if port != DEFAULT_PORT:
@@ -60,12 +60,12 @@ class ChromiumDriver(RemoteWebDriver):
                           DeprecationWarning, stacklevel=2)
 
         _ignore_proxy = None
-        if options is None:
+        if not options:
             # desired_capabilities stays as passed in
-            if desired_capabilities is None:
+            if not desired_capabilities:
                 desired_capabilities = self.create_options().to_capabilities()
         else:
-            if desired_capabilities is None:
+            if not desired_capabilities:
                 desired_capabilities = options.to_capabilities()
             else:
                 desired_capabilities.update(options.to_capabilities())
@@ -74,7 +74,7 @@ class ChromiumDriver(RemoteWebDriver):
 
         self.vendor_prefix = vendor_prefix
 
-        if service is None:
+        if not service:
             raise AttributeError('service cannot be None')
 
         self.service = service

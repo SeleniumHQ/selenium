@@ -78,13 +78,16 @@ public class NodeOptions {
   }
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
-    /* Danger! Java stereotype ahead! */ Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
+    /* Danger! Java stereotype ahead! */
+    Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
 
     int maxSessions = getMaxSessions();
 
-    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(maxSessions, factoryFactory);
+    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers =
+      discoverDrivers(maxSessions, factoryFactory);
 
-    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories = ImmutableMultimap.builder();
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories =
+      ImmutableMultimap.builder();
 
     addDriverFactoriesFromConfig(sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
@@ -100,7 +103,8 @@ public class NodeOptions {
       Runtime.getRuntime().availableProcessors());
   }
 
-  private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+  private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities,
+    SessionFactory> sessionFactories) {
     config.getAll(NODE_SECTION, "driver-factories").ifPresent(allConfigs -> {
       if (allConfigs.size() % 2 != 0) {
         throw new ConfigException("Expected each driver class to be mapped to a config");
@@ -123,7 +127,8 @@ public class NodeOptions {
     try {
       // Use the context class loader since this is what the `--ext`
       // flag modifies.
-      Class<?> ClassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
+      Class<?> ClassClazz =
+        Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
       Method create = ClassClazz.getMethod("create", Config.class, Capabilities.class);
 
       if (!Modifier.isStatic(create.getModifiers())) {
@@ -152,15 +157,31 @@ public class NodeOptions {
       return;
     }
 
-    allDrivers.entrySet().stream()
+    // Only specified drivers should be added, not all the detected ones
+    if (config.getAll(NODE_SECTION, "drivers").isPresent()) {
+      return;
+    }
+
+    allDrivers.entrySet()
+      .stream()
       .peek(this::report)
-      .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+      .forEach(
+        entry ->
+          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
   }
 
   private void addSpecificDrivers(
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    List<String> drivers = config.getAll(NODE_SECTION, "drivers").orElse(new ArrayList<>()).stream()
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true) &&
+        config.getAll(NODE_SECTION, "drivers").isPresent()) {
+      String logMessage = "Specific drivers cannot be added if 'detect-drivers' is set to false";
+      LOG.warning(logMessage);
+      throw new ConfigException(logMessage);
+    }
+
+    List<String> drivers = config.getAll(NODE_SECTION, "drivers").orElse(new ArrayList<>())
+      .stream()
       .map(String::toLowerCase)
       .collect(Collectors.toList());
 
@@ -168,7 +189,9 @@ public class NodeOptions {
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
       .sorted(Comparator.comparing(entry -> entry.getKey().getDisplayName().toLowerCase()))
       .peek(this::report)
-      .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+      .forEach(
+        entry ->
+          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(

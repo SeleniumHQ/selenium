@@ -42,6 +42,8 @@ public enum AttributeKey {
   HTTP_SCHEME(SemanticAttributes.HTTP_SCHEME.getKey()),
   HTTP_FLAVOR(SemanticAttributes.HTTP_FLAVOR.getKey()),
 
+  ERROR("error"),
+
   LOGGER_CLASS("logger"),
 
   DRIVER_RESPONSE("driver.response"),

@@ -57,7 +57,7 @@ class WebDriver(RemoteWebDriver):
         if executable_path != 'IEDriverServer.exe':
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if capabilities is not None:
+        if capabilities:
             warnings.warn('capabilities has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if port != DEFAULT_PORT:
@@ -81,19 +81,19 @@ class WebDriver(RemoteWebDriver):
             self.port = utils.free_port()
 
         # If both capabilities and desired capabilities are set, ignore desired capabilities.
-        if capabilities is None and desired_capabilities:
+        if not capabilities and desired_capabilities:
             capabilities = desired_capabilities
 
-        if options is None:
-            if capabilities is None:
+        if not options:
+            if not capabilities:
                 capabilities = self.create_options().to_capabilities()
         else:
-            if capabilities is None:
+            if not capabilities:
                 capabilities = options.to_capabilities()
             else:
                 # desired_capabilities stays as passed in
                 capabilities.update(options.to_capabilities())
-        if service is not None:
+        if service:
             self.iedriver = service
         else:
             self.iedriver = Service(

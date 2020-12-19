@@ -104,7 +104,6 @@ public class LocalNode extends Node {
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
-  private final Secret registrationSecret;
   private AtomicInteger pendingSessions = new AtomicInteger();
 
   private LocalNode(
@@ -126,7 +125,7 @@ public class LocalNode extends Node {
     this.gridUri = Require.nonNull("Grid URI", gridUri);
     this.maxSessionCount = Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
     this.factories = ImmutableList.copyOf(factories);
-    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
+    Require.nonNull("Registration secret", registrationSecret);
 
     this.healthCheck = healthCheck == null ?
       () -> new HealthCheck.Result(

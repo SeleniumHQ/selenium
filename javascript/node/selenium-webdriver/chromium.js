@@ -394,7 +394,7 @@ class Options extends Capabilities {
    * - `enableTimeline`: Whether or not to collect events from Timeline domain.
    *     Note: when tracing is enabled, Timeline domain is implicitly disabled,
    *     unless `enableTimeline` is explicitly set to true.
-   * - `tracingCategories`: A comma-separated string of Chromium tracing
+   * - `traceCategories`: A comma-separated string of Chromium tracing
    *     categories for which trace events should be collected. An unspecified
    *     or empty string disables tracing.
    * - `bufferUsageReportingInterval`: The requested number of milliseconds
@@ -405,7 +405,7 @@ class Options extends Capabilities {
    * @param {{enableNetwork: boolean,
    *          enablePage: boolean,
    *          enableTimeline: boolean,
-   *          tracingCategories: string,
+   *          traceCategories: string,
    *          bufferUsageReportingInterval: number}} prefs The performance
    *     logging preferences.
    * @return {!Options} A self reference.
@@ -776,33 +776,52 @@ class Driver extends webdriver.WebDriver {
    * @param connection CDP Connection
    */
   async register(username, password, connection) {
-    await connection.execute("Network.setCacheDisabled", this.getRandomNumber(1, 10), {
-      cacheDisabled: true,
-    }, null);
+    await connection.execute(
+      'Network.setCacheDisabled',
+      this.getRandomNumber(1, 10),
+      {
+        cacheDisabled: true,
+      },
+      null
+    )
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
 
       if (params.method === 'Fetch.authRequired') {
         const requestParams = params['params']
-        connection.execute('Fetch.continueWithAuth', this.getRandomNumber(1, 10), {
-          requestId: requestParams['requestId'],
-          authChallengeResponse: {
-            response: 'ProvideCredentials',
-            username: username,
-            password: password,
-        }})
+        connection.execute(
+          'Fetch.continueWithAuth',
+          this.getRandomNumber(1, 10),
+          {
+            requestId: requestParams['requestId'],
+            authChallengeResponse: {
+              response: 'ProvideCredentials',
+              username: username,
+              password: password,
+            },
+          }
+        )
       } else if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
-        connection.execute('Fetch.continueRequest', this.getRandomNumber(1, 10), {
-          requestId: requestPausedParams['requestId'],
-        })
+        connection.execute(
+          'Fetch.continueRequest',
+          this.getRandomNumber(1, 10),
+          {
+            requestId: requestPausedParams['requestId'],
+          }
+        )
       }
     })
 
-    await connection.execute('Fetch.enable', 1, {
-      handleAuthRequests: true,
-    }, null)
+    await connection.execute(
+      'Fetch.enable',
+      1,
+      {
+        handleAuthRequests: true,
+      },
+      null
+    )
   }
 
   /**
@@ -812,7 +831,12 @@ class Driver extends webdriver.WebDriver {
    * @returns {Promise<void>}
    */
   async onLogEvent(connection, callback) {
-    await connection.execute('Runtime.enable', this.getRandomNumber(1, 10), {}, null)
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -822,7 +846,7 @@ class Driver extends webdriver.WebDriver {
         let event = {
           type: consoleEventParams['type'],
           timestamp: new Date(consoleEventParams['timestamp']),
-          args: consoleEventParams['args']
+          args: consoleEventParams['args'],
         }
 
         callback(event)
@@ -855,7 +879,12 @@ class Driver extends webdriver.WebDriver {
    * @returns {Promise<void>}
    */
   async onLogException(connection, callback) {
-    await connection.execute('Runtime.enable', this.getRandomNumber(1, 10), {}, null)
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
 
     this._wsConnection.on('message', (message) => {
       const params = JSON.parse(message)
@@ -878,26 +907,62 @@ class Driver extends webdriver.WebDriver {
    * @returns {Promise<void>}
    */
   async logMutationEvents(connection, callback) {
-    await connection.execute('Runtime.enable', this.getRandomNumber(1, 10), {}, null)
-    await connection.execute('Page.enable', this.getRandomNumber(1, 10), {}, null)
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+    await connection.execute(
+      'Page.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
 
-    await connection.execute('Runtime.addBinding', this.getRandomNumber(1, 10), {
-      name: '__webdriver_attribute',
-    }, null)
+    await connection.execute(
+      'Runtime.addBinding',
+      this.getRandomNumber(1, 10),
+      {
+        name: '__webdriver_attribute',
+      },
+      null
+    )
 
-    const mutationListener = fs.readFileSync('../../cdp-support/mutation-listener.js', 'utf-8').toString()
+    let mutationListener = ''
+    try {
+      // Depending on what is running the code it could appear in 2 different places which is why we try
+      // here and then the other location
+      mutationListener = fs
+        .readFileSync(
+          './javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js',
+          'utf-8'
+        )
+        .toString()
+    } catch {
+      mutationListener = fs
+        .readFileSync('./lib/atoms/mutation-listener.js', 'utf-8')
+        .toString()
+    }
 
     this.executeScript(mutationListener)
 
-    await connection.execute('Page.addScriptToEvaluateOnNewDocument', this.getRandomNumber(1, 10), {
-      source: mutationListener,
-    }, null)
+    await connection.execute(
+      'Page.addScriptToEvaluateOnNewDocument',
+      this.getRandomNumber(1, 10),
+      {
+        source: mutationListener,
+      },
+      null
+    )
 
     this._wsConnection.on('message', async (message) => {
       const params = JSON.parse(message)
       if (params.method === 'Runtime.bindingCalled') {
         let payload = JSON.parse(params['params']['payload'])
-        let elements = await this.findElements({css: "*[data-__webdriver_id=" + payload['target']})
+        let elements = await this.findElements({
+          css: '*[data-__webdriver_id=' + payload['target'],
+        })
 
         if (elements.length === 0) {
           return
@@ -907,7 +972,7 @@ class Driver extends webdriver.WebDriver {
           element: elements[0],
           attribute_name: payload['name'],
           current_value: payload['value'],
-          old_value: payload['oldValue']
+          old_value: payload['oldValue'],
         }
         callback(event)
       }
