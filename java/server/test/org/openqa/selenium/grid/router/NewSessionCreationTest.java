@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.events.EventBus;
@@ -36,7 +35,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -62,7 +60,6 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.testing.drivers.Browser;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
@@ -197,12 +194,14 @@ public class NewSessionCreationTest {
     Server<?> server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())), router).start();
 
+    Capabilities capabilities = Browser.detect().getCapabilities();
+
     URI uri = server.getUrl().toURI();
     TestSessionFactory sessionFactory =
       new TestSessionFactory((id, caps) -> new Session(
         id,
         uri,
-        Browser.detect().getCapabilities(),
+        capabilities,
         caps,
         Instant.now()));
 
@@ -212,13 +211,9 @@ public class NewSessionCreationTest {
       uri,
       uri,
       registrationSecret)
-      .add(Browser.detect().getCapabilities(), sessionFactory)
+      .add(capabilities, sessionFactory)
       .build();
     distributor.add(node);
-
-    Capabilities capabilities = new ImmutableCapabilities(ImmutableMap.of(
-      "capabilities", ImmutableMap.of(
-        "alwaysMatch", Browser.detect().getCapabilities())));
 
     WebDriver driver = new RemoteWebDriver(server.getUrl(), capabilities);
     driver.get("http://www.google.com");
@@ -243,8 +238,7 @@ public class NewSessionCreationTest {
   }
 
   @Test
-  public void shouldRetryNewSessionRequestOnUnexpectedError() throws
-    URISyntaxException, MalformedURLException {
+  public void shouldRetryNewSessionRequestOnUnexpectedError() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     URI nodeUri = new URI("http://localhost:4444");
     CombinedHandler handler = new CombinedHandler();
@@ -312,17 +306,4 @@ public class NewSessionCreationTest {
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
   }
 
-  private LocalNode.Builder addDriverFactory(
-    LocalNode.Builder builder,
-    WebDriverInfo info,
-    DriverService.Builder<?, ?> driverService) {
-    return builder.add(
-      info.getCanonicalCapabilities(),
-      new DriverServiceSessionFactory(
-        tracer,
-        clientFactory,
-        info.getCanonicalCapabilities(),
-        info::isSupporting,
-        driverService));
-  }
 }

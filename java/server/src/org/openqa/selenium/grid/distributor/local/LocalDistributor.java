@@ -106,7 +106,6 @@ public class LocalDistributor extends Distributor {
   private final Queue<RequestId> requestIds = new ConcurrentLinkedQueue<>();
   private final ScheduledExecutorService executorService =
     Executors.newSingleThreadScheduledExecutor();
-  private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
@@ -136,6 +135,7 @@ public class LocalDistributor extends Distributor {
     bus.addListener(NodeDrainComplete.listener(this::remove));
     bus.addListener(NewSessionRequestEvent.listener(requestIds::offer));
 
+    Thread shutdownHook = new Thread(this::callExecutorShutdown);
     Runtime.getRuntime().addShutdownHook(shutdownHook);
     NewSessionRunnable runnable = new NewSessionRunnable();
     executorService.scheduleAtFixedRate(runnable, 0, 1000, TimeUnit.MILLISECONDS);
@@ -148,15 +148,17 @@ public class LocalDistributor extends Distributor {
       writeLock.lock();
       try {
         if (!requestIds.isEmpty()) {
-          boolean hasCapacity = nodes.keySet()
-            .stream().anyMatch(key -> nodes.get(key).getStatus().hasCapacity());
+          boolean hasCapacity = nodes
+            .keySet()
+            .stream()
+            .anyMatch(key -> nodes.get(key).getStatus().hasCapacity());
           if (hasCapacity) {
             RequestId reqId = requestIds.poll();
             if (reqId != null) {
               Optional<HttpRequest> optionalHttpRequest = sessionRequests.remove(reqId);
               // Check if polling the queue did not return null
               if (optionalHttpRequest.isPresent()) {
-                handleSession(optionalHttpRequest.get(), reqId);
+                handleNewSessionRequest(optionalHttpRequest.get(), reqId);
               } else {
                 fireSessionRejectedEvent(
                   "Unable to poll request from the new session request queue.",
@@ -170,13 +172,16 @@ public class LocalDistributor extends Distributor {
       }
     }
 
-    private void handleSession(HttpRequest sessionRequest, RequestId reqId) {
+    private void handleNewSessionRequest(HttpRequest sessionRequest, RequestId reqId) {
       try (Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue")) {
         Map<String, EventAttributeValue> attributeMap = new HashMap<>();
         attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
+          AttributeKey.LOGGER_CLASS.getKey(),
+          EventAttribute.setValue(getClass().getName()));
         span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
-        attributeMap.put(AttributeKey.REQUEST_ID.getKey(), EventAttribute.setValue(reqId.toString()));
+        attributeMap.put(
+          AttributeKey.REQUEST_ID.getKey(),
+          EventAttribute.setValue(reqId.toString()));
 
         attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
         Either<SessionNotCreatedException, CreateSessionResponse> response =
@@ -197,7 +202,7 @@ public class LocalDistributor extends Distributor {
             boolean retried = sessionRequests.retryAddToQueue(sessionRequest, reqId);
 
             attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
-            span.addEvent("Retry adding to front of queue. All slots are busy.", attributeMap);
+            span.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
 
             if (!retried) {
               span.addEvent("Retry adding to front of queue failed.", attributeMap);
@@ -426,7 +431,7 @@ public class LocalDistributor extends Distributor {
   }
 
   public void callExecutorShutdown() {
-    LOG.info("Shutting down distributor executor service");
+    LOG.info("Shutting down Distributor executor service");
     executorService.shutdownNow();
   }
 }
