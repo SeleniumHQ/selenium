@@ -124,8 +124,6 @@ public class LoggingOptions {
       return new NullTracer();
     }
 
-    LOG.info("Using OpenTelemetry for tracing");
-
     Tracer localTracer = tracer;
     if (localTracer == null) {
       synchronized (LoggingOptions.class) {
