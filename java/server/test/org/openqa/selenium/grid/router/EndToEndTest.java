@@ -102,6 +102,7 @@ public class EndToEndTest {
   public Supplier<TestData> values;
 
   private Server<?> server;
+  private TearDownFixture[] fixtures;
 
   private HttpClient.Factory clientFactory;
 
@@ -109,12 +110,13 @@ public class EndToEndTest {
   public void setFields() {
     TestData data = values.get();
     this.server = data.server;
+    this.fixtures = data.fixtures;
     this.clientFactory = HttpClient.Factory.createDefault();
   }
 
   @After
   public void stopServers() {
-    Safely.safelyCall(values.get().fixtures);
+    Safely.safelyCall(this.fixtures);
   }
 
 

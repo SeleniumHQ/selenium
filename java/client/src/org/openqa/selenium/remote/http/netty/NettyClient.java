@@ -104,7 +104,7 @@ public class NettyClient implements HttpClient {
     public HttpClient createClient(ClientConfig config) {
       Require.nonNull("Client config", config);
 
-      if ("unix".equals(config.baseUri().getScheme())) {
+      if (config.baseUri() != null && "unix".equals(config.baseUri().getScheme())) {
         return new NettyDomainSocketClient(config);
       }
 
