@@ -40,7 +40,7 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     List<WebElement> elements = driver.findElements(withTagName("p").above(lowest));
     List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-    assertThat(ids).isEqualTo(List.of("mid", "above"));
+    assertThat(ids).containsExactly("mid", "above");
   }
 
   @Test
@@ -50,7 +50,7 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     List<WebElement> seen = driver.findElements(withTagName("td").above(By.id("center")).toRightOf(By.id("second")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-    assertThat(ids).isEqualTo(singletonList("third"));
+    assertThat(ids).containsExactly("third");
   }
 
   @Test
@@ -69,6 +69,6 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     // 5-8. Diagonally close (pythagorus sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-    assertThat(ids).isEqualTo(List.of("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth"));
+    assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
   }
 }

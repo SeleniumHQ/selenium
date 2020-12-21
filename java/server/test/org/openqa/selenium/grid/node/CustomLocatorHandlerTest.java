@@ -52,16 +52,22 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import com.google.common.collect.ImmutableMap;
 
 public class CustomLocatorHandlerTest {
 
@@ -85,11 +91,12 @@ public class CustomLocatorHandlerTest {
   public void shouldRequireInputToHaveAUsingParameter() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(node, registrationSecret, Set.of());
+    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
+      node, registrationSecret, emptySet());
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
-        .setContent(Contents.asJson(Map.of("value", "1234"))));
+        .setContent(Contents.asJson(singletonMap("value", "1234"))));
 
     assertThat(res.getStatus()).isEqualTo(HTTP_BAD_REQUEST);
     assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> Values.get(res, MAP_TYPE));
@@ -99,11 +106,12 @@ public class CustomLocatorHandlerTest {
   public void shouldRequireInputToHaveAValueParameter() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(node, registrationSecret, Set.of());
+    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
+      node, registrationSecret, emptySet());
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
-        .setContent(Contents.asJson(Map.of("using", "magic"))));
+        .setContent(Contents.asJson(singletonMap("using", "magic"))));
 
     assertThat(res.getStatus()).isEqualTo(HTTP_BAD_REQUEST);
     assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> Values.get(res, MAP_TYPE));
@@ -113,11 +121,12 @@ public class CustomLocatorHandlerTest {
   public void shouldRejectRequestWithAnUnknownLocatorMechanism() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(node, registrationSecret, Set.of());
+    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
+      node, registrationSecret, emptySet());
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
-        .setContent(Contents.asJson(Map.of(
+        .setContent(Contents.asJson(ImmutableMap.of(
           "using", "cheese",
           "value", "tasty"))));
 
@@ -136,7 +145,7 @@ public class CustomLocatorHandlerTest {
     HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
       node,
       registrationSecret,
-      Set.of(new CustomLocator() {
+      singleton(new CustomLocator() {
         @Override
         public String getLocatorName() {
           return "cheese";
@@ -147,7 +156,7 @@ public class CustomLocatorHandlerTest {
           return new By() {
             @Override
             public List<WebElement> findElements(SearchContext context) {
-              return List.of();
+              return emptyList();
             }
           };
         }
@@ -155,7 +164,7 @@ public class CustomLocatorHandlerTest {
 
     HttpResponse res = handler.with(new ErrorFilter()).execute(
       new HttpRequest(POST, "/session/1234/element")
-        .setContent(Contents.asJson(Map.of(
+        .setContent(Contents.asJson(ImmutableMap.of(
           "using", "cheese",
           "value", "tasty"))));
 
@@ -171,13 +180,13 @@ public class CustomLocatorHandlerTest {
       .thenReturn(
         new HttpResponse()
           .addHeader("Content-Type", Json.JSON_UTF_8)
-          .setContent(Contents.asJson(Map.of(
-            "value", List.of(Map.of(Dialect.W3C.getEncodedElementKey(), elementId))))));
+          .setContent(Contents.asJson(singletonMap(
+            "value", singletonList(singletonMap(Dialect.W3C.getEncodedElementKey(), elementId))))));
 
     HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
       node,
       registrationSecret,
-      Set.of(new CustomLocator() {
+      singleton(new CustomLocator() {
         @Override
         public String getLocatorName() {
           return "cheese";
@@ -191,7 +200,7 @@ public class CustomLocatorHandlerTest {
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/elements")
-        .setContent(Contents.asJson(Map.of(
+        .setContent(Contents.asJson(ImmutableMap.of(
           "using", "cheese",
           "value", "tasty"))));
 
@@ -210,13 +219,13 @@ public class CustomLocatorHandlerTest {
       .thenReturn(
         new HttpResponse()
           .addHeader("Content-Type", Json.JSON_UTF_8)
-          .setContent(Contents.asJson(Map.of(
-            "value", List.of(Map.of(Dialect.W3C.getEncodedElementKey(), elementId))))));
+          .setContent(Contents.asJson(singletonMap(
+            "value", singletonList(singletonMap(Dialect.W3C.getEncodedElementKey(), elementId))))));
 
     HttpHandler handler = new CustomLocatorHandler(
       node,
       registrationSecret,
-      Set.of(new CustomLocator() {
+      singleton(new CustomLocator() {
         @Override
         public String getLocatorName() {
           return "cheese";
@@ -230,7 +239,7 @@ public class CustomLocatorHandlerTest {
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element/234345/elements")
-        .setContent(Contents.asJson(Map.of(
+        .setContent(Contents.asJson(ImmutableMap.of(
           "using", "cheese",
           "value", "tasty"))));
 
