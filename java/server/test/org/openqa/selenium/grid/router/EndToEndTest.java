@@ -53,7 +53,6 @@ import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -311,10 +310,6 @@ public class EndToEndTest {
   }
 
   private static void waitUntilReady(Server<?> server, Duration duration) {
-    waitUntilReady(server, duration, false);
-  }
-
-  private static void waitUntilReady(Server<?> server, Duration duration, boolean printOutput) {
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
     new FluentWait<>(client)
@@ -322,11 +317,9 @@ public class EndToEndTest {
       .pollingEvery(Duration.ofSeconds(1))
       .until(c -> {
         HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-        if (printOutput) {
-          System.out.println(Contents.string(response));
-        }
         Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return Boolean.TRUE.equals(status.get("ready"));
+        return Boolean.TRUE.equals(status != null &&
+                                   Boolean.parseBoolean(status.get("ready").toString()));
       });
   }
 

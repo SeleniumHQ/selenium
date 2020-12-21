@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -55,7 +57,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
-import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -81,6 +82,7 @@ public class NewSessionCreationTest {
   private EventBus events;
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
+  private Server<?> server;
 
   @Before
   public void setup() {
@@ -88,6 +90,11 @@ public class NewSessionCreationTest {
     events = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     registrationSecret = new Secret("hereford hop");
+  }
+
+  @After
+  public void stopServer() {
+    server.stop();
   }
 
   @Test
@@ -116,7 +123,7 @@ public class NewSessionCreationTest {
     Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
-    Server<?> server = new NettyServer(
+    server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),
       router,
       new ProxyCdpIntoGrid(clientFactory, sessions))
@@ -191,7 +198,7 @@ public class NewSessionCreationTest {
 
     Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor);
 
-    Server<?> server = new NettyServer(
+    server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())), router).start();
 
     Capabilities capabilities = Browser.detect().getCapabilities();
@@ -288,7 +295,7 @@ public class NewSessionCreationTest {
     Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
     handler.addHandler(router);
 
-    Server<?> server = new NettyServer(
+    server = new NettyServer(
       new BaseServerOptions(
         new MapConfig(ImmutableMap.of())),
       handler);
