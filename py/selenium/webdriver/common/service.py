@@ -17,10 +17,10 @@
 
 import errno
 import os
-import platform
 import subprocess
+from platform import system
 from subprocess import PIPE
-import time
+from time import sleep
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
@@ -46,7 +46,8 @@ class Service(object):
 
         self.start_error_message = start_error_message
         self.log_file = log_file
-        self.creationflags = 0 # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
+        # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
+        self.creationflags = 0
         self.env = env or os.environ
 
     @property
@@ -71,7 +72,7 @@ class Service(object):
             cmd = [self.path]
             cmd.extend(self.command_line_args())
             self.process = subprocess.Popen(cmd, env=self.env,
-                                            close_fds=platform.system() != 'Windows',
+                                            close_fds=system() != 'Windows',
                                             stdout=self.log_file,
                                             stderr=self.log_file,
                                             stdin=PIPE,
@@ -102,13 +103,13 @@ class Service(object):
                 break
 
             count += 1
-            time.sleep(0.5)
+            sleep(0.5)
             if count == 60:
                 raise WebDriverException("Can not connect to the Service %s" % self.path)
 
     def assert_process_still_running(self):
         return_code = self.process.poll()
-        if return_code is not None:
+        if return_code:
             raise WebDriverException(
                 'Service %s unexpectedly exited. Status code was: %s'
                 % (self.path, return_code)
@@ -135,7 +136,7 @@ class Service(object):
             if not self.is_connectable():
                 break
             else:
-                time.sleep(1)
+                sleep(1)
 
     def stop(self):
         """
@@ -147,7 +148,7 @@ class Service(object):
             except Exception:
                 pass
 
-        if self.process is None:
+        if not self.process:
             return
 
         try:

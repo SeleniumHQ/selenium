@@ -202,24 +202,24 @@ public class MutableCapabilities implements Capabilities {
     if (stringify.getClass().isArray()) {
       value.append("[");
       value.append(
-          Stream.of((Object[]) stringify)
-              .map(item -> abbreviate(seen, item))
-              .collect(Collectors.joining(", ")));
+        Stream.of((Object[]) stringify)
+          .map(item -> abbreviate(seen, item))
+          .collect(Collectors.joining(", ")));
       value.append("]");
     } else if (stringify instanceof Collection) {
       value.append("[");
       value.append(
-          ((Collection<?>) stringify).stream()
-              .map(item -> abbreviate(seen, item))
-              .collect(Collectors.joining(", ")));
+        ((Collection<?>) stringify).stream()
+          .map(item -> abbreviate(seen, item))
+          .collect(Collectors.joining(", ")));
       value.append("]");
     } else if (stringify instanceof Map) {
       value.append("{");
       value.append(
-          ((Map<?, ?>) stringify).entrySet().stream()
-              .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
-              .map(entry -> String.valueOf(entry.getKey()) + ": " + abbreviate(seen, entry.getValue()))
-              .collect(Collectors.joining(", ")));
+        ((Map<?, ?>) stringify).entrySet().stream()
+          .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
+          .map(entry -> String.format("%s: %s", entry.getKey(), abbreviate(seen, entry.getValue())))
+          .collect(Collectors.joining(", ")));
       value.append("}");
     } else {
       String s = String.valueOf(stringify);

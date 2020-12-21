@@ -39,6 +39,37 @@ import java.util.Map;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+/**
+ * Used for finding elements by their location on a page, rather than their
+ * position on the DOM. Elements are returned ordered by their proximity to
+ * the last anchor element used for finding them. As an example:
+ * <pre>
+ *   List<WebElement> elements = driver.findElements(withTagName("p").above(lowest));
+ * </pre>
+ * Would return all {@code p} elements above the {@link WebElement}
+ * {@code lowest} sorted by the proximity to {@code lowest}.
+ * <p>
+ * Proximity is determined by simply comparing the distance to the center
+ * point of each of the elements in turn. For some non-rectangular shapes
+ * (such as paragraphs of text that take more than one line), this may lead
+ * to some surprising results.
+ * <p>
+ * In addition, be aware that the relative locators all use the "client
+ * bounding rect" of elements to determine whether something is "left",
+ * "right", "above" or "below" of another. Given the example:
+ * <pre>
+ *   +-----+
+ *   |  a  |---+
+ *   +-----+ b |
+ *       +-----+
+ * </pre>
+ * Where {@code a} partially overlaps {@code b}, {@code b} is none of
+ * "above", "below", "left" or "right" of {@code a}. This is because of
+ * how these are calculated using the box model. {@code b}'s bounding
+ * rect has it's left-most edge to the right of {@code a}'s bounding
+ * rect's right-most edge, so it is not considered to be "right" of
+ * {@code a}. Similar logic applies for the other directions.
+ */
 public class RelativeLocator {
 
   private static final Json JSON = new Json();
@@ -58,6 +89,11 @@ public class RelativeLocator {
       throw new UncheckedIOException(e);
     }
   }
+  private static final int CLOSE_IN_PIXELS = 100;
+
+  /**
+   * Start of a relative locator, finding elements by tag name.
+   */
   public static RelativeBy withTagName(String tagName) {
     Require.nonNull("Tag name to look for", tagName);
     return new RelativeBy(By.tagName(tagName));
@@ -134,7 +170,7 @@ public class RelativeLocator {
 
     public RelativeBy near(WebElement element) {
       Require.nonNull("Element to search near", element);
-      return near(element, 50);
+      return near(element, CLOSE_IN_PIXELS);
     }
 
     public RelativeBy near(WebElement element, int atMostDistanceInPixels) {
@@ -146,7 +182,7 @@ public class RelativeLocator {
 
     public RelativeBy near(By locator) {
       Require.nonNull("Locator", locator);
-      return near((Object) locator, 50);
+      return near((Object) locator, CLOSE_IN_PIXELS);
     }
 
     public RelativeBy near(By locator, int atMostDistanceInPixels) {
@@ -164,7 +200,7 @@ public class RelativeLocator {
         root,
         amend(ImmutableMap.of(
           "kind", "near",
-          "args", ImmutableList.of(asAtomLocatorParameter(locator), "distance", atMostDistanceInPixels))));
+          "args", ImmutableList.of(asAtomLocatorParameter(locator), atMostDistanceInPixels))));
     }
 
     @Override

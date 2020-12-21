@@ -192,9 +192,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     Optional<String> postData) {
     HttpRequest req = new HttpRequest(convertFromCdpHttpMethod(cdpMethod), url);
     headers.forEach((key, value) -> req.addHeader(key, String.valueOf(value)));
-    postData.ifPresent(data -> {
-      req.setContent(Contents.utf8String(data));
-    });
+    postData.ifPresent(data -> req.setContent(Contents.utf8String(data)));
 
     return req;
   }

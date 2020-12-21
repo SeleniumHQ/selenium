@@ -219,12 +219,12 @@ java_module = rule(
             default = "@bazel_tools//tools/jdk:current_java_toolchain",
         ),
         "_merge_jars": attr.label(
-            default = "//java/client/src/org/openqa/selenium/tools/jar:MergeJars",
+            default = "//java/buildtools/src/dev/selenium/tools/jar:MergeJars",
             executable = True,
             cfg = "host",
         ),
         "_module_generator": attr.label(
-            default = "//java/client/src/org/openqa/selenium/tools/modules:ModuleGenerator",
+            default = "//java/buildtools/src/dev/selenium/tools/modules:ModuleGenerator",
             executable = True,
             cfg = "host",
         ),

@@ -1,4 +1,4 @@
-## v.next
+## v4.0.0-alpha.8
 
 * Rolling back native support for Opera Browser
 * Added new ieOptions capabilities:
@@ -10,6 +10,10 @@
     
 * Added relative locators
 * Added Chrome DevTools Protocol (CDP) support
+* Added support for BASIC authentication.
+* Added listener for DOM mutations.
+* Added support for listening out for console log events.
+* Added support listening js exceptions using CDP
 
 ### API Changes
 

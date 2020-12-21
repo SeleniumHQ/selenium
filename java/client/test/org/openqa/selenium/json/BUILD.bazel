@@ -8,6 +8,7 @@ java_test_suite(
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),

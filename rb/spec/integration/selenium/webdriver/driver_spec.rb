@@ -108,7 +108,7 @@ module Selenium
           driver.navigate.to url_for('relative_locators.html')
 
           above = driver.find_element(relative: {tag_name: 'td', above: {id: 'center'}})
-          expect(above.attribute('id')).to eq('first')
+          expect(above.attribute('id')).to eq('second')
         end
 
         it 'should find child element' do
@@ -153,14 +153,14 @@ module Selenium
 
           lowest = driver.find_element(id: 'below')
           above = driver.find_elements(relative: {tag_name: 'p', above: lowest})
-          expect(above.map { |e| e.attribute('id') }).to eq(%w[above mid])
+          expect(above.map { |e| e.attribute('id') }).to eq(%w[mid above])
         end
 
         it 'should find above another' do
           driver.navigate.to url_for('relative_locators.html')
 
           above = driver.find_elements(relative: {tag_name: 'td', above: {id: 'center'}})
-          expect(above.map { |e| e.attribute('id') }).to eq(%w[first second third])
+          expect(above.map { |e| e.attribute('id') }).to eq(%w[second first third])
         end
 
         it 'should find below element' do
@@ -175,28 +175,28 @@ module Selenium
           driver.navigate.to url_for('relative_locators.html')
 
           near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth'}})
-          expect(near.map { |e| e.attribute('id') }).to eq(%w[second third center eighth ninth])
+          expect(near.map { |e| e.attribute('id') }).to eq(%w[third ninth center second eighth])
         end
 
         it 'should find near another within custom distance' do
           driver.navigate.to url_for('relative_locators.html')
 
           near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth', distance: 100}})
-          expect(near.map { |e| e.attribute('id') }).to eq(%w[second third center eighth ninth])
+          expect(near.map { |e| e.attribute('id') }).to eq(%w[third ninth center second eighth])
         end
 
         it 'should find to the left of another' do
           driver.navigate.to url_for('relative_locators.html')
 
           left = driver.find_elements(relative: {tag_name: 'td', left: {id: 'center'}})
-          expect(left.map { |e| e.attribute('id') }).to eq(%w[first fourth seventh])
+          expect(left.map { |e| e.attribute('id') }).to eq(%w[fourth first seventh])
         end
 
         it 'should find to the right of another' do
           driver.navigate.to url_for('relative_locators.html')
 
           right = driver.find_elements(relative: {tag_name: 'td', right: {id: 'center'}})
-          expect(right.map { |e| e.attribute('id') }).to eq(%w[third sixth ninth])
+          expect(right.map { |e| e.attribute('id') }).to eq(%w[sixth third ninth])
         end
 
         it 'should find by combined relative locators' do

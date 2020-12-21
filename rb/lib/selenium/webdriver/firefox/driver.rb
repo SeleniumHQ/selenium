@@ -37,6 +37,12 @@ module Selenium
         def bridge_class
           Bridge
         end
+
+        def print_page(**options)
+          options[:page_ranges] &&= Array(options[:page_ranges])
+
+          @bridge.print_page(options)
+        end
       end # Driver
     end # Firefox
   end # WebDriver

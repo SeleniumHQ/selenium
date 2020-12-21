@@ -19,10 +19,13 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 /**
  * Small test for name extraction
  */
+@Category(UnitTests.class)
 public class WebDriverExceptionTest {
   @Test
   public void testExtractsADriverName() {

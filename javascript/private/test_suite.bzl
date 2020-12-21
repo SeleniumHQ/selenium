@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "selenium_test")
 
 def closure_test_suite(name, data = [], browsers = None):
@@ -20,10 +21,11 @@ def closure_test_suite(name, data = [], browsers = None):
 
     native.java_binary(
         name = name + "_debug_server",
-        main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
+        main_class = "org.openqa.selenium.environment.webserver.NettyAppServer",
         data = data,
         testonly = 1,
         runtime_deps = [
             "//java/client/test/org/openqa/selenium/environment",
+            artifact("org.slf4j:slf4j-jdk14"),
         ],
     )

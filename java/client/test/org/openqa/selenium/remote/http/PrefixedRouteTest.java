@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote.http;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +29,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+@Category(UnitTests.class)
 public class PrefixedRouteTest {
 
   @Test

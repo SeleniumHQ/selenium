@@ -1,4 +1,4 @@
-// <copyright file="IDomains.cs" company="WebDriver Committers">
+// <copyright file="DevToolsDomains.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace OpenQA.Selenium.DevTools
@@ -32,14 +33,14 @@ namespace OpenQA.Selenium.DevTools
         private static readonly int DefaultVersionRange = 5;
 
         // This is the list of known supported DevTools version implementation.
-        // Note carefully that it is sorted in reverse order, most recent
-        // version first, as that is more likely to match. When new versions
-        // are implemented for support, 
-        private static readonly List<Type> SupportedDevToolsVersions = new List<Type>()
+        // When new versions are implemented for support, new types must be
+        // added to this dictionary.
+        private static readonly Dictionary<int, Type> SupportedDevToolsVersions = new Dictionary<int, Type>()
         {
-            typeof(V86.V86Domains),
-            typeof(V85.V85Domains),
-            typeof(V84.V84Domains)
+            { 89, typeof(V89.V89Domains) },
+            { 88, typeof(V88.V88Domains) },
+            { 87, typeof(V87.V87Domains) },
+            { 86, typeof(V86.V86Domains) },
         };
 
         /// <summary>
@@ -70,22 +71,22 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Initializes the supplied DevTools session's domains for the specified browser version.
         /// </summary>
-        /// <param name="versionInfo">The <see cref="DevToolsVersionInfo"/> object containing the browser version information.</param>
+        /// <param name="protocolVersion">The version of the DevTools Protocol to use.</param>
         /// <param name="session">The <see cref="DevToolsSession"/> for which to initialiize the domains.</param>
         /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
-        public static DevToolsDomains InitializeDomains(DevToolsVersionInfo versionInfo, DevToolsSession session)
+        public static DevToolsDomains InitializeDomains(int protocolVersion, DevToolsSession session)
         {
-            return InitializeDomains(versionInfo, session, DefaultVersionRange);
+            return InitializeDomains(protocolVersion, session, DefaultVersionRange);
         }
 
         /// <summary>
         /// Initializes the supplied DevTools session's domains for the specified browser version within the specified number of versions.
         /// </summary>
-        /// <param name="versionInfo">The <see cref="DevToolsVersionInfo"/> object containing the browser version information.</param>
+        /// <param name="protocolVersion">The version of the DevTools Protocol to use.</param>
         /// <param name="session">The <see cref="DevToolsSession"/> for which to initialiize the domains.</param>
         /// <param name="versionRange">The range of versions within which to match the provided version number. Defaults to 5 versions.</param>
         /// <returns>The <see cref="DevToolsDomains"/> object containing the version-specific domains.</returns>
-        public static DevToolsDomains InitializeDomains(DevToolsVersionInfo versionInfo, DevToolsSession session, int versionRange)
+        public static DevToolsDomains InitializeDomains(int protocolVersion, DevToolsSession session, int versionRange)
         {
             if (versionRange < 0)
             {
@@ -93,16 +94,11 @@ namespace OpenQA.Selenium.DevTools
             }
 
             DevToolsDomains domains = null;
-            int browserMajorVersion = 0;
-            bool versionParsed = int.TryParse(versionInfo.BrowserMajorVersion, out browserMajorVersion);
-            if (versionParsed)
+            Type domainType = MatchDomainsVersion(protocolVersion, versionRange);
+            ConstructorInfo constructor = domainType.GetConstructor(new Type[] { typeof(DevToolsSession) });
+            if (constructor != null)
             {
-                Type domainType = MatchDomainsVersion(browserMajorVersion, versionRange);
-                ConstructorInfo constructor = domainType.GetConstructor(new Type[] { typeof(DevToolsSession) });
-                if (constructor != null)
-                {
-                    domains = constructor.Invoke(new object[] { session }) as DevToolsDomains;
-                }
+                domains = constructor.Invoke(new object[] { session }) as DevToolsDomains;
             }
 
             return domains;
@@ -110,22 +106,24 @@ namespace OpenQA.Selenium.DevTools
 
         private static Type MatchDomainsVersion(int desiredVersion, int versionRange)
         {
-            // Use reflection to look for a DevToolsVersion static field on every known domain implementation type
-            foreach (Type candidateType in SupportedDevToolsVersions)
+            // Return fast on an exact match
+            if (SupportedDevToolsVersions.ContainsKey(desiredVersion))
             {
-                PropertyInfo info = candidateType.GetProperty("DevToolsVersion", BindingFlags.Static | BindingFlags.Public);
-                if (info != null)
+                return SupportedDevToolsVersions[desiredVersion];
+            }
+
+            // Get the list of supported versions and sort descending
+            List<int> supportedVersions = new List<int>(SupportedDevToolsVersions.Keys);
+            supportedVersions.Sort((first, second) => second.CompareTo(first));
+
+            foreach (int supportedVersion in supportedVersions)
+            {
+                // Match the version with the desired version within the
+                // version range, using "The Price Is Right" style matching
+                // (that is, closest without going over).
+                if (desiredVersion >= supportedVersion && desiredVersion - supportedVersion < versionRange)
                 {
-                    object propertyValue = info.GetValue(null);
-                    if (propertyValue != null)
-                    {
-                        // Match the version with the desired version within the version range
-                        int candidateVersion = (int)propertyValue;
-                        if (desiredVersion - candidateVersion < versionRange)
-                        {
-                            return candidateType;
-                        }
-                    }
+                    return SupportedDevToolsVersions[supportedVersion];
                 }
             }
 

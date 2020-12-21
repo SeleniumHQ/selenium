@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -32,9 +34,24 @@ import org.openqa.selenium.internal.Require;
 public class PathResource implements Resource {
 
   private final Path base;
+  private final Predicate<Path> allowedSubpaths;
 
   public PathResource(Path base) {
+    this(Require.nonNull("Base path", base), str -> true);
+  }
+
+  private PathResource(Path base, Predicate<Path> allowedSubpaths) {
     this.base = Require.nonNull("Base path", base).normalize();
+    this.allowedSubpaths = Require.nonNull("Sub-path predicate", allowedSubpaths);
+  }
+
+  public PathResource limit(String... subpaths) {
+    return new PathResource(
+      base,
+      path -> Arrays.stream(subpaths)
+        .map(subpath -> Files.exists(base.resolve(subpath)))
+        .reduce(Boolean::logicalOr)
+        .orElse(false));
   }
 
   @Override
@@ -54,6 +71,10 @@ public class PathResource implements Resource {
       throw new RuntimeException("Attempt to navigate away from the parent directory");
     }
 
+    if (!allowedSubpaths.test(normalized)) {
+      return Optional.empty();
+    }
+
     if (Files.exists(normalized)) {
       return Optional.of(new PathResource(normalized));
     }
@@ -69,7 +90,7 @@ public class PathResource implements Resource {
   @Override
   public Set<Resource> list() {
     try (Stream<Path> files = Files.list(base)) {
-      return files.map(PathResource::new).collect(toImmutableSet());
+      return files.filter(allowedSubpaths).map(PathResource::new).collect(toImmutableSet());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

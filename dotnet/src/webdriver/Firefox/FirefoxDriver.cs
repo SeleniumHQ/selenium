@@ -70,6 +70,7 @@ namespace OpenQA.Selenium.Firefox
         private const string SetContextCommand = "setContext";
         private const string InstallAddOnCommand = "installAddOn";
         private const string UninstallAddOnCommand = "uninstallAddOn";
+        private const string GetFullPageScreenshotCommand = "fullPageScreenshot";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
@@ -153,6 +154,7 @@ namespace OpenQA.Selenium.Firefox
             this.AddCustomFirefoxCommand(SetContextCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/context");
             this.AddCustomFirefoxCommand(InstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
             this.AddCustomFirefoxCommand(UninstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
+            this.AddCustomFirefoxCommand(GetFullPageScreenshotCommand, CommandInfo.GetCommand, "/session/{sessionId}/moz/screenshot/full");
         }
 
         /// <summary>
@@ -240,6 +242,17 @@ namespace OpenQA.Selenium.Firefox
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters["id"] = addOnId;
             this.Execute(UninstallAddOnCommand, parameters);
+        }
+
+        /// <summary>
+        /// Gets a <see cref="Screenshot"/> object representing the image of the full page on the screen.
+        /// </summary>
+        /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+        public Screenshot GetFullPageScreenshot()
+        {
+            Response screenshotResponse = this.Execute(GetFullPageScreenshotCommand, null);
+            string base64 = screenshotResponse.Value.ToString();
+            return new Screenshot(base64);
         }
 
         /// <summary>

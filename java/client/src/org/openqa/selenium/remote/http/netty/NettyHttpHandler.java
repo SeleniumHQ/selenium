@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class NettyHttpHandler extends RemoteCall {
 
@@ -51,14 +53,16 @@ public class NettyHttpHandler extends RemoteCall {
     Require.nonNull("Request", request);
 
     Future<Response> whenResponse = client.executeRequest(
-        NettyMessages.toNettyRequest(getConfig().baseUri(), request));
+      NettyMessages.toNettyRequest(getConfig().baseUri(), request));
 
     try {
-      Response response = whenResponse.get();
+      Response response = whenResponse.get(getConfig().readTimeout().toMillis(), TimeUnit.MILLISECONDS);
       return NettyMessages.toSeleniumResponse(response);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new RuntimeException("NettyHttpHandler request interrupted", e);
+    } catch (TimeoutException e) {
+      throw new org.openqa.selenium.TimeoutException(e);
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
       if (cause instanceof UncheckedIOException) {

@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
-import hashlib
 import os
+from base64 import b64decode
+from hashlib import md5 as md5_hash
 import pkgutil
 import warnings
 import zipfile
@@ -158,7 +158,7 @@ class WebElement(BaseWebElement):
         else:
             resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
             attribute_value = resp.get('value')
-            if attribute_value is not None:
+            if attribute_value:
                 if name != 'value' and attribute_value.lower() in ('true', 'false'):
                     attribute_value = attribute_value.lower()
         return attribute_value
@@ -534,10 +534,10 @@ class WebElement(BaseWebElement):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
-            local_files = list(map(lambda keys_to_send: 
-                self.parent.file_detector.is_local_file(keys_to_send),
-                ''.join(*value).split('\n')))
-            if not None in local_files:
+            local_files = list(map(lambda keys_to_send:
+                                   self.parent.file_detector.is_local_file(keys_to_send),
+                                   ''.join(value).split('\n')))
+            if None not in local_files:
                 remote_files = []
                 for file in local_files:
                     remote_files.append(self._upload(file))
@@ -637,7 +637,7 @@ class WebElement(BaseWebElement):
 
                 element_png = element.screenshot_as_png
         """
-        return base64.b64decode(self.screenshot_as_base64.encode('ascii'))
+        return b64decode(self.screenshot_as_base64.encode('ascii'))
 
     def screenshot(self, filename):
         """
@@ -762,7 +762,7 @@ class WebElement(BaseWebElement):
                              {"using": by, "value": value})['value']
 
     def __hash__(self):
-        return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
+        return int(md5_hash(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
         fp = BytesIO()

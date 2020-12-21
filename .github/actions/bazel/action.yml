@@ -1,0 +1,11 @@
+name: 'Run bazel'
+inputs:
+  command:  # id of input
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        cp .github/.bazelrc.local .
+        bazel ${{ inputs.command }}
+      shell: bash

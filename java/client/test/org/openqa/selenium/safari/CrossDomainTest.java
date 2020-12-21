@@ -17,23 +17,23 @@
 
 package org.openqa.selenium.safari;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.testing.Pages;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.JettyAppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.Pages;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @NeedsLocalEnvironment(reason = "Uses a local server")
 public class CrossDomainTest extends JUnit4TestBase {
@@ -41,15 +41,9 @@ public class CrossDomainTest extends JUnit4TestBase {
   private static AppServer otherServer;
   private static Pages otherPages;
 
-  @AfterClass
-  public static void quitDriver() {
-    removeDriver();
-  }
-
-
   @BeforeClass
   public static void startSecondServer() {
-    otherServer = new JettyAppServer();
+    otherServer = new NettyAppServer();
     otherServer.start();
 
     otherPages = new Pages(otherServer);
@@ -71,7 +65,7 @@ public class CrossDomainTest extends JUnit4TestBase {
     driver.findElement(By.tagName("body"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
-        .isThrownBy(body1::getTagName);
+      .isThrownBy(body1::getTagName);
   }
 
   @Test
@@ -88,12 +82,12 @@ public class CrossDomainTest extends JUnit4TestBase {
     setupCrossDomainFrameTest();
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> ((JavascriptExecutor) driver).executeScript(
-            "return window.top.document.body.tagName"));
+      .isThrownBy(() -> ((JavascriptExecutor) driver).executeScript(
+        "return window.top.document.body.tagName"));
 
     // Make sure we can recover from the above.
     assertThat(((JavascriptExecutor) driver).executeScript(
-        "return window.document.body.tagName.toLowerCase();")).isEqualTo("body");
+      "return window.document.body.tagName.toLowerCase();")).isEqualTo("body");
   }
 
   private void setupCrossDomainFrameTest() {
@@ -101,7 +95,7 @@ public class CrossDomainTest extends JUnit4TestBase {
 
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     ((JavascriptExecutor) driver).executeScript(
-        "arguments[0].src = arguments[1];", iframe, otherPages.iframePage);
+      "arguments[0].src = arguments[1];", iframe, otherPages.iframePage);
 
     assertThat(isTop()).isTrue();
     driver.switchTo().frame(iframe);

@@ -45,8 +45,7 @@ module Selenium
           end
         end
 
-        it 'should be able to use the same profile more than once', except: {driver: :remote,
-                                                                             reason: "Likely related to #8524"} do
+        it 'should be able to use the same profile more than once' do
           create_driver!(capabilities: Options.new(profile: profile)) do |driver1|
             expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
             create_driver!(capabilities: Options.new(profile: profile)) do |driver2|

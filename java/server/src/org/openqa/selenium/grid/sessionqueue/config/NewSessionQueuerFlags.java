@@ -35,7 +35,7 @@ import java.util.Set;
 public class NewSessionQueuerFlags implements HasRoles {
 
   @Parameter(
-    names = { "-sq",  "--sessionqueuer" },
+    names = { "--sq",  "--sessionqueuer" },
     description = "Address of the session queue server.")
   @ConfigValue(section = "sessionqueuer", name = "host", example = "\"http://localhost:1237\"")
   private URI sessionQueueServer;

@@ -16,6 +16,7 @@ closure_js_library(
     ],
     suppress = [
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         "//javascript/atoms:dom",

@@ -85,11 +85,5 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
         /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
         Task<JToken> SendCommand(string commandName, JToken @params, CancellationToken cancellationToken, int? millisecondsTimeout, bool throwExceptionIfResponseNotReceived);
-
-        /// <summary>
-        /// Asynchronously starts the session.
-        /// </summary>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        Task Start();
     }
 }

@@ -20,13 +20,16 @@ package org.openqa.selenium.edgehtml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class EdgeHtmlOptionsTest {
 
   @Test

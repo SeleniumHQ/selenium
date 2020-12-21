@@ -22,12 +22,21 @@ import static org.openqa.selenium.build.DevMode.isInDevMode;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
 public class BazelBuild {
   private static Logger log = Logger.getLogger(BazelBuild.class.getName());
+
+  public static File findBinRoot(File dir) {
+    if ("bin".equals(dir.getName())) {
+      return dir;
+    } else {
+      return findBinRoot(dir.getParentFile());
+    }
+  }
 
   public void build(String target) {
     if (!isInDevMode()) {

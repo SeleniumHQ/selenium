@@ -27,7 +27,7 @@ class Log(object):
         self.level = None
 
     def to_capabilities(self):
-        if self.level is not None:
+        if self.level:
             return {"log": {"level": self.level}}
         return {}
 
@@ -132,7 +132,7 @@ class Options(ArgOptions):
         Args:
           value: boolean value indicating to set the headless option
         """
-        if value is True:
+        if value: # is True or == True can be written as bool(variablename), so 
             self._arguments.append('-headless')
         elif '-headless' in self._arguments:
             self._arguments.remove('-headless')
@@ -159,20 +159,20 @@ class Options(ArgOptions):
         caps = self._caps
         opts = {}
 
-        if self._binary is not None:
+        if self._binary:
             opts["binary"] = self._binary._start_cmd
-        if len(self._preferences) > 0:
+        if self._preferences:
             opts["prefs"] = self._preferences
-        if self._proxy is not None:
+        if self._proxy:
             self._proxy.add_to_capabilities(caps)
-        if self._profile is not None:
+        if self._profile:
             opts["profile"] = self._profile.encoded
-        if len(self._arguments) > 0:
+        if self._arguments:
             opts["args"] = self._arguments
 
         opts.update(self.log.to_capabilities())
 
-        if len(opts) > 0:
+        if opts:
             caps[Options.KEY] = opts
 
         return caps

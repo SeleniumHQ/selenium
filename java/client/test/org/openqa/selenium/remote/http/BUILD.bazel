@@ -6,9 +6,7 @@ java_test_suite(
     size = "small",
     srcs = glob(["*.java"]),
     javacopts = [
-        "-source",
-        "11",
-        "-target",
+        "--release",
         "11",
     ],
     deps = [
@@ -16,6 +14,7 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/remote/http/netty",
         "//java/client/src/org/openqa/selenium/remote/http/reactor",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),

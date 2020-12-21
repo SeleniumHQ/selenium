@@ -33,6 +33,9 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -42,16 +45,17 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.support.ui.FluentWait;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -63,6 +67,7 @@ public class RouterTest {
   private EventBus bus;
   private CombinedHandler handler;
   private SessionMap sessions;
+  private NewSessionQueuer queuer;
   private Distributor distributor;
   private Router router;
   private Secret registrationSecret;
@@ -79,10 +84,25 @@ public class RouterTest {
     handler.addHandler(sessions);
 
     registrationSecret = new Secret("stinking bishop");
-    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, registrationSecret);
+
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    handler.addHandler(queuer);
+
+    distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
     handler.addHandler(distributor);
 
-    router = new Router(tracer, clientFactory, sessions, distributor);
+    router = new Router(tracer, clientFactory, sessions, queuer, distributor);
   }
 
   @Test
@@ -99,10 +119,10 @@ public class RouterTest {
     AtomicReference<Availability> isUp = new AtomicReference<>(DOWN);
 
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
-        .advanced()
-        .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
-        .build();
+      .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
+      .build();
     distributor.add(node);
 
     Map<String, Object> status = getStatus(router);
@@ -117,14 +137,13 @@ public class RouterTest {
     AtomicReference<Availability> isUp = new AtomicReference<>(UP);
 
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
-        .advanced()
-        .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
-        .build();
+      .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .advanced()
+      .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
+      .build();
     distributor.add(node);
 
-    Map<String, Object> status = getStatus(router);
-    assertTrue(status.toString(), (Boolean) status.get("ready"));
+    waitUntilReady(router, Duration.ofSeconds(5));
   }
 
   @Test
@@ -142,5 +161,16 @@ public class RouterTest {
     Map<String, Object> status = Values.get(response, MAP_TYPE);
     assertNotNull(status);
     return status;
+  }
+
+  private static void waitUntilReady(Router router, Duration duration) {
+    new FluentWait<>(router)
+      .withTimeout(duration)
+      .pollingEvery(Duration.ofMillis(100))
+      .until(r -> {
+        HttpResponse response = r.execute(new HttpRequest(GET, "/status"));
+        Map<String, Object> status = Values.get(response, MAP_TYPE);
+        return Boolean.TRUE.equals(status.get("ready"));
+      });
   }
 }

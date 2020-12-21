@@ -37,7 +37,7 @@ public class RouterFlags implements HasRoles {
       " in contravention of strict W3C spec compliance.",
     arity = 1)
   @ConfigValue(section = "network", name = "relax-checks", example = "true")
-  private boolean relaxChecks;
+  private Boolean relaxChecks;
 
   @Override
   public Set<Role> getRoles() {

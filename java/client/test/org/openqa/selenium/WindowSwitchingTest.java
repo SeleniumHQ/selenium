@@ -25,21 +25,19 @@ import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_OPERA;
 import static org.openqa.selenium.testing.drivers.Browser.OPERA;
-import static org.openqa.selenium.testing.drivers.Browser.OPERABLINK;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 
-import org.junit.Rule;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -53,37 +51,33 @@ import java.util.stream.Collectors;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @Rule
-  public final TestRule switchToMainWindow = new TestWatcher() {
-    private String mainWindow;
+  private String mainWindow;
 
-    @Override
-    protected void starting(Description description) {
-      super.starting(description);
-      mainWindow = driver.getWindowHandle();
-    }
+  @Before
+  public void storeMainWindowHandle() {
+    mainWindow = driver.getWindowHandle();
+  }
 
-    @Override
-    protected void finished(Description description) {
-      try {
-        driver.getWindowHandles().stream().filter(handle -> ! mainWindow.equals(handle))
-            .forEach(handle -> driver.switchTo().window(handle).close());
-      } catch (Exception ignore) {
-        System.err.println("Ignoring: " + ignore.getMessage());
-      }
-      try {
-        driver.switchTo().window(mainWindow);
-      } catch (Exception ignore) {
-      }
-      super.finished(description);
+  @After
+  public void closeAllWindowsExceptForTheMainOne() {
+    try {
+      driver.getWindowHandles().stream().filter(handle -> ! mainWindow.equals(handle))
+        .forEach(handle -> driver.switchTo().window(handle).close());
+    } catch (Exception ignore) {
+      System.err.println("Ignoring: " + ignore.getMessage());
     }
-  };
+    try {
+      driver.switchTo().window(mainWindow);
+    } catch (Exception ignore) {
+      System.err.println("Ignoring: " + ignore.getMessage());
+    }
+  }
 
   @SwitchToTopAfterTest
   @NoDriverAfterTest(failedOnly = true)
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
-    assumeFalse(Browser.detect() == Browser.OPERA &&
+    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
@@ -109,7 +103,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testShouldThrowNoSuchWindowException() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchWindowException.class)
-        .isThrownBy(() -> driver.switchTo().window("invalid name"));
+      .isThrownBy(() -> driver.switchTo().window("invalid name"));
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -145,7 +139,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchWindowException.class).isThrownBy(driver::getTitle);
 
     assertThatExceptionOfType(NoSuchWindowException.class)
-        .isThrownBy(() -> driver.findElement(By.tagName("body")));
+      .isThrownBy(() -> driver.findElement(By.tagName("body")));
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -191,7 +185,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
-    assumeFalse(Browser.detect() == Browser.OPERA &&
+    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
     boolean isIE = isInternetExplorer(driver);
 
@@ -216,9 +210,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(EDGE)
+  @Ignore(EDGE_HTML)
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
-    assumeFalse(Browser.detect() == Browser.OPERA &&
+    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
@@ -257,7 +251,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     String current = driver.getWindowHandle();
 
     assertThatExceptionOfType(NoSuchWindowException.class)
-        .isThrownBy(() -> driver.switchTo().window("i will never exist"));
+      .isThrownBy(() -> driver.switchTo().window("i will never exist"));
 
     String newHandle = driver.getWindowHandle();
     assertThat(newHandle).isEqualTo(current);
@@ -327,7 +321,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/610")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/610")
   public void testShouldFocusOnTheTopMostFrameAfterSwitchingToAWindow() {
     driver.get(appServer.whereIs("window_switching_tests/page_with_frame.html"));
 
@@ -349,10 +343,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest(failedOnly = true)
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(OPERABLINK)
-  @NotYetImplemented(EDGE)
-  @Ignore(FIREFOX)
-  @Ignore(OPERA)
+  @NotYetImplemented(OPERA)
+  @NotYetImplemented(EDGE_HTML)
+  @Ignore(LEGACY_FIREFOX_XPI)
+  @Ignore(LEGACY_OPERA)
   public void canOpenANewWindow() {
     driver.get(pages.xhtmlTestPage);
 

@@ -33,8 +33,6 @@ import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.util.UUID;
-
 class AddBackToSessionQueue implements HttpHandler {
 
   private final Tracer tracer;

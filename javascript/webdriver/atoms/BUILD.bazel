@@ -27,6 +27,7 @@ closure_js_library(
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     visibility = ["//javascript:__subpackages__"],
     deps = [
@@ -44,6 +45,9 @@ closure_fragment(
     name = "clear-local-storage",
     function = "webdriver.atoms.storage.local.clear",
     module = "webdriver.atoms.storage.local",
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     visibility = [
         "//javascript/chrome-driver:__pkg__",
     ],
@@ -267,6 +271,9 @@ closure_js_library(
     name = "all_js_for_testing",
     testonly = 1,
     srcs = glob(["**/*.js"]),
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     visibility = [
         "//javascript:__pkg__",
         "//javascript/chrome-driver:__pkg__",

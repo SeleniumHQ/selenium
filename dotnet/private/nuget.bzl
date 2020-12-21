@@ -1,4 +1,10 @@
 load("@bazel_skylib//rules:common_settings.bzl", "BuildSettingInfo")
+load("//dotnet/private:copy_files.bzl", "copy_files")
+load(
+    "//dotnet:selenium-dotnet-version.bzl",
+    "SUPPORTED_NET_FRAMEWORKS",
+    "SUPPORTED_NET_STANDARD_VERSIONS",
+)
 
 def _nuget_push_impl(ctx):
     args = [
@@ -51,6 +57,29 @@ nuget_push = rule(
     },
 )
 
+def _get_relative_destination_file(src_file):
+    src_file_dirs = src_file.dirname.split("/")
+    framework_dir = src_file_dirs[-1]
+    for src_file_dir in reversed(src_file_dirs):
+        if src_file_dir in SUPPORTED_NET_FRAMEWORKS or src_file_dir in SUPPORTED_NET_STANDARD_VERSIONS:
+            framework_dir = src_file_dir
+            break
+    return "{}/{}".format(framework_dir, src_file.basename)
+
+
+def _stage_files_for_packaging(ctx, staging_dir):
+    src_list = []
+    for dep in ctx.attr.deps:
+        src_file = dep.files.to_list()[0]
+        relative_dest_file = _get_relative_destination_file(src_file)
+        src_list.append((src_file, relative_dest_file))
+        if (ctx.attr.create_symbol_package):
+            symbol_file = dep.default_runfiles.files.to_list()[0]
+            relative_dest_symbol_file =_get_relative_destination_file(symbol_file)
+            src_list.append((symbol_file, relative_dest_symbol_file))
+
+    return copy_files(ctx, src_list, staging_dir, ctx.attr.is_windows)
+
 def _nuget_package_impl(ctx):
     args = [
         "pack",
@@ -61,6 +90,11 @@ def _nuget_package_impl(ctx):
 
     package_file = ctx.actions.declare_file("{}.{}.nupkg".format(package_id, package_version))
     output_path = ctx.expand_location(package_file.dirname)
+    output_files = [package_file]
+
+    if (ctx.attr.create_symbol_package):
+        symbol_file = ctx.actions.declare_file("{}.{}.snupkg".format(package_id, package_version))
+        output_files.append(symbol_file)
 
     # The dependencies are assembly output compiled into directories
     # with the appropriate target framework moniker ("<base>/net45",
@@ -70,6 +104,9 @@ def _nuget_package_impl(ctx):
     # provide proper path traversal for custom rules.
     base_path = ctx.files.deps[0].dirname + "/.."
 
+    packaging_file_list = _stage_files_for_packaging(ctx, ctx.label.name)
+    base_path = packaging_file_list[0].dirname + "/.."
+
     args.append(ctx.expand_location(ctx.attr.src.files.to_list()[0].path))
     args.append("-Properties")
     args.append("packageid={}".format(package_id))
@@ -77,6 +114,10 @@ def _nuget_package_impl(ctx):
     args.append(package_version)
     args.append("-BasePath")
     args.append(base_path)
+    if (ctx.attr.create_symbol_package):
+        args.append("-Symbols")
+        args.append("-SymbolPackageFormat")
+        args.append("snupkg")
     args.append("-OutputDirectory")
     args.append(output_path)
 
@@ -85,14 +126,10 @@ def _nuget_package_impl(ctx):
         progress_message = "Packaging {}".format(package_file.path),
         arguments = args,
         inputs = ctx.attr.src.files.to_list() + ctx.files.deps,
-        outputs = [
-            package_file,
-        ],
+        outputs = output_files,
     )
 
-    return DefaultInfo(files = depset([
-        package_file,
-    ]))
+    return DefaultInfo(files = depset(output_files), runfiles = ctx.runfiles(files = packaging_file_list))
 
 nuget_package = rule(
     implementation = _nuget_package_impl,
@@ -103,6 +140,8 @@ nuget_package = rule(
         "deps": attr.label_list(),
         "package_id": attr.string(),
         "package_version": attr.string(),
+        "create_symbol_package": attr.bool(default = False),
+        "is_windows": attr.bool(default = False),
         "nuget_exe": attr.label(
             executable = True,
             cfg = "host",

@@ -60,12 +60,12 @@ public class GridModel {
   public GridModel(EventBus events) {
     this.events = Require.nonNull("Event bus", events);
 
-    events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
-    events.addListener(NodeDrainComplete.listener(this::remove));
-    events.addListener(NodeRemovedEvent.listener(this::remove));
-    events.addListener(NodeStatusEvent.listener(status -> refresh(status)));
+    this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
+    this.events.addListener(NodeDrainComplete.listener(this::remove));
+    this.events.addListener(NodeRemovedEvent.listener(this::remove));
+    this.events.addListener(NodeStatusEvent.listener(this::refresh));
 
-    events.addListener(SessionClosedEvent.listener(this::release));
+    this.events.addListener(SessionClosedEvent.listener(this::release));
   }
 
   public GridModel add(NodeStatus node) {
@@ -188,7 +188,7 @@ public class GridModel {
 
       if (!UP.equals(node.availability)) {
         LOG.warning(String.format(
-          "Asked to reserve a slot on node %s, but not is %s",
+          "Asked to reserve a slot on node %s, but node is %s",
           slotId.getOwningNodeId(),
           node.availability));
         return false;
@@ -305,41 +305,47 @@ public class GridModel {
   public void setSession(SlotId slotId, Session session) {
     Require.nonNull("Slot ID", slotId);
 
-    AvailabilityAndNode node = findNode(slotId.getOwningNodeId());
-    if (node == null) {
-      LOG.warning("Grid model and reality have diverged. Unable to find node " + slotId.getOwningNodeId());
-      return;
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      AvailabilityAndNode node = findNode(slotId.getOwningNodeId());
+      if (node == null) {
+        LOG.warning("Grid model and reality have diverged. Unable to find node " + slotId.getOwningNodeId());
+        return;
+      }
+
+      Optional<Slot> maybeSlot = node.status.getSlots().stream()
+        .filter(slot -> slotId.equals(slot.getId()))
+        .findFirst();
+
+      if (!maybeSlot.isPresent()) {
+        LOG.warning("Grid model and reality have diverged. Unable to find slot " + slotId);
+        return;
+      }
+
+      Slot slot = maybeSlot.get();
+      Optional<Session> maybeSession = slot.getSession();
+      if (!maybeSession.isPresent()) {
+        LOG.warning("Grid model and reality have diverged. Slot is not reserved. " + slotId);
+        return;
+      }
+
+      Session current = maybeSession.get();
+      if (!RESERVED.equals(current.getId())) {
+        LOG.warning("Grid model and reality have diverged. Slot has session and is not reserved. " + slotId);
+        return;
+      }
+
+      Slot updated = new Slot(
+        slot.getId(),
+        slot.getStereotype(),
+        session == null ? slot.getLastStarted() : session.getStartTime(),
+        Optional.ofNullable(session));
+
+      amend(node.availability, node.status, updated);
+    } finally {
+      writeLock.unlock();
     }
-
-    Optional<Slot> maybeSlot = node.status.getSlots().stream()
-      .filter(slot -> slotId.equals(slot.getId()))
-      .findFirst();
-
-    if (!maybeSlot.isPresent()) {
-      LOG.warning("Grid model and reality have diverged. Unable to find slot " + slotId);
-      return;
-    }
-
-    Slot slot = maybeSlot.get();
-    Optional<Session> maybeSession = slot.getSession();
-    if (!maybeSession.isPresent()) {
-      LOG.warning("Grid model and reality have diverged. Slot is not reserved. " + slotId);
-      return;
-    }
-
-    Session current = maybeSession.get();
-    if (!RESERVED.equals(current.getId())) {
-      LOG.warning("Gid model and reality have diverged. Slot has session and is not reserved. " + slotId);
-      return;
-    }
-
-    Slot updated = new Slot(
-      slot.getId(),
-      slot.getStereotype(),
-      session == null ? slot.getLastStarted() : session.getStartTime(),
-      Optional.ofNullable(session));
-
-    amend(node.availability, node.status, updated);
   }
 
   private void amend(Availability availability, NodeStatus status, Slot slot) {

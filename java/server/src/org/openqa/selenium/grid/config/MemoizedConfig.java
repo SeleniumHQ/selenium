@@ -96,7 +96,8 @@ public class MemoizedConfig implements Config {
       new Key(section, option, typeOfX.toGenericString(), defaultClassName),
       ignored -> {
         try {
-          return delegate.getClass(section, option, typeOfX, defaultClassName);
+          String clazz = delegate.get(section, option).orElse(defaultClassName);
+          return ClassCreation.callCreateMethod(clazz, typeOfX, this);
         } catch (Exception e) {
           thrown.set(e);
           return null;

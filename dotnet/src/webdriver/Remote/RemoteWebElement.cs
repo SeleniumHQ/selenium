@@ -218,6 +218,38 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets the computed accessible label of this element.
+        /// </summary>
+        public virtual string ComputedAccessibleLabel
+        {
+            get
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", this.Id);
+                Response commandResponse = this.Execute(DriverCommand.GetComputedAccessibleLabel, parameters);
+                return commandResponse.Value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the computed ARIA role for this element.
+        /// </summary>
+        public virtual string ComputedAccessibleRole
+        {
+            get
+            {
+                // TODO: Returning this as a string is incorrect. The W3C WebDriver Specification
+                // needs to be updated to more throughly document the structure of what is returned
+                // by this command. Once that is done, a type-safe class will be created, and will
+                // be returned by this property.
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters.Add("id", this.Id);
+                Response commandResponse = this.Execute(DriverCommand.GetComputedAccessibleRole, parameters);
+                return commandResponse.Value.ToString();
+            }
+        }
+
+        /// <summary>
         /// Gets the coordinates identifying the location of this element using
         /// various frames of reference.
         /// </summary>
@@ -353,15 +385,15 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets the value of the specified attribute for this element.
+        /// Gets the value of the specified attribute or property for this element.
         /// </summary>
-        /// <param name="attributeName">The name of the attribute.</param>
-        /// <returns>The attribute's current value. Returns a <see langword="null"/> if the
-        /// value is not set.</returns>
+        /// <param name="attributeName">The name of the attribute or property.</param>
+        /// <returns>The attribute's or property's current value. Returns a <see langword="null"/>
+        /// if the value is not set.</returns>
         /// <remarks>The <see cref="GetAttribute"/> method will return the current value
-        /// of the attribute, even if the value has been modified after the page has been
-        /// loaded. Note that the value of the following attributes will be returned even if
-        /// there is no explicit attribute on the element:
+        /// of the attribute or property, even if the value has been modified after the page
+        /// has been loaded. Note that the value of the following attributes will be returned
+        /// even if there is no explicit attribute on the element:
         /// <list type="table">
         /// <listheader>
         /// <term>Attribute name</term>
@@ -384,6 +416,9 @@ namespace OpenQA.Selenium.Remote
         /// <description>Input and other UI elements</description>
         /// </item>
         /// </list>
+        /// The method looks both in declared attributes in the HTML markup of the page, and
+        /// in the properties of the elemnt as found when accessing the element's properties
+        /// via JavaScript.
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public virtual string GetAttribute(string attributeName)
@@ -415,13 +450,59 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets the value of a declared HTML attribute of this element.
+        /// </summary>
+        /// <param name="attributeName">The name of the HTML attribugte to get the value of.</param>
+        /// <returns>The HTML attribute's current value. Returns a <see langword="null"/> if the
+        /// value is not set or the declared attribute does not exist.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        /// <remarks>
+        /// As opposed to the <see cref="GetAttribute(string)"/> method, this method
+        /// only returns attriibutes decalred in the element's HTML markup. To access the value
+        /// of an IDL property of the element, either use the <see cref="GetAttribute(string)"/>
+        /// method or the <see cref="GetDomProperty(string)"/> method.
+        /// </remarks>
+        public virtual string GetDomAttribute(string attributeName)
+        {
+            string attributeValue = string.Empty;
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
+            parameters.Add("name", attributeName);
+
+            Response commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
+            if (commandResponse.Value == null)
+            {
+                attributeValue = null;
+            }
+            else
+            {
+                attributeValue = commandResponse.Value.ToString();
+            }
+
+            return attributeValue;
+        }
+
+        /// <summary>
         /// Gets the value of a JavaScript property of this element.
         /// </summary>
-        /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+        /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
         /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
         /// value is not set or the property does not exist.</returns>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        [Obsolete("Use the GetDomProperty method instead.")]
         public virtual string GetProperty(string propertyName)
+        {
+            return this.GetDomProperty(propertyName);
+        }
+
+        /// <summary>
+        /// Gets the value of a JavaScript property of this element.
+        /// </summary>
+        /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
+        /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
+        /// value is not set or the property does not exist.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        public virtual string GetDomProperty(string propertyName)
         {
             string propertyValue = string.Empty;
             Dictionary<string, object> parameters = new Dictionary<string, object>();

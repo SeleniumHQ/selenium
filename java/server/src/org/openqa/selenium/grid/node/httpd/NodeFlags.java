@@ -38,24 +38,28 @@ public class NodeFlags implements HasRoles {
     names = "--max-sessions",
     description = "Maximum number of concurrent sessions.")
   @ConfigValue(section = "node", name = "max-concurrent-sessions", example = "8")
-  public int maxSessions = Runtime.getRuntime().availableProcessors();
+  public int maxSessions;
 
   @Parameter(
       names = {"--detect-drivers"}, arity = 1,
-      description = "Autodetect which drivers are available on the current system, and add them to the node.")
+      description = "Autodetect which drivers are available on the current system, " +
+                    "and add them to the node. Defaults to true.")
   @ConfigValue(section = "node", name = "detect-drivers", example = "true")
-  public Boolean autoconfigure = true;
+  public Boolean autoconfigure;
 
   @Parameter(
     names = {"-I", "--driver-implementation"},
-    description = "Drivers that should be checked. If specified, will skip autoconfiguration. Example: -I \"firefox\" -I \"chrome\"")
+    description = "Drivers that should be checked. If specified, will skip autoconfiguration. " +
+                  "Example: -I \"firefox\" -I \"chrome\"")
   @ConfigValue(section = "node", name = "drivers", example = "[\"firefox\", \"chrome\"]")
   public Set<String> driverNames = new HashSet<>();
 
   @Parameter(
     names = {"--driver-factory"},
-    description = "Mapping of fully qualified class name to a browser configuration that this matches against. " +
-      "`--driver-factory org.openqa.selenium.example.LynxDriverFactory '{\"browserName\": \"lynx\"}')",
+    description = "Mapping of fully qualified class name to a browser configuration that this " +
+                  "matches against. " +
+                  "`--driver-factory org.openqa.selenium.example.LynxDriverFactory " +
+                  "'{\"browserName\": \"lynx\"}')",
     arity = 2,
     variableArity = true)
   @ConfigValue(
@@ -66,7 +70,8 @@ public class NodeFlags implements HasRoles {
 
   @Parameter(
     names = {"--public-url"},
-    description = "Public URL of the Grid as a whole (typically the address of the hub or the router)")
+    description = "Public URL of the Grid as a whole (typically the address of the Hub " +
+                  "or the Router)")
   @ConfigValue(section = "node", name = "grid-url", example = "\"https://grid.example.com\"")
   public URL gridUri;
 

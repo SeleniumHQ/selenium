@@ -22,6 +22,8 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],

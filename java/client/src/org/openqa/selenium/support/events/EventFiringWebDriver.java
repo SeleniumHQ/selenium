@@ -127,7 +127,7 @@ public class EventFiringWebDriver implements
     }
     extractInterfaces(allInterfaces, object.getClass());
 
-    return allInterfaces.toArray(new Class<?>[allInterfaces.size()]);
+    return allInterfaces.toArray(new Class<?>[0]);
   }
 
   private void extractInterfaces(Set<Class<?>> addTo, Class<?> clazz) {

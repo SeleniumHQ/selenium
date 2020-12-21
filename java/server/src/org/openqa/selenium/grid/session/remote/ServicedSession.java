@@ -46,12 +46,15 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 @ManagedService
 public class ServicedSession extends RemoteSession {
+
+  private static final Logger LOG = Logger.getLogger(ServicedSession.class.getName());
 
   private final DriverService service;
 

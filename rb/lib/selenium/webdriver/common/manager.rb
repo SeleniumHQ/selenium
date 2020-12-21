@@ -174,6 +174,7 @@ module Selenium
           domain: cookie['domain'] && strip_port(cookie['domain']),
           expires: cookie['expiry'] && datetime_at(cookie['expiry']),
           same_site: cookie['sameSite'],
+          http_only: cookie['httpOnly'],
           secure: cookie['secure']
         }
       end

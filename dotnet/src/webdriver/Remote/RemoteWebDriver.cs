@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IFindsElement, ITakesScreenshot, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IHasCapabilities, IHasCommandExecutor, IAllowsFileDetection, IHasSessionId, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -77,6 +77,7 @@ namespace OpenQA.Selenium.Remote
         private IApplicationCache appCache;
         private ILocationContext locationContext;
         private IFileDetector fileDetector = new DefaultFileDetector();
+        private RemoteNetwork network;
         private RemoteWebElementFactory elementFactory;
 
         /// <summary>
@@ -139,6 +140,7 @@ namespace OpenQA.Selenium.Remote
             this.StartClient();
             this.StartSession(desiredCapabilities);
             this.elementFactory = new RemoteWebElementFactory(this);
+            this.network = new RemoteNetwork(this);
 
             if (this.capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
             {
@@ -384,9 +386,14 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the <see cref="ICommandExecutor"/> which executes commands for this driver.
         /// </summary>
-        protected ICommandExecutor CommandExecutor
+        public ICommandExecutor CommandExecutor
         {
             get { return this.executor; }
+        }
+
+        internal RemoteNetwork Network
+        {
+            get { return this.network; }
         }
 
         /// <summary>
@@ -523,6 +530,36 @@ namespace OpenQA.Selenium.Remote
         public object ExecuteAsyncScript(string script, params object[] args)
         {
             return this.ExecuteScriptCommand(script, DriverCommand.ExecuteAsyncScript, args);
+        }
+
+        /// <summary>
+        /// Finds an element matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the element.</param>
+        /// <param name="value">The value to use to search for the element.</param>
+        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
+        public virtual IWebElement FindElement(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
+            return this.GetElementFromResponse(commandResponse);
+        }
+
+        /// <summary>
+        /// Finds all elements matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the elements.</param>
+        /// <param name="value">The value to use to search for the elements.</param>
+        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
+        public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("using", mechanism);
+            parameters.Add("value", value);
+            Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
+            return this.GetElementsFromResponse(commandResponse);
         }
 
         /// <summary>
@@ -801,56 +838,26 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds an element matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the element.</param>
-        /// <param name="value">The value to use to search for the element.</param>
-        /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
-        public virtual IWebElement FindElement(string mechanism, string value)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindElement, parameters);
-            return this.GetElementFromResponse(commandResponse);
-        }
-
-        /// <summary>
-        /// Finds all elements matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the elements.</param>
-        /// <param name="value">The value to use to search for the elements.</param>
-        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
-        public virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
-        {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("using", mechanism);
-            parameters.Add("value", value);
-            Response commandResponse = this.Execute(DriverCommand.FindElements, parameters);
-            return this.GetElementsFromResponse(commandResponse);
-        }
-
-        /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
         public Screenshot GetScreenshot()
         {
-            // Get the screenshot as base64.
             Response screenshotResponse = this.Execute(DriverCommand.Screenshot, null);
             string base64 = screenshotResponse.Value.ToString();
-
-            // ... and convert it.
             return new Screenshot(base64);
         }
 
         /// <summary>
-        /// Dispose the RemoteWebDriver Instance
+        /// Gets a <see cref="PrintDocument"/> object representing a PDF-formatted print representation of the page.
         /// </summary>
-        public void Dispose()
+        /// <param name="printOptions">A <see cref="PrintOptions"/> object describing the options of the printed document.</param>
+        /// <returns>The <see cref="PrintDocument"/> object containing the PDF-formatted print representation of the page.</returns>
+        public PrintDocument Print(PrintOptions printOptions)
         {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
+            Response commandResponse = this.Execute(DriverCommand.Print, printOptions.ToDictionary());
+            string base64 = commandResponse.Value.ToString();
+            return new PrintDocument(base64);
         }
 
         /// <summary>
@@ -881,6 +888,15 @@ namespace OpenQA.Selenium.Remote
         public void ResetInputState()
         {
             this.Execute(DriverCommand.CancelActions, null);
+        }
+
+        /// <summary>
+        /// Dispose the RemoteWebDriver Instance
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>

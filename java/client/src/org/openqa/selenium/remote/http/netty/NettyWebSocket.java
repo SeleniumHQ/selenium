@@ -59,9 +59,9 @@ class NettyWebSocket implements WebSocket {
       String wsScheme = "https".equalsIgnoreCase(origUrl.getProtocol()) ? "wss" : "ws";
 
       URI wsUri = new URI(wsScheme, null, origUrl.getHost(), origUrl.getPort(), origUrl.getPath(), null, null);
-      ListenableFuture<org.asynchttpclient.netty.ws.NettyWebSocket> future = client.prepareGet(wsUri.toString())
-        .execute(new WebSocketUpgradeHandler.Builder()
-          .addWebSocketListener(new WebSocketListener() {
+      ListenableFuture<org.asynchttpclient.netty.ws.NettyWebSocket> future =
+        client.prepareGet(wsUri.toString()).execute(
+          new WebSocketUpgradeHandler.Builder().addWebSocketListener(new WebSocketListener() {
             @Override
             public void onOpen(org.asynchttpclient.ws.WebSocket websocket) {
             }
@@ -91,7 +91,10 @@ class NettyWebSocket implements WebSocket {
             }
           }).build());
       socket = future.toCompletableFuture()
-        .exceptionally(t -> {t.printStackTrace(); return null;})
+        .exceptionally(t -> {
+          log.log(Level.WARNING, t.getMessage(), t);
+          return null;
+        })
         .get();
 
       if (socket == null) {

@@ -46,9 +46,11 @@ public class BaseServerFlags implements HasRoles {
   @ConfigValue(section = "server", name = "max-threads", example = "12")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
-  @Parameter(description = "Whether the Selenium server should allow web browser connections from any host", names = "--allow-cors")
+  @Parameter(names = "--allow-cors",
+    description = "Whether the Selenium server should allow web browser connections from any host",
+    arity = 1)
   @ConfigValue(section = "server", name = "allow-cors", example = "true")
-  private Boolean allowCORS = false;
+  private Boolean allowCORS;
 
   @Parameter(description = "Private key for https", names = "--https-private-key")
   @ConfigValue(section = "server", name = "https-private-key", example = "\"/path/to/key.pkcs8\"")

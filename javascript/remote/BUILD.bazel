@@ -24,6 +24,7 @@ closure_js_library(
         "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         "//javascript/atoms:errors",
