@@ -26,6 +26,7 @@ import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 
 import javax.management.AttributeNotFoundException;
@@ -39,6 +40,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -56,6 +58,9 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -68,34 +73,39 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 public class JmxTest {
 
-  private Tracer tracer;
-  private EventBus bus;
   private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
-  private HttpClient.Factory clientFactory;
   private Server<?> server;
   URI nodeUri;
 
   @Before
   public void setup() throws URISyntaxException, MalformedURLException {
-    tracer = DefaultTestTracer.createTracer();
-    bus = new GuavaEventBus();
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
 
     nodeUri = new URI("http://localhost:4444");
     CombinedHandler handler = new CombinedHandler();
-    clientFactory = new RoutableHttpClientFactory(
-        nodeUri.toURL(),
-        handler,
-        HttpClient.Factory.createDefault());
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+      nodeUri.toURL(),
+      handler,
+      HttpClient.Factory.createDefault());
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     Secret secret = new Secret("cheese");
+
     Distributor distributor = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
+      tracer,
+      bus,
+      clientFactory,
         sessions,
+        queuer,
         secret);
     handler.addHandler(distributor);
 
@@ -109,10 +119,15 @@ public class JmxTest {
     handler.addHandler(localNode);
     distributor.add(localNode);
 
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
 
     server = createServer(router);
     server.start();
+  }
+
+  @After
+  public void stopServer() {
+    server.stop();
   }
 
   private static Server<?> createServer(HttpHandler handler) {
@@ -159,7 +174,7 @@ public class JmxTest {
       assertThat(attributeInfo).hasSize(9);
 
       String currentSessions = (String) beanServer.getAttribute(name, "CurrentSessions");
-      assertThat(Integer.parseInt(currentSessions)).isEqualTo(0);
+      assertThat(Integer.parseInt(currentSessions)).isZero();
 
       String maxSessions = (String) beanServer.getAttribute(name, "MaxSessions");
       assertThat(Integer.parseInt(maxSessions)).isEqualTo(1);
@@ -171,7 +186,7 @@ public class JmxTest {
       assertThat(Integer.parseInt(totalSlots)).isEqualTo(1);
 
       String usedSlots = (String) beanServer.getAttribute(name, "UsedSlots");
-      assertThat(Integer.parseInt(usedSlots)).isEqualTo(0);
+      assertThat(Integer.parseInt(usedSlots)).isZero();
 
       String load = (String) beanServer.getAttribute(name, "Load");
       assertThat(Float.parseFloat(load)).isEqualTo(0.0f);
