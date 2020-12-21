@@ -172,19 +172,24 @@ public class SessionQueueGridTest {
   @Test
   public void shouldBeAbleToClearQueue() {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
-    ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(2);
+    ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     // The grid has two slots with same capabilities.
     // Two sessions can be created successfully.
-    // Third session request will be retried.
+    // Third session request will be waiting in the queue since Grid is full.
     try {
       Callable<HttpResponse> sessionCreationTask = () -> createSession(caps);
 
-      List<Future<HttpResponse>> futureList = fixedThreadPoolService.invokeAll(Arrays.asList(
-        sessionCreationTask,
-        sessionCreationTask,
-        sessionCreationTask));
+      HttpResponse firstSessionResponse =
+        fixedThreadPoolService.submit(sessionCreationTask).get(20, SECONDS);
+      assertThat(firstSessionResponse.getStatus()).isEqualTo(HTTP_OK);
+
+      HttpResponse secondSessionResponse =
+        fixedThreadPoolService.submit(sessionCreationTask).get(20, SECONDS);
+      assertThat(secondSessionResponse.getStatus()).isEqualTo(HTTP_OK);
+
+      Future<HttpResponse> thirdSessionrFuture = fixedThreadPoolService.submit(sessionCreationTask);
 
       Callable<HttpResponse> clearTask = () -> {
         HttpRequest request = new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
@@ -197,22 +202,8 @@ public class SessionQueueGridTest {
       // Clearing the new session request will cancel the third session request in the queue.
       clearQueueResponse.get(10, SECONDS);
 
-      int failureCount = 0;
-      int successCount = 0;
-      for (Future<HttpResponse> future : futureList) {
-        HttpResponse httpResponse = future.get(40, SECONDS);
-
-        if (httpResponse.getStatus() == HTTP_OK) {
-          successCount++;
-        }
-        if (httpResponse.getStatus() == HTTP_INTERNAL_ERROR) {
-          failureCount++;
-        }
-      }
-
-      assertEquals(failureCount, 1);
-      assertEquals(successCount, 2);
-
+      HttpResponse thirdSessionResponse = thirdSessionrFuture.get();
+      assertThat(thirdSessionResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
     } catch (InterruptedException e) {
       fail("Unable to create session. Thread Interrupted");
     } catch (ExecutionException e) {
