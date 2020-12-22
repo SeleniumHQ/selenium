@@ -74,6 +74,7 @@ public class JmxTest {
 
   private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private Server<?> server;
+  private NewSessionQueueOptions queueOptions;
   URI nodeUri;
 
   @Before
@@ -91,7 +92,7 @@ public class JmxTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    NewSessionQueueOptions queueOptions =
+    queueOptions =
       new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
 
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
@@ -224,10 +225,10 @@ public class JmxTest {
       assertThat(attributeInfoArray).hasSize(2);
 
       String requestTimeout = (String) beanServer.getAttribute(name, "RequestTimeoutSeconds");
-      assertThat(Long.parseLong(requestTimeout)).isEqualTo(300L);
+      assertThat(Long.parseLong(requestTimeout)).isEqualTo(queueOptions.getRequestTimeoutSeconds());
 
       String retryInterval = (String) beanServer.getAttribute(name, "RetryIntervalSeconds");
-      assertThat(Long.parseLong(retryInterval)).isEqualTo(5L);
+      assertThat(Long.parseLong(retryInterval)).isEqualTo(queueOptions.getRetryIntervalSeconds());
     } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
       | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
