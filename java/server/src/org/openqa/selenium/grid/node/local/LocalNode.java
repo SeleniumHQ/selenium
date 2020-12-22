@@ -222,12 +222,12 @@ public class LocalNode extends Node {
   }
 
   @ManagedAttribute(name = "RemoteNodeUri")
-  public URI getExternalURI() {
+  public URI getExternalUri() {
     return this.getUri();
   }
 
   @ManagedAttribute(name = "GridUri")
-  public URI getGridURI() {
+  public URI getGridUri() {
     return this.gridUri;
   }
 

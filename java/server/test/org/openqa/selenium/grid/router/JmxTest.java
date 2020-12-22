@@ -59,7 +59,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class JmxTest {
 
   private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
-  private MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
+  private final MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
 
   @Test
   public void shouldBeAbleToRegisterBaseServerConfig() {
@@ -77,8 +77,8 @@ public class JmxTest {
       MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
       assertThat(attributeInfoArray).hasSize(3);
 
-      String urlValue = (String) beanServer.getAttribute(name, "URL");
-      assertThat(urlValue).isEqualTo(baseServerOptions.getExternalUri().toString());
+      String uriValue = (String) beanServer.getAttribute(name, "Uri");
+      assertThat(uriValue).isEqualTo(baseServerOptions.getExternalUri().toString());
 
     } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
       | MalformedObjectNameException e) {

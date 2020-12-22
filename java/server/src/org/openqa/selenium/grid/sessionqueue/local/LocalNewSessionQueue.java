@@ -90,12 +90,12 @@ public class LocalNewSessionQueue extends NewSessionQueue {
 
   @ManagedAttribute(name = "NewSessionQueueSize")
   public int getQueueSize() {
-    Lock writeLock = lock.writeLock();
-    writeLock.lock();
+    Lock readLock = lock.readLock();
+    readLock.lock();
     try {
       return sessionRequests.size();
     } finally {
-      writeLock.unlock();
+      readLock.unlock();
     }
   }
 

@@ -28,10 +28,8 @@ import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -82,6 +80,7 @@ public class BaseServerOptions {
     return count;
   }
 
+  @ManagedAttribute(name = "Uri")
   public URI getExternalUri() {
     // Assume the host given is addressable if it's been set
     String host = getHostname()
@@ -108,15 +107,6 @@ public class BaseServerOptions {
         null);
     } catch (URISyntaxException e) {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
-    }
-  }
-
-  @ManagedAttribute(name = "URL")
-  public URL getExternalUrl() {
-    try {
-      return getExternalUri().toURL();
-    } catch (MalformedURLException e) {
-      throw new ConfigException("Cannot convert URI to URL " + e.getMessage());
     }
   }
 
