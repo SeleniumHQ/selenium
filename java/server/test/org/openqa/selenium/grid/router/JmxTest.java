@@ -75,14 +75,15 @@ public class JmxTest {
   private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private Server<?> server;
   private NewSessionQueueOptions queueOptions;
-  URI nodeUri;
+  private static URI nodeUri;
+  private MBeanServer beanServer;
 
   @Before
   public void setup() throws URISyntaxException, MalformedURLException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
 
-    nodeUri = new URI("http://localhost:4444");
+    nodeUri = new URI("http://example.com:4444");
     CombinedHandler handler = new CombinedHandler();
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
       nodeUri.toURL(),
@@ -128,6 +129,7 @@ public class JmxTest {
 
     server = createServer(router);
     server.start();
+    beanServer = ManagementFactory.getPlatformMBeanServer();
   }
 
   @After
@@ -145,7 +147,6 @@ public class JmxTest {
 
   @Test
   public void shouldBeAbleToRegisterBaseServerConfig() {
-    MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
     try {
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=Config,name=BaseServerConfig");
       MBeanInfo info = beanServer.getMBeanInfo(name);
@@ -169,7 +170,6 @@ public class JmxTest {
 
   @Test
   public void shouldBeAbleToRegisterNode() {
-    MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
     try {
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=Node,name=LocalNode");
       MBeanInfo info = beanServer.getMBeanInfo(name);
@@ -214,7 +214,6 @@ public class JmxTest {
 
   @Test
   public void shouldBeAbleToRegisterSessionQueuerServerConfig() {
-    MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
     try {
       ObjectName name = new ObjectName(
         "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
@@ -241,7 +240,6 @@ public class JmxTest {
 
   @Test
   public void shouldBeAbleToRegisterSessionQueue() {
-    MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
     try {
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue," +
         "name=LocalSessionQueue");

@@ -96,7 +96,7 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=Node,name=LocalNode",
-    description = "Node running the webdriver sessions.")
+  description = "Node running the webdriver sessions.")
 public class LocalNode extends Node {
 
   private static final Json JSON = new Json();
@@ -223,12 +223,12 @@ public class LocalNode extends Node {
 
   @ManagedAttribute(name = "RemoteNodeUri")
   public URI getExternalURI() {
-    return externalUri;
+    return this.externalUri;
   }
 
   @ManagedAttribute(name = "GridUri")
   public URI getGridURI() {
-    return gridUri;
+    return this.gridUri;
   }
 
   @ManagedAttribute(name = "NodeId")

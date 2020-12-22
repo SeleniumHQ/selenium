@@ -24,7 +24,6 @@ import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig",
   description = "New session queue config")
