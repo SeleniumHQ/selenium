@@ -56,7 +56,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
-    description = "New session queue")
+  description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue {
 
   private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());

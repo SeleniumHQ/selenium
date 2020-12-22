@@ -27,7 +27,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig",
-    description = "New session queue config")
+  description = "New session queue config")
 public class NewSessionQueueOptions {
 
   private static final String SESSIONS_QUEUE_SECTION = "sessionqueue";

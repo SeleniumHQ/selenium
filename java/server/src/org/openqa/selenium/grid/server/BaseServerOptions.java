@@ -116,7 +116,7 @@ public class BaseServerOptions {
     try {
       return getExternalUri().toURL();
     } catch (MalformedURLException e) {
-      throw new ConfigException("Cannot convert URI to URL" + e.getMessage());
+      throw new ConfigException("Cannot convert URI to URL " + e.getMessage());
     }
   }
 

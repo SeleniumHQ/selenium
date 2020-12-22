@@ -26,7 +26,6 @@ import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.time.Instant;
 
 import javax.management.AttributeNotFoundException;
@@ -42,7 +41,6 @@ import javax.management.ReflectionException;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -59,6 +57,7 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
@@ -73,7 +72,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 public class JmxTest {
 
-  private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
+  private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private Server<?> server;
   URI nodeUri;
 
@@ -89,14 +88,23 @@ public class JmxTest {
       handler,
       HttpClient.Factory.createDefault());
 
+    NewSessionQueueOptions queueOptions =
+      new NewSessionQueueOptions(
+        new MapConfig(
+          ImmutableMap.of("sessionqueue", ImmutableMap.of(
+            "session-retry-interval", 2,
+            "session-request-timeout", 2))));
+
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
+
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
       bus,
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
+      queueOptions.getSessionRequestRetryInterval(),
+      queueOptions.getSessionRequestTimeout());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    handler.addHandler((queuer));
 
     Secret secret = new Secret("cheese");
 
@@ -104,18 +112,18 @@ public class JmxTest {
       tracer,
       bus,
       clientFactory,
-        sessions,
-        queuer,
-        secret);
+      sessions,
+      queuer,
+      secret);
     handler.addHandler(distributor);
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
-            id,
-            nodeUri,
-            new ImmutableCapabilities(),
-            caps,
-            Instant.now()))).build();
+      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
+        id,
+        nodeUri,
+        new ImmutableCapabilities(),
+        caps,
+        Instant.now()))).build();
     handler.addHandler(localNode);
     distributor.add(localNode);
 
@@ -132,10 +140,10 @@ public class JmxTest {
 
   private static Server<?> createServer(HttpHandler handler) {
     return new NettyServer(
-        new BaseServerOptions(
-            new MapConfig(
-                ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
-        handler);
+      new BaseServerOptions(
+        new MapConfig(
+          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+      handler);
   }
 
   @Test
@@ -153,7 +161,7 @@ public class JmxTest {
       assertThat(urlValue).isEqualTo(server.getUrl().toString());
 
     } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
-        | MalformedObjectNameException e) {
+      | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
     } catch (MBeanException e) {
       fail("MBeanServer exception");
@@ -198,7 +206,7 @@ public class JmxTest {
       assertThat(gridUri).isEqualTo(nodeUri.toString());
 
     } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
-        | MalformedObjectNameException e) {
+      | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
     } catch (MBeanException e) {
       fail("MBeanServer exception");
@@ -207,16 +215,55 @@ public class JmxTest {
     }
   }
 
-  @Ignore
   @Test
   public void shouldBeAbleToRegisterSessionQueuerServerConfig() {
-    // TODO
+    MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
+    try {
+      ObjectName name = new ObjectName(
+        "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
+      MBeanInfo info = beanServer.getMBeanInfo(name);
+      assertThat(info).isNotNull();
+
+      MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
+      assertThat(attributeInfoArray).hasSize(2);
+
+      String requestTimeout = (String) beanServer.getAttribute(name, "RequestTimeoutSeconds");
+      assertThat(Long.parseLong(requestTimeout)).isEqualTo(2L);
+
+      String retryInterval = (String) beanServer.getAttribute(name, "RetryIntervalSeconds");
+      assertThat(Long.parseLong(retryInterval)).isEqualTo(2L);
+    } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
+      | MalformedObjectNameException e) {
+      fail("Could not find the registered MBean");
+    } catch (MBeanException e) {
+      fail("MBeanServer exception");
+    } catch (AttributeNotFoundException e) {
+      fail("Could not find the registered MBean's attribute");
+    }
   }
 
-  @Ignore
   @Test
   public void shouldBeAbleToRegisterSessionQueue() {
-    // TODO
+    MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
+    try {
+      ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue," +
+        "name=LocalSessionQueue");
+      MBeanInfo info = beanServer.getMBeanInfo(name);
+      assertThat(info).isNotNull();
+
+      MBeanAttributeInfo[] attributeInfoArray = info.getAttributes();
+      assertThat(attributeInfoArray).hasSize(1);
+
+      String size = (String) beanServer.getAttribute(name, "NewSessionQueueSize");
+      assertThat(Integer.parseInt(size)).isEqualTo(0);
+    } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
+      | MalformedObjectNameException e) {
+      fail("Could not find the registered MBean");
+    } catch (MBeanException e) {
+      fail("MBeanServer exception");
+    } catch (AttributeNotFoundException e) {
+      fail("Could not find the registered MBean's attribute");
+    }
   }
 }
 

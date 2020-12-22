@@ -70,6 +70,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/config",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
