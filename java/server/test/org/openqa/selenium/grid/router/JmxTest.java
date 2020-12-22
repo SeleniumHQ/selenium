@@ -72,7 +72,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 public class JmxTest {
 
-  private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
+  private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private Server<?> server;
   URI nodeUri;
 
@@ -88,15 +88,11 @@ public class JmxTest {
       handler,
       HttpClient.Factory.createDefault());
 
-    NewSessionQueueOptions queueOptions =
-      new NewSessionQueueOptions(
-        new MapConfig(
-          ImmutableMap.of("sessionqueue", ImmutableMap.of(
-            "session-retry-interval", 2,
-            "session-request-timeout", 2))));
-
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
+
+    NewSessionQueueOptions queueOptions =
+      new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
 
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -104,7 +100,7 @@ public class JmxTest {
       queueOptions.getSessionRequestRetryInterval(),
       queueOptions.getSessionRequestTimeout());
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    handler.addHandler((queuer));
+    handler.addHandler(queuer);
 
     Secret secret = new Secret("cheese");
 
@@ -228,10 +224,10 @@ public class JmxTest {
       assertThat(attributeInfoArray).hasSize(2);
 
       String requestTimeout = (String) beanServer.getAttribute(name, "RequestTimeoutSeconds");
-      assertThat(Long.parseLong(requestTimeout)).isEqualTo(2L);
+      assertThat(Long.parseLong(requestTimeout)).isEqualTo(300L);
 
       String retryInterval = (String) beanServer.getAttribute(name, "RetryIntervalSeconds");
-      assertThat(Long.parseLong(retryInterval)).isEqualTo(2L);
+      assertThat(Long.parseLong(retryInterval)).isEqualTo(5L);
     } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
       | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");

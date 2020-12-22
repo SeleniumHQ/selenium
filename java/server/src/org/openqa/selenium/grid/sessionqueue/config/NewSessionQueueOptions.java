@@ -45,7 +45,7 @@ public class NewSessionQueueOptions {
   }
 
   public Duration getSessionRequestTimeout() {
-    int timeout = config.getInt(SESSIONS_QUEUE_SECTION, "session-request-timeout")
+    long timeout = config.getInt(SESSIONS_QUEUE_SECTION, "session-request-timeout")
       .orElse(DEFAULT_REQUEST_TIMEOUT);
 
     if (timeout <= 0) {
@@ -55,7 +55,7 @@ public class NewSessionQueueOptions {
   }
 
   public Duration getSessionRequestRetryInterval() {
-    int interval = config.getInt(SESSIONS_QUEUE_SECTION, "session-retry-interval")
+    long interval = config.getInt(SESSIONS_QUEUE_SECTION, "session-retry-interval")
       .orElse(DEFAULT_RETRY_INTERVAL);
 
     if (interval <= 0) {
@@ -66,12 +66,12 @@ public class NewSessionQueueOptions {
 
   @ManagedAttribute(name = "RequestTimeoutSeconds")
   public long getRequestTimeoutSeconds() {
-    return getSessionRequestTimeout().get(ChronoUnit.SECONDS);
+    return getSessionRequestTimeout().getSeconds();
   }
 
   @ManagedAttribute(name = "RetryIntervalSeconds")
   public long getRetryIntervalSeconds() {
-    return getSessionRequestRetryInterval().get(ChronoUnit.SECONDS);
+    return getSessionRequestRetryInterval().getSeconds();
   }
 
   public NewSessionQueue getSessionQueue() {
