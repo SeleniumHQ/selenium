@@ -1,18 +1,41 @@
+// <copyright file="RemoteNetwork.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.DevTools;
 
 namespace OpenQA.Selenium.Remote
 {
+    /// <summary>
+    /// Provides methods for monitoring, intercepting, and modifying network requests and responses.
+    /// </summary>
     public class RemoteNetwork : INetwork
     {
         private Lazy<DevToolsSession> session;
         private List<NetworkRequestHandler> requestHandlers = new List<NetworkRequestHandler>();
         private List<NetworkAuthenticationHandler> authenticationHandlers = new List<NetworkAuthenticationHandler>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteNetwork"/> class.
+        /// </summary>
+        /// <param name="driver">The <see cref="IWebDriver"/> instance on which the network should be monitored.</param>
         public RemoteNetwork(IWebDriver driver)
         {
             // Use of Lazy<T> means this exception won't be thrown until the user first
@@ -30,9 +53,20 @@ namespace OpenQA.Selenium.Remote
             });
         }
 
-        public event EventHandler<NetworkResponseRecievedEventArgs> NetworkResponseReceived;
+        /// <summary>
+        /// Occurs when a browser sends a network request.
+        /// </summary>
         public event EventHandler<NetworkRequestSentEventArgs> NetworkRequestSent;
 
+        /// <summary>
+        /// Occurs when a browser receives a network response.
+        /// </summary>
+        public event EventHandler<NetworkResponseRecievedEventArgs> NetworkResponseReceived;
+
+        /// <summary>
+        /// Asynchronously starts monitoring for network traffic.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task StartMonitoring()
         {
             this.session.Value.Domains.Network.RequestPaused += OnRequestPaused;
@@ -43,6 +77,10 @@ namespace OpenQA.Selenium.Remote
             await this.session.Value.Domains.Network.DisableNetworkCaching();
         }
 
+        /// <summary>
+        /// Asynchronously stops monitoring for network traffic.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task StopMonitoring()
         {
             this.session.Value.Domains.Network.ResponsePaused -= OnResponsePaused;
@@ -51,6 +89,11 @@ namespace OpenQA.Selenium.Remote
             await this.session.Value.Domains.Network.EnableNetworkCaching();
         }
 
+        /// <summary>
+        /// Adds a <see cref="NetworkRequestHandler"/> to examine incoming network requests,
+        /// and optionally modify the request or provide a response. 
+        /// </summary>
+        /// <param name="handler">The <see cref="NetworkRequestHandler"/> to add.</param>
         public void AddRequestHandler(NetworkRequestHandler handler)
         {
             if (handler == null)
@@ -71,11 +114,19 @@ namespace OpenQA.Selenium.Remote
             this.requestHandlers.Add(handler);
         }
 
+        /// <summary>
+        /// Clears all added <see cref="NetworkRequestHandler"/> instances.
+        /// </summary>
         public void ClearRequestHandlers()
         {
             this.requestHandlers.Clear();
         }
 
+        /// <summary>
+        /// Adds a <see cref="NetworkAuthenticationHandler"/> to supply authentication
+        /// credentials for network requests.
+        /// </summary>
+        /// <param name="handler">The <see cref="NetworkAuthenticationHandler"/> to add.</param>
         public void AddAuthenticationHandler(NetworkAuthenticationHandler handler)
         {
             if (handler == null)
@@ -102,6 +153,9 @@ namespace OpenQA.Selenium.Remote
             this.authenticationHandlers.Add(handler);
         }
 
+        /// <summary>
+        /// Clears all added <see cref="NetworkAuthenticationHandler"/> instances.
+        /// </summary>
         public void ClearAuthenticationHandlers()
         {
             this.authenticationHandlers.Clear();
