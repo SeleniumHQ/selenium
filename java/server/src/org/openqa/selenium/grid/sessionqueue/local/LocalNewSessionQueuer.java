@@ -33,11 +33,9 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 public class LocalNewSessionQueuer extends NewSessionQueuer {
 
-  private static final Logger LOG = Logger.getLogger(LocalNewSessionQueuer.class.getName());
   private final EventBus bus;
   public final NewSessionQueue sessionRequests;
 

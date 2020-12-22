@@ -155,6 +155,20 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
         .getValue());
   }
 
+  @Override
+  public String getAriaRole() {
+    return stringValueOf(
+      execute(DriverCommand.GET_ELEMENT_ARIA_ROLE(id))
+        .getValue());
+  }
+
+  @Override
+  public String getAccessibleName() {
+    return stringValueOf(
+      execute(DriverCommand.GET_ELEMENT_ACCESSIBLE_NAME(id))
+        .getValue());
+  }
+
   private static String stringValueOf(Object o) {
     if (o == null) {
       return null;

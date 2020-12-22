@@ -20,6 +20,7 @@ package org.openqa.selenium.json;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -34,6 +35,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.StringReader;
 import java.time.Instant;
@@ -59,6 +61,7 @@ import static org.openqa.selenium.logging.LogType.CLIENT;
 import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.logging.LogType.SERVER;
 
+@Category(UnitTests.class)
 public class JsonTest {
 
   @Test

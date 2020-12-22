@@ -25,11 +25,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -287,7 +287,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(SAFARI)
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage() {
     driver.get(pages.framesetPage);
@@ -456,12 +456,12 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
-  @NotYetImplemented(value = CHROMIUMEDGE, reason = "Throws NoSuchElementException")
+  @NotYetImplemented(value = EDGIUM, reason = "Throws NoSuchElementException")
   @Ignore(IE)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 

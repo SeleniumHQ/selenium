@@ -20,6 +20,7 @@ package org.openqa.selenium.docker;
 import org.openqa.selenium.internal.Require;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,5 +66,13 @@ public class Container {
     LOG.info("Inspecting " + getId());
 
     return protocol.inspectContainer(getId());
+  }
+
+  public ContainerLogs getLogs() {
+    if (this.running) {
+      LOG.info("Getting logs " + getId());
+      return protocol.getContainerLogs(getId());
+    }
+    return new ContainerLogs(getId(), new ArrayList<>());
   }
 }

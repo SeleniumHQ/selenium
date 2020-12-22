@@ -23,10 +23,12 @@ import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import com.google.common.io.Files;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +41,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Category(UnitTests.class)
 public class EdgeOptionsTest {
 
   @Test

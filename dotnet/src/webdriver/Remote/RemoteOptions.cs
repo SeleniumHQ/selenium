@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteOptions.cs" company="WebDriver Committers">
+// <copyright file="RemoteOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -67,6 +67,11 @@ namespace OpenQA.Selenium.Remote
         public ITimeouts Timeouts()
         {
             return new RemoteTimeouts(this.driver);
+        }
+
+        public INetwork Network
+        {
+            get { return this.driver.Network; }
         }
     }
 }

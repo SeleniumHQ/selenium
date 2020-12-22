@@ -19,12 +19,12 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));
     int windowHeight = driver.manage().window().getSize().getHeight();
@@ -112,11 +112,11 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(EDGE_HTML)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
+  @NotYetImplemented(EDGIUM)
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
@@ -127,11 +127,11 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(EDGE_HTML)
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
+  @NotYetImplemented(EDGIUM)
   public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));
     driver.switchTo().frame("ifr");
@@ -141,8 +141,8 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
-  @NotYetImplemented(EDGE)
+  @Ignore(LEGACY_FIREFOX_XPI)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
     assertThat(getLocationInViewPort(By.id("fixed")).getY()).isEqualTo(0);
@@ -169,9 +169,9 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(value = CHROME, reason = "WebKit bug 28804")
-  @NotYetImplemented(value = CHROMIUMEDGE, reason = "WebKit bug 28804")
+  @NotYetImplemented(value = EDGIUM, reason = "WebKit bug 28804")
   @NotYetImplemented(SAFARI)
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(pages.rectanglesPage);
 

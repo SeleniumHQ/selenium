@@ -17,9 +17,12 @@
 
 package org.openqa.selenium.remote.http.reactor;
 
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.HttpClientTestBase;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class ReactorClientTest extends HttpClientTestBase {
 
   @Override

@@ -45,6 +45,12 @@ module Selenium
           opts[:url] ||= "http://#{Platform.localhost}:4444/wd/hub"
           super
         end
+
+        def print_page(**options)
+          options[:page_ranges] &&= Array(options[:page_ranges])
+
+          @bridge.print_page(options)
+        end
       end # Driver
     end # Remote
   end # WebDriver

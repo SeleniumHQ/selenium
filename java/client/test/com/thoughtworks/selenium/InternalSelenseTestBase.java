@@ -175,21 +175,21 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       case CHROME:
         return new ChromeOptions();
 
-      case EDGE:
+      case EDGE_HTML:
         return new EdgeHtmlOptions();
 
-      case CHROMIUMEDGE:
+      case EDGIUM:
         return new EdgeOptions();
 
       case IE:
         return new InternetExplorerOptions();
 
+      case LEGACY_FIREFOX_XPI:
       case FIREFOX:
-      case MARIONETTE:
         return new FirefoxOptions();
 
+      case LEGACY_OPERA:
       case OPERA:
-      case OPERABLINK:
         return new OperaOptions();
 
       case SAFARI:

@@ -145,11 +145,11 @@ bot.locators.relative.near_ = function (selector, opt_distance) {
     distance = opt_distance;
   } else if (goog.isNumber(selector['distance'])) {
     distance = /** @type {number} */ (selector['distance']);
-    delete selector['distance'];
+    // delete selector['distance'];
   }
 
   if (!distance) {
-    distance = 50;
+    distance = 100;
   }
 
   /**
@@ -179,29 +179,39 @@ bot.locators.relative.near_ = function (selector, opt_distance) {
     // we would be comparing the right hand side of 2 to the left hand side
     // of 1. Similar logic happens for top and bottom.
 
-    var rhs1 = rect1.left + rect1.width;
-    var rhs2 = rect2.left + rect2.width;
-    var bottom1 = rect1.top - rect1.height;
-    var bottom2 = rect2.top - rect2.height;
+    // Distance from left edge to right edge
+    var leftDistance = Math.abs(rect1.left - (rect2.left + rect2.width));
 
-    /** @type {function():boolean} */
-    var verticalProximity = function () {
-      return Math.abs(bottom1 - rect2.top) <= distance ||
-        Math.abs(bottom2 - rect1.top) <= distance;
-    };
+    // Distance from right edge to left edge
+    var rightDistance = Math.abs((rect1.left + rect1.width) - rect2.left);
 
-    // Is 1 to the right of 2?
-    if (Math.abs(rhs1 - rect2.left) <= distance) {
-      return verticalProximity();
+    // Distance from top to bottom
+    var topDistance = Math.abs(rect1.top - (rect2.top + rect2.height));
+
+    // Distance from bottom to top
+    var bottomDistance = Math.abs((rect1.top + rect1.height) - rect2.top);
+
+    var horizontallyClose = leftDistance <= distance || rightDistance <= distance;
+    var verticallyClose = topDistance <= distance || bottomDistance <= distance;
+
+    if (horizontallyClose && verticallyClose) {
+      return true;
     }
 
-    // Is 1 to the left of 2?
-    if (Math.abs(rhs2 - rect1.left) <= distance) {
-      return verticalProximity();
-    }
+    // Distance from centre points
+    var x1 = rect1.left + (rect1.width / 2);
+    var y1 = rect1.top + (rect1.height / 2);
 
-    return false;
+    var x2 = rect2.left + (rect2.width / 2);
+    var y2 = rect2.top + (rect2.height / 2);
+
+    var xDistance = Math.abs(x1 - x2);
+    var yDistance = Math.abs(y1 - y2);
+
+    var dist = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    return dist <= distance;
   };
+
   return func;
 };
 

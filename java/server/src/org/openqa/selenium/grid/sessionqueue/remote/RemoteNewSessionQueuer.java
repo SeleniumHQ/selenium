@@ -18,7 +18,8 @@
 package org.openqa.selenium.grid.sessionqueue.remote;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.*;
+import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_ID_HEADER;
+import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -41,7 +42,6 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public class RemoteNewSessionQueuer extends NewSessionQueuer {

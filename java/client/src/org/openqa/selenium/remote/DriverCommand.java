@@ -200,6 +200,14 @@ public interface DriverCommand {
   static CommandPayload GET_ELEMENT_VALUE_OF_CSS_PROPERTY(String id, String name) {
     return new CommandPayload(GET_ELEMENT_VALUE_OF_CSS_PROPERTY, ImmutableMap.of("id", id, "propertyName", name));
   }
+  String GET_ELEMENT_ARIA_ROLE = "getElementAriaRole";
+  static CommandPayload GET_ELEMENT_ARIA_ROLE(String id) {
+    return new CommandPayload(GET_ELEMENT_ARIA_ROLE, ImmutableMap.of("id", id));
+  }
+  String GET_ELEMENT_ACCESSIBLE_NAME = "getElementAccessibleName";
+  static CommandPayload GET_ELEMENT_ACCESSIBLE_NAME(String id) {
+    return new CommandPayload(GET_ELEMENT_ACCESSIBLE_NAME, ImmutableMap.of("id", id));
+  }
   String ELEMENT_EQUALS = "elementEquals";
 
   String SCREENSHOT = "screenshot";

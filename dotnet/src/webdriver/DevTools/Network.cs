@@ -39,7 +39,7 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Occurs when a network response is received.
         /// </summary>
-        public event EventHandler<ResponseReceivedEventArgs> ResponseReceived;
+        public event EventHandler<ResponsePausedEventArgs> ResponsePaused;
 
         /// <summary>
         /// Asynchronously disables network caching.
@@ -81,16 +81,23 @@ namespace OpenQA.Selenium.DevTools
         /// Asynchronously continues an intercepted network request.
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
-        /// <param name="responseData">The <see cref="HttpResponseData"/> with which to respond to the request</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task ContinueRequest(HttpRequestData requestData, HttpResponseData responseData);
+        public abstract Task ContinueRequest(HttpRequestData requestData);
 
         /// <summary>
-        /// Asynchronously contines an intercepted network call without modification.
+        /// Asynchronously continues an intercepted network request and returns the specified response.
+        /// </summary>
+        /// <param name="requestData">The <see cref="HttpRequestData"/> of the request.</param>
+        /// <param name="responseData">The <see cref="HttpResponseData"/> with which to respond to the request</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public abstract Task ContinueRequestWithResponse(HttpRequestData requestData, HttpResponseData responseData);
+
+        /// <summary>
+        /// Asynchronously contines an intercepted network request without modification.
         /// </summary>
         /// <param name="requestData">The <see cref="HttpRequestData"/> of the network request.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public abstract Task ContinueWithoutModification(HttpRequestData requestData);
+        public abstract Task ContinueRequestWithoutModification(HttpRequestData requestData);
 
         /// <summary>
         /// Asynchronously continues an intercepted network call using authentication.
@@ -107,6 +114,20 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="requestId">The ID of the network request for which to cancel authentication.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task CancelAuth(string requestId);
+
+        /// <summary>
+        /// Asynchronously adds the response body to the provided <see cref="HttpResponseData"/> object.
+        /// </summary>
+        /// <param name="responseData">The <see cref="HttpResponseData"/> object to which to add the response body.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public abstract Task AddResponseBody(HttpResponseData responseData);
+
+        /// <summary>
+        /// Asynchronously contines an intercepted network response without modification.
+        /// </summary>
+        /// <param name="responseData">The <see cref="HttpResponseData"/> of the network response.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public abstract Task ContinueResponseWithoutModification(HttpResponseData responseData);
 
         /// <summary>
         /// Raises the AuthRequired event.
@@ -135,12 +156,12 @@ namespace OpenQA.Selenium.DevTools
         /// <summary>
         /// Raises the ResponseReceived event.
         /// </summary>
-        /// <param name="e">An <see cref="ResponseReceivedEventArgs"/> that contains the event data.</param>
-        protected virtual void OnResponseReceived(ResponseReceivedEventArgs e)
+        /// <param name="e">An <see cref="ResponsePausedEventArgs"/> that contains the event data.</param>
+        protected virtual void OnResponsePaused(ResponsePausedEventArgs e)
         {
-            if (this.ResponseReceived != null)
+            if (this.ResponsePaused != null)
             {
-                this.ResponseReceived(this, e);
+                this.ResponsePaused(this, e);
             }
         }
     }

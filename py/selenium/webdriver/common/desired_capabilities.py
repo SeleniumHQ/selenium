@@ -50,6 +50,7 @@ class DesiredCapabilities(object):
     FIREFOX = {
         "browserName": "firefox",
         "acceptInsecureCerts": True,
+        "moz:debuggerAddress": True,
     }
 
     INTERNETEXPLORER = {

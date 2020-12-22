@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -71,7 +71,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testAnElementFoundInADifferentFrameViaJsShouldHaveSameId() {
     driver.get(pages.missedJsReferencePage);
 

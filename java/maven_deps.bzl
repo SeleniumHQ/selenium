@@ -9,7 +9,14 @@ def selenium_java_deps():
         artifacts = [
             "com.beust:jcommander:1.78",
             "com.github.javaparser:javaparser-core:3.17.0",
-            "com.github.spotbugs:spotbugs:4.1.4",
+            maven.artifact(
+                group = "com.github.spotbugs",
+                artifact = "spotbugs",
+                version = "4.1.4",
+                exclusions = [
+                    "org.slf4j:slf4j-api",
+                ],
+            ),
             "com.google.code.gson:gson:2.8.6",
             "com.google.guava:guava:30.0-jre",
             "com.google.auto:auto-common:0.11",
@@ -65,6 +72,7 @@ def selenium_java_deps():
             "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.5.1",
             "org.mockito:mockito-core:3.6.0",
+            "org.slf4j:slf4j-api:1.7.30",
             "org.slf4j:slf4j-jdk14:1.7.30",
             "org.testng:testng:7.3.0",
             "org.zeromq:jeromq:0.5.2",

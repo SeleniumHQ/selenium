@@ -26,11 +26,14 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.time.Duration;
 
+@Category(UnitTests.class)
 public class EdgeHtmlDriverServiceTest {
 
   @Test

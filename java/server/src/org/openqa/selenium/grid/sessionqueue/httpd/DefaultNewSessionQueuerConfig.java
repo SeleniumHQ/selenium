@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.grid.sessionqueue.httpd;
 
-    import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap;
 
-    import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.MapConfig;
 
 class DefaultNewSessionQueuerConfig extends MapConfig {
 

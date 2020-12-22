@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.http;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -33,6 +34,8 @@ import org.openqa.selenium.internal.Require;
 public interface HttpClient extends HttpHandler {
 
   WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
+
+  default void close() throws IOException {}
 
   interface Factory {
 

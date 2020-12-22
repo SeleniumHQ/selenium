@@ -215,27 +215,22 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
         "The underlying command executor returned a null response.");
     }
 
-    if (response.getValue() == null) {
+    Object responseValue = response.getValue();
+
+    if (responseValue == null) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response without payload: " +
         response.toString());
     }
 
-    if (!(response.getValue() instanceof Map)) {
+    if (!(responseValue instanceof Map)) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response with a non well formed payload: " +
         response.toString());
     }
 
-    Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
-    MutableCapabilities returnedCapabilities = new MutableCapabilities();
-    for (Map.Entry<String, Object> entry : rawCapabilities.entrySet()) {
-      // Handle the platform later
-      if (PLATFORM.equals(entry.getKey()) || PLATFORM_NAME.equals(entry.getKey())) {
-        continue;
-      }
-      returnedCapabilities.setCapability(entry.getKey(), entry.getValue());
-    }
+    Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
+    MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
     String platformString = (String) rawCapabilities.getOrDefault(PLATFORM,
                                                                   rawCapabilities.get(PLATFORM_NAME));
     Platform platform;

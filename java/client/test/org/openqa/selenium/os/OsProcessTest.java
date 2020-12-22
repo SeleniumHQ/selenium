@@ -25,12 +25,15 @@ import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
 import org.junit.Test;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.build.BazelBuild;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 public class OsProcessTest {
 
-  private static String testExecutable = "java/client/test/org/openqa/selenium/os/echo";
+  private final static String testExecutable = findExecutable(
+    "java/client/test/org/openqa/selenium/os/echo");
 
   private OsProcess process = new OsProcess(testExecutable);
 
@@ -39,7 +42,7 @@ public class OsProcessTest {
     String key = null;
     String value = "Bar";
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> process.setEnvironmentVariable(key, value));
+      .isThrownBy(() -> process.setEnvironmentVariable(key, value));
     assertThat(process.getEnvironment()).doesNotContainValue(value);
   }
 
@@ -48,7 +51,7 @@ public class OsProcessTest {
     String key = "Foo";
     String value = null;
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> process.setEnvironmentVariable(key, value));
+      .isThrownBy(() -> process.setEnvironmentVariable(key, value));
     assertThat(process.getEnvironment()).doesNotContainKey(key);
   }
 
@@ -91,7 +94,7 @@ public class OsProcessTest {
   public void canDetectSuccess() throws InterruptedException {
     assumeThat(isOnTravis()).as("Operation not permitted on travis").isFalse();
     OsProcess process = new OsProcess(
-        testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
+      testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     process.executeAsync();
     process.waitFor();
     assertThat(process.getExitCode()).isEqualTo(0);
@@ -102,5 +105,14 @@ public class OsProcessTest {
     process.executeAsync();
     process.waitFor();
     assertThat(process.getExitCode()).isNotEqualTo(0);
+  }
+
+  private static String findExecutable(String relativePath) {
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      File workingDir = BazelBuild.findBinRoot(new File(".").getAbsoluteFile());
+      return new File(workingDir, relativePath).getAbsolutePath();
+    } else {
+      return relativePath;
+    }
   }
 }

@@ -20,10 +20,13 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 /**
  * Tests WebDriver's Point class.
  */
+@Category(UnitTests.class)
 public class PointTest {
 
   @Test

@@ -27,6 +27,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -41,6 +42,7 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +57,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Category(UnitTests.class)
 public class W3CRemoteDriverTest {
 
   @Test

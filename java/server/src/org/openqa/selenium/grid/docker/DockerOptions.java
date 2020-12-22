@@ -23,6 +23,8 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.docker.ContainerId;
+import org.openqa.selenium.docker.ContainerInfo;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.Image;
@@ -51,6 +53,8 @@ import static org.openqa.selenium.Platform.WINDOWS;
 public class DockerOptions {
 
   private static final String DOCKER_SECTION = "docker";
+  private static final String CONTAINER_ASSETS_PATH = "/opt/selenium/assets";
+  private static final String DEFAULT_VIDEO_IMAGE = "selenium/video:latest";
 
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
@@ -94,26 +98,28 @@ public class DockerOptions {
     }
   }
 
-  private boolean isEnabled(HttpClient.Factory clientFactory) {
+  private boolean isEnabled(Docker docker) {
     if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
       return false;
     }
 
     // Is the daemon up and running?
-    URI uri = getDockerUri();
-    HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri));
-
-    return new Docker(client).isSupported();
+    return docker.isSupported();
   }
 
   public Map<Capabilities, Collection<SessionFactory>> getDockerSessionFactories(
     Tracer tracer,
     HttpClient.Factory clientFactory) {
 
-    if (!isEnabled(clientFactory)) {
+    HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
+    Docker docker = new Docker(client);
+
+    if (!isEnabled(docker)) {
       LOG.warning("Unable to reach the Docker daemon.");
       return ImmutableMap.of();
     }
+
+    DockerAssetsPath assetsPath = getAssetsPath(docker);
 
     List<String> allConfigs = config.getAll(DOCKER_SECTION, "configs")
         .orElseThrow(() -> new DockerException("Unable to find docker configs"));
@@ -130,37 +136,26 @@ public class DockerOptions {
       kinds.put(imageName, stereotype);
     }
 
-    HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
-    Docker docker = new Docker(client);
-
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
-    if (isVideoRecordingAvailable()) {
-      loadImages(docker, videoImage.getName());
-    }
+    loadImages(docker, videoImage.getName());
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
     ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
     kinds.forEach((name, caps) -> {
       Image image = docker.getImage(name);
       for (int i = 0; i < maxContainerCount; i++) {
-        if (isVideoRecordingAvailable()) {
-          factories.put(
+        factories.put(
+          caps,
+          new DockerSessionFactory(
+            tracer,
+            clientFactory,
+            docker,
+            getDockerUri(),
+            image,
             caps,
-            new DockerSessionFactory(
-              tracer,
-              clientFactory,
-              docker,
-              getDockerUri(),
-              image,
-              caps,
-              videoImage,
-              getAssetsPath()));
-        } else {
-          factories.put(
-            caps,
-            new DockerSessionFactory(tracer, clientFactory, docker, getDockerUri(), image, caps));
-        }
+            videoImage,
+            assetsPath));
       }
       LOG.info(String.format(
           "Mapping %s to docker image %s %d times",
@@ -171,27 +166,33 @@ public class DockerOptions {
     return factories.build().asMap();
   }
 
-  private boolean isVideoRecordingAvailable() {
-    return config.get(DOCKER_SECTION, "video-image").isPresent()
-           && config.get(DOCKER_SECTION, "assets-path").isPresent();
-  }
-
   private Image getVideoImage(Docker docker) {
-    Optional<String> videoImage = config.get(DOCKER_SECTION, "video-image");
-    return videoImage.map(docker::getImage).orElse(null);
+    String videoImage = config.get(DOCKER_SECTION, "video-image").orElse(DEFAULT_VIDEO_IMAGE);
+    return docker.getImage(videoImage);
   }
 
-  private DockerSessionAssetsPath getAssetsPath() {
-    Optional<String> hostAssetsPath = config.get(DOCKER_SECTION, "assets-path");
-    Optional<String> containerAssetsPath = config.get(DOCKER_SECTION, "container-assets-path");
-    if (hostAssetsPath.isPresent() && containerAssetsPath.isPresent()) {
-      return new DockerSessionAssetsPath(hostAssetsPath.get(), containerAssetsPath.get());
-    } else if (hostAssetsPath.isPresent()) {
-      // If only the host assets path is present, we assume this is not running inside a container.
-      return new DockerSessionAssetsPath(hostAssetsPath.get(), hostAssetsPath.get());
+  private DockerAssetsPath getAssetsPath(Docker docker) {
+    Optional<String> assetsPath = config.get(DOCKER_SECTION, "assets-path");
+    if (assetsPath.isPresent()) {
+      // We assume the user is not running the Selenium Server inside a Docker container
+      // Therefore, we have access to the assets path on the host
+      return new DockerAssetsPath(assetsPath.get(), assetsPath.get());
     }
-    // We should not reach this point because the invocation to this method is
-    // guarded by `isVideoRecordingAvailable()`
+    // Selenium Server is running inside a Docker container, we will inspect that container
+    // to get the mounted volume and use that. If no volume was mounted, no assets will be saved.
+    // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
+    String hostname = System.getenv("HOSTNAME");
+    ContainerInfo info = docker.inspect(new ContainerId(hostname));
+    Optional<Map<String, Object>> mountedVolume = info.getMountedVolumes()
+      .stream()
+      .filter(
+        mounted ->
+          CONTAINER_ASSETS_PATH.equalsIgnoreCase(String.valueOf(mounted.get("Destination"))))
+      .findFirst();
+    if (mountedVolume.isPresent()) {
+      String hostPath = String.valueOf(mountedVolume.get().get("Source"));
+      return new DockerAssetsPath(hostPath, CONTAINER_ASSETS_PATH);
+    }
     return null;
   }
 

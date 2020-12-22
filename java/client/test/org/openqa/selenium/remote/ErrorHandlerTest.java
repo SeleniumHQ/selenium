@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.ImeActivationFailedException;
@@ -48,11 +49,13 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class ErrorHandlerTest {
   private ErrorHandler handler;
 

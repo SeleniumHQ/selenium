@@ -58,6 +58,10 @@ public class Point {
     return Objects.hash(x, y);
   }
 
+  /**
+   * @deprecated Use {{@link #moveBy(int, int)} instead}
+   */
+  @Deprecated
   public void move(int newX, int newY) {
     x = newX;
     y = newY;

@@ -24,11 +24,11 @@ import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Before;
@@ -131,7 +131,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
@@ -206,7 +206,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/653")
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/653")
   @NotYetImplemented(SAFARI)
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     driver.findElement(By.id("embeddedBlock")).click();
@@ -240,7 +240,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")
+  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502636")
   @NotYetImplemented(SAFARI)
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
@@ -257,8 +257,8 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
+  @Ignore(LEGACY_FIREFOX_XPI)
+  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big.html");
@@ -350,11 +350,11 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @Ignore(EDGIUM)
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/wrapped_overlapping_elements.html"));
 

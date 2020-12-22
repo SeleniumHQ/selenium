@@ -47,6 +47,12 @@ module Selenium
           @bridge.send_command(cmd: cmd, params: params)
         end
 
+        def print_page(**options)
+          options[:page_ranges] &&= Array(options[:page_ranges])
+
+          @bridge.print_page(options)
+        end
+
         private
 
         def debugger_address

@@ -5,7 +5,8 @@ load(
     "merged_assembly",
     "generated_assembly_info",
     "nuget_package",
-    "nuget_push")
+    "nuget_push",
+    "devtools_version_targets",)
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -16,6 +17,7 @@ load(
     "SE_VERSION",
     "SUPPORTED_NET_FRAMEWORKS",
     "SUPPORTED_NET_STANDARD_VERSIONS",
+    "SUPPORTED_DEVTOOLS_VERSIONS",
 )
 
 generated_assembly_info(
@@ -48,11 +50,7 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/cdp:generate-v84",
-        "//dotnet/src/webdriver/cdp:generate-v85",
-        "//dotnet/src/webdriver/cdp:generate-v86",
-        "//dotnet/src/webdriver/cdp:generate-v87",
-    ],
+    ] + devtools_version_targets(),
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -97,11 +95,7 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/cdp:generate-v84",
-        "//dotnet/src/webdriver/cdp:generate-v85",
-        "//dotnet/src/webdriver/cdp:generate-v86",
-        "//dotnet/src/webdriver/cdp:generate-v87",
-    ],
+    ] + devtools_version_targets(),
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -137,11 +131,7 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/cdp:generate-v84",
-        "//dotnet/src/webdriver/cdp:generate-v85",
-        "//dotnet/src/webdriver/cdp:generate-v86",
-        "//dotnet/src/webdriver/cdp:generate-v87",
-    ],
+    ] + devtools_version_targets(),
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
@@ -187,11 +177,7 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/cdp:generate-v84",
-        "//dotnet/src/webdriver/cdp:generate-v85",
-        "//dotnet/src/webdriver/cdp:generate-v86",
-        "//dotnet/src/webdriver/cdp:generate-v87",
-    ],
+    ] + devtools_version_targets(),
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [

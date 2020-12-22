@@ -75,6 +75,8 @@ public class LoggingOptions {
 
   public static final Json JSON = new Json();
 
+  private Level level = Level.INFO;
+
   private final Config config;
 
   public LoggingOptions(Config config) {
@@ -93,14 +95,34 @@ public class LoggingOptions {
     return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
   }
 
+  public void setLoggingLevel() {
+    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(Level.INFO.getName());
+
+    if (Level.ALL.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.ALL;
+    } else if (Level.CONFIG.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.CONFIG;
+    } else if (Level.FINE.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINE;
+    } else if (Level.FINER.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINER;
+    } else if (Level.FINEST.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINEST;
+    } else if (Level.OFF.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.OFF;
+    } else if (Level.SEVERE.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.SEVERE;
+    } else if (Level.WARNING.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.WARNING;
+    }
+  }
+
   public Tracer getTracer() {
     boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing").orElse(true);
     if (!tracingEnabled) {
       LOG.info("Using null tracer");
       return new NullTracer();
     }
-
-    LOG.info("Using OpenTelemetry for tracing");
 
     Tracer localTracer = tracer;
     if (localTracer == null) {
@@ -209,18 +231,22 @@ public class LoggingOptions {
 
     // Now configure the root logger, since everything should flow up to that
     Logger logger = logManager.getLogger("");
+    setLoggingLevel();
+    logger.setLevel(level);
     OutputStream out = getOutputStream();
     String encoding = getLogEncoding();
 
     if (isUsingPlainLogs()) {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter());
+      handler.setLevel(level);
       configureLogEncoding(logger, encoding, handler);
     }
 
     if (isUsingStructuredLogging()) {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
+      handler.setLevel(level);
       configureLogEncoding(logger, encoding, handler);
     }
   }

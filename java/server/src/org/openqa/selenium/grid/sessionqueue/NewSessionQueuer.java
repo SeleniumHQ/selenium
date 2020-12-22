@@ -48,11 +48,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
-  private static final Logger LOG = Logger.getLogger(NewSessionQueuer.class.getName());
   private final Route routes;
   protected final Tracer tracer;
 

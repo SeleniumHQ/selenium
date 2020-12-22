@@ -171,6 +171,30 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   String getAttribute(String name);
 
   /**
+   * Gets result of computing the WAI-ARIA role of element.
+   * <p>
+   * See <a href="https://www.w3.org/TR/webdriver/#get-computed-role">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @return the WAI-ARIA role of the element.
+   */
+  default String getAriaRole() {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Gets result of a Accessible Name and Description Computation for the Accessible Name of the element.
+   * <p>
+   * See <a href="https://www.w3.org/TR/webdriver/#get-computed-label">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @return the accessible name of the element.
+   */
+  default String getAccessibleName() {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
    * Determine whether or not this element is selected or not. This operation only applies to input
    * elements such as checkboxes, options in a select and radio buttons.
    * For more information on which elements this method supports,

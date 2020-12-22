@@ -37,10 +37,10 @@ class ExtensionConnection(RemoteConnection):
         HOST = host
         timeout = int(timeout)
 
-        if self.binary is None:
+        if not self.binary:
             self.binary = FirefoxBinary()
 
-        if HOST is None:
+        if not HOST:
             HOST = "127.0.0.1"
 
         PORT = utils.free_port()
