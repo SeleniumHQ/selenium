@@ -23,11 +23,10 @@ import static org.junit.Assert.fail;
 import com.google.common.collect.ImmutableMap;
 
 import java.lang.management.ManagementFactory;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
-
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
@@ -39,7 +38,6 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -47,96 +45,32 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.netty.server.NettyServer;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 public class JmxTest {
 
   private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
-  private Server<?> server;
-  private NewSessionQueueOptions queueOptions;
-  private URI nodeUri;
-  private MBeanServer beanServer;
-
-  @Before
-  public void setup() throws URISyntaxException, MalformedURLException {
-    Tracer tracer = DefaultTestTracer.createTracer();
-    EventBus bus = new GuavaEventBus();
-
-    nodeUri = new URI("http://example.com:4444");
-    CombinedHandler handler = new CombinedHandler();
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-
-    SessionMap sessions = new LocalSessionMap(tracer, bus);
-    handler.addHandler(sessions);
-
-    queueOptions =
-      new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
-
-    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      queueOptions.getSessionRequestRetryInterval(),
-      queueOptions.getSessionRequestTimeout());
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    handler.addHandler(queuer);
-
-    Secret secret = new Secret("cheese");
-
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      sessions,
-      queuer,
-      secret);
-    handler.addHandler(distributor);
-
-    LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
-      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
-        id,
-        nodeUri,
-        new ImmutableCapabilities(),
-        caps,
-        Instant.now()))).build();
-    handler.addHandler(localNode);
-
-    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
-
-    server = createServer(router);
-    beanServer = ManagementFactory.getPlatformMBeanServer();
-  }
-
-  private static Server<?> createServer(HttpHandler handler) {
-    return new NettyServer(
-      new BaseServerOptions(
-        new MapConfig(
-          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
-      handler);
-  }
+  private MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
 
   @Test
   public void shouldBeAbleToRegisterBaseServerConfig() {
     try {
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=Config,name=BaseServerConfig");
+      new JMXHelper().unregister(name);
+
+      BaseServerOptions baseServerOptions = new BaseServerOptions(
+        new MapConfig(
+          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))));
+
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 
@@ -144,7 +78,7 @@ public class JmxTest {
       assertThat(attributeInfoArray).hasSize(3);
 
       String urlValue = (String) beanServer.getAttribute(name, "URL");
-      assertThat(urlValue).isEqualTo(server.getUrl().toString());
+      assertThat(urlValue).isEqualTo(baseServerOptions.getExternalUri().toString());
 
     } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
       | MalformedObjectNameException e) {
@@ -157,9 +91,27 @@ public class JmxTest {
   }
 
   @Test
-  public void shouldBeAbleToRegisterNode() {
+  public void shouldBeAbleToRegisterNode() throws URISyntaxException {
     try {
+      URI nodeUri = new URI("http://example.com:1234");
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=Node,name=LocalNode");
+      new JMXHelper().unregister(name);
+
+      Tracer tracer = DefaultTestTracer.createTracer();
+      EventBus bus = new GuavaEventBus();
+
+      Secret secret = new Secret("cheese");
+
+      LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, secret)
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(
+          id,
+          nodeUri,
+          new ImmutableCapabilities(),
+          caps,
+          Instant.now()))).build();
+
+      assertThat(localNode).isNotNull();
+
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 
@@ -205,6 +157,11 @@ public class JmxTest {
     try {
       ObjectName name = new ObjectName(
         "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
+
+      new JMXHelper().unregister(name);
+
+      NewSessionQueueOptions queueOptions =
+        new NewSessionQueueOptions(new MapConfig(ImmutableMap.of()));
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 
@@ -231,6 +188,19 @@ public class JmxTest {
     try {
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue," +
         "name=LocalSessionQueue");
+
+      new JMXHelper().unregister(name);
+
+      Tracer tracer = DefaultTestTracer.createTracer();
+      EventBus bus = new GuavaEventBus();
+
+      LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+        tracer,
+        bus,
+        Duration.ofSeconds(2),
+        Duration.ofSeconds(2));
+
+      assertThat(localNewSessionQueue).isNotNull();
       MBeanInfo info = beanServer.getMBeanInfo(name);
       assertThat(info).isNotNull();
 
