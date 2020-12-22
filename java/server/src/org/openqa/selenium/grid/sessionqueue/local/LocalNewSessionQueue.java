@@ -29,6 +29,11 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpRequest;
+
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
+
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
@@ -50,6 +55,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
+  description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue {
 
   private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());
@@ -65,6 +72,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     super(tracer, retryInterval, requestTimeout);
     this.bus = Require.nonNull("Event bus", bus);
     Runtime.getRuntime().addShutdownHook(shutdownHook);
+    new JMXHelper().register(this);
   }
 
   public static NewSessionQueue create(Config config) {
@@ -78,6 +86,17 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   @Override
   public boolean isReady() {
     return bus.isReady();
+  }
+
+  @ManagedAttribute(name = "NewSessionQueueSize")
+  public int getQueueSize() {
+    Lock readLock = lock.readLock();
+    readLock.lock();
+    try {
+      return sessionRequests.size();
+    } finally {
+      readLock.unlock();
+    }
   }
 
   @Override
