@@ -255,7 +255,7 @@ public class JmxTest {
       assertThat(attributeInfoArray).hasSize(1);
 
       String size = (String) beanServer.getAttribute(name, "NewSessionQueueSize");
-      assertThat(Integer.parseInt(size)).isEqualTo(0);
+      assertThat(Integer.parseInt(size)).isZero();
     } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
       | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
