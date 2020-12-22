@@ -2325,6 +2325,16 @@ class WebElement {
   }
 
   /**
+   * Get the computed WAI-ARIA role of element.
+   *
+   * @return {!Promise<string>} A promise that will be
+   *     resolved with the element's computed role.
+   */
+  getAriaRole() {
+    return this.execute_(new command.Command(command.Name.GET_COMPUTED_ROLE))
+  }
+
+  /**
    * Returns an object describing an element's location, in pixels relative to
    * the document element, and the element's size in pixels.
    *
