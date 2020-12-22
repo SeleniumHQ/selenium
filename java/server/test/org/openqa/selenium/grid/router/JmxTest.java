@@ -39,7 +39,6 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -62,7 +61,6 @@ import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -75,7 +73,7 @@ public class JmxTest {
   private final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private Server<?> server;
   private NewSessionQueueOptions queueOptions;
-  private static URI nodeUri;
+  private URI nodeUri;
   private MBeanServer beanServer;
 
   @Before
@@ -85,10 +83,7 @@ public class JmxTest {
 
     nodeUri = new URI("http://example.com:4444");
     CombinedHandler handler = new CombinedHandler();
-    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      nodeUri.toURL(),
-      handler,
-      HttpClient.Factory.createDefault());
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
@@ -123,18 +118,11 @@ public class JmxTest {
         caps,
         Instant.now()))).build();
     handler.addHandler(localNode);
-    distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
 
     server = createServer(router);
-    server.start();
     beanServer = ManagementFactory.getPlatformMBeanServer();
-  }
-
-  @After
-  public void stopServer() {
-    server.stop();
   }
 
   private static Server<?> createServer(HttpHandler handler) {
