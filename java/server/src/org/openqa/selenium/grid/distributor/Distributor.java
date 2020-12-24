@@ -155,8 +155,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(
-    HttpRequest request) throws SessionNotCreatedException {
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(HttpRequest request)
+    throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.create_session_response");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -199,7 +199,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
         if (!hostsWithCaps) {
           String errorMessage = String.format(
-            "No host supports the capabilities required: %s",
+            "No Node supports the required capabilities: %s",
             payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
           SessionNotCreatedException exception = new SessionNotCreatedException(errorMessage);
           span.setAttribute(AttributeKey.ERROR.getKey(), true);
@@ -212,7 +212,7 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
           return Either.left(exception);
         }
 
-        // Find a host that supports the capabilities present in the new session
+        // Find a Node that supports the capabilities present in the new session
         Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getCapabilities(), model);
         if (!slotIds.isEmpty()) {
           selected = Optional.of(reserve(slotIds.iterator().next(), firstRequest));
