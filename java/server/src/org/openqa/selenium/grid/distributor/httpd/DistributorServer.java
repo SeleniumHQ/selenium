@@ -52,7 +52,6 @@ import static org.openqa.selenium.remote.http.Route.get;
 public class DistributorServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(DistributorServer.class.getName());
-  private static final String LOCAL_DISTRIBUTOR_SERVER = "org.openqa.selenium.grid.distributor.local.LocalDistributor";
 
   @Override
   public String getName() {
@@ -88,7 +87,7 @@ public class DistributorServer extends TemplateGridServerCommand {
   protected Handlers createHandlers(Config config) {
     DistributorOptions distributorOptions = new DistributorOptions(config);
 
-    Distributor distributor = distributorOptions.getDistributor(LOCAL_DISTRIBUTOR_SERVER);
+    Distributor distributor = distributorOptions.getDistributor();
 
     HttpHandler readinessCheck = req -> {
       boolean ready = distributor.isReady();

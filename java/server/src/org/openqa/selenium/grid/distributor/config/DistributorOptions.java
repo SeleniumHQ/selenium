@@ -24,12 +24,12 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 public class DistributorOptions {
 
   private static final String DISTRIBUTOR_SECTION = "distributor";
-  private static final Logger LOG = Logger.getLogger(DistributorOptions.class.getName());
+  private static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
+    "org.openqa.selenium.grid.distributor.local.LocalDistributor";
 
   private final Config config;
 
@@ -74,7 +74,11 @@ public class DistributorOptions {
     }
   }
 
-  public Distributor getDistributor(String defaultClass) {
-    return config.getClass(DISTRIBUTOR_SECTION, "implementation", Distributor.class, defaultClass);
+  public Distributor getDistributor() {
+    return config.getClass(
+      DISTRIBUTOR_SECTION,
+      "implementation",
+      Distributor.class,
+      DEFAULT_DISTRIBUTOR_IMPLEMENTATION);
   }
 }

@@ -142,13 +142,16 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     Json json = new Json();
     routes = Route.combine(
       post("/se/grid/distributor/node")
-          .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
+          .to(() ->
+                new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
           .with(requiresSecret),
       post("/se/grid/distributor/node/{nodeId}/drain")
-          .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .to((Map<String, String> params) ->
+                new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
           .with(requiresSecret),
       delete("/se/grid/distributor/node/{nodeId}")
-          .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .to(params ->
+                new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
           .with(requiresSecret),
       get("/se/grid/distributor/status")
           .to(() -> new GetDistributorStatus(this))
@@ -173,7 +176,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       span.addEvent("Session request received by the distributor", attributeMap);
 
       if (!iterator.hasNext()) {
-        SessionNotCreatedException exception = new SessionNotCreatedException("No capabilities found");
+        SessionNotCreatedException exception =
+          new SessionNotCreatedException("No capabilities found in session request payload");
         EXCEPTION.accept(attributeMap, exception);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
           EventAttribute.setValue("Unable to create session. No capabilities found: " +
@@ -200,7 +204,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         if (!hostsWithCaps) {
           String errorMessage = String.format(
             "No Node supports the required capabilities: %s",
-            payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
+            payload.stream().map(Capabilities::toString)
+              .collect(Collectors.joining(", ")));
           SessionNotCreatedException exception = new SessionNotCreatedException(errorMessage);
           span.setAttribute(AttributeKey.ERROR.getKey(), true);
           span.setStatus(Status.ABORTED);
@@ -244,7 +249,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         String errorMessage =
             String.format(
                 "Unable to find provider for session: %s",
-                payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
+                payload.stream().map(Capabilities::toString)
+                  .collect(Collectors.joining(", ")));
         SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
         return Either.left(exception);
       }
@@ -264,7 +270,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
       EXCEPTION.accept(attributeMap, e);
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
+        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " +
+                                e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(new SessionNotCreatedException(e.getMessage(), e));
@@ -283,7 +290,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
   protected abstract Set<NodeStatus> getAvailableNodes();
 
-  protected abstract Supplier<CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request);
+  protected abstract Supplier<CreateSessionResponse> reserve(SlotId slot,
+                                                             CreateSessionRequest request);
 
   @Override
   public boolean test(HttpRequest httpRequest) {
