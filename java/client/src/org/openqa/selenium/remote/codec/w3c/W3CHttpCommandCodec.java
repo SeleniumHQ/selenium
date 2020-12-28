@@ -154,6 +154,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(GET_ALERT_TEXT, get(alert + "/text"));
     defineCommand(SET_ALERT_VALUE, post(alert + "/text"));
 
+    defineCommand(PRINT_PAGE, post(sessionId + "/print"));
+
     defineCommand(UPLOAD_FILE, post(sessionId + "/se/file"));
 
     defineCommand(GET_ACTIVE_ELEMENT, get(sessionId + "/element/active"));

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.printoptions;
 
+import java.util.Map;
+
 public class PrintOptions {
 
   public enum PrintOrientation {
@@ -88,5 +90,9 @@ public class PrintOptions {
 
   public PageMargin getPageMargin() {
     return this.pageMargin;
+  }
+
+  public Map<String, String> to_json() {
+    return null;
   }
 }

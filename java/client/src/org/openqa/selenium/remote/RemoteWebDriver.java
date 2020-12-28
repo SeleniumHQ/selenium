@@ -54,6 +54,7 @@ import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
+import org.openqa.selenium.printoptions.PrintOptions;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
@@ -333,6 +334,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     }
   }
 
+  public String printPage(PrintOptions options) {
+    Response response = execute(DriverCommand.PRINT_PAGE(options));
+
+    return (String) response.getValue();
+  }
   @Override
   public List<WebElement> findElements(By locator) {
     if (locator instanceof By.StandardLocator) {
