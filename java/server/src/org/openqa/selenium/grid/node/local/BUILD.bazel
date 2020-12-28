@@ -25,6 +25,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/node/config",
         "//java/server/src/org/openqa/selenium/grid/security",
         "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/remote/server/jmx",
         artifact("com.google.guava:guava"),
     ],
 )

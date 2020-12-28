@@ -19,9 +19,14 @@ package org.openqa.selenium.grid.sessionqueue.config;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.time.Duration;
 
+@ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig",
+  description = "New session queue config")
 public class NewSessionQueueOptions {
 
   private static final String SESSIONS_QUEUE_SECTION = "sessionqueue";
@@ -35,10 +40,11 @@ public class NewSessionQueueOptions {
 
   public NewSessionQueueOptions(Config config) {
     this.config = config;
+    new JMXHelper().register(this);
   }
 
   public Duration getSessionRequestTimeout() {
-    int timeout = config.getInt(SESSIONS_QUEUE_SECTION, "session-request-timeout")
+    long timeout = config.getInt(SESSIONS_QUEUE_SECTION, "session-request-timeout")
       .orElse(DEFAULT_REQUEST_TIMEOUT);
 
     if (timeout <= 0) {
@@ -48,13 +54,23 @@ public class NewSessionQueueOptions {
   }
 
   public Duration getSessionRequestRetryInterval() {
-    int interval = config.getInt(SESSIONS_QUEUE_SECTION, "session-retry-interval")
+    long interval = config.getInt(SESSIONS_QUEUE_SECTION, "session-retry-interval")
       .orElse(DEFAULT_RETRY_INTERVAL);
 
     if (interval <= 0) {
       return Duration.ofSeconds(DEFAULT_RETRY_INTERVAL);
     }
     return Duration.ofSeconds(interval);
+  }
+
+  @ManagedAttribute(name = "RequestTimeoutSeconds")
+  public long getRequestTimeoutSeconds() {
+    return getSessionRequestTimeout().getSeconds();
+  }
+
+  @ManagedAttribute(name = "RetryIntervalSeconds")
+  public long getRetryIntervalSeconds() {
+    return getSessionRequestRetryInterval().getSeconds();
   }
 
   public NewSessionQueue getSessionQueue() {
