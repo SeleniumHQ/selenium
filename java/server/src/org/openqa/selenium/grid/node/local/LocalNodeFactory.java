@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.node.local;
 
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -63,7 +62,8 @@ public class LocalNodeFactory {
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
-    nodeOptions.getSessionFactories(info -> createSessionFactory(tracer, clientFactory, builders, info))
+    nodeOptions
+      .getSessionFactories(caps -> createSessionFactory(tracer, clientFactory, builders, caps))
       .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
 
     if (config.getAll("docker", "configs").isPresent()) {
@@ -78,21 +78,19 @@ public class LocalNodeFactory {
     Tracer tracer,
     HttpClient.Factory clientFactory,
     List<DriverService.Builder<?, ?>> builders,
-    WebDriverInfo info) {
+    Capabilities capabilities) {
     ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
 
-    Capabilities caps = info.getCanonicalCapabilities();
-
     builders.stream()
-      .filter(builder -> builder.score(caps) > 0)
+      .filter(builder -> builder.score(capabilities) > 0)
       .forEach(builder -> {
-        DriverService.Builder<?, ?> freePortBuilder = builder.usingAnyFreePort();
+        DriverService.Builder<?, ?> driverServiceBuilder = builder.usingAnyFreePort();
         toReturn.add(new DriverServiceSessionFactory(
           tracer,
           clientFactory,
-          info.getCanonicalCapabilities(),
-          c -> freePortBuilder.score(c) > 0,
-          freePortBuilder));
+          capabilities,
+          c -> driverServiceBuilder.score(c) > 0,
+          driverServiceBuilder));
       });
 
     return toReturn.build();

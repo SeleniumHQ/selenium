@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
@@ -62,16 +61,18 @@ public class NodeOptionsTest {
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
-    List<WebDriverInfo> reported = new ArrayList<>();
-    new NodeOptions(config).getSessionFactories(info -> {
-      reported.add(info);
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(caps -> {
+      reported.add(caps);
       return Collections.emptySet();
     });
 
-    String expected = new ChromeDriverInfo().getDisplayName();
+    ChromeDriverInfo chromeDriverInfo = new ChromeDriverInfo();
+    String expected = chromeDriverInfo.getDisplayName();
 
     reported.stream()
-      .filter(info -> expected.equals(info.getDisplayName()))
+      .filter(chromeDriverInfo::isSupporting)
+      .filter(caps -> expected.equalsIgnoreCase(caps.getBrowserName()))
       .findFirst()
       .orElseThrow(() -> new AssertionError("Unable to find Chrome info"));
   }
@@ -84,9 +85,9 @@ public class NodeOptionsTest {
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
-    List<WebDriverInfo> reported = new ArrayList<>();
-    new NodeOptions(config).getSessionFactories(info -> {
-      reported.add(info);
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(caps -> {
+      reported.add(caps);
       return Collections.emptySet();
     });
 
@@ -106,9 +107,9 @@ public class NodeOptionsTest {
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
-    List<WebDriverInfo> reported = new ArrayList<>();
-    new NodeOptions(config).getSessionFactories(info -> {
-      reported.add(info);
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(caps -> {
+      reported.add(caps);
       return Collections.emptySet();
     });
 
@@ -122,9 +123,9 @@ public class NodeOptionsTest {
   @Test
   public void canConfigureNodeWithoutDriverDetection() {
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "false")));
-    List<WebDriverInfo> reported = new ArrayList<>();
-    new NodeOptions(config).getSessionFactories(info -> {
-      reported.add(info);
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(caps -> {
+      reported.add(caps);
       return Collections.emptySet();
     });
 
@@ -139,10 +140,10 @@ public class NodeOptionsTest {
                      "detect-drivers", "false",
                      "drivers", "[chrome]"
                    )));
-    List<WebDriverInfo> reported = new ArrayList<>();
+    List<Capabilities> reported = new ArrayList<>();
     try {
-      new NodeOptions(config).getSessionFactories(info -> {
-        reported.add(info);
+      new NodeOptions(config).getSessionFactories(caps -> {
+        reported.add(caps);
         return Collections.emptySet();
       });
       fail("Should have not executed 'getSessionFactories' successfully");
@@ -157,9 +158,9 @@ public class NodeOptionsTest {
   public void detectDriversByDefault() {
     Config config = new MapConfig(emptyMap());
 
-    List<WebDriverInfo> reported = new ArrayList<>();
-    new NodeOptions(config).getSessionFactories(info -> {
-      reported.add(info);
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(caps -> {
+      reported.add(caps);
       return Collections.emptySet();
     });
 
@@ -191,9 +192,9 @@ public class NodeOptionsTest {
     assertThat(sessionFactories.iterator().next()).isInstanceOf(SessionFactory.class);
   }
 
-  private Condition<? super List<? extends WebDriverInfo>> supporting(String name) {
+  private Condition<? super List<? extends Capabilities>> supporting(String name) {
     return new Condition<>(
-      infos -> infos.stream().anyMatch(info -> name.equals(info.getCanonicalCapabilities().getBrowserName())),
+      caps -> caps.stream().anyMatch(cap -> name.equals(cap.getBrowserName())),
       "supporting %s",
       name);
   }
