@@ -36,7 +36,7 @@ module Selenium
 
         def initialize(opts = {})
           listener = opts.delete(:listener)
-          @bridge = Bridge.handshake(opts)
+          @bridge = Bridge.handshake(**opts)
           if @bridge.dialect == :oss
             extend DriverExtensions::HasTouchScreen
             extend DriverExtensions::HasLocation
