@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.After;
 import org.junit.Test;
+import org.junit.Before;
+import org.openqa.selenium.printoptions.PageSize;
 import org.openqa.selenium.printoptions.PrintOptions;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -29,6 +31,14 @@ public class PrintCommandTest extends JUnit4TestBase {
   private ChromeDriver driver = null;
   private static String MAGIC_STRING = "JVBER";
 
+  @Before
+  public void setUp() {
+    ChromeOptions options = new ChromeOptions();
+    options.setHeadless(true);
+
+    driver = new ChromeDriver(options);
+    driver.get(pages.printPage);
+  }
   @After
   public void tearDown() {
     if (driver != null) {
@@ -39,11 +49,29 @@ public class PrintCommandTest extends JUnit4TestBase {
   @Test
   public void canPrintPage() {
     PrintOptions printOptions = new PrintOptions();
-    ChromeOptions options = new ChromeOptions();
-    options.setHeadless(true);
 
-    driver = new ChromeDriver(options);
-    driver.get(pages.printPage);
+    String response = driver.printPage(printOptions);
+    assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
+  }
+
+  @Test
+  public void canPrintwoPages() {
+    PrintOptions printOptions = new PrintOptions();
+    printOptions.setPageRanges(new String[]{"1-2"});
+
+    String response = driver.printPage(printOptions);
+    assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
+  }
+
+  @Test
+  public void canPrintWithValidParams() {
+    PrintOptions printOptions = new PrintOptions();
+    PageSize pageSize = new PageSize();
+    pageSize.setWidth(30.0);
+
+    printOptions.setPageRanges(new String[]{"1-2"});
+    printOptions.setOrientation(PrintOptions.PrintOrientation.Landscape);
+    printOptions.setPageSize(pageSize);
 
     String response = driver.printPage(printOptions);
     assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
