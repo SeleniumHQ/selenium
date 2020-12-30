@@ -81,13 +81,13 @@ public class PageMargin {
     this.left = left;
   }
 
-  public Map<String, String> to_json() {
-    Map<String, String> marginParams = new HashMap<>();
+  public Map<String, Double> to_json() {
+    Map<String, Double> marginParams = new HashMap<>();
 
-    marginParams.put("top", String.valueOf(this.top));
-    marginParams.put("bottom", String.valueOf(this.bottom));
-    marginParams.put("left", String.valueOf(this.left));
-    marginParams.put("right", String.valueOf(this.right));
+    marginParams.put("top", this.top);
+    marginParams.put("bottom", this.bottom);
+    marginParams.put("left", this.left);
+    marginParams.put("right", this.right);
 
     return marginParams;
   }
