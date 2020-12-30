@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -79,10 +80,22 @@ public class TomlConfig implements Config {
     }
 
     if (value instanceof Collection) {
-      ImmutableList<String> values = ((Collection<?>) value).stream()
-      .filter(item -> (!(item instanceof Collection)))
-      .map(String::valueOf)
-      .collect(ImmutableList.toImmutableList());
+      Collection<?> collection = (Collection<?>) value;
+      // Case when an array of tables is used as config
+      // https://toml.io/en/v1.0.0-rc.3#array-of-tables
+      if (collection.stream().anyMatch(item -> item instanceof TomlTable)) {
+        List<String> toReturn = new ArrayList<>();
+        collection.stream()
+          .map(item -> (TomlTable)item)
+          .forEach(tomlTable -> tomlTable.toMap().entrySet().stream()
+            .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+            .forEach(toReturn::add));
+        return Optional.of(toReturn);
+      }
+      List<String> values = collection.stream()
+        .filter(item -> (!(item instanceof Collection)))
+        .map(String::valueOf)
+        .collect(ImmutableList.toImmutableList());
 
       return Optional.of(values);
     }
