@@ -15,43 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.printoptions;
+package org.openqa.selenium.chrome;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.After;
+import org.junit.Test;
+import org.openqa.selenium.printoptions.PrintOptions;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
-public class PageSize {
+public class PrintCommandTest extends JUnit4TestBase {
 
-  private double height;
-  private double width;
+  private ChromeDriver driver = null;
 
-  public PageSize() {
-    // Initialize with defaults
-    this.height = 21.59;
-    this.width = 27.94;
-  }
-  public double getHeight() {
-    return height;
-  }
-
-  public double getWidth() {
-    return width;
+  @After
+  public void tearDown() {
+    if (driver != null) {
+      driver.quit();
+    }
   }
 
-  public void setHeight(double height) {
-    this.height = height;
-  }
+  @NeedsLocalEnvironment
+  @Test
+  public void canPrintPage() {
+    PrintOptions printOptions = new PrintOptions();
+    ChromeOptions options = new ChromeOptions();
+    options.setHeadless(true);
 
-  public void setWidth(double width) {
-    this.width = width;
-  }
+    driver = new ChromeDriver(options);
+    driver.get(pages.printPage);
 
-  public Map<String, String> to_json() {
-    Map<String, String> pageParams = new HashMap<>();
-
-    pageParams.put("height", String.valueOf(this.height));
-    pageParams.put("width", String.valueOf(this.width));
-
-    return pageParams;
+    driver.printPage(printOptions);
   }
 }

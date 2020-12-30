@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.printoptions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PageMargin {
   private double top;
   private double bottom;
@@ -76,5 +79,16 @@ public class PageMargin {
     }
 
     this.left = left;
+  }
+
+  public Map<String, String> to_json() {
+    Map<String, String> marginParams = new HashMap<>();
+
+    marginParams.put("top", String.valueOf(this.top));
+    marginParams.put("bottom", String.valueOf(this.bottom));
+    marginParams.put("left", String.valueOf(this.left));
+    marginParams.put("right", String.valueOf(this.right));
+
+    return marginParams;
   }
 }

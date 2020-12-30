@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.printoptions;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PrintOptions {
@@ -92,7 +93,16 @@ public class PrintOptions {
     return this.pageMargin;
   }
 
-  public Map<String, String> to_json() {
-    return null;
+  public Map<String, Object> to_json() {
+    Map<String, Object> printOptions = new HashMap<>();
+
+    printOptions.put("scale", this.scale);
+    printOptions.put("background", this.background);
+    printOptions.put("shrinkToFit", this.shrinkToFit);
+    printOptions.put("page", this.pageSize.to_json());
+    printOptions.put("margin", this.pageMargin.to_json());
+
+
+    return printOptions;
   }
 }
