@@ -5,6 +5,7 @@ LARGE_TESTS = [
     "FirefoxDriverTest.java",
     "MarionetteTest.java",
     "TakesFullPageScreenshotTest.java",
+    "FireFoxPrintCommandTest.java",
 ]
 
 java_test_suite(
