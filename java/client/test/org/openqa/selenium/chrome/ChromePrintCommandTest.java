@@ -26,7 +26,7 @@ import org.openqa.selenium.printoptions.PageSize;
 import org.openqa.selenium.printoptions.PrintOptions;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class PrintCommandTest extends JUnit4TestBase {
+public class ChromePrintCommandTest extends JUnit4TestBase {
 
   private ChromeDriver driver = null;
   private static String MAGIC_STRING = "JVBER";
