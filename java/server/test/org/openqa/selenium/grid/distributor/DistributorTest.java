@@ -31,14 +31,11 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.EventListener;
-import org.openqa.selenium.events.EventName;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -100,45 +97,25 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class DistributorTest {
 
-  private static class EitherAssert<A, B> extends AbstractAssert<EitherAssert<A, B>, Either<A, B>> {
-    public EitherAssert(Either<A, B> actual) {
-      super(actual, EitherAssert.class);
-    }
-
-    public EitherAssert<A, B> isLeft() {
-      isNotNull();
-      if (actual.isRight()) {
-        failWithMessage(
-          "Expected Either to be left but it is right: %s", actual.right());
-      }
-      return this;
-    }
-
-    public EitherAssert<A, B> isRight() {
-      isNotNull();
-      if (actual.isLeft()) {
-        failWithMessage(
-          "Expected Either to be right but it is left: %s", actual.left());
-      }
-      return this;
-    }
-  }
-
-  private static <A, B> EitherAssert<A, B> assertThatEither(Either<A, B> either) {
-    return new EitherAssert<>(either);
-  }
-
   private static final Logger LOG = Logger.getLogger("Distributor Test");
+  private final Secret registrationSecret = new Secret("hellim");
+  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
   private Tracer tracer;
   private EventBus bus;
   private Distributor local;
   private Capabilities stereotype;
   private Capabilities caps;
-  private final Secret registrationSecret = new Secret("hellim");
-  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+  private URI nodeUri;
+  private URI routableUri;
+
+  private static <A, B> EitherAssert<A, B> assertThatEither(Either<A, B> either) {
+    return new EitherAssert<>(either);
+  }
 
   @Before
-  public void setUp() {
+  public void setUp() throws URISyntaxException {
+    nodeUri = new URI("http://example:5678");
+    routableUri = new URI("http://localhost:1234");
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -169,10 +146,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToAddANodeAndCreateASession() throws URISyntaxException {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
+  public void shouldBeAbleToAddANodeAndCreateASession() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -181,7 +155,9 @@ public class DistributorTest {
       Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
     Distributor distributor = new LocalDistributor(
@@ -207,10 +183,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void creatingASessionAddsItToTheSessionMap() throws URISyntaxException {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
+  public void creatingASessionAddsItToTheSessionMap() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -220,7 +193,9 @@ public class DistributorTest {
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
     LocalDistributor distributor = new LocalDistributor(
@@ -247,10 +222,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToRemoveANode() throws URISyntaxException, MalformedURLException {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
+  public void shouldBeAbleToRemoveANode() throws MalformedURLException {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -260,7 +232,9 @@ public class DistributorTest {
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
     Distributor local = new LocalDistributor(
@@ -286,10 +260,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void testDrainingNodeDoesNotAcceptNewSessions() throws URISyntaxException {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
+  public void testDrainingNodeDoesNotAcceptNewSessions() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -298,7 +269,9 @@ public class DistributorTest {
       Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
     Distributor distributor = new LocalDistributor(
@@ -320,12 +293,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void testDrainedNodeShutsDownOnceEmpty()
-    throws URISyntaxException, InterruptedException
-  {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
+  public void testDrainedNodeShutsDownOnceEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -334,7 +302,9 @@ public class DistributorTest {
       Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
     CountDownLatch latch = new CountDownLatch(1);
@@ -366,12 +336,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void drainedNodeDoesNotShutDownIfNotEmpty()
-    throws URISyntaxException, InterruptedException
-  {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
+  public void drainedNodeDoesNotShutDownIfNotEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -380,7 +345,9 @@ public class DistributorTest {
       Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
     CountDownLatch latch = new CountDownLatch(1);
@@ -411,12 +378,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void drainedNodeShutsDownAfterSessionsFinish()
-    throws URISyntaxException, InterruptedException
-  {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
+  public void drainedNodeShutsDownAfterSessionsFinish() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -425,8 +387,12 @@ public class DistributorTest {
       Duration.ofSeconds(2));
     LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
     CountDownLatch latch = new CountDownLatch(1);
@@ -464,13 +430,11 @@ public class DistributorTest {
   }
 
   @Test
-  public void registeringTheSameNodeMultipleTimesOnlyCountsTheFirstTime()
-    throws URISyntaxException
-  {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
+  public void registeringTheSameNodeMultipleTimesOnlyCountsTheFirstTime() {
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
     local.add(node);
@@ -479,48 +443,6 @@ public class DistributorTest {
     DistributorStatus status = local.getStatus();
 
     assertThat(status.getNodes().size()).isEqualTo(1);
-  }
-
-  @Test
-  public void registeringTheWrongRegistrationSecretDoesNotWork()
-    throws URISyntaxException, InterruptedException
-  {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
-    EventName rejected = new EventName("node-rejected");
-    CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(new EventListener<>(rejected, Object.class, obj -> latch.countDown()));
-
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, new Secret("pickles"))
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
-      .build();
-
-    local.add(node);
-
-    latch.await(1, TimeUnit.SECONDS);
-
-    assertThat(latch.getCount()).isEqualTo(1);
-  }
-
-  @Test
-  public void registeringTheCorrectRegistrationSecretWorks()
-    throws URISyntaxException, InterruptedException
-  {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
-    CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(NodeAddedEvent.listener(ignored -> latch.countDown()));
-    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
-      .build();
-
-    local.add(node);
-
-    assertTrue(latch.await(1, TimeUnit.SECONDS));
-
-    assertThat(latch.getCount()).isEqualTo(0);
   }
 
   @Test
@@ -668,13 +590,17 @@ public class DistributorTest {
 
     URI uri = createUri();
     Node alwaysDown = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(DOWN, "Boo!"))
       .build();
     handler.addHandler(alwaysDown);
     Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(UP, "Yay!"))
       .build();
@@ -708,9 +634,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() throws URISyntaxException {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
+  public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -750,9 +674,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldReleaseSlotOnceSessionEnds() throws URISyntaxException {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
+  public void shouldReleaseSlotOnceSessionEnds() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -835,7 +757,8 @@ public class DistributorTest {
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
-    ImmutableCapabilities unmatched = new ImmutableCapabilities("browserName", "transit of venus");
+    ImmutableCapabilities unmatched =
+      new ImmutableCapabilities("browserName", "transit of venus");
     try (NewSessionPayload payload = NewSessionPayload.create(unmatched)) {
       Either<SessionNotCreatedException, CreateSessionResponse> result =
         distributor.newSession(createRequest(payload));
@@ -844,10 +767,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() throws URISyntaxException {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
+  public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -897,7 +817,9 @@ public class DistributorTest {
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(caps, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+      .add(
+        caps,
+        new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
       .build();
@@ -939,7 +861,9 @@ public class DistributorTest {
       URI uri = createUri();
       LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret);
       for (Capabilities caps: capabilities) {
-        builder.add(caps, new TestSessionFactory((id, hostCaps) -> new HandledSession(uri, hostCaps)));
+        builder.add(
+          caps,
+          new TestSessionFactory((id, hostCaps) -> new HandledSession(uri, hostCaps)));
       }
       Node node = builder.build();
       distributor.add(node);
@@ -950,7 +874,7 @@ public class DistributorTest {
 
   @Test
   public void shouldPrioritizeHostsWithTheMostSlotsAvailableForASessionType() {
-    //SS: Consider the case where you have 1 Windows machine and 5 linux machines. All of these hosts
+    // Consider the case where you have 1 Windows machine and 5 linux machines. All of these hosts
     // can run Chrome and Firefox sessions, but only one can run Edge sessions. Ideally, the machine
     // able to run Edge would be sorted last.
 
@@ -976,20 +900,19 @@ public class DistributorTest {
     handler.addHandler(distributor);
 
     //Create all three Capability types
-    Capabilities edgeCapabilities = new ImmutableCapabilities("browserName", "edge");
-    Capabilities firefoxCapabilities = new ImmutableCapabilities("browserName", "firefox");
-    Capabilities chromeCapabilities = new ImmutableCapabilities("browserName", "chrome");
+    Capabilities edge = new ImmutableCapabilities("browserName", "edge");
+    Capabilities firefox = new ImmutableCapabilities("browserName", "firefox");
+    Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
 
-    //TODO This should probably be a map of browser -> all nodes that support <browser>
     //Store our "expected results" sets for the various browser-specific nodes
-    Set<Node> edgeNodes = createNodeSet(distributor, 3, edgeCapabilities, chromeCapabilities, firefoxCapabilities);
+    Set<Node> edgeNodes = createNodeSet(distributor, 3, edge, chrome, firefox);
 
     //chromeNodes is all these new nodes PLUS all the Edge nodes from before
-    Set<Node> chromeNodes = createNodeSet(distributor,5, chromeCapabilities, firefoxCapabilities);
+    Set<Node> chromeNodes = createNodeSet(distributor,5, chrome, firefox);
     chromeNodes.addAll(edgeNodes);
 
     //all nodes support firefox, so add them to the firefoxNodes set
-    Set<Node> firefoxNodes = createNodeSet(distributor,3, firefoxCapabilities);
+    Set<Node> firefoxNodes = createNodeSet(distributor,3, firefox);
     firefoxNodes.addAll(edgeNodes);
     firefoxNodes.addAll(chromeNodes);
 
@@ -997,8 +920,8 @@ public class DistributorTest {
 
     //Assign 5 Chrome and 5 Firefox sessions to the distributor, make sure they don't go to the Edge node
     for (int i=0; i<5; i++) {
-      try (NewSessionPayload chromePayload = NewSessionPayload.create(chromeCapabilities);
-           NewSessionPayload firefoxPayload = NewSessionPayload.create(firefoxCapabilities)) {
+      try (NewSessionPayload chromePayload = NewSessionPayload.create(chrome);
+           NewSessionPayload firefoxPayload = NewSessionPayload.create(firefox)) {
 
         Either<SessionNotCreatedException, CreateSessionResponse> chromeResult =
           distributor.newSession(createRequest(chromePayload));
@@ -1027,7 +950,7 @@ public class DistributorTest {
     }
 
     //The Chrome Nodes should be full at this point, but Firefox isn't... so send an Edge session and make sure it routes to an Edge node
-    try (NewSessionPayload edgePayload = NewSessionPayload.create(edgeCapabilities)) {
+    try (NewSessionPayload edgePayload = NewSessionPayload.create(edge)) {
       Either<SessionNotCreatedException, CreateSessionResponse> edgeResult =
         distributor.newSession(createRequest(edgePayload));
       assertThatEither(edgeResult).isRight();
@@ -1063,13 +986,14 @@ public class DistributorTest {
 
   @Test
   public void statusShouldIndicateThatDistributorIsNotAvailableIfNodesAreDown()
-    throws URISyntaxException
-  {
+    throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+      .add(
+        capabilities,
+        new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
       .build();
@@ -1088,7 +1012,9 @@ public class DistributorTest {
 
     URI uri = new URI("http://example.com");
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
+      .add(
+        capabilities,
+        new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
       .advanced()
       .healthCheck(() -> new HealthCheck.Result(DOWN, "TL;DR"))
       .build();
@@ -1121,19 +1047,6 @@ public class DistributorTest {
     }
   }
 
-  class HandledSession extends Session implements HttpHandler {
-
-    HandledSession(URI uri, Capabilities caps) {
-      super(new SessionId(UUID.randomUUID()), uri, stereotype, caps, Instant.now());
-    }
-
-    @Override
-    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-      // no-op
-      return new HttpResponse();
-    }
-  }
-
   private void waitToHaveCapacity(Distributor distributor) {
     new FluentWait<>(distributor)
       .withTimeout(Duration.ofSeconds(5))
@@ -1156,6 +1069,43 @@ public class DistributorTest {
       System.out.println("*************");
       System.out.println("" + nodes.size());
       nodes.forEach(node -> System.out.println("" + node.hasCapacity()));
+    }
+  }
+
+  private static class EitherAssert<A, B> extends AbstractAssert<EitherAssert<A, B>, Either<A, B>> {
+    public EitherAssert(Either<A, B> actual) {
+      super(actual, EitherAssert.class);
+    }
+
+    public EitherAssert<A, B> isLeft() {
+      isNotNull();
+      if (actual.isRight()) {
+        failWithMessage(
+          "Expected Either to be left but it is right: %s", actual.right());
+      }
+      return this;
+    }
+
+    public EitherAssert<A, B> isRight() {
+      isNotNull();
+      if (actual.isLeft()) {
+        failWithMessage(
+          "Expected Either to be right but it is left: %s", actual.left());
+      }
+      return this;
+    }
+  }
+
+  class HandledSession extends Session implements HttpHandler {
+
+    HandledSession(URI uri, Capabilities caps) {
+      super(new SessionId(UUID.randomUUID()), uri, stereotype, caps, Instant.now());
+    }
+
+    @Override
+    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+      // no-op
+      return new HttpResponse();
     }
   }
 }
