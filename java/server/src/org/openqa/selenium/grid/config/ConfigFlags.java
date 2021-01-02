@@ -90,7 +90,8 @@ public class ConfigFlags implements HasRoles {
       return false;
     }
 
-    Map<String, Set<DescribedOption>> allOptions = DescribedOption.findAllMatchingOptions(currentRoles).stream()
+    Map<String, Set<DescribedOption>> allOptions = DescribedOption
+      .findAllMatchingOptions(currentRoles).stream()
       .collect(Collectors.toMap(
         DescribedOption::section,
         ImmutableSortedSet::of,
@@ -104,7 +105,17 @@ public class ConfigFlags implements HasRoles {
           demoToml.append("# ").append(option.description).append("\n");
         }
         demoToml.append("# Type: ").append(option.type).append("\n");
-        demoToml.append(option.optionName).append(" = ").append(option.example(config)).append("\n\n");
+        if (option.optionName.contains(String.format("%s.", section))) {
+          demoToml.append("[[")
+            .append(option.optionName)
+            .append("]]")
+            .append(option.example(config))
+            .append("\n\n");
+        } else {
+          demoToml.append(option.optionName)
+            .append(" = ")
+            .append(option.example(config)).append("\n\n");
+        }
       });
       demoToml.append("\n");
     });
