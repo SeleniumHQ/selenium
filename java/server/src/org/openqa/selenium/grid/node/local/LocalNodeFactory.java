@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.node.local;
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
@@ -78,18 +80,19 @@ public class LocalNodeFactory {
     Tracer tracer,
     HttpClient.Factory clientFactory,
     List<DriverService.Builder<?, ?>> builders,
-    Capabilities capabilities) {
+    Capabilities stereotype) {
     ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
+    SlotMatcher slotMatcher = new DefaultSlotMatcher();
 
     builders.stream()
-      .filter(builder -> builder.score(capabilities) > 0)
+      .filter(builder -> builder.score(stereotype) > 0)
       .forEach(builder -> {
         DriverService.Builder<?, ?> driverServiceBuilder = builder.usingAnyFreePort();
         toReturn.add(new DriverServiceSessionFactory(
           tracer,
           clientFactory,
-          capabilities,
-          c -> driverServiceBuilder.score(c) > 0,
+          stereotype,
+          capabilities -> slotMatcher.matches(capabilities, stereotype),
           driverServiceBuilder));
       });
 
