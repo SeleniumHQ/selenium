@@ -1505,7 +1505,7 @@ public class ExpectedConditions {
    * An expectation for String value from javascript
    *
    * @param javaScript as executable js line
-   * @return true once js return string
+   * @return object once javaScript executes without errors
    */
   public static ExpectedCondition<Object> jsReturnsValue(final String javaScript) {
     return new ExpectedCondition<Object>() {

@@ -59,7 +59,7 @@ public class EventBusFlags implements HasRoles {
     section = "events",
     name = "implementation",
     example = "org.openqa.selenium.events.zeromq.ZeroMqEventBus")
-  private String implmentation;
+  private String implementation;
 
   @Override
   public Set<Role> getRoles() {

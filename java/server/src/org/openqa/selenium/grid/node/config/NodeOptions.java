@@ -79,7 +79,7 @@ public class NodeOptions {
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
     /* Danger! Java stereotype ahead! */
-    Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
+    Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
     int maxSessions = getMaxSessions();
 
@@ -195,8 +195,7 @@ public class NodeOptions {
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
-    int maxSessions,
-    Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
+    int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true)) {
       return ImmutableMap.of();
@@ -220,7 +219,7 @@ public class NodeOptions {
         .filter(builder -> builder.score(caps) > 0)
         .forEach(builder -> {
           for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
-            toReturn.putAll(info, factoryFactory.apply(info));
+            toReturn.putAll(info, factoryFactory.apply(caps));
           }
         });
     });
