@@ -105,8 +105,10 @@ public class ConfigFlags implements HasRoles {
           demoToml.append("# ").append(option.description).append("\n");
         }
         demoToml.append("# Type: ").append(option.type).append("\n");
-        if (option.optionName.contains(String.format("%s.", section))) {
+        if (option.prefixed) {
           demoToml.append("[[")
+            .append(section)
+            .append(".")
             .append(option.optionName)
             .append("]]")
             .append(option.example(config))
