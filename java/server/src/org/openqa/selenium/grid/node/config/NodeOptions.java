@@ -22,6 +22,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
@@ -92,6 +94,7 @@ public class NodeOptions {
     addDriverFactoriesFromConfig(sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
+    addDriverConfigs(maxSessions, factoryFactory, sessionFactories);
 
     return sessionFactories.build().asMap();
   }
@@ -148,6 +151,74 @@ public class NodeOptions {
     } catch (ReflectiveOperationException e) {
       throw new IllegalArgumentException("Unable to find class: " + clazz, e);
     }
+  }
+
+  private void addDriverConfigs(
+    int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory,
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+    Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
+    config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers -> {
+      if (drivers.size() % 2 != 0) {
+        throw new ConfigException("Expected each driver config to have two elements " +
+                                  "(name & stereotype)");
+      }
+
+      drivers.stream()
+        .filter(driver -> !driver.contains("="))
+        .peek(driver -> LOG.warning(driver + " does not have the required 'key=value' " +
+                                    "structure for the configuration"))
+        .findFirst()
+        .ifPresent(ignore -> {
+          throw new ConfigException("One or more driver configs does not have the " +
+                                    "required 'key=value' structure");
+        });
+
+      List<Map<String, String>> driversMap = new ArrayList<>();
+      IntStream.range(0, drivers.size()/2).boxed()
+        .forEach(i -> {
+          ImmutableMap<String, String> configMap = ImmutableMap.of(
+            drivers.get(i*2).split("=")[0], drivers.get(i*2).split("=")[1],
+            drivers.get(i*2+1).split("=")[0], drivers.get(i*2+1).split("=")[1]
+          );
+          driversMap.add(configMap);
+        });
+
+      List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
+      ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
+
+      List<WebDriverInfo> infos = new ArrayList<>();
+      ServiceLoader.load(WebDriverInfo.class).forEach(infos::add);
+
+      driversMap.forEach(configMap -> {
+        if (!configMap.containsKey("stereotype")) {
+          throw new ConfigException("Driver config is missing stereotype value. " + configMap);
+        }
+        Capabilities stereotype = JSON.toType(configMap.get("stereotype"), Capabilities.class);
+        String configName = configMap.getOrDefault("name", "Custom Slot Config");
+
+        WebDriverInfo info = infos.stream()
+          .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
+          .findFirst()
+          .orElseThrow(() ->
+                         new ConfigException("Unable to find matching driver for %s", stereotype));
+
+        WebDriverInfo driverInfoConfig = createConfiguredDriverInfo(info, stereotype, configName);
+
+        builders.stream()
+          .filter(builder -> builder.score(stereotype) > 0)
+          .forEach(builder -> {
+            for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
+              driverConfigs.putAll(driverInfoConfig, factoryFactory.apply(stereotype));
+            }
+          });
+      });
+    });
+    driverConfigs.asMap().entrySet()
+      .stream()
+      .peek(this::report)
+      .forEach(
+        entry ->
+          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
   }
 
   private void addDetectedDrivers(
@@ -225,6 +296,42 @@ public class NodeOptions {
     });
 
     return toReturn.asMap();
+  }
+
+  private WebDriverInfo createConfiguredDriverInfo(
+    WebDriverInfo detectedDriver, Capabilities canonicalCapabilities, String displayName) {
+    return new WebDriverInfo() {
+      @Override
+      public String getDisplayName() {
+        return displayName;
+      }
+
+      @Override
+      public Capabilities getCanonicalCapabilities() {
+        return canonicalCapabilities;
+      }
+
+      @Override
+      public boolean isSupporting(Capabilities capabilities) {
+        return detectedDriver.isSupporting(capabilities);
+      }
+
+      @Override
+      public boolean isAvailable() {
+        return detectedDriver.isAvailable();
+      }
+
+      @Override
+      public int getMaximumSimultaneousSessions() {
+        return detectedDriver.getMaximumSimultaneousSessions();
+      }
+
+      @Override
+      public Optional<WebDriver> createDriver(Capabilities capabilities)
+        throws SessionNotCreatedException {
+        return Optional.empty();
+      }
+    };
   }
 
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {

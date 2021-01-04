@@ -75,6 +75,29 @@ public class NodeFlags implements HasRoles {
   @ConfigValue(section = "node", name = "grid-url", example = "\"https://grid.example.com\"")
   public URL gridUri;
 
+  @Parameter(
+    names = {"--driver-configuration"},
+    description = "List of configured drivers a Node supports. " +
+                  "It is recommended to provide this type of configuration through a toml config " +
+                  "file to improve readability. In the example, please note the absence of " +
+                  "commas (,) in the 'stereotype' definition." +
+                  "--drivers-configuration name=\"Firefox Nightly\" " +
+                  "stereotype='{\"browserName\": \"firefox\" \"browserVersion\": \"86\" " +
+                  "\"moz:firefoxOptions\": " +
+                  "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}'",
+    arity = 2,
+    variableArity = true)
+  @ConfigValue(
+    section = "node",
+    name = "driver-configuration",
+    prefixed = true,
+    example = "\n" +
+              "name = \"Firefox Nightly\"\n" +
+              "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
+              "\"moz:firefoxOptions\": " +
+              "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
+  public List<String> driverConfiguration;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(NODE_ROLE);

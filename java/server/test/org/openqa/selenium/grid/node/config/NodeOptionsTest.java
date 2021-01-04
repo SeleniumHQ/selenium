@@ -23,6 +23,8 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -183,13 +185,90 @@ public class NodeOptionsTest {
       HelperFactory.class.getName(),
       capsString.toString().replace("\"", "\\\""))));
 
-
     NodeOptions options = new NodeOptions(config);
     Map<Capabilities, Collection<SessionFactory>> factories = options.getSessionFactories(info -> emptySet());
 
     Collection<SessionFactory> sessionFactories = factories.get(caps);
     assertThat(sessionFactories).size().isEqualTo(1);
     assertThat(sessionFactories.iterator().next()).isInstanceOf(SessionFactory.class);
+  }
+
+  @Test
+  public void driversCanBeConfigured() {
+    String chromeLocation = "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
+    String firefoxLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin";
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.setBinary(chromeLocation);
+    FirefoxOptions firefoxOptions = new FirefoxOptions();
+    firefoxOptions.setBinary(firefoxLocation);
+    StringBuilder chromeCaps = new StringBuilder();
+    StringBuilder firefoxCaps = new StringBuilder();
+    new Json().newOutput(chromeCaps).setPrettyPrint(false).write(chromeOptions);
+    new Json().newOutput(firefoxCaps).setPrettyPrint(false).write(firefoxOptions);
+
+    String[] rawConfig = new String[]{
+      "[node]",
+      "detect-drivers = false",
+      "[[node.driver-configuration]]",
+      "name = \"Chrome Beta\"",
+      String.format("stereotype = \"%s\"", chromeCaps.toString().replace("\"", "\\\"")),
+      "[[node.driver-configuration]]",
+      "name = \"Firefox Nightly\"",
+      String.format("stereotype = \"%s\"", firefoxCaps.toString().replace("\"", "\\\""))
+    };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(capabilities -> {
+      reported.add(capabilities);
+      return Collections.emptySet();
+    });
+
+    assertThat(reported).is(supporting("chrome"));
+    assertThat(reported).is(supporting("firefox"));
+    //noinspection unchecked
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
+      .anyMatch(
+        capabilities ->
+          ((Map<String, String>) capabilities.getCapability(ChromeOptions.CAPABILITY))
+            .get("binary").equalsIgnoreCase(chromeLocation));
+    //noinspection unchecked
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))
+      .anyMatch(
+        capabilities ->
+          ((Map<String, String>) capabilities.getCapability(FirefoxOptions.FIREFOX_OPTIONS))
+            .get("binary").equalsIgnoreCase(firefoxLocation));
+  }
+
+  @Test
+  public void driversConfigNeedsStereotypeField() {
+    String[] rawConfig = new String[]{
+      "[node]",
+      "detect-drivers = false",
+      "[[node.driver-configuration]]",
+      "name = \"Chrome Beta\"",
+      "cheese = \"paipa\"",
+      "[[node.driver-configuration]]",
+      "name = \"Firefox Nightly\"",
+      "cheese = \"sabana\"",
+    };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    List<Capabilities> reported = new ArrayList<>();
+    try {
+      new NodeOptions(config).getSessionFactories(caps -> {
+        reported.add(caps);
+        return Collections.emptySet();
+      });
+      fail("Should have not executed 'getSessionFactories' successfully because driver config " +
+           "needs the stereotype field");
+    } catch (ConfigException e) {
+      // Fall through
+    }
+
+    assertThat(reported).isEmpty();
   }
 
   private Condition<? super List<? extends Capabilities>> supporting(String name) {

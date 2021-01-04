@@ -58,7 +58,7 @@ public class RemoteDistributor extends Distributor {
     super(
       tracer,
       factory,
-      (caps, nodes) -> {throw new UnsupportedOperationException("host selection");},
+      (caps, nodes) -> {throw new UnsupportedOperationException("Slot selector");},
       new NullSessionMap(tracer),
       registrationSecret);
     this.client = factory.createClient(url);
