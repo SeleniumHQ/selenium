@@ -17,15 +17,18 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static java.util.Collections.unmodifiableSet;
 
 public class DistributorStatus {
 
@@ -34,7 +37,7 @@ public class DistributorStatus {
   private final Set<NodeStatus> allNodes;
 
   public DistributorStatus(Collection<NodeStatus> allNodes) {
-    this.allNodes = ImmutableSet.copyOf(allNodes);
+    this.allNodes = unmodifiableSet(new HashSet<>(Require.nonNull("nodes", allNodes)));
   }
 
   public boolean hasCapacity() {
@@ -49,8 +52,7 @@ public class DistributorStatus {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
-        "nodes", getNodes());
+    return Collections.singletonMap("nodes", getNodes());
   }
 
   private static DistributorStatus fromJson(JsonInput input) {

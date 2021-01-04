@@ -17,12 +17,15 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.UUID;
+
+import static java.util.Collections.unmodifiableMap;
 
 public class SlotId {
 
@@ -63,7 +66,10 @@ public class SlotId {
   }
 
   private Object toJson() {
-    return ImmutableMap.of("hostId", nodeId, "id", uuid);
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("hostId", nodeId);
+    toReturn.put("id", uuid);
+    return unmodifiableMap(toReturn);
   }
 
   private static SlotId fromJson(JsonInput input) {

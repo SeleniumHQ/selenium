@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
@@ -26,9 +24,14 @@ import org.openqa.selenium.json.TypeToken;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 
 public class NodeStatus {
 
@@ -49,14 +52,8 @@ public class NodeStatus {
     this.maxSessionCount = Require.positive("Max session count",
         maxSessionCount,
 "Make sure that a driver is available on $PATH");
-    this.slots = ImmutableSet.copyOf(Require.nonNull("Slots", slots));
+    this.slots = unmodifiableSet(new HashSet<>(Require.nonNull("Slots", slots)));
     this.availability = Require.nonNull("Availability", availability);
-
-    ImmutableSet.Builder<Session> sessions = ImmutableSet.builder();
-
-    for (Slot slot : slots) {
-      slot.getSession().ifPresent(sessions::add);
-    }
   }
 
   public boolean hasCapability(Capabilities caps) {
@@ -131,13 +128,14 @@ public class NodeStatus {
   }
 
   private Map<String, Object> toJson() {
-    return new ImmutableMap.Builder<String, Object>()
-        .put("id", nodeId)
-        .put("uri", externalUri)
-        .put("maxSessions", maxSessionCount)
-        .put("slots", slots)
-        .put("availability", availability)
-        .build();
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("id", nodeId);
+    toReturn.put("uri", externalUri);
+    toReturn.put("maxSessions", maxSessionCount);
+    toReturn.put("slots", slots);
+    toReturn.put("availability", availability);
+
+    return unmodifiableMap(toReturn);
   }
 
   public static NodeStatus fromJson(JsonInput input) {

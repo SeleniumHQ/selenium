@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Base64;
 import java.util.Map;
+import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableMap;
 
 public class CreateSessionResponse {
 
@@ -47,9 +48,10 @@ public class CreateSessionResponse {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
-        "downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse),
-        "session", session);
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse));
+    toReturn.put("session", session);
+    return unmodifiableMap(toReturn);
   }
 
   private static CreateSessionResponse fromJson(JsonInput input) {
