@@ -92,7 +92,7 @@ public class LocalNodeFactory {
           tracer,
           clientFactory,
           stereotype,
-          capabilities -> slotMatcher.matches(capabilities, stereotype),
+          capabilities -> slotMatcher.matches(stereotype, capabilities),
           driverServiceBuilder));
       });
 

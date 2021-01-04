@@ -19,17 +19,56 @@ package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.Capabilities;
 
+import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+/**
+ * Default matching implementation for slots, loosely based on the
+ * requirements for capability matching from the WebDriver spec. A match
+ * is made if the following are all true:
+ * <ul>
+ *   <li>All non-extension capabilities from the {@code stereotype} match
+ *       those in the {@link Capabilities} being considered.
+ *   <li>If the {@link Capabilities} being considered contain any of:
+ *       <ul>
+ *         <li>browserName
+ *         <li>browserVersion
+ *         <li>platform
+ *       </ul>
+ *       Then the {@code stereotype} must contain the same values.
+ * </ul>
+ * <p>
+ * One thing to note is that extension capabilities are not considered when
+ * matching slots, since the matching of these is implementation-specific
+ * to each driver.
+ */
 public class DefaultSlotMatcher implements SlotMatcher {
 
   @Override
-  public boolean matches(Capabilities capabilities, Capabilities stereotype) {
+  public boolean matches(Capabilities stereotype, Capabilities capabilities) {
+
+    Boolean initialMatch = stereotype.getCapabilityNames().stream()
+      // Matching of extension capabilities is implementation independent. Skip them
+      .filter(name -> !name.contains(":"))
+      .map(name -> {
+        Object value = capabilities.getCapability(name);
+        return value == null || Objects.equals(stereotype.getCapability(name), value);
+      })
+      .reduce(Boolean::logicalAnd)
+      .orElse(false);
+
+    if (!initialMatch) {
+      return false;
+    }
+
     // Simple browser, browserVersion and platformName match
     boolean browserNameMatch =
+      capabilities.getBrowserName() == null ||
       Objects.equals(stereotype.getBrowserName(), capabilities.getBrowserName());
     boolean browserVersionMatch =
-      capabilities.getBrowserVersion().isEmpty() ||
+      (capabilities.getBrowserVersion() == null || capabilities.getBrowserVersion().isEmpty()) ||
       Objects.equals(stereotype.getBrowserVersion(), capabilities.getBrowserVersion());
     boolean platformNameMatch =
       capabilities.getPlatformName() == null ||

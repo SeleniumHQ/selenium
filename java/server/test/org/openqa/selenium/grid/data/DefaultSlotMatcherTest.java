@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.data;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
@@ -30,133 +31,149 @@ public class DefaultSlotMatcherTest {
 
   @Test
   public void fullMatch() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
+    Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
+    Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isTrue();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
 
   @Test
   public void matchesBrowserAndVersion() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
+    Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
+    Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80"
     );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isTrue();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
 
   @Test
   public void matchesBrowser() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
+    Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
+    Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome"
     );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isTrue();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
 
   @Test
   public void platformDoesNotMatch() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
+    Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
+    Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.MAC
     );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isFalse();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 
   @Test
   public void browserDoesNotMatch() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
+    Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
+    Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "firefox",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isFalse();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 
   @Test
   public void browserVersionDoesNotMatch() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
+    Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
+    Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "84",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isFalse();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 
   @Test
   public void requestedPlatformDoesNotMatch() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
+    Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80"
     );
 
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
-      CapabilityType.BROWSER_NAME, "chrome",
-      CapabilityType.BROWSER_VERSION, "84",
-      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
-    );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isFalse();
-  }
-
-  @Test
-  public void requestedBrowserVersionDoesNotMatch() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
-      CapabilityType.BROWSER_NAME, "chrome",
-      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
-    );
-
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
-      CapabilityType.BROWSER_NAME, "chrome",
-      CapabilityType.BROWSER_VERSION, "84",
-      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
-    );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isFalse();
-  }
-
-  @Test
-  public void matchesWithJWPCaps() {
-    ImmutableCapabilities stereotype = new ImmutableCapabilities(
+    Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
     );
-    ImmutableCapabilities capabilities = new ImmutableCapabilities(
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  public void shouldNotMatchIfRequestedBrowserVersionIsMissingFromStereotype() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "84",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
+    );
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  public void matchesWithJsonWireProtocolCaps() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, "chrome",
+      CapabilityType.BROWSER_VERSION, "80",
+      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
+    );
+    Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.VERSION, "80",
       CapabilityType.PLATFORM, Platform.WINDOWS
     );
-    assertThat(slotMatcher.matches(capabilities, stereotype)).isTrue();
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
+
+  @Test
+  public void shouldNotMatchCapabilitiesThatAreDifferentButDoNotContainCommonCapabilityNames() {
+    Capabilities stereotype = new ImmutableCapabilities("acceptInsecureCerts", "true");
+    Capabilities capabilities = new ImmutableCapabilities("acceptInsecureCerts", "false");
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
+  }
+
+  @Test
+  public void shouldMatchCapabilitiesThatAreTheSameButDoNotContainCommonCapabilityNames() {
+    Capabilities stereotype = new ImmutableCapabilities("strictFileInteractability", "true");
+    Capabilities capabilities = new ImmutableCapabilities("strictFileInteractability", "true");
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
 }

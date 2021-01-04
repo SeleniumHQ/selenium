@@ -25,5 +25,5 @@ import org.openqa.selenium.Capabilities;
  */
 @FunctionalInterface
 public interface SlotMatcher {
-  boolean matches(Capabilities capabilities, Capabilities stereotype);
+  boolean matches(Capabilities stereotype, Capabilities capabilities);
 }
