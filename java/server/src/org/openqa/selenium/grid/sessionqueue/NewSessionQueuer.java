@@ -27,6 +27,8 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.security.RequiresSecretFilter;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -54,20 +56,26 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
   private final Route routes;
   protected final Tracer tracer;
 
-  protected NewSessionQueuer(Tracer tracer) {
+  protected NewSessionQueuer(Tracer tracer, Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
 
+    Require.nonNull("Registration secret", registrationSecret);
+    RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
+
     routes = combine(
-        post("/session")
-            .to(() -> this::addToQueue),
-        post("/se/grid/newsessionqueuer/session")
-            .to(() -> new AddToSessionQueue(tracer, this)),
-        post("/se/grid/newsessionqueuer/session/retry/{requestId}")
-            .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params))),
-        get("/se/grid/newsessionqueuer/session/{requestId}")
-            .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params))),
-        delete("/se/grid/newsessionqueuer/queue")
-            .to(() -> new ClearSessionQueue(tracer, this)));
+      post("/session")
+        .to(() -> this::addToQueue),
+      post("/se/grid/newsessionqueuer/session")
+        .to(() -> new AddToSessionQueue(tracer, this)),
+      post("/se/grid/newsessionqueuer/session/retry/{requestId}")
+        .to(params -> new AddBackToSessionQueue(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
+      get("/se/grid/newsessionqueuer/session/{requestId}")
+        .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
+        .with(requiresSecret),
+      delete("/se/grid/newsessionqueuer/queue")
+        .to(() -> new ClearSessionQueue(tracer, this))
+        .with(requiresSecret));
   }
 
   private RequestId requestIdFrom(Map<String, String> params) {

@@ -90,7 +90,7 @@ public class RouterTest {
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue, registrationSecret);
     handler.addHandler(queuer);
 
     distributor = new LocalDistributor(

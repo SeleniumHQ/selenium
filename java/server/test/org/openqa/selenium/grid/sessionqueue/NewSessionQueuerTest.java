@@ -33,6 +33,7 @@ import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
@@ -89,6 +90,7 @@ public class NewSessionQueuerTest {
   private HttpRequest request;
   private static int count = 0;
   private static final Json JSON = new Json();
+  private final Secret registrationSecret = new Secret("secret");
   private NewSessionQueue sessionQueue;
 
 
@@ -104,10 +106,10 @@ public class NewSessionQueuerTest {
         Duration.ofSeconds(1),
         Duration.ofSeconds(1000));
 
-    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
+    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue, registrationSecret);
 
     HttpClient client = new PassthroughHttpClient(local);
-    remote = new RemoteNewSessionQueuer(tracer, client);
+    remote = new RemoteNewSessionQueuer(tracer, client, registrationSecret);
 
     payload = NewSessionPayload.create(caps);
     request = createRequest(payload, POST, "/session");
@@ -414,10 +416,10 @@ public class NewSessionQueuerTest {
         Duration.ofSeconds(4),
         Duration.ofSeconds(0));
 
-    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
+    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue, registrationSecret);
 
     HttpClient client = new PassthroughHttpClient(local);
-    remote = new RemoteNewSessionQueuer(tracer, client);
+    remote = new RemoteNewSessionQueuer(tracer, client, registrationSecret);
 
     AtomicBoolean isPresent = new AtomicBoolean();
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {

@@ -33,6 +33,7 @@ import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.ProxyCdpIntoGrid;
 import org.openqa.selenium.grid.router.Router;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
@@ -110,17 +111,19 @@ public class RouterServer extends TemplateGridServerCommand {
     NetworkOptions networkOptions = new NetworkOptions(config);
     HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
+    Secret secret = secretOptions.getRegistrationSecret();
+
     SessionMapOptions sessionsOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionsOptions.getSessionMap();
 
     NewSessionQueuerOptions sessionQueuerOptions = new NewSessionQueuerOptions(config);
     URL sessionQueuerUrl = fromUri(sessionQueuerOptions.getSessionQueuerUri());
     NewSessionQueuer queuer = new RemoteNewSessionQueuer(
-        tracer,
-        clientFactory.createClient(sessionQueuerUrl));
-
-    BaseServerOptions serverOptions = new BaseServerOptions(config);
-    SecretOptions secretOptions = new SecretOptions(config);
+      tracer,
+      clientFactory.createClient(sessionQueuerUrl),
+      secret);
 
     DistributorOptions distributorOptions = new DistributorOptions(config);
     URL distributorUrl = fromUri(distributorOptions.getDistributorUri());
@@ -128,7 +131,7 @@ public class RouterServer extends TemplateGridServerCommand {
       tracer,
       clientFactory,
       distributorUrl,
-      secretOptions.getRegistrationSecret());
+      secret);
 
     GraphqlHandler graphqlHandler = new GraphqlHandler(tracer, distributor, serverOptions.getExternalUri());
 

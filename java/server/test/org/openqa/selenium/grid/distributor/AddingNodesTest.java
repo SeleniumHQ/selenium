@@ -107,7 +107,11 @@ public class AddingNodesTest {
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      bus,
+      localNewSessionQueue,
+      registrationSecret);
     Distributor local = new LocalDistributor(
       tracer,
       bus,

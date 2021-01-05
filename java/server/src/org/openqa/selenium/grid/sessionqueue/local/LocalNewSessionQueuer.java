@@ -21,6 +21,8 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.GetNewSessionResponse;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
@@ -38,14 +40,17 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
 
   private final EventBus bus;
   public final NewSessionQueue sessionRequests;
+  private final Secret registrationSecret;
 
   public LocalNewSessionQueuer(
     Tracer tracer,
     EventBus bus,
-    NewSessionQueue sessionRequests) {
-    super(tracer);
+    NewSessionQueue sessionRequests,
+    Secret registrationSecret) {
+    super(tracer, registrationSecret);
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
+    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
   }
 
   public static NewSessionQueuer create(Config config) {
@@ -58,7 +63,11 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
         bus,
         retryInterval,
         requestTimeout);
-    return new LocalNewSessionQueuer(tracer, bus, sessionRequests);
+
+    SecretOptions secretOptions = new SecretOptions(config);
+    Secret registrationSecret = secretOptions.getRegistrationSecret();
+
+    return new LocalNewSessionQueuer(tracer, bus, sessionRequests, registrationSecret);
   }
 
   @Override

@@ -110,7 +110,11 @@ public class GraphqlHandlerTest {
       events,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      events,
+      localNewSessionQueue,
+      registrationSecret);
 
     distributor = new LocalDistributor(
       tracer,
