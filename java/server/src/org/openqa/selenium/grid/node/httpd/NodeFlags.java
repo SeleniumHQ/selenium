@@ -44,7 +44,7 @@ public class NodeFlags implements HasRoles {
   @Parameter(
       names = {"--detect-drivers"}, arity = 1,
       description = "Autodetect which drivers are available on the current system, " +
-                    "and add them to the node. Defaults to true.")
+                    "and add them to the Node. Defaults to true.")
   @ConfigValue(section = "node", name = "detect-drivers", example = "true")
   public Boolean autoconfigure;
 
@@ -59,8 +59,8 @@ public class NodeFlags implements HasRoles {
     names = {"--driver-factory"},
     description = "Mapping of fully qualified class name to a browser configuration that this " +
                   "matches against. " +
-                  "`--driver-factory org.openqa.selenium.example.LynxDriverFactory " +
-                  "'{\"browserName\": \"lynx\"}')",
+                  "--driver-factory org.openqa.selenium.example.LynxDriverFactory " +
+                  "'{\"browserName\": \"lynx\"}'",
     arity = 2,
     variableArity = true,
     splitter = NonSplittingSplitter.class)
