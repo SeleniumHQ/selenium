@@ -230,7 +230,7 @@ public interface DriverCommand {
 
   String PRINT_PAGE = "printPage";
   static CommandPayload PRINT_PAGE(PrintOptions options) {
-    return new CommandPayload(PRINT_PAGE, options.to_json());
+    return new CommandPayload(PRINT_PAGE, options.toJson());
   }
 
   @Deprecated

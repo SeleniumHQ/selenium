@@ -93,14 +93,14 @@ public class PrintOptions {
     return this.pageMargin;
   }
 
-  public Map<String, Object> to_json() {
+  public Map<String, Object> toJson() {
     Map<String, Object> printOptions = new HashMap<>();
 
     printOptions.put("scale", this.scale);
     printOptions.put("background", this.background);
     printOptions.put("shrinkToFit", this.shrinkToFit);
-    printOptions.put("page", this.pageSize.to_json());
-    printOptions.put("margin", this.pageMargin.to_json());
+    printOptions.put("page", this.pageSize.toJson());
+    printOptions.put("margin", this.pageMargin.toJson());
 
 
     return printOptions;

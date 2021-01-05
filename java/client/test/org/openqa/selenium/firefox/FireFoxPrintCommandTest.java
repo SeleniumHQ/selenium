@@ -48,7 +48,7 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     PrintOptions printOptions = new PrintOptions();
 
     String response = localDriver.printPage(printOptions);
-    assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
+    assertThat(response.contains(MAGIC_STRING)).isTrue();
   }
 
   @Test
@@ -57,7 +57,7 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     printOptions.setPageRanges(new String[]{"1-2"});
 
     String response = localDriver.printPage(printOptions);
-    assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
+    assertThat(response.contains(MAGIC_STRING)).isTrue();
   }
 
   @Test
@@ -71,6 +71,6 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     printOptions.setPageSize(pageSize);
 
     String response = localDriver.printPage(printOptions);
-    assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
+    assertThat(response.contains(MAGIC_STRING)).isTrue();
   }
 }

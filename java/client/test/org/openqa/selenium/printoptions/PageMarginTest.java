@@ -51,11 +51,11 @@ public class PageMarginTest {
     pageMargin.setLeft(1.0);
     pageMargin.setRight(2.0);
 
-    Map<String, Double> pageMarginMap = pageMargin.to_json();
+    Map<String, Double> pageMarginMap = pageMargin.toJson();
 
-    assertThat(pageMarginMap.get("bottom")).isEqualTo(2.0);
-    assertThat(pageMarginMap.get("top")).isEqualTo(3.0);
-    assertThat(pageMarginMap.get("left")).isEqualTo(1.0);
-    assertThat(pageMarginMap.get("right")).isEqualTo(2.0);
+    assertThat(pageMarginMap).containsEntry("bottom", pageMargin.getBottom());
+    assertThat(pageMarginMap).containsEntry("top", pageMargin.getTop());
+    assertThat(pageMarginMap).containsEntry("left", pageMargin.getLeft());
+    assertThat(pageMarginMap).containsEntry("right", pageMargin.getRight());
   }
 }

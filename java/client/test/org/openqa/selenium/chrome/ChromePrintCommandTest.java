@@ -51,7 +51,7 @@ public class ChromePrintCommandTest extends JUnit4TestBase {
     PrintOptions printOptions = new PrintOptions();
 
     String response = driver.printPage(printOptions);
-    assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
+    assertThat(response.contains(MAGIC_STRING)).isTrue();
   }
 
   @Test
@@ -60,7 +60,7 @@ public class ChromePrintCommandTest extends JUnit4TestBase {
     printOptions.setPageRanges(new String[]{"1-2"});
 
     String response = driver.printPage(printOptions);
-    assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
+    assertThat(response.contains(MAGIC_STRING)).isTrue();
   }
 
   @Test
@@ -74,6 +74,6 @@ public class ChromePrintCommandTest extends JUnit4TestBase {
     printOptions.setPageSize(pageSize);
 
     String response = driver.printPage(printOptions);
-    assertThat(response.contains(MAGIC_STRING)).isEqualTo(true);
+    assertThat(response.contains(MAGIC_STRING)).isTrue();
   }
 }

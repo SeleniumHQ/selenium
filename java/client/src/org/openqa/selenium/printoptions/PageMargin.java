@@ -81,7 +81,7 @@ public class PageMargin {
     this.left = left;
   }
 
-  public Map<String, Double> to_json() {
+  public Map<String, Double> toJson() {
     Map<String, Double> marginParams = new HashMap<>();
 
     marginParams.put("top", this.top);

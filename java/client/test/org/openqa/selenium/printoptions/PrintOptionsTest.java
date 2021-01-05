@@ -33,19 +33,19 @@ public class PrintOptionsTest {
     PrintOptions printOptions = new PrintOptions();
 
     assertThat(printOptions.getScale()).isEqualTo(1.0);
-    assertThat(printOptions.getBackground()).isEqualTo(false);
-    assertThat(printOptions.getShrinkToFit()).isEqualTo(true);
+    assertThat(printOptions.getBackground()).isFalse();
+    assertThat(printOptions.getShrinkToFit()).isTrue();
   }
 
   @Test
   public void returnsMapDefaultValues() {
     PrintOptions printOptions = new PrintOptions();
 
-    Map<String, Object> printOptionsMap = printOptions.to_json();
+    Map<String, Object> printOptionsMap = printOptions.toJson();
 
-    assertThat(printOptionsMap.get("scale")).isEqualTo(printOptions.getScale());
-    assertThat(printOptionsMap.get("background")).isEqualTo(printOptions.getBackground());
-    assertThat(printOptionsMap.get("shrinkToFit")).isEqualTo(printOptions.getShrinkToFit());
+    assertThat(printOptionsMap).containsEntry("scale", printOptions.getScale());
+    assertThat(printOptionsMap).containsEntry("background", printOptions.getBackground());
+    assertThat(printOptionsMap).containsEntry("shrinkToFit", printOptions.getShrinkToFit());
   }
 
   @Test
@@ -56,10 +56,10 @@ public class PrintOptionsTest {
     printOptions.setScale(1.5);
     printOptions.setShrinkToFit(false);
 
-    Map<String, Object> printOptionsMap = printOptions.to_json();
+    Map<String, Object> printOptionsMap = printOptions.toJson();
 
-    assertThat(printOptionsMap.get("background")).isEqualTo(printOptions.getBackground());
-    assertThat(printOptionsMap.get("scale")).isEqualTo(printOptions.getScale());
-    assertThat(printOptionsMap.get("shrinkToFit")).isEqualTo(printOptions.getShrinkToFit());
+    assertThat(printOptionsMap).containsEntry("scale", printOptions.getScale());
+    assertThat(printOptionsMap).containsEntry("background", printOptions.getBackground());
+    assertThat(printOptionsMap).containsEntry("shrinkToFit", printOptions.getShrinkToFit());
   }
 }

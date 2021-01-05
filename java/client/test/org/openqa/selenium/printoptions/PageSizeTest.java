@@ -45,9 +45,9 @@ public class PageSizeTest {
     pageSize.setHeight(11.0);
     pageSize.setWidth(12.0);
 
-    Map<String, Double> pageSizeMap = pageSize.to_json();
+    Map<String, Double> pageSizeMap = pageSize.toJson();
 
-    assertThat(pageSizeMap.get("height")).isEqualTo(11.0);
-    assertThat(pageSizeMap.get("width")).isEqualTo(12.0);
+    assertThat(pageSizeMap).containsEntry("height", pageSize.getHeight());
+    assertThat(pageSizeMap).containsEntry("width", pageSize.getWidth());
   }
 }

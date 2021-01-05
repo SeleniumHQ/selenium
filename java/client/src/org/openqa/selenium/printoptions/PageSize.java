@@ -46,7 +46,7 @@ public class PageSize {
     this.width = width;
   }
 
-  public Map<String, Double> to_json() {
+  public Map<String, Double> toJson() {
     Map<String, Double> pageParams = new HashMap<>();
 
     pageParams.put("height", this.height);
