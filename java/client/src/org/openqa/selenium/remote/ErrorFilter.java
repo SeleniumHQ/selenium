@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium.remote;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -27,10 +27,10 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 
 public class ErrorFilter implements Filter {
 
-  private final ErrorCodec errors;
+  private final org.openqa.selenium.remote.ErrorCodec errors;
 
   public ErrorFilter() {
-    this(ErrorCodec.createDefault());
+    this(org.openqa.selenium.remote.ErrorCodec.createDefault());
   }
 
   public ErrorFilter(ErrorCodec errors) {

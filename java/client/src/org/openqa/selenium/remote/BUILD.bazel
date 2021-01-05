@@ -101,12 +101,26 @@ java_export(
 java_library(
     name = "remote-lib",
     srcs = [
+
+        "AddRotatable.java",
+        "Augmenter.java",
+        "AugmenterProvider.java",
+        "RemoteRotatable.java",
+#        "RemoteTags.java",
+        "html5/AddApplicationCache.java",
+        "html5/AddLocationContext.java",
+        "html5/AddWebStorage.java",
+        "mobile/AddNetworkConnection.java",
+
         "AbstractDriverOptions.java",
         "AcceptedW3CCapabilityKeys.java",
+        "AddWebDriverSpecHeaders.java",
         "CommandCodec.java",
         "CommandInfo.java",
         "Dialect.java",
         "DriverCommand.java",
+        "ErrorCodec.java",
+        "ErrorFilter.java",
         "ErrorHandler.java",
         "ExecuteMethod.java",
         "FileDetector.java",
@@ -159,6 +173,8 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/remote/session",
         artifact("com.google.guava:guava"),
+
+        artifact("net.bytebuddy:byte-buddy"),
     ],
 )
 

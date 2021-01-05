@@ -85,7 +85,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
     // Are we dealing with an error?
     // {"error":"no such alert","message":"No tab modal was open when attempting to get the dialog text"}
-    if (HTTP_OK != encodedResponse.getStatus()) {
+    if (!encodedResponse.isSuccessful()) {
       log.fine("Processing an error");
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);

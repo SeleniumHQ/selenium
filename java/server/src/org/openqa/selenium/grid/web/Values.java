@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.remote.ErrorCodec;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ import java.lang.reflect.Type;
 public class Values {
 
   private static final Json JSON = new Json();
-  private static final ErrorCodec ERRORS = ErrorCodec.createDefault();
+  private static final org.openqa.selenium.remote.ErrorCodec ERRORS = ErrorCodec.createDefault();
 
   public static <T> T get(HttpResponse response, Type typeOfT) {
     try (Reader reader = reader(response);

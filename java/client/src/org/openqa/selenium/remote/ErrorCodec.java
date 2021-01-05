@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium.remote;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
@@ -47,7 +47,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.ScreenshotException;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;

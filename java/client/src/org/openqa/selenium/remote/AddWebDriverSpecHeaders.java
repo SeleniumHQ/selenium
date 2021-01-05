@@ -15,27 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium.remote;
 
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.util.logging.Logger;
+
 public class AddWebDriverSpecHeaders implements Filter {
   @Override
   public HttpHandler apply(HttpHandler next) {
     return req -> {
+      if (req.getHeader("Content-Type") == null) {
+        req.addHeader("Content-Type", Json.JSON_UTF_8);
+      }
+      if (req.getHeader("Cache-Control") == null) {
+        req.addHeader("Cache-Control", "no-cache");
+      }
+
       HttpResponse res = next.execute(req);
       if (res == null) {
         return res;
-      }
-
-      if (res.getHeader("Content-Type") == null) {
-        res.addHeader("Content-Type", Json.JSON_UTF_8);
-      }
-      if (res.getHeader("Cache-Control") == null) {
-        res.addHeader("Cache-Control", "none");
       }
 
       return res;

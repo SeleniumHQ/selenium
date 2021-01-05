@@ -19,7 +19,7 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.openqa.selenium.grid.web.ErrorFilter;
+import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;

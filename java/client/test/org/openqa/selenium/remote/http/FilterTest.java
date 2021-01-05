@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.testing.UnitTests;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -96,5 +98,26 @@ public class FilterTest {
     assertThat(rootCalls.get()).isEqualTo(1);
     assertThat(filterOneCount.get()).isEqualTo(1);
     assertThat(filterTwoCount.get()).isEqualTo(1);
+  }
+
+  @Test
+  public void filtersShouldBeCalledInTheOrderAddedWithLastInCalledFirst() {
+    List<String> ordered = new ArrayList<>();
+
+    HttpHandler inner = req -> {
+      ordered.add("inner");
+      return new HttpResponse();
+    };
+    HttpHandler handler = inner.with(next -> req -> {
+      ordered.add("middle");
+      return next.execute(req);
+    }).with(next -> req -> {
+      ordered.add("outer");
+      return next.execute(req);
+    });
+
+    handler.execute(new HttpRequest(GET, "/cheese"));
+
+    assertThat(ordered).isEqualTo(List.of("outer", "middle", "inner"));
   }
 }
