@@ -35,7 +35,7 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.locators.ById;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.grid.web.ErrorFilter;
+import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.TypeToken;

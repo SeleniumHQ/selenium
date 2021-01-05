@@ -15,40 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium.remote;
 
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import static org.openqa.selenium.remote.http.Contents.asJson;
-
-public class ErrorFilter implements Filter {
-
-  private final ErrorCodec errors;
-
-  public ErrorFilter() {
-    this(ErrorCodec.createDefault());
-  }
-
-  public ErrorFilter(ErrorCodec errors) {
-    this.errors = Require.nonNull("Error codec", errors);
-  }
-
+public class AddWebDriverSpecHeaders implements Filter {
   @Override
   public HttpHandler apply(HttpHandler next) {
     return req -> {
-      try {
-        return next.execute(req);
-      } catch (Throwable throwable) {
-        return new HttpResponse()
-          .setHeader("Cache-Control", "none")
-          .setHeader("Content-Type", Json.JSON_UTF_8)
-          .setStatus(errors.getHttpStatusCode(throwable))
-          .setContent(asJson(errors.encode(throwable)));
+      if (req.getHeader("Content-Type") == null) {
+        req.addHeader("Content-Type", Json.JSON_UTF_8);
       }
+      if (req.getHeader("Cache-Control") == null) {
+        req.addHeader("Cache-Control", "no-cache");
+      }
+
+      return next.execute(req);
     };
   }
 }

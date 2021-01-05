@@ -48,15 +48,7 @@ java_library(
 java_export(
     name = "remote",
     srcs = [
-        "AddRotatable.java",
-        "Augmenter.java",
-        "AugmenterProvider.java",
-        "RemoteRotatable.java",
         "RemoteTags.java",
-        "html5/AddApplicationCache.java",
-        "html5/AddLocationContext.java",
-        "html5/AddWebStorage.java",
-        "mobile/AddNetworkConnection.java",
     ],
     hides = [
         "org.openqa.selenium.remote.internal",
@@ -83,7 +75,7 @@ java_export(
         "//java/client/src/org/openqa/selenium/remote/tracing",
         "//java/client/src/org/openqa/selenium/remote/tracing/opentelemetry",
     ],
-    deps = [
+    runtime_deps = [
         ":api",
         ":capabilities",
         ":remote-lib",
@@ -96,6 +88,11 @@ java_export(
         artifact("com.google.guava:guava"),
         artifact("net.bytebuddy:byte-buddy"),
     ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote:api",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+    ],
 )
 
 java_library(
@@ -103,10 +100,16 @@ java_library(
     srcs = [
         "AbstractDriverOptions.java",
         "AcceptedW3CCapabilityKeys.java",
+        "AddWebDriverSpecHeaders.java",
+        "AddRotatable.java",
+        "Augmenter.java",
+        "AugmenterProvider.java",
         "CommandCodec.java",
         "CommandInfo.java",
         "Dialect.java",
         "DriverCommand.java",
+        "ErrorCodec.java",
+        "ErrorFilter.java",
         "ErrorHandler.java",
         "ExecuteMethod.java",
         "FileDetector.java",
@@ -122,6 +125,7 @@ java_library(
         "RemoteKeyboard.java",
         "RemoteLogs.java",
         "RemoteMouse.java",
+        "RemoteRotatable.java",
         "RemoteStatus.java",
         "RemoteTouchScreen.java",
         "RemoteWebDriver.java",
@@ -131,11 +135,15 @@ java_library(
         "UnreachableBrowserException.java",
         "UselessFileDetector.java",
         "W3CHandshakeResponse.java",
+        "html5/AddApplicationCache.java",
+        "html5/AddLocationContext.java",
+        "html5/AddWebStorage.java",
         "html5/RemoteApplicationCache.java",
         "html5/RemoteLocalStorage.java",
         "html5/RemoteLocationContext.java",
         "html5/RemoteSessionStorage.java",
         "html5/RemoteWebStorage.java",
+        "mobile/AddNetworkConnection.java",
         "mobile/RemoteNetworkConnection.java",
     ] + glob([
         "codec/*.java",
@@ -159,6 +167,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/remote/session",
         artifact("com.google.guava:guava"),
+        artifact("net.bytebuddy:byte-buddy"),
     ],
 )
 
