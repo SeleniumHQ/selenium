@@ -21,6 +21,7 @@ import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.NonSplittingSplitter;
 import org.openqa.selenium.grid.config.Role;
 
 import java.net.URL;
@@ -52,7 +53,8 @@ public class DockerFlags implements HasRoles {
       description = "Docker configs which map image name to stereotype capabilities (example " +
                     "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}')",
       arity = 2,
-      variableArity = true)
+      variableArity = true,
+      splitter = NonSplittingSplitter.class)
   @ConfigValue(
     section = "docker",
     name = "configs",

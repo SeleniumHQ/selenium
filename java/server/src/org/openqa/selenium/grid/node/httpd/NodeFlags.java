@@ -21,6 +21,7 @@ import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.NonSplittingSplitter;
 import org.openqa.selenium.grid.config.Role;
 
 import java.net.URL;
@@ -61,7 +62,8 @@ public class NodeFlags implements HasRoles {
                   "`--driver-factory org.openqa.selenium.example.LynxDriverFactory " +
                   "'{\"browserName\": \"lynx\"}')",
     arity = 2,
-    variableArity = true)
+    variableArity = true,
+    splitter = NonSplittingSplitter.class)
   @ConfigValue(
     section = "node",
     name = "driver-factories",
@@ -79,14 +81,14 @@ public class NodeFlags implements HasRoles {
     names = {"--driver-configuration"},
     description = "List of configured drivers a Node supports. " +
                   "It is recommended to provide this type of configuration through a toml config " +
-                  "file to improve readability. In the example, please note the absence of " +
-                  "commas (,) in the 'stereotype' definition." +
+                  "file to improve readability." +
                   "--drivers-configuration name=\"Firefox Nightly\" " +
-                  "stereotype='{\"browserName\": \"firefox\" \"browserVersion\": \"86\" " +
+                  "stereotype='{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
                   "\"moz:firefoxOptions\": " +
                   "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}'",
     arity = 2,
-    variableArity = true)
+    variableArity = true,
+    splitter = NonSplittingSplitter.class)
   @ConfigValue(
     section = "node",
     name = "driver-configuration",
