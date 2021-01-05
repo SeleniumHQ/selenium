@@ -17,20 +17,21 @@
 
 package org.openqa.selenium.grid.data;
 
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.TypeToken;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.Dialect;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class CreateSessionRequest {
 
@@ -42,10 +43,10 @@ public class CreateSessionRequest {
       Set<Dialect> downstreamDialects,
       Capabilities capabilities,
       Map<String, Object> metadata) {
-    this.downstreamDialects = ImmutableSet.copyOf(
-        Require.nonNull("Downstream dialects", downstreamDialects));
+    this.downstreamDialects = unmodifiableSet(new HashSet<>(
+        Require.nonNull("Downstream dialects", downstreamDialects)));
     this.capabilities = ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities));
-    this.metadata = ImmutableMap.copyOf(Require.nonNull("Metadata", metadata));
+    this.metadata = unmodifiableMap(new HashMap<>(Require.nonNull("Metadata", metadata)));
   }
 
   public Set<Dialect> getDownstreamDialects() {

@@ -59,7 +59,7 @@ public class Slot {
   }
 
   public boolean isSupporting(Capabilities caps) {
-    return slotMatcher.matches(caps, getStereotype());
+    return slotMatcher.matches(getStereotype(), caps);
   }
 
   @Override

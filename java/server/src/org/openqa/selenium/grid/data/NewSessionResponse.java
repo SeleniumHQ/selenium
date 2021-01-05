@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Base64;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static java.util.Collections.unmodifiableMap;
 
 public class NewSessionResponse {
 
@@ -52,11 +53,11 @@ public class NewSessionResponse {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
-        "requestId", requestId,
-        "session", session,
-        "downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse)
-    );
+    Map<String, Object> toReturn = new LinkedHashMap<>();
+    toReturn.put("requestId", requestId);
+    toReturn.put("session", session);
+    toReturn.put("downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse));
+    return unmodifiableMap(toReturn);
   }
 
   private static NewSessionResponse fromJson(JsonInput input) {
