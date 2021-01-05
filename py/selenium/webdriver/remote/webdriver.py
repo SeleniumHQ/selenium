@@ -281,10 +281,7 @@ class WebDriver(BaseWebDriver):
         Creates a new session with the desired capabilities.
 
         :Args:
-         - browser_name - The name of the browser to request.
-         - version - Which browser version to request.
-         - platform - Which platform to request the browser on.
-         - javascript_enabled - Whether the new session should support JavaScript.
+         - capabilities - a capabilities dict to start the session with.
          - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
         """
         if not isinstance(capabilities, dict):
