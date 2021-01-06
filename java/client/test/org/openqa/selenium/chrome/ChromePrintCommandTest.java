@@ -70,7 +70,7 @@ public class ChromePrintCommandTest extends JUnit4TestBase {
     pageSize.setWidth(30.0);
 
     printOptions.setPageRanges(new String[]{"1-2"});
-    printOptions.setOrientation(PrintOptions.PrintOrientation.Landscape);
+    printOptions.setOrientation(PrintOptions.Orientation.Landscape);
     printOptions.setPageSize(pageSize);
 
     String response = driver.printPage(printOptions);
