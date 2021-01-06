@@ -17,28 +17,29 @@
 
 package org.openqa.selenium.printoptions;
 
-import java.util.HashMap;
-import java.util.Map;
+
+import org.openqa.selenium.printoptions.print.PageMargin;
+import org.openqa.selenium.printoptions.print.PageSize;
 
 public class PrintOptions {
 
-  public enum PrintOrientation {
+  public enum Orientation {
     Portrait,
     Landscape
   }
-  private PrintOrientation orientation = PrintOrientation.Portrait;
+  private Orientation orientation = Orientation.Portrait;
   private double scale = 1.0;
   private boolean background = false;
   private boolean shrinkToFit = true;
-  private PageSize pageSize = new PageSize();
-  private PageMargin pageMargin = new PageMargin();
+  private org.openqa.selenium.printoptions.print.PageSize pageSize = new org.openqa.selenium.printoptions.print.PageSize();
+  private org.openqa.selenium.printoptions.print.PageMargin pageMargin = new org.openqa.selenium.printoptions.print.PageMargin();
   private String[] pageRanges;
 
-  public PrintOrientation getOrientation() {
+  public Orientation getOrientation() {
     return this.orientation;
   }
 
-  public void setOrientation(PrintOrientation orientation) {
+  public void setOrientation(Orientation orientation) {
     this.orientation = orientation;
   }
 
@@ -91,18 +92,5 @@ public class PrintOptions {
 
   public PageMargin getPageMargin() {
     return this.pageMargin;
-  }
-
-  public Map<String, Object> toJson() {
-    Map<String, Object> printOptions = new HashMap<>();
-
-    printOptions.put("scale", this.scale);
-    printOptions.put("background", this.background);
-    printOptions.put("shrinkToFit", this.shrinkToFit);
-    printOptions.put("page", this.pageSize.toJson());
-    printOptions.put("margin", this.pageMargin.toJson());
-
-
-    return printOptions;
   }
 }

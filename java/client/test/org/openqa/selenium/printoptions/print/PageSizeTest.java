@@ -15,14 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.printoptions;
+package org.openqa.selenium.printoptions.print;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.openqa.selenium.printoptions.print.PageSize;
 import org.openqa.selenium.testing.UnitTests;
 
-import java.util.Map;
 
 @Category(UnitTests.class)
 public class PageSizeTest {
@@ -33,21 +34,19 @@ public class PageSizeTest {
 
   @Test
   public void setsDefaultHeightWidth() {
-    PageSize pageSize = new PageSize();
+    org.openqa.selenium.printoptions.print.PageSize pageSize = new org.openqa.selenium.printoptions.print.PageSize();
 
     assertThat(pageSize.getHeight()).isEqualTo(HEIGHT);
     assertThat(pageSize.getWidth()).isEqualTo(WIDTH);
   }
 
   @Test
-  public void returnsMapOfPageSize() {
-    PageSize pageSize = new PageSize();
+  public void setsValuesAsPassed() {
+    org.openqa.selenium.printoptions.print.PageSize pageSize = new PageSize();
     pageSize.setHeight(11.0);
     pageSize.setWidth(12.0);
 
-    Map<String, Double> pageSizeMap = pageSize.toJson();
-
-    assertThat(pageSizeMap).containsEntry("height", pageSize.getHeight());
-    assertThat(pageSizeMap).containsEntry("width", pageSize.getWidth());
+    assertThat(pageSize.getHeight()).isEqualTo(11.0);
+    assertThat(pageSize.getWidth()).isEqualTo(12.0);
   }
 }

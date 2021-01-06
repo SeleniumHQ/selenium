@@ -4,11 +4,12 @@ load("//java:defs.bzl", "java_binary", "java_test_suite")
 java_test_suite(
     name = "SmallTests",
     size = "small",
-    srcs = glob(["*Test.java"]),
+    srcs = glob(["*Test.java", "print/*Test.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/printoptions",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/src/org/openqa/selenium/printoptions/print",
         artifact("org.assertj:assertj-core"),
         artifact("junit:junit"),
     ]

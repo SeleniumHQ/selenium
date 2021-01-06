@@ -15,14 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.printoptions;
+package org.openqa.selenium.printoptions.print;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.openqa.selenium.printoptions.print.PageMargin;
 import org.openqa.selenium.testing.UnitTests;
 
-import java.util.Map;
 
 @Category(UnitTests.class)
 public class PageMarginTest {
@@ -35,7 +36,7 @@ public class PageMarginTest {
 
   @Test
   public void setsDefaultMarginValues() {
-    PageMargin pageMargin = new PageMargin();
+    org.openqa.selenium.printoptions.print.PageMargin pageMargin = new org.openqa.selenium.printoptions.print.PageMargin();
 
     assertThat(pageMargin.getTop()).isEqualTo(TOP);
     assertThat(pageMargin.getBottom()).isEqualTo(BOTTOM);
@@ -44,18 +45,16 @@ public class PageMarginTest {
   }
 
   @Test
-  public void returnsMapOfPageMargin() {
-    PageMargin pageMargin = new PageMargin();
+  public void setsVauesAsPassed() {
+    org.openqa.selenium.printoptions.print.PageMargin pageMargin = new PageMargin();
     pageMargin.setBottom(2.0);
     pageMargin.setTop(3.0);
     pageMargin.setLeft(1.0);
     pageMargin.setRight(2.0);
 
-    Map<String, Double> pageMarginMap = pageMargin.toJson();
-
-    assertThat(pageMarginMap).containsEntry("bottom", pageMargin.getBottom());
-    assertThat(pageMarginMap).containsEntry("top", pageMargin.getTop());
-    assertThat(pageMarginMap).containsEntry("left", pageMargin.getLeft());
-    assertThat(pageMarginMap).containsEntry("right", pageMargin.getRight());
+    assertThat(pageMargin.getTop()).isEqualTo(3.0);
+    assertThat(pageMargin.getBottom()).isEqualTo(2.0);
+    assertThat(pageMargin.getLeft()).isEqualTo(1.0);
+    assertThat(pageMargin.getRight()).isEqualTo(2.0);
   }
 }

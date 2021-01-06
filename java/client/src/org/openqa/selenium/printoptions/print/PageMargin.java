@@ -15,10 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.printoptions;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.openqa.selenium.printoptions.print;
 
 public class PageMargin {
   private double top;
@@ -34,19 +31,19 @@ public class PageMargin {
   }
 
   public double getTop() {
-    return this.top;
+    return top;
   }
 
   public double getBottom() {
-    return this.bottom;
+    return bottom;
   }
 
   public double getLeft() {
-    return this.left;
+    return left;
   }
 
   public double getRight() {
-    return this.right;
+    return right;
   }
 
   public void setTop(double top) {
@@ -79,16 +76,5 @@ public class PageMargin {
     }
 
     this.left = left;
-  }
-
-  public Map<String, Double> toJson() {
-    Map<String, Double> marginParams = new HashMap<>();
-
-    marginParams.put("top", this.top);
-    marginParams.put("bottom", this.bottom);
-    marginParams.put("left", this.left);
-    marginParams.put("right", this.right);
-
-    return marginParams;
   }
 }

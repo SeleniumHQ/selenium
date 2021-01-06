@@ -23,8 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.openqa.selenium.testing.UnitTests;
 
-import java.util.Map;
-
 @Category(UnitTests.class)
 public class PrintOptionsTest {
 
@@ -38,17 +36,6 @@ public class PrintOptionsTest {
   }
 
   @Test
-  public void returnsMapDefaultValues() {
-    PrintOptions printOptions = new PrintOptions();
-
-    Map<String, Object> printOptionsMap = printOptions.toJson();
-
-    assertThat(printOptionsMap).containsEntry("scale", printOptions.getScale());
-    assertThat(printOptionsMap).containsEntry("background", printOptions.getBackground());
-    assertThat(printOptionsMap).containsEntry("shrinkToFit", printOptions.getShrinkToFit());
-  }
-
-  @Test
   public void setsValuesAsPassed() {
     PrintOptions printOptions = new PrintOptions();
 
@@ -56,10 +43,8 @@ public class PrintOptionsTest {
     printOptions.setScale(1.5);
     printOptions.setShrinkToFit(false);
 
-    Map<String, Object> printOptionsMap = printOptions.toJson();
-
-    assertThat(printOptionsMap).containsEntry("scale", printOptions.getScale());
-    assertThat(printOptionsMap).containsEntry("background", printOptions.getBackground());
-    assertThat(printOptionsMap).containsEntry("shrinkToFit", printOptions.getShrinkToFit());
+    assertThat(printOptions.getScale()).isEqualTo(1.5);
+    assertThat(printOptions.getBackground()).isTrue();
+    assertThat(printOptions.getShrinkToFit()).isFalse();
   }
 }

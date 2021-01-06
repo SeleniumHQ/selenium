@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.printoptions;
+package org.openqa.selenium.printoptions.print;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,14 +44,5 @@ public class PageSize {
 
   public void setWidth(double width) {
     this.width = width;
-  }
-
-  public Map<String, Double> toJson() {
-    Map<String, Double> pageParams = new HashMap<>();
-
-    pageParams.put("height", this.height);
-    pageParams.put("width", this.width);
-
-    return pageParams;
   }
 }
