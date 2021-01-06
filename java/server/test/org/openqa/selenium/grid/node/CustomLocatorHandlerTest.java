@@ -32,6 +32,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.node.locators.FallbackLocators;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.ErrorFilter;
@@ -91,8 +92,7 @@ public class CustomLocatorHandlerTest {
   public void shouldRequireInputToHaveAUsingParameter() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
-      node, registrationSecret, emptySet());
+    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
@@ -106,8 +106,7 @@ public class CustomLocatorHandlerTest {
   public void shouldRequireInputToHaveAValueParameter() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
-      node, registrationSecret, emptySet());
+    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
@@ -121,8 +120,7 @@ public class CustomLocatorHandlerTest {
   public void shouldRejectRequestWithAnUnknownLocatorMechanism() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
-      node, registrationSecret, emptySet());
+    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
@@ -142,7 +140,7 @@ public class CustomLocatorHandlerTest {
       new TestSessionFactory((id, c) -> new Session(id, nodeUri, caps, c, Instant.now())))
       .build();
 
-    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
+    HttpHandler handler = new CustomLocatorHandler(
       node,
       registrationSecret,
       singleton(new CustomLocator() {
@@ -183,7 +181,7 @@ public class CustomLocatorHandlerTest {
           .setContent(Contents.asJson(singletonMap(
             "value", singletonList(singletonMap(Dialect.W3C.getEncodedElementKey(), elementId))))));
 
-    HttpHandler handler = new org.openqa.selenium.grid.node.CustomLocatorHandler(
+    HttpHandler handler = new CustomLocatorHandler(
       node,
       registrationSecret,
       singleton(new CustomLocator() {
@@ -241,6 +239,54 @@ public class CustomLocatorHandlerTest {
       new HttpRequest(POST, "/session/1234/element/234345/elements")
         .setContent(Contents.asJson(ImmutableMap.of(
           "using", "cheese",
+          "value", "tasty"))));
+
+    List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());
+    assertThat(elements).hasSize(1);
+    Object seenId = elements.get(0).get(Dialect.W3C.getEncodedElementKey());
+    assertThat(seenId).isEqualTo(elementId);
+  }
+
+  @Test
+  public void shouldNotFindLocatorStrategyForId() {
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheesefox");
+    Node node = nodeBuilder.add(
+      caps,
+      new TestSessionFactory((id, c) -> new Session(id, nodeUri, caps, c, Instant.now())))
+      .build();
+
+    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
+
+    HttpResponse res = handler.with(new ErrorFilter()).execute(
+      new HttpRequest(POST, "/session/1234/element")
+        .setContent(Contents.asJson(ImmutableMap.of(
+          "using", "id",
+          "value", "tasty"))));
+
+    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> Values.get(res, WebElement.class));
+  }
+
+  @Test
+  public void shouldFallbackToUseById() {
+    String elementId = UUID.randomUUID().toString();
+
+    Node node = Mockito.mock(Node.class);
+    when(node.executeWebDriverCommand(argThat(matchesUri("/session/{sessionId}/elements"))))
+      .thenReturn(
+        new HttpResponse()
+          .addHeader("Content-Type", Json.JSON_UTF_8)
+          .setContent(Contents.asJson(singletonMap(
+            "value", singletonList(singletonMap(Dialect.W3C.getEncodedElementKey(), elementId))))));
+
+    HttpHandler handler = new CustomLocatorHandler(
+      node,
+      registrationSecret,
+      singleton(new FallbackLocators.ById()));
+
+    HttpResponse res = handler.execute(
+      new HttpRequest(POST, "/session/1234/elements")
+        .setContent(Contents.asJson(ImmutableMap.of(
+          "using", "id",
           "value", "tasty"))));
 
     List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());
