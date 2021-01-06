@@ -22,42 +22,29 @@ import static java.util.stream.Collectors.joining;
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.locators.CustomLocator;
 
 import java.util.stream.Stream;
 
-public class FallbackLocators {
+/**
+ * A class implementing {link @CustomLocator} and to be used as a fallback locator on the server
+ * side.
+ */
 
-  @AutoService(CustomLocator.class)
-  public static class ById extends CustomLocator {
-    @Override
-    public String getLocatorName() {
-      return "id";
-    }
-
-    @Override
-    public By createBy(Object usingParameter) {
-      String id = Stream.of(
-        String.valueOf(usingParameter)
-          .split("\\s+")).map(str -> "#" + str).collect(joining(" "));
-      return By.cssSelector(id);
-    }
+@AutoService(CustomLocator.class)
+public class ById extends CustomLocator {
+  @Override
+  public String getLocatorName() {
+    return "id";
   }
 
-  @AutoService(CustomLocator.class)
-  public static class ByName extends CustomLocator {
-    @Override
-    public String getLocatorName() {
-      return "name";
-    }
-
-    @Override
-    public By createBy(Object usingParameter) {
-      String name = String.valueOf(usingParameter).replace("'", "\\'");
-      return By.cssSelector(String.format("*[name='%s']", name));
-    }
+  @Override
+  public By createBy(Object usingParameter) {
+    Require.argument("Locator value", usingParameter).instanceOf(String.class);
+    String id = Stream.of(
+      String.valueOf(usingParameter)
+        .split("\\s+")).map(str -> "#" + str).collect(joining(" "));
+    return By.cssSelector(id);
   }
-
-
-  // asJson.put("value", String.format("*[name='%s']", name.replace("'", "\\'")));
 }

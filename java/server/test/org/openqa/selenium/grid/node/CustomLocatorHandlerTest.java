@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.node.locators.FallbackLocators;
+import org.openqa.selenium.grid.node.locators.ById;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.ErrorFilter;
@@ -281,7 +281,7 @@ public class CustomLocatorHandlerTest {
     HttpHandler handler = new CustomLocatorHandler(
       node,
       registrationSecret,
-      singleton(new FallbackLocators.ById()));
+      singleton(new ById()));
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/elements")

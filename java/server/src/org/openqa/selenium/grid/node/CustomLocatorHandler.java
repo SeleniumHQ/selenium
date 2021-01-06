@@ -157,7 +157,7 @@ class CustomLocatorHandler implements Routable {
         .orElseThrow(() -> new IllegalArgumentException("Cannot locate session ID from " + req.getUri())));
 
     SearchContext context = null;
-    RemoteWebElement element = null;
+    RemoteWebElement element;
     boolean findMultiple = false;
     UrlTemplate.Match match = FIND_ELEMENT.match(req.getUri());
     if (match != null) {
@@ -194,7 +194,7 @@ class CustomLocatorHandler implements Routable {
       throw new IllegalStateException("Unable to determine locator context: " + req);
     }
 
-    Object toReturn = null;
+    Object toReturn;
     By by = customLocator.apply(value);
     if (findMultiple) {
       toReturn = context.findElements(by);
