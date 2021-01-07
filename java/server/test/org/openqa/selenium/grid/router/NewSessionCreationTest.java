@@ -107,7 +107,11 @@ public class NewSessionCreationTest {
       events,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      events,
+      localNewSessionQueue,
+      registrationSecret);
 
     Distributor distributor = new LocalDistributor(
         tracer,
@@ -183,7 +187,11 @@ public class NewSessionCreationTest {
       events,
       Duration.ofSeconds(2),
       Duration.ofSeconds(10));
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      events,
+      localNewSessionQueue,
+      registrationSecret);
     handler.addHandler(queuer);
 
     Distributor distributor = new LocalDistributor(

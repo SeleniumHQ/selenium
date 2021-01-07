@@ -56,6 +56,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -80,6 +81,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class SessionQueueGridTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private HttpClient.Factory clientFactory;
+  private Secret registrationSecret;
   private Server<?> server;
 
   @Before
@@ -92,6 +94,8 @@ public class SessionQueueGridTest {
       nodeUri.toURL(), handler,
       HttpClient.Factory.createDefault());
 
+    registrationSecret = new Secret("cheese");
+
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     NewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
@@ -99,10 +103,13 @@ public class SessionQueueGridTest {
       bus,
       Duration.ofSeconds(5),
       Duration.ofSeconds(10));
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      bus,
+      localNewSessionQueue,
+      registrationSecret);
     handler.addHandler(queuer);
 
-    Secret registrationSecret = new Secret("hereford hop");
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -192,9 +199,10 @@ public class SessionQueueGridTest {
       Future<HttpResponse> thirdSessionrFuture = fixedThreadPoolService.submit(sessionCreationTask);
 
       Callable<HttpResponse> clearTask = () -> {
-        HttpRequest request = new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
+        HttpRequest request =
+          new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
         HttpClient client = clientFactory.createClient(server.getUrl());
-        return client.execute(request);
+        return client.with(new AddSecretFilter(registrationSecret)).execute(request);
       };
 
       Future<HttpResponse> clearQueueResponse = scheduler.schedule(clearTask, 3, SECONDS);

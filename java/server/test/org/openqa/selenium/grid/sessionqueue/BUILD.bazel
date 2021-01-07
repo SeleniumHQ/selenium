@@ -17,6 +17,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/remote",
         "//java/server/test/org/openqa/selenium/grid/testing",
+        "//java/server/src/org/openqa/selenium/grid/security",
         artifact("junit:junit"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("org.assertj:assertj-core"),
