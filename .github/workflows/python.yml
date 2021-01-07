@@ -9,7 +9,7 @@ on:
       - trunk
 
 jobs:
-  tox-flake8:
+  tox_flake8:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -27,7 +27,7 @@ jobs:
         env:
           TOXENV: flake8
 
-  tox-docs:
+  tox_docs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -44,3 +44,33 @@ jobs:
         run: tox -c py/tox.ini
         env:
           TOXENV: docs
+
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-python-unit-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-python-unit-tests-
+            ${{ runner.os }}-bazel-build-
+      - name: Setup bazelisk
+        uses: ./.github/actions/setup-bazelisk
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Run unit tests
+        uses: ./.github/actions/bazel
+        with:
+          command: test //py:unit
