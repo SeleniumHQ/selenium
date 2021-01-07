@@ -196,6 +196,7 @@ py_test_suite(
         requirement("pytest-instafail"),
         requirement("pytest-mock"),
         requirement("pytest-trio"),
+        requirement("six"),
         requirement("sortedcontainers"),
         requirement("sniffio"),
         requirement("zipp"),

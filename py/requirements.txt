@@ -16,6 +16,7 @@ pytest==6.1.2
 pytest-instafail==0.4.2
 pytest-mock==3.3.1
 pytest-trio==0.7.0
+six
 sortedcontainers
 sniffio
 trio==0.17.0
