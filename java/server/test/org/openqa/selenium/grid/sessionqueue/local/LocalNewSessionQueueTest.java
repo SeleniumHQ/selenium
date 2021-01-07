@@ -215,6 +215,15 @@ public class LocalNewSessionQueueTest {
     assertEquals(count, 0);
   }
 
+  @Test
+  public void shouldBeAbleToGetQueueSize() {
+    boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
+    assertTrue(added);
+
+    int size = sessionQueue.getQueueSize();
+    assertEquals(size, 1);
+  }
+
   private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {
     StringBuilder builder = new StringBuilder();
     try {

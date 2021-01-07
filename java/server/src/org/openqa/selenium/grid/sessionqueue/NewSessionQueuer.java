@@ -63,6 +63,7 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
     routes = combine(
+
       post("/session")
         .to(() -> this::addToQueue),
       post("/se/grid/newsessionqueuer/session")
@@ -73,6 +74,8 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
       get("/se/grid/newsessionqueuer/session/{requestId}")
         .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
+      get("/se/grid/newsessionqueuer/queue/size")
+        .to(() -> new GetNewSessionQueueSize(tracer, this)),
       delete("/se/grid/newsessionqueuer/queue")
         .to(() -> new ClearSessionQueue(tracer, this))
         .with(requiresSecret));
@@ -121,6 +124,8 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
   public abstract Optional<HttpRequest> remove(RequestId reqId);
 
   public abstract int clearQueue();
+
+  public abstract int getQueueSize();
 
   @Override
   public boolean matches(HttpRequest req) {

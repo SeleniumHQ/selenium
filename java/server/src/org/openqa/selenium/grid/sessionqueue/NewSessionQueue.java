@@ -48,6 +48,8 @@ public abstract class NewSessionQueue implements HasReadyState {
 
   public abstract int clear();
 
+  public abstract int getQueueSize();
+
   public void addRequestHeaders(HttpRequest request, RequestId reqId) {
     long timestamp = Instant.now().getEpochSecond();
     request.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
