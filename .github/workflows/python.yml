@@ -9,7 +9,7 @@ on:
       - trunk
 
 jobs:
-  tox:
+  tox-flake8:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
@@ -24,3 +24,23 @@ jobs:
           pip install tox==2.4.1
       - name: Test with tox
         run: tox -c py/tox.ini
+        env:
+          TOXENV: flake8
+
+  tox-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox==2.4.1
+      - name: Test with tox
+        run: tox -c py/tox.ini
+        env:
+          TOXENV: docs
