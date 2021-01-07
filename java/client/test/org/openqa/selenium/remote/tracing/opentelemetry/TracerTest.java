@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.DefaultContextPropagators;
@@ -84,7 +85,7 @@ public class TracerTest {
 
     assertThat(values).hasSize(1);
     assertThat(values).element(0)
-        .extracting(SpanData::getStatus).extracting(SpanData.Status::getCanonicalCode).isEqualTo(
+        .extracting(SpanData::getStatus).extracting(SpanData.Status::getStatusCode).isEqualTo(
         StatusCode.ERROR);
     assertThat(values).element(0)
         .extracting(el -> el.getAttributes().get(AttributeKey.stringKey("cheese"))).isEqualTo("gouda");
@@ -196,7 +197,7 @@ public class TracerTest {
     String event = "Test event";
     String attribute = "testBoolean";
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(attribute, false);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
@@ -218,9 +219,9 @@ public class TracerTest {
     String event = "Test event";
     String arrayKey = "booleanArray";
     String varArgsKey = "booleanVarArgs";
-    Boolean[] booleanArray = new Boolean[]{true, false};
+    boolean[] booleanArray = new boolean[]{true, false};
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(arrayKey, booleanArray);
     attributes.put(varArgsKey, true, false, true);
 
@@ -245,7 +246,7 @@ public class TracerTest {
     String attribute = "testDouble";
     Double attributeValue = 1.1;
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
@@ -267,9 +268,9 @@ public class TracerTest {
     String event = "Test event";
     String arrayKey = "doubleArray";
     String varArgsKey = "doubleVarArgs";
-    Double[] doubleArray = new Double[]{4.5, 2.5};
+    double[] doubleArray = new double[]{4.5, 2.5};
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(arrayKey, doubleArray);
     attributes.put(varArgsKey, 2.2, 5.3);
 
@@ -294,7 +295,7 @@ public class TracerTest {
     String attribute = "testLong";
     Long attributeValue = 500L;
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
@@ -316,9 +317,9 @@ public class TracerTest {
     String event = "Test event";
     String arrayKey = "longArray";
     String varArgsKey = "longVarArgs";
-    Long[] longArray = new Long[]{400L, 200L};
+    long[] longArray = new long[]{400L, 200L};
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(arrayKey, longArray);
     attributes.put(varArgsKey, 250L, 5L);
 
@@ -343,7 +344,7 @@ public class TracerTest {
     String attribute = "testString";
     String attributeValue = "attributeValue";
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(attribute, attributeValue);
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
@@ -367,7 +368,7 @@ public class TracerTest {
     String varArgsKey = "strVarArgs";
     String[] strArray = new String[]{"hey", "hello"};
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(arrayKey, strArray);
     attributes.put(varArgsKey, "hi", "hola");
 
@@ -392,7 +393,7 @@ public class TracerTest {
     String attribute = "testString";
     String attributeValue = "Hey";
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put(attribute, attributeValue);
     attributes.put(attribute, attributeValue);
 
@@ -415,11 +416,9 @@ public class TracerTest {
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
     String[] stringArray = new String[]{"Hey", "Hello"};
-    Long[] longArray = new Long[]{10L, 5L};
-    Double[] doubleArray = new Double[]{4.5, 2.5};
-    Boolean[] booleanArray = new Boolean[]{true, false};
+    boolean[] booleanArray = new boolean[]{true, false};
 
-    Attributes.Builder attributes = Attributes.builder();
+    AttributesBuilder attributes = Attributes.builder();
     attributes.put("testFloat", 5.5f);
     attributes.put("testInt", 10);
     attributes.put("testStringArray", stringArray);

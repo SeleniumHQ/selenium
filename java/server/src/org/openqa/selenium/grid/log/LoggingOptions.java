@@ -18,21 +18,18 @@
 package org.openqa.selenium.grid.log;
 
 import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.common.AttributeConsumer;
-import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.context.propagation.DefaultContextPropagators;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
-import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.TracerSdkManagement;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.api.trace.propagation.HttpTraceContext;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -164,12 +161,8 @@ public class LoggingOptions {
             Attributes attributes = event.getAttributes();
             Map<String, Object> attributeMap = new HashMap<>();
 
-            attributes.forEach(new AttributeConsumer() {
-              @Override
-              public <T> void accept(AttributeKey<T> key, T value) {
-                attributeMap.put(key.getKey(), value);
-              }
-            });
+            attributes.forEach(
+              (attributeKey, value) -> attributeMap.put(attributeKey.getKey(), value));
             map.put("attributes", attributeMap);
             String jsonString = getJsonString(map);
             if (status.isOk()) {
@@ -200,12 +193,12 @@ public class LoggingOptions {
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
       exporter -> exporters.add(SimpleSpanProcessor.builder(exporter).build()));
-    tracerManagement.addSpanProcessor(MultiSpanProcessor.create(exporters));
+    tracerManagement.addSpanProcessor(SpanProcessor.composite(exporters));
 
     // OpenTelemetry default propagators are no-op since version 0.9.0.
     // Hence, required propagators need to defined and added.
-    ContextPropagators propagators = DefaultContextPropagators.builder()
-      .addTextMapPropagator(HttpTraceContext.getInstance()).build();
+    ContextPropagators propagators = ContextPropagators.create(
+      TextMapPropagator.composite(W3CTraceContextPropagator.getInstance()));
 
     return new OpenTelemetryTracer(
       OpenTelemetry.getGlobalTracer("default"),

@@ -19,6 +19,6 @@ java_library(
         artifact("io.opentelemetry:opentelemetry-exporter-logging"),
         artifact("io.opentelemetry:opentelemetry-sdk"),
         artifact("io.opentelemetry:opentelemetry-sdk-common"),
-        artifact("io.opentelemetry:opentelemetry-sdk-tracing"),
+        artifact("io.opentelemetry:opentelemetry-sdk-trace"),
     ],
 )
