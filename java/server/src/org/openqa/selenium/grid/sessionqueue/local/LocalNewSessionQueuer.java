@@ -40,7 +40,6 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
 
   private final EventBus bus;
   public final NewSessionQueue sessionRequests;
-  private final Secret registrationSecret;
 
   public LocalNewSessionQueuer(
     Tracer tracer,
@@ -50,7 +49,6 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     super(tracer, registrationSecret);
     this.bus = Require.nonNull("Event bus", bus);
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
-    this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
   }
 
   public static NewSessionQueuer create(Config config) {
