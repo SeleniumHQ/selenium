@@ -85,7 +85,7 @@ public class TracerTest {
 
     assertThat(values).hasSize(1);
     assertThat(values).element(0)
-        .extracting(SpanData::getStatus).extracting(SpanData.Status::getCanonicalCode).isEqualTo(
+        .extracting(SpanData::getStatus).extracting(SpanData.Status::getStatusCode).isEqualTo(
         StatusCode.ERROR);
     assertThat(values).element(0)
         .extracting(el -> el.getAttributes().get(AttributeKey.stringKey("cheese"))).isEqualTo("gouda");
@@ -219,7 +219,7 @@ public class TracerTest {
     String event = "Test event";
     String arrayKey = "booleanArray";
     String varArgsKey = "booleanVarArgs";
-    Boolean[] booleanArray = new Boolean[]{true, false};
+    boolean[] booleanArray = new boolean[]{true, false};
 
     AttributesBuilder attributes = Attributes.builder();
     attributes.put(arrayKey, booleanArray);
@@ -268,7 +268,7 @@ public class TracerTest {
     String event = "Test event";
     String arrayKey = "doubleArray";
     String varArgsKey = "doubleVarArgs";
-    Double[] doubleArray = new Double[]{4.5, 2.5};
+    double[] doubleArray = new double[]{4.5, 2.5};
 
     AttributesBuilder attributes = Attributes.builder();
     attributes.put(arrayKey, doubleArray);
@@ -317,7 +317,7 @@ public class TracerTest {
     String event = "Test event";
     String arrayKey = "longArray";
     String varArgsKey = "longVarArgs";
-    Long[] longArray = new Long[]{400L, 200L};
+    long[] longArray = new long[]{400L, 200L};
 
     AttributesBuilder attributes = Attributes.builder();
     attributes.put(arrayKey, longArray);
@@ -416,9 +416,7 @@ public class TracerTest {
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
     String[] stringArray = new String[]{"Hey", "Hello"};
-    Long[] longArray = new Long[]{10L, 5L};
-    Double[] doubleArray = new Double[]{4.5, 2.5};
-    Boolean[] booleanArray = new Boolean[]{true, false};
+    boolean[] booleanArray = new boolean[]{true, false};
 
     AttributesBuilder attributes = Attributes.builder();
     attributes.put("testFloat", 5.5f);
