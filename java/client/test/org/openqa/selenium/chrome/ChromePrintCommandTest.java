@@ -39,6 +39,7 @@ public class ChromePrintCommandTest extends JUnit4TestBase {
     driver = new ChromeDriver(options);
     driver.get(pages.printPage);
   }
+
   @After
   public void tearDown() {
     if (driver != null) {
