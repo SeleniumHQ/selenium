@@ -234,7 +234,7 @@ public class NewSessionQueuerTest {
     sessionQueue.offerLast(request, requestId);
 
     int size = local.getQueueSize();
-    assertEquals(size, 1);
+    assertEquals(1, size);
   }
 
   @Test
@@ -243,7 +243,7 @@ public class NewSessionQueuerTest {
     sessionQueue.offerLast(request, requestId);
 
     int size = sessionQueue.getQueueSize();
-    assertEquals(size, 1);
+    assertEquals(1, size);
   }
 
   @Test

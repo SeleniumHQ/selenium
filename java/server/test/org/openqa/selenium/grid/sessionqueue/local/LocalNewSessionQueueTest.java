@@ -221,7 +221,7 @@ public class LocalNewSessionQueueTest {
     assertTrue(added);
 
     int size = sessionQueue.getQueueSize();
-    assertEquals(size, 1);
+    assertEquals(1, size);
   }
 
   private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {
