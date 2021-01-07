@@ -39,7 +39,9 @@ jobs:
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run JavaScript tests on Firefox
-        run: bazel test //javascript/node/selenium-webdriver:tests
+        uses: ./.github/actions/bazel
+        with:
+          command: test //javascript/node/selenium-webdriver:tests
         env:
           DISPLAY: :99
           SELENIUM_BROWSER: firefox
