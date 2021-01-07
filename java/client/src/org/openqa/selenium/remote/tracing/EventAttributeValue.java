@@ -26,11 +26,11 @@ public class EventAttributeValue {
   private final Type type;
   private String stringValue;
   private Number numberValue;
-  private Boolean booleanValue;
+  private boolean booleanValue;
   private String[] stringArrayValue;
-  private Long[] longArrayValue;
-  private Double[] doubleArrayValue;
-  private Boolean[] booleanArrayValue;
+  private long[] longArrayValue;
+  private double[] doubleArrayValue;
+  private boolean[] booleanArrayValue;
 
   public EventAttributeValue(String value) {
     this.stringValue = value;
@@ -58,19 +58,19 @@ public class EventAttributeValue {
     this.type = Type.STRING_ARRAY;
   }
 
-  public EventAttributeValue(Long[] value) {
+  public EventAttributeValue(long[] value) {
     Require.nonNull("Value", value);
     this.longArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.LONG_ARRAY;
   }
 
-  public EventAttributeValue(Double[] value) {
+  public EventAttributeValue(double[] value) {
     Require.nonNull("Value", value);
     this.doubleArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.DOUBLE_ARRAY;
   }
 
-  public EventAttributeValue(Boolean[] value) {
+  public EventAttributeValue(boolean[] value) {
     Require.nonNull("Value", value);
     this.booleanArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.BOOLEAN_ARRAY;
@@ -90,11 +90,11 @@ public class EventAttributeValue {
 
   public String[] getStringArrayValue() { return Arrays.copyOf(stringArrayValue, stringArrayValue.length); }
 
-  public Long[] getLongArrayValue() { return Arrays.copyOf(longArrayValue, longArrayValue.length); }
+  public long[] getLongArrayValue() { return Arrays.copyOf(longArrayValue, longArrayValue.length); }
 
-  public Double[] getDoubleArrayValue() { return Arrays.copyOf(doubleArrayValue, doubleArrayValue.length); }
+  public double[] getDoubleArrayValue() { return Arrays.copyOf(doubleArrayValue, doubleArrayValue.length); }
 
-  public Boolean[] getBooleanArrayValue() { return Arrays.copyOf(booleanArrayValue, booleanArrayValue.length); }
+  public boolean[] getBooleanArrayValue() { return Arrays.copyOf(booleanArrayValue, booleanArrayValue.length); }
 
   public Type getAttributeType() {
     return type;

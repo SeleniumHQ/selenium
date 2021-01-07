@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.tracing.opentelemetry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.api.trace.SpanContext;
@@ -90,7 +91,7 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
   public Span addEvent(String name, Map<String, EventAttributeValue> attributeMap) {
     Require.nonNull("Name", name);
     Require.nonNull("Event Attribute Map", attributeMap);
-    Attributes.Builder otAttributes = Attributes.builder();
+    AttributesBuilder otAttributes = Attributes.builder();
 
     attributeMap.forEach(
         (key, value) -> {

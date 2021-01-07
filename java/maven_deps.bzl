@@ -3,7 +3,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
     netty_version = "4.1.53.Final"
-    opentelemetry_version = "0.10.0"
+    opentelemetry_version = "0.12.0"
 
     maven_install(
         artifacts = [
@@ -45,7 +45,7 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-sdk-testing:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk-common:%s" % opentelemetry_version,
-            "io.opentelemetry:opentelemetry-sdk-tracing:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-sdk-trace:%s" % opentelemetry_version,
             "io.ous:jtoml:2.0.0",
             "it.ozimov:embedded-redis:0.7.3",
             "io.projectreactor:reactor-core:3.4.0",

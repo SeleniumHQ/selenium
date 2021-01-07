@@ -38,15 +38,15 @@ public class EventAttribute {
     return new EventAttributeValue(value);
   }
 
-  public static EventAttributeValue setValue(Long... value) {
+  public static EventAttributeValue setValue(long... value) {
     return new EventAttributeValue(value);
   }
 
-  public static EventAttributeValue setValue(Double... value) {
+  public static EventAttributeValue setValue(double... value) {
     return new EventAttributeValue(value);
   }
 
-  public static EventAttributeValue setValue(Boolean... value) {
+  public static EventAttributeValue setValue(boolean... value) {
     return new EventAttributeValue(value);
   }
 
