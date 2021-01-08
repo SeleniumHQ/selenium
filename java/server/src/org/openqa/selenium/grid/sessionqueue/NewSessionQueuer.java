@@ -86,29 +86,28 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
     try (Span span = tracer.getCurrentContext().createSpan("newsession_queuer.validate")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       try (
-          Reader reader = reader(request);
-          NewSessionPayload payload = NewSessionPayload.create(reader)) {
+        Reader reader = reader(request);
+        NewSessionPayload payload = NewSessionPayload.create(reader)) {
         Objects.requireNonNull(payload, "Requests to process must be set.");
         attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
 
         Iterator<Capabilities> iterator = payload.stream().iterator();
         if (!iterator.hasNext()) {
-          SessionNotCreatedException
-              exception =
-              new SessionNotCreatedException("No capabilities found");
+          SessionNotCreatedException exception =
+            new SessionNotCreatedException("No capabilities found");
           EXCEPTION.accept(attributeMap, exception);
-          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                           EventAttribute.setValue(exception.getMessage()));
+          attributeMap.put(
+            AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(exception.getMessage()));
           span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
           throw exception;
         }
       } catch (IOException e) {
         SessionNotCreatedException exception = new SessionNotCreatedException(e.getMessage(), e);
         EXCEPTION.accept(attributeMap, exception);
-        attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue(
-                             "IOException while reading the request payload. " + exception
-                                 .getMessage()));
+        String errorMessage = "IOException while reading the request payload. " +
+          exception.getMessage();
+        attributeMap.put(
+          AttributeKey.EXCEPTION_MESSAGE.getKey(), EventAttribute.setValue(errorMessage));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         throw exception;
       }

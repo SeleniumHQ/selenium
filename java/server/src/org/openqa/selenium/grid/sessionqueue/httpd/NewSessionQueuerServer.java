@@ -49,8 +49,8 @@ import static org.openqa.selenium.remote.http.Route.get;
 public class NewSessionQueuerServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(NewSessionQueuerServer.class.getName());
-  private static final String
-      LOCAL_NEWSESSION_QUEUER = "org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer";
+  private static final String LOCAL_NEWSESSION_QUEUER =
+    "org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer";
 
   @Override
   public String getName() {

@@ -57,10 +57,10 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     Duration retryInterval = new NewSessionQueueOptions(config).getSessionRequestRetryInterval();
     Duration requestTimeout = new NewSessionQueueOptions(config).getSessionRequestTimeout();
     NewSessionQueue sessionRequests = new LocalNewSessionQueue(
-        tracer,
-        bus,
-        retryInterval,
-        requestTimeout);
+      tracer,
+      bus,
+      retryInterval,
+      requestTimeout);
 
     SecretOptions secretOptions = new SecretOptions(config);
     Secret registrationSecret = secretOptions.getRegistrationSecret();
@@ -71,8 +71,8 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   @Override
   public HttpResponse addToQueue(HttpRequest request) {
     validateSessionRequest(request);
-    GetNewSessionResponse
-        getNewSessionResponse = new GetNewSessionResponse(tracer, bus, sessionRequests);
+    GetNewSessionResponse getNewSessionResponse =
+      new GetNewSessionResponse(tracer, bus, sessionRequests);
     return getNewSessionResponse.add(request);
   }
 
