@@ -99,6 +99,7 @@ class ErrorHandler(object):
     """
     Handles errors returned by the WebDriver server.
     """
+
     def check_response(self, response):
         """
         Checks that a JSON response from the WebDriver does not have an error.
@@ -198,7 +199,7 @@ class ErrorHandler(object):
             exception_class = UnknownMethodException
         else:
             exception_class = WebDriverException
-        if not value: #if value == '' or value == None, the condition will be executed
+        if not value:
             value = response['value']
         if isinstance(value, basestring):
             raise exception_class(value)

@@ -41,7 +41,6 @@ class Service(service.Service):
             in the services' environment.
 
         """
-        #the condition will fail on both "" and on None, so no need of `log_path is not None and log_path != ""`
         log_file = open(log_path, "a+") if log_path else None
 
         service.Service.__init__(

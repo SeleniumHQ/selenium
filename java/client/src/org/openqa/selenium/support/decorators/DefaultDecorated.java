@@ -40,22 +40,22 @@ public class DefaultDecorated<T> implements Decorated<T> {
 
   @Override
   public void beforeCall(Method method, Object[] args) {
-    getDecorator().beforeCallGlobal(this, method, args);
+    getDecorator().beforeCall(this, method, args);
   }
 
   @Override
   public Object call(Method method, Object[] args) throws Throwable {
-    return getDecorator().callGlobal(this, method, args);
+    return getDecorator().call(this, method, args);
   }
 
   @Override
   public void afterCall(Method method, Object result, Object[] args) {
-    getDecorator().afterCallGlobal(this, method, args, result);
+    getDecorator().afterCall(this, method, args, result);
   }
 
   @Override
   public Object onError(Method method, InvocationTargetException e, Object[] args) throws Throwable {
-    return getDecorator().onErrorGlobal(this, method, args, e);
+    return getDecorator().onError(this, method, args, e);
   }
 
   @Override

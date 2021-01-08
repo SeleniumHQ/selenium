@@ -33,6 +33,143 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * This class helps to create decorators for instances of {@link WebDriver} and
+ * derived objects, such as {@link WebElement}s and {@link Alert}, that can
+ * extend or modify their "regular" behavior. It provides a flexible
+ * alternative to subclassing WebDriver.
+ * <p>
+ * Here is a general usage pattern:
+ * <ol>
+ *   <li>implement a subclass of WebDriverDecorator that adds something to WebDriver behavior:<br>
+ *     <code>
+ *       public class MyWebDriverDecorator extends WebDriverDecorator { ... }
+ *     </code><br>
+ *     (see below for details)</li>
+ *   <li>use a decorator instance to decorate a WebDriver object:<br>
+ *     <code>
+ *       WebDriver original = new FirefoxDriver();
+ *       WebDriver decorated = new MyWebDriverDecorator().decorate(original);
+ *     </code></li>
+ *   <li>use the decorated WebDriver instead of the original one:<br>
+ *    <code>
+ *      decorated.get("http://example.com/");
+ *      ...
+ *      decorated.quit();
+ *    </code>
+ *   </li>
+ * </ol>
+ * By subclassing WebDriverDecorator you can define what code should be executed
+ * <ul>
+ *   <li>before executing a method of the underlying object,</li>
+ *   <li>after executing a method of the underlying object,</li>
+ *   <li>instead of executing a method of the underlying object,</li>
+ *   <li>when an exception is thrown by a method of the underlying object.</li>
+ * </ul>
+ * The same decorator is used under the hood to decorate all the objects
+ * derived from the underlying WebDriver instance. For example,
+ * <code>decorated.findElement(someLocator)</code> automatically decorates
+ * the returned WebElement.
+ * <p>
+ * Instances created by the decorator implement all the same interfaces as
+ * the original objects.
+ * <p>
+ * When you implement a decorator there are two main options (that can be used
+ * both separately and together):
+ * <ul>
+ *   <li>if you want to apply the same behavior modification to all methods of
+ *   a WebDriver instance and its derived objects you can subclass
+ *   WebDriverDecorator and override some of the following methods:
+ *   {@link #beforeCall(Decorated, Method, Object[])},
+ *   {@link #afterCall(Decorated, Method, Object[], Object)},
+ *   {@link #call(Decorated, Method, Object[])} and
+ *   {@link #onError(Decorated, Method, Object[], InvocationTargetException)}</li>
+ *   <li>if you want to modify behavior of a specific class instances only
+ *   (e.g. behaviour of WebElement instances) you can override one of the
+ *   overloaded <code>createDecorated</code> methods to create a non-trivial
+ *   decorator for the specific class only.</li>
+ * </ul>
+ * Let's consider both approaches by examples.
+ * <p>
+ * One of the most widely used decorator examples is a logging decorator.
+ * In this case we want to add the same piece of logging code before and after
+ * each invoked method:
+ * <code>
+ *   public class LoggingDecorator extends WebDriverDecorator {
+ *     final Logger logger = LoggerFactory.getLogger(Thread.currentThread().getName());
+ *
+ *     @Override
+ *     public void beforeCall(Decorated<?> target, Method method, Object[] args) {
+ *       logger.debug("before {}.{}({})", target, method, args);
+ *     }
+ *     @Override
+ *     public void afterCall(Decorated<?> target, Method method, Object[] args, Object res) {
+ *       logger.debug("after {}.{}({}) => {}", target, method, args, res);
+ *     }
+ *   }
+ * </code>
+ * For the second example let's implement a decorator that implicitly waits
+ * for an element to be visible before any click or sendKeys method call.
+ * <code>
+ *   public class ImplicitlyWaitingDecorator extends WebDriverDecorator {
+ *     private WebDriverWait wait;
+ *
+ *     @Override
+ *     public Decorated<WebDriver> createDecorated(WebDriver driver) {
+ *       wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+ *       return super.createDecorated(driver);
+ *     }
+ *     @Override
+ *     public Decorated<WebElement> createDecorated(WebElement original) {
+ *       return new DefaultDecorated<>(original, this) {
+ *         @Override
+ *         public void beforeCall(Method method, Object[] args) {
+ *           String methodName = method.getName();
+ *           if ("click".equals(methodName) || "sendKeys".equals(methodName)) {
+ *             wait.until(d -> getOriginal().isDisplayed());
+ *           }
+ *         }
+ *       };
+ *     }
+ *   }
+ * </code>
+ * This class is not a pure decorator, it allows to not only add new behavior
+ * but also replace "normal" behavior of a WebDriver or derived objects.
+ * <p>
+ * Let's suppose you want to use JavaScript-powered clicks instead of normal
+ * ones (yes, this allows to interact with invisible elements, it's a bad
+ * practice in general but sometimes it's inevitable). This behavior change
+ * can be achieved with the following "decorator":
+ * <code>
+ *   public class JavaScriptPoweredDecorator extends WebDriverDecorator {
+ *     @Override
+ *     public Decorated<WebElement> createDecorated(WebElement original) {
+ *       return new DefaultDecorated<>(original, this) {
+ *         @Override
+ *         public Object call(Method method, Object[] args) throws Throwable {
+ *           String methodName = method.getName();
+ *           if ("click".equals(methodName)) {
+ *             JavascriptExecutor executor = (JavascriptExecutor) getDecoratedDriver().getOriginal();
+ *             executor.executeScript("arguments[0].click()", getOriginal());
+ *             return null;
+ *           } else {
+ *             return super.call(method, args);
+ *           }
+ *         }
+ *       };
+ *     }
+ *   }
+ * </code>
+ * It is possible to apply multiple decorators to compose behaviors added
+ * by each of them. For example, if you want to log method calls and
+ * implicitly wait for elements visibility you can use two decorators:
+ * <code>
+ *   WebDriver original = new FirefoxDriver();
+ *   WebDriver decorated =
+ *     new ImplicitlyWaitingDecorator().decorate(
+ *       new LoggingDecorator().decorate(original));
+ * </code>
+ */
 @Beta
 public class WebDriverDecorator {
 
@@ -85,16 +222,16 @@ public class WebDriverDecorator {
     return new DefaultDecorated<>(original, this);
   }
 
-  public void beforeCallGlobal(Decorated<?> target, Method method, Object[] args) {}
+  public void beforeCall(Decorated<?> target, Method method, Object[] args) {}
 
-  public Object callGlobal(Decorated<?> target, Method method, Object[] args) throws Throwable {
+  public Object call(Decorated<?> target, Method method, Object[] args) throws Throwable {
     return decorateResult(method.invoke(target.getOriginal(), args));
   }
 
-  public void afterCallGlobal(Decorated<?> target, Method method, Object[] args, Object res) {}
+  public void afterCall(Decorated<?> target, Method method, Object[] args, Object res) {}
 
-  public Object onErrorGlobal(Decorated<?> target, Method method, Object[] args,
-                              InvocationTargetException e) throws Throwable
+  public Object onError(Decorated<?> target, Method method, Object[] args,
+                        InvocationTargetException e) throws Throwable
   {
     throw e.getTargetException();
   }
