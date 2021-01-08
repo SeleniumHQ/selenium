@@ -22,6 +22,7 @@ import pytest
 
 
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_firefox(reason="This is not in release firefox yet")
 async def test_check_console_messages(driver, pages):
     pages.load("javascriptPage.html")
     from selenium.webdriver.common.bidi.console import Console
@@ -31,6 +32,7 @@ async def test_check_console_messages(driver, pages):
 
 
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_firefox(reason="This is not in release firefox yet")
 async def test_check_error_console_messages(driver, pages):
     pages.load("javascriptPage.html")
     from selenium.webdriver.common.bidi.console import Console
