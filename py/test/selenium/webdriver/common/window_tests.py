@@ -58,6 +58,7 @@ def test_should_set_the_size_of_the_current_window(driver):
     assert new_size.get('height') == target_height
 
 
+@pytest.mark.xfail_chrome
 def test_should_get_the_position_of_the_current_window(driver):
     position = driver.get_window_position()
     assert position.get('x') >= 0
@@ -81,6 +82,7 @@ def test_should_set_the_position_of_the_current_window(driver):
 
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_chrome
 def test_should_get_the_rect_of_the_current_window(driver):
     rect = driver.get_window_rect()
     assert rect.get('x') >= 0

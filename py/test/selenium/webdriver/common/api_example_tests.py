@@ -238,6 +238,7 @@ def testIsElementDisplayed(driver, pages):
     assert not not_visible
 
 
+@pytest.mark.xfail_chrome
 def testMoveWindowPosition(driver, pages):
     pages.load("blank.html")
     loc = driver.get_window_position()
