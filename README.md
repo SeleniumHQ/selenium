@@ -1,4 +1,10 @@
-# Selenium [![Travis Status](https://travis-ci.com/SeleniumHQ/selenium.svg?branch=trunk)](https://travis-ci.com/SeleniumHQ/selenium/builds) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/trunk?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/trunk)
+# Selenium 
+
+![Python workflow](https://github.com/SeleniumHQ/selenium/workflows/Python%20workflow/badge.svg)
+![Ruby workflow](https://github.com/SeleniumHQ/selenium/workflows/Ruby%20workflow/badge.svg)
+![JavaScript workflow](https://github.com/SeleniumHQ/selenium/workflows/JavaScript%20workflow/badge.svg)
+![Java workflow](https://github.com/SeleniumHQ/selenium/workflows/Java%20workflow/badge.svg)
+
 
 <a href="https://selenium.dev"><img src="https://selenium.dev/images/selenium_logo_square_green.png" width="180" alt="Selenium"/></a>
 
