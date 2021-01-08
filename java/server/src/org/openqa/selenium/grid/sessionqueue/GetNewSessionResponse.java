@@ -82,7 +82,7 @@ public class GetNewSessionResponse {
     if (sessionRequest.isPresent()) {
       NewSessionRequest request = sessionRequest.get();
       request.setSessionResponse(
-          new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse())));
+        new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse())));
       request.getLatch().countDown();
     }
   }
@@ -99,11 +99,9 @@ public class GetNewSessionResponse {
 
     if (sessionRequest.isPresent()) {
       NewSessionRequest request = sessionRequest.get();
-      request
-          .setSessionResponse(new HttpResponse()
-                                  .setStatus(HTTP_INTERNAL_ERROR)
-                                  .setContent(asJson(
-                                      ImmutableMap.of("message", sessionResponse.getMessage()))));
+      request.setSessionResponse(new HttpResponse()
+        .setStatus(HTTP_INTERNAL_ERROR)
+        .setContent(asJson(ImmutableMap.of("message", sessionResponse.getMessage()))));
       request.getLatch().countDown();
     }
   }
@@ -119,26 +117,27 @@ public class GetNewSessionResponse {
 
     if (!sessionRequests.offerLast(request, requestId)) {
       return new HttpResponse()
-          .setStatus(HTTP_INTERNAL_ERROR)
-          .setContent(asJson(ImmutableMap.of("message",
-                                             "Session request could not be created. Error while adding to the session queue.")));
+        .setStatus(HTTP_INTERNAL_ERROR)
+        .setContent(asJson(ImmutableMap.of(
+          "message",
+          "Session request could not be created. Error while adding to the session queue.")));
     }
 
     try {
       // Block until response is received.
       // This will not wait indefinitely due to request timeout handled by the LocalDistributor.
       latch.await();
-      HttpResponse res = requestIdentifier.getSessionResponse();
-      return res;
+      return requestIdentifier.getSessionResponse();
     } catch (InterruptedException e) {
       LOG.log(Level.WARNING, "The thread waiting for new session response interrupted. {0}",
-              e.getMessage());
+        e.getMessage());
       Thread.currentThread().interrupt();
 
       return new HttpResponse()
-          .setStatus(HTTP_INTERNAL_ERROR)
-          .setContent(asJson(ImmutableMap.of("message",
-                                             "Session request could not be created. Error while processing the session request.")));
+        .setStatus(HTTP_INTERNAL_ERROR)
+        .setContent(asJson(ImmutableMap.of(
+          "message",
+          "Session request could not be created. Error while processing the session request.")));
     } finally {
       removeRequest(requestId);
     }

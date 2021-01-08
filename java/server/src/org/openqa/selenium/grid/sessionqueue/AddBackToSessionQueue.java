@@ -55,8 +55,8 @@ class AddBackToSessionQueue implements HttpHandler {
 
       span.setAttribute("request.retry", value);
 
-      HttpResponse response = new HttpResponse().setContent(
-          asJson(ImmutableMap.of("value", value)));
+      HttpResponse response = new HttpResponse()
+        .setContent(asJson(ImmutableMap.of("value", value)));
 
       HTTP_RESPONSE.accept(span, response);
 

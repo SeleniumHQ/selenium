@@ -58,18 +58,18 @@ public class NewSessionQueuerOptions {
 
     try {
       return new URI(
-          "http",
-          null,
-          hostname.get(),
-          port.get(),
-          "",
-          null,
-          null);
+        "http",
+        null,
+        hostname.get(),
+        port.get(),
+        "",
+        null,
+        null);
     } catch (URISyntaxException e) {
       throw new ConfigException(
-          "Session queuer server uri configured through host (%s) and port (%d) is not a valid URI",
-          hostname.get(),
-          port.get());
+        "Session queuer server uri configured through host (%s) and port (%d) is not a valid URI",
+        hostname.get(),
+        port.get());
     }
   }
 

@@ -93,7 +93,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   @Override
   public boolean retryAddToQueue(HttpRequest request, RequestId reqId) {
     HttpRequest upstream =
-        new HttpRequest(POST, "/se/grid/newsessionqueuer/session/retry/" + reqId.toString());
+      new HttpRequest(POST, "/se/grid/newsessionqueuer/session/retry/" + reqId.toString());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     upstream.setContent(request.getContent());
     upstream.setHeader(timestampHeader, request.getHeader(timestampHeader));
@@ -105,7 +105,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   @Override
   public Optional<HttpRequest> remove(RequestId reqId) {
     HttpRequest upstream =
-        new HttpRequest(GET, "/se/grid/newsessionqueuer/session/" + reqId.toString());
+      new HttpRequest(GET, "/se/grid/newsessionqueuer/session/" + reqId.toString());
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
