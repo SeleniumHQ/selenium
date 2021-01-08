@@ -42,19 +42,19 @@ public class IntegrationTest {
     int counterCall = 0;
 
     @Override
-    public void beforeCallGlobal(Decorated<?> target, Method method, Object[] args) {
+    public void beforeCall(Decorated<?> target, Method method, Object[] args) {
       counterBefore++;
     }
 
     @Override
-    public void afterCallGlobal(Decorated<?> target, Method method, Object[] args, Object result) {
+    public void afterCall(Decorated<?> target, Method method, Object[] args, Object result) {
       counterAfter++;
     }
 
     @Override
-    public Object callGlobal(Decorated<?> target, Method method, Object[] args) throws Throwable {
+    public Object call(Decorated<?> target, Method method, Object[] args) throws Throwable {
       counterCall++;
-      return super.callGlobal(target, method, args);
+      return super.call(target, method, args);
     }
   }
 
