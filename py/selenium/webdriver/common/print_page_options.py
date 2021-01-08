@@ -1,4 +1,4 @@
-# Licensed to the Software Freedom Conservancy (SFC) under one
+Licensed to the Software Freedom Conservancy(SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
 # regarding copyright ownership.  The SFC licenses this file
@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 
 class PrintOptions():
     ORIENTATION_VALUES = ['portrait', 'landscape']
@@ -130,7 +131,7 @@ class PrintOptions():
         """
         :Returns: Top margin of the page
         """
-        return  self._margin.get('top', None)
+        return self._margin.get('top', None)
 
     @margin_top.setter
     def margin_top(self, value):

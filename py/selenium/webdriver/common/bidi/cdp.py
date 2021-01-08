@@ -22,6 +22,8 @@
 #
 # This code comes from https://github.com/HyperionGray/trio-chrome-devtools-protocol/tree/master/trio_cdp
 
+# flake8: noqa
+
 from trio_websocket import (
     ConnectionClosed as WsConnectionClosed,
     connect_websocket_url,

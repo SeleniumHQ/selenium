@@ -82,10 +82,10 @@ class Color(object):
             raise ValueError("Could not convert %s into color" % str_)
 
     @staticmethod
-    def _from_hsl(h, s, l, a=1):
+    def _from_hsl(h, s, light, a=1):
         h = float(h) / 360
         s = float(s) / 100
-        _l = float(l) / 100
+        _l = float(light) / 100
 
         if s == 0:
             r = _l
