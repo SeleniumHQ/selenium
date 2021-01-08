@@ -80,7 +80,7 @@ def url_matches(pattern):
     pattern is the expected pattern, which must be an exact match
     returns True if the url matches, false otherwise."""
     def _predicate(driver):
-        return bool(re.search(pattern, driver.current_url)) #note bool is necessary
+        return bool(re.search(pattern, driver.current_url))
 
     return _predicate
 

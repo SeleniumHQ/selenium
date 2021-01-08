@@ -132,7 +132,7 @@ class Options(ArgOptions):
         Args:
           value: boolean value indicating to set the headless option
         """
-        if value: # is True or == True can be written as bool(variablename), so 
+        if value:
             self._arguments.append('-headless')
         elif '-headless' in self._arguments:
             self._arguments.remove('-headless')

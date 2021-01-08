@@ -23,6 +23,8 @@
 # This is a copy of https://github.com/HyperionGray/python-chrome-devtools-protocol/blob/master/generator/generate.py
 # The license above is theirs and MUST be preserved.
 
+# flake8: noqa
+
 import builtins
 from dataclasses import dataclass
 from enum import Enum
