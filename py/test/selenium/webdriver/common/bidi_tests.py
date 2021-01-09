@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -62,7 +63,8 @@ async def test_collect_log_mutations(driver, pages):
     async with driver.log_mutation_events() as event:
         pages.load("dynamic.html")
         driver.find_element(By.ID, "reveal").click()
-        WebDriverWait(driver, 5).until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
+        WebDriverWait(driver, 5, ignored_exceptions=InvalidSelectorException)\
+            .until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
 
     assert event["attribute_name"] == "style"
     assert event["current_value"] == ""
