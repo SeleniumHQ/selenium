@@ -17,8 +17,6 @@ import pytest
 
 from selenium.common.exceptions import (
     NoSuchElementException,
-    NoSuchWindowException,
-    TimeoutException,
     WebDriverException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
