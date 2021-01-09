@@ -36,6 +36,7 @@ def test_get_screenshot_as_png(driver, pages):
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 def test_get_element_screenshot(driver, pages):
     pages.load("simpleTest.html")
     element = driver.find_element(By.ID, "multiline")

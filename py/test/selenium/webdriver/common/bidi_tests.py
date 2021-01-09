@@ -23,6 +23,7 @@ import pytest
 
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_firefox(reason="This is not in release firefox yet")
+@pytest.mark.xfail_remote
 async def test_check_console_messages(driver, pages):
     pages.load("javascriptPage.html")
     from selenium.webdriver.common.bidi.console import Console
@@ -33,6 +34,7 @@ async def test_check_console_messages(driver, pages):
 
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_firefox(reason="This is not in release firefox yet")
+@pytest.mark.xfail_remote
 async def test_check_error_console_messages(driver, pages):
     pages.load("javascriptPage.html")
     from selenium.webdriver.common.bidi.console import Console
@@ -44,6 +46,7 @@ async def test_check_error_console_messages(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 async def test_collect_js_exceptions(driver, pages):
     pages.load("javascriptPage.html")
     async with driver.add_js_error_listener() as exceptions:
@@ -54,6 +57,7 @@ async def test_collect_js_exceptions(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 async def test_collect_log_mutations(driver, pages):
     async with driver.log_mutation_events() as event:
         pages.load("dynamic.html")

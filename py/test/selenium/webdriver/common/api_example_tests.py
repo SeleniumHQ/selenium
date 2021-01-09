@@ -122,22 +122,6 @@ def testFindElementByTagNameWithinElement(driver, pages):
     assert len(elems) == 1
 
 
-@pytest.mark.xfail_firefox(
-    reason="W3C implementations can't switch to a window by name",
-    raises=TimeoutException,
-    run=False)
-def testSwitchToWindow(driver, pages):
-    title_1 = "XHTML Test Page"
-    title_2 = "We Arrive Here"
-    switch_to_window_timeout = 5
-    wait = WebDriverWait(driver, switch_to_window_timeout, ignored_exceptions=[NoSuchWindowException])
-    pages.load("xhtmlTest.html")
-    driver.find_element(By.LINK_TEXT, "Open new window").click()
-    assert title_1 == driver.title
-    wait.until(lambda dr: dr.switch_to.window("result") is None)
-    assert title_2 == driver.title
-
-
 def testSwitchFrameByName(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "third"))

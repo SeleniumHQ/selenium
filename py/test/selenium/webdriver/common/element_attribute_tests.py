@@ -271,6 +271,7 @@ def testShouldReturnTrueForPresentBooleanAttributes(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def testShouldGetUnicodeCharsFromAttribute(driver, pages):
     pages.load("formPage.html")
     title = driver.find_element(By.ID, "vsearchGadget").get_attribute("title")
@@ -280,6 +281,7 @@ def testShouldGetUnicodeCharsFromAttribute(driver, pages):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def testShouldGetValuesAndNotMissItems(driver, pages):
     pages.load("attributes.html")
     expected = "4b273a33fbbd29013nN93dy4F1A~"
