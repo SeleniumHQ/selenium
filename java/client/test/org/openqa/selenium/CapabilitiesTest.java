@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Category(UnitTests.class)
-public class ImmutableCapabilitiesTest {
+public class CapabilitiesTest {
 
   @Test
   public void canCreateEmptyCapabilities() {
@@ -60,14 +60,14 @@ public class ImmutableCapabilitiesTest {
   public void canCreateFourPairCapabilities() {
     Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4");
     assertThat(caps.asMap())
-        .isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4"));
+      .isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4"));
   }
 
   @Test
   public void canCreateFivePairCapabilities() {
     Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5");
     assertThat(caps.asMap())
-        .isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5"));
+      .isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5"));
   }
 
   @Test
@@ -88,7 +88,36 @@ public class ImmutableCapabilitiesTest {
     Map<Object, Object> map = new HashMap<>();
     map.put(new Object(), new Object());
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new ImmutableCapabilities(map));
+      .isThrownBy(() -> new ImmutableCapabilities(map));
   }
 
+  @Test
+  public void canMergeImmutableCapabilities() {
+    Map<String, Object> map1 = ImmutableMap.of("c1", "v1", "c2", "v2");
+    Map<String, Object> map2 = ImmutableMap.of("c1", "new value", "c3", "v3");
+    Capabilities caps1 = new ImmutableCapabilities(map1);
+    Capabilities caps2 = new ImmutableCapabilities(map2);
+    Capabilities merged = caps1.merge(caps2);
+    assertThat(merged).isNotSameAs(caps1).isNotSameAs(caps2);
+    assertThat(merged.asMap()).containsExactlyEntriesOf(
+      ImmutableMap.of(
+        "c1", "new value", "c2", "v2", "c3", "v3"));
+    assertThat(caps1.asMap()).containsExactlyEntriesOf(map1);
+    assertThat(caps2.asMap()).containsExactlyEntriesOf(map2);
+  }
+
+  @Test
+  public void canMergeMutableCapabilities() {
+    Map<String, Object> map1 = ImmutableMap.of("c1", "v1", "c2", "v2");
+    Map<String, Object> map2 = ImmutableMap.of("c1", "new value", "c3", "v3");
+    Capabilities caps1 = new MutableCapabilities(map1);
+    Capabilities caps2 = new MutableCapabilities(map2);
+    Capabilities merged = caps1.merge(caps2);
+    assertThat(merged).isNotSameAs(caps1).isNotSameAs(caps2);
+    assertThat(merged.asMap()).containsExactlyEntriesOf(
+      ImmutableMap.of(
+        "c1", "new value", "c2", "v2", "c3", "v3"));
+    assertThat(caps1.asMap()).containsExactlyEntriesOf(map1);
+    assertThat(caps2.asMap()).containsExactlyEntriesOf(map2);
+  }
 }

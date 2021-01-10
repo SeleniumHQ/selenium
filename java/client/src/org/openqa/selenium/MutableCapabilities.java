@@ -67,22 +67,17 @@ public class MutableCapabilities implements Capabilities {
   }
 
   /**
-   * Merge the extra capabilities provided into this DesiredCapabilities instance. If capabilities
-   * with the same name exist in this instance, they will be overridden by the values from the
-   * extraCapabilities object.
-   *
-   * @param extraCapabilities Additional capabilities to be added.
-   * @return The DesiredCapabilities instance after the merge.
+   * Merge two {@link Capabilities} together and return the union of the two as a new
+   * {@link Capabilities} instance. Capabilities from {@code other} will override those in
+   * {@code this}.
    */
   @Override
-  public MutableCapabilities merge(Capabilities extraCapabilities) {
-    if (extraCapabilities == null) {
-      return this;
+  public MutableCapabilities merge(Capabilities other) {
+    MutableCapabilities newInstance = new MutableCapabilities(this);
+    if (other != null) {
+      other.asMap().forEach(newInstance::setCapability);
     }
-
-    extraCapabilities.asMap().forEach(this::setCapability);
-
-    return this;
+    return newInstance;
   }
 
   public void setCapability(String capabilityName, boolean value) {

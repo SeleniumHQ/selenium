@@ -104,7 +104,9 @@ public class DesiredCapabilities extends MutableCapabilities {
    */
   @Override
   public DesiredCapabilities merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
+    if (extraCapabilities != null) {
+      extraCapabilities.asMap().forEach(this::setCapability);
+    }
     return this;
   }
 
