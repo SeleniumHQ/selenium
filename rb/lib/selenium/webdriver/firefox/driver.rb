@@ -28,7 +28,7 @@ module Selenium
           # @return [Marionette::Driver, Legacy::Driver]
           #
 
-          def new(**opts)
+          def new(opts)
             if marionette?(opts)
               Firefox::Marionette::Driver.new(opts)
             else
