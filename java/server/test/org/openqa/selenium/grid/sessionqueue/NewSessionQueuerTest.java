@@ -229,6 +229,24 @@ public class NewSessionQueuerTest {
   }
 
   @Test
+  public void shouldBeAbleToGetQueueSize() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    sessionQueue.offerLast(request, requestId);
+
+    int size = local.getQueueSize();
+    assertEquals(1, size);
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueSizeRemotely() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    sessionQueue.offerLast(request, requestId);
+
+    int size = sessionQueue.getQueueSize();
+    assertEquals(1, size);
+  }
+
+  @Test
   public void shouldBeClearQueueAndFireRejectedEvent() {
     AtomicBoolean result = new AtomicBoolean(false);
 

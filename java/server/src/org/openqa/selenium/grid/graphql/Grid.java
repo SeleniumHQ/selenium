@@ -24,6 +24,7 @@ import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.internal.Require;
 
 import java.net.URI;
@@ -37,10 +38,12 @@ public class Grid {
 
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
+  private final NewSessionQueuer newSessionQueuer;
 
-  public Grid(Distributor distributor, URI uri) {
+  public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
+    this.newSessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
   }
 
@@ -95,5 +98,9 @@ public class Grid {
 
   public int getUsedSlots() {
     return getSessionCount();
+  }
+
+  public int getSessionQueueSize() {
+    return newSessionQueuer.getQueueSize();
   }
 }

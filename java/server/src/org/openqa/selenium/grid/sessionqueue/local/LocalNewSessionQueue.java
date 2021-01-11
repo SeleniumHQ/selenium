@@ -88,6 +88,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     return bus.isReady();
   }
 
+  @Override
   @ManagedAttribute(name = "NewSessionQueueSize")
   public int getQueueSize() {
     Lock readLock = lock.readLock();

@@ -18,6 +18,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue",
         artifact("com.google.guava:guava"),
         artifact("com.graphql-java:graphql-java"),
     ],
