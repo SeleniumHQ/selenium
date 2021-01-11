@@ -1491,6 +1491,15 @@ class WebDriver(BaseWebDriver):
 
         :Usage:
              ::
+               async with driver.log_mutation_events() as event:
+                    pages.load("dynamic.html")
+                    driver.find_element(By.ID, "reveal").click()
+                    WebDriverWait(driver, 5)\
+                        .until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
+
+                assert event["attribute_name"] == "style"
+                assert event["current_value"] == ""
+                assert event["old_value"] == "display:none;"
 
         """
         _pkg = '.'.join(__name__.split('.')[:-1])
