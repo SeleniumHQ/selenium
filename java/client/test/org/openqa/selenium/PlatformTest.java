@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.ANY;
+import static org.openqa.selenium.Platform.CATALINA;
 import static org.openqa.selenium.Platform.IOS;
 import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.Platform.MAC;
@@ -31,7 +32,10 @@ import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.Platform.XP;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class PlatformTest {
 
   @Test
@@ -163,6 +167,16 @@ public class PlatformTest {
   @Test
   public void canParseMacOsXCorrectly() {
     assertThat(Platform.fromString("Mac OS X")).isEqualTo(MAC);
+  }
+
+  @Test
+  public void catalinaIsMac() {
+    assertThat(CATALINA.is(MAC)).isTrue();
+  }
+
+  @Test
+  public void canParseCatalinaFromOSName() {
+    assertThat(Platform.fromString("macOS 10.15")).isEqualTo(CATALINA);
   }
 
   private void assertAllAre(Platform platform, String... osNames) {

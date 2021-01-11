@@ -25,7 +25,10 @@ import static org.openqa.selenium.Architecture.X64;
 import static org.openqa.selenium.Architecture.X86;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class ArchitectureTest {
 
   @Test

@@ -34,5 +34,7 @@ public @interface ConfigValue {
 
   String name();
 
+  boolean prefixed() default false;
+
   String example();
 }

@@ -46,12 +46,12 @@ class WebDriver(RemoteWebDriver):
          - service_log_path : Path to write service stdout and stderr output.
          - keep_alive : Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-        if options is None:
-            if desired_capabilities is None:
+        if not options:
+            if not desired_capabilities:
                 desired_capabilities = Options().to_capabilities()
         else:
             capabilities = options.to_capabilities()
-            if desired_capabilities is not None:
+            if desired_capabilities:
                 capabilities.update(desired_capabilities)
             desired_capabilities = capabilities
 

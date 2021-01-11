@@ -23,6 +23,7 @@ module Selenium
       ELEMENT_KEY = 'element-6066-11e4-a52e-4f735466cecf'
 
       include SearchContext
+      include TakesScreenshot
 
       #
       # Creates a new Element
@@ -326,6 +327,10 @@ module Selenium
         type = attribute(:type).to_s.downcase
 
         tn == 'option' || (tn == 'input' && %w[radio checkbox].include?(type))
+      end
+
+      def screenshot
+        bridge.element_screenshot(self)
       end
     end # Element
   end # WebDriver

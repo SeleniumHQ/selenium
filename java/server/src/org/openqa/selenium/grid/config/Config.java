@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.config;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -50,26 +48,8 @@ public interface Config {
     // We don't declare a constant on the interface, natch.
     Logger.getLogger(Config.class.getName()).fine(String.format("Creating %s as instance of %s", clazz, typeOfClass));
 
-    try {
-      // Use the context class loader since this is what the `--ext`
-      // flag modifies.
-      Class<?> ClassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
-      Method create = ClassClazz.getMethod("create", Config.class);
-
-      if (!Modifier.isStatic(create.getModifiers())) {
-        throw new IllegalArgumentException(String.format(
-            "Class %s's `create(Config)` method must be static", clazz));
-      }
-
-      if (!typeOfClass.isAssignableFrom(create.getReturnType())) {
-        throw new IllegalArgumentException(String.format(
-            "Class %s's `create(Config)` method must be static", clazz));
-      }
-
-      return typeOfClass.cast(create.invoke(null, this));
-    } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException(String.format(
-          "Class %s must have a static `create(Config)` method", clazz));
+    try{
+      return ClassCreation.callCreateMethod(clazz, typeOfClass, this);
     } catch (ReflectiveOperationException e) {
       throw new IllegalArgumentException("Unable to find class: " + clazz, e);
     }

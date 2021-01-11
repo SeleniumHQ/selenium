@@ -5,11 +5,11 @@ java_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = glob(["*Test.java"]),
-    tags = [
-        "no-sandbox",
-    ],
     resources = [
         "packaged-file.txt",
+    ],
+    tags = [
+        "no-sandbox",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",

@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -46,6 +47,7 @@ public class SessionSlot implements
 
   private static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
   private final EventBus bus;
+  private final UUID id;
   private final Capabilities stereotype;
   private final SessionFactory factory;
   private final AtomicBoolean reserved = new AtomicBoolean(false);
@@ -53,8 +55,13 @@ public class SessionSlot implements
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
     this.bus = Require.nonNull("Event bus", bus);
+    this.id = UUID.randomUUID();
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.factory = Require.nonNull("Session factory", factory);
+  }
+
+  public UUID getId() {
+    return id;
   }
 
   public Capabilities getStereotype() {

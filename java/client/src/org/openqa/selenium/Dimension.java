@@ -17,6 +17,8 @@
 
 package org.openqa.selenium;
 
+import java.util.Objects;
+
 /**
  * Similar to Point - implement locally to avoid depending on GWT.
  */
@@ -49,9 +51,7 @@ public class Dimension {
 
   @Override
   public int hashCode() {
-    // Assuming height, width, rarely exceed 4096 pixels, shifting
-    // by 12 should provide a good hash value.
-    return width << 12 + height;
+    return Objects.hash(width, height);
   }
 
   @Override

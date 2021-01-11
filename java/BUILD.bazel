@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "spotbugs_config")
 
 exports_files(
     srcs = [
@@ -33,5 +34,15 @@ java_library(
     exports = [
         artifact("com.google.auto.service:auto-service"),
         artifact("com.google.auto.service:auto-service-annotations"),
+    ],
+)
+
+spotbugs_config(
+    name = "spotbugs-config",
+    effort = "default",
+    fail_on_warning = True,
+    exclude_filter = "spotbugs-excludes.xml",
+    visibility = [
+        "//visibility:public",
     ],
 )

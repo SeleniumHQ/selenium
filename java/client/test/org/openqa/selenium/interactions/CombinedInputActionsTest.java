@@ -24,11 +24,11 @@ import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
@@ -58,7 +58,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
@@ -83,7 +83,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
@@ -110,8 +110,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(FIREFOX)
-  @Ignore(value = MARIONETTE, travis = true)
+  @Ignore(LEGACY_FIREFOX_XPI)
+  @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnMultiSelectionList() {
     assumeFalse("FIXME: macs don't have CONTROL key",
                 getEffectivePlatform(driver).is(Platform.MAC));
@@ -139,7 +139,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = MARIONETTE, travis = true)
+  @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnCustomMultiSelectionList() {
     assumeFalse("FIXME: macs don't have CONTROL key",
                 getEffectivePlatform(driver).is(Platform.MAC));
@@ -277,8 +277,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
-  @NotYetImplemented(EDGE)
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(EDGE_HTML)
   @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONTROL key",

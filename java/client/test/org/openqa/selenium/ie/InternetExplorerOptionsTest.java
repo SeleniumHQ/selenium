@@ -24,14 +24,17 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_
 import static org.openqa.selenium.ie.InternetExplorerOptions.IE_OPTIONS;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class InternetExplorerOptionsTest {
 
   @Test

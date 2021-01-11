@@ -50,6 +50,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 public class DriverServiceSessionFactoryTest {
 
@@ -164,7 +165,8 @@ public class DriverServiceSessionFactoryTest {
 
   private DriverServiceSessionFactory factoryFor(String browser, DriverService.Builder builder) {
     Predicate<Capabilities> predicate = c -> c.getBrowserName().equals(browser);
-    return new DriverServiceSessionFactory(tracer, clientFactory, predicate, builder);
+    ImmutableCapabilities stereotype = new ImmutableCapabilities(BROWSER_NAME, browser);
+    return new DriverServiceSessionFactory(tracer, clientFactory, stereotype, predicate, builder);
   }
 
   private Capabilities toPayload(String browserName) {

@@ -1,8 +1,12 @@
-load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load("//common:defs.bzl", "copy_file")
-load("//dotnet:merge-assemblies.bzl", "merged_assembly")
-load("//dotnet:assembly-info.bzl", "generated_assembly_info")
-load("//dotnet:nuget.bzl", "nuget_package")
+load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
+load(
+    "//dotnet:defs.bzl",
+    "merged_assembly",
+    "generated_assembly_info",
+    "nuget_package",
+    "nuget_push",
+    "devtools_version_targets",)
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -13,6 +17,7 @@ load(
     "SE_VERSION",
     "SUPPORTED_NET_FRAMEWORKS",
     "SUPPORTED_NET_STANDARD_VERSIONS",
+    "SUPPORTED_DEVTOOLS_VERSIONS",
 )
 
 generated_assembly_info(
@@ -43,7 +48,9 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+    ] + devtools_version_targets(),
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -70,7 +77,7 @@ generated_assembly_info(
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 [csharp_library(
-    name = "{}assembly".format(standard_version),
+    name = "{}".format(standard_version),
     srcs = glob([
         "*.cs",
         "Chrome/*.cs",
@@ -86,12 +93,15 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+    ] + devtools_version_targets(),
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
         "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
         "{}".format(standard_version),
@@ -119,13 +129,16 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+    ] + devtools_version_targets(),
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
         "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
         "{}".format(framework),
@@ -146,7 +159,7 @@ generated_assembly_info(
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 [csharp_library(
-    name = "{}assembly-strongnamed".format(standard_version),
+    name = "{}-strongnamed".format(standard_version),
     srcs = glob([
         "*.cs",
         "Chrome/*.cs",
@@ -162,13 +175,16 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]) + [":assembly-info"],
+    ]) + [
+        ":assembly-info",
+    ] + devtools_version_targets(),
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
         "//javascript/webdriver/atoms:get-attribute.js",
+        "//third_party/js/selenium:webdriver_json",
     ],
     target_frameworks = [
         "{}".format(standard_version),
@@ -181,7 +197,6 @@ generated_assembly_info(
 
 [merged_assembly(
     name = "{}".format(framework),
-    out = "merged/{}/WebDriver.dll".format(framework),
     src_assembly = ":{}assembly".format(framework),
     target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
@@ -190,16 +205,8 @@ generated_assembly_info(
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-[copy_file(
-    name = "{}".format(standard_version),
-    src = ":{}assembly".format(standard_version),
-    out = "merged/{}/WebDriver.dll".format(standard_version),
-    visibility = ["//visibility:public"],
-) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
-
 [merged_assembly(
     name = "{}-strongnamed".format(framework),
-    out = "strongnamed/{}/WebDriver.dll".format(framework),
     keyfile = "//dotnet:WebDriver.snk",
     src_assembly = ":{}assembly-strongnamed".format(framework),
     target_framework = "{}".format(framework),
@@ -209,18 +216,22 @@ generated_assembly_info(
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-[copy_file(
-    name = "{}-strongnamed".format(standard_version),
-    src = ":{}assembly-strongnamed".format(standard_version),
-    out = "strongnamed/{}/WebDriver.dll".format(standard_version),
-    visibility = ["//visibility:public"],
-) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
+copy_file(
+    name = "logo",
+    src = "//common/images:selenium_logo_small.png",
+    out = "icon.png"
+)
 
 nuget_package(
     name = "package",
     src = "WebDriver.nuspec",
     package_id = "Selenium.WebDriver",
     package_version = "{}".format(SE_VERSION),
+    create_symbol_package = True,
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
     visibility = ["//visibility:public"],
     deps = [
         ":net45",
@@ -229,14 +240,20 @@ nuget_package(
         ":net48",
         ":netstandard2.0",
         ":netstandard2.1",
+        ":net5.0",
+        ":logo",
     ],
 )
 
 nuget_package(
     name = "package-strongnamed",
-    src = "WebDriver.nuspec",
+    src = "WebDriver.StrongNamed.nuspec",
     package_id = "Selenium.WebDriver.StrongNamed",
     package_version = "{}".format(SE_VERSION),
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
     visibility = ["//visibility:public"],
     deps = [
         ":net45-strongnamed",
@@ -245,5 +262,12 @@ nuget_package(
         ":net48-strongnamed",
         ":netstandard2.0-strongnamed",
         ":netstandard2.1-strongnamed",
+        ":net5.0-strongnamed",
     ],
+)
+
+nuget_push(
+    name = "publish",
+    src = ":package",
+    api_key = "//dotnet:nuget-api-key",
 )

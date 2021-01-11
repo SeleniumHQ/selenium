@@ -234,6 +234,7 @@ const COMMAND_MAP = new Map([
   ],
   [cmd.Name.SUBMIT_ELEMENT, post('/session/:sessionId/element/:id/submit')],
   [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
+  [cmd.Name.GET_COMPUTED_ROLE, get('/session/:sessionId/element/:id/computedrole')],
   [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
   [
     cmd.Name.IS_ELEMENT_SELECTED,
@@ -402,6 +403,7 @@ const W3C_COMMAND_MAP = new Map([
     post('/session/:sessionId/element/:id/value'),
   ],
   [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
+  [cmd.Name.GET_COMPUTED_ROLE, get('/session/:sessionId/element/:id/computedrole')],
   [cmd.Name.IS_ELEMENT_ENABLED, get('/session/:sessionId/element/:id/enabled')],
   [
     cmd.Name.GET_ELEMENT_ATTRIBUTE,
@@ -432,6 +434,8 @@ const W3C_COMMAND_MAP = new Map([
     cmd.Name.TAKE_ELEMENT_SCREENSHOT,
     get('/session/:sessionId/element/:id/screenshot'),
   ],
+  // print page.
+  [cmd.Name.PRINT_PAGE, post('/session/:sessionId/print')],
   // Log extensions.
   [cmd.Name.GET_LOG, post('/session/:sessionId/se/log')],
   [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/se/log/types')],

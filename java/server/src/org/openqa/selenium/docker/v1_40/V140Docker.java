@@ -19,7 +19,9 @@ package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerId;
+import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.ContainerInfo;
+import org.openqa.selenium.docker.ContainerLogs;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.DockerProtocol;
 import org.openqa.selenium.docker.Image;
@@ -39,8 +41,8 @@ public class V140Docker implements DockerProtocol {
   private final CreateContainer createContainer;
   private final StartContainer startContainer;
   private final StopContainer stopContainer;
-  private final DeleteContainer deleteContainer;
-  private final ContainerExists containerExists;
+  private final InspectContainer inspectContainer;
+  private final GetContainerLogs containerLogs;
 
   public V140Docker(HttpHandler client) {
     Require.nonNull("HTTP client", client);
@@ -50,8 +52,8 @@ public class V140Docker implements DockerProtocol {
     createContainer = new CreateContainer(this, client);
     startContainer = new StartContainer(client);
     stopContainer = new StopContainer(client);
-    deleteContainer = new DeleteContainer(client);
-    containerExists = new ContainerExists(client);
+    inspectContainer = new InspectContainer(client);
+    containerLogs = new GetContainerLogs(client);
   }
 
   @Override
@@ -84,12 +86,12 @@ public class V140Docker implements DockerProtocol {
   }
 
   @Override
-  public Container create(ContainerInfo info) {
-    Require.nonNull("Container info", info);
+  public Container create(ContainerConfig config) {
+    Require.nonNull("Container config", config);
 
-    LOG.info("Creating container: " + info);
+    LOG.info("Creating container: " + config);
 
-    return createContainer.apply(info);
+    return createContainer.apply(config);
   }
 
   @Override
@@ -99,15 +101,6 @@ public class V140Docker implements DockerProtocol {
     LOG.info("Starting container: " + id);
 
     startContainer.apply(id);
-  }
-
-  @Override
-  public boolean exists(ContainerId id) {
-    Require.nonNull("Container id", id);
-
-    LOG.fine(String.format("Checking whether %s is running", id));
-
-    return containerExists.apply(id);
   }
 
   @Override
@@ -121,11 +114,20 @@ public class V140Docker implements DockerProtocol {
   }
 
   @Override
-  public void deleteContainer(ContainerId id) throws DockerException {
+  public ContainerInfo inspectContainer(ContainerId id) throws DockerException {
     Require.nonNull("Container id", id);
 
-    LOG.info("Deleting container: " + id);
+    LOG.info("Inspecting container: " + id);
 
-    deleteContainer.apply(id);
+    return inspectContainer.apply(id);
+  }
+
+  @Override
+  public ContainerLogs getContainerLogs(ContainerId id) throws DockerException {
+    Require.nonNull("Container id", id);
+
+    LOG.info("Getting container logs: " + id);
+
+    return containerLogs.apply(id);
   }
 }

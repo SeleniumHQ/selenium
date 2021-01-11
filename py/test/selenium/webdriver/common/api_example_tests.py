@@ -1,20 +1,3 @@
-# Licensed to the Software Freedom Conservancy (SFC) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The SFC licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
@@ -34,8 +17,6 @@ import pytest
 
 from selenium.common.exceptions import (
     NoSuchElementException,
-    NoSuchWindowException,
-    TimeoutException,
     WebDriverException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -139,22 +120,6 @@ def testFindElementByTagNameWithinElement(driver, pages):
     assert len(elems) == 1
 
 
-@pytest.mark.xfail_firefox(
-    reason="W3C implementations can't switch to a window by name",
-    raises=TimeoutException,
-    run=False)
-def testSwitchToWindow(driver, pages):
-    title_1 = "XHTML Test Page"
-    title_2 = "We Arrive Here"
-    switch_to_window_timeout = 5
-    wait = WebDriverWait(driver, switch_to_window_timeout, ignored_exceptions=[NoSuchWindowException])
-    pages.load("xhtmlTest.html")
-    driver.find_element(By.LINK_TEXT, "Open new window").click()
-    assert title_1 == driver.title
-    wait.until(lambda dr: dr.switch_to.window("result") is None)
-    assert title_2 == driver.title
-
-
 def testSwitchFrameByName(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "third"))
@@ -255,6 +220,7 @@ def testIsElementDisplayed(driver, pages):
     assert not not_visible
 
 
+@pytest.mark.xfail_chrome
 def testMoveWindowPosition(driver, pages):
     pages.load("blank.html")
     loc = driver.get_window_position()

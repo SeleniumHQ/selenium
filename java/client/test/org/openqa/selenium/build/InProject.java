@@ -40,23 +40,22 @@ public class InProject {
    */
   public static Path locate(String... paths) {
     return Stream.of(paths)
-        .map(path -> Paths.get(path))
-        .filter(path -> Files.exists(path))
-        .findFirst()
-        .map(Path::toAbsolutePath)
-        .orElseGet(() -> {
-          System.out.println("In the fallback");
-          Path root = findProjectRoot();
-          return Stream.of(paths)
-              .map(path -> {
-                Path needle = root.resolve(path);
-                return Files.exists(needle) ? needle : null;
-              })
-              .filter(Objects::nonNull)
-              .findFirst().orElseThrow(() -> new WebDriverException(new FileNotFoundException(
-                  String.format("Could not find any of %s in the project",
-                                String.join(",", paths)))));
-        });
+      .map(Paths::get)
+      .filter(Files::exists)
+      .findFirst()
+      .map(Path::toAbsolutePath)
+      .orElseGet(() -> {
+        Path root = findProjectRoot();
+        return Stream.of(paths)
+          .map(path -> {
+            Path needle = root.resolve(path);
+            return Files.exists(needle) ? needle : null;
+          })
+          .filter(Objects::nonNull)
+          .findFirst().orElseThrow(() -> new WebDriverException(new FileNotFoundException(
+            String.format("Could not find any of %s in the project",
+                          String.join(",", paths)))));
+      });
   }
 
   public static Path findProjectRoot() {

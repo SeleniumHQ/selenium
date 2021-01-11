@@ -67,22 +67,17 @@ public class MutableCapabilities implements Capabilities {
   }
 
   /**
-   * Merge the extra capabilities provided into this DesiredCapabilities instance. If capabilities
-   * with the same name exist in this instance, they will be overridden by the values from the
-   * extraCapabilities object.
-   *
-   * @param extraCapabilities Additional capabilities to be added.
-   * @return The DesiredCapabilities instance after the merge.
+   * Merge two {@link Capabilities} together and return the union of the two as a new
+   * {@link Capabilities} instance. Capabilities from {@code other} will override those in
+   * {@code this}.
    */
   @Override
-  public MutableCapabilities merge(Capabilities extraCapabilities) {
-    if (extraCapabilities == null) {
-      return this;
+  public MutableCapabilities merge(Capabilities other) {
+    MutableCapabilities newInstance = new MutableCapabilities(this);
+    if (other != null) {
+      other.asMap().forEach(newInstance::setCapability);
     }
-
-    extraCapabilities.asMap().forEach(this::setCapability);
-
-    return this;
+    return newInstance;
   }
 
   public void setCapability(String capabilityName, boolean value) {
@@ -202,24 +197,24 @@ public class MutableCapabilities implements Capabilities {
     if (stringify.getClass().isArray()) {
       value.append("[");
       value.append(
-          Stream.of((Object[]) stringify)
-              .map(item -> abbreviate(seen, item))
-              .collect(Collectors.joining(", ")));
+        Stream.of((Object[]) stringify)
+          .map(item -> abbreviate(seen, item))
+          .collect(Collectors.joining(", ")));
       value.append("]");
     } else if (stringify instanceof Collection) {
       value.append("[");
       value.append(
-          ((Collection<?>) stringify).stream()
-              .map(item -> abbreviate(seen, item))
-              .collect(Collectors.joining(", ")));
+        ((Collection<?>) stringify).stream()
+          .map(item -> abbreviate(seen, item))
+          .collect(Collectors.joining(", ")));
       value.append("]");
     } else if (stringify instanceof Map) {
       value.append("{");
       value.append(
-          ((Map<?, ?>) stringify).entrySet().stream()
-              .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
-              .map(entry -> String.valueOf(entry.getKey()) + ": " + abbreviate(seen, entry.getValue()))
-              .collect(Collectors.joining(", ")));
+        ((Map<?, ?>) stringify).entrySet().stream()
+          .sorted(Comparator.comparing(entry -> String.valueOf(entry.getKey())))
+          .map(entry -> String.format("%s: %s", entry.getKey(), abbreviate(seen, entry.getValue())))
+          .collect(Collectors.joining(", ")));
       value.append("}");
     } else {
       String s = String.valueOf(stringify);

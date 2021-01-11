@@ -99,6 +99,7 @@ class ErrorHandler(object):
     """
     Handles errors returned by the WebDriver server.
     """
+
     def check_response(self, response):
         """
         Checks that a JSON response from the WebDriver does not have an error.
@@ -110,7 +111,7 @@ class ErrorHandler(object):
         :Raises: If the response contains an error message.
         """
         status = response.get('status', None)
-        if status is None or status == ErrorCode.SUCCESS:
+        if not status or status == ErrorCode.SUCCESS:
             return
         value = None
         message = response.get("message", "")
@@ -125,7 +126,7 @@ class ErrorHandler(object):
                     if len(value.keys()) == 1:
                         value = value['value']
                     status = value.get('error', None)
-                    if status is None:
+                    if not status:
                         status = value["status"]
                         message = value["value"]
                         if not isinstance(message, basestring):
@@ -198,7 +199,7 @@ class ErrorHandler(object):
             exception_class = UnknownMethodException
         else:
             exception_class = WebDriverException
-        if value == '' or value is None:
+        if not value:
             value = response['value']
         if isinstance(value, basestring):
             raise exception_class(value)

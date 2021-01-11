@@ -17,16 +17,20 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.internal.Require;
+
+import java.util.Arrays;
+
 public class EventAttributeValue {
 
   private final Type type;
   private String stringValue;
   private Number numberValue;
-  private Boolean booleanValue;
+  private boolean booleanValue;
   private String[] stringArrayValue;
-  private Long[] longArrayValue;
-  private Double[] doubleArrayValue;
-  private Boolean[] booleanArrayValue;
+  private long[] longArrayValue;
+  private double[] doubleArrayValue;
+  private boolean[] booleanArrayValue;
 
   public EventAttributeValue(String value) {
     this.stringValue = value;
@@ -49,22 +53,26 @@ public class EventAttributeValue {
   }
 
   public EventAttributeValue(String[] value) {
-    this.stringArrayValue = value;
+    Require.nonNull("Value", value);
+    this.stringArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.STRING_ARRAY;
   }
 
-  public EventAttributeValue(Long[] value) {
-    this.longArrayValue = value;
+  public EventAttributeValue(long[] value) {
+    Require.nonNull("Value", value);
+    this.longArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.LONG_ARRAY;
   }
 
-  public EventAttributeValue(Double[] value) {
-    this.doubleArrayValue = value;
+  public EventAttributeValue(double[] value) {
+    Require.nonNull("Value", value);
+    this.doubleArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.DOUBLE_ARRAY;
   }
 
-  public EventAttributeValue(Boolean[] value) {
-    this.booleanArrayValue = value;
+  public EventAttributeValue(boolean[] value) {
+    Require.nonNull("Value", value);
+    this.booleanArrayValue = Arrays.copyOf(value, value.length);
     this.type = Type.BOOLEAN_ARRAY;
   }
 
@@ -80,13 +88,13 @@ public class EventAttributeValue {
     return booleanValue;
   }
 
-  public String[] getStringArrayValue() { return stringArrayValue; }
+  public String[] getStringArrayValue() { return Arrays.copyOf(stringArrayValue, stringArrayValue.length); }
 
-  public Long[] getLongArrayValue() { return longArrayValue; }
+  public long[] getLongArrayValue() { return Arrays.copyOf(longArrayValue, longArrayValue.length); }
 
-  public Double[] getDoubleArrayValue() { return doubleArrayValue; }
+  public double[] getDoubleArrayValue() { return Arrays.copyOf(doubleArrayValue, doubleArrayValue.length); }
 
-  public Boolean[] getBooleanArrayValue() { return booleanArrayValue; }
+  public boolean[] getBooleanArrayValue() { return Arrays.copyOf(booleanArrayValue, booleanArrayValue.length); }
 
   public Type getAttributeType() {
     return type;

@@ -25,7 +25,10 @@ import com.google.auto.service.AutoService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class HttpClientFactoryTest {
 
   private String oldProperty;

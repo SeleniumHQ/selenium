@@ -48,6 +48,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
   public final String description;
   public final String type;
   public final String example;
+  public final boolean prefixed;
   public final boolean repeats;
   public final boolean quotable;
   public final Set<String> flags;
@@ -61,6 +62,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
     this.optionName = configValue.name();
     this.type = getType(type);
     this.description = parameter.description();
+    this.prefixed = configValue.prefixed();
     this.repeats = isCollection(type);
     this.quotable = isTomlStringType(type);
     this.example = configValue.example();
@@ -125,7 +127,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
     Optional<List<String>> allOptions = config.getAll(section, optionName);
     if (allOptions.isPresent() && !allOptions.get().isEmpty()) {
       if (repeats) {
-        return allOptions.stream()
+        return allOptions.get().stream()
           .map(value -> quotable ? "\"" + value + "\"" : String.valueOf(value))
           .collect(Collectors.joining(", ", "[", "]"));
       }
@@ -143,6 +145,26 @@ public class DescribedOption implements Comparable<DescribedOption> {
   @Override
   public int compareTo(DescribedOption o) {
     return optionName.compareTo(o.optionName);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DescribedOption that = (DescribedOption) o;
+    return repeats == that.repeats &&
+      quotable == that.quotable &&
+      Objects.equals(section, that.section) &&
+      Objects.equals(optionName, that.optionName) &&
+      Objects.equals(description, that.description) &&
+      Objects.equals(type, that.type) &&
+      Objects.equals(example, that.example) &&
+      Objects.equals(flags, that.flags);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(section, optionName, description, type, example, repeats, quotable, flags);
   }
 
   public String getType(Type type) {

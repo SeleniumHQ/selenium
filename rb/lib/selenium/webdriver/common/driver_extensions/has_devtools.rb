@@ -29,7 +29,8 @@ module Selenium
         #
 
         def devtools
-          @devtools ||= DevTools.new(capabilities['goog:chromeOptions']['debuggerAddress'])
+          version = Integer(capabilities.browser_version.split('.').first)
+          @devtools ||= DevTools.new(url: debugger_address, version: version)
         end
 
       end # HasDevTools

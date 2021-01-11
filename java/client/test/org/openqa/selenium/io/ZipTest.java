@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +34,7 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+@Category(UnitTests.class)
 public class ZipTest {
   private File inputDir;
   private File outputDir;

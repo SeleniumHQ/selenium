@@ -1,4 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "node",
@@ -17,8 +18,11 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/node/locators",
+        "//java/server/src/org/openqa/selenium/grid/security",
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/status",
+        "//java/server/src/org/openqa/selenium/remote/server/jmx",
         artifact("com.google.guava:guava"),
     ],
 )

@@ -121,11 +121,11 @@ public class InfoCommand implements CliCommand {
         throw new UncheckedIOException(e);
       }
 
-      PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0);
-
-      outWriter.printf("\n%s\n%s\n\n", title, String.join("", Collections.nCopies(title.length(), "=")));
-      outWriter.print(content);
-      outWriter.println("\n\n");
+      try (PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0)) {
+        outWriter.printf("%n%s%n%s%n%n", title, String.join("", Collections.nCopies(title.length(), "=")));
+        outWriter.print(content);
+        outWriter.println("\n\n");
+      }
     };
   }
 

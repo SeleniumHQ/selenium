@@ -47,11 +47,6 @@ public class IgnoreComparatorUnitTest {
 
   IgnoreComparator ignoreComparator = new IgnoreComparator();
 
-  @Before
-  public void setupComparator() {
-    ignoreComparator.setCurrentPlatform(CURRENT_PLATFORM);
-  }
-
   @Test
   public void shouldNotIgnoreIfNothingBeingIgnored() {
     assertFalse(new IgnoreComparator().shouldIgnore((Ignore) null));

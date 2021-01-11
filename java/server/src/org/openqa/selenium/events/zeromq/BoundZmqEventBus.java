@@ -19,7 +19,9 @@ package org.openqa.selenium.events.zeromq;
 
 import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.Type;
+import org.openqa.selenium.events.EventListener;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.NetworkUtils;
 import org.zeromq.SocketType;
 import org.zeromq.ZContext;
@@ -30,7 +32,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +43,7 @@ class BoundZmqEventBus implements EventBus {
   private final ZMQ.Socket xsub;
   private final ExecutorService executor;
 
-  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection) {
+  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
@@ -66,7 +67,7 @@ class BoundZmqEventBus implements EventBus {
     });
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
 
-    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise);
+    delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret);
 
     LOG.info("Event bus ready");
   }
@@ -77,8 +78,10 @@ class BoundZmqEventBus implements EventBus {
   }
 
   @Override
-  public void addListener(Type type, Consumer<Event> onType) {
-    delegate.addListener(type, onType);
+  public void addListener(EventListener<?> listener) {
+    Require.nonNull("Listener", listener);
+
+    delegate.addListener(listener);
   }
 
   @Override

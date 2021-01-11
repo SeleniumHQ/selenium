@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.events;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.net.PortProber;
 import org.zeromq.ZContext;
 
@@ -37,27 +34,35 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(Parameterized.class)
 public class EventBusTest {
 
   @Parameterized.Parameters(name = "EventBus {0}")
   public static Collection<Supplier<EventBus>> buildEventBuses() {
+    Secret secret = new Secret("cheese");
+
     return ImmutableSet.of(
         () -> ZeroMqEventBus.create(
             new ZContext(),
             "inproc://bus-pub",
             "inproc://bus-sub",
-            true),
+            true,
+            secret),
         () -> ZeroMqEventBus.create(
             new ZContext(),
             "tcp://*:" + PortProber.findFreePort(),
             "tcp://*:" + PortProber.findFreePort(),
-            true),
+            true,
+            secret),
         () -> ZeroMqEventBus.create(
             new ZContext(),
             "tcp://localhost:" + PortProber.findFreePort(),
             "tcp://localhost:" + PortProber.findFreePort(),
-            true),
+            true,
+            secret),
         GuavaEventBus::new);
   }
 
@@ -78,11 +83,11 @@ public class EventBusTest {
 
   @Test(timeout = 4000)
   public void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
-    Type cheese = new Type("cheese");
+    EventName cheese = new EventName("cheese");
     Event event = new Event(cheese, null);
 
     CountDownLatch latch = new CountDownLatch(1);
-    bus.addListener(cheese, e -> latch.countDown());
+    bus.addListener(new EventListener<>(cheese, Object.class, obj -> latch.countDown()));
     bus.fire(event);
     latch.await(1, SECONDS);
 
@@ -92,9 +97,9 @@ public class EventBusTest {
   @Test(timeout = 4000)
   public void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
-    bus.addListener(new Type("peas"), e -> count.incrementAndGet());
+    bus.addListener(new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));
 
-    bus.fire(new Event(new Type("cheese"), null));
+    bus.fire(new Event(new EventName("cheese"), null));
 
     assertThat(count.get()).isEqualTo(0);
   }

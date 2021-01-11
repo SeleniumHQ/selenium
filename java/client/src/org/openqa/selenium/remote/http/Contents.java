@@ -24,6 +24,7 @@ import com.google.common.io.FileBackedOutputStream;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -114,7 +115,12 @@ public class Contents {
    * @return an {@link InputStream} containing the object converted to a UTF-8 JSON string.
    */
   public static Supplier<InputStream> asJson(Object obj) {
-    return utf8String(JSON.toJson(obj));
+    StringBuilder builder = new StringBuilder();
+    try (JsonOutput out = JSON.newOutput(builder)) {
+      out.writeClassName(false);
+      out.write(obj);
+    }
+    return utf8String(builder);
   }
 
   public static Supplier<InputStream> memoize(Supplier<InputStream> delegate) {

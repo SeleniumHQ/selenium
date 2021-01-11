@@ -1,7 +1,10 @@
-load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load("//common:defs.bzl", "copy_file")
-load("//dotnet:nuget.bzl", "nuget_package")
-load("//dotnet:assembly-info.bzl", "generated_assembly_info")
+load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
+load(
+    "//dotnet:defs.bzl",
+    "generated_assembly_info",
+    "nuget_package",
+    "nuget_push")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -92,7 +95,7 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:{}assembly".format(standard_version),
+        "//dotnet/src/webdriver:{}".format(standard_version),
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -165,15 +168,26 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:{}assembly-strongnamed".format(standard_version),
+        "//dotnet/src/webdriver:{}-strongnamed".format(standard_version),
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
+
+copy_file(
+    name = "logo",
+    src = "//common/images:selenium_logo_small.png",
+    out = "icon.png"
+)
 
 nuget_package(
     name = "package",
     src = "Selenium.WebDriverBackedSelenium.nuspec",
     package_id = "Selenium.WebDriverBackedSelenium",
     package_version = "{}".format(SE_VERSION),
+    create_symbol_package = True,
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
     visibility = ["//visibility:public"],
     deps = [
         ":net45",
@@ -182,35 +196,35 @@ nuget_package(
         ":net48",
         ":netstandard2.0",
         ":netstandard2.1",
+        ":net5.0",
+        ":logo",
     ],
 )
-
-[copy_file(
-    name = "copy-{}-strongnamed".format(framework),
-    src = ":{}-strongnamed".format(framework),
-    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
-    visibility = ["//visibility:public"],
-) for framework in SUPPORTED_NET_FRAMEWORKS]
-
-[copy_file(
-    name = "copy-{}-strongnamed".format(standard_version),
-    src = ":{}-strongnamed".format(standard_version),
-    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium.dll".format(standard_version),
-    visibility = ["//visibility:public"],
-) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
 nuget_package(
     name = "package-strongnamed",
     src = "Selenium.WebDriverBackedSelenium.nuspec",
     package_id = "Selenium.WebDriverBackedSelenium.StrongNamed",
     package_version = "{}".format(SE_VERSION),
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
     visibility = ["//visibility:public"],
     deps = [
-        ":copy-net45-strongnamed",
-        ":copy-net46-strongnamed",
-        ":copy-net47-strongnamed",
-        ":copy-net48-strongnamed",
-        ":copy-netstandard2.0-strongnamed",
-        ":copy-netstandard2.1-strongnamed",
+        ":net45-strongnamed",
+        ":net46-strongnamed",
+        ":net47-strongnamed",
+        ":net48-strongnamed",
+        ":netstandard2.0-strongnamed",
+        ":netstandard2.1-strongnamed",
+        ":net5.0-strongnamed",
+        ":logo",
     ],
+)
+
+nuget_push(
+    name = "publish",
+    src = ":package",
+    api_key = "//dotnet:nuget-api-key",
 )

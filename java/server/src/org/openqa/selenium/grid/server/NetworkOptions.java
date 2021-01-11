@@ -34,6 +34,8 @@ import java.util.Set;
 
 public class NetworkOptions {
 
+  private static final String NETWORK_SECTION = "network";
+
   private final Config config;
   // These are commonly used by process which can't set various headers.
   private final Set<String> SKIP_CHECKS_ON = ImmutableSet.of("/status", "/readyz");
@@ -50,16 +52,16 @@ public class NetworkOptions {
     // Base case: we do nothing
     Filter toReturn = httpHandler -> httpHandler;
 
-    if (config.getBool("network", "relax_checks").orElse(false)) {
+    if (config.getBool(NETWORK_SECTION, "relax-checks").orElse(false)) {
       return toReturn;
     }
 
-    if (config.getBool("network", "check_content_type").orElse(true)) {
+    if (config.getBool(NETWORK_SECTION, "check_content_type").orElse(true)) {
       toReturn = toReturn.andThen(new CheckContentTypeHeader(SKIP_CHECKS_ON));
     }
 
-    boolean checkOrigin = config.getBool("network", "check_origin_header").orElse(true);
-    Optional<List<String>> allowedOrigins = config.getAll("network", "allowed_origins");
+    boolean checkOrigin = config.getBool(NETWORK_SECTION, "check_origin_header").orElse(true);
+    Optional<List<String>> allowedOrigins = config.getAll(NETWORK_SECTION, "allowed_origins");
 
     if (checkOrigin || allowedOrigins.isPresent()) {
       toReturn = toReturn.andThen(new CheckOriginHeader(allowedOrigins.orElse(ImmutableList.of()), SKIP_CHECKS_ON));

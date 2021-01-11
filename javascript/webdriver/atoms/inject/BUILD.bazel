@@ -31,6 +31,7 @@ closure_js_library(
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":execute-script",
@@ -44,6 +45,9 @@ closure_js_library(
 closure_js_library(
     name = "appcache",
     srcs = ["appcache.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     deps = [
         "//javascript/atoms:inject",
         "//javascript/webdriver/atoms:atoms-lib",
@@ -56,6 +60,7 @@ closure_js_library(
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":execute-script",
@@ -73,6 +78,7 @@ closure_js_library(
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         "//javascript/atoms:inject",
@@ -85,6 +91,7 @@ closure_js_library(
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":execute-script",
@@ -100,6 +107,7 @@ closure_js_library(
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         ":execute-script",
@@ -110,6 +118,9 @@ closure_js_library(
 closure_js_library(
     name = "local-storage",
     srcs = ["local_storage.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     deps = [
         ":execute-script",
         "//javascript/webdriver/atoms:atoms-lib",
@@ -119,6 +130,9 @@ closure_js_library(
 closure_js_library(
     name = "session-storage",
     srcs = ["session_storage.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     deps = [
         ":execute-script",
         "//javascript/webdriver/atoms:atoms-lib",
@@ -128,6 +142,9 @@ closure_js_library(
 closure_js_library(
     name = "sql-database",
     srcs = ["sql_database.js"],
+    suppress = [
+        "JSC_USE_OF_GOOG_PROVIDE",
+    ],
     deps = [
         ":execute-script",
         "//javascript/atoms:errors",

@@ -52,14 +52,24 @@ public class Docker {
       .orElseThrow(() -> new DockerException("Unable to get image " + name));
   }
 
-  public Container create(ContainerInfo info) {
-    Require.nonNull("Container info", info);
+  public Container create(ContainerConfig config) {
+    Require.nonNull("Container config", config);
 
-    LOG.info("Creating image from " + info);
+    LOG.info("Creating image from " + config);
 
     return getDocker()
-      .map(protocol -> protocol.create(info))
-      .orElseThrow(() -> new DockerException("Unable to create container: " + info));
+      .map(protocol -> protocol.create(config))
+      .orElseThrow(() -> new DockerException("Unable to create container: " + config));
+  }
+
+  public ContainerInfo inspect(ContainerId id) {
+    Require.nonNull("Container id", id);
+
+    LOG.info("Inspecting container with id: " + id);
+
+    return getDocker()
+      .map(protocol -> protocol.inspectContainer(id))
+      .orElseThrow(() -> new DockerException("Unable to inspect container: " + id));
   }
 
   private Optional<DockerProtocol> getDocker() {

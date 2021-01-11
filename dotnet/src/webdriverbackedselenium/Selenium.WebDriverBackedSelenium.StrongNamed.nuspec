@@ -4,7 +4,7 @@
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2017 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2020 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>WebDriver-backed Selenium</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -27,24 +27,28 @@
     <repository url="https://github.com/SeleniumHQ/selenium" />
     <license type="expression">Apache-2.0</license>
     <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
+    <icon>images\icon.png</icon>
     <tags>selenium webdriver remote control rc browser automation</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5">
+      <group targetFramework="net45">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETFramework4.6">
+      <group targetFramework="net46">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETFramework4.7">
+      <group targetFramework="net47">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETFramework4.8">
+      <group targetFramework="net48">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETStandard2.0">
+      <group targetFramework="netstandard2.0">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETStandard2.1">
+      <group targetFramework="netstandard2.1">
+        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net5.0">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
     </dependencies>
@@ -53,6 +57,8 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**" target="lib" />
+    <file src="**/Selenium.WebDriverBackedSelenium.dll" target="lib" />
+    <file src="**/Selenium.WebDriverBackedSelenium.pdb" target="lib" />
+    <file src="../icon.png" target="images\"/>
   </files>
 </package>

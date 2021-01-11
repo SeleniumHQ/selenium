@@ -164,7 +164,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
   private static class DriverSupplier implements Supplier<WebDriver>, Closeable {
 
-    private WebDriver driver;
+    private volatile WebDriver driver;
 
     @Override
     public WebDriver get() {

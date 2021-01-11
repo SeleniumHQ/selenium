@@ -22,8 +22,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.v84.network.Network;
-import org.openqa.selenium.devtools.v84.page.Page;
+import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.grid.commands.EventBusCommand;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.distributor.httpd.DistributorServer;
@@ -32,6 +31,7 @@ import org.openqa.selenium.grid.router.httpd.RouterServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.httpd.SessionMapServer;
+import org.openqa.selenium.grid.sessionqueue.httpd.NewSessionQueuerServer;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
@@ -41,6 +41,8 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.support.devtools.NetworkInterceptor;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.testing.drivers.Browser;
 
@@ -48,7 +50,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import static java.time.Duration.ofSeconds;
@@ -68,7 +69,9 @@ public class DistributedCdpTest {
 
     int eventPublishPort = PortProber.findFreePort();
     int eventSubscribePort = PortProber.findFreePort();
-    String[] eventBusFlags = new String[]{"--publish-events", "tcp://*:" + eventPublishPort, "--subscribe-events", "tcp://*:" + eventSubscribePort};
+    String[] eventBusFlags = new String[]{
+      "--publish-events", "tcp://*:" + eventPublishPort,
+      "--subscribe-events", "tcp://*:" + eventSubscribePort};
 
     int eventBusPort = PortProber.findFreePort();
     new EventBusCommand().configure(
@@ -84,31 +87,49 @@ public class DistributedCdpTest {
       mergeArgs(eventBusFlags, "--bind-bus", "false", "--port", "" + sessionsPort)).run();
     waitUntilUp(sessionsPort);
 
+    int queuerPort = PortProber.findFreePort();
+    new NewSessionQueuerServer().configure(
+      System.out,
+      System.err,
+      mergeArgs(eventBusFlags, "--bind-bus", "false", "--port", "" + queuerPort)).run();
+    waitUntilUp(sessionsPort);
+
     int distributorPort = PortProber.findFreePort();
     new DistributorServer().configure(
       System.out,
       System.err,
-      mergeArgs(eventBusFlags, "--bind-bus", "false", "--port", "" + distributorPort, "-s", "http://localhost:" + sessionsPort)).run();
+      mergeArgs(eventBusFlags,
+        "--bind-bus", "false", "--port", "" + distributorPort,
+        "-s", "http://localhost:" + sessionsPort,
+        "--sessionqueuer", "http://localhost:" + queuerPort)).run();
     waitUntilUp(distributorPort);
 
     int routerPort = PortProber.findFreePort();
     new RouterServer().configure(
       System.out,
       System.err,
-      "--port", "" + routerPort, "-s", "http://localhost:" + sessionsPort, "-d", "http://localhost:" + distributorPort).run();
+      "--port", "" + routerPort,
+      "-s", "http://localhost:" + sessionsPort,
+      "-d", "http://localhost:" + distributorPort,
+      "--sessionqueuer", "http://localhost:" + queuerPort).run();
     waitUntilUp(routerPort);
 
     int nodePort = PortProber.findFreePort();
     new NodeServer().configure(
       System.out,
       System.err,
-      mergeArgs(eventBusFlags, "--port", "" + nodePort, "-I", getBrowserShortName(), "--public-url", "http://localhost:" + routerPort)).run();
+      mergeArgs(
+        eventBusFlags,
+        "--port", "" + nodePort,
+        "-I", getBrowserShortName(),
+        "--public-url", "http://localhost:" + routerPort)).run();
     waitUntilUp(nodePort);
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(new URL("http://localhost:" + routerPort));
     new FluentWait<>(client).withTimeout(ofSeconds(10)).until(c -> {
-      HttpResponse res = c.execute(new HttpRequest(GET, "/status")
-                                       .addHeader("Content-Type", "application/json; charset=utf-8"));
+      HttpResponse res = c.execute(
+        new HttpRequest(GET, "/status")
+          .addHeader("Content-Type", "application/json; charset=utf-8"));
       if (!res.isSuccessful()) {
         return false;
       }
@@ -124,17 +145,25 @@ public class DistributedCdpTest {
       req -> new HttpResponse().setContent(Contents.utf8String("I like cheese")))
       .start();
 
-    WebDriver driver = new RemoteWebDriver(new URL("http://localhost:" + routerPort), browser.getCapabilities());
+    WebDriver driver = new RemoteWebDriver(
+      new URL("http://localhost:" + routerPort), browser.getCapabilities());
     driver = new Augmenter().augment(driver);
+
+    String serverUri = server.getUrl().toString();
 
     CountDownLatch latch = new CountDownLatch(1);
     try (DevTools devTools = ((HasDevTools) driver).getDevTools()) {
       devTools.createSessionIfThereIsNotOne();
-      devTools.send(Page.enable());
-      devTools.addListener(Network.loadingFinished(), res -> latch.countDown());
-      devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
+      Network<?, ?> network = devTools.getDomains().network();
+      network.addRequestHandler(
+        Route.matching(req -> req.getUri().startsWith(serverUri))
+          .to(() -> req -> {
+            latch.countDown();
+            return NetworkInterceptor.PROCEED_WITH_REQUEST;
+          }));
 
-      devTools.send(Page.navigate(server.getUrl().toString(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+      driver.get(server.getUrl().toString());
+
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
   }

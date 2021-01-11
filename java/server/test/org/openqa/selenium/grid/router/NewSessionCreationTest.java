@@ -20,9 +20,13 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
@@ -32,13 +36,18 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.EnsureSpecCompliantHeaders;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
@@ -46,18 +55,22 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
-import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class NewSessionCreationTest {
@@ -65,12 +78,20 @@ public class NewSessionCreationTest {
   private Tracer tracer;
   private EventBus events;
   private HttpClient.Factory clientFactory;
+  private Secret registrationSecret;
+  private Server<?> server;
 
   @Before
   public void setup() {
     tracer = DefaultTestTracer.createTracer();
     events = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
+    registrationSecret = new Secret("hereford hop");
+  }
+
+  @After
+  public void stopServer() {
+    server.stop();
   }
 
   @Test
@@ -81,11 +102,29 @@ public class NewSessionCreationTest {
     assumeThat(geckoDriverInfo.isAvailable()).isTrue();
 
     SessionMap sessions = new LocalSessionMap(tracer, events);
-    Distributor distributor = new LocalDistributor(tracer, events, clientFactory, sessions, null);
-    Routable router = new Router(tracer, clientFactory, sessions, distributor)
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      events,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      events,
+      localNewSessionQueue,
+      registrationSecret);
+
+    Distributor distributor = new LocalDistributor(
+        tracer,
+        events,
+        clientFactory,
+        sessions,
+        queuer,
+        registrationSecret);
+
+    Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
-    Server<?> server = new NettyServer(
+    server = new NettyServer(
       new BaseServerOptions(new MapConfig(ImmutableMap.of())),
       router,
       new ProxyCdpIntoGrid(clientFactory, sessions))
@@ -97,8 +136,8 @@ public class NewSessionCreationTest {
       events,
       uri,
       uri,
-      null)
-      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+      registrationSecret)
+      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, Browser.detect().getCapabilities(), caps, Instant.now())))
       .build();
     distributor.add(node);
 
@@ -135,16 +174,77 @@ public class NewSessionCreationTest {
     assertThat(res.isSuccessful()).isTrue();
   }
 
-  private LocalNode.Builder addDriverFactory(
-    LocalNode.Builder builder,
-    WebDriverInfo info,
-    DriverService.Builder<?, ?> driverService) {
-    return builder.add(
-      info.getCanonicalCapabilities(),
-      new DriverServiceSessionFactory(
-        tracer,
-        clientFactory,
-        info::isSupporting,
-        driverService));
+  @Test
+  public void shouldRetryNewSessionRequestOnUnexpectedError() throws URISyntaxException {
+    Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
+    URI nodeUri = new URI("http://localhost:4444");
+    CombinedHandler handler = new CombinedHandler();
+
+    SessionMap sessions = new LocalSessionMap(tracer, events);
+    handler.addHandler(sessions);
+    NewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      events,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(10));
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      events,
+      localNewSessionQueue,
+      registrationSecret);
+    handler.addHandler(queuer);
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      events,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret);
+    handler.addHandler(distributor);
+
+    AtomicInteger count = new AtomicInteger();
+
+    // First session creation attempt throws an error.
+    // Second attempt creates a session.
+    TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) -> {
+      if (count.get() == 0) {
+        count.incrementAndGet();
+        throw new SessionNotCreatedException("Expected the exception");
+      } else {
+        return new Session(
+          id,
+          nodeUri,
+          new ImmutableCapabilities(),
+          caps,
+          Instant.now());
+      }
+    });
+
+    LocalNode localNode = LocalNode.builder(tracer, events, nodeUri, nodeUri, registrationSecret)
+      .add(capabilities, sessionFactory).build();
+    handler.addHandler(localNode);
+    distributor.add(localNode);
+
+    Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
+    handler.addHandler(router);
+
+    server = new NettyServer(
+      new BaseServerOptions(
+        new MapConfig(ImmutableMap.of())),
+      handler);
+
+    server.start();
+
+    HttpRequest request = new HttpRequest(POST, "/session");
+    request.setContent(asJson(
+      ImmutableMap.of(
+        "capabilities", ImmutableMap.of(
+          "alwaysMatch", capabilities))));
+
+    HttpClient client = clientFactory.createClient(server.getUrl());
+    HttpResponse httpResponse = client.execute(request);
+    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
   }
+
 }

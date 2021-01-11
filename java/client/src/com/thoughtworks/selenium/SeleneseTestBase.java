@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
@@ -112,10 +113,10 @@ public class SeleneseTestBase {
     try {
       Class<?> c = Class.forName("org.openqa.selenium.server.RemoteControlConfiguration");
       Method getDefaultPort = c.getMethod("getDefaultPort");
-      Integer portNumber = (Integer) getDefaultPort.invoke(null);
+      Number portNumber = (Number) getDefaultPort.invoke(null);
       return portNumber.intValue();
-    } catch (Exception e) {
-      return Integer.getInteger("selenium.port", 4444).intValue();
+    } catch (ReflectiveOperationException | NumberFormatException e) {
+      return Integer.getInteger("selenium.port", 4444);
     }
   }
 
@@ -195,7 +196,7 @@ public class SeleneseTestBase {
    */
   public static void assertEquals(Object expected, Object actual) {
     if (expected == null) {
-      assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead", actual == null);
+      assertTrue("Expected null but saw \"" + actual + "\" instead", actual == null);
     } else if (expected instanceof String && actual instanceof String) {
       assertEquals((String) expected, (String) actual);
     } else if (expected instanceof String && actual instanceof String[]) {
@@ -249,22 +250,22 @@ public class SeleneseTestBase {
       actual = expectedPattern;
       expectedPattern = tmp;
     }
-    Boolean b;
+    Optional<Boolean> b;
     b = handleRegex("regexp:", expectedPattern, actual, 0);
-    if (b != null) {
-      return b.booleanValue();
+    if (b.isPresent()) {
+      return b.get();
     }
     b = handleRegex("regex:", expectedPattern, actual, 0);
-    if (b != null) {
-      return b.booleanValue();
+    if (b.isPresent()) {
+      return b.get();
     }
     b = handleRegex("regexpi:", expectedPattern, actual, Pattern.CASE_INSENSITIVE);
-    if (b != null) {
-      return b.booleanValue();
+    if (b.isPresent()) {
+      return b.get();
     }
     b = handleRegex("regexi:", expectedPattern, actual, Pattern.CASE_INSENSITIVE);
-    if (b != null) {
-      return b.booleanValue();
+    if (b.isPresent()) {
+      return b.get();
     }
 
     if (expectedPattern.startsWith("exact:")) {
@@ -289,17 +290,17 @@ public class SeleneseTestBase {
     return true;
   }
 
-  private static Boolean handleRegex(String prefix, String expectedPattern, String actual, int flags) {
+  private static Optional<Boolean> handleRegex(String prefix, String expectedPattern, String actual, int flags) {
     if (expectedPattern.startsWith(prefix)) {
       String expectedRegEx = expectedPattern.replaceFirst(prefix, ".*") + ".*";
       Pattern p = Pattern.compile(expectedRegEx, flags);
       if (!p.matcher(actual).matches()) {
         System.out.println("expected " + actual + " to match regexp " + expectedPattern);
-        return Boolean.FALSE;
+        return Optional.of(Boolean.FALSE);
       }
-      return Boolean.TRUE;
+      return Optional.of(Boolean.TRUE);
     }
-    return null;
+    return Optional.empty();
   }
 
   /**

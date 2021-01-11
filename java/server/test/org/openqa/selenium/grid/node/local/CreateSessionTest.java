@@ -27,6 +27,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
@@ -35,6 +36,7 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -49,6 +51,7 @@ public class CreateSessionTest {
 
   private final Json json = new Json();
   private final Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+  private final Secret registrationSecret = new Secret("tunworth");
 
   @Test
   public void shouldAcceptAW3CPayload() throws URISyntaxException {
@@ -66,8 +69,8 @@ public class CreateSessionTest {
         new GuavaEventBus(),
         uri,
         uri,
-        null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        registrationSecret)
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -117,8 +120,8 @@ public class CreateSessionTest {
         new GuavaEventBus(),
         uri,
         uri,
-        null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        registrationSecret)
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -160,8 +163,8 @@ public class CreateSessionTest {
         new GuavaEventBus(),
         uri,
         uri,
-        null)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
+        registrationSecret)
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(

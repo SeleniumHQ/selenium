@@ -59,7 +59,7 @@ public class WaitForCondition extends SeleneseCommand<Void> {
           return true;
         }
       }
-    }.wait("Failed to resolve " + script, Long.valueOf(timeout));
+    }.wait("Failed to resolve " + script, Long.parseLong(timeout));
 
     return null;
   }

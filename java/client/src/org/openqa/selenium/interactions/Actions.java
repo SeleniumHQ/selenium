@@ -366,13 +366,12 @@ public class Actions {
   }
 
   /**
-   * Moves the mouse to an offset from the center of the element.
-   * The element is scrolled into view and its location is calculated using getClientRects.
+   * Moves the mouse to an offset from the element's in-view center point.
    * @param target element to move to.
-   * @param xOffset Offset from the center. A negative value means coordinates left from
-   * the element.
-   * @param yOffset Offset from the center. A negative value means coordinates above
-   * the element.
+   * @param xOffset Offset from the element's in-view center point. A negative value means
+   * an offset left of the point.
+   * @param yOffset Offset from the element's in-view center point. A negative value means
+   * an offset above the point.
    * @return A self reference.
    */
   public Actions moveToElement(WebElement target, int xOffset, int yOffset) {
@@ -382,7 +381,7 @@ public class Actions {
 
     // Of course, this is the offset from the centre of the element. We have no idea what the width
     // and height are once we execute this method.
-    LOG.info("When using the W3C Action commands, offsets are from the center of element");
+    LOG.info("When using the W3C Action commands, offsets are from the element's in-view center point");
     return moveInTicks(target, xOffset, yOffset);
   }
 

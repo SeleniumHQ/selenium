@@ -18,15 +18,13 @@
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.grpc.Context;
+import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.SpanContext;
-import io.opentelemetry.trace.Tracer;
-import io.opentelemetry.trace.TracingContextUtils;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.Tracer;
 
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.tracing.SpanId;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
 import java.util.Objects;
@@ -41,12 +39,12 @@ public class OpenTelemetryContext implements TraceContext {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.context = Require.nonNull("Context", context);
 
-    spanContext = TracingContextUtils.getSpan(context).getContext();
+    spanContext = Span.fromContext(context).getSpanContext();
   }
 
   @Override
-  public SpanId getId() {
-    return new SpanId(spanContext.getSpanId());
+  public String getId() {
+    return spanContext.getSpanIdAsHexString();
   }
 
   @SuppressWarnings("MustBeClosedChecker")
@@ -54,11 +52,11 @@ public class OpenTelemetryContext implements TraceContext {
   public OpenTelemetrySpan createSpan(String name) {
     Require.nonNull("Name", name);
 
-    Span span = tracer.spanBuilder(name).setParent(spanContext).startSpan();
+    Span span = tracer.spanBuilder(name).setParent(context).startSpan();
     Context prev = Context.current();
 
     // Now update the context
-    Scope scope = tracer.withSpan(span);
+    Scope scope = span.makeCurrent();
 
     if (prev.equals(Context.current())) {
       throw new IllegalStateException("Context has not been changed");
@@ -98,12 +96,11 @@ public class OpenTelemetryContext implements TraceContext {
 
   @Override
   public String toString() {
-
     return "OpenTelemetryContext{" +
       "tracer=" + tracer +
       ", context=" + this.context +
-      ", span id=" + spanContext.getSpanId() +
-      ", trace id=" + spanContext.getTraceId() +
+      ", span id=" + spanContext.getSpanIdAsHexString() +
+      ", trace id=" + spanContext.getTraceIdAsHexString() +
       '}';
   }
 }

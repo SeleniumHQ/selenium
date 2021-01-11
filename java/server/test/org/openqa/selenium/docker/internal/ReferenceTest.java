@@ -42,7 +42,8 @@ public class ReferenceTest {
       {"repo/img", new Reference("docker.io", "repo", "img", "latest",null)},
       {"repo/img:tag", new Reference("docker.io", "repo", "img", "tag",null)},
       {"repo/img@sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", new Reference("docker.io", "repo", "img", null,"sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")},
-      // domain/repository/name:tag -> {domain: domain, repository: repository, name: name, tag: tag, digest: null}
+      {"images.sample.io/repo/img", new Reference("images.sample.io", "repo", "img", "latest",null)},
+      {"images.sample.io/repo/img:tag", new Reference("images.sample.io", "repo", "img", "tag",null)},
       // domain:port/repository/name@digest ->
     });
   }

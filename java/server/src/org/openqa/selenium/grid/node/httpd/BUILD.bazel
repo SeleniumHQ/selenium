@@ -1,10 +1,12 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
 
 java_library(
     name = "httpd",
     srcs = glob(["*.java"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     deps = [
         "//java:auto-service",

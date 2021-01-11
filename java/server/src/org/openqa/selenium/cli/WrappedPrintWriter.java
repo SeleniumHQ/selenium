@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 public class WrappedPrintWriter extends PrintWriter {
 
@@ -31,7 +32,7 @@ public class WrappedPrintWriter extends PrintWriter {
   private int position = 0;
 
   public WrappedPrintWriter(OutputStream out, int lineLength, int indentBy) {
-    this(new OutputStreamWriter(out), lineLength, indentBy);
+    this(new OutputStreamWriter(out, Charset.defaultCharset()), lineLength, indentBy);
   }
 
   public WrappedPrintWriter(Writer out, int lineLength, int indentBy) {

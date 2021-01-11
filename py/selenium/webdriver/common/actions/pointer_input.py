@@ -39,7 +39,7 @@ class PointerInput(InputDevice):
         action["y"] = y
         if isinstance(origin, WebElement):
             action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
-        elif origin is not None:
+        elif origin:
             action["origin"] = origin
 
         self.add_action(action)

@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_binary", "java_library", "java_test_suite")
 
 filegroup(
     name = "keystore",
@@ -13,6 +13,7 @@ filegroup(
 
 java_library(
     name = "environment",
+    testonly = True,
     srcs = glob(
         [
             "*.java",
@@ -27,15 +28,15 @@ java_library(
         "webserver/keystore",
         "//common/src/web",
         "//javascript/atoms",
+        "//javascript/atoms:deps",
         "//third_party/closure/goog",
         "//third_party/js/selenium:webdriver_json",
         "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/sizzle",
+        "@com_google_javascript_closure_library",
     ],
     javacopts = [
-        "-source",
-        "11",
-        "-target",
+        "--release",
         "11",
     ],
     visibility = [
@@ -52,19 +53,16 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//java/server/src/org/openqa/selenium/jre/server",
+        "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.google.guava:guava"),
-        artifact("org.eclipse.jetty:jetty-http"),
-        artifact("org.eclipse.jetty:jetty-server"),
-        artifact("org.eclipse.jetty:jetty-servlet"),
-        artifact("org.eclipse.jetty:jetty-util"),
-        artifact("javax.servlet:javax.servlet-api"),
+        artifact("org.assertj:assertj-core"),
     ],
 )
 
 java_binary(
     name = "appserver",
-    main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
+    testonly = True,
+    main_class = "org.openqa.selenium.environment.webserver.NettyAppServer",
     visibility = [
         "//:__pkg__",
         "//dotnet/test:__subpackages__",
@@ -76,6 +74,7 @@ java_binary(
 
 java_binary(
     name = "jre-server",
+    testonly = True,
     main_class = "org.openqa.selenium.environment.webserver.JreAppServer",
     visibility = [
         "//dotnet/test:__subpackages__",
@@ -87,6 +86,7 @@ java_binary(
 
 java_library(
     name = "test-base",
+    testonly = True,
     srcs = ["webserver/AppServerTestBase.java"],
     deps = [
         ":environment",
@@ -105,5 +105,6 @@ java_test_suite(
     deps = [
         ":environment",
         ":test-base",
+        artifact("junit:junit"),
     ],
 )

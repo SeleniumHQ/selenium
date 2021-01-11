@@ -49,9 +49,9 @@ public class TestChromeDriver extends ChromeDriver {
     try {
       Path logFile = Files.createTempFile("chromedriver", ".log");
       ChromeDriverService service = new ChromeDriverService.Builder()
-          .withLogLevel(ChromeDriverLogLevel.ALL)
-          .withLogFile(logFile.toFile())
-          .build();
+        .withLogLevel(ChromeDriverLogLevel.ALL)
+        .withLogFile(logFile.toFile())
+        .build();
       LOG.info("chromedriver will log to " + logFile);
       LOG.info("chromedriver will use log level " + ChromeDriverLogLevel.ALL.toString().toUpperCase());
       service.start();
@@ -65,7 +65,7 @@ public class TestChromeDriver extends ChromeDriver {
 
   private static ChromeOptions chromeWithCustomCapabilities(Capabilities originalCapabilities) {
     ChromeOptions options = new ChromeOptions();
-    options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
+    options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad", "disable-dev-shm-usage", "no-sandbox");
     Map<String, Object> prefs = new HashMap<>();
     prefs.put("exit_type", "None");
     prefs.put("exited_cleanly", true);

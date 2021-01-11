@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_library", "java_test_suite")
 
 java_library(
     name = "annotations",
@@ -13,6 +13,7 @@ java_library(
         "NotYetImplemented.java",
         "NotYetImplementedList.java",
         "SwitchToTopAfterTest.java",
+        "UnitTests.java",
     ],
     visibility = [
         "//java/client/test:__subpackages__",
@@ -26,11 +27,14 @@ java_library(
 
 java_library(
     name = "test-base",
+    testonly = True,
     srcs = [
+        "CaptureLoggingRule.java",
         "IgnoreComparator.java",
         "JUnit4TestBase.java",
         "Pages.java",
         "Safely.java",
+        "SeleniumTestRule.java",
         "SeleniumTestRunner.java",
         "StaticResources.java",
         "TearDownFixture.java",

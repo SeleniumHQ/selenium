@@ -24,6 +24,7 @@ import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
 
 import java.util.Set;
+import java.util.logging.Level;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 
@@ -49,6 +50,16 @@ public class LoggingFlags implements HasRoles {
   @Parameter(description = "File to write out logs", hidden = true, names = "--log", arity = 1)
   @ConfigValue(section = "logging", name = "log-file", example = "true")
   private String logFile;
+
+  @Parameter(description = "Log encoding", names = "--log-encoding", arity = 1)
+  @ConfigValue(section = "logging", name = "log-encoding", example = "UTF-8")
+  private String logEncoding = null;
+
+  @Parameter(description = "Log level. Default logging level is INFO." +
+    "Log levels are described here https://docs.oracle.com/javase/7/docs/api/java/util/logging/Level.html ",
+    names = "--log-level", arity = 1)
+  @ConfigValue(section = "logging", name = "log-level", example = "INFO")
+  private String logLevel;
 
   @Override
   public Set<Role> getRoles() {

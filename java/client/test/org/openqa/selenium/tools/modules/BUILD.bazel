@@ -12,13 +12,11 @@ load("//java:defs.bzl", "java_test_suite")
 #        "with-module-info.jar",
 #    ],
 #    javacopts = [
-#        "-source",
-#        "9",
-#        "-target",
-#        "9",
+#        "--release",
+#        "11",
 #    ],
 #    deps = [
-#        "//java/client/src/org/openqa/selenium/tools/modules:ModuleGenerator",
+#        "//java/buildtools/src/dev/selenium/tools/modules:ModuleGenerator",
 #        "//third_party/java/assertj",
 #        "//third_party/java/bytebuddy:byte-buddy",
 #        "//third_party/java/guava",

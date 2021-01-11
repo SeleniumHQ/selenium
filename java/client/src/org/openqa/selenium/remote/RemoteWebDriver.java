@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
@@ -58,6 +59,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -82,9 +84,9 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
 @Augmentable
-public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
-      HasInputDevices, HasCapabilities, Interactive, TakesScreenshot,
-      HasVirtualAuthenticator {
+public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputDevices,
+                                        HasCapabilities, Interactive, TakesScreenshot,
+                                        HasVirtualAuthenticator {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -113,13 +115,20 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this((URL) null, capabilities);
   }
 
+  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
+    this(new HttpCommandExecutor(remoteAddress), capabilities);
+  }
+
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
+    if (executor == null) {
+      throw new IllegalArgumentException("RemoteWebDriver cannot work without a command executor");
+    }
     this.executor = executor;
 
     init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
-      ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
+      ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
     }
 
     try {
@@ -133,10 +142,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       throw e;
     }
-  }
-
-  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
-    this(new HttpCommandExecutor(remoteAddress), capabilities);
   }
 
   @Beta
@@ -172,8 +177,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Set<String> logTypesToInclude = builder.build();
 
     LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToInclude);
-    LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(),
-        logTypesToInclude);
+    LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(
+      LoggingHandler.getInstance(), logTypesToInclude);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
   }
@@ -205,15 +210,27 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   protected void startSession(Capabilities capabilities) {
     Response response = execute(DriverCommand.NEW_SESSION(capabilities));
 
-    Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
-    MutableCapabilities returnedCapabilities = new MutableCapabilities();
-    for (Map.Entry<String, Object> entry : rawCapabilities.entrySet()) {
-      // Handle the platform later
-      if (PLATFORM.equals(entry.getKey()) || PLATFORM_NAME.equals(entry.getKey())) {
-        continue;
-      }
-      returnedCapabilities.setCapability(entry.getKey(), entry.getValue());
+    if (response == null) {
+      throw new SessionNotCreatedException(
+        "The underlying command executor returned a null response.");
     }
+
+    Object responseValue = response.getValue();
+
+    if (responseValue == null) {
+      throw new SessionNotCreatedException(
+        "The underlying command executor returned a response without payload: " +
+        response.toString());
+    }
+
+    if (!(responseValue instanceof Map)) {
+      throw new SessionNotCreatedException(
+        "The underlying command executor returned a response with a non well formed payload: " +
+        response.toString());
+    }
+
+    Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
+    MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
     String platformString = (String) rawCapabilities.getOrDefault(PLATFORM,
                                                                   rawCapabilities.get(PLATFORM_NAME));
     Platform platform;
@@ -296,7 +313,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       String base64EncodedPng = (String) result;
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result);
+      String base64EncodedPng = new String((byte[]) result, UTF_8);
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else {
       throw new RuntimeException(String.format("Unexpected result for %s command: %s",
@@ -333,12 +350,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     if (value == null) { // see https://github.com/SeleniumHQ/selenium/issues/5809
       throw new NoSuchElementException(String.format("Cannot locate an element using %s=%s", by, using));
     }
-    WebElement element;
-    try {
-      element = (WebElement) value;
-    } catch (ClassCastException ex) {
-      throw new WebDriverException("Returned value cannot be converted to WebElement: " + value, ex);
+    if (!(value instanceof WebElement)) {
+      throw new WebDriverException("Returned value cannot be converted to WebElement: " + value);
     }
+    WebElement element = (WebElement) value;
     setFoundBy(this, element, by, using);
     return element;
   }
@@ -494,7 +509,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     long start = System.currentTimeMillis();
     String currentName = Thread.currentThread().getName();
     Thread.currentThread().setName(
-        String.format("Forwarding %s on session %s to remote", command.getName(), sessionId));
+      String.format("Forwarding %s on session %s to remote", command.getName(), sessionId));
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
@@ -508,24 +523,21 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = getElementConverter().apply(response.getValue());
       response.setValue(value);
-    } catch (WebDriverException e) {
-      throw e;
-    } catch (Exception e) {
+    } catch (Throwable e) {
       log(sessionId, command.getName(), command, When.EXCEPTION);
-      String errorMessage = "Error communicating with the remote browser. " +
-          "It may have died.";
+      WebDriverException toThrow;
       if (command.getName().equals(DriverCommand.NEW_SESSION)) {
-        errorMessage = "Could not start a new session. Possible causes are " +
-            "invalid address of the remote server or browser start-up failure.";
+        toThrow = new SessionNotCreatedException(
+          "Possible causes are invalid address of the remote server or browser start-up failure.", e);
+      } else if (e instanceof WebDriverException) {
+        toThrow = (WebDriverException) e;
+      } else {
+        toThrow = new UnreachableBrowserException(
+          "Error communicating with the remote browser. It may have died.", e);
       }
-      UnreachableBrowserException ube = new UnreachableBrowserException(errorMessage, e);
-      if (getSessionId() != null) {
-        ube.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
-      }
-      if (getCapabilities() != null) {
-        ube.addInfo("Capabilities", getCapabilities().toString());
-      }
-      throw ube;
+      populateWebDriverException(toThrow);
+      toThrow.addInfo("Command", command.toString());
+      throw toThrow;
     } finally {
       Thread.currentThread().setName(currentName);
     }
@@ -533,24 +545,21 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     try {
       errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
     } catch (WebDriverException ex) {
-      if (command.getParameters() != null && command.getParameters().containsKey("using") && command.getParameters().containsKey("value")) {
-        ex.addInfo(
-            "*** Element info",
-            String.format(
-                "{Using=%s, value=%s}",
-                command.getParameters().get("using"),
-                command.getParameters().get("value")));
-      }
-      ex.addInfo(WebDriverException.DRIVER_INFO, this.getClass().getName());
-      if (getSessionId() != null) {
-        ex.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
-      }
-      if (getCapabilities() != null) {
-        ex.addInfo("Capabilities", getCapabilities().toString());
-      }
+      populateWebDriverException(ex);
+      ex.addInfo("Command", command.toString());
       throw ex;
     }
     return response;
+  }
+
+  private void populateWebDriverException(WebDriverException ex) {
+    ex.addInfo(WebDriverException.DRIVER_INFO, this.getClass().getName());
+    if (getSessionId() != null) {
+      ex.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
+    }
+    if (getCapabilities() != null) {
+      ex.addInfo("Capabilities", getCapabilities().toString());
+    }
   }
 
   protected Response execute(String driverCommand, Map<String, ?> parameters) {
@@ -1040,7 +1049,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     @Override
     public void removeCredential(String credentialId) {
       execute(DriverCommand.REMOVE_CREDENTIAL,
-          ImmutableMap.of("authenticatorId", id, "credentialId", credentialId)).getValue();
+          ImmutableMap.of("authenticatorId", id, "credentialId", credentialId));
     }
 
     @Override

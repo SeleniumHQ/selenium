@@ -60,53 +60,6 @@ module Selenium
         expect(driver.find_element(id: 'dynamo').text).to eq("What's for dinner?")
       end
 
-      context 'screenshots' do
-        it 'should save' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
-
-          save_screenshot_and_assert(path)
-        end
-
-        it 'should warn if extension of provided path is not png' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
-          message = "name used for saved screenshot does not match file type. "\
-                    "It should end with .png extension"
-          expect(WebDriver.logger).to receive(:warn).with(message, id: :screenshot)
-
-          save_screenshot_and_assert(path)
-        end
-
-        it 'should not warn if extension of provided path is png' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.PNG"
-          expect(WebDriver.logger).not_to receive(:warn)
-
-          save_screenshot_and_assert(path)
-        end
-
-        it 'should return in the specified format' do
-          driver.navigate.to url_for('xhtmlTest.html')
-
-          ss = driver.screenshot_as(:png)
-          expect(ss).to be_kind_of(String)
-          expect(ss.size).to be_positive
-        end
-
-        it 'raises an error when given an unknown format' do
-          expect { driver.screenshot_as(:jpeg) }.to raise_error(WebDriver::Error::UnsupportedOperationError)
-        end
-
-        def save_screenshot_and_assert(path)
-          driver.save_screenshot path
-          expect(File.exist?(path)).to be true
-          expect(File.size(path)).to be_positive
-        ensure
-          File.delete(path) if File.exist?(path)
-        end
-      end
-
       describe 'one element' do
         it 'should find by id' do
           driver.navigate.to url_for('xhtmlTest.html')
@@ -155,7 +108,7 @@ module Selenium
           driver.navigate.to url_for('relative_locators.html')
 
           above = driver.find_element(relative: {tag_name: 'td', above: {id: 'center'}})
-          expect(above.attribute('id')).to eq('first')
+          expect(above.attribute('id')).to eq('second')
         end
 
         it 'should find child element' do
@@ -200,14 +153,14 @@ module Selenium
 
           lowest = driver.find_element(id: 'below')
           above = driver.find_elements(relative: {tag_name: 'p', above: lowest})
-          expect(above.map { |e| e.attribute('id') }).to eq(%w[above mid])
+          expect(above.map { |e| e.attribute('id') }).to eq(%w[mid above])
         end
 
         it 'should find above another' do
           driver.navigate.to url_for('relative_locators.html')
 
           above = driver.find_elements(relative: {tag_name: 'td', above: {id: 'center'}})
-          expect(above.map { |e| e.attribute('id') }).to eq(%w[first second third])
+          expect(above.map { |e| e.attribute('id') }).to eq(%w[second first third])
         end
 
         it 'should find below element' do
@@ -222,28 +175,28 @@ module Selenium
           driver.navigate.to url_for('relative_locators.html')
 
           near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth'}})
-          expect(near.map { |e| e.attribute('id') }).to eq(%w[second third center eighth ninth])
+          expect(near.map { |e| e.attribute('id') }).to eq(%w[third ninth center second eighth])
         end
 
         it 'should find near another within custom distance' do
           driver.navigate.to url_for('relative_locators.html')
 
           near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth', distance: 100}})
-          expect(near.map { |e| e.attribute('id') }).to eq(%w[second third center eighth ninth])
+          expect(near.map { |e| e.attribute('id') }).to eq(%w[third ninth center second eighth])
         end
 
         it 'should find to the left of another' do
           driver.navigate.to url_for('relative_locators.html')
 
           left = driver.find_elements(relative: {tag_name: 'td', left: {id: 'center'}})
-          expect(left.map { |e| e.attribute('id') }).to eq(%w[first fourth seventh])
+          expect(left.map { |e| e.attribute('id') }).to eq(%w[fourth first seventh])
         end
 
         it 'should find to the right of another' do
           driver.navigate.to url_for('relative_locators.html')
 
           right = driver.find_elements(relative: {tag_name: 'td', right: {id: 'center'}})
-          expect(right.map { |e| e.attribute('id') }).to eq(%w[third sixth ninth])
+          expect(right.map { |e| e.attribute('id') }).to eq(%w[sixth third ninth])
         end
 
         it 'should find by combined relative locators' do

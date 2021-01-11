@@ -21,6 +21,7 @@ import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.NonSplittingSplitter;
 import org.openqa.selenium.grid.config.Role;
 
 import java.net.URL;
@@ -41,16 +42,38 @@ public class DockerFlags implements HasRoles {
   private URL dockerUrl;
 
   @Parameter(
+    names = {"--docker-host"},
+    description = "Host name where the docker daemon is running"
+  )
+  @ConfigValue(section = "docker", name = "host", example = "\"tcp://localhost:2375\"")
+  private String dockerHost;
+
+  @Parameter(
       names = {"--docker", "-D"},
       description = "Docker configs which map image name to stereotype capabilities (example " +
                     "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}')",
       arity = 2,
-      variableArity = true)
+      variableArity = true,
+      splitter = NonSplittingSplitter.class)
   @ConfigValue(
     section = "docker",
     name = "configs",
     example = "[\"selenium/standalone-firefox:latest\", \"{\\\"browserName\\\": \\\"firefox\\\"}\"]")
   private List<String> images2Capabilities;
+
+  @Parameter(
+    names = {"--docker-video-image"},
+    description = "Docker image to be used when video recording is enabled"
+  )
+  @ConfigValue(section = "docker", name = "video-image", example = "\"selenium/video:ffmpeg-4.3.1-20201030\"")
+  private String videoImage;
+
+  @Parameter(
+    names = {"--docker-assets-path"},
+    description = "Absolute path where assets will be stored"
+  )
+  @ConfigValue(section = "docker", name = "assets-path", example = "\"/absolute/path/to/assets/path\"")
+  private String assetsPath;
 
   @Override
   public Set<Role> getRoles() {

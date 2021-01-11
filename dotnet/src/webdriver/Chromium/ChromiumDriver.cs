@@ -45,6 +45,7 @@ namespace OpenQA.Selenium.Chromium
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
 
         private readonly string optionsCapabilityName;
+        private DevToolsSession devToolsSession;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified
@@ -167,59 +168,65 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession CreateDevToolsSession()
+        public DevToolsSession GetDevToolsSession()
         {
-            if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
-            {
-                throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
-            }
+            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+        }
 
-            Dictionary<string, object> options = this.Capabilities.GetCapability(this.optionsCapabilityName) as Dictionary<string, object>;
-            if (options == null)
+        /// <summary>
+        /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
+        /// </summary>
+        /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
+        /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        {
+            if (this.devToolsSession == null)
             {
-                throw new WebDriverException("Found " + this.optionsCapabilityName + " capability, but is not an object");
-            }
-
-            if (!options.ContainsKey("debuggerAddress"))
-            {
-                throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
-            }
-
-            string debuggerAddress = options["debuggerAddress"].ToString();
-            try
-            {
-                string debuggerUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}/", debuggerAddress);
-                string rawDebuggerInfo = string.Empty;
-                using (HttpClient client = new HttpClient())
+                if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
                 {
-                    client.BaseAddress = new Uri(debuggerUrl);
-                    rawDebuggerInfo = client.GetStringAsync("/json").ConfigureAwait(false).GetAwaiter().GetResult();
+                    throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
                 }
 
-                string webSocketUrl = null;
-                string targetId = null;
-                var sessions = JsonConvert.DeserializeObject<ICollection<DevToolsSessionInfo>>(rawDebuggerInfo);
-                foreach (var target in sessions)
+                Dictionary<string, object> options = this.Capabilities.GetCapability(this.optionsCapabilityName) as Dictionary<string, object>;
+                if (options == null)
                 {
-                    if (target.Type == "page")
-                    {
-                        targetId = target.Id;
-                        webSocketUrl = target.WebSocketDebuggerUrl;
-                        break;
-                    }
+                    throw new WebDriverException("Found " + this.optionsCapabilityName + " capability, but is not an object");
                 }
 
-                DevToolsSession session = new DevToolsSession(webSocketUrl);
-                var foo = session.Target.AttachToTarget(new DevTools.Target.AttachToTargetCommandSettings() { TargetId = targetId }).ConfigureAwait(false).GetAwaiter().GetResult();
-                var t1 = session.Target.SetAutoAttach(new DevTools.Target.SetAutoAttachCommandSettings() { AutoAttach = true, WaitForDebuggerOnStart = false }).ConfigureAwait(false).GetAwaiter().GetResult();
-                var t2 = session.Log.Clear().ConfigureAwait(false).GetAwaiter().GetResult();
-                return session;
+                if (!options.ContainsKey("debuggerAddress"))
+                {
+                    throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
+                }
+
+                string debuggerAddress = options["debuggerAddress"].ToString();
+                try
+                {
+                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    session.Start(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
+                    this.devToolsSession = session;
+                }
+                catch (Exception e)
+                {
+                    throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                }
             }
-            catch (Exception e)
+
+            return this.devToolsSession;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                throw new WebDriverException("Unexpected error creating WebSocket DevTools session.", e);
+                if (this.devToolsSession != null)
+                {
+                    this.devToolsSession.Dispose();
+                }
             }
+
+            base.Dispose(disposing);
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(ChromiumOptions options)

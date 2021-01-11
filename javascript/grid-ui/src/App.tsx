@@ -4,7 +4,8 @@ import { ApolloClient } from "apollo-client";
 import { HttpLink } from "apollo-link-http";
 import ReactModal from "react-modal";
 import { ApolloProvider } from "react-apollo";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import fetch from 'node-fetch';
 
 // css import order is important
 /* 1 */ import "./css/theme.css";
@@ -14,7 +15,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import HelpPage from "./screens/HelpPage/HelpPage";
 import Console from "./screens/Console/Console";
 import NavBar from "./components/NavBar/NavBar";
-import Hubpage from "./screens/Hub/Hub";
 import { GridConfig } from "./config";
 import NodePage from "./screens/Node/NodePage";
 import NodeType from "./models/node";
@@ -22,6 +22,7 @@ import NodeType from "./models/node";
 const cache = new InMemoryCache();
 const link = new HttpLink({
 	uri: GridConfig.serverUri,
+  fetch: fetch
 });
 
 export const client = new ApolloClient({
@@ -39,7 +40,7 @@ declare global {
 	}
 }
 
-ReactModal.setAppElement("#root");
+if (process.env.NODE_ENV !== 'test') ReactModal.setAppElement("#root");
 
 function App() {
 	return (
@@ -48,7 +49,6 @@ function App() {
 				<NavBar />
 				<Switch>
 					<Route exact path="/" component={Console} />
-					<Route exact path="/hub" component={Hubpage} />
 					<Route exact path="/node/:id" component={NodePage} />
 					<Route exact path="/home" component={HelpPage} />
 					<Route exact path="/console" component={Console} />

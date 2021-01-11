@@ -44,6 +44,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URI;
 import java.net.URL;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -60,16 +61,21 @@ public class DriverServiceSessionFactory implements SessionFactory {
   private final HttpClient.Factory clientFactory;
   private final Predicate<Capabilities> predicate;
   private final DriverService.Builder builder;
+  private final Capabilities stereotype;
+  private final BrowserOptionsMutator browserOptionsMutator;
 
   public DriverServiceSessionFactory(
       Tracer tracer,
       HttpClient.Factory clientFactory,
+      Capabilities stereotype,
       Predicate<Capabilities> predicate,
       DriverService.Builder builder) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.clientFactory = Require.nonNull("HTTP client factory", clientFactory);
+    this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.predicate = Require.nonNull("Accepted capabilities predicate", predicate);
-    this.builder = Require.nonNull("Driver service bulder", builder);
+    this.builder = Require.nonNull("Driver service builder", builder);
+    this.browserOptionsMutator = new BrowserOptionsMutator(this.stereotype);
   }
 
   @Override
@@ -89,7 +95,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
     try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-      Capabilities capabilities = sessionRequest.getCapabilities();
+      Capabilities capabilities = browserOptionsMutator.apply(sessionRequest.getCapabilities());
       CAPABILITIES.accept(span, capabilities);
       CAPABILITIES_EVENT.accept(attributeMap, capabilities);
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(this.getClass().getName()));
@@ -102,9 +108,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
         attributeMap.put(AttributeKey.DRIVER_URL.getKey(), EventAttribute.setValue(serviceURL.toString()));
         HttpClient client = clientFactory.createClient(serviceURL);
 
-        Command command = new Command(
-            null,
-            DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
+        Command command = new Command(null, DriverCommand.NEW_SESSION(capabilities));
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
@@ -119,7 +123,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
         attributeMap.put(AttributeKey.UPSTREAM_DIALECT.getKey(), EventAttribute.setValue(upstream.toString()));
         attributeMap.put(AttributeKey.DOWNSTREAM_DIALECT.getKey(), EventAttribute.setValue(downstream.toString()));
         attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(), EventAttribute.setValue(response.toString()));
-
 
         // TODO: This is a nasty hack. Try and make it elegant.
 
@@ -143,7 +146,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
             service.getUrl(),
             downstream,
             upstream,
-            caps) {
+            stereotype,
+            caps,
+            Instant.now()) {
             @Override
             public void stop() {
               service.stop();

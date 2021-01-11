@@ -19,14 +19,16 @@ package org.openqa.selenium.grid.node.local;
 
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.data.DefaultSlotMatcher;
+import org.openqa.selenium.grid.data.SlotMatcher;
 import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.config.DriverServiceSessionFactory;
 import org.openqa.selenium.grid.node.config.NodeOptions;
+import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
@@ -47,6 +49,7 @@ public class LocalNodeFactory {
     BaseServerOptions serverOptions = new BaseServerOptions(config);
     NodeOptions nodeOptions = new NodeOptions(config);
     NetworkOptions networkOptions = new NetworkOptions(config);
+    SecretOptions secretOptions = new SecretOptions(config);
 
     Tracer tracer = loggingOptions.getTracer();
     HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
@@ -56,16 +59,19 @@ public class LocalNodeFactory {
       eventOptions.getEventBus(),
       serverOptions.getExternalUri(),
       nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
-      serverOptions.getRegistrationSecret());
+      secretOptions.getRegistrationSecret());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
-    nodeOptions.getSessionFactories(info -> createSessionFactory(tracer, clientFactory, builders, info))
+    nodeOptions
+      .getSessionFactories(caps -> createSessionFactory(tracer, clientFactory, builders, caps))
       .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
 
-    new DockerOptions(config).getDockerSessionFactories(tracer, clientFactory)
-      .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
+    if (config.getAll("docker", "configs").isPresent()) {
+      new DockerOptions(config).getDockerSessionFactories(tracer, clientFactory)
+        .forEach((caps, factories) -> factories.forEach(factory -> builder.add(caps, factory)));
+    }
 
     return builder.build();
   }
@@ -74,20 +80,20 @@ public class LocalNodeFactory {
     Tracer tracer,
     HttpClient.Factory clientFactory,
     List<DriverService.Builder<?, ?>> builders,
-    WebDriverInfo info) {
+    Capabilities stereotype) {
     ImmutableList.Builder<SessionFactory> toReturn = ImmutableList.builder();
-
-    Capabilities caps = info.getCanonicalCapabilities();
+    SlotMatcher slotMatcher = new DefaultSlotMatcher();
 
     builders.stream()
-      .filter(builder -> builder.score(caps) > 0)
+      .filter(builder -> builder.score(stereotype) > 0)
       .forEach(builder -> {
-        DriverService.Builder<?, ?> freePortBuilder = builder.usingAnyFreePort();
+        DriverService.Builder<?, ?> driverServiceBuilder = builder.usingAnyFreePort();
         toReturn.add(new DriverServiceSessionFactory(
           tracer,
           clientFactory,
-          c -> freePortBuilder.score(c) > 0,
-          freePortBuilder));
+          stereotype,
+          capabilities -> slotMatcher.matches(stereotype, capabilities),
+          driverServiceBuilder));
       });
 
     return toReturn.build();

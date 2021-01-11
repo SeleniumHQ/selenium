@@ -30,9 +30,10 @@ module Selenium
         include DriverExtensions::HasNetworkConditions
         include DriverExtensions::HasWebStorage
         include DriverExtensions::HasLocation
-        include DriverExtensions::TakesScreenshot
         include DriverExtensions::DownloadsFiles
         include DriverExtensions::HasDevTools
+        include DriverExtensions::HasAuthentication
+        include DriverExtensions::HasLogEvents
 
         def browser
           :chrome
@@ -44,6 +45,18 @@ module Selenium
 
         def execute_cdp(cmd, **params)
           @bridge.send_command(cmd: cmd, params: params)
+        end
+
+        def print_page(**options)
+          options[:page_ranges] &&= Array(options[:page_ranges])
+
+          @bridge.print_page(options)
+        end
+
+        private
+
+        def debugger_address
+          capabilities['goog:chromeOptions']['debuggerAddress']
         end
       end # Driver
     end # Chrome

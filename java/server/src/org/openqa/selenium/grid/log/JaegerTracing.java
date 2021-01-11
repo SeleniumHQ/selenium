@@ -94,8 +94,8 @@ class JaegerTracing {
 
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-    Class<?> exporterClazz = Class.forName("io.opentelemetry.exporters.jaeger.JaegerGrpcSpanExporter", true, cl);
-    Method newBuilder = exporterClazz.getMethod("newBuilder");
+    Class<?> exporterClazz = Class.forName("io.opentelemetry.exporter.jaeger.JaegerGrpcSpanExporter", true, cl);
+    Method newBuilder = exporterClazz.getMethod("builder");
     Object builderObj = newBuilder.invoke(exporterClazz);
 
     Class<?> builderClazz = builderObj.getClass();

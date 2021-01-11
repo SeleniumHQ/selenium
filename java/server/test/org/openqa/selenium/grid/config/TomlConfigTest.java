@@ -20,6 +20,9 @@ package org.openqa.selenium.grid.config;
 import org.junit.Test;
 
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,5 +35,33 @@ public class TomlConfigTest {
     Config config = new TomlConfig(new StringReader(raw));
 
     assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
+  }
+
+  @Test
+  public void shouldContainConfigFromArrayOfTables() {
+    String[] rawConfig = new String[]{
+      "[cheeses]",
+      "default = manchego",
+      "[[cheeses.type]]",
+      "name = \"soft cheese\"",
+      "default = \"brie\"",
+      "[[cheeses.type]]",
+      "name = \"Medium-hard cheese\"",
+      "default = \"Emmental\""
+    };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    assertThat(config.get("cheeses", "default")).isEqualTo(Optional.of("manchego"));
+
+    List<String> expected = Arrays.asList(
+      "name=soft cheese", "default=brie",
+      "name=Medium-hard cheese", "default=Emmental");
+    assertThat(
+      config.getAll("cheeses", "type").orElse(Collections.emptyList()))
+      .containsAll(expected);
+    assertThat(
+      config.getAll("cheeses", "type").orElse(Collections.emptyList()).subList(0, 2))
+      .containsAll(expected.subList(0, 2));
+
   }
 }

@@ -17,18 +17,19 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.common.Attributes;
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
+import io.opentelemetry.context.propagation.ContextPropagators;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
-import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-import io.opentelemetry.sdk.trace.TracerSdkProvider;
+import io.opentelemetry.sdk.trace.TracerSdkManagement;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.trace.Status;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -41,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -66,9 +68,11 @@ public class LoggingOptions {
   // humanity. This implies that we're never going to need to configure
   // tracing more than once for the entire JVM, so we're never going to be
   // adding unit tests for this.
-  private static Tracer tracer;
+  private static volatile Tracer tracer;
 
   public static final Json JSON = new Json();
+
+  private Level level = Level.INFO;
 
   private final Config config;
 
@@ -84,6 +88,32 @@ public class LoggingOptions {
     return config.getBool(LOGGING_SECTION, "plain-logs").orElse(true);
   }
 
+  public String getLogEncoding() {
+    return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
+  }
+
+  public void setLoggingLevel() {
+    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(Level.INFO.getName());
+
+    if (Level.ALL.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.ALL;
+    } else if (Level.CONFIG.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.CONFIG;
+    } else if (Level.FINE.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINE;
+    } else if (Level.FINER.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINER;
+    } else if (Level.FINEST.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINEST;
+    } else if (Level.OFF.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.OFF;
+    } else if (Level.SEVERE.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.SEVERE;
+    } else if (Level.WARNING.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.WARNING;
+    }
+  }
+
   public Tracer getTracer() {
     boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing").orElse(true);
     if (!tracingEnabled) {
@@ -91,35 +121,34 @@ public class LoggingOptions {
       return new NullTracer();
     }
 
-    LOG.info("Using OpenTelemetry for tracing");
-
-    if (tracer != null) {
-      return tracer;
-    }
-
-    synchronized (LoggingOptions.class) {
-      if (tracer == null) {
-        tracer = createTracer();
+    Tracer localTracer = tracer;
+    if (localTracer == null) {
+      synchronized (LoggingOptions.class) {
+        localTracer = tracer;
+        if (localTracer == null) {
+          localTracer = createTracer();
+          tracer = localTracer;
+        }
       }
     }
-    return tracer;
+    return localTracer;
   }
 
   private Tracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
-    TracerSdkProvider tracerFactory = OpenTelemetrySdk.getTracerProvider();
+    TracerSdkManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
 
     List<SpanProcessor> exporters = new LinkedList<>();
-    exporters.add(SimpleSpanProcessor.newBuilder(new SpanExporter() {
+    exporters.add(SimpleSpanProcessor.builder(new SpanExporter() {
       @Override
       public CompletableResultCode export(Collection<SpanData> spans) {
 
         spans.forEach(span -> {
           LOG.fine(String.valueOf(span));
 
-          String traceId = span.getTraceId().toLowerBase16();
-          String spanId = span.getSpanId().toLowerBase16();
-          Status status = span.getStatus();
+          String traceId = span.getTraceId();
+          String spanId = span.getSpanId();
+          SpanData.Status status = span.getStatus();
           List<Event> eventList = span.getEvents();
           eventList.forEach(event -> {
             Map<String, Object> map = new HashMap<>();
@@ -131,39 +160,9 @@ public class LoggingOptions {
 
             Attributes attributes = event.getAttributes();
             Map<String, Object> attributeMap = new HashMap<>();
-            attributes.forEach((key, value) -> {
-              Object attributeValue;
-              switch (value.getType()) {
-                case LONG:
-                  attributeValue = value.getLongValue();
-                  break;
-                case DOUBLE:
-                  attributeValue = value.getDoubleValue();
-                  break;
-                case STRING:
-                  attributeValue = value.getStringValue();
-                  break;
-                case BOOLEAN:
-                  attributeValue = value.getBooleanValue();
-                  break;
-                case STRING_ARRAY:
-                  attributeValue = value.getStringArrayValue();
-                  break;
-                case LONG_ARRAY:
-                  attributeValue = value.getLongArrayValue();
-                  break;
-                case DOUBLE_ARRAY:
-                  attributeValue = value.getDoubleArrayValue();
-                  break;
-                case BOOLEAN_ARRAY:
-                  attributeValue = value.getBooleanArrayValue();
-                  break;
-                default:
-                  throw new IllegalArgumentException(
-                      "Unrecognized event attribute value type: " + value.getType());
-              }
-              attributeMap.put(key, attributeValue);
-            });
+
+            attributes.forEach(
+              (attributeKey, value) -> attributeMap.put(attributeKey.getKey(), value));
             map.put("attributes", attributeMap);
             String jsonString = getJsonString(map);
             if (status.isOk()) {
@@ -193,12 +192,17 @@ public class LoggingOptions {
     // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
-      exporter -> exporters.add(SimpleSpanProcessor.newBuilder(exporter).build()));
-    tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
+      exporter -> exporters.add(SimpleSpanProcessor.builder(exporter).build()));
+    tracerManagement.addSpanProcessor(SpanProcessor.composite(exporters));
+
+    // OpenTelemetry default propagators are no-op since version 0.9.0.
+    // Hence, required propagators need to defined and added.
+    ContextPropagators propagators = ContextPropagators.create(
+      TextMapPropagator.composite(W3CTraceContextPropagator.getInstance()));
 
     return new OpenTelemetryTracer(
-      tracerFactory.get("default"),
-      OpenTelemetry.getPropagators().getTextMapPropagator());
+      OpenTelemetry.getGlobalTracer("default"),
+      propagators.getTextMapPropagator());
   }
 
   public void configureLogging() {
@@ -211,24 +215,50 @@ public class LoggingOptions {
     Enumeration<String> names = logManager.getLoggerNames();
     while (names.hasMoreElements()) {
       Logger logger = logManager.getLogger(names.nextElement());
+      if (logger == null) {
+        continue;
+      }
+
       Arrays.stream(logger.getHandlers()).forEach(logger::removeHandler);
     }
 
     // Now configure the root logger, since everything should flow up to that
     Logger logger = logManager.getLogger("");
+    setLoggingLevel();
+    logger.setLevel(level);
     OutputStream out = getOutputStream();
+    String encoding = getLogEncoding();
 
     if (isUsingPlainLogs()) {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter());
-      logger.addHandler(handler);
-  }
+      handler.setLevel(level);
+      configureLogEncoding(logger, encoding, handler);
+    }
 
     if (isUsingStructuredLogging()) {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
-      logger.addHandler(handler);
+      handler.setLevel(level);
+      configureLogEncoding(logger, encoding, handler);
     }
+  }
+
+  private void configureLogEncoding(Logger logger, String encoding, Handler handler) {
+    String message;
+    try {
+      if (encoding != null) {
+        handler.setEncoding(encoding);
+        message = String.format("Using encoding %s", encoding);
+      } else {
+        message = "Using the system default encoding";
+      }
+    } catch (UnsupportedEncodingException e) {
+      message =
+          String.format("Using the system default encoding. Unsupported encoding %s", encoding);
+    }
+    logger.addHandler(handler);
+    logger.log(Level.INFO, message);
   }
 
   private OutputStream getOutputStream() {

@@ -120,9 +120,32 @@ module Selenium
               time = Rack::Request.new(env).params['time']
               sleep Integer(time)
               [200, {'Content-Type' => 'text/html'}, ["Slept for #{time}"]]
+            when '/basicAuth'
+              authorize(env)
             else
               @static.call env
             end
+          end
+
+          private
+
+          def authorize(env)
+            if authorized?(env)
+              status = 200
+              header = {'Content-Type' => 'text/html'}
+              body = '<h1>authorized</h1>'
+            else
+              status = 401
+              header = {'WWW-Authenticate' => 'Basic realm="basic-auth-test"'}
+              body = 'Login please'
+            end
+
+            [status, header, [body]]
+          end
+
+          def authorized?(env)
+            auth = Rack::Auth::Basic::Request.new(env)
+            auth.provided? && auth.basic? && auth.credentials && auth.credentials == BASIC_AUTH_CREDENTIALS
           end
         end
       end # RackServer

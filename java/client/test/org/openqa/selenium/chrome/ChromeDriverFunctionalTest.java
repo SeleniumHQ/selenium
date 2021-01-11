@@ -51,7 +51,7 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(Browser.EDGE)
+  @Ignore(Browser.EDGE_HTML)
   public void canSetPermissionHeadless() {
     ChromeOptions options = new ChromeOptions();
     options.setHeadless(true);

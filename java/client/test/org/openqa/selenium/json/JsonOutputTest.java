@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -41,6 +42,7 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.awt.*;
 import java.io.IOException;
@@ -49,6 +51,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +64,7 @@ import java.util.logging.Level;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.valueOf;
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -73,6 +77,7 @@ import static org.openqa.selenium.logging.LogType.CLIENT;
 import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.logging.LogType.SERVER;
 
+@Category(UnitTests.class)
 public class JsonOutputTest {
 
   @Test
@@ -146,6 +151,19 @@ public class JsonOutputTest {
 
     Object o = line.get("lineNumber");
     assertThat(o).isInstanceOf(Long.class);
+  }
+
+  @Test
+  public void shouldConvertAnInstantToEpochMillis() {
+    Instant now = Instant.ofEpochMilli(System.currentTimeMillis());
+    String json = convert(now);
+
+    System.out.println(json);
+
+    String value = JsonParser.parseString(json).getAsString();
+    // We expect the instant to be an ISO 8601 string
+    Instant seen = Instant.from(ISO_INSTANT.parse(value));
+    assertThat(seen).isEqualTo(now);
   }
 
   @Test

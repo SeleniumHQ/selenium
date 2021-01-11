@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -91,5 +92,23 @@ public class ConfigTest {
     Config config = new AnnotatedConfig(settable);
 
     assertEquals(Optional.of(settable.field), config.getAll("food", "kinds"));
+  }
+
+  @Test
+  public void compoundConfigsCanProperlyInstantiateClassesReferringToOptionsInOtherConfigs() {
+    Config config = new CompoundConfig(
+      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("taste", "delicious"))),
+      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("name", "cheddar"))),
+      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("scent", "smelly"))));
+
+    String name = config.getClass("foo", "bar", String.class, ReadsConfig.class.getName());
+
+    assertThat(name).isEqualTo("cheddar");
+  }
+
+  public static class ReadsConfig {
+    public static String create(Config config) {
+      return config.get("cheese", "name").orElse("no cheese");
+    }
   }
 }

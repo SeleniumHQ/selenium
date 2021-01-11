@@ -74,6 +74,9 @@ public class DevTools implements Closeable {
   }
 
   public void clearListeners() {
+    // By removing all the listeners, we should also disable all the domains
+    getDomains().disableAll();
+
     connection.clearListeners();
   }
 

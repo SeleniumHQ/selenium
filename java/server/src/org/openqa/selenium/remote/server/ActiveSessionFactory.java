@@ -66,7 +66,7 @@ public class ActiveSessionFactory implements SessionFactory {
     }
   };
 
-  private volatile List<SessionFactory> factories;
+  private List<SessionFactory> factories;
 
   public ActiveSessionFactory(Tracer tracer) {
     // Insertion order matters. The first matching predicate is always used for matching.

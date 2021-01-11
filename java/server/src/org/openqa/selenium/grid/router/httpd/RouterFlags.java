@@ -36,8 +36,8 @@ public class RouterFlags implements HasRoles {
     description = "Relax checks on origin header and content type of incoming requests," +
       " in contravention of strict W3C spec compliance.",
     arity = 1)
-  @ConfigValue(section = "network", name = "relax_checks", example = "--relax-checks")
-  private boolean relaxChecks;
+  @ConfigValue(section = "network", name = "relax-checks", example = "true")
+  private Boolean relaxChecks;
 
   @Override
   public Set<Role> getRoles() {

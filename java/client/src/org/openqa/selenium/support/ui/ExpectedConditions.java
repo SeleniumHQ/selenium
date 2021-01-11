@@ -18,7 +18,6 @@
 package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Joiner;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -33,16 +32,12 @@ import org.openqa.selenium.WebElement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Canned {@link ExpectedCondition}s which are generally useful within webdriver tests.
  */
 public class ExpectedConditions {
-
-  private static final Logger log = Logger.getLogger(ExpectedConditions.class.getName());
 
   private ExpectedConditions() {
     // Utility class
@@ -148,16 +143,13 @@ public class ExpectedConditions {
    */
   public static ExpectedCondition<Boolean> urlMatches(final String regex) {
     return new ExpectedCondition<Boolean>() {
+      private final Pattern pattern = Pattern.compile(regex);
       private String currentUrl;
-      private Pattern pattern;
-      private Matcher matcher;
 
       @Override
       public Boolean apply(WebDriver driver) {
         currentUrl = driver.getCurrentUrl();
-        pattern = Pattern.compile(regex);
-        matcher = pattern.matcher(currentUrl);
-        return matcher.find();
+        return pattern.matcher(currentUrl).find();
       }
 
       @Override
@@ -354,7 +346,7 @@ public class ExpectedConditions {
           String elementText = element.getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -383,7 +375,7 @@ public class ExpectedConditions {
           String elementText = driver.findElement(locator).getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -416,7 +408,7 @@ public class ExpectedConditions {
           }
           return false;
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -449,7 +441,7 @@ public class ExpectedConditions {
           }
           return false;
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -576,15 +568,12 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         try {
           return !(driver.findElement(locator).isDisplayed());
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
           // Returns true because the element is not present in DOM. The
           // try block checks if the element is present but is invisible.
           return true;
-        } catch (StaleElementReferenceException e) {
-          // Returns true because stale element reference implies that element
-          // is no longer visible.
-          return true;
         }
+
       }
 
       @Override
@@ -787,7 +776,7 @@ public class ExpectedConditions {
           WebElement element = driver.findElement(locator);
           return element.isSelected() == selected;
         } catch (StaleElementReferenceException e) {
-          return null;
+          return false;
         }
       }
 
@@ -824,7 +813,7 @@ public class ExpectedConditions {
         try {
           return driver.getWindowHandles().size() == expectedNumberOfWindows;
         } catch (WebDriverException e) {
-          return null;
+          return false;
         }
       }
 
@@ -868,8 +857,10 @@ public class ExpectedConditions {
    * @param value     used as expected attribute value
    * @return Boolean true when element has css or html attribute with the value
    */
-  public static ExpectedCondition<Boolean> attributeToBe(final By locator, final String attribute,
-                                                         final String value) {
+  public static ExpectedCondition<Boolean> attributeToBe(
+    final By locator,
+    final String attribute,
+    final String value) {
     return new ExpectedCondition<Boolean>() {
       private String currentValue = null;
 
@@ -877,7 +868,7 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         WebElement element = driver.findElement(locator);
         currentValue = element.getAttribute(attribute);
-        if (currentValue == null||currentValue.isEmpty()) {
+        if (currentValue == null || currentValue.isEmpty()) {
           currentValue = element.getCssValue(attribute);
         }
         return value.equals(currentValue);
@@ -1035,6 +1026,62 @@ public class ExpectedConditions {
   }
 
   /**
+   * An expectation for checking given WebElement has DOM property with a specific value
+   *
+   * @param element   used to check its parameters
+   * @param property  property name
+   * @param value     used as expected property value
+   * @return Boolean true when element has DOM property with the value
+   */
+  public static ExpectedCondition<Boolean> domPropertyToBe(final WebElement element,
+                                                           final String property,
+                                                           final String value) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentValue = null;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentValue = element.getDomProperty(property);
+        return value.equals(currentValue);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("DOM property '%s' to be '%s'. Current value: '%s'",
+                             property, value, currentValue);
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking given WebElement has DOM attribute with a specific value
+   *
+   * @param element   used to check its parameters
+   * @param attribute attribute name
+   * @param value     used as expected attribute value
+   * @return Boolean true when element has DOM attribute with the value
+   */
+  public static ExpectedCondition<Boolean> domAttributeToBe(final WebElement element,
+                                                            final String attribute,
+                                                            final String value) {
+    return new ExpectedCondition<Boolean>() {
+      private String currentValue = null;
+
+      @Override
+      public Boolean apply(WebDriver driver) {
+        currentValue = element.getDomAttribute(attribute);
+        return value.equals(currentValue);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("DOM attribute '%s' to be '%s'. Current value: '%s'",
+                             attribute, value, currentValue);
+      }
+    };
+  }
+
+  /**
    * An expectation for checking given WebElement has attribute with a specific value
    *
    * @param element   used to check its parameters
@@ -1059,8 +1106,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format(attribute + " to be \"%s\". Current " + attribute + ": \"%s\"", value,
-                             currentValue);
+        return String.format("Attribute or property '%s' to be '%s'. Current value: '%s'",
+                             attribute, value, currentValue);
       }
     };
   }
@@ -1078,18 +1125,16 @@ public class ExpectedConditions {
                                                              final String attribute,
                                                              final String value) {
     return new ExpectedCondition<Boolean>() {
-      private String currentValue = null;
-
       @Override
       public Boolean apply(WebDriver driver) {
         return getAttributeOrCssValue(element, attribute)
-            .map(seen -> seen.contains(value))
-            .orElse(false);
+          .map(seen -> seen.contains(value))
+          .orElse(false);
       }
 
       @Override
       public String toString() {
-        return String.format("value to contain \"%s\". Current value: \"%s\"", value, currentValue);
+        return String.format("value to contain \"%s\".", value);
       }
     };
   }
@@ -1107,19 +1152,16 @@ public class ExpectedConditions {
                                                              final String attribute,
                                                              final String value) {
     return new ExpectedCondition<Boolean>() {
-      private String currentValue = null;
-
       @Override
       public Boolean apply(WebDriver driver) {
         return getAttributeOrCssValue(driver.findElement(locator), attribute)
-            .map(seen -> seen.contains(value))
-            .orElse(false);
+          .map(seen -> seen.contains(value))
+          .orElse(false);
       }
 
       @Override
       public String toString() {
-        return String.format("value found by %s to contain \"%s\". Current value: \"%s\"",
-                             locator, value, currentValue);
+        return String.format("value found by %s to contain \"%s\".", locator, value);
       }
     };
   }
@@ -1222,8 +1264,8 @@ public class ExpectedConditions {
    * @return subelement
    */
   public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
-      final By locator,
-      final By childLocator) {
+    final By locator, final By childLocator)
+  {
     return new ExpectedCondition<WebElement>() {
 
       @Override
@@ -1246,8 +1288,8 @@ public class ExpectedConditions {
    * @return subelement
    */
   public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
-    final WebElement element,
-    final By childLocator) {
+    final WebElement element, final By childLocator)
+  {
 
     return new ExpectedCondition<WebElement>() {
 
@@ -1272,8 +1314,8 @@ public class ExpectedConditions {
    * @return subelement
    */
   public static ExpectedCondition<List<WebElement>> presenceOfNestedElementsLocatedBy(
-    final By parent,
-    final By childLocator) {
+    final By parent, final By childLocator)
+  {
     return new ExpectedCondition<List<WebElement>>() {
 
       @Override
@@ -1296,8 +1338,7 @@ public class ExpectedConditions {
    * @param elements used to check their invisibility
    * @return Boolean true when all elements are not visible anymore
    */
-  public static ExpectedCondition<Boolean> invisibilityOfAllElements(
-    final WebElement... elements) {
+  public static ExpectedCondition<Boolean> invisibilityOfAllElements(final WebElement... elements) {
     return invisibilityOfAllElements(Arrays.asList(elements));
   }
 
@@ -1307,8 +1348,7 @@ public class ExpectedConditions {
    * @param elements used to check their invisibility
    * @return Boolean true when all elements are not visible anymore
    */
-  public static ExpectedCondition<Boolean> invisibilityOfAllElements(
-    final List<WebElement> elements) {
+  public static ExpectedCondition<Boolean> invisibilityOfAllElements(final List<WebElement> elements) {
     return new ExpectedCondition<Boolean>() {
 
       @Override
@@ -1397,7 +1437,6 @@ public class ExpectedConditions {
     };
   }
 
-
   /**
    * An expectation with the logical and condition of the given list of conditions.
    *
@@ -1435,7 +1474,6 @@ public class ExpectedConditions {
     };
   }
 
-
   /**
    * An expectation to check if js executable.
    *
@@ -1467,7 +1505,7 @@ public class ExpectedConditions {
    * An expectation for String value from javascript
    *
    * @param javaScript as executable js line
-   * @return true once js return string
+   * @return object once javaScript executes without errors
    */
   public static ExpectedCondition<Object> jsReturnsValue(final String javaScript) {
     return new ExpectedCondition<Object>() {

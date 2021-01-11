@@ -25,7 +25,7 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -44,7 +44,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(SAFARI)
-@Ignore(MARIONETTE)
+@Ignore(FIREFOX)
 public class Html5CapabilitiesTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

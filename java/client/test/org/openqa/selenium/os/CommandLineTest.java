@@ -32,8 +32,10 @@ import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 import org.junit.Assume;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.build.BazelBuild;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,10 +43,11 @@ import java.util.Map;
 public class CommandLineTest {
 
   // ping can be found on every platform we support.
-  private static String testExecutable = "ping";
+  private final static String testExecutable = findExecutable(
+    "java/client/test/org/openqa/selenium/os/echo");
 
-  private CommandLine commandLine = new CommandLine(testExecutable);
-  private OsProcess process = spyProcess(commandLine);
+  private final CommandLine commandLine = new CommandLine(testExecutable);
+  private final OsProcess process = spyProcess(commandLine);
 
   @Test
   public void testSetEnvironmentVariableDelegatesToProcess() {
@@ -102,12 +105,15 @@ public class CommandLineTest {
 
   @Test
   public void canHandleOutput() {
+    CommandLine commandLine = new CommandLine(testExecutable, "ping");
     commandLine.execute();
     assertThat(commandLine.getStdOut()).isNotEmpty().contains("ping");
   }
 
   @Test
   public void canCopyOutput() {
+    CommandLine commandLine = new CommandLine(testExecutable, "I", "love", "cheese");
+
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     commandLine.copyOutputTo(buffer);
     commandLine.execute();
@@ -150,6 +156,15 @@ public class CommandLineTest {
       return spyProcess;
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private static String findExecutable(String relativePath) {
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      File workingDir = BazelBuild.findBinRoot(new File(".").getAbsoluteFile());
+      return new File(workingDir, relativePath).getAbsolutePath();
+    } else {
+      return relativePath;
     }
   }
 }

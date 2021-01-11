@@ -57,6 +57,8 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 
 class GridStatusHandler implements HttpHandler {
 
@@ -95,10 +97,14 @@ class GridStatusHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
     long start = System.currentTimeMillis();
 
-    try (Span span = newSpanAsChildOf(tracer, req, "router.status")) {
+    try (Span span = newSpanAsChildOf(tracer, req, "grid.status")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
                        EventAttribute.setValue(getClass().getName()));
+
+      HTTP_REQUEST.accept(span, req);
+      HTTP_REQUEST_EVENT.accept(attributeMap, req);
+
       DistributorStatus status;
       try {
         status = EXECUTOR_SERVICE.submit(span.wrap(distributor::getStatus)).get(2, SECONDS);
@@ -108,12 +114,16 @@ class GridStatusHandler implements HttpHandler {
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Unable to get distributor status due to execution error or timeout: " + e.getMessage()));
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-
-        return new HttpResponse().setContent(asJson(
+        HttpResponse response = new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
             "ready", false,
             "message", "Unable to read distributor status."))));
+
+        HTTP_RESPONSE.accept(span, response);
+        HTTP_RESPONSE_EVENT.accept(attributeMap, response);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+        return response;
       } catch (InterruptedException e) {
         span.setAttribute("error", true);
         span.setStatus(Status.ABORTED);
@@ -121,23 +131,29 @@ class GridStatusHandler implements HttpHandler {
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Interruption while getting distributor status: " + e.getMessage()));
 
-        Thread.currentThread().interrupt();
-        return new HttpResponse().setContent(asJson(
+        HttpResponse response = new HttpResponse().setContent(asJson(
           ImmutableMap.of("value", ImmutableMap.of(
             "ready", false,
             "message", "Reading distributor status was interrupted."))));
+
+        HTTP_RESPONSE.accept(span, response);
+        HTTP_RESPONSE_EVENT.accept(attributeMap, response);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+        Thread.currentThread().interrupt();
+        return  response;
       }
 
       boolean ready = status.hasCapacity();
 
       long remaining = System.currentTimeMillis() + 2000 - start;
       List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
-        .map(summary -> {
+        .map(node -> {
           ImmutableMap<String, Object> defaultResponse = ImmutableMap.of(
-            "id", summary.getNodeId(),
-            "uri", summary.getUri(),
-            "maxSessions", summary.getMaxSessionCount(),
-            "stereotypes", summary.getStereotypes(),
+            "id", node.getId(),
+            "uri", node.getUri(),
+            "maxSessions", node.getMaxSessionCount(),
+            "slots", node.getSlots(),
             "warning", "Unable to read data from node.");
 
           CompletableFuture<Map<String, Object>> toReturn = new CompletableFuture<>();
@@ -145,7 +161,7 @@ class GridStatusHandler implements HttpHandler {
           Future<?> future = EXECUTOR_SERVICE.submit(
             () -> {
               try {
-                HttpClient client = clientFactory.createClient(summary.getUri().toURL());
+                HttpClient client = clientFactory.createClient(node.getUri().toURL());
                 HttpRequest nodeStatusReq = new HttpRequest(GET, "/se/grid/node/status");
                 HttpTracing.inject(tracer, span, nodeStatusReq);
                 HttpResponse res = client.execute(nodeStatusReq);

@@ -85,6 +85,8 @@ const webdriver = require('./lib/webdriver')
 const WebSocket = require('ws')
 const cdp = require('./devtools/CDPConnection')
 const remote = require('./remote')
+const cdpTargets = ['page', 'browser']
+const fs = require('fs')
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -95,6 +97,7 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
   SET_PERMISSION: 'setPermission',
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
@@ -140,6 +143,11 @@ function configureExecutor(executor, vendorPrefix) {
     Command.SEND_DEVTOOLS_COMMAND,
     'POST',
     '/session/:sessionId/chromium/send_command'
+  )
+  executor.defineCommand(
+    Command.SEND_AND_GET_DEVTOOLS_COMMAND,
+    'POST',
+    '/session/:sessionId/chromium/send_command_and_get_result'
   )
   executor.defineCommand(
     Command.SET_PERMISSION,
@@ -386,7 +394,7 @@ class Options extends Capabilities {
    * - `enableTimeline`: Whether or not to collect events from Timeline domain.
    *     Note: when tracing is enabled, Timeline domain is implicitly disabled,
    *     unless `enableTimeline` is explicitly set to true.
-   * - `tracingCategories`: A comma-separated string of Chromium tracing
+   * - `traceCategories`: A comma-separated string of Chromium tracing
    *     categories for which trace events should be collected. An unspecified
    *     or empty string disables tracing.
    * - `bufferUsageReportingInterval`: The requested number of milliseconds
@@ -397,7 +405,7 @@ class Options extends Capabilities {
    * @param {{enableNetwork: boolean,
    *          enablePage: boolean,
    *          enableTimeline: boolean,
-   *          tracingCategories: string,
+   *          traceCategories: string,
    *          bufferUsageReportingInterval: number}} prefs The performance
    *     logging preferences.
    * @return {!Options} A self reference.
@@ -685,17 +693,35 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
+   * ends an arbitrary devtools command to the browser and get the result.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has finished.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
+   */
+  sendAndGetDevToolsCommand(cmd, params = {}) {
+    return this.execute(
+      new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
+        .setParameter('cmd', cmd)
+        .setParameter('params', params)
+    )
+  }
+
+  /**
    * Creates a new WebSocket connection.
    * @return {!Promise<resolved>} A new CDP instance.
    */
-  async createCDPConnection() {
+  async createCDPConnection(target) {
     const caps = await this.getCapabilities()
     const seOptions = caps['map_'].get('se:options') || new Map()
     const vendorInfo =
       caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
       new Map()
     const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress']
-    this._wsUrl = await this.getWsUrl(debuggerUrl)
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
+
     return new Promise((resolve, reject) => {
       try {
         this._wsConnection = new WebSocket(this._wsUrl)
@@ -718,16 +744,116 @@ class Driver extends webdriver.WebDriver {
   /**
    * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
    * @param {string} debuggerAddress
+   * @param {string} target
    * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
    */
-  async getWsUrl(debuggerAddress) {
-    let request = new http.Request('GET', '/json/version')
+  async getWsUrl(debuggerAddress, target) {
+    if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
+      throw new error.InvalidArgumentError('invalid target value')
+    }
+    let path = '/json/version'
+
+    if (target === 'page') {
+      path = '/json'
+    }
+    let request = new http.Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
-    let url
     let response = await client.send(request)
-    url = JSON.parse(response.body)['webSocketDebuggerUrl']
+    let url = JSON.parse(response.body)['webSocketDebuggerUrl']
+    if (target.toLowerCase() === 'page') {
+      url = JSON.parse(response.body)[0]['webSocketDebuggerUrl']
+    }
+
     return url
   }
+
+  /**
+   * Sets a listener for Fetch.authRequired event from CDP
+   * If event is triggered, it enter username and password
+   * and allows the test to move forward
+   * @param {string} username
+   * @param {string} password
+   * @param connection CDP Connection
+   */
+  async register(username, password, connection) {
+    await connection.execute(
+      'Network.setCacheDisabled',
+      this.getRandomNumber(1, 10),
+      {
+        cacheDisabled: true,
+      },
+      null
+    )
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Fetch.authRequired') {
+        const requestParams = params['params']
+        connection.execute(
+          'Fetch.continueWithAuth',
+          this.getRandomNumber(1, 10),
+          {
+            requestId: requestParams['requestId'],
+            authChallengeResponse: {
+              response: 'ProvideCredentials',
+              username: username,
+              password: password,
+            },
+          }
+        )
+      } else if (params.method === 'Fetch.requestPaused') {
+        const requestPausedParams = params['params']
+        connection.execute(
+          'Fetch.continueRequest',
+          this.getRandomNumber(1, 10),
+          {
+            requestId: requestPausedParams['requestId'],
+          }
+        )
+      }
+    })
+
+    await connection.execute(
+      'Fetch.enable',
+      1,
+      {
+        handleAuthRequests: true,
+      },
+      null
+    )
+  }
+
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogEvent(connection, callback) {
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.consoleAPICalled') {
+        const consoleEventParams = params['params']
+        let event = {
+          type: consoleEventParams['type'],
+          timestamp: new Date(consoleEventParams['timestamp']),
+          args: consoleEventParams['args'],
+        }
+
+        callback(event)
+      }
+    })
+  }
+
   /**
    * Set a permission state to the given value.
    *
@@ -744,6 +870,113 @@ class Driver extends webdriver.WebDriver {
         .setParameter('descriptor', { name })
         .setParameter('state', state)
     )
+  }
+
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogException(connection, callback) {
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.exceptionThrown') {
+        const exceptionEventParams = params['params']
+        let event = {
+          exceptionDetails: exceptionEventParams['exceptionDetails'],
+          timestamp: new Date(exceptionEventParams['timestamp']),
+        }
+
+        callback(event)
+      }
+    })
+  }
+
+  /**
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async logMutationEvents(connection, callback) {
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+    await connection.execute(
+      'Page.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+
+    await connection.execute(
+      'Runtime.addBinding',
+      this.getRandomNumber(1, 10),
+      {
+        name: '__webdriver_attribute',
+      },
+      null
+    )
+
+    let mutationListener = ''
+    try {
+      // Depending on what is running the code it could appear in 2 different places which is why we try
+      // here and then the other location
+      mutationListener = fs
+        .readFileSync(
+          './javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js',
+          'utf-8'
+        )
+        .toString()
+    } catch {
+      mutationListener = fs
+        .readFileSync('./lib/atoms/mutation-listener.js', 'utf-8')
+        .toString()
+    }
+
+    this.executeScript(mutationListener)
+
+    await connection.execute(
+      'Page.addScriptToEvaluateOnNewDocument',
+      this.getRandomNumber(1, 10),
+      {
+        source: mutationListener,
+      },
+      null
+    )
+
+    this._wsConnection.on('message', async (message) => {
+      const params = JSON.parse(message)
+      if (params.method === 'Runtime.bindingCalled') {
+        let payload = JSON.parse(params['params']['payload'])
+        let elements = await this.findElements({
+          css: '*[data-__webdriver_id=' + payload['target'],
+        })
+
+        if (elements.length === 0) {
+          return
+        }
+
+        let event = {
+          element: elements[0],
+          attribute_name: payload['name'],
+          current_value: payload['value'],
+          old_value: payload['oldValue'],
+        }
+        callback(event)
+      }
+    })
   }
 
   /**
@@ -842,6 +1075,10 @@ class Driver extends webdriver.WebDriver {
       ),
       'Driver.stopCasting(' + deviceName + ')'
     )
+  }
+
+  getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 }
 

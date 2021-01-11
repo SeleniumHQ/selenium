@@ -1,0 +1,9 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "zip",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/buildtools/src/dev/selenium/tools:__subpackages__",
+    ],
+)

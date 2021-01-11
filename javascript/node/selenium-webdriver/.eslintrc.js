@@ -4,10 +4,13 @@ module.exports = {
     node: true,
     es6: true,
   },
-  extends: ['eslint:recommended', 'plugin:node/recommended', 'prettier'],
-  plugins: ['prettier', 'no-only-tests'],
+  extends: [
+    'eslint:recommended',
+    'plugin:node/recommended',
+    'plugin:prettier/recommended',
+  ],
+  plugins: ['no-only-tests'],
   rules: {
-    'prettier/prettier': 'error',
     'no-const-assign': 'error',
     'no-this-before-super': 'error',
     'no-undef': 'error',

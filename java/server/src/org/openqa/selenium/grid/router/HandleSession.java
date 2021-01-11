@@ -102,9 +102,7 @@ class HandleSession implements HttpHandler {
         HttpResponse res = knownSessions.get(id, loadSessionId(tracer, span, id)).execute(req);
 
         HTTP_RESPONSE.accept(span, res);
-        HTTP_RESPONSE_EVENT.accept(attributeMap, res);
 
-        span.addEvent("Session request execution complete", attributeMap);
         return res;
       } catch (ExecutionException e) {
         span.setAttribute("error", true);

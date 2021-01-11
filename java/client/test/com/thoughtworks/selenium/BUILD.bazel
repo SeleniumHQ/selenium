@@ -1,8 +1,9 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_library", "java_test_suite")
 
 java_library(
     name = "test-base",
+    testonly = True,
     srcs = [
         "InternalSelenseTestBase.java",
     ],

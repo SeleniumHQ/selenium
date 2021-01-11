@@ -49,12 +49,12 @@ class BaseOptions(object):
         """Return minimal capabilities necessary as a dictionary."""
 
 
-
 class ArgOptions(BaseOptions):
 
     def __init__(self):
         super(ArgOptions, self).__init__()
         self._arguments = []
+        self._ignore_local_proxy = False
 
     @property
     def arguments(self):
@@ -74,6 +74,12 @@ class ArgOptions(BaseOptions):
             self._arguments.append(argument)
         else:
             raise ValueError('argument can not be null')
+
+    def ignore_local_proxy_environment_variables(self):
+        """
+            By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from being picked up and used.
+        """
+        self._ignore_local_proxy = True
 
     def to_capabilities(self):
         return self._caps

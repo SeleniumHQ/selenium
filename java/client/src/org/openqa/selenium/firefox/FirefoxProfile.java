@@ -27,12 +27,15 @@ import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,7 +113,7 @@ public class FirefoxProfile {
   protected Reader onlyOverrideThisIfYouKnowWhatYouAreDoing() {
     URL resource = Resources.getResource(FirefoxProfile.class, defaultPrefs);
     try {
-      return new InputStreamReader(resource.openStream());
+      return new InputStreamReader(resource.openStream(), Charset.defaultCharset());
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -247,7 +250,8 @@ public class FirefoxProfile {
       prefs.setPreference("browser.startup.page", 1);
     }
 
-    try (FileWriter writer = new FileWriter(userPrefs)) {
+    try (Writer writer = new OutputStreamWriter(
+      new FileOutputStream(userPrefs), Charset.defaultCharset())) {
       prefs.writeTo(writer);
     } catch (IOException e) {
       throw new WebDriverException(e);

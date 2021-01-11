@@ -87,6 +87,7 @@ public class UrlTemplate {
     return new Match(matchAgainst, params.build());
   }
 
+  @SuppressWarnings("InnerClassMayBeStatic")
   public class Match {
     private final String url;
     private final Map<String, String> parameters;

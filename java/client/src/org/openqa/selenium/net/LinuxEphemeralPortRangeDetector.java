@@ -19,10 +19,11 @@ package org.openqa.selenium.net;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetector {
 
@@ -32,7 +33,7 @@ public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetect
   public static LinuxEphemeralPortRangeDetector getInstance() {
     File file = new File("/proc/sys/net/ipv4/ip_local_port_range");
     if (file.exists() && file.canRead()) {
-      try (Reader inputFil = new FileReader(file)) {
+      try (Reader inputFil = Files.newBufferedReader(file.toPath(), Charset.defaultCharset())) {
         return new LinuxEphemeralPortRangeDetector(inputFil);
       } catch (IOException e) {
         throw new RuntimeException(e);
@@ -49,7 +50,7 @@ public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetect
       String[] split = in.readLine().split("\\s+");
       lowPort = Integer.parseInt(split[0]);
       highPort = Integer.parseInt(split[1]);
-    } catch (IOException ignore) {
+    } catch (IOException | NullPointerException ignore) {
     }
     firstEphemeralPort = lowPort;
     lastEphemeralPort = highPort;

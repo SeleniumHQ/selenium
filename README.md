@@ -1,10 +1,16 @@
-# Selenium [![Travis Status](https://travis-ci.com/SeleniumHQ/selenium.svg?branch=trunk)](https://travis-ci.com/SeleniumHQ/selenium/builds) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/trunk?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/trunk)
+# Selenium 
+
+![Python workflow](https://github.com/SeleniumHQ/selenium/workflows/Python%20workflow/badge.svg)
+![Ruby workflow](https://github.com/SeleniumHQ/selenium/workflows/Ruby%20workflow/badge.svg)
+![JavaScript workflow](https://github.com/SeleniumHQ/selenium/workflows/JavaScript%20workflow/badge.svg)
+![Java workflow](https://github.com/SeleniumHQ/selenium/workflows/Java%20workflow/badge.svg)
+
 
 <a href="https://selenium.dev"><img src="https://selenium.dev/images/selenium_logo_square_green.png" width="180" alt="Selenium"/></a>
 
 Selenium is an umbrella project encapsulating a variety of tools and
 libraries enabling web browser automation. Selenium specifically
-provides infrastructure for the [W3C WebDriver specification](https://w3c.github.io/webdriver/)
+provides an infrastructure for the [W3C WebDriver specification](https://w3c.github.io/webdriver/)
 — a platform and language-neutral coding interface compatible with all
 major web browsers.
 
@@ -32,15 +38,56 @@ API documentation:
 Please read [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md)
 before submitting your pull requests.
 
-## Building
+## Requirements
 
-In order to build Selenium, you'll generally use the `./go` command. `./go` is a Rake script,
-which wraps the main build too, `bazel`.
+* [Bazelisk](https://github.com/bazelbuild/bazelisk), a Bazel wrapper that automatically downloads
+  the version of Bazel specified in `.bazelversion` file and transparently passes through all
+  command-line arguments to the real Bazel binary.
+* The latest version of the [Java 11 OpenJDK](https://openjdk.java.net/)
+* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE).
+  * To test this, try running the command `javac`. This command won't exist if you only have the JRE
+  installed. If you're met with a list of command-line options, you're referencing the JDK properly.
+* [Python 3.7+](https://www.python.org/downloads/)
+* `python` on the PATH
+* [The Requests Library](http://python-requests.org) for Python: `pip install requests`
+* [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
+* MacOS users should have the latest version of Xcode installed, including the command-line tools.
+The following command should work:
+
+```bash
+xcode-select --install
+```
+
+* Windows users should have the latest version of Visual Studio command line tools and build tools installed
+  * `BAZEL_VS` environment variable should point to the location of the build tools,
+     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools`
+  * `BAZEL_VC` environment variable should point to the location of the command line tools,
+     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC`
+  * `BAZEL_VC_FULL_VERSION` environment variable should contain the version of the installed command line tools,
+     e.g. `14.27.29110`
+
+### Optional Requirements
+
+* Ruby 2.0
+
+### Internet Explorer Driver
+
+If you plan to compile the
+[IE driver](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver),
+you also need:
+
+* [Visual Studio 2008](https://www.visualstudio.com/)
+* 32 and 64-bit cross compilers
+
+The build will work on any platform, but the tests for IE will be
+skipped silently if you are not building on Windows.
+
+## Building
 
 ### Bazel
 
 [Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
-downloads, generates the Selenium binaries, executes tests and does it all rather quickly.
+downloads, generate the Selenium binaries, executes tests, and does it all rather quickly.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
 the java and javascript folders to build without errors, you should be confident that you have the
@@ -48,9 +95,9 @@ correct binaries on your system.
 
 ### Before Building
 
-Ensure that you have Chrome installed and the
-[`chromedriver`](https://chromedriver.chromium.org/downloads) that matches
-your Chrome version available on your `$PATH`. You may have to update this from time to time.
+Ensure that you have Firefox installed and the latest
+[`geckodriver`](https://github.com/mozilla/geckodriver/releases/) on your `$PATH`.
+You may have to update this from time to time.
 
 ### Common Build Targets
 
@@ -75,68 +122,22 @@ executes without errors, you should be able to create a PR of your changes. (See
 
 * Bazel files are called BUILD.bazel
 * [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) build files are called
-*build.desc*. This is an older build system, still in use in the project
-* There is also a main Rakefile
+*build.desc*. This is an older build system, still in use in the project for Ruby bindings mostly.
 
 The order the modules are built is determined by the build system. If you want to build an
 individual module (assuming all dependent modules have previously been built), try the following:
 
 ```sh
-./go javascript/atoms:test:run
+bazel test javascript/atoms:test
 ```
 
 In this case, `javascript/atoms` is the module directory,
-`test` is a target in that directory's `build.desc` file,
-and `run` is the action to run on that target.
+`test` is a target in that directory's `BUILD.bazel` file.
 
 As you see *build targets* scroll past in the log,
-you may want to run them individually. crazyfun can run them individually,
-by target name, as long as `:run` is appended (see above).
+you may want to run them individually.
 
-To list all available targets, you can append the `-T` flag:
 
-```sh
-./go -T
-```
-
-## Requirements
-
-* The latest version of the [Java 11 OpenJDK](https://openjdk.java.net/)
-* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE).
-  * To test this, try running the command `javac`. This command won't exist if you only have the JRE
-  installed. If you're met with a list of command-line options, you're referencing the JDK properly.
-* [Bazel](https://docs.bazel.build/versions/master/install.html)
-* [Python](https://www.python.org/)
-* `python` on the PATH
-* [The Requests Library](http://python-requests.org) for Python: `pip install requests`
-* MacOS users should have the latest version of Xcode installed, including the command-line tools.
-The following command should work:
-
-```bash
-xcode-select --install
-```
-
-Although the build system is based on rake, it's **strongly advised**
-to rely on the version of JRuby in `third_party/` that is invoked by
-`go`.  The only developer type who would want to deviate from this is
-the “build maintainer” who's experimenting with a JRuby upgrade.
-
-### Optional Requirements
-
-* Python 3.5+ (if you want to run Python tests for this version)
-* Ruby 2.0
-
-### Internet Explorer Driver
-
-If you plan to compile the
-[IE driver](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver),
-you also need:
-
-* [Visual Studio 2008](https://www.visualstudio.com/)
-* 32 and 64 bit cross compilers
-
-The build will work on any platform, but the tests for IE will be
-skipped silently if you are not building on Windows.
 
 ## Common Tasks (Bazel)
 
@@ -166,7 +167,7 @@ the ```test java/...``` to launch browsers and consume a considerable amount of 
 
 ## Tour
 
-The code base is generally segmented around the languages used to
+The codebase is generally segmented around the languages used to
 write the component.  Selenium makes extensive use of JavaScript, so
 let's start there.  Working on the JavaScript is easy.  First of all,
 start the development server:
@@ -184,12 +185,7 @@ developing much of the JavaScript, so now navigate to
 [http://localhost:2310/javascript/atoms/test](http://localhost:2310/javascript/atoms/test).
 
 The tests in this directory are normal HTML files with names ending
-with `_test.html`.  Click on one to load the page and run the test. You
-can run all the JavaScript tests using:
-
-```sh
-./go test_javascript
-```
+with `_test.html`.  Click on one to load the page and run the test.
 
 ## Maven POM files
 
@@ -198,26 +194,7 @@ repository](https://repo1.maven.org/maven2/org/seleniumhq/selenium/).
 
 ## Build Output
 
-`./go` only makes a top-level `build` directory.  Outputs are placed
-under that relative to the target name. Which is probably best
-described with an example.  For the target:
-
-```sh
-./go //java/client/src/org/openqa/selenium:selenium-api
-```
-
-The output is found under:
-
-```sh
-build/java/client/src/org/openqa/selenium/selenium-api.jar
-```
-
-If you watch the build, each step should print where its output is
-going.  Java test outputs appear in one of two places: either under
-`build/test_logs` for [JUnit](http://junit.org/) or in
-`build/build_log.xml` for [TestNG](http://testng.org/doc/index.html)
-tests.  If you'd like the build to be chattier, just append `log=true`
-to the build command line.
+`bazel` makes a top-level group of directories with the  `bazel-` prefix on each directory.
 
 ## Help with `go`
 
@@ -236,7 +213,7 @@ targets.
 
 If it is not clear already, Selenium is not built with Maven. It is
 built with `bazel`, though that is invoked with `go` as outlined above,
-so you do not really have to learn too much about that.
+so you do not have to learn too much about that.
 
 That said, it is possible to relatively quickly build Selenium pieces
 for Maven to use. You are only really going to want to do this when
@@ -256,6 +233,30 @@ The maven jars should now be in your local `~/.m2/repository`.
 Refer to the [Building Web
 Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver)
 wiki page for the last word on building the bits and pieces of Selenium.
+
+## Running Browser Tests on Linux
+
+In order to run Browser tests, you first need to install the browser-specific drivers,
+such as [`geckodriver`](https://github.com/mozilla/geckodriver/releases),
+[`chromedriver`](https://chromedriver.chromium.org/), or
+[`edgedriver`](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/).
+These need to be on your `PATH`.
+
+By default, Bazel runs these tests in your current X-server UI. If you prefer, you can
+alternatively run them in a virtual or nested X-server.
+
+1. Run the X server `Xvfb :99` or `Xnest :99`
+2. Run a window manager, for example, `DISPLAY=:99 jwm`
+3. Run the tests you are interested in:
+```sh
+bazel test --test_env=DISPLAY=:99 //java/... --test_tag_filters=chrome
+```
+
+An easy way to run tests in a virtual X-server is to use Bazel's `--run_under`
+functionality:
+```
+bazel test --run_under="xvfb-run -a" //java/... --test_tag_filters=chrome
+```
 
 ## Bazel Installation/Troubleshooting
 

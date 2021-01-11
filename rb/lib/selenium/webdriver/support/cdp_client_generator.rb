@@ -24,32 +24,35 @@ module Selenium
   module WebDriver
     module Support
       class CDPClientGenerator
-        DEVTOOLS_DIR = File.expand_path('../devtools', __dir__)
+        # Input JSON files are generated from PDL tasks.
         BROWSER_PROTOCOL_PATH = File.expand_path('cdp/browser_protocol.json', __dir__)
         JS_PROTOCOL_PATH = File.expand_path('cdp/js_protocol.json', __dir__)
         TEMPLATE_PATH = File.expand_path('cdp/domain.rb.erb', __dir__)
 
         RESERVED_KEYWORDS = %w[end].freeze
 
-        def initialize
-          @browser_protocol = JSON.parse(File.read(BROWSER_PROTOCOL_PATH), symbolize_names: true)
-          @js_protocol = JSON.parse(File.read(JS_PROTOCOL_PATH), symbolize_names: true)
+        def call(output_dir:, version:, **)
           @template = ERB.new(File.read(TEMPLATE_PATH))
-        end
+          @output_dir = output_dir
+          @version = version
 
-        def call
-          @browser_protocol[:domains].each(&method(:process_domain))
-          @js_protocol[:domains].each(&method(:process_domain))
+          browser_protocol = JSON.parse(File.read(BROWSER_PROTOCOL_PATH), symbolize_names: true)
+          js_protocol = JSON.parse(File.read(JS_PROTOCOL_PATH), symbolize_names: true)
+          browser_protocol[:domains].each(&method(:process_domain))
+          js_protocol[:domains].each(&method(:process_domain))
         end
 
         def process_domain(domain)
-          result = @template.result_with_hash(domain: domain, h: self)
-          filename = File.join(DEVTOOLS_DIR, "#{snake_case(domain[:domain])}.rb")
+          result = @template.result_with_hash(domain: domain, version: @version.upcase, h: self)
+          filename = File.join(@output_dir, "#{snake_case(domain[:domain])}.rb")
           File.write(filename, remove_empty_lines(result))
         end
 
         def snake_case(string)
-          name = string.gsub(/([a-z])([A-Z])/, '\1_\2').downcase
+          name = string.gsub('JavaScript', 'Javascript')
+                       .gsub(/([A-Z]+)([A-Z][a-z]{2,})/, '\1_\2')
+                       .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+                       .downcase
           # Certain CDP parameters conflict with Ruby keywords
           # so we prefix the name with underscore.
           name = "_#{name}" if RESERVED_KEYWORDS.include?(name)

@@ -84,7 +84,7 @@ public class DesiredCapabilities extends MutableCapabilities {
       if (raw instanceof String) {
         return Boolean.parseBoolean((String) raw);
       } else if (raw instanceof Boolean) {
-        return ((Boolean) raw).booleanValue();
+        return (Boolean) raw;
       }
     }
     return true;
@@ -104,7 +104,9 @@ public class DesiredCapabilities extends MutableCapabilities {
    */
   @Override
   public DesiredCapabilities merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
+    if (extraCapabilities != null) {
+      extraCapabilities.asMap().forEach(this::setCapability);
+    }
     return this;
   }
 

@@ -28,6 +28,7 @@ import static org.openqa.selenium.Keys.CONTROL;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -36,6 +37,7 @@ import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,6 +47,7 @@ import java.util.Map;
 /**
  * Tests the builder for advanced user interaction, the Actions class.
  */
+@Category(UnitTests.class)
 public class ActionsTest {
 
   @Mock private Mouse mockMouse;

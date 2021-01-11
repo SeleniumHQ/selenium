@@ -22,12 +22,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class SafariOptionsTest {
 
   @Test

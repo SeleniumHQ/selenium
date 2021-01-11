@@ -30,6 +30,7 @@ module Selenium
 
     class Driver
       include SearchContext
+      include TakesScreenshot
 
       class << self
         #
@@ -359,6 +360,10 @@ module Selenium
                                         port: opts.delete(:port))
         @service = service_config.launch
         @service.uri
+      end
+
+      def screenshot
+        bridge.screenshot
       end
     end # Driver
   end # WebDriver

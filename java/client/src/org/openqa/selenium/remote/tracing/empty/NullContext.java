@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.tracing.empty;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Span;
-import org.openqa.selenium.remote.tracing.SpanId;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
 import java.util.UUID;
@@ -27,10 +26,10 @@ import java.util.concurrent.Callable;
 
 public class NullContext implements TraceContext {
 
-  private final SpanId id = new SpanId(UUID.randomUUID());
+  private final String id = UUID.randomUUID().toString();
 
   @Override
-  public SpanId getId() {
+  public String getId() {
     return id;
   }
 

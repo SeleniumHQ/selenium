@@ -64,14 +64,14 @@ module Selenium
           expect(cookies.first[:value]).to eq('bar')
         end
 
-        it 'should add sameSite cookie with attribute Strict', only: {browser: %i[chrome edge]} do
+        it 'should add sameSite cookie with attribute Strict', only: {browser: %i[chrome edge firefox]} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Strict'
 
           expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Strict')
         end
 
-        it 'should add sameSite cookie with attribute Lax', only: {browser: %i[chrome edge]} do
+        it 'should add sameSite cookie with attribute Lax', only: {browser: %i[chrome edge firefox]} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Lax'
           expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Lax')

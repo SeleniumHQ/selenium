@@ -67,7 +67,7 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class FirefoxDriverTest extends JUnit4TestBase {
@@ -88,7 +88,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "Assumed to be covered by tests for GeckoDriverService")
+  @Ignore(value = FIREFOX, reason = "Assumed to be covered by tests for GeckoDriverService")
   public void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
     FirefoxOptions options = new FirefoxOptions()
@@ -153,7 +153,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "Assumed to be covered by tests for GeckoDriverService")
+  @Ignore(value = FIREFOX, reason = "Assumed to be covered by tests for GeckoDriverService")
   public void canSetBinaryInCapabilities() {
     FirefoxBinary binary = spy(new FirefoxBinary());
     Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binary);
@@ -218,7 +218,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void shouldWaitUntilBrowserHasClosedProperly() {
     driver.get(pages.simpleTestPage);
     driver.quit();
-    JUnit4TestBase.removeDriver();
+    removeDriver();
 
     driver = new WebDriverBuilder().get();
 
@@ -293,7 +293,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 60000)
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
     GeckoDriverService service = new GeckoDriverService.Builder()
@@ -344,7 +344,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/273")
+  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/273")
   public void canAccessUrlProtectedByBasicAuth() {
     driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
     assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
@@ -502,7 +502,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415067")
+  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415067")
   public void testFirefoxCanNativelyClickOverlappingElements() {
     FirefoxOptions options = new FirefoxOptions();
     options.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);

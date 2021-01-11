@@ -31,7 +31,7 @@ public class RedirectHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    String targetLocation = UrlPath.relativeToContext(req, "/resultPage.html");
+    String targetLocation = UrlPath.relativeToContext(req, "resultPage.html");
 
     return new HttpResponse()
       .setStatus(HTTP_MOVED_TEMP)

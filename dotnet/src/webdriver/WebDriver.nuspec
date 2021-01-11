@@ -4,7 +4,7 @@
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2019 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2020 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>Selenium WebDriver</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -23,17 +23,21 @@
     <repository url="https://github.com/SeleniumHQ/selenium" />
     <license type="expression">Apache-2.0</license>
     <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
+    <icon>images\icon.png</icon>
     <tags>selenium webdriver browser automation</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5" />
-      <group targetFramework=".NETFramework4.6" />
-      <group targetFramework=".NETFramework4.7" />
-      <group targetFramework=".NETFramework4.8" />
-      <group targetFramework=".NETStandard2.0">
-        <dependency id="Newtonsoft.Json" version="12.0.2" exclude="Build,Analyzers" />
+      <group targetFramework="net45" />
+      <group targetFramework="net46" />
+      <group targetFramework="net47" />
+      <group targetFramework="net48" />
+      <group targetFramework="netstandard2.0">
+        <dependency id="Newtonsoft.Json" version="12.0.3" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETStandard2.1">
-        <dependency id="Newtonsoft.Json" version="12.0.2" exclude="Build,Analyzers" />
+      <group targetFramework="netstandard2.1">
+        <dependency id="Newtonsoft.Json" version="12.0.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net5.0">
+        <dependency id="Newtonsoft.Json" version="12.0.3" exclude="Build,Analyzers" />
       </group>
     </dependencies>
     <frameworkAssemblies>
@@ -42,6 +46,7 @@
   </metadata>
   <files>
     <file src="**/WebDriver.dll" target="lib" />
-    <file src="**/WebDriver.xml" target="lib" />
+    <file src="**/WebDriver.pdb" target="lib" />
+    <file src="../icon.png" target="images\" />
   </files>
 </package>

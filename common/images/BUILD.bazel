@@ -1,0 +1,8 @@
+exports_files([
+    "selenium_logo_extra_small.png",
+    "selenium_logo_small.png",
+    "selenium_logo_medium.png",
+    "selenium_logo_large.png",
+    "selenium_logo_extra_large.png",
+    "selenium_logo_extra_extra_large.png",
+])

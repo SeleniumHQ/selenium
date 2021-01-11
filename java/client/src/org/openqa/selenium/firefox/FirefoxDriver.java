@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
@@ -259,7 +260,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
       String base64EncodedPng = (String) result;
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result);
+      String base64EncodedPng = new String((byte[]) result, UTF_8);
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else {
       throw new RuntimeException(String.format("Unexpected result for %s command: %s",

@@ -26,12 +26,12 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -61,9 +61,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @NotYetImplemented(SAFARI)
-  @Ignore(value = EDGE, reason = "Can't run two instances at once")
+  @Ignore(value = EDGE_HTML, reason = "Can't run two instances at once")
   public void testShouldFireFocusEventInNonTopmostWindow() {
     WebDriver driver2 = new WebDriverBuilder().get();
     try {
@@ -113,7 +113,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   @NotYetImplemented(SAFARI)
   public void testShouldFireMouseOverEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -129,7 +129,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
    * move towards it.
    */
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
   public void testShouldFireMouseMoveEventWhenClicking() {
     driver.get(pages.simpleTestPage);
@@ -214,7 +214,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
@@ -308,7 +308,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "Allows only one instance")
-  @Ignore(value = EDGE, reason = "Can't run two instances at once")
+  @Ignore(value = EDGE_HTML, reason = "Can't run two instances at once")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
 
@@ -483,12 +483,12 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @Ignore(EDGIUM)
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
   @Ignore(HTMLUNIT)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(EDGE_HTML)
   public void testClickPartiallyOverlappingElements() {
     for (int i = 1; i < 6; i++) {
       driver.get(appServer.whereIs("click_tests/partially_overlapping_elements.html"));
@@ -508,13 +508,13 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
-  @Ignore(FIREFOX)
+  @Ignore(EDGIUM)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
-  @Ignore(value = MARIONETTE, reason = "Checks overlapping by default")
+  @Ignore(value = FIREFOX, reason = "Checks overlapping by default")
   @Ignore(value = IE, reason = "Checks overlapping by default")
-  @Ignore(EDGE)
+  @Ignore(EDGE_HTML)
   public void testNativelyClickOverlappingElements() {
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
     driver.findElement(By.id("under")).click();

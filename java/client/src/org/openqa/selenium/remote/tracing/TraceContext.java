@@ -23,7 +23,7 @@ public interface TraceContext {
 
   Span createSpan(String name);
 
-  SpanId getId();
+  String getId();
 
   Runnable wrap(Runnable runnable);
 

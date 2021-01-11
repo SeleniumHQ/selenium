@@ -25,7 +25,10 @@ import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class ChromeOptionsTest {
 
   @Test

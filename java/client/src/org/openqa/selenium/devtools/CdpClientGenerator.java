@@ -769,6 +769,9 @@ public class CdpClientGenerator {
       if (type.equals("object")) {
         toJson.setType("java.util.Map<String, Object>");
         toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
+      } else if (type.equals("integer")) {
+        toJson.setType(Integer.class);
+        toJson.getBody().get().addStatement(String.format("return %s;", propertyName));
       } else {
         toJson.setType(String.class);
         toJson.getBody().get().addStatement(String.format("return %s.toString();", propertyName));
@@ -936,7 +939,7 @@ public class CdpClientGenerator {
       ClassOrInterfaceDeclaration classDecl = new ClassOrInterfaceDeclaration().setName(capitalize(name));
 
       properties.stream().filter(property -> property.type instanceof EnumType).forEach(
-          property -> classDecl.addMember(((EnumType) property.type).toTypeDeclaration()));
+          property -> classDecl.addMember(property.type.toTypeDeclaration()));
 
       properties.forEach(property -> classDecl.addField(
           property.getJavaType(), property.getFieldName()).setPrivate(true).setFinal(true));

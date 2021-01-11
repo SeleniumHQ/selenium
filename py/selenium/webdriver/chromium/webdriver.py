@@ -48,7 +48,7 @@ class ChromiumDriver(RemoteWebDriver):
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
-        if desired_capabilities is not None:
+        if desired_capabilities:
             warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if port != DEFAULT_PORT:
@@ -59,19 +59,22 @@ class ChromiumDriver(RemoteWebDriver):
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 
-        if options is None:
+        _ignore_proxy = None
+        if not options:
             # desired_capabilities stays as passed in
-            if desired_capabilities is None:
+            if not desired_capabilities:
                 desired_capabilities = self.create_options().to_capabilities()
         else:
-            if desired_capabilities is None:
+            if not desired_capabilities:
                 desired_capabilities = options.to_capabilities()
             else:
                 desired_capabilities.update(options.to_capabilities())
+            if options._ignore_local_proxy:
+                _ignore_proxy = options._ignore_local_proxy
 
         self.vendor_prefix = vendor_prefix
 
-        if service is None:
+        if not service:
             raise AttributeError('service cannot be None')
 
         self.service = service
@@ -83,7 +86,7 @@ class ChromiumDriver(RemoteWebDriver):
                 command_executor=ChromiumRemoteConnection(
                     remote_server_addr=self.service.service_url,
                     browser_name=browser_name, vendor_prefix=vendor_prefix,
-                    keep_alive=keep_alive),
+                    keep_alive=keep_alive, ignore_proxy=_ignore_proxy),
                 desired_capabilities=desired_capabilities)
         except Exception:
             self.quit()
