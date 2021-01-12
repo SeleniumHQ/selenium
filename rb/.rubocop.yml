@@ -4,6 +4,8 @@ require:
 
 AllCops:
   TargetRubyVersion: 2.5
+  Exclude:
+    - 'lib/selenium/webdriver/devtools/**/*'
 
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
@@ -40,8 +42,9 @@ Lint/SuppressedException:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 27
+  Max: 28
   Exclude:
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/http/curb.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
@@ -62,6 +65,7 @@ Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/MethodLength:
   CountComments: false
@@ -82,7 +86,7 @@ Metrics/ParameterLists:
 
 # TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
-  Max: 8
+  Max: 9
   Exclude:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
 
@@ -132,6 +136,12 @@ RSpec/MessageSpies:
 RSpec/MultipleExpectations:
   Enabled: false
 
+RSpec/StubbedMock:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 
@@ -163,6 +173,9 @@ Style/HashTransformValues:
 
 # Port Integers do not need underscores
 Style/NumericLiterals:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
   Enabled: false
 
 Style/RegexpLiteral:

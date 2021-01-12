@@ -37,22 +37,6 @@ module Selenium
             @options[key] = value
           end
         end
-
-        #
-        # Create a new Options instance for W3C-capable versions of Safari.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Safari::Options.new(automatic_inspection: true)
-        #   driver = Selenium::WebDriver.for :safari, options: options
-        #
-        # @param [Hash] opts the pre-defined options to create the Safari::Options with
-        # @option opts [Boolean] :automatic_inspection Preloads Web Inspector and JavaScript debugger. Default is false
-        # @option opts [Boolean] :automatic_profiling Preloads Web Inspector and starts a timeline recording. Default is false
-        #
-
-        def initialize(**opts)
-          super
-        end
       end # Options
     end # Safari
   end # WebDriver

@@ -85,7 +85,7 @@ module Selenium
           it 'adds an extension' do
             allow(File).to receive(:file?).and_return(true)
             ext = 'foo.crx'
-            allow_any_instance_of(Options).to receive(:encode_file).with(ext).and_return("encoded_#{ext[/([^\.]*)/]}")
+            allow_any_instance_of(Options).to receive(:encode_file).with(ext).and_return("encoded_#{ext[/([^.]*)/]}")
 
             options.add_extension(ext)
             expect(options.extensions).to eq([ext])
