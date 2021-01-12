@@ -20,16 +20,17 @@
 from abc import ABCMeta
 from base64 import b64decode
 import copy
-from contextlib import (contextmanager, asynccontextmanager)
-from importlib import import_module
-import json
-import pkgutil
-import warnings
+from contextlib import contextmanager
 import sys
+import pkgutil
+
+import warnings
+
 
 from .command import Command
 from .errorhandler import ErrorHandler
 from .file_detector import FileDetector, LocalFileDetector
+from .log import Log
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
@@ -52,14 +53,6 @@ try:
     str = basestring
 except NameError:
     pass
-
-cdp = None
-
-
-def import_cdp():
-    global cdp
-    if not cdp:
-        cdp = import_module("selenium.webdriver.common.bidi.cdp")
 
 
 _W3C_CAPABILITY_NAMES = frozenset([
@@ -1484,166 +1477,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
 
-    @asynccontextmanager
-    async def log_mutation_events(self):
-        """
-        Listens for mutation events and emits them as it finds them
-
-        :Usage:
-             ::
-               async with driver.log_mutation_events() as event:
-                    pages.load("dynamic.html")
-                    driver.find_element(By.ID, "reveal").click()
-                    WebDriverWait(driver, 5)\
-                        .until(EC.visibility_of(driver.find_element(By.ID, "revealed")))
-
-                assert event["attribute_name"] == "style"
-                assert event["current_value"] == ""
-                assert event["old_value"] == "display:none;"
-
-        """
-        _pkg = '.'.join(__name__.split('.')[:-1])
-        mutation_listener_js = pkgutil.get_data(_pkg, 'mutation-listener.js').decode('utf8').strip()
-
+    @property
+    def log(self):
         assert sys.version_info >= (3, 7)
-        global cdp
-        async with self._get_bidi_connection():
-            global devtools
-            page = cdp.get_session_context('page.enable')
-            await page.execute(devtools.page.enable())
-            runtime = cdp.get_session_context('runtime.enable')
-            await runtime.execute(devtools.runtime.enable())
-            await runtime.execute(devtools.runtime.add_binding("__webdriver_attribute"))
-            self.pin_script(mutation_listener_js)
-            script_key = await page.execute(devtools.page.add_script_to_evaluate_on_new_document(mutation_listener_js))
-            self.pin_script(mutation_listener_js, script_key)
-            self.execute_script(f"return {mutation_listener_js}")
-            event = {}
-            async with runtime.wait_for(devtools.runtime.BindingCalled) as evnt:
-                yield event
-
-            payload = json.loads(evnt.value.payload)
-            elements: list = self.find_elements(By.CSS_SELECTOR, "*[data-__webdriver_id={}".format(payload['target']))
-            if not elements:
-                elements.append(None)
-            event["element"] = elements[0]
-            event["attribute_name"] = payload['name']
-            event["current_value"] = payload['value']
-            event["old_value"] = payload['oldValue']
-
-    @asynccontextmanager
-    async def add_js_error_listener(self):
-        """
-        Listens for JS errors and when the contextmanager exits check if there were JS Errors
-
-        :Usage:
-             ::
-
-                async with driver.add_js_error_listener() as error:
-                    driver.find_element(By.ID, "throwing-mouseover").click()
-                assert bool(error)
-                assert error.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
-        """
-        assert sys.version_info >= (3, 7)
-        global cdp
-        async with self._get_bidi_connection():
-            global devtools
-            session = cdp.get_session_context('page.enable')
-            await session.execute(devtools.page.enable())
-            session = cdp.get_session_context('runtime.enable')
-            await session.execute(devtools.runtime.enable())
-            js_exception = devtools.runtime.ExceptionThrown(None, None)
-            async with session.wait_for(devtools.runtime.ExceptionThrown) as exception:
-                yield js_exception
-            js_exception.timestamp = exception.value.timestamp
-            js_exception.exception_details = exception.value.exception_details
-
-    @asynccontextmanager
-    async def add_listener(self, event_type):
-        '''
-        Listens for certain events that are passed in.
-
-        :Args:
-         - event_type: The type of event that we want to look at.
-
-         :Usage:
-             ::
-
-                async with driver.add_listener(Console.log) as messages:
-                    driver.execute_script("console.log('I like cheese')")
-                assert messages["message"] == "I love cheese"
-
-        '''
-        assert sys.version_info >= (3, 7)
-        global cdp
-        from selenium.webdriver.common.bidi.console import Console
-
-        async with self._get_bidi_connection():
-            global devtools
-            session = cdp.get_session_context('page.enable')
-            await session.execute(devtools.page.enable())
-            session = cdp.get_session_context('runtime.enable')
-            await session.execute(devtools.runtime.enable())
-            console = {
-                "message": None,
-                "level": None
-            }
-            async with session.wait_for(devtools.runtime.ConsoleAPICalled) as messages:
-                yield console
-
-            if event_type == Console.ERROR:
-                console["message"] = messages.value.args[0].value
-                console["level"] = messages.value.args[0].type_
-            if event_type == Console.ALL:
-                console["message"] = messages.value.args[0].value
-                console["level"] = messages.value.args[0].type_
-
-    @asynccontextmanager
-    async def _get_bidi_connection(self):
-        global cdp
-        import_cdp()
-        ws_url = None
-        if self.caps.get("se:options"):
-            ws_url = self.caps.get("se:options").get("cdp")
-        else:
-            version, ws_url = self._get_cdp_details()
-
-        if not ws_url:
-            raise WebDriverException("Unable to find url to connect to from capabilities")
-
-        cdp.import_devtools(version)
-
-        global devtools
-        devtools = import_module("selenium.webdriver.common.devtools.v{}".format(version))
-        async with cdp.open_cdp(ws_url) as conn:
-            targets = await conn.execute(devtools.target.get_targets())
-            target_id = targets[0].target_id
-            async with conn.open_session(target_id) as session:
-                yield session
-
-    def _get_cdp_details(self):
-        import json
-        import urllib3
-
-        http = urllib3.PoolManager()
-        _firefox = False
-        if self.caps.get("browserName") == "chrome":
-            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
-        else:
-            _firefox = True
-            debugger_address = self.caps.get("moz:debuggerAddress")
-        res = http.request('GET', f"http://{debugger_address}/json/version")
-        data = json.loads(res.data)
-
-        browser_version = data.get("Browser")
-        websocket_url = data.get("webSocketDebuggerUrl")
-
-        import re
-        if _firefox:
-            # Mozilla Automation Team asked to only support 85
-            # until WebDriver Bidi is available.
-            version = 85
-        else:
-            version = re.search(r".*/(\d+)\.", browser_version).group(1)
-
-        return version, websocket_url
+        return Log(self)
