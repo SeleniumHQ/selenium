@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.printoptions.print;
 
+import org.openqa.selenium.internal.Require;
+
 public class PageMargin {
   private double top;
   private double bottom;
@@ -47,34 +49,18 @@ public class PageMargin {
   }
 
   public void setTop(double top) {
-    if (top < 0) {
-      throw new IllegalArgumentException("Top margin value should be > 0");
-    }
-
-    this.top = top;
+    this.top = Require.positive("top", top, null);
   }
 
   public void setBottom(double bottom) {
-    if (bottom < 0) {
-      throw new IllegalArgumentException("Bottom margin value should be > 0");
-    }
-
-    this.bottom = bottom;
+    this.bottom = Require.positive("bottom", bottom, null);
   }
 
   public void setRight(double right) {
-    if (right < 0) {
-      throw new IllegalArgumentException("Right margin value should be > 0");
-    }
-
-    this.right = right;
+    this.right = Require.positive("right", right, null);
   }
 
   public void setLeft(double left) {
-    if (left < 0) {
-      throw new IllegalArgumentException("Left margin value should be > 0");
-    }
-
-    this.left = left;
+    this.left = Require.positive("left", left, null);
   }
 }
