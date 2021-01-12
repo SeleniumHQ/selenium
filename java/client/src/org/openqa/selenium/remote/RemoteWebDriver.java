@@ -88,7 +88,7 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 @Augmentable
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputDevices,
                                         HasCapabilities, Interactive, TakesScreenshot,
-                                        HasVirtualAuthenticator {
+                                        HasVirtualAuthenticator, PrintsPage {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -326,6 +326,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   }
 
   @Override
+  public Pdf getPdf(Object printOptions) throws WebDriverException {
+    Response response = execute(DriverCommand.PRINT_PAGE((PrintOptions) printOptions));
+
+    Object result = response.getValue();
+    return new Pdf(result);
+  }
+
+  @Override
   public WebElement findElement(By locator) {
     if (locator instanceof By.StandardLocator) {
       return ((By.StandardLocator) locator).findElement(this, this::findElement);
@@ -334,11 +342,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     }
   }
 
-  public String printPage(PrintOptions options) {
-    Response response = execute(DriverCommand.PRINT_PAGE(options));
-
-    return (String) response.getValue();
-  }
   @Override
   public List<WebElement> findElements(By locator) {
     if (locator instanceof By.StandardLocator) {
