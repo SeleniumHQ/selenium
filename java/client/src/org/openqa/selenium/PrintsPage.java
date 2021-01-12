@@ -17,5 +17,5 @@
 package org.openqa.selenium;
 
 public interface PrintsPage {
-  <X> X getPdf(Object printOptions) throws WebDriverException;
+  <X> X print(Object printOptions) throws WebDriverException;
 }

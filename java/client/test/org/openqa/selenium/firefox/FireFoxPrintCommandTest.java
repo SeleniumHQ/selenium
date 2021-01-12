@@ -48,7 +48,7 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
   public void canPrintPage() {
     PrintOptions printOptions = new PrintOptions();
 
-    Pdf pdf = localDriver.getPdf(printOptions);
+    Pdf pdf = localDriver.print(printOptions);
     assertThat(pdf.getBase64String().contains(MAGIC_STRING)).isTrue();
   }
 
@@ -57,7 +57,7 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     PrintOptions printOptions = new PrintOptions();
     printOptions.setPageRanges(new String[]{"1-2"});
 
-    Pdf pdf = localDriver.getPdf(printOptions);
+    Pdf pdf = localDriver.print(printOptions);
     assertThat(pdf.getBase64String().contains(MAGIC_STRING)).isTrue();
   }
 
@@ -71,7 +71,7 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     printOptions.setOrientation(PrintOptions.Orientation.Landscape);
     printOptions.setPageSize(pageSize);
 
-    Pdf pdf = localDriver.getPdf(printOptions);
+    Pdf pdf = localDriver.print(printOptions);
     assertThat(pdf.getBase64String().contains(MAGIC_STRING)).isTrue();
   }
 }
