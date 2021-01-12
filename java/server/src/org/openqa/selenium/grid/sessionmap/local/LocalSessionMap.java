@@ -39,11 +39,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 
 public class LocalSessionMap extends SessionMap {
+
+  private static final Logger LOG = Logger.getLogger(LocalSessionMap.class.getName());
 
   private final EventBus bus;
   private final Map<SessionId, Session> knownSessions = new ConcurrentHashMap<>();
@@ -62,7 +65,9 @@ public class LocalSessionMap extends SessionMap {
         SESSION_ID.accept(span, id);
         SESSION_ID_EVENT.accept(attributeMap, id);
         knownSessions.remove(id);
-        span.addEvent("Deleted session from local session map", attributeMap);
+        String sessionDeletedMessage = "Deleted session from local session map";
+        span.addEvent(sessionDeletedMessage, attributeMap);
+        LOG.info(String.format("%s, Id: %s", sessionDeletedMessage, id));
       }
     }));
   }

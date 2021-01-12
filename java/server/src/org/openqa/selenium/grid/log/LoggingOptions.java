@@ -166,7 +166,7 @@ public class LoggingOptions {
             map.put("attributes", attributeMap);
             String jsonString = getJsonString(map);
             if (status.isOk()) {
-              LOG.log(Level.INFO, jsonString);
+              LOG.log(Level.FINE, jsonString);
             } else {
               LOG.log(Level.WARNING, jsonString);
             }
@@ -188,7 +188,7 @@ public class LoggingOptions {
     }).build());
 
     // The Jaeger exporter doesn't yet have a `TracerFactoryProvider`, so we
-    //shall look up the class using reflection, and beg for forgiveness
+    // shall look up the class using reflection, and beg for forgiveness
     // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
