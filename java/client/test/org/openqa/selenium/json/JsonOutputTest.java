@@ -640,6 +640,41 @@ public class JsonOutputTest {
   }
 
   @Test
+  public void canKeepEscapedStringIntactByDefault() {
+    String sample =
+      "{  \r\n    \"employee\": {  \r\n        \"name\":       \"bob\",   \r\n    " +
+        "    \"salary\":      56000,   \r\n        \"married\":    true  \r\n    }  \r\n}";
+    Map<String, String> map = ImmutableMap.of("key", sample);
+
+    StringBuilder json = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(json)) {
+      out.write(map);
+    }
+
+    assertThat(json.indexOf("\\n")).isPositive();
+    assertThat(json.indexOf("\\r")).isPositive();
+    assertThat(json.indexOf("\\\"")).isPositive();
+  }
+
+  @Test
+  public void canDisableStringEscaping() {
+    String sample =
+      "{  \r\n    \"employee\": {  \r\n        \"name\":       \"bob\",   \r\n    " +
+        "    \"salary\":      56000,   \r\n        \"married\":    true  \r\n    }  \r\n}";
+    Map<String, String> map = ImmutableMap.of("key", sample);
+
+    StringBuilder json = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(json)) {
+      out.disableEscaping(true);
+      out.write(map);
+    }
+
+    assertThat(json.indexOf("\\n")).isEqualTo(-1);
+    assertThat(json.indexOf("\\r")).isEqualTo(-1);
+    assertThat(json.indexOf("\\\"")).isEqualTo(-1);
+  }
+
+  @Test
   public void shouldEncodeLogLevelsAsStrings() {
     String converted = convert(Level.INFO);
 

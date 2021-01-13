@@ -265,7 +265,7 @@ public class LoggingOptions {
 
   private String getJsonString(Map<String, Object> map) {
     StringBuilder text = new StringBuilder();
-    try (JsonOutput json = JSON.newOutput(text).setPrettyPrint(false)) {
+    try (JsonOutput json = JSON.newOutput(text).setPrettyPrint(false).disableEscaping(true)) {
       json.write(map);
       text.append('\n');
     }

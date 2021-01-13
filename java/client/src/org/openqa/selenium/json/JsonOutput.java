@@ -65,38 +65,6 @@ public class JsonOutput implements Closeable {
     GSON_ELEMENT = gsonElement;
   }
 
-  // https://www.json.org has some helpful comments on characters to escape
-  // See also https://tools.ietf.org/html/rfc8259#section-7 and
-  // https://github.com/google/gson/issues/341 so we escape those as well.
-  // It's legal to escape any character, so to be nice to HTML parsers,
-  // we'll also escape "<" and "&"
-  private static final Map<Integer, String> ESCAPES;
-  static {
-    Map<Integer, String> builder = new LinkedHashMap<>();
-
-    for (int i = 0; i <= 0x1f; i++) {
-      // We want nice looking escapes for these, which are called out
-      // by json.org
-      if (!(i == '\b' || i == '\f' || i == '\n' || i == '\r' || i == '\t')) {
-        builder.put(i, String.format("\\u%04x", i));
-      }
-    }
-
-    builder.put((int) '"', "\\\"");
-    builder.put((int) '\\', "\\\\");
-    builder.put((int) '/', "\\u002f");
-    builder.put((int) '\b', "\\b");
-    builder.put((int) '\f', "\\f");
-    builder.put((int) '\n', "\\n");
-    builder.put((int) '\r', "\\r");
-    builder.put((int) '\t', "\\t");
-
-    builder.put((int) '\u2028', "\\u2028");
-    builder.put((int) '<', String.format("\\u%04x", (int) '<'));
-    builder.put((int) '&', String.format("\\u%04x", (int) '&'));
-    ESCAPES = Collections.unmodifiableMap(builder);
-  }
-
   private final Map<Predicate<Class<?>>, SafeBiConsumer<Object, Integer>> converters;
   private final Appendable appendable;
   private final Consumer<String> appender;
@@ -105,6 +73,7 @@ public class JsonOutput implements Closeable {
   private String lineSeparator = "\n";
   private String indentBy = "  ";
   private boolean writeClassName = true;
+  private Map<Integer, String> escapes;
 
   JsonOutput(Appendable appendable) {
     this.appendable = Require.nonNull("Underlying appendable", appendable);
@@ -118,6 +87,8 @@ public class JsonOutput implements Closeable {
           }
         };
 
+    this.escapes = new LinkedHashMap<>();
+    setEscapes();
     this.stack = new ArrayDeque<>();
     this.stack.addFirst(new Empty());
 
@@ -210,6 +181,42 @@ public class JsonOutput implements Closeable {
   public JsonOutput setPrettyPrint(boolean enablePrettyPrinting) {
     this.lineSeparator = enablePrettyPrinting ? "\n" : "";
     this.indentBy = enablePrettyPrinting ? "  " : "";
+    return this;
+  }
+
+  // https://www.json.org has some helpful comments on characters to escape
+  // See also https://tools.ietf.org/html/rfc8259#section-7 and
+  // https://github.com/google/gson/issues/341 so we escape those as well.
+  // It's legal to escape any character, so to be nice to HTML parsers,
+  // we'll also escape "<" and "&"
+  private void setEscapes() {
+
+    for (int i = 0; i <= 0x1f; i++) {
+      // We want nice looking escapes for these, which are called out
+      // by json.org
+      if (!(i == '\b' || i == '\f' || i == '\n' || i == '\r' || i == '\t')) {
+        this.escapes.put(i, String.format("\\u%04x", i));
+      }
+    }
+
+    this.escapes.put((int) '"', "\\\"");
+    this.escapes.put((int) '\\', "\\\\");
+    this.escapes.put((int) '/', "\\u002f");
+    this.escapes.put((int) '\b', "\\b");
+    this.escapes.put((int) '\f', "\\f");
+    this.escapes.put((int) '\n', "\\n");
+    this.escapes.put((int) '\r', "\\r");
+    this.escapes.put((int) '\t', "\\t");
+
+    this.escapes.put((int) '\u2028', "\\u2028");
+    this.escapes.put((int) '<', String.format("\\u%04x", (int) '<'));
+    this.escapes.put((int) '&', String.format("\\u%04x", (int) '&'));
+  }
+
+  public JsonOutput disableEscaping(boolean disable) {
+    if (disable) {
+      this.escapes.clear();
+    }
     return this;
   }
 
@@ -313,7 +320,7 @@ public class JsonOutput implements Closeable {
     String.valueOf(obj)
         .chars()
         .forEach(i -> {
-          String escaped = ESCAPES.get(i);
+          String escaped = escapes.get(i);
           if (escaped != null) {
             toReturn.append(escaped);
           } else {

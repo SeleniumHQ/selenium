@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
@@ -41,10 +43,15 @@ public class RemoteTags {
       span.setAttribute(AttributeKey.SESSION_ID.getKey(), String.valueOf(id));
 
   public static final BiConsumer<Map<String, EventAttributeValue>, Capabilities>
-      CAPABILITIES_EVENT =
-      (map, caps) ->
-          map.put(AttributeKey.SESSION_CAPABILITIES.getKey(),
-                  EventAttribute.setValue(String.valueOf(caps)));
+    CAPABILITIES_EVENT = (map, caps) -> {
+    StringBuilder text = new StringBuilder();
+    try (JsonOutput json = new Json().newOutput(text).setPrettyPrint(false).disableEscaping(true)) {
+      json.write(caps.asMap());
+      text.append('\n');
+    }
+    map.put(AttributeKey.SESSION_CAPABILITIES.getKey(),
+      EventAttribute.setValue(text.toString()));
+  };
 
   public static final BiConsumer<Map<String, EventAttributeValue>, SessionId>
       SESSION_ID_EVENT =
