@@ -55,6 +55,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -244,6 +246,24 @@ public class NewSessionQueuerTest {
 
     int size = sessionQueue.getQueueSize();
     assertEquals(1, size);
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueInfo() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    sessionQueue.offerLast(request, requestId);
+
+    Map<String, Object> response = local.getQueueContents();
+    assertThat(response).isNotNull();
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueInfoRemotely() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    sessionQueue.offerLast(request, requestId);
+
+    Map<String, Object> response = sessionQueue.getQueueContents();
+    assertThat(response).isNotNull();
   }
 
   @Test
