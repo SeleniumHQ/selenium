@@ -28,24 +28,26 @@ module Selenium
         it 'adds an extension' do
           ext_path = '/some/path.crx'
 
-          expect(File).to receive(:file?).with(ext_path).and_return true
+          allow(File).to receive(:file?).with(ext_path).and_return true
+
           expect(profile.add_extension(ext_path)).to eq([ext_path])
         end
 
         it 'reads an extension as binary data' do
           ext_path = '/some/path.crx'
-          expect(File).to receive(:file?).with(ext_path).and_return true
+          allow(File).to receive(:file?).with(ext_path).and_return true
 
           profile.add_extension(ext_path)
 
           ext_file = instance_double('file')
-          expect(File).to receive(:open).with(ext_path, 'rb').and_yield ext_file
-          expect(ext_file).to receive(:read).and_return 'test'
+          allow(File).to receive(:open).with(ext_path, 'rb').and_yield ext_file
+          allow(ext_file).to receive(:read).and_return 'test'
 
-          expect(profile).to receive(:layout_on_disk).and_return 'ignored'
+          allow(profile).to receive(:layout_on_disk).and_return 'ignored'
 
           expect(profile.as_json).to eq('directory' => 'ignored',
                                         'extensions' => [Base64.strict_encode64('test')])
+          expect(ext_file).to have_received(:read)
         end
 
         it "raises an error if the extension doesn't exist" do

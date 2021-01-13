@@ -128,9 +128,10 @@ module Selenium
         end
 
         it 'is created when :url is not provided' do
-          expect(Service).to receive(:new).and_return(service)
+          allow(Service).to receive(:new).and_return(service)
 
           driver.new
+          expect(Service).to have_received(:new).with(hash_excluding(url: anything))
         end
 
         it 'accepts :driver_path but throws deprecation notice' do
@@ -161,9 +162,9 @@ module Selenium
           driver_opts = {foo: 'bar',
                          bar: ['--foo', '--bar']}
 
-          expect(Service).to receive(:new).with(path: nil,
-                                                port: nil,
-                                                args: driver_opts).and_return(service)
+          allow(Service).to receive(:new).with(path: nil,
+                                               port: nil,
+                                               args: driver_opts).and_return(service)
 
           expect {
             driver.new(driver_opts: driver_opts)

@@ -136,9 +136,6 @@ RSpec/MessageSpies:
 RSpec/MultipleExpectations:
   Enabled: false
 
-RSpec/StubbedMock:
-  Enabled: false
-
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
