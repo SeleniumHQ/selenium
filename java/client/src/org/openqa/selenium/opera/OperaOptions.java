@@ -22,7 +22,6 @@ import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;

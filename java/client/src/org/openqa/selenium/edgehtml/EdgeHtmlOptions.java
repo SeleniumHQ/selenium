@@ -19,7 +19,6 @@ package org.openqa.selenium.edgehtml;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.BrowserType;
 

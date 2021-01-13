@@ -32,7 +32,6 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Beta;
