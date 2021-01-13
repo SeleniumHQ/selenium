@@ -62,8 +62,15 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     return this;
   }
 
+  @Override
+  public ChromeOptions merge(Capabilities extraCapabilities) {
+    ChromeOptions newInstance = new ChromeOptions();
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    return newInstance;
+  }
+
   public ChromeDriverLogLevel getLogLevel(){
     return logLevel;
   }
-
 }

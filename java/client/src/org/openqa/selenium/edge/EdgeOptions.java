@@ -17,6 +17,7 @@
 package org.openqa.selenium.edge;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -55,5 +56,13 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   public EdgeOptions() {
     super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);
+  }
+
+  @Override
+  public EdgeOptions merge(Capabilities extraCapabilities) {
+    EdgeOptions newInstance = new EdgeOptions();
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    return newInstance;
   }
 }

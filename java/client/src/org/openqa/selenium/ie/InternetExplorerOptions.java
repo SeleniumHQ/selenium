@@ -32,6 +32,7 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Beta;
@@ -98,8 +99,10 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   @Override
   public InternetExplorerOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    InternetExplorerOptions newInstance = new InternetExplorerOptions();
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    return newInstance;
   }
 
   public InternetExplorerOptions withAttachTimeout(long duration, TimeUnit unit) {

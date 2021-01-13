@@ -100,7 +100,7 @@ public class MutableCapabilities implements Capabilities {
     // and this is no longer needed as options are capabilities. There will be a large amount of
     // legacy code that will always try and follow this pattern, however.
     if (OPTION_KEYS.contains(key) && value instanceof Capabilities) {
-      merge((Capabilities) value);
+      ((Capabilities) value).asMap().forEach(this::setCapability);
       return;
     }
 

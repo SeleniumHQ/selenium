@@ -22,6 +22,7 @@ import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
@@ -76,8 +77,10 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
   @Override
   public OperaOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    OperaOptions newInstance = new OperaOptions();
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    return newInstance;
   }
 
   /**
