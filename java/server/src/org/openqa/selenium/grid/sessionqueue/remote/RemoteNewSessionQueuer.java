@@ -138,6 +138,13 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
     return Values.get(response, Integer.class);
   }
 
+  public String getQueueInfo() {
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/info");
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
+    HttpResponse response = client.execute(upstream);
+    return Values.get(response, String.class);
+  }
+
   @Override
   public boolean isReady() {
     try {

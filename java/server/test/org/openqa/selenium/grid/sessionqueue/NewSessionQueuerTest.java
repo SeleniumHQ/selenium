@@ -55,6 +55,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -244,6 +246,63 @@ public class NewSessionQueuerTest {
 
     int size = sessionQueue.getQueueSize();
     assertEquals(1, size);
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueInfo() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    sessionQueue.offerLast(request, requestId);
+
+    String response = local.getQueueInfo();
+    assertThat(response).isNotNull();
+
+    List<Object> browserList = JSON.toType(response, Json.OBJECT_TYPE);
+    assertEquals(1, browserList.size());
+
+    Map<String, Object> chromeBrowserInfo = (Map<String, Object>) browserList.get(0);
+    assertEquals("chrome", chromeBrowserInfo.get("browser"));
+
+    List<Object> platforms = (List<Object>) chromeBrowserInfo.get("platforms");
+    assertEquals(1, platforms.size());
+
+    Map<String, Object> platform = (Map<String, Object>) platforms.get(0);
+    assertEquals("ANY", platform.get("platform"));
+    assertEquals(1L, platform.get("count"));
+
+    List<Object> versions = (List<Object>) platform.get("versions");
+    assertEquals(1, versions.size());
+
+    Map<String, Object> version = (Map<String, Object>) versions.get(0);
+    assertEquals("ANY", version.get("version"));
+    assertEquals(1L, version.get("count"));
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueInfoRemotely() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    sessionQueue.offerLast(request, requestId);
+
+    String response = sessionQueue.getQueueInfo();
+
+    List<Object> browserList = JSON.toType(response, Json.OBJECT_TYPE);
+    assertEquals(1, browserList.size());
+
+    Map<String, Object> chromeBrowserInfo = (Map<String, Object>) browserList.get(0);
+    assertEquals("chrome", chromeBrowserInfo.get("browser"));
+
+    List<Object> platforms = (List<Object>) chromeBrowserInfo.get("platforms");
+    assertEquals(1, platforms.size());
+
+    Map<String, Object> platform = (Map<String, Object>) platforms.get(0);
+    assertEquals("ANY", platform.get("platform"));
+    assertEquals(1L, platform.get("count"));
+
+    List<Object> versions = (List<Object>) platform.get("versions");
+    assertEquals(1, versions.size());
+
+    Map<String, Object> version = (Map<String, Object>) versions.get(0);
+    assertEquals("ANY", version.get("version"));
+    assertEquals(1L, version.get("count"));
   }
 
   @Test

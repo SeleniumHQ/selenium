@@ -96,6 +96,10 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
     return sessionRequests.getQueueSize();
   }
 
+  public String getQueueInfo() {
+    return sessionRequests.getQueueInfo();
+  }
+
   @Override
   public boolean isReady() {
     return bus.isReady();
