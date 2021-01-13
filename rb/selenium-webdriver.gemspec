@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 5.0']
-  s.add_runtime_dependency 'rexml'
+  s.add_runtime_dependency 'rexml', ['~> 3.2']
   s.add_runtime_dependency 'rubyzip', ['>= 1.2.2']
   s.add_runtime_dependency 'websocket', ['~> 1.0']
 
@@ -45,5 +45,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'rubocop-rspec'
   s.add_development_dependency 'webmock', ['~> 3.5']
+  s.add_development_dependency 'webrick',['~> 1.7']
   s.add_development_dependency 'yard', ['~> 0.9.11']
 end
