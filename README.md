@@ -1,9 +1,9 @@
 # Selenium 
 
-![Python workflow](https://github.com/SeleniumHQ/selenium/workflows/Python%20workflow/badge.svg)
-![Ruby workflow](https://github.com/SeleniumHQ/selenium/workflows/Ruby%20workflow/badge.svg)
-![JavaScript workflow](https://github.com/SeleniumHQ/selenium/workflows/JavaScript%20workflow/badge.svg)
-![Java workflow](https://github.com/SeleniumHQ/selenium/workflows/Java%20workflow/badge.svg)
+[![Python workflow](https://github.com/SeleniumHQ/selenium/workflows/Python%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Python+workflow%22)
+[![Ruby workflow](https://github.com/SeleniumHQ/selenium/workflows/Ruby%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Ruby+workflow%22)
+[![JavaScript workflow](https://github.com/SeleniumHQ/selenium/workflows/JavaScript%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22JavaScript+workflow%22)
+[![Java workflow](https://github.com/SeleniumHQ/selenium/workflows/Java%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Java+workflow%22)
 
 
 <a href="https://selenium.dev"><img src="https://selenium.dev/images/selenium_logo_square_green.png" width="180" alt="Selenium"/></a>
