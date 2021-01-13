@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium;
 
+import org.openqa.selenium.printoptions.PrintOptions;
+
 public interface PrintsPage {
-  <X> X print(Object printOptions) throws WebDriverException;
+  Pdf print(PrintOptions printOptions) throws WebDriverException;
 }

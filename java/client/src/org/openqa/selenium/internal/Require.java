@@ -159,10 +159,7 @@ public final class Require {
     return number;
   }
 
-  public static double positive(String argName, Double number, String message) {
-    if (number == null) {
-      throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
-    }
+  public static double positive(String argName, double number, String message) {
     if (number <= 0) {
       if (message == null) {
         throw new IllegalArgumentException(argName + " must be greater than 0");

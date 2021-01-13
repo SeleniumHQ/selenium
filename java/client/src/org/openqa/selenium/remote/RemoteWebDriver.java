@@ -328,11 +328,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   }
 
   @Override
-  public Pdf print(Object printOptions) throws WebDriverException {
-    Response response = execute(DriverCommand.PRINT_PAGE((PrintOptions) printOptions));
+  public Pdf print(PrintOptions printOptions) throws WebDriverException {
+    Response response = execute(DriverCommand.PRINT_PAGE(printOptions));
 
     Object result = response.getValue();
-    return new Pdf(result);
+    return new Pdf((String) result);
   }
 
   @Override

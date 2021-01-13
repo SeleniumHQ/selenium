@@ -19,13 +19,13 @@ package org.openqa.selenium;
 
 public class Pdf {
 
-  private Object base64String;
+  private final String base64EncodedPdf;
 
-  public Pdf(Object base64String) {
-    this.base64String = base64String;
+  public Pdf(String base64EncodedPdf) {
+    this.base64EncodedPdf = base64EncodedPdf;
   }
 
-  public String getBase64String() {
-    return (String) base64String;
+  public String getContent() {
+    return base64EncodedPdf;
   }
 }
