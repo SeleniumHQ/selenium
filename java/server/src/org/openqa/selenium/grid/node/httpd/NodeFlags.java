@@ -82,11 +82,11 @@ public class NodeFlags implements HasRoles {
     description = "List of configured drivers a Node supports. " +
                   "It is recommended to provide this type of configuration through a toml config " +
                   "file to improve readability." +
-                  "--drivers-configuration name=\"Firefox Nightly\" " +
+                  "--drivers-configuration name=\"Firefox Nightly\" max-sessions=2 " +
                   "stereotype='{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
                   "\"moz:firefoxOptions\": " +
                   "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}'",
-    arity = 2,
+    arity = 3,
     variableArity = true,
     splitter = NonSplittingSplitter.class)
   @ConfigValue(
@@ -95,6 +95,7 @@ public class NodeFlags implements HasRoles {
     prefixed = true,
     example = "\n" +
               "name = \"Firefox Nightly\"\n" +
+              "max-sessions = 2\n" +
               "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
               "\"moz:firefoxOptions\": " +
               "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
