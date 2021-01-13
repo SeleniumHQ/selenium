@@ -15,13 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.printoptions.print;
+package org.openqa.selenium.print;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.openqa.selenium.printoptions.print.PageMargin;
+import org.openqa.selenium.print.PageMargin;
 import org.openqa.selenium.testing.UnitTests;
 
 
@@ -36,7 +36,7 @@ public class PageMarginTest {
 
   @Test
   public void setsDefaultMarginValues() {
-    org.openqa.selenium.printoptions.print.PageMargin pageMargin = new org.openqa.selenium.printoptions.print.PageMargin();
+    PageMargin pageMargin = new PageMargin();
 
     assertThat(pageMargin.getTop()).isEqualTo(TOP);
     assertThat(pageMargin.getBottom()).isEqualTo(BOTTOM);
@@ -46,7 +46,7 @@ public class PageMarginTest {
 
   @Test
   public void setsVauesAsPassed() {
-    org.openqa.selenium.printoptions.print.PageMargin pageMargin = new PageMargin();
+    PageMargin pageMargin = new PageMargin();
     pageMargin.setBottom(2.0);
     pageMargin.setTop(3.0);
     pageMargin.setLeft(1.0);

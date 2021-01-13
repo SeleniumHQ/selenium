@@ -24,8 +24,8 @@ import org.junit.Test;
 import org.junit.Before;
 
 import org.openqa.selenium.Pdf;
-import org.openqa.selenium.printoptions.print.PageSize;
-import org.openqa.selenium.printoptions.PrintOptions;
+import org.openqa.selenium.print.PageSize;
+import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class FireFoxPrintCommandTest extends JUnit4TestBase {
@@ -49,7 +49,7 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     PrintOptions printOptions = new PrintOptions();
 
     Pdf pdf = localDriver.print(printOptions);
-    assertThat(pdf.getBase64String().contains(MAGIC_STRING)).isTrue();
+    assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 
   @Test
@@ -58,7 +58,7 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     printOptions.setPageRanges(new String[]{"1-2"});
 
     Pdf pdf = localDriver.print(printOptions);
-    assertThat(pdf.getBase64String().contains(MAGIC_STRING)).isTrue();
+    assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 
   @Test
@@ -72,6 +72,6 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     printOptions.setPageSize(pageSize);
 
     Pdf pdf = localDriver.print(printOptions);
-    assertThat(pdf.getBase64String().contains(MAGIC_STRING)).isTrue();
+    assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 }

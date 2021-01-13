@@ -15,12 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.printoptions;
-
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.printoptions.print.PageMargin;
-import org.openqa.selenium.printoptions.print.PageSize;
+package org.openqa.selenium.print;
 
 public class PrintOptions {
 
@@ -32,8 +27,8 @@ public class PrintOptions {
   private double scale = 1.0;
   private boolean background = false;
   private boolean shrinkToFit = true;
-  private org.openqa.selenium.printoptions.print.PageSize pageSize = new org.openqa.selenium.printoptions.print.PageSize();
-  private org.openqa.selenium.printoptions.print.PageMargin pageMargin = new org.openqa.selenium.printoptions.print.PageMargin();
+  private PageSize pageSize = new PageSize();
+  private PageMargin pageMargin = new PageMargin();
   private String[] pageRanges;
 
   public Orientation getOrientation() {
@@ -41,7 +36,7 @@ public class PrintOptions {
   }
 
   public void setOrientation(Orientation orientation) {
-    this.orientation = Require.nonNull("orientation", orientation);
+    this.orientation = orientation;
   }
 
   public String[] getPageRanges() {
@@ -52,26 +47,23 @@ public class PrintOptions {
     this.pageRanges = ranges;
   }
 
+  public void setBackground(boolean background) {
+    this.background = background;
+  }
+
   public boolean getBackground() {
     return this.background;
   }
 
-  public void setBackground(boolean background) {
-    this.background = Require.nonNull("background", background);
+  public void setScale(double scale) {
+    if (scale < 0.1 || scale > 2) {
+      throw new IllegalArgumentException("Scale value should be between 0.1 and 2");
+    }
+    this.scale = scale;
   }
 
   public double getScale() {
     return this.scale;
-  }
-
-  public void setScale(double scale) {
-    Require.nonNull("scale", scale);
-
-    if (scale < 0.1 || scale > 2) {
-      throw new IllegalArgumentException("Scale value should be between 0.1 and 2");
-    }
-
-    this.scale = scale;
   }
 
   public boolean getShrinkToFit() {
@@ -79,22 +71,22 @@ public class PrintOptions {
   }
 
   public void setShrinkToFit(boolean value) {
-    this.shrinkToFit = Require.nonNull("value", value);
+    this.shrinkToFit = value;
+  }
+
+  public void setPageSize(PageSize pageSize) {
+    this.pageSize = pageSize;
+  }
+
+  public void setPageMargin(PageMargin margin) {
+    this.pageMargin = margin;
   }
 
   public PageSize getPageSize() {
     return this.pageSize;
   }
 
-  public void setPageSize(PageSize pageSize) {
-    this.pageSize = Require.nonNull("pageSize", pageSize);
-  }
-
   public PageMargin getPageMargin() {
     return this.pageMargin;
-  }
-
-  public void setPageMargin(PageMargin margin) {
-    this.pageMargin = Require.nonNull("margin", margin);
   }
 }

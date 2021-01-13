@@ -15,36 +15,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.printoptions;
+package org.openqa.selenium.print;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.openqa.selenium.print.PageSize;
 import org.openqa.selenium.testing.UnitTests;
 
+
 @Category(UnitTests.class)
-public class PrintOptionsTest {
+public class PageSizeTest {
+
+  // Defaults assertion
+  private static double HEIGHT = 21.59;
+  private static double WIDTH = 27.94;
 
   @Test
-  public void setsDefaultValues() {
-    PrintOptions printOptions = new PrintOptions();
+  public void setsDefaultHeightWidth() {
+    PageSize pageSize = new PageSize();
 
-    assertThat(printOptions.getScale()).isEqualTo(1.0);
-    assertThat(printOptions.getBackground()).isFalse();
-    assertThat(printOptions.getShrinkToFit()).isTrue();
+    assertThat(pageSize.getHeight()).isEqualTo(HEIGHT);
+    assertThat(pageSize.getWidth()).isEqualTo(WIDTH);
   }
 
   @Test
   public void setsValuesAsPassed() {
-    PrintOptions printOptions = new PrintOptions();
+    PageSize pageSize = new PageSize();
+    pageSize.setHeight(11.0);
+    pageSize.setWidth(12.0);
 
-    printOptions.setBackground(true);
-    printOptions.setScale(1.5);
-    printOptions.setShrinkToFit(false);
-
-    assertThat(printOptions.getScale()).isEqualTo(1.5);
-    assertThat(printOptions.getBackground()).isTrue();
-    assertThat(printOptions.getShrinkToFit()).isFalse();
+    assertThat(pageSize.getHeight()).isEqualTo(11.0);
+    assertThat(pageSize.getWidth()).isEqualTo(12.0);
   }
 }
