@@ -17,11 +17,8 @@
 
 from abc import ABCMeta, abstractmethod
 
-from six import add_metaclass
 
-
-@add_metaclass(ABCMeta)
-class BaseOptions(object):
+class BaseOptions(metaclass=ABCMeta):
     """
     Base class for individual browser options
     """

@@ -47,8 +47,6 @@ from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
 
-from six import add_metaclass
-
 
 _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',
@@ -119,8 +117,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
     return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
 
 
-@add_metaclass(ABCMeta)
-class BaseWebDriver(object):
+class BaseWebDriver(metaclass=ABCMeta):
     """
     Abstract Base Class for all Webdriver subtypes.
     ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
