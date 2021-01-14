@@ -14,10 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-try:
-    basestring
-except NameError:  # Python 3.x
-    basestring = str
 
 from base64 import b64decode
 from shutil import rmtree
@@ -154,12 +150,12 @@ class WebDriver(RemoteWebDriver):
         # firefox_binary and firefox_profile
         # override options
         if firefox_binary:
-            if isinstance(firefox_binary, basestring):
+            if isinstance(firefox_binary, str):
                 firefox_binary = FirefoxBinary(firefox_binary)
             self.binary = firefox_binary
             options.binary = firefox_binary
         if firefox_profile:
-            if isinstance(firefox_profile, basestring):
+            if isinstance(firefox_profile, str):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
             options.profile = firefox_profile

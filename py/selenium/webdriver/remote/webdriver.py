@@ -49,11 +49,6 @@ from selenium.webdriver.support.relative_locator import RelativeBy
 
 from six import add_metaclass
 
-try:
-    str = basestring
-except NameError:
-    pass
-
 
 _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',

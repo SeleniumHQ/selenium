@@ -16,7 +16,7 @@
 # under the License.
 
 import os
-from base64 import b64decode
+from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 import pkgutil
 import warnings
@@ -30,17 +30,6 @@ from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
 
 from six import add_metaclass
-
-# Python 3 imports
-try:
-    str = basestring
-except NameError:
-    pass
-
-try:
-    from base64 import encodebytes
-except ImportError:  # Python 2
-    from base64 import encodestring as encodebytes
 
 
 # TODO: when dropping Python 2.7, use built in importlib_resources.files
