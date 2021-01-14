@@ -27,7 +27,7 @@ module Selenium
         class Persistent < Default
           def initialize(open_timeout: nil, read_timeout: nil)
             WebDriver.logger.deprecate("Selenium::WebDriver::Remote::Http::Persistent",
-                                       id: :http_persistent) {"The default HTTP client now uses persistence."}
+                                       id: :http_persistent) { "The default HTTP client now uses persistence." }
             super
           end
 
