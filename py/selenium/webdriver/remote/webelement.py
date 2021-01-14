@@ -31,9 +31,8 @@ from .command import Command
 
 from six import add_metaclass
 
-
-# TODO: when dropping Python 2.7, use built in importlib_resources.files
-# not relying on __package__ here as it can be `None` in some situations (see #4558)
+# TODO: When moving to supporting python 3.9 as the minimum version we can
+# use built in importlib_resources.files.
 _pkg = '.'.join(__name__.split('.')[:-1])
 getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
