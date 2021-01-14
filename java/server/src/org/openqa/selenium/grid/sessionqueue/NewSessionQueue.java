@@ -17,15 +17,23 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.grid.data.BrowserInfo;
+import org.openqa.selenium.grid.data.PlatformInfo;
 import org.openqa.selenium.grid.data.RequestId;
+import org.openqa.selenium.grid.data.VersionInfo;
 import org.openqa.selenium.internal.Require;
 
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class NewSessionQueue implements HasReadyState {
@@ -66,6 +74,40 @@ public abstract class NewSessionQueue implements HasReadyState {
     Duration duration = Duration.between(enque, deque);
 
     return duration.compareTo(requestTimeout) > 0;
+  }
+
+  protected Capabilities validateCaps(Capabilities caps) {
+    String browser = caps.getBrowserName().isEmpty() ? "ANY" : caps.getBrowserName();
+    Platform platform = caps.getPlatformName() == null ? Platform.ANY : caps.getPlatformName();
+    String version = caps.getBrowserVersion().isEmpty() ? "ANY" : caps.getBrowserVersion();
+
+    return new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, browser,
+      CapabilityType.PLATFORM_NAME, platform,
+      CapabilityType.BROWSER_VERSION, version);
+  }
+
+  protected void setCount(Capabilities caps, Map<String, BrowserInfo> browserInfoMap) {
+    String browser = caps.getBrowserName();
+    String platform = caps.getPlatformName().name();
+    String version = caps.getBrowserVersion();
+
+    // Set browser count
+    BrowserInfo browserInfo = browserInfoMap.getOrDefault(browser, new BrowserInfo(browser));
+    browserInfo.setCount(browserInfo.getCount() + 1);
+    browserInfoMap.putIfAbsent(browser, browserInfo);
+
+    // Set platform count
+    Map<String, PlatformInfo> platformMap = browserInfo.getPlatformInfoMap();
+    PlatformInfo platformInfo = platformMap.getOrDefault(platform, new PlatformInfo(platform));
+    platformInfo.setCount(platformInfo.getCount() + 1);
+    platformMap.putIfAbsent(platform, platformInfo);
+
+    // Set version count
+    Map<String, VersionInfo> versionMap = platformInfo.getVersionMap();
+    VersionInfo versionInfo = versionMap.getOrDefault(version, new VersionInfo(version));
+    versionInfo.setCount(versionInfo.getCount() + 1);
+    versionMap.putIfAbsent(version, versionInfo);
   }
 
   protected NewSessionQueue(Tracer tracer, Duration retryInterval, Duration requestTimeout) {

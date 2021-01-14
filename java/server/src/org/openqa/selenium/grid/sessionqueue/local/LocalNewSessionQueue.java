@@ -18,12 +18,9 @@
 package org.openqa.selenium.grid.sessionqueue.local;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.BrowserInfo;
-import org.openqa.selenium.grid.data.PlatformInfo;
-import org.openqa.selenium.grid.data.VersionInfo;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
 import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
@@ -54,8 +51,10 @@ import java.time.Duration;
 import java.util.Iterator;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -65,6 +64,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static org.openqa.selenium.remote.http.Contents.reader;
 
@@ -119,57 +119,35 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     readLock.lock();
     try {
       Map<String, BrowserInfo> browserCountMap = new HashMap<>();
-      sessionRequests.forEach(req -> {
-        HttpRequest httpRequest = req.getHttpRequest();
-        try (
-          Reader reader = reader(httpRequest);
-          NewSessionPayload payload = NewSessionPayload.create(reader)) {
 
-          Iterator<Capabilities> iterator = payload.stream().iterator();
-          Capabilities caps = iterator.next();
-
-          // Set browser count
-          String browserName = caps.getBrowserName();
-          if (browserName.isEmpty()) {
-            browserName = "ANY";
+      List<Capabilities> capabilitiesList = sessionRequests.stream()
+        .map(SessionRequest::getHttpRequest)
+        .map(req -> {
+          try (
+            Reader reader = reader(req);
+            NewSessionPayload payload = NewSessionPayload.create(reader)) {
+            return payload.stream().iterator();
+          } catch (IOException e) {
+            LOG.warning("IOException while mapping to capabilities");
           }
-          BrowserInfo browserInfo =
-            browserCountMap.getOrDefault(browserName, new BrowserInfo(browserName));
-          browserInfo.setCount(browserInfo.getCount() + 1);
+          return null;
+        })
+        .filter(Objects::nonNull)
+        .filter(Iterator::hasNext)
+        .map(Iterator::next)
+        .collect(Collectors.toList());
 
-          // Set platform count
-          Optional<Platform> platform = Optional.ofNullable(caps.getPlatformName());
-          String platformName = "ANY";
-          if (platform.isPresent()) {
-            platformName = platform.get().name();
-          }
-          Map<String, PlatformInfo> platformMap = browserInfo.getPlatformInfoMap();
-          PlatformInfo platformInfo = platformMap.getOrDefault(
-            platformName, new PlatformInfo(platformName));
-          platformInfo.setCount(platformInfo.getCount() + 1);
+      List<Capabilities> validCaps = capabilitiesList.stream()
+        .map(this::validateCaps)
+        .collect(Collectors.toList());
 
-          // Set version count
-          String version = caps.getBrowserVersion();
-          if (version.isEmpty()) {
-            version = "ANY";
-          }
-          Map<String, VersionInfo> versionMap = platformInfo.getVersionMap();
-          VersionInfo versionInfo = versionMap.getOrDefault(version, new VersionInfo(version));
-          versionInfo.setCount(versionInfo.getCount() + 1);
-          versionMap.put(version, versionInfo);
+      validCaps.forEach(caps -> setCount(caps, browserCountMap));
 
-          platformMap.put(platformName, platformInfo);
-          browserCountMap.put(browserName, browserInfo);
-        } catch (IOException e) {
-          LOG.warning("IOException while mapping to capabilities");
-        }
-      } );
-
-      StringBuilder text = new StringBuilder();
-      try (JsonOutput json = JSON.newOutput(text).setPrettyPrint(false)) {
+      StringBuilder response = new StringBuilder();
+      try (JsonOutput json = JSON.newOutput(response).setPrettyPrint(false)) {
         json.write(browserCountMap.values());
       }
-      return text.toString();
+      return response.toString();
     } finally {
       readLock.unlock();
     }
