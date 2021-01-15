@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.print;
 
+import org.openqa.selenium.internal.Require;
+
 public class PrintOptions {
 
   public enum Orientation {
@@ -36,7 +38,7 @@ public class PrintOptions {
   }
 
   public void setOrientation(Orientation orientation) {
-    this.orientation = orientation;
+    this.orientation = Require.nonNull("orientation", orientation);
   }
 
   public String[] getPageRanges() {
@@ -44,11 +46,11 @@ public class PrintOptions {
   }
 
   public void setPageRanges(String[] ranges) {
-    this.pageRanges = ranges;
+    this.pageRanges = Require.nonNull("pageRanges", ranges);
   }
 
   public void setBackground(boolean background) {
-    this.background = background;
+    this.background = Require.nonNull("background", background);
   }
 
   public boolean getBackground() {
@@ -71,15 +73,15 @@ public class PrintOptions {
   }
 
   public void setShrinkToFit(boolean value) {
-    this.shrinkToFit = value;
+    this.shrinkToFit = Require.nonNull("value", value);
   }
 
   public void setPageSize(PageSize pageSize) {
-    this.pageSize = pageSize;
+    this.pageSize = Require.nonNull("pageSize", pageSize);
   }
 
   public void setPageMargin(PageMargin margin) {
-    this.pageMargin = margin;
+    this.pageMargin = Require.nonNull("margin", margin);
   }
 
   public PageSize getPageSize() {
