@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -127,15 +128,14 @@ public class ByTest {
   }
 
   @Test
-  public void ensureClassNameIsSerializedProperly() {
-    // Although it's not legal, make sure we handle the case where people use spaces.
-    By by = By.className("one two");
-
-    Json json = new Json();
-    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
-
-    assertThat(blob.get("using")).isEqualTo("css selector");
-    assertThat(blob.get("value")).isEqualTo(".one .two");
+  public void ensureMultipleClassNamesAreNotAccepted() {
+    try {
+      By by = By.className("one two");
+    } catch (InvalidSelectorException ignore) {
+      // Expected
+    } catch (Exception e) {
+      fail("Multiple class names locator failed with a different exception, " + e);
+    }
   }
 
   @Test

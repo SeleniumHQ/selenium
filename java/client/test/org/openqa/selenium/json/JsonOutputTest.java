@@ -690,7 +690,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void onRequsetShouldNotWriteClassNamesIntoJson() {
+  public void onRequestShouldNotWriteClassNamesIntoJson() {
     class WithClassName {
       public String getCheese() {
         return "gouda";

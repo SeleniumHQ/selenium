@@ -74,12 +74,6 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
     setCapability(capabilityType, browserType);
   }
 
-  @Override
-  public T merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return (T) this;
-  }
-
   /**
    * Sets the path to the Chrome executable. This path should exist on the
    * machine which will launch Chrome. The path should either be absolute or

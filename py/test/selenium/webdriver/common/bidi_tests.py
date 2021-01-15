@@ -28,7 +28,7 @@ import pytest
 async def test_check_console_messages(driver, pages):
     pages.load("javascriptPage.html")
     from selenium.webdriver.common.bidi.console import Console
-    async with driver.add_listener(Console.ALL) as messages:
+    async with driver.log.add_listener(Console.ALL) as messages:
         driver.execute_script("console.log('I love cheese')")
     assert messages["message"] == "I love cheese"
 
@@ -39,7 +39,7 @@ async def test_check_console_messages(driver, pages):
 async def test_check_error_console_messages(driver, pages):
     pages.load("javascriptPage.html")
     from selenium.webdriver.common.bidi.console import Console
-    async with driver.add_listener(Console.ERROR) as messages:
+    async with driver.log.add_listener(Console.ERROR) as messages:
         driver.execute_script("console.error(\"I don't cheese\")")
         driver.execute_script("console.log('I love cheese')")
     assert messages["message"] == "I don't cheese"
@@ -50,7 +50,7 @@ async def test_check_error_console_messages(driver, pages):
 @pytest.mark.xfail_remote
 async def test_collect_js_exceptions(driver, pages):
     pages.load("javascriptPage.html")
-    async with driver.add_js_error_listener() as exceptions:
+    async with driver.log.add_js_error_listener() as exceptions:
         driver.find_element(By.ID, "throwing-mouseover").click()
     assert exceptions is not None
     assert exceptions.exception_details.stack_trace.call_frames[0].function_name == "onmouseover"
@@ -60,7 +60,7 @@ async def test_collect_js_exceptions(driver, pages):
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
 async def test_collect_log_mutations(driver, pages):
-    async with driver.log_mutation_events() as event:
+    async with driver.log.mutation_events() as event:
         pages.load("dynamic.html")
         driver.find_element(By.ID, "reveal").click()
         WebDriverWait(driver, 5, ignored_exceptions=InvalidSelectorException)\

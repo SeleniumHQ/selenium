@@ -57,10 +57,10 @@ module Selenium
       def window(id)
         if block_given?
           original = begin
-                       @bridge.window_handle
-                     rescue Error::NoSuchWindowError
-                       nil
-                     end
+            @bridge.window_handle
+          rescue Error::NoSuchWindowError
+            nil
+          end
 
           unless @bridge.window_handles.include? id
             raise Error::NoSuchWindowError, "The specified identifier '#{id}' is not found in the window handle list"

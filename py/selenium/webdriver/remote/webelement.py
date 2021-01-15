@@ -16,7 +16,7 @@
 # under the License.
 
 import os
-from base64 import b64decode
+from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 import pkgutil
 import warnings
@@ -29,29 +29,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
 
-from six import add_metaclass
 
-# Python 3 imports
-try:
-    str = basestring
-except NameError:
-    pass
-
-try:
-    from base64 import encodebytes
-except ImportError:  # Python 2
-    from base64 import encodestring as encodebytes
-
-
-# TODO: when dropping Python 2.7, use built in importlib_resources.files
-# not relying on __package__ here as it can be `None` in some situations (see #4558)
+# TODO: When moving to supporting python 3.9 as the minimum version we can
+# use built in importlib_resources.files.
 _pkg = '.'.join(__name__.split('.')[:-1])
 getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
-@add_metaclass(ABCMeta)
-class BaseWebElement(object):
+class BaseWebElement(metaclass=ABCMeta):
     """
     Abstract Base Class for WebElement.
     ABC's will allow custom types to be registered as a WebElement to pass type checks.

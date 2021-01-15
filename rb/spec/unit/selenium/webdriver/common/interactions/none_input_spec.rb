@@ -61,7 +61,8 @@ module Selenium
 
           it 'should contain an actions key with an array of actions' do
             allow(none).to receive(:no_actions?).and_return(false)
-            expect(none.actions).to receive(:map).and_return([1, 2, 3])
+            allow(none.actions).to receive(:map).and_return([1, 2, 3])
+
             expect(none.encode).to include(actions: [1, 2, 3])
           end
         end # when encoding

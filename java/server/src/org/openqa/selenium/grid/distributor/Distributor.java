@@ -67,6 +67,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -117,6 +118,8 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
  * </table>
  */
 public abstract class Distributor implements HasReadyState, Predicate<HttpRequest>, Routable {
+
+  private static final Logger LOG = Logger.getLogger(Distributor.class.getName());
 
   private final Route routes;
   protected final Tracer tracer;
@@ -173,7 +176,9 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
       Iterator<Capabilities> iterator = payload.stream().iterator();
       attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
-      span.addEvent("Session request received by the distributor", attributeMap);
+      String sessionReceivedMessage = "Session request received by the distributor";
+      span.addEvent(sessionReceivedMessage, attributeMap);
+      LOG.info(String.format("%s: \n %s", sessionReceivedMessage, payload));
 
       if (!iterator.hasNext()) {
         SessionNotCreatedException exception =
@@ -242,7 +247,9 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
         attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
 
-        span.addEvent("Session created by the distributor", attributeMap);
+        String sessionCreatedMessage = "Session created by the distributor";
+        span.addEvent(sessionCreatedMessage, attributeMap);
+        LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, caps));
         return Either.right(sessionResponse);
 
       } else {

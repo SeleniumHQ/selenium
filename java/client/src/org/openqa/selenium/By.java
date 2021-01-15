@@ -92,9 +92,8 @@ public abstract class By {
   }
 
   /**
-   * Find elements based on the value of the "class" attribute. If an element has multiple classes, then
-   * this will match against each of them. For example, if the value is "one two onone", then the
-   * class names "one" and "two" will match.
+   * Find elements based on the value of the "class" attribute. Only one class name should be
+   * used. If an element has multiple classes, please use {@link By#cssSelector(String)}.
    *
    * @param className The value of the "class" attribute to search for.
    * @return A By which locates elements by the value of the "class" attribute.
@@ -425,6 +424,9 @@ public abstract class By {
       if (className == null) {
         throw new IllegalArgumentException(
             "Cannot find elements when the class name expression is null.");
+      }
+      if (className.matches(".*\\s.*")) {
+        throw new InvalidSelectorException("Compound class names not permitted");
       }
 
       this.className = className;

@@ -94,7 +94,7 @@ public class NodeOptions {
     addDriverFactoriesFromConfig(sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
-    addDriverConfigs(maxSessions, factoryFactory, sessionFactories);
+    addDriverConfigs(factoryFactory, sessionFactories);
 
     return sessionFactories.build().asMap();
   }
@@ -154,13 +154,14 @@ public class NodeOptions {
   }
 
   private void addDriverConfigs(
-    int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory,
+    Function<Capabilities, Collection<SessionFactory>> factoryFactory,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
     Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
+    int configElements = 3;
     config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers -> {
-      if (drivers.size() % 2 != 0) {
-        throw new ConfigException("Expected each driver config to have two elements " +
-                                  "(name & stereotype)");
+      if (drivers.size() % configElements != 0) {
+        throw new ConfigException("Expected each driver config to have three elements " +
+                                  "(name, stereotype and max-sessions)");
       }
 
       drivers.stream()
@@ -174,11 +175,15 @@ public class NodeOptions {
         });
 
       List<Map<String, String>> driversMap = new ArrayList<>();
-      IntStream.range(0, drivers.size()/2).boxed()
+      IntStream.range(0, drivers.size()/configElements).boxed()
         .forEach(i -> {
           ImmutableMap<String, String> configMap = ImmutableMap.of(
-            drivers.get(i*2).split("=")[0], drivers.get(i*2).split("=")[1],
-            drivers.get(i*2+1).split("=")[0], drivers.get(i*2+1).split("=")[1]
+            drivers.get(i*configElements).split("=")[0],
+            drivers.get(i*configElements).split("=")[1],
+            drivers.get(i*configElements+1).split("=")[0],
+            drivers.get(i*configElements+1).split("=")[1],
+            drivers.get(i*configElements+2).split("=")[0],
+            drivers.get(i*configElements+2).split("=")[1]
           );
           driversMap.add(configMap);
         });
@@ -195,6 +200,8 @@ public class NodeOptions {
         }
         Capabilities stereotype = JSON.toType(configMap.get("stereotype"), Capabilities.class);
         String configName = configMap.getOrDefault("name", "Custom Slot Config");
+        int driverMaxSessions = Integer.parseInt(configMap.getOrDefault("max-sessions", "1"));
+        Require.positive("Driver max sessions", driverMaxSessions);
 
         WebDriverInfo info = infos.stream()
           .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
@@ -207,7 +214,8 @@ public class NodeOptions {
         builders.stream()
           .filter(builder -> builder.score(stereotype) > 0)
           .forEach(builder -> {
-            for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
+            int maxSessions = Math.min(info.getMaximumSimultaneousSessions(), driverMaxSessions);
+            for (int i = 0; i < maxSessions; i++) {
               driverConfigs.putAll(driverInfoConfig, factoryFactory.apply(stereotype));
             }
           });

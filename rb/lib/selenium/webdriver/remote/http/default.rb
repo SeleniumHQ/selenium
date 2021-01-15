@@ -28,8 +28,7 @@ module Selenium
         class Default < Common
           attr_writer :proxy
 
-          attr_accessor :open_timeout
-          attr_accessor :read_timeout
+          attr_accessor :open_timeout, :read_timeout
 
           # Initializes object.
           # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
@@ -39,6 +38,7 @@ module Selenium
           def initialize(open_timeout: nil, read_timeout: nil)
             @open_timeout = open_timeout
             @read_timeout = read_timeout
+            super()
           end
 
           def close

@@ -103,7 +103,7 @@ module Selenium
 
       def start_process
         @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
-        # Note: this is a bug only in Windows 7
+        # NOTE: this is a bug only in Windows 7
         @process.leader = true unless Platform.windows?
         @process.start
       end

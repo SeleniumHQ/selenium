@@ -94,7 +94,7 @@ module Selenium
             profile = Profile.new
             allow(profile).to receive(:encoded).and_return('encoded_profile')
 
-            expect(Profile).to receive(:from_name).with('foo').and_return(profile)
+            allow(Profile).to receive(:from_name).with('foo').and_return(profile)
             options.profile = 'foo'
             expect(options.profile).to eq(profile)
           end
@@ -140,7 +140,7 @@ module Selenium
 
           it 'converts to a json hash' do
             profile = Profile.new
-            expect(profile).to receive(:as_json).and_return('encoded_profile')
+            allow(profile).to receive(:as_json).and_return('encoded_profile')
 
             opts = Options.new(browser_version: '66',
                                platform_name: 'win10',

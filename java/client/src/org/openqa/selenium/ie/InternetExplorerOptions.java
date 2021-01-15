@@ -98,8 +98,10 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   @Override
   public InternetExplorerOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    InternetExplorerOptions newInstance = new InternetExplorerOptions();
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    return newInstance;
   }
 
   public InternetExplorerOptions withAttachTimeout(long duration, TimeUnit unit) {

@@ -76,8 +76,10 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
   @Override
   public OperaOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    OperaOptions newInstance = new OperaOptions();
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    return newInstance;
   }
 
   /**
