@@ -11,6 +11,8 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/server/src/org/openqa/selenium/grid/web",
         artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-api-common"),
+        artifact("io.opentelemetry:opentelemetry-api-trace"),
         artifact("io.opentelemetry:opentelemetry-sdk"),
         artifact("io.opentelemetry:opentelemetry-sdk-common"),
         artifact("io.opentelemetry:opentelemetry-sdk-trace"),
