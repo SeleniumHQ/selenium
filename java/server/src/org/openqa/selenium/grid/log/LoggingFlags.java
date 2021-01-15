@@ -24,7 +24,6 @@ import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
 
 import java.util.Set;
-import java.util.logging.Level;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 

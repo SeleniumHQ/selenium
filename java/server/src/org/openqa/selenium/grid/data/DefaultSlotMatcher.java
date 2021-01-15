@@ -19,10 +19,7 @@ package org.openqa.selenium.grid.data;
 
 import org.openqa.selenium.Capabilities;
 
-import java.util.AbstractMap;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Default matching implementation for slots, loosely based on the
