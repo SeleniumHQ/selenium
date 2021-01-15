@@ -55,6 +55,15 @@ module Selenium
       describe 'cookie management' do
         after { driver.manage.delete_all_cookies }
 
+        it 'should show http only when insecure' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'security',
+                                   value: 'insecure',
+                                   http_only: true
+
+          expect(driver.manage.cookie_named('security')[:http_only]).to eq true
+        end
+
         it 'should not show secure when insecure' do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'security',
