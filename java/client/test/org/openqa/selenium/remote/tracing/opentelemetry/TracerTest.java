@@ -17,20 +17,20 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
-import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.context.propagation.DefaultContextPropagators;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
-import io.opentelemetry.sdk.trace.TracerSdkManagement;
+import io.opentelemetry.sdk.trace.SdkTracerManagement;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.api.trace.propagation.HttpTraceContext;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -575,8 +575,8 @@ public class TracerTest {
   }
 
   private Tracer createTracer(List<SpanData> exportTo) {
-    TracerSdkManagement tracerSdkManagement = OpenTelemetrySdk.getGlobalTracerManagement();
-    tracerSdkManagement.addSpanProcessor(SimpleSpanProcessor.builder(new SpanExporter() {
+    SdkTracerManagement sdkTracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
+    sdkTracerManagement.addSpanProcessor(SimpleSpanProcessor.builder(new SpanExporter() {
       @Override
       public CompletableResultCode export(Collection<SpanData> spans) {
         exportTo.addAll(spans);
@@ -593,11 +593,11 @@ public class TracerTest {
       }
     }).build());
 
-    ContextPropagators propagators = DefaultContextPropagators.builder()
-      .addTextMapPropagator(HttpTraceContext.getInstance()).build();
+    ContextPropagators propagators = ContextPropagators.create(
+      TextMapPropagator.composite(W3CTraceContextPropagator.getInstance()));
 
     return new OpenTelemetryTracer(
-      OpenTelemetry.getGlobalTracer("get"),
+      GlobalOpenTelemetry.getTracer("test"),
       propagators.getTextMapPropagator());
   }
 }

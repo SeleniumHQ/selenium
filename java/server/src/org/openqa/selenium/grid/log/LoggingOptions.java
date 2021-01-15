@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
@@ -25,7 +25,7 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-import io.opentelemetry.sdk.trace.TracerSdkManagement;
+import io.opentelemetry.sdk.trace.SdkTracerManagement;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.SpanData.Event;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
@@ -136,8 +136,7 @@ public class LoggingOptions {
 
   private Tracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
-    TracerSdkManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
-
+    SdkTracerManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
     List<SpanProcessor> exporters = new LinkedList<>();
     exporters.add(SimpleSpanProcessor.builder(new SpanExporter() {
       @Override
@@ -201,7 +200,7 @@ public class LoggingOptions {
       TextMapPropagator.composite(W3CTraceContextPropagator.getInstance()));
 
     return new OpenTelemetryTracer(
-      OpenTelemetry.getGlobalTracer("default"),
+      GlobalOpenTelemetry.getTracer("default"),
       propagators.getTextMapPropagator());
   }
 

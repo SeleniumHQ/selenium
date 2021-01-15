@@ -3,7 +3,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
     netty_version = "4.1.53.Final"
-    opentelemetry_version = "0.12.0"
+    opentelemetry_version = "0.13.1"
 
     maven_install(
         artifacts = [
@@ -39,8 +39,21 @@ def selenium_java_deps():
             "io.netty:netty-transport-native-kqueue:%s" % netty_version,
             "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
             "io.netty:netty-transport-native-unix-common:%s" % netty_version,
-            "io.opentelemetry:opentelemetry-api:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-context:%s" % opentelemetry_version,
+             maven.artifact(
+                group = "io.opentelemetry",
+                artifact = "opentelemetry-api",
+                version = "0.13.1",
+                exclusions = [
+                    "io.opentelemetry:opentelemetry-api-trace",
+                    "io.opentelemetry:opentelemetry-api-common",
+                    "io.opentelemetry:opentelemetry-context",
+                    "io.opentelemetry:opentelemetry-api-baggage",
+                ],
+            ),
+            "io.opentelemetry:opentelemetry-api-baggage:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-api-trace:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-api-common:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-exporter-logging:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk-testing:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk:%s" % opentelemetry_version,
@@ -83,6 +96,10 @@ def selenium_java_deps():
             "org.hamcrest:hamcrest-all",  # Replaced by hamcrest 2
             "org.hamcrest:hamcrest-core",
             "io.netty:netty-all",  # Depend on the actual things you need
+            "io.opentelemetry:opentelemetry-api-trace",
+            "io.opentelemetry:opentelemetry-api-common",
+            "io.opentelemetry:opentelemetry-context",
+            "io.opentelemetry:opentelemetry-api-baggage",
         ],
         override_targets = {
             "org.seleniumhq.selenium:selenium-api": "@//java/client/src/org/openqa/selenium:core",
