@@ -41,7 +41,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox==2.4.1
       - name: Test with tox
-        run: tox -c py/tox.ini
+        run: |
+          cd py
+          tox -e docs
         env:
           TOXENV: docs
 
