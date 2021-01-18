@@ -57,6 +57,7 @@ java_export(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
+        "//java/client/src/org/openqa/selenium/print",
     ] + CDP_DEPS,
 )
 

@@ -15,40 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.firefox;
+package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.After;
-import org.junit.Test;
 import org.junit.Before;
-
-import org.openqa.selenium.Pdf;
+import org.junit.Test;
 import org.openqa.selenium.print.PageSize;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class FireFoxPrintCommandTest extends JUnit4TestBase {
-
-  private FirefoxDriver localDriver = new FirefoxDriver();
+public class PrintPageTest extends JUnit4TestBase {
   private static String MAGIC_STRING = "JVBER";
 
   @Before
   public void setUp() {
-    localDriver.get(pages.printPage);
-  }
-  @After
-  public void tearDown() {
-    if (localDriver != null) {
-      localDriver.quit();
-    }
+    driver.get(pages.printPage);
   }
 
   @Test
   public void canPrintPage() {
     PrintOptions printOptions = new PrintOptions();
 
-    Pdf pdf = localDriver.print(printOptions);
+    Pdf pdf = driver.print(printOptions);
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 
@@ -57,7 +46,7 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     PrintOptions printOptions = new PrintOptions();
     printOptions.setPageRanges(new String[]{"1-2"});
 
-    Pdf pdf = localDriver.print(printOptions);
+    Pdf pdf = driver.print(printOptions);
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 
@@ -71,7 +60,8 @@ public class FireFoxPrintCommandTest extends JUnit4TestBase {
     printOptions.setOrientation(PrintOptions.Orientation.Landscape);
     printOptions.setPageSize(pageSize);
 
-    Pdf pdf = localDriver.print(printOptions);
+    Pdf pdf = driver.print(printOptions);
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
+
 }
