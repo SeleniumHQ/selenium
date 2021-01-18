@@ -35,6 +35,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
+import org.openqa.selenium.Pdf;
 import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.HasTouchScreen;
@@ -165,6 +166,11 @@ public class EventFiringWebDriver implements
       return ((WrapsDriver) driver).getWrappedDriver();
     }
     return driver;
+  }
+
+  @Override
+  public Pdf print(Object printOptions) throws WebDriverException {
+    return driver.print(printOptions);
   }
 
   @Override

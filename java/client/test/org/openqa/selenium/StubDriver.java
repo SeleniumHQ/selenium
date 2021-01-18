@@ -123,4 +123,9 @@ public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen, J
   public Object executeAsyncScript(String script, Object... args) {
     throw new UnsupportedOperationException("executeAsyncScript");
   }
+
+  @Override
+  public Pdf print(Object printOptions) throws WebDriverException {
+    throw new UnsupportedOperationException("print");
+  }
 }
