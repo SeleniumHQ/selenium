@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,9 +28,12 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class PrintPageTest extends JUnit4TestBase {
   private static String MAGIC_STRING = "JVBER";
+  private PrintsPage printer;
 
   @Before
   public void setUp() {
+    assumeTrue(driver instanceof PrintsPage);
+    printer = (PrintsPage) driver;
     driver.get(pages.printPage);
   }
 
@@ -37,7 +41,7 @@ public class PrintPageTest extends JUnit4TestBase {
   public void canPrintPage() {
     PrintOptions printOptions = new PrintOptions();
 
-    Pdf pdf = driver.print(printOptions);
+    Pdf pdf = printer.print(printOptions);
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 
@@ -46,7 +50,7 @@ public class PrintPageTest extends JUnit4TestBase {
     PrintOptions printOptions = new PrintOptions();
     printOptions.setPageRanges(new String[]{"1-2"});
 
-    Pdf pdf = driver.print(printOptions);
+    Pdf pdf = printer.print(printOptions);
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 
@@ -60,7 +64,7 @@ public class PrintPageTest extends JUnit4TestBase {
     printOptions.setOrientation(PrintOptions.Orientation.Landscape);
     printOptions.setPageSize(pageSize);
 
-    Pdf pdf = driver.print(printOptions);
+    Pdf pdf = printer.print(printOptions);
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 

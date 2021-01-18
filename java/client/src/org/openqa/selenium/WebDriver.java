@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
-//import org.openqa.selenium.print.PrintOptions;
 
 import java.net.URL;
 import java.time.Duration;
@@ -68,7 +67,6 @@ public interface WebDriver extends SearchContext {
    */
   void get(String url);
 
-  Pdf print(Object options) throws WebDriverException;
   /**
    * Get a string representing the current URL that the browser is looking at.
    * <p>

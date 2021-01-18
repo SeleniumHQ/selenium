@@ -55,12 +55,13 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
+import org.openqa.selenium.Pdf;
+import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
-import org.openqa.selenium.Pdf;
 
 import java.net.URL;
 import java.time.Duration;
@@ -89,7 +90,7 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 @Augmentable
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputDevices,
                                         HasCapabilities, Interactive, TakesScreenshot,
-                                        HasVirtualAuthenticator {
+                                        HasVirtualAuthenticator, PrintsPage {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -327,8 +328,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   }
 
   @Override
-  public Pdf print(Object printOptions) throws WebDriverException {
-    Response response = execute(DriverCommand.PRINT_PAGE((PrintOptions) printOptions));
+  public Pdf print(PrintOptions printOptions) throws WebDriverException {
+    Response response = execute(DriverCommand.PRINT_PAGE(printOptions));
 
     Object result = response.getValue();
     return new Pdf((String) result);
