@@ -28,7 +28,9 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.SdkTracerManagement;
+import io.opentelemetry.sdk.trace.data.EventData;
 import io.opentelemetry.sdk.trace.data.SpanData;
+import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import org.junit.Test;
@@ -85,7 +87,7 @@ public class TracerTest {
 
     assertThat(values).hasSize(1);
     assertThat(values).element(0)
-        .extracting(SpanData::getStatus).extracting(SpanData.Status::getStatusCode).isEqualTo(
+        .extracting(SpanData::getStatus).extracting(StatusData::getStatusCode).isEqualTo(
         StatusCode.ERROR);
     assertThat(values).element(0)
         .extracting(el -> el.getAttributes().get(AttributeKey.stringKey("cheese"))).isEqualTo("gouda");
@@ -127,10 +129,10 @@ public class TracerTest {
     SpanData spanData = allSpans.get(0);
     assertThat(spanData.getEvents()).hasSize(1);
 
-    List<SpanData.Event> timedEvents = spanData.getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName)
+    List<EventData> timedEvents = spanData.getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName)
         .isEqualTo(event);
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getTotalAttributeCount)
+    assertThat(timedEvents).element(0).extracting(EventData::getTotalAttributeCount)
         .isEqualTo(0);
   }
 
@@ -150,12 +152,12 @@ public class TracerTest {
     SpanData spanData = allSpans.get(0);
     assertThat(spanData.getEvents()).hasSize(2);
 
-    List<SpanData.Event> timedEvents = spanData.getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName)
+    List<EventData> timedEvents = spanData.getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName)
         .isEqualTo(startEvent);
-    assertThat(timedEvents).element(1).extracting(SpanData.Event::getName)
+    assertThat(timedEvents).element(1).extracting(EventData::getName)
         .isEqualTo(endEvent);
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getTotalAttributeCount)
+    assertThat(timedEvents).element(0).extracting(EventData::getTotalAttributeCount)
         .isEqualTo(0);
   }
 
@@ -179,14 +181,14 @@ public class TracerTest {
     assertThat(allSpans).hasSize(2);
     SpanData httpSpanData = allSpans.get(0);
     assertThat(httpSpanData.getEvents()).hasSize(1);
-    List<SpanData.Event> httpTimedEvents = httpSpanData.getEvents();
-    assertThat(httpTimedEvents).element(0).extracting(SpanData.Event::getName)
+    List<EventData> httpTimedEvents = httpSpanData.getEvents();
+    assertThat(httpTimedEvents).element(0).extracting(EventData::getName)
         .isEqualTo(httpEvent);
 
     SpanData dbSpanData = allSpans.get(1);
     assertThat(dbSpanData.getEvents()).hasSize(1);
-    List<SpanData.Event> dbTimedEvents = dbSpanData.getEvents();
-    assertThat(dbTimedEvents).element(0).extracting(SpanData.Event::getName)
+    List<EventData> dbTimedEvents = dbSpanData.getEvents();
+    assertThat(dbTimedEvents).element(0).extracting(EventData::getName)
         .isEqualTo(databaseEvent);
   }
 
@@ -207,8 +209,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -233,8 +235,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -256,8 +258,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -282,8 +284,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -305,8 +307,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -331,8 +333,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -354,8 +356,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -380,8 +382,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -405,8 +407,8 @@ public class TracerTest {
     }
 
     assertThat(allSpans).hasSize(1);
-    List<SpanData.Event> timedEvents = allSpans.get(0).getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = allSpans.get(0).getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 
@@ -439,8 +441,8 @@ public class TracerTest {
     SpanData spanData = allSpans.get(0);
     assertThat(spanData.getEvents()).hasSize(1);
 
-    List<SpanData.Event> timedEvents = spanData.getEvents();
-    assertThat(timedEvents).element(0).extracting(SpanData.Event::getName).isEqualTo(event);
+    List<EventData> timedEvents = spanData.getEvents();
+    assertThat(timedEvents).element(0).extracting(EventData::getName).isEqualTo(event);
     assertThat(timedEvents.get(0).getAttributes()).isEqualTo(attributes.build());
   }
 

@@ -26,8 +26,9 @@ import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.SdkTracerManagement;
+import io.opentelemetry.sdk.trace.data.EventData;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import io.opentelemetry.sdk.trace.data.SpanData.Event;
+import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import org.openqa.selenium.grid.config.Config;
@@ -147,8 +148,8 @@ public class LoggingOptions {
 
           String traceId = span.getTraceId();
           String spanId = span.getSpanId();
-          SpanData.Status status = span.getStatus();
-          List<Event> eventList = span.getEvents();
+          StatusData status = span.getStatus();
+          List<EventData> eventList = span.getEvents();
           eventList.forEach(event -> {
             Map<String, Object> map = new HashMap<>();
             map.put("eventTime", event.getEpochNanos());
