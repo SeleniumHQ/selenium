@@ -182,7 +182,9 @@ module Selenium
           prefs = read_user_prefs(path).merge(@additional_prefs)
 
           # If the user sets the home page, we should also start up there
-          prefs['startup.homepage_welcome_url'] = prefs['browser.startup.homepage']
+          if prefs['browser.startup.homepage']
+            prefs['startup.homepage_welcome_url'] ||= prefs['browser.startup.homepage']
+          end
 
           write_prefs prefs, path
         end
