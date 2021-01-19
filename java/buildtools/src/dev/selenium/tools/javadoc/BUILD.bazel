@@ -12,7 +12,7 @@ java_binary(
         "//visibility:public",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/io",
         "//java/buildtools/src/dev/selenium/tools/zip",
+        "//java/client/src/org/openqa/selenium/io",
     ],
 )

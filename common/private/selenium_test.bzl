@@ -1,11 +1,12 @@
 load(
-  "//java:browsers.bzl",
-  "chrome_data",
-  "chrome_jvm_flags",
-  "edge_data",
-  "edge_jvm_flags",
-  "firefox_data",
-  "firefox_jvm_flags")
+    "//java:browsers.bzl",
+    "chrome_data",
+    "chrome_jvm_flags",
+    "edge_data",
+    "edge_jvm_flags",
+    "firefox_data",
+    "firefox_jvm_flags",
+)
 
 DEFAULT_BROWSER = "firefox"
 

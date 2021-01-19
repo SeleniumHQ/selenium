@@ -31,7 +31,7 @@ public class %s {
     return [
         DefaultInfo(
             files = depset([src_file]),
-        )
+        ),
     ]
 
 _write_suite = rule(
@@ -39,7 +39,7 @@ _write_suite = rule(
     attrs = {
         "package": attr.string(),
         "suite_name": attr.string(),
-        "test_classes": attr.string_list()
+        "test_classes": attr.string_list(),
     },
 )
 
@@ -94,7 +94,7 @@ def _generate_common_targets(
         srcs = srcs,
         deps = deps,
         tags = tags,
-        **libargs,
+        **libargs
     )
 
     _write_suite(
@@ -103,7 +103,6 @@ def _generate_common_targets(
         suite_name = suite_name,
         test_classes = test_classes,
     )
-
 
 def java_test_suite(
         name,
@@ -127,7 +126,7 @@ def java_test_suite(
         deps,
         tags,
         test_identifiers,
-        **kwargs,
+        **kwargs
     )
 
     # Skip linting for the generated test suite
@@ -139,7 +138,7 @@ def java_test_suite(
         deps = deps + ["%s-suite-lib" % name],
         shard_count = len(test_classes),
         tags = tags + additional_tags,
-        **kwargs,
+        **kwargs
     )
 
 def java_selenium_test_suite(
@@ -178,5 +177,5 @@ def java_selenium_test_suite(
         deps = deps + ["%s-suite-lib" % name],
         data = data,
         jvm_flags = jvm_flags,
-        tags = tags
+        tags = tags,
     )

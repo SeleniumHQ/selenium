@@ -4,7 +4,7 @@ package(default_visibility = ["//visibility:public"])
 
 bool_flag(
     name = "pin_browsers",
-    build_setting_default = False
+    build_setting_default = False,
 )
 
 config_setting(
@@ -78,14 +78,22 @@ config_setting(
     [
         config_setting(
             name = "use_pinned_%s_%s" % (platform, browser),
-            flag_values = {
-                ":pin_browsers": "true",
-            },
             constraint_values = [
                 "@platforms//os:%s" % platform,
             ],
+            flag_values = {
+                ":pin_browsers": "true",
+            },
         )
-
-        for platform in ["linux", "macos", "windows"]]
-
-    for browser in ["chrome", "edge", "firefox"]]
+        for platform in [
+            "linux",
+            "macos",
+            "windows",
+        ]
+    ]
+    for browser in [
+        "chrome",
+        "edge",
+        "firefox",
+    ]
+]

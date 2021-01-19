@@ -25,16 +25,18 @@ def _spotbugs_impl(ctx):
         jars = depset(transitive = [target[JavaInfo].transitive_runtime_deps for target in ctx.attr.deps if JavaInfo in target]).to_list()
 
     flags = ["-textui", "-effort:%s" % effort]
-#    flags = ["-textui", "-xml", "-effort:%s" % effort]
+
+    #    flags = ["-textui", "-xml", "-effort:%s" % effort]
     if exclude_filter:
         flags.extend(["-exclude", exclude_filter.short_path])
 
     test = [
         "#!/usr/bin/env bash",
         "RES=`{lib} {flags} {jars} 2>/dev/null`".format(
-            lib=ctx.executable._spotbugs_cli.short_path,
-            flags=" ".join(flags),
-            jars=" ".join([jar.short_path for jar in jars])),
+            lib = ctx.executable._spotbugs_cli.short_path,
+            flags = " ".join(flags),
+            jars = " ".join([jar.short_path for jar in jars]),
+        ),
         "echo \"$RES\"",
     ]
 
@@ -42,7 +44,7 @@ def _spotbugs_impl(ctx):
         test.extend([
             "if [ -n \"$RES\" ]; then",
             "   exit 1",
-            "fi"
+            "fi",
         ])
 
     out = ctx.actions.declare_file(ctx.label.name + "exec")
@@ -61,16 +63,16 @@ def _spotbugs_impl(ctx):
     return [
         DefaultInfo(
             executable = out,
-            runfiles = runfiles.merge(ctx.attr._spotbugs_cli[DefaultInfo].default_runfiles)
-        )
-     ]
+            runfiles = runfiles.merge(ctx.attr._spotbugs_cli[DefaultInfo].default_runfiles),
+        ),
+    ]
 
 spotbugs_test = rule(
     implementation = _spotbugs_impl,
     attrs = {
         "deps": attr.label_list(
             mandatory = True,
-            allow_files = False
+            allow_files = False,
         ),
         "config": attr.label(
             providers = [
@@ -80,7 +82,7 @@ spotbugs_test = rule(
         "effort": attr.string(
             doc = "Effort can be min, less, default, more or max. Defaults to default",
             values = ["min", "less", "default", "more", "max"],
-            default = "default"
+            default = "default",
         ),
         "only_output_jars": attr.bool(
             doc = "If set to true, only the output jar of the target will be analyzed. Otherwise all transitive runtime dependencies will be analyzed",

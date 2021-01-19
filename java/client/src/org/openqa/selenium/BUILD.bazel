@@ -26,7 +26,6 @@ java_export(
         "net/*.java",
         "virtualauthenticator/*.java",
         "print/*.java",
-
     ]),
     hides = [
         "org.openqa.selenium.interactions.internal",

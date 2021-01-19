@@ -36,7 +36,6 @@ def _nuget_push_impl(ctx):
         output_file,
     ]))
 
-
 nuget_push = rule(
     implementation = _nuget_push_impl,
     attrs = {
@@ -66,7 +65,6 @@ def _get_relative_destination_file(src_file):
             break
     return "{}/{}".format(framework_dir, src_file.basename)
 
-
 def _stage_files_for_packaging(ctx, staging_dir):
     src_list = []
     for dep in ctx.attr.deps:
@@ -75,7 +73,7 @@ def _stage_files_for_packaging(ctx, staging_dir):
         src_list.append((src_file, relative_dest_file))
         if (ctx.attr.create_symbol_package):
             symbol_file = dep.default_runfiles.files.to_list()[0]
-            relative_dest_symbol_file =_get_relative_destination_file(symbol_file)
+            relative_dest_symbol_file = _get_relative_destination_file(symbol_file)
             src_list.append((symbol_file, relative_dest_symbol_file))
 
     return copy_files(ctx, src_list, staging_dir, ctx.attr.is_windows)

@@ -48,7 +48,7 @@ def _merged_assembly_impl(ctx):
     )
 
     runfiles = ctx.runfiles(
-        files = [output_pdb]
+        files = [output_pdb],
     )
 
     for dep in ctx.files.deps:

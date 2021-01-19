@@ -40,7 +40,7 @@ def selenium_java_deps():
             "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
             "io.netty:netty-transport-native-unix-common:%s" % netty_version,
             "io.opentelemetry:opentelemetry-context:%s" % opentelemetry_version,
-             maven.artifact(
+            maven.artifact(
                 group = "io.opentelemetry",
                 artifact = "opentelemetry-api",
                 version = "0.13.1",
