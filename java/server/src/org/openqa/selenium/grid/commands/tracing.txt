@@ -15,7 +15,7 @@ on macOS or Linux:
 ```
   java -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporters-jaeger:0.13.1 \
+          io.opentelemetry:opentelemetry-exporter-jaeger:0.13.1 \
           io.grpc:grpc-netty:1.33.1) \
        standalone
 ```
