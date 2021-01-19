@@ -16,6 +16,9 @@ SMALL_TESTS = [
     "ProxyTest.java",
     "RequireTest.java",
     "WebDriverExceptionTest.java",
+    "print/PrintOptionsTest.java",
+    "print/PageMarginTest.java",
+    "print/PageSizeTest.java"
 ]
 
 java_test_suite(

@@ -170,6 +170,10 @@ public final class Require {
     return number;
   }
 
+  public static double positive(String argName, double number) {
+    return positive(argName, number, null);
+  }
+
   public static int positive(String argName, Integer number) {
     return positive(argName, number, null);
   }

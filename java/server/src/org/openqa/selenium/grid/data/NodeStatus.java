@@ -44,7 +44,7 @@ public class NodeStatus {
   public NodeStatus(
       NodeId nodeId,
       URI externalUri,
-      Integer maxSessionCount,
+      int maxSessionCount,
       Set<Slot> slots,
       Availability availability) {
     this.nodeId = Require.nonNull("Node id", nodeId);

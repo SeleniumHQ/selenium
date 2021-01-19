@@ -25,6 +25,8 @@ java_export(
         "mobile/*.java",
         "net/*.java",
         "virtualauthenticator/*.java",
+        "print/*.java",
+
     ]),
     hides = [
         "org.openqa.selenium.interactions.internal",
@@ -57,7 +59,6 @@ java_export(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
-        "//java/client/src/org/openqa/selenium/print",
     ] + CDP_DEPS,
 )
 

@@ -18,6 +18,8 @@
 package org.openqa.selenium.print;
 
 
+import org.openqa.selenium.internal.Require;
+
 public class PageSize {
 
   private double height;
@@ -37,10 +39,10 @@ public class PageSize {
   }
 
   public void setHeight(double height) {
-    this.height = height;
+    this.height = Require.positive("height", height);
   }
 
   public void setWidth(double width) {
-    this.width = width;
+    this.width = Require.positive("width", width);
   }
 }

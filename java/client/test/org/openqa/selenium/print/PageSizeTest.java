@@ -29,8 +29,8 @@ import org.openqa.selenium.testing.UnitTests;
 public class PageSizeTest {
 
   // Defaults assertion
-  private static double HEIGHT = 21.59;
-  private static double WIDTH = 27.94;
+  private static final double HEIGHT = 21.59;
+  private static final double WIDTH = 27.94;
 
   @Test
   public void setsDefaultHeightWidth() {

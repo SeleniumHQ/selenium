@@ -29,10 +29,10 @@ import org.openqa.selenium.testing.UnitTests;
 public class PageMarginTest {
 
   // Defaults assertion
-  private static double TOP = 1.0;
-  private static double BOTTOM = 1.0;
-  private static double LEFT = 1.0;
-  private static double RIGHT = 1.0;
+  private static final double TOP = 1.0;
+  private static final double BOTTOM = 1.0;
+  private static final double LEFT = 1.0;
+  private static final double RIGHT = 1.0;
 
   @Test
   public void setsDefaultMarginValues() {

@@ -27,7 +27,7 @@ import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class PrintPageTest extends JUnit4TestBase {
-  private static String MAGIC_STRING = "JVBER";
+  private static final String MAGIC_STRING = "JVBER";
   private PrintsPage printer;
 
   @Before
