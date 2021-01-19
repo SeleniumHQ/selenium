@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.docker;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import org.openqa.selenium.Capabilities;
@@ -115,8 +114,7 @@ public class DockerOptions {
     Docker docker = new Docker(client);
 
     if (!isEnabled(docker)) {
-      LOG.warning("Unable to reach the Docker daemon.");
-      return ImmutableMap.of();
+      throw new DockerException("Unable to reach the Docker daemon at " + getDockerUri());
     }
 
     DockerAssetsPath assetsPath = getAssetsPath(docker);
