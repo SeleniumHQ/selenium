@@ -26,7 +26,7 @@ public class PageSize {
   private double width;
 
   public PageSize() {
-    // Initialize with defaults
+    // Initialize with defaults. A4 paper size defaults in cms.
     this.height = 21.59;
     this.width = 27.94;
   }

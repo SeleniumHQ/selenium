@@ -48,7 +48,7 @@ public class PrintPageTest extends JUnit4TestBase {
   @Test
   public void canPrintwoPages() {
     PrintOptions printOptions = new PrintOptions();
-    printOptions.setPageRanges(new String[]{"1-2"});
+    printOptions.setPageRanges("1-2");
 
     Pdf pdf = printer.print(printOptions);
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
@@ -60,7 +60,7 @@ public class PrintPageTest extends JUnit4TestBase {
     PageSize pageSize = new PageSize();
     pageSize.setWidth(30.0);
 
-    printOptions.setPageRanges(new String[]{"1-2"});
+    printOptions.setPageRanges("1-2");
     printOptions.setOrientation(PrintOptions.Orientation.Landscape);
     printOptions.setPageSize(pageSize);
 

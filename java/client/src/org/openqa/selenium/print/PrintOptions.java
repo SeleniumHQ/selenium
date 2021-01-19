@@ -45,8 +45,15 @@ public class PrintOptions {
     return this.pageRanges;
   }
 
-  public void setPageRanges(String[] ranges) {
-    this.pageRanges = Require.nonNull("pageRanges", ranges);
+  public void setPageRanges(String firstRange, String ... ranges) {
+    Require.nonNull("pageRanges", firstRange);
+    this.pageRanges = new String[ranges.length + 1]; // Need to add all ranges and the initial range too.
+
+    this.pageRanges[0] = firstRange;
+
+    for (int i = 1; i < ranges.length; i++) {
+      this.pageRanges[i] = ranges[i - 1];
+    }
   }
 
   public void setBackground(boolean background) {

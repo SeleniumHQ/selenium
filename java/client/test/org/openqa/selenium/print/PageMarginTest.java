@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.openqa.selenium.print.PageMargin;
 import org.openqa.selenium.testing.UnitTests;
 
 
