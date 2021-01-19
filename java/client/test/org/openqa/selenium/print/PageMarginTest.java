@@ -42,18 +42,4 @@ public class PageMarginTest {
     assertThat(pageMargin.getLeft()).isEqualTo(LEFT);
     assertThat(pageMargin.getRight()).isEqualTo(RIGHT);
   }
-
-  @Test
-  public void setsVauesAsPassed() {
-    PageMargin pageMargin = new PageMargin();
-    pageMargin.setBottom(2.0);
-    pageMargin.setTop(3.0);
-    pageMargin.setLeft(1.0);
-    pageMargin.setRight(2.0);
-
-    assertThat(pageMargin.getTop()).isEqualTo(3.0);
-    assertThat(pageMargin.getBottom()).isEqualTo(2.0);
-    assertThat(pageMargin.getLeft()).isEqualTo(1.0);
-    assertThat(pageMargin.getRight()).isEqualTo(2.0);
-  }
 }
