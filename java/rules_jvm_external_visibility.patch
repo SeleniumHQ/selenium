@@ -20,6 +20,20 @@ index 10e439c..85d183f 100644
      label_to_javainfo = {target.label: target[JavaInfo]}
  
      gathered = _gathered(
+diff --git a/private/rules/pom_file.bzl b/private/rules/pom_file.bzl
+index b549275..f91f6fe 100644
+--- a/private/rules/pom_file.bzl
++++ b/private/rules/pom_file.bzl
+@@ -26,6 +26,9 @@ def _explode_coordinates(coords):
+     if len(parts) == 4:
+         # Assume a buildr coordinate: groupId:artifactId:type:version
+         return (parts[0], parts[1], parts[3], parts[2])
++    if len(parts) == 5:
++        # Assume groupId:artifactId:type:classifier:version
++        return (parts[0], parts[1], parts[4], parts[2], parts[3])
+ 
+     fail("Unparsed: %s" % coords)
+ 
 diff --git a/private/tools/java/rules/jvm/external/zip/BUILD b/private/tools/java/rules/jvm/external/zip/BUILD
 index 58778d6..6bf4fd2 100644
 --- a/private/tools/java/rules/jvm/external/zip/BUILD

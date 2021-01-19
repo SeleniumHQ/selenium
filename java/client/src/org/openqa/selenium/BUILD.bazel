@@ -61,12 +61,12 @@ java_export(
     ] + CDP_DEPS,
 )
 
-javadoc(
-    name = "core-docs",
-    deps = [
-        ":core",
-    ],
-)
+#javadoc(
+#    name = "core-docs",
+#    deps = [
+#        ":core",
+#    ],
+#)
 
 java_dist_zip(
     name = "client-zip",
