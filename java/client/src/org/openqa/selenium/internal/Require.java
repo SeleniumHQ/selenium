@@ -159,6 +159,21 @@ public final class Require {
     return number;
   }
 
+  public static double positive(String argName, double number, String message) {
+    if (number <= 0) {
+      if (message == null) {
+        throw new IllegalArgumentException(argName + " must be greater than 0");
+      } else {
+        throw new IllegalArgumentException(message);
+      }
+    }
+    return number;
+  }
+
+  public static double positive(String argName, double number) {
+    return positive(argName, number, null);
+  }
+
   public static int positive(String argName, Integer number) {
     return positive(argName, number, null);
   }

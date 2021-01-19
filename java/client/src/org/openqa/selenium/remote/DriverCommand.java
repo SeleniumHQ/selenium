@@ -25,6 +25,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.print.PrintOptions;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -226,6 +227,11 @@ public interface DriverCommand {
   String SET_ALERT_CREDENTIALS = "setAlertCredentials";
 
   String SET_TIMEOUT = "setTimeout";
+
+  String PRINT_PAGE = "printPage";
+  static CommandPayload PRINT_PAGE(PrintOptions options) {
+    return new CommandPayload(PRINT_PAGE, ImmutableMap.of("options", options));
+  }
 
   @Deprecated
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(long time, TimeUnit unit) {
