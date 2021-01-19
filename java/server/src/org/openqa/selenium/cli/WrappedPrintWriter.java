@@ -37,7 +37,7 @@ public class WrappedPrintWriter extends PrintWriter {
 
   public WrappedPrintWriter(Writer out, int lineLength, int indentBy) {
     super(out);
-    this.lineLength = Require.argument("Line length", lineLength).greaterThan(9, "Lines must be 10 or more characters");
+    this.lineLength = Require.argument(lineLength).greaterThan(9, "Lines must be 10 or more characters");
     this.indentBy = Require.nonNegative("An indent", indentBy);
 
   }
