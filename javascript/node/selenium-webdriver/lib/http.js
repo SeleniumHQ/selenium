@@ -234,7 +234,14 @@ const COMMAND_MAP = new Map([
   ],
   [cmd.Name.SUBMIT_ELEMENT, post('/session/:sessionId/element/:id/submit')],
   [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
-  [cmd.Name.GET_COMPUTED_ROLE, get('/session/:sessionId/element/:id/computedrole')],
+  [
+    cmd.Name.GET_COMPUTED_ROLE,
+    get('/session/:sessionId/element/:id/computedrole'),
+  ],
+  [
+    cmd.Name.GET_COMPUTED_LABEL,
+    get('/session/:sessionId/element/:id/computedlabel'),
+  ],
   [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
   [
     cmd.Name.IS_ELEMENT_SELECTED,
@@ -403,7 +410,14 @@ const W3C_COMMAND_MAP = new Map([
     post('/session/:sessionId/element/:id/value'),
   ],
   [cmd.Name.GET_ELEMENT_TEXT, get('/session/:sessionId/element/:id/text')],
-  [cmd.Name.GET_COMPUTED_ROLE, get('/session/:sessionId/element/:id/computedrole')],
+  [
+    cmd.Name.GET_COMPUTED_ROLE,
+    get('/session/:sessionId/element/:id/computedrole'),
+  ],
+  [
+    cmd.Name.GET_COMPUTED_LABEL,
+    get('/session/:sessionId/element/:id/computedlabel'),
+  ],
   [cmd.Name.IS_ELEMENT_ENABLED, get('/session/:sessionId/element/:id/enabled')],
   [
     cmd.Name.GET_ELEMENT_ATTRIBUTE,

@@ -141,6 +141,7 @@ const Name = {
 
   GET_ELEMENT_TEXT: 'getElementText',
   GET_COMPUTED_ROLE: 'getAriaRole',
+  GET_COMPUTED_LABEL: 'getAccessibleName',
   GET_ELEMENT_TAG_NAME: 'getElementTagName',
   IS_ELEMENT_SELECTED: 'isElementSelected',
   IS_ELEMENT_ENABLED: 'isElementEnabled',
