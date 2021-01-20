@@ -137,23 +137,18 @@ public class NewSessionCreationTest {
       uri,
       uri,
       registrationSecret)
-      .add(Browser.detect().getCapabilities(), new TestSessionFactory((id, caps) -> new Session(id, uri, Browser.detect().getCapabilities(), caps, Instant.now())))
+      .add(
+        Browser.detect().getCapabilities(),
+        new TestSessionFactory(
+          (id, caps) ->
+            new Session(id, uri, Browser.detect().getCapabilities(), caps, Instant.now())))
       .build();
     distributor.add(node);
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
-    // Attempt to create a session without setting the content type
-    HttpResponse res = client.execute(
-      new HttpRequest(POST, "/session")
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "capabilities", ImmutableMap.of(
-            "alwaysMatch", Browser.detect().getCapabilities())))));
-
-    assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
-
     // Attempt to create a session with an origin header but content type set
-    res = client.execute(
+    HttpResponse res = client.execute(
       new HttpRequest(POST, "/session")
         .addHeader("Content-Type", JSON_UTF_8)
         .addHeader("Origin", "localhost")
