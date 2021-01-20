@@ -135,18 +135,20 @@ public final class Require {
     return arg;
   }
 
-  public static int nonNegative(String argName, int number) {
+  public static int nonNegative(String argName, Integer number) {
+    if (number == null) {
+      throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
+    }
     if (number < 0) {
       throw new IllegalArgumentException(argName + " cannot be less than 0");
     }
     return number;
   }
 
-  public static int positive(String argName, int number) {
-    return positive(argName, number, null);
-  }
-
-  public static int positive(String argName, int number, String message) {
+  public static int positive(String argName, Integer number, String message) {
+    if (number == null) {
+      throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
+    }
     if (number <= 0) {
       if (message == null) {
         throw new IllegalArgumentException(argName + " must be greater than 0");
@@ -157,11 +159,7 @@ public final class Require {
     return number;
   }
 
-  public static double positive(String argName, double number) {
-    return positive(argName, number, null);
-  }
-
-  public static double positive(String argName, double number, String message) {
+  public static double positive(String argName, Double number, String message) {
     if (number <= 0) {
       if (message == null) {
         throw new IllegalArgumentException(argName + " must be greater than 0");
@@ -172,19 +170,32 @@ public final class Require {
     return number;
   }
 
-  public static IntChecker argument(int number) {
-    return new IntChecker(number);
+  public static double positive(String argName, Double number) {
+    return positive(argName, number, null);
+  }
+
+  public static int positive(String argName, Integer number) {
+    return positive(argName, number, null);
+  }
+
+  public static IntChecker argument(String argName, Integer number) {
+    return new IntChecker(argName, number);
   }
 
   public static class IntChecker {
 
-    private final int number;
+    private final String argName;
+    private final Integer number;
 
-    IntChecker(int number) {
+    IntChecker(String argName, Integer number) {
+      this.argName = argName;
       this.number = number;
     }
 
     public int greaterThan(int max, String message) {
+      if (number == null) {
+        throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
+      }
       if (number <= max) {
         throw new IllegalArgumentException(message);
       }

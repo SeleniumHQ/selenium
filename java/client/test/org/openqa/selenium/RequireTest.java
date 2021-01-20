@@ -159,12 +159,12 @@ public class RequireTest {
   @Test
   public void canCheckIntegerArgumentWithCheckerObject() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.argument((Integer) null).greaterThan(5, "It should be longer"))
+        .isThrownBy(() -> Require.argument("Timeout", (Integer) null).greaterThan(5, "It should be longer"))
         .withMessage("Timeout must be set");
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> Require.argument( 3).greaterThan(5, "It should be longer"))
+        .isThrownBy(() -> Require.argument("Timeout", 3).greaterThan(5, "It should be longer"))
         .withMessage("It should be longer");
-    assertThat(Require.argument(10).greaterThan(5, "It should be longer")).isEqualTo(10);
+    assertThat(Require.argument("Timeout", 10).greaterThan(5, "It should be longer")).isEqualTo(10);
   }
 
   @Test
