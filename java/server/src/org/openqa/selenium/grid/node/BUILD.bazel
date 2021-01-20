@@ -21,8 +21,8 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/node/locators",
         "//java/server/src/org/openqa/selenium/grid/security",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//java/server/src/org/openqa/selenium/status",
         "//java/server/src/org/openqa/selenium/remote/server/jmx",
+        "//java/server/src/org/openqa/selenium/status",
         artifact("com.google.guava:guava"),
     ],
 )

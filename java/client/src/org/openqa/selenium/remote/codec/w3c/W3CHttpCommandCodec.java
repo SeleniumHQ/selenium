@@ -73,6 +73,7 @@ import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
+import static org.openqa.selenium.remote.DriverCommand.PRINT_PAGE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -153,6 +154,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(DISMISS_ALERT, post(alert + "/dismiss"));
     defineCommand(GET_ALERT_TEXT, get(alert + "/text"));
     defineCommand(SET_ALERT_VALUE, post(alert + "/text"));
+
+    defineCommand(PRINT_PAGE, post(sessionId + "/print"));
 
     defineCommand(UPLOAD_FILE, post(sessionId + "/se/file"));
 

@@ -7,8 +7,8 @@ java_library(
     resources = glob(["*.txt"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
-        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
         "//java/server/test/org/openqa/selenium/grid/gridui:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     runtime_deps = [
         "//java/server/src/org/openqa/selenium/events/local",
@@ -34,9 +34,9 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
-        "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
-        "//java/server/src/org/openqa/selenium/grid/sessionqueue/config",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/config",
+        "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),

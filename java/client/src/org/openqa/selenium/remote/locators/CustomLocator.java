@@ -18,17 +18,6 @@
 package org.openqa.selenium.remote.locators;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsDriver;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * Allows servers to add additional locator strategies to the Selenium
@@ -37,8 +26,6 @@ import java.util.List;
  * and calls it in the context of the server.
  */
 public abstract class CustomLocator {
-
-  private static final Json JSON = new Json();
 
   /**
    * @return The locator name, which is the value of the {@code using}

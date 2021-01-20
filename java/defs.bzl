@@ -1,8 +1,9 @@
 load(
-  "@rules_java//java:defs.bzl",
-  _java_binary = "java_binary",
-  _java_import = "java_import",
-  _java_test = "java_test")
+    "@rules_java//java:defs.bzl",
+    _java_binary = "java_binary",
+    _java_import = "java_import",
+    _java_test = "java_test",
+)
 load("@rules_jvm_external//:defs.bzl", _artifact = "artifact")
 load("//java/private:dist_zip.bzl", _java_dist_zip = "java_dist_zip")
 load("//java/private:library.bzl", _java_export = "java_export", _java_library = "java_library")

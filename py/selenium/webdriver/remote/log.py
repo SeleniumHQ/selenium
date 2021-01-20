@@ -193,7 +193,7 @@ class Log():
             debugger_address = self.driver.caps.get(f"{self.driver.vendor_prefix}:{self.driver.caps.get('browserName')}Options").get("debuggerAddress")
         else:
             _firefox = True
-            debugger_address = self.caps.get("moz:debuggerAddress")
+            debugger_address = self.driver.caps.get("moz:debuggerAddress")
         res = http.request('GET', f"http://{debugger_address}/json/version")
         data = json.loads(res.data)
 

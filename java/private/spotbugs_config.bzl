@@ -12,7 +12,7 @@ def _spotbugs_config_impl(ctx):
             effort = ctx.attr.effort,
             exclude_filter = ctx.file.exclude_filter,
             fail_on_warning = ctx.attr.fail_on_warning,
-        )
+        ),
     ]
 
 spotbugs_config = rule(
@@ -34,5 +34,5 @@ spotbugs_config = rule(
     },
     provides = [
         SpotBugsInfo,
-    ]
+    ],
 )

@@ -32,7 +32,7 @@ pkg_npm(
         "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
-        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener"
+        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
     ],
 )
 
@@ -59,7 +59,7 @@ nodejs_binary(
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
         "//javascript/node/selenium-webdriver/lib/atoms:find-elements",
-        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener"
+        "//javascript/node/selenium-webdriver/lib/atoms:mutation-listener",
     ],
     entry_point = "lib/test/fileserver.ts",
 )

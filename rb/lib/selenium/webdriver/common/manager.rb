@@ -52,6 +52,9 @@ module Selenium
         same_site = opts.delete(:same_site)
         opts[:sameSite] = same_site if same_site
 
+        http_only = opts.delete(:http_only)
+        opts[:httpOnly] = http_only if http_only
+
         obj = opts.delete(:expires)
         opts[:expiry] = seconds_from(obj).to_i if obj
 

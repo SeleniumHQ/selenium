@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium.remote;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;

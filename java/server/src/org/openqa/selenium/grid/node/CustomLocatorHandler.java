@@ -26,7 +26,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.grid.web.AddWebDriverSpecHeaders;
+import org.openqa.selenium.remote.AddWebDriverSpecHeaders;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;

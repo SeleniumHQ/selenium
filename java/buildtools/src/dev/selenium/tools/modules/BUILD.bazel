@@ -11,8 +11,8 @@ java_binary(
     main_class = "dev.selenium.tools.modules.ModuleGenerator",
     visibility = ["//visibility:public"],
     deps = [
-        "//java/client/src/org/openqa/selenium/io",
         "//java/buildtools/src/dev/selenium/tools/zip",
+        "//java/client/src/org/openqa/selenium/io",
         artifact("net.bytebuddy:byte-buddy"),
         artifact("com.github.javaparser:javaparser-core"),
     ],

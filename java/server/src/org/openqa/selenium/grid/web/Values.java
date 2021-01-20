@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.remote.ErrorCodec;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;

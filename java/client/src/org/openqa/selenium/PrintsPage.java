@@ -14,31 +14,10 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium;
 
-package org.openqa.selenium.grid.web;
+import org.openqa.selenium.print.PrintOptions;
 
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.Filter;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-public class AddWebDriverSpecHeaders implements Filter {
-  @Override
-  public HttpHandler apply(HttpHandler next) {
-    return req -> {
-      HttpResponse res = next.execute(req);
-      if (res == null) {
-        return res;
-      }
-
-      if (res.getHeader("Content-Type") == null) {
-        res.addHeader("Content-Type", Json.JSON_UTF_8);
-      }
-      if (res.getHeader("Cache-Control") == null) {
-        res.addHeader("Cache-Control", "none");
-      }
-
-      return res;
-    };
-  }
+public interface PrintsPage {
+  Pdf print(PrintOptions printOptions) throws WebDriverException;
 }

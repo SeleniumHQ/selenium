@@ -3,7 +3,8 @@ load(
     "@rules_java//java:defs.bzl",
     _java_binary = "java_binary",
     _java_library = "java_library",
-    _java_test = "java_test")
+    _java_test = "java_test",
+)
 load(":export.bzl", _java_export = "java_export")
 load(":spotbugs.bzl", "spotbugs_test")
 
@@ -34,5 +35,5 @@ def java_export(name, **kwargs):
     _java_export(name = name, **kwargs)
 
 def java_library(name, **kwargs):
-  _add_lint_tests(name, **kwargs)
-  _java_library(name = name, **kwargs)
+    _add_lint_tests(name, **kwargs)
+    _java_library(name = name, **kwargs)

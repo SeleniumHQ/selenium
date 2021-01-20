@@ -4,7 +4,8 @@ load(
     "//dotnet:defs.bzl",
     "generated_assembly_info",
     "nuget_package",
-    "nuget_push")
+    "nuget_push",
+)
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -175,51 +176,51 @@ generated_assembly_info(
 copy_file(
     name = "logo",
     src = "//common/images:selenium_logo_small.png",
-    out = "icon.png"
+    out = "icon.png",
 )
 
 nuget_package(
     name = "package",
     src = "Selenium.WebDriverBackedSelenium.nuspec",
-    package_id = "Selenium.WebDriverBackedSelenium",
-    package_version = "{}".format(SE_VERSION),
     create_symbol_package = True,
     is_windows = select({
         "@bazel_tools//src/conditions:host_windows": True,
         "//conditions:default": False,
     }),
+    package_id = "Selenium.WebDriverBackedSelenium",
+    package_version = "{}".format(SE_VERSION),
     visibility = ["//visibility:public"],
     deps = [
+        ":logo",
         ":net45",
         ":net46",
         ":net47",
         ":net48",
+        ":net5.0",
         ":netstandard2.0",
         ":netstandard2.1",
-        ":net5.0",
-        ":logo",
     ],
 )
 
 nuget_package(
     name = "package-strongnamed",
     src = "Selenium.WebDriverBackedSelenium.nuspec",
-    package_id = "Selenium.WebDriverBackedSelenium.StrongNamed",
-    package_version = "{}".format(SE_VERSION),
     is_windows = select({
         "@bazel_tools//src/conditions:host_windows": True,
         "//conditions:default": False,
     }),
+    package_id = "Selenium.WebDriverBackedSelenium.StrongNamed",
+    package_version = "{}".format(SE_VERSION),
     visibility = ["//visibility:public"],
     deps = [
+        ":logo",
         ":net45-strongnamed",
         ":net46-strongnamed",
         ":net47-strongnamed",
         ":net48-strongnamed",
+        ":net5.0-strongnamed",
         ":netstandard2.0-strongnamed",
         ":netstandard2.1-strongnamed",
-        ":net5.0-strongnamed",
-        ":logo",
     ],
 )
 

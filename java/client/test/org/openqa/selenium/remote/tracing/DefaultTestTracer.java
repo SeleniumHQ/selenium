@@ -17,18 +17,20 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.DefaultOpenTelemetry;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.context.propagation.DefaultContextPropagators;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
 public class DefaultTestTracer {
 
   public static Tracer createTracer() {
-    ContextPropagators propagators = DefaultContextPropagators.builder().build();
+    ContextPropagators propagators = ContextPropagators.create(
+      TextMapPropagator.composite(W3CTraceContextPropagator.getInstance()));
 
     return new OpenTelemetryTracer(
-      OpenTelemetry.getGlobalTracer("default"),
+      DefaultOpenTelemetry.builder().build().getTracer("default"),
       propagators.getTextMapPropagator());
   }
 }

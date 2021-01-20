@@ -21,7 +21,6 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toList;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;

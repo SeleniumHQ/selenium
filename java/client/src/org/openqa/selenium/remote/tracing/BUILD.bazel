@@ -29,6 +29,8 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-api-trace"),
+        artifact("io.opentelemetry:opentelemetry-api-common"),
         artifact("io.opentelemetry:opentelemetry-context"),
     ],
 )
