@@ -210,8 +210,12 @@ module Selenium
 
             it 'with Options instance with profile' do
               profile = Profile.new.tap(&:layout_on_disk)
+              allow(profile).to receive(:directory).and_return("PROF_DIR")
               options = Options.new(profile: profile)
-              expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", 'goog:chromeOptions': {}]}})
+
+              expect_request(body: {capabilities:
+                                       {firstMatch: [browserName: "chrome",
+                                                     'goog:chromeOptions': {"args": ["--user-data-dir=PROF_DIR"]}]}})
 
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end

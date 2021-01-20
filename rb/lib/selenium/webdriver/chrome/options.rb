@@ -40,16 +40,6 @@ module Selenium
                         perf_logging_prefs: 'perfLoggingPrefs',
                         window_types: 'windowTypes'}.freeze
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
-
         # Create a new Options instance.
         #
         # @example
@@ -74,12 +64,21 @@ module Selenium
         # @option opts [Array<String>] :window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(profile: nil, encoded_extensions: nil, **opts)
+        def initialize(profile: nil, encoded_extensions: [], **opts)
           super(**opts)
 
           @profile = profile
-          @options[:encoded_extensions] = encoded_extensions if encoded_extensions
-          @options[:extensions]&.each(&method(:validate_extension))
+          @options[:encoded_extensions] = encoded_extensions
+
+          @options[:args] ||= []
+          @options[:prefs] ||= {}
+          @options[:emulation] ||= {}
+          @options[:local_state] ||= {}
+          @options[:exclude_switches] ||= []
+          @options[:perf_logging_prefs] ||= {}
+          @options[:window_types] ||= []
+          @options[:extensions] ||= []
+          @options[:extensions].each(&method(:validate_extension))
         end
 
         #
@@ -94,7 +93,6 @@ module Selenium
 
         def add_extension(path)
           validate_extension(path)
-          @options[:extensions] ||= []
           @options[:extensions] << path
         end
 
@@ -109,7 +107,6 @@ module Selenium
         #
 
         def add_encoded_extension(encoded)
-          @options[:encoded_extensions] ||= []
           @options[:encoded_extensions] << encoded
         end
         alias_method :encoded_extension=, :add_encoded_extension
@@ -125,7 +122,6 @@ module Selenium
         #
 
         def add_argument(arg)
-          @options[:args] ||= []
           @options[:args] << arg
         end
 
@@ -141,7 +137,6 @@ module Selenium
         #
 
         def add_preference(name, value)
-          @options[:prefs] ||= {}
           @options[:prefs][name] = value
         end
 
@@ -185,16 +180,13 @@ module Selenium
         def process_browser_options(browser_options)
           options = browser_options[KEY]
           options['binary'] ||= binary_path if binary_path
-          (options['args'] || []) << "--user-data-dir=#{@profile.directory}" if @profile
+          options['args'] << "--user-data-dir=#{@profile.directory}" if @profile
           merge_extensions(options)
         end
 
         def merge_extensions(browser_options)
-          extensions = browser_options['extensions'] || []
-          encoded_extensions = browser_options.delete(:encoded_extensions) || []
-
-          browser_options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
-          browser_options.delete('extensions') if browser_options['extensions'].empty?
+          encoded_extensions = browser_options.delete(:encoded_extensions)
+          browser_options[:extensions] = extensions.map(&method(:encode_extension)) + encoded_extensions
         end
 
         def binary_path
@@ -210,15 +202,8 @@ module Selenium
           raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
         end
 
-        def generate_as_json(value, camelize_keys: true)
-          if value.is_a?(Hash)
-            value.each_with_object({}) do |(key, val), hash|
-              key = convert_json_key(key, camelize: camelize_keys)
-              hash[key] = generate_as_json(val, camelize_keys: key != 'prefs')
-            end
-          else
-            super
-          end
+        def camelize?(key)
+          !['prefs'].include?(key)
         end
       end # Options
     end # Chrome

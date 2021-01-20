@@ -23,19 +23,23 @@ module Selenium
       W3C_OPTIONS = %i[browser_name browser_version platform_name accept_insecure_certs page_load_strategy proxy
                        set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability].freeze
 
-      W3C_OPTIONS.each do |key|
-        define_method key do
-          @options[key]
-        end
+      def self.set_capabilities
+        (W3C_OPTIONS + self::CAPABILITIES.keys).each do |key|
+          define_method key do
+            @options[key]
+          end
 
-        define_method "#{key}=" do |value|
-          @options[key] = value
+          define_method "#{key}=" do |value|
+            @options[key] = value
+          end
         end
       end
 
       attr_accessor :options
 
       def initialize(options: nil, **opts)
+        self.class.set_capabilities
+
         @options = if options
                      WebDriver.logger.deprecate(":options as keyword for initializing #{self.class}",
                                                 "custom values directly in #new constructor",
@@ -84,10 +88,17 @@ module Selenium
 
       private
 
+      def camelize?(_key)
+        true
+      end
+
       def generate_as_json(value, camelize_keys: true)
         if value.is_a?(Hash)
           value.each_with_object({}) do |(key, val), hash|
-            hash[convert_json_key(key, camelize: camelize_keys)] = generate_as_json(val, camelize_keys: camelize_keys)
+            next if val.respond_to?(:empty?) && val.empty?
+
+            key = convert_json_key(key, camelize: camelize_keys)
+            hash[key] = generate_as_json(val, camelize_keys: camelize?(key))
           end
         elsif value.respond_to?(:as_json)
           value.as_json

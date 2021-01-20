@@ -62,7 +62,7 @@ Metrics/ClassLength:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
 
 Metrics/CyclomaticComplexity:
-  Max: 9
+  Max: 10
   Exclude:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/support/color.rb'
@@ -86,7 +86,7 @@ Metrics/ParameterLists:
 
 # TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
-  Max: 9
+  Max: 10
   Exclude:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
 
