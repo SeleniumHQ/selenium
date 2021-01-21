@@ -140,7 +140,7 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   }
 
   public Map<String, Object> getQueueContents() {
-    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueue");
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
     return Values.get(response, Map.class);

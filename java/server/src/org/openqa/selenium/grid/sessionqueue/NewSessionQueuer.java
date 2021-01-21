@@ -76,7 +76,7 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
         .with(requiresSecret),
       get("/se/grid/newsessionqueuer/queue/size")
         .to(() -> new GetNewSessionQueueSize(tracer, this)),
-      get("/se/grid/newsessionqueue")
+      get("/se/grid/newsessionqueuer/queue")
         .to(() -> new GetSessionQueue(tracer, this)),
       delete("/se/grid/newsessionqueuer/queue")
         .to(() -> new ClearSessionQueue(tracer, this))

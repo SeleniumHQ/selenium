@@ -124,7 +124,7 @@ public class LocalNewSessionQueue extends NewSessionQueue {
             NewSessionPayload payload = NewSessionPayload.create(reader)) {
             return payload.stream().iterator();
           } catch (IOException e) {
-            LOG.warning("IOException while mapping to capabilities");
+            LOG.warning("IOException while mapping to capabilities" + e.getMessage());
           }
           return null;
         })
