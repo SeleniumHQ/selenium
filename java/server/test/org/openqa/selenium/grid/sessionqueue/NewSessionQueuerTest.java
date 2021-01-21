@@ -55,6 +55,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -229,21 +231,31 @@ public class NewSessionQueuerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetQueueSize() {
+  public void shouldBeAbleToGetQueueContents() {
     RequestId requestId = new RequestId(UUID.randomUUID());
     sessionQueue.offerLast(request, requestId);
 
-    int size = local.getQueueSize();
-    assertEquals(1, size);
+    Map<String, Object> response = local.getQueueContents();
+    assertThat(response).isNotNull();
+
+    assertEquals(1, response.get("request-count"));
+
+    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
+    assertEquals(caps, capabilitiesList.get(0));
   }
 
   @Test
-  public void shouldBeAbleToGetQueueSizeRemotely() {
+  public void shouldBeAbleToGetQueueContentsRemotely() {
     RequestId requestId = new RequestId(UUID.randomUUID());
     sessionQueue.offerLast(request, requestId);
 
-    int size = sessionQueue.getQueueSize();
-    assertEquals(1, size);
+    Map<String, Object> response = sessionQueue.getQueueContents();
+    assertThat(response).isNotNull();
+
+    assertEquals(1, response.get("request-count"));
+
+    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
+    assertEquals(caps, capabilitiesList.get(0));
   }
 
   @Test

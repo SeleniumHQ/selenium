@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
@@ -28,6 +30,7 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
@@ -40,11 +43,16 @@ import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.time.Duration;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -54,6 +62,9 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import static org.openqa.selenium.remote.http.Contents.reader;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue",
   description = "New session queue")
@@ -95,6 +106,36 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     readLock.lock();
     try {
       return sessionRequests.size();
+    } finally {
+      readLock.unlock();
+    }
+  }
+
+  @Override
+  public Map<String, Object> getQueueContents() {
+    Lock readLock = lock.readLock();
+    readLock.lock();
+    try {
+      List<Capabilities> capabilitiesList = sessionRequests.stream()
+        .map(SessionRequest::getHttpRequest)
+        .map(req -> {
+          try (
+            Reader reader = reader(req);
+            NewSessionPayload payload = NewSessionPayload.create(reader)) {
+            return payload.stream().iterator();
+          } catch (IOException e) {
+            LOG.warning("IOException while mapping to capabilities" + e.getMessage());
+          }
+          return null;
+        })
+        .filter(Objects::nonNull)
+        .filter(Iterator::hasNext)
+        .map(Iterator::next)
+        .collect(Collectors.toList());
+
+      return ImmutableMap.of(
+        "request-count", capabilitiesList.size(),
+        "request-payloads", capabilitiesList);
     } finally {
       readLock.unlock();
     }

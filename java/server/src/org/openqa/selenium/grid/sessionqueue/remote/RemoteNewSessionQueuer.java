@@ -45,6 +45,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -130,12 +131,11 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public int getQueueSize() {
-    HttpRequest upstream =
-      new HttpRequest(GET, "/se/grid/newsessionqueuer/queue/size");
+  public Map<String, Object> getQueueContents() {
+    HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
-    return Values.get(response, Integer.class);
+    return Values.get(response, Map.class);
   }
 
   @Override

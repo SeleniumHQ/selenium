@@ -26,6 +26,7 @@ import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class NewSessionQueue implements HasReadyState {
@@ -49,6 +50,8 @@ public abstract class NewSessionQueue implements HasReadyState {
   public abstract int clear();
 
   public abstract int getQueueSize();
+
+  public abstract Map<String,Object> getQueueContents();
 
   public void addRequestHeaders(HttpRequest request, RequestId reqId) {
     long timestamp = Instant.now().getEpochSecond();

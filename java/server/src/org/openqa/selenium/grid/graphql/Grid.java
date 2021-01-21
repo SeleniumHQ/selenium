@@ -99,8 +99,4 @@ public class Grid {
   public int getUsedSlots() {
     return getSessionCount();
   }
-
-  public int getSessionQueueSize() {
-    return newSessionQueuer.getQueueSize();
-  }
 }

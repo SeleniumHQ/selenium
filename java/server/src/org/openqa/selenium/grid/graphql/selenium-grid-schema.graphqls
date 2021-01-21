@@ -47,5 +47,4 @@ type Grid {
   totalSlots: Int
   usedSlots: Int
   sessionCount: Int!
-  sessionQueueSize: Int!
 }
