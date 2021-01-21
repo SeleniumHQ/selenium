@@ -30,7 +30,6 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 
@@ -78,7 +77,6 @@ public class LocalNewSessionQueue extends NewSessionQueue {
   private final ScheduledExecutorService executorService =
     Executors.newSingleThreadScheduledExecutor();
   private final Thread shutdownHook = new Thread(this::callExecutorShutdown);
-  public static final Json JSON = new Json();
 
   public LocalNewSessionQueue(Tracer tracer, EventBus bus, Duration retryInterval,
                               Duration requestTimeout) {

@@ -26,7 +26,6 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -60,7 +59,6 @@ public class LocalNewSessionQueueTest {
   private NewSessionQueue sessionQueue;
   private HttpRequest expectedSessionRequest;
   private RequestId requestId;
-  public static final Json JSON = new Json();
 
   @Before
   public void setUp() {

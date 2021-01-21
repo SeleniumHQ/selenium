@@ -14,7 +14,6 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/sessionqueue",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/local",
         "//java/server/test/org/openqa/selenium/grid/testing",
-        "//java/client/src/org/openqa/selenium/json",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),
