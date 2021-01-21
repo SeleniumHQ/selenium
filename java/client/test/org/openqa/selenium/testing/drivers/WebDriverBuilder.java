@@ -61,7 +61,9 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   private static final Map<Browser, Function<Capabilities, Capabilities>> capabilitySuppliers =
     new ImmutableMap.Builder<Browser, Function<Capabilities, Capabilities>>()
-      .put(Browser.CHROME, original -> new ChromeOptions().merge(original))
+      .put(Browser.CHROME, original -> new ChromeOptions().merge(original)
+           .setHeadless(Boolean.getBoolean("webdriver.chrome.headless"))
+      )
       .put(Browser.LEGACY_FIREFOX_XPI, original -> new FirefoxOptions(original)
         .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
       .put(Browser.FIREFOX, original -> new FirefoxOptions(original)

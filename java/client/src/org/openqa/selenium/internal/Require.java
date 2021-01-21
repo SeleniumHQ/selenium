@@ -159,7 +159,7 @@ public final class Require {
     return number;
   }
 
-  public static double positive(String argName, double number, String message) {
+  public static double positive(String argName, Double number, String message) {
     if (number <= 0) {
       if (message == null) {
         throw new IllegalArgumentException(argName + " must be greater than 0");
@@ -170,7 +170,7 @@ public final class Require {
     return number;
   }
 
-  public static double positive(String argName, double number) {
+  public static double positive(String argName, Double number) {
     return positive(argName, number, null);
   }
 

@@ -17,7 +17,12 @@
 
 package org.openqa.selenium.internal;
 
-public class Either<A, B> {
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+public class Either<A, B> implements Iterable<B> {
   private final A left;
   private final B right;
 
@@ -48,5 +53,24 @@ public class Either<A, B> {
 
   public B right() {
     return right;
+  }
+
+  public <R> R map(Function<? super B, ? extends R> mapper) {
+    Require.nonNull("Mapper", mapper);
+    return mapper.apply(right());
+  }
+
+  public <R> R mapLeft(Function<? super A, ? extends R> mapper) {
+    Require.nonNull("Mapper", mapper);
+    return mapper.apply(left());
+  }
+
+  @Override
+  public Iterator<B> iterator() {
+    return Collections.singleton(right()).iterator();
+  }
+
+  public Stream<B> stream() {
+    return Stream.of(right());
   }
 }

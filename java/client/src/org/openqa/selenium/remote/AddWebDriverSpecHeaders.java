@@ -20,7 +20,6 @@ package org.openqa.selenium.remote;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
 
 public class AddWebDriverSpecHeaders implements Filter {
   @Override

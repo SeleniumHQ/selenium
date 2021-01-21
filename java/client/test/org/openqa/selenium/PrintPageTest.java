@@ -20,11 +20,14 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.print.PageSize;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 public class PrintPageTest extends JUnit4TestBase {
   private static final String MAGIC_STRING = "JVBER";
@@ -32,12 +35,21 @@ public class PrintPageTest extends JUnit4TestBase {
 
   @Before
   public void setUp() {
+    System.setProperty("webdriver.chrome.headless", "true");
+    createNewDriver(new ImmutableCapabilities());
     assumeTrue(driver instanceof PrintsPage);
     printer = (PrintsPage) driver;
     driver.get(pages.printPage);
   }
 
+  @After
+  public void tearDown() {
+    System.clearProperty("webdriver.chrome.headless");
+  }
+
   @Test
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void canPrintPage() {
     PrintOptions printOptions = new PrintOptions();
 
@@ -46,7 +58,9 @@ public class PrintPageTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canPrintwoPages() {
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
+  public void canPrintTwoPages() {
     PrintOptions printOptions = new PrintOptions();
     printOptions.setPageRanges("1-2");
 
@@ -55,6 +69,8 @@ public class PrintPageTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void canPrintWithValidParams() {
     PrintOptions printOptions = new PrintOptions();
     PageSize pageSize = new PageSize();

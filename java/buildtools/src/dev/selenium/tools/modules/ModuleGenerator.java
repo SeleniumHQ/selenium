@@ -37,7 +37,7 @@ import net.bytebuddy.jar.asm.ClassWriter;
 import net.bytebuddy.jar.asm.ModuleVisitor;
 
 import org.openqa.selenium.io.TemporaryFilesystem;
-import dev.selenium.tools.zip.StableZipEntry;
+import rules.jvm.external.zip.StableZipEntry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -83,7 +83,7 @@ import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
 
 public class ModuleGenerator {
-  
+
   public static void main(String[] args) throws IOException {
     Path outJar = null;
     Path inJar = null;
