@@ -149,6 +149,7 @@ public class Standalone extends TemplateGridServerCommand {
       bus,
       newSessionQueueOptions.getSessionRequestRetryInterval(),
       newSessionQueueOptions.getSessionRequestTimeout());
+
     NewSessionQueuer queuer = new LocalNewSessionQueuer(
       tracer,
       bus,
@@ -179,7 +180,8 @@ public class Standalone extends TemplateGridServerCommand {
       tracer,
       distributor,
       queuer,
-      serverOptions.getExternalUri());
+      serverOptions.getExternalUri(),
+      getFormattedVersion());
 
     Routable ui;
     URL uiRoot = getClass().getResource("/javascript/grid-ui/build");
@@ -213,11 +215,14 @@ public class Standalone extends TemplateGridServerCommand {
 
     Server<?> server = asServer(config).start();
 
-    BuildInfo info = new BuildInfo();
     LOG.info(String.format(
-      "Started Selenium standalone %s (revision %s): %s",
-      info.getReleaseLabel(),
-      info.getBuildRevision(),
+      "Started Selenium Standalone %s: %s",
+      getFormattedVersion(),
       server.getUrl()));
+  }
+
+  private String getFormattedVersion() {
+    BuildInfo info = new BuildInfo();
+    return String.format("%s (revision %s)", info.getReleaseLabel(), info.getBuildRevision());
   }
 }

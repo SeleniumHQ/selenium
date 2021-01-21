@@ -39,16 +39,23 @@ public class Grid {
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
   private final NewSessionQueuer newSessionQueuer;
+  private final String version;
 
-  public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri) {
+  public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri,
+              String version) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
     this.newSessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
+    this.version = Require.nonNull("Grid's version", version);
   }
 
   public URI getUri() {
     return uri;
+  }
+
+  public String getVersion() {
+    return version;
   }
 
   public List<Node> getNodes() {

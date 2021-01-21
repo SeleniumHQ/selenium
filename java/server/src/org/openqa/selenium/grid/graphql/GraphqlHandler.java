@@ -34,7 +34,6 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
@@ -49,11 +48,9 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -71,14 +68,16 @@ public class GraphqlHandler implements HttpHandler {
   private final Distributor distributor;
   private final NewSessionQueuer newSessionQueuer;
   private final URI publicUri;
+  private final String version;
   private final GraphQL graphQl;
 
 
   public GraphqlHandler(Tracer tracer, Distributor distributor, NewSessionQueuer newSessionQueuer,
-                        URI publicUri) {
+                        URI publicUri, String version) {
     this.distributor = Require.nonNull("Distributor", distributor);
     this.newSessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
     this.publicUri = Require.nonNull("Uri", publicUri);
+    this.version = Require.nonNull("GridVersion", version);
     this.tracer = Require.nonNull("Tracer", tracer);
 
     GraphQLSchema schema = new SchemaGenerator()
@@ -132,7 +131,8 @@ public class GraphqlHandler implements HttpHandler {
       }
 
       String query = (String) inputs.get("query");
-      @SuppressWarnings("unchecked") Map<String, Object> variables = inputs.get("variables") instanceof Map ?
+      @SuppressWarnings("unchecked")
+      Map<String, Object> variables = inputs.get("variables") instanceof Map ?
         (Map<String, Object>) inputs.get("variables") :
         new HashMap<>();
 
@@ -173,7 +173,11 @@ public class GraphqlHandler implements HttpHandler {
       .scalar(Types.Uri)
       .scalar(Types.Url)
       .type("GridQuery", typeWiring -> typeWiring
-          .dataFetcher("grid", new GridData(distributor, newSessionQueuer, publicUri))
+          .dataFetcher("grid", new GridData(
+            distributor,
+            newSessionQueuer,
+            publicUri,
+            version))
           .dataFetcher("session", new SessionData(distributor)))
       .build();
   }

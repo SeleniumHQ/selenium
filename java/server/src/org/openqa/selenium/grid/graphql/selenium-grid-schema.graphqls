@@ -44,7 +44,8 @@ type GridQuery {
 type Grid {
   uri: Uri!
   nodes: [Node!]!
-  totalSlots: Int
-  usedSlots: Int
+  totalSlots: Int!
+  usedSlots: Int!
   sessionCount: Int!
+  version: String!
 }

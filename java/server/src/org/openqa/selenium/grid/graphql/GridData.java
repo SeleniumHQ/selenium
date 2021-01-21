@@ -29,15 +29,18 @@ public class GridData implements DataFetcher {
   private final Distributor distributor;
   private final NewSessionQueuer newSessionQueuer;
   private final URI publicUri;
+  private final String version;
 
-  public GridData(Distributor distributor, NewSessionQueuer newSessionQueuer, URI publicUri) {
+  public GridData(Distributor distributor, NewSessionQueuer newSessionQueuer, URI publicUri,
+                  String version) {
     this.distributor = Require.nonNull("Distributor", distributor);
     this.publicUri = Require.nonNull("Grid's public URI", publicUri);
     this.newSessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
+    this.version = Require.nonNull("Grid's version", version);
   }
 
   @Override
   public Object get(DataFetchingEnvironment environment) {
-    return new Grid(distributor, newSessionQueuer, publicUri);
+    return new Grid(distributor, newSessionQueuer, publicUri, version);
   }
 }
