@@ -17,13 +17,11 @@
 
 package org.openqa.selenium.print;
 
-import org.openqa.selenium.internal.Require;
-
 public class PageMargin {
-  private double top;
-  private double bottom;
-  private double left;
-  private double right;
+  private final double top;
+  private final double bottom;
+  private final double left;
+  private final double right;
 
   public PageMargin() {
     this.top = 1.0;
