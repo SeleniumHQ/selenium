@@ -142,26 +142,6 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueSize() {
-    HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", caps))));
-
-    localNewSessionQueue.offerLast(request, new RequestId(UUID.randomUUID()));
-    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri);
-
-    Map<String, Object> topLevel = executeQuery(handler, "{ grid { sessionQueueSize } }");
-
-    assertThat(topLevel).isEqualTo(
-      singletonMap(
-        "data", singletonMap(
-          "grid", singletonMap(
-            "sessionQueueSize", 1L))));
-  }
-
-  @Test
   public void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri);
 

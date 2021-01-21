@@ -74,8 +74,6 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
       get("/se/grid/newsessionqueuer/session/{requestId}")
         .to(params -> new RemoveFromSessionQueue(tracer, this, requestIdFrom(params)))
         .with(requiresSecret),
-      get("/se/grid/newsessionqueuer/queue/size")
-        .to(() -> new GetNewSessionQueueSize(tracer, this)),
       get("/se/grid/newsessionqueuer/queue")
         .to(() -> new GetSessionQueue(tracer, this)),
       delete("/se/grid/newsessionqueuer/queue")
@@ -126,8 +124,6 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
   public abstract Optional<HttpRequest> remove(RequestId reqId);
 
   public abstract int clearQueue();
-
-  public abstract int getQueueSize();
 
   public abstract Map<String, Object> getQueueContents();
 

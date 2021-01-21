@@ -93,10 +93,6 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public int getQueueSize() {
-    return sessionRequests.getQueueSize();
-  }
-
   public Map<String, Object> getQueueContents() {
     return sessionRequests.getQueueContents();
   }
