@@ -36,5 +36,6 @@ from .common.desired_capabilities import DesiredCapabilities  # noqa
 from .common.action_chains import ActionChains  # noqa
 from .common.touch_actions import TouchActions  # noqa
 from .common.proxy import Proxy  # noqa
+from .common.keys import Keys # noqa
 
 __version__ = '4.0.0a7'
