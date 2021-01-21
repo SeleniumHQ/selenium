@@ -15,13 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import List
 from selenium.webdriver.chromium import service
 
 
 class Service(service.ChromiumService):
 
-    def __init__(self, executable_path, port=0, verbose=False, log_path=None,
-                 service_args=None, env=None):
+    def __init__(self, executable_path: str, port: int = 0, verbose: bool = False, log_path: str = None,
+                 service_args: List[str] = None, env=None):
         """
         Creates a new instance of the EdgeDriver service.
         EdgeDriver provides an interface for Microsoft WebDriver to use

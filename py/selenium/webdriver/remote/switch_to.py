@@ -16,9 +16,13 @@
 # under the License.
 
 from .command import Command
+
+from selenium.common.exceptions import (NoSuchElementException,
+                                        NoSuchFrameException,
+                                        NoSuchWindowException)
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException, NoSuchWindowException
+from selenium.webdriver.remote.webelement import WebElement
 
 
 class SwitchTo:
@@ -26,7 +30,7 @@ class SwitchTo:
         self._driver = driver
 
     @property
-    def active_element(self):
+    def active_element(self) -> WebElement:
         """
         Returns the element with focus, or BODY if nothing has focus.
 
@@ -41,7 +45,7 @@ class SwitchTo:
             return self._driver.execute(Command.GET_ACTIVE_ELEMENT)['value']
 
     @property
-    def alert(self):
+    def alert(self) -> Alert:
         """
         Switches focus to an alert on the page.
 
@@ -54,7 +58,7 @@ class SwitchTo:
         alert.text
         return alert
 
-    def default_content(self):
+    def default_content(self) -> None:
         """
         Switch focus to the default frame.
 
@@ -65,7 +69,7 @@ class SwitchTo:
         """
         self._driver.execute(Command.SWITCH_TO_FRAME, {'id': None})
 
-    def frame(self, frame_reference):
+    def frame(self, frame_reference) -> None:
         """
         Switches focus to the specified frame, by index, name, or webelement.
 
@@ -91,7 +95,7 @@ class SwitchTo:
 
         self._driver.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
 
-    def new_window(self, type_hint=None):
+    def new_window(self, type_hint=None) -> None:
         """Switches to a new top-level browsing context.
 
         The type hint can be one of "tab" or "window". If not specified the
@@ -105,7 +109,7 @@ class SwitchTo:
         value = self._driver.execute(Command.NEW_WINDOW, {'type': type_hint})['value']
         self._w3c_window(value['handle'])
 
-    def parent_frame(self):
+    def parent_frame(self) -> None:
         """
         Switches focus to the parent context. If the current context is the top
         level browsing context, the context remains unchanged.
@@ -117,7 +121,7 @@ class SwitchTo:
         """
         self._driver.execute(Command.SWITCH_TO_PARENT_FRAME)
 
-    def window(self, window_name):
+    def window(self, window_name) -> None:
         """
         Switches focus to the specified window.
 

@@ -34,9 +34,9 @@ class WebDriver(ChromiumDriver):
     """
 
     def __init__(self, executable_path='MicrosoftWebDriver.exe', port=DEFAULT_PORT,
-                 options=None, service_args=None,
+                 options: Options = None, service_args=None,
                  capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 service=None, keep_alive=False, verbose=False):
+                 service: Service = None, keep_alive=False, verbose=False):
         """
         Creates a new instance of the edge driver.
         Starts the service and then creates new instance of edge driver.
@@ -67,5 +67,5 @@ class WebDriver(ChromiumDriver):
                                         service_args, capabilities,
                                         service_log_path, service, keep_alive)
 
-    def create_options(self):
+    def create_options(self) -> Options:
         return Options()

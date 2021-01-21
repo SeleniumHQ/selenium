@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import NoReturn
 import warnings
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -35,7 +36,7 @@ class WebDriver(RemoteWebDriver):
     def __init__(self, executable_path='IEDriverServer.exe', capabilities=None,
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
                  log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 options=None, service=None,
+                 options: Options = None, service: Service = None,
                  desired_capabilities=None, keep_alive=False):
         """
         Creates a new instance of the Ie driver.
@@ -112,9 +113,9 @@ class WebDriver(RemoteWebDriver):
             keep_alive=keep_alive)
         self._is_remote = False
 
-    def quit(self):
+    def quit(self) -> NoReturn:
         RemoteWebDriver.quit(self)
         self.iedriver.stop()
 
-    def create_options(self):
+    def create_options(self) -> Options:
         return Options()

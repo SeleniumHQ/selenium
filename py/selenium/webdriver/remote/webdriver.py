@@ -17,15 +17,18 @@
 
 """The WebDriver implementation."""
 
-from abc import ABCMeta
-from base64 import b64decode
 import copy
-from contextlib import contextmanager
-import sys
+
 import pkgutil
+import sys
+from typing import (List,
+                    NoReturn)
 
 import warnings
 
+from abc import ABCMeta
+from base64 import b64decode
+from contextlib import contextmanager
 
 from .command import Command
 from .errorhandler import ErrorHandler
@@ -233,7 +236,7 @@ class WebDriver(BaseWebDriver):
         return self._mobile
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Returns the name of the underlying browser for this instance.
 
         :Usage:
@@ -260,7 +263,7 @@ class WebDriver(BaseWebDriver):
         """
         pass
 
-    def start_session(self, capabilities, browser_profile=None):
+    def start_session(self, capabilities: dict, browser_profile=None) -> NoReturn:
         """
         Creates a new session with the desired capabilities.
 
@@ -306,7 +309,7 @@ class WebDriver(BaseWebDriver):
         else:
             return value
 
-    def create_web_element(self, element_id):
+    def create_web_element(self, element_id: str) -> WebElement:
         """Creates a web element with the specified `element_id`."""
         return self._web_element_cls(self, element_id, w3c=self.w3c)
 
@@ -327,7 +330,7 @@ class WebDriver(BaseWebDriver):
         else:
             return value
 
-    def execute(self, driver_command, params=None):
+    def execute(self, driver_command: str, params: dict = None) -> dict:
         """
         Sends a command to be executed by a command.CommandExecutor.
 
@@ -355,14 +358,14 @@ class WebDriver(BaseWebDriver):
         # a success
         return {'success': 0, 'value': None, 'sessionId': self.session_id}
 
-    def get(self, url):
+    def get(self, url: str) -> NoReturn:
         """
         Loads a web page in the current browser session.
         """
         self.execute(Command.GET, {'url': url})
 
     @property
-    def title(self):
+    def title(self) -> str:
         """Returns the title of the current page.
 
         :Usage:
@@ -692,7 +695,7 @@ class WebDriver(BaseWebDriver):
         warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
-    def pin_script(self, script, script_key=None):
+    def pin_script(self, script, script_key=None) -> ScriptKey:
         """
 
         """
@@ -703,13 +706,13 @@ class WebDriver(BaseWebDriver):
         self.pinned_scripts[_script_key.id] = script
         return _script_key
 
-    def unpin(self, script_key):
+    def unpin(self, script_key) -> NoReturn:
         """
 
         """
         self.pinned_scripts.pop(script_key.id)
 
-    def get_pinned_scripts(self):
+    def get_pinned_scripts(self) -> List[str]:
         """
 
         """
@@ -745,7 +748,7 @@ class WebDriver(BaseWebDriver):
             'script': script,
             'args': converted_args})['value']
 
-    def execute_async_script(self, script, *args):
+    def execute_async_script(self, script: str, *args):
         """
         Asynchronously Executes JavaScript in the current window/frame.
 
@@ -771,7 +774,7 @@ class WebDriver(BaseWebDriver):
             'args': converted_args})['value']
 
     @property
-    def current_url(self):
+    def current_url(self) -> str:
         """
         Gets the URL of the current page.
 
@@ -783,7 +786,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_CURRENT_URL)['value']
 
     @property
-    def page_source(self):
+    def page_source(self) -> str:
         """
         Gets the source of the current page.
 
@@ -794,7 +797,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_PAGE_SOURCE)['value']
 
-    def close(self):
+    def close(self) -> NoReturn:
         """
         Closes the current window.
 
@@ -805,7 +808,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.CLOSE)
 
-    def quit(self):
+    def quit(self) -> NoReturn:
         """
         Quits the driver and closes every associated window.
 
@@ -821,7 +824,7 @@ class WebDriver(BaseWebDriver):
             self.command_executor.close()
 
     @property
-    def current_window_handle(self):
+    def current_window_handle(self) -> str:
         """
         Returns the handle of the current window.
 
@@ -836,7 +839,7 @@ class WebDriver(BaseWebDriver):
             return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
 
     @property
-    def window_handles(self):
+    def window_handles(self) -> List[str]:
         """
         Returns the handles of all windows within the current session.
 
@@ -850,7 +853,7 @@ class WebDriver(BaseWebDriver):
         else:
             return self.execute(Command.GET_WINDOW_HANDLES)['value']
 
-    def maximize_window(self):
+    def maximize_window(self) -> NoReturn:
         """
         Maximizes the current window that webdriver is using
         """
@@ -861,19 +864,19 @@ class WebDriver(BaseWebDriver):
             params = {'windowHandle': 'current'}
         self.execute(command, params)
 
-    def fullscreen_window(self):
+    def fullscreen_window(self) -> NoReturn:
         """
         Invokes the window manager-specific 'full screen' operation
         """
         self.execute(Command.FULLSCREEN_WINDOW)
 
-    def minimize_window(self):
+    def minimize_window(self) -> NoReturn:
         """
         Invokes the window manager-specific 'minimize' operation
         """
         self.execute(Command.MINIMIZE_WINDOW)
 
-    def print_page(self, print_options=None):
+    def print_page(self, print_options=None) -> str:
         """
         Takes PDF of the current page.
         The driver makes a best effort to return a PDF based on the provided parameters.
@@ -885,7 +888,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.PRINT_PAGE, options)['value']
 
     @property
-    def switch_to(self):
+    def switch_to(self) -> SwitchTo:
         """
         :Returns:
             - SwitchTo: an object containing all options to switch focus into
@@ -905,7 +908,7 @@ class WebDriver(BaseWebDriver):
         return self._switch_to
 
     # Navigation
-    def back(self):
+    def back(self) -> NoReturn:
         """
         Goes one step backward in the browser history.
 
@@ -916,7 +919,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.GO_BACK)
 
-    def forward(self):
+    def forward(self) -> NoReturn:
         """
         Goes one step forward in the browser history.
 
@@ -927,7 +930,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.GO_FORWARD)
 
-    def refresh(self):
+    def refresh(self) -> NoReturn:
         """
         Refreshes the current page.
 
@@ -939,7 +942,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.REFRESH)
 
     # Options
-    def get_cookies(self):
+    def get_cookies(self) -> List[dict]:
         """
         Returns a set of dictionaries, corresponding to cookies visible in the current session.
 
@@ -950,7 +953,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_ALL_COOKIES)['value']
 
-    def get_cookie(self, name):
+    def get_cookie(self, name) -> dict:
         """
         Get a single cookie by name. Returns the cookie if found, None if not.
 
@@ -971,7 +974,7 @@ class WebDriver(BaseWebDriver):
                     return cookie
             return None
 
-    def delete_cookie(self, name):
+    def delete_cookie(self, name) -> NoReturn:
         """
         Deletes a single cookie with the given name.
 
@@ -982,7 +985,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.DELETE_COOKIE, {'name': name})
 
-    def delete_all_cookies(self):
+    def delete_all_cookies(self) -> NoReturn:
         """
         Delete all cookies in the scope of the session.
 
@@ -993,7 +996,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.DELETE_ALL_COOKIES)
 
-    def add_cookie(self, cookie_dict):
+    def add_cookie(self, cookie_dict) -> NoReturn:
         """
         Adds a cookie to your current session.
 
@@ -1015,7 +1018,7 @@ class WebDriver(BaseWebDriver):
             self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
     # Timeouts
-    def implicitly_wait(self, time_to_wait):
+    def implicitly_wait(self, time_to_wait) -> NoReturn:
         """
         Sets a sticky timeout to implicitly wait for an element to be found,
            or a command to complete. This method only needs to be called one
@@ -1037,7 +1040,7 @@ class WebDriver(BaseWebDriver):
             self.execute(Command.IMPLICIT_WAIT, {
                 'ms': float(time_to_wait) * 1000})
 
-    def set_script_timeout(self, time_to_wait):
+    def set_script_timeout(self, time_to_wait) -> NoReturn:
         """
         Set the amount of time that the script should wait during an
            execute_async_script call before throwing an error.
@@ -1057,7 +1060,7 @@ class WebDriver(BaseWebDriver):
             self.execute(Command.SET_SCRIPT_TIMEOUT, {
                 'ms': float(time_to_wait) * 1000})
 
-    def set_page_load_timeout(self, time_to_wait):
+    def set_page_load_timeout(self, time_to_wait) -> NoReturn:
         """
         Set the amount of time to wait for a page load to complete
            before throwing an error.
@@ -1079,7 +1082,7 @@ class WebDriver(BaseWebDriver):
                 'type': 'page load'})
 
     @property
-    def timeouts(self):
+    def timeouts(self) -> Timeouts:
         """
         Get all the timeouts that have been set on the current session
 
@@ -1095,7 +1098,7 @@ class WebDriver(BaseWebDriver):
         return Timeouts(**timeouts)
 
     @timeouts.setter
-    def timeouts(self, timeouts):
+    def timeouts(self, timeouts) -> NoReturn:
         """
         Set all timeouts for the session. This will override any previously
         set timeouts.
@@ -1108,7 +1111,7 @@ class WebDriver(BaseWebDriver):
         """
         self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
 
-    def find_element(self, by=By.ID, value=None):
+    def find_element(self, by=By.ID, value=None) -> WebElement:
         """
         Find an element given a By strategy and locator.
 
@@ -1135,7 +1138,7 @@ class WebDriver(BaseWebDriver):
             'using': by,
             'value': value})['value']
 
-    def find_elements(self, by=By.ID, value=None):
+    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
         """
         Find elements given a By strategy and locator.
 
@@ -1172,7 +1175,7 @@ class WebDriver(BaseWebDriver):
             'value': value})['value'] or []
 
     @property
-    def desired_capabilities(self):
+    def desired_capabilities(self) -> dict:
         """
         returns the drivers current desired capabilities being used
         """
@@ -1181,13 +1184,13 @@ class WebDriver(BaseWebDriver):
         return self.caps
 
     @property
-    def capabilities(self):
+    def capabilities(self) -> dict:
         """
         returns the drivers current capabilities being used.
         """
         return self.caps
 
-    def get_screenshot_as_file(self, filename):
+    def get_screenshot_as_file(self, filename) -> bool:
         """
         Saves a screenshot of the current window to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -1215,7 +1218,7 @@ class WebDriver(BaseWebDriver):
             del png
         return True
 
-    def save_screenshot(self, filename):
+    def save_screenshot(self, filename) -> bool:
         """
         Saves a screenshot of the current window to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -1232,7 +1235,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.get_screenshot_as_file(filename)
 
-    def get_screenshot_as_png(self):
+    def get_screenshot_as_png(self) -> str:
         """
         Gets the screenshot of the current window as a binary data.
 
@@ -1243,7 +1246,7 @@ class WebDriver(BaseWebDriver):
         """
         return b64decode(self.get_screenshot_as_base64().encode('ascii'))
 
-    def get_screenshot_as_base64(self):
+    def get_screenshot_as_base64(self) -> str:
         """
         Gets the screenshot of the current window as a base64 encoded string
            which is useful in embedded images in HTML.
@@ -1255,7 +1258,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.SCREENSHOT)['value']
 
-    def set_window_size(self, width, height, windowHandle='current'):
+    def set_window_size(self, width, height, windowHandle='current') -> dict:
         """
         Sets the width and height of the current window. (window.resizeTo)
 
@@ -1278,7 +1281,7 @@ class WebDriver(BaseWebDriver):
                 'height': int(height),
                 'windowHandle': windowHandle})
 
-    def get_window_size(self, windowHandle='current'):
+    def get_window_size(self, windowHandle='current') -> dict:
         """
         Gets the width and height of the current window.
 
@@ -1300,7 +1303,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ('width', 'height')}
 
-    def set_window_position(self, x, y, windowHandle='current'):
+    def set_window_position(self, x, y, windowHandle='current') -> dict:
         """
         Sets the x,y position of the current window. (window.moveTo)
 
@@ -1325,7 +1328,7 @@ class WebDriver(BaseWebDriver):
                              'windowHandle': windowHandle
                          })
 
-    def get_window_position(self, windowHandle='current'):
+    def get_window_position(self, windowHandle='current') -> dict:
         """
         Gets the x,y position of the current window.
 
@@ -1344,7 +1347,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: position[k] for k in ('x', 'y')}
 
-    def get_window_rect(self):
+    def get_window_rect(self) -> dict:
         """
         Gets the x, y coordinates of the window as well as height and width of
         the current window.
@@ -1356,7 +1359,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_WINDOW_RECT)['value']
 
-    def set_window_rect(self, x=None, y=None, width=None, height=None):
+    def set_window_rect(self, x=None, y=None, width=None, height=None) -> dict:
         """
         Sets the x, y coordinates of the window as well as height and width of
         the current window. This method is only supported for W3C compatible
@@ -1469,6 +1472,6 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_LOG, {'type': log_type})['value']
 
     @property
-    def log(self):
+    def log(self) -> Log:
         assert sys.version_info >= (3, 7)
         return Log(self)

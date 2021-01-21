@@ -50,7 +50,7 @@ class Log():
         self._mutation_listener_js = pkgutil.get_data(_pkg, 'mutation-listener.js').decode('utf8').strip()
 
     @asynccontextmanager
-    async def mutation_events(self):
+    async def mutation_events(self) -> dict:
         """
         Listens for mutation events and emits them as it finds them
 
@@ -121,7 +121,7 @@ class Log():
             js_exception.exception_details = exception.value.exception_details
 
     @asynccontextmanager
-    async def add_listener(self, event_type):
+    async def add_listener(self, event_type) -> dict:
         '''
         Listens for certain events that are passed in.
 

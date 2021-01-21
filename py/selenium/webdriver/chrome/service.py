@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import List
 from selenium.webdriver.chromium import service
 
 
@@ -23,8 +24,8 @@ class Service(service.ChromiumService):
     Object that manages the starting and stopping of the ChromeDriver
     """
 
-    def __init__(self, executable_path, port=0, service_args=None,
-                 log_path=None, env=None):
+    def __init__(self, executable_path: str, port: int = 0, service_args: List[str] = None,
+                 log_path: str = None, env: str = None):
         """
         Creates a new instance of the Service
 
