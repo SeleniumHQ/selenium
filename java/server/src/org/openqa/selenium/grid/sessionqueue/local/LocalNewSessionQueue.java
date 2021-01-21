@@ -48,7 +48,13 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.IOException;
 import java.io.Reader;
 import java.time.Duration;
-import java.util.*;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -129,10 +135,6 @@ public class LocalNewSessionQueue extends NewSessionQueue {
         .filter(Iterator::hasNext)
         .map(Iterator::next)
         .collect(Collectors.toList());
-
-//      StringBuilder response = new StringBuilder();
-//     try (JsonOutput json = JSON.newOutput(response).setPrettyPrint(false)) {
-//        json.write
 
       return ImmutableMap.of(
         "request-count", capabilitiesList.size(),
