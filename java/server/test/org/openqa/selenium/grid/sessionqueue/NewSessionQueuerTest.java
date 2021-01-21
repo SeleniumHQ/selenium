@@ -249,21 +249,31 @@ public class NewSessionQueuerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetQueueInfo() {
+  public void shouldBeAbleToGetQueueContents() {
     RequestId requestId = new RequestId(UUID.randomUUID());
     sessionQueue.offerLast(request, requestId);
 
     Map<String, Object> response = local.getQueueContents();
     assertThat(response).isNotNull();
+
+    assertEquals(1, response.get("request-count"));
+
+    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
+    assertEquals(caps, capabilitiesList.get(0));
   }
 
   @Test
-  public void shouldBeAbleToGetQueueInfoRemotely() {
+  public void shouldBeAbleToGetQueueContentsRemotely() {
     RequestId requestId = new RequestId(UUID.randomUUID());
     sessionQueue.offerLast(request, requestId);
 
     Map<String, Object> response = sessionQueue.getQueueContents();
     assertThat(response).isNotNull();
+
+    assertEquals(1, response.get("request-count"));
+
+    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
+    assertEquals(caps, capabilitiesList.get(0));
   }
 
   @Test

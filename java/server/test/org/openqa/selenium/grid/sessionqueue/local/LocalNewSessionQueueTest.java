@@ -229,7 +229,7 @@ public class LocalNewSessionQueueTest {
   }
 
   @Test
-  public void shouldBeAbleToGetQueueInfo() {
+  public void shouldBeAbleToGetQueueContents() {
     long timestamp = Instant.now().getEpochSecond();
 
     ImmutableCapabilities chromeCaps = new ImmutableCapabilities(
@@ -252,10 +252,16 @@ public class LocalNewSessionQueueTest {
     firefoxRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
     RequestId firefoxRequestId = new RequestId(UUID.randomUUID());
     boolean addFirefoxRequest = sessionQueue.offerLast(firefoxRequest, firefoxRequestId);
-
     assertTrue(addFirefoxRequest);
+
     Map<String, Object> response = sessionQueue.getQueueContents();
     assertThat(response).isNotNull();
+
+    assertEquals(2, response.get("request-count"));
+
+    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
+    assertEquals(chromeCaps, capabilitiesList.get(0));
+    assertEquals(firefoxCaps, capabilitiesList.get(1));
   }
 
   private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {

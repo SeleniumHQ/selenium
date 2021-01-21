@@ -20,7 +20,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionqueue",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/config",
         "//java/server/src/org/openqa/selenium/remote/server/jmx",
-        "//java/server/src/org/openqa/selenium/grid/security",
         "//java/client/src/org/openqa/selenium/json",
         artifact("com.google.guava:guava"),
     ],
