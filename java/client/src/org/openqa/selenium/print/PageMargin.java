@@ -36,32 +36,15 @@ public class PageMargin {
     return top;
   }
 
-  public void setTop(double top) {
-    this.top = Require.positive("top", top);
-  }
-
   public double getBottom() {
     return bottom;
-  }
-
-  public void setBottom(double bottom) {
-    this.bottom = Require.positive("bottom", bottom);
   }
 
   public double getLeft() {
     return left;
   }
 
-  public void setLeft(double left) {
-    this.left = Require.positive("left", left);
-  }
-
   public double getRight() {
     return right;
   }
-
-  public void setRight(double right) {
-    this.right = Require.positive("right", right);
-  }
-
 }

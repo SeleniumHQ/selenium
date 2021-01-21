@@ -37,12 +37,4 @@ public class PageSize {
   public double getWidth() {
     return width;
   }
-
-  public void setHeight(double height) {
-    this.height = Require.positive("height", height);
-  }
-
-  public void setWidth(double width) {
-    this.width = Require.positive("width", width);
-  }
 }

@@ -74,7 +74,6 @@ public class PrintPageTest extends JUnit4TestBase {
   public void canPrintWithValidParams() {
     PrintOptions printOptions = new PrintOptions();
     PageSize pageSize = new PageSize();
-    pageSize.setWidth(30.0);
 
     printOptions.setPageRanges("1-2");
     printOptions.setOrientation(PrintOptions.Orientation.Landscape);
