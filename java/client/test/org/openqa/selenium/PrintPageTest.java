@@ -19,11 +19,13 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.print.PageSize;
 import org.openqa.selenium.print.PrintOptions;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class PrintPageTest extends JUnit4TestBase {
@@ -37,7 +39,9 @@ public class PrintPageTest extends JUnit4TestBase {
     driver.get(pages.printPage);
   }
 
+  // TODO: Skipped for Chrome because it needs to run headless, a workaround for this is needed.
   @Test
+  @Ignore(value = CHROME)
   public void canPrintPage() {
     PrintOptions printOptions = new PrintOptions();
 
@@ -45,8 +49,10 @@ public class PrintPageTest extends JUnit4TestBase {
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 
+  // TODO: Skipped for Chrome because it needs to run headless, a workaround for this is needed.
   @Test
-  public void canPrintwoPages() {
+  @Ignore(value = CHROME)
+  public void canPrintTwoPages() {
     PrintOptions printOptions = new PrintOptions();
     printOptions.setPageRanges("1-2");
 
@@ -54,11 +60,12 @@ public class PrintPageTest extends JUnit4TestBase {
     assertThat(pdf.getContent().contains(MAGIC_STRING)).isTrue();
   }
 
+  // TODO: Skipped for Chrome because it needs to run headless, a workaround for this is needed.
   @Test
+  @Ignore(value = CHROME)
   public void canPrintWithValidParams() {
     PrintOptions printOptions = new PrintOptions();
     PageSize pageSize = new PageSize();
-    pageSize.setWidth(30.0);
 
     printOptions.setPageRanges("1-2");
     printOptions.setOrientation(PrintOptions.Orientation.Landscape);

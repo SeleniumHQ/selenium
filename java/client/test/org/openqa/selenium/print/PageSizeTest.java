@@ -39,14 +39,4 @@ public class PageSizeTest {
     assertThat(pageSize.getHeight()).isEqualTo(HEIGHT);
     assertThat(pageSize.getWidth()).isEqualTo(WIDTH);
   }
-
-  @Test
-  public void setsValuesAsPassed() {
-    PageSize pageSize = new PageSize();
-    pageSize.setHeight(11.0);
-    pageSize.setWidth(12.0);
-
-    assertThat(pageSize.getHeight()).isEqualTo(11.0);
-    assertThat(pageSize.getWidth()).isEqualTo(12.0);
-  }
 }

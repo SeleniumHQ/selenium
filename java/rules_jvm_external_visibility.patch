@@ -1,0 +1,47 @@
+diff --git a/private/rules/has_maven_deps.bzl b/private/rules/has_maven_deps.bzl
+index 10e439c..85d183f 100644
+--- a/private/rules/has_maven_deps.bzl
++++ b/private/rules/has_maven_deps.bzl
+@@ -34,7 +34,7 @@ _EMPTY_INFO = MavenInfo(
+ _MAVEN_PREFIX = "maven_coordinates="
+ _STOP_TAGS = ["maven:compile-only", "no-maven"]
+ 
+-def _read_coordinates(tags):
++def read_coordinates(tags):
+     coordinates = []
+     for stop_tag in _STOP_TAGS:
+         if stop_tag in tags:
+@@ -119,7 +119,7 @@ def _has_maven_deps_impl(target, ctx):
+     for attr in _ASPECT_ATTRS:
+         all_deps.extend(getattr(ctx.rule.attr, attr, []))
+ 
+-    coordinates = _read_coordinates(ctx.rule.attr.tags)
++    coordinates = read_coordinates(ctx.rule.attr.tags)
+     label_to_javainfo = {target.label: target[JavaInfo]}
+ 
+     gathered = _gathered(
+diff --git a/private/rules/pom_file.bzl b/private/rules/pom_file.bzl
+index b549275..f91f6fe 100644
+--- a/private/rules/pom_file.bzl
++++ b/private/rules/pom_file.bzl
+@@ -26,6 +26,9 @@ def _explode_coordinates(coords):
+     if len(parts) == 4:
+         # Assume a buildr coordinate: groupId:artifactId:type:version
+         return (parts[0], parts[1], parts[3], parts[2])
++    if len(parts) == 5:
++        # Assume groupId:artifactId:type:classifier:version
++        return (parts[0], parts[1], parts[4], parts[2], parts[3])
+ 
+     fail("Unparsed: %s" % coords)
+ 
+diff --git a/private/tools/java/rules/jvm/external/zip/BUILD b/private/tools/java/rules/jvm/external/zip/BUILD
+index 58778d6..6bf4fd2 100644
+--- a/private/tools/java/rules/jvm/external/zip/BUILD
++++ b/private/tools/java/rules/jvm/external/zip/BUILD
+@@ -4,5 +4,6 @@ java_library(
+     visibility = [
+         "//private/tools/java:__subpackages__",
+         "//tests:__subpackages__",
++        "@selenium//:__subpackages__",
+     ],
+ )

@@ -18,12 +18,10 @@
 package org.openqa.selenium.print;
 
 
-import org.openqa.selenium.internal.Require;
-
 public class PageSize {
 
-  private double height;
-  private double width;
+  private final double height;
+  private final double width;
 
   public PageSize() {
     // Initialize with defaults. A4 paper size defaults in cms.
@@ -36,13 +34,5 @@ public class PageSize {
 
   public double getWidth() {
     return width;
-  }
-
-  public void setHeight(double height) {
-    this.height = Require.positive("height", height);
-  }
-
-  public void setWidth(double width) {
-    this.width = Require.positive("width", width);
   }
 }

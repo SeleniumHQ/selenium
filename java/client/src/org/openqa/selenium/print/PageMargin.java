@@ -17,13 +17,11 @@
 
 package org.openqa.selenium.print;
 
-import org.openqa.selenium.internal.Require;
-
 public class PageMargin {
-  private double top;
-  private double bottom;
-  private double left;
-  private double right;
+  private final double top;
+  private final double bottom;
+  private final double left;
+  private final double right;
 
   public PageMargin() {
     this.top = 1.0;
@@ -36,32 +34,15 @@ public class PageMargin {
     return top;
   }
 
-  public void setTop(double top) {
-    this.top = Require.positive("top", top);
-  }
-
   public double getBottom() {
     return bottom;
-  }
-
-  public void setBottom(double bottom) {
-    this.bottom = Require.positive("bottom", bottom);
   }
 
   public double getLeft() {
     return left;
   }
 
-  public void setLeft(double left) {
-    this.left = Require.positive("left", left);
-  }
-
   public double getRight() {
     return right;
   }
-
-  public void setRight(double right) {
-    this.right = Require.positive("right", right);
-  }
-
 }
