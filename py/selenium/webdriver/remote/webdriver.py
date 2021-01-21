@@ -123,7 +123,6 @@ class BaseWebDriver(metaclass=ABCMeta):
     ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
     will succeed.
     """
-    # TODO: After dropping Python 2, use ABC instead of ABCMeta and remove metaclass decorator.
 
 
 class WebDriver(BaseWebDriver):
