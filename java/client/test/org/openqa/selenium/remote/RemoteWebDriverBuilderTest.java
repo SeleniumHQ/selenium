@@ -157,21 +157,24 @@ public class RemoteWebDriverBuilderTest {
 
   @Test
   public void doesNotAllowFirstMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> RemoteWebDriver.builder().addMetadata("firstMatch", "cheese"));
+      .isThrownBy(() -> builder.addMetadata("firstMatch", "cheese"));
   }
 
   @Test
   public void doesNotAllowAlwaysMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> RemoteWebDriver.builder().addMetadata("alwaysMatch", "cheese"));
+      .isThrownBy(() -> builder.addMetadata("alwaysMatch", "cheese"));
 
   }
 
   @Test
   public void doesNotAllowCapabilitiesToBeUsedAsAMetadataName() {
+    RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(IllegalArgumentException.class)
-      .isThrownBy(() -> RemoteWebDriver.builder().addMetadata("capabilities", "cheese"));
+      .isThrownBy(() -> builder.addMetadata("capabilities", "cheese"));
   }
 
   @Test
