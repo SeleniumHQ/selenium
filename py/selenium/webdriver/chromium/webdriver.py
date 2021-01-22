@@ -15,6 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from typing import NoReturn
+from selenium.webdriver.edge.options import Options
+from selenium.webdriver.edge.service import Service
 import warnings
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
@@ -30,9 +33,9 @@ class ChromiumDriver(RemoteWebDriver):
     """
 
     def __init__(self, browser_name, vendor_prefix,
-                 port=DEFAULT_PORT, options=None, service_args=None,
+                 port=DEFAULT_PORT, options: Options = None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 service=None, keep_alive=True):
+                 service: Service = None, keep_alive=True):
         """
         Creates a new WebDriver instance of the ChromiumDriver.
         Starts the service and then creates new WebDriver instance of ChromiumDriver.
@@ -108,7 +111,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute("getNetworkConditions")['value']
 
-    def set_network_conditions(self, **network_conditions):
+    def set_network_conditions(self, **network_conditions) -> NoReturn:
         """
         Sets Chromium network emulation settings.
 
@@ -130,7 +133,7 @@ class ChromiumDriver(RemoteWebDriver):
             'network_conditions': network_conditions
         })
 
-    def execute_cdp_cmd(self, cmd, cmd_args):
+    def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
         """
         Execute Chrome Devtools Protocol command and get returned result
         The command and command args should follow chrome devtools protocol domains/commands, refer to link
@@ -149,7 +152,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute("executeCdpCommand", {'cmd': cmd, 'params': cmd_args})['value']
 
-    def get_sinks(self):
+    def get_sinks(self) -> list:
         """
         :Returns: A list of sinks avaliable for Cast.
         """
@@ -161,7 +164,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('getIssueMessage')['value']
 
-    def set_sink_to_use(self, sink_name):
+    def set_sink_to_use(self, sink_name: str) -> str:
         """
         Sets a specific sink, using its name, as a Cast session receiver target.
 
@@ -170,7 +173,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('setSinkToUse', {'sinkName': sink_name})
 
-    def start_tab_mirroring(self, sink_name):
+    def start_tab_mirroring(self, sink_name: str) -> str:
         """
         Starts a tab mirroring session on a specific receiver target.
 
@@ -179,7 +182,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('startTabMirroring', {'sinkName': sink_name})
 
-    def stop_casting(self, sink_name):
+    def stop_casting(self, sink_name: str) -> str:
         """
         Stops the existing Cast session on a specific receiver target.
 
@@ -188,7 +191,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('stopCasting', {'sinkName': sink_name})
 
-    def quit(self):
+    def quit(self) -> NoReturn:
         """
         Closes the browser and shuts down the ChromiumDriver executable
         that is started when starting the ChromiumDriver

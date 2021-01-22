@@ -67,16 +67,16 @@ class WebElement(BaseWebElement):
             type(self), self._parent.session_id, self._id)
 
     @property
-    def tag_name(self):
+    def tag_name(self) -> str:
         """This element's ``tagName`` property."""
         return self._execute(Command.GET_ELEMENT_TAG_NAME)['value']
 
     @property
-    def text(self):
+    def text(self) -> str:
         """The text of the element."""
         return self._execute(Command.GET_ELEMENT_TEXT)['value']
 
-    def click(self):
+    def click(self) -> None:
         """Clicks the element."""
         self._execute(Command.CLICK_ELEMENT)
 
@@ -91,11 +91,11 @@ class WebElement(BaseWebElement):
         else:
             self._execute(Command.SUBMIT_ELEMENT)
 
-    def clear(self):
+    def clear(self) -> None:
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name):
+    def get_property(self, name) -> str:
         """
         Gets the given property of the element.
 
@@ -113,7 +113,7 @@ class WebElement(BaseWebElement):
             # if we hit an end point that doesnt understand getElementProperty lets fake it
             return self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
 
-    def get_attribute(self, name):
+    def get_attribute(self, name) -> str:
         """Gets the given attribute or property of the element.
 
         This method will first try to return the value of a property with the
@@ -149,14 +149,14 @@ class WebElement(BaseWebElement):
                     attribute_value = attribute_value.lower()
         return attribute_value
 
-    def is_selected(self):
+    def is_selected(self) -> bool:
         """Returns whether the element is selected.
 
         Can be used to check if a checkbox or radio button is selected.
         """
         return self._execute(Command.IS_ELEMENT_SELECTED)['value']
 
-    def is_enabled(self):
+    def is_enabled(self) -> bool:
         """Returns whether the element is enabled."""
         return self._execute(Command.IS_ELEMENT_ENABLED)['value']
 
@@ -494,7 +494,7 @@ class WebElement(BaseWebElement):
         warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
-    def send_keys(self, *value):
+    def send_keys(self, *value) -> None:
         """Simulates typing into the element.
 
         :Args:
@@ -534,7 +534,7 @@ class WebElement(BaseWebElement):
                        'value': keys_to_typing(value)})
 
     # RenderedWebElement Items
-    def is_displayed(self):
+    def is_displayed(self) -> bool:
         """Whether the element is visible to a user."""
         # Only go into this conditional for browsers that don't use the atom themselves
         if self._w3c:
@@ -545,7 +545,7 @@ class WebElement(BaseWebElement):
             return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
 
     @property
-    def location_once_scrolled_into_view(self):
+    def location_once_scrolled_into_view(self) -> dict:
         """THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover
         where on the screen an element is so that we can click it. This method
         should cause the element to be scrolled into view.
@@ -564,7 +564,7 @@ class WebElement(BaseWebElement):
             return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
 
     @property
-    def size(self):
+    def size(self) -> dict:
         """The size of the element."""
         size = {}
         if self._w3c:
@@ -575,13 +575,13 @@ class WebElement(BaseWebElement):
                     "width": size["width"]}
         return new_size
 
-    def value_of_css_property(self, property_name):
+    def value_of_css_property(self, property_name) -> str:
         """The value of a CSS property."""
         return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {
             'propertyName': property_name})['value']
 
     @property
-    def location(self):
+    def location(self) -> dict:
         """The location of the element in the renderable canvas."""
         if self._w3c:
             old_loc = self._execute(Command.GET_ELEMENT_RECT)['value']
@@ -592,7 +592,7 @@ class WebElement(BaseWebElement):
         return new_loc
 
     @property
-    def rect(self):
+    def rect(self) -> dict:
         """A dictionary with the size and location of the element."""
         if self._w3c:
             return self._execute(Command.GET_ELEMENT_RECT)['value']
@@ -602,7 +602,7 @@ class WebElement(BaseWebElement):
             return rect
 
     @property
-    def screenshot_as_base64(self):
+    def screenshot_as_base64(self) -> str:
         """
         Gets the screenshot of the current element as a base64 encoded string.
 
@@ -614,7 +614,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.ELEMENT_SCREENSHOT)['value']
 
     @property
-    def screenshot_as_png(self):
+    def screenshot_as_png(self) -> str:
         """
         Gets the screenshot of the current element as a binary data.
 
@@ -625,7 +625,7 @@ class WebElement(BaseWebElement):
         """
         return b64decode(self.screenshot_as_base64.encode('ascii'))
 
-    def screenshot(self, filename):
+    def screenshot(self, filename) -> bool:
         """
         Saves a screenshot of the current element to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -659,7 +659,7 @@ class WebElement(BaseWebElement):
         return self._parent
 
     @property
-    def id(self):
+    def id(self) -> str:
         """Internal ID used by selenium.
 
         This is mainly for internal use. Simple use cases such as checking if 2
