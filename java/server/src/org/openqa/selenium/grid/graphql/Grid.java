@@ -20,12 +20,16 @@ package org.openqa.selenium.grid.graphql;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.net.URI;
 import java.util.Collection;
@@ -33,19 +37,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Grid {
 
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
+  private final Map<String, Object> result;
   private final NewSessionQueuer newSessionQueuer;
   private final String version;
+  private static final Json JSON = new Json();
 
   public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri,
               String version) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
     this.newSessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
+    this.result = newSessionQueuer.getQueueContents();
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
     this.version = Require.nonNull("Grid's version", version);
   }
@@ -106,4 +114,16 @@ public class Grid {
   public int getUsedSlots() {
     return getSessionCount();
   }
+
+  public int getSessionQueueSize() {
+    return (int) result.get("request-count");
+  }
+
+  public List<String> getSessionQueueRequests() {
+    Map<String, Object> result = newSessionQueuer.getQueueContents();
+    return ((List<Capabilities>) result.get("request-payloads")).stream()
+      .map(JSON::toJson)
+      .collect(Collectors.toList());
+  }
+
 }

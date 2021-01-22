@@ -72,6 +72,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -83,14 +84,16 @@ public class GraphqlHandlerTest {
   private final Secret registrationSecret = new Secret("stilton");
   private final URI publicUri = new URI("http://example.com/grid-o-matic");
   private final String version = "4.0.0";
+  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+  private static final Json JSON = new Json();
   private Distributor distributor;
   private NewSessionQueuer queuer;
   private Tracer tracer;
   private EventBus events;
   private ImmutableCapabilities caps;
   private ImmutableCapabilities stereotype;
+  private LocalNewSessionQueue localNewSessionQueue;
   private NewSessionPayload payload;
-  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
 
   public GraphqlHandlerTest() throws URISyntaxException {
   }
@@ -106,7 +109,7 @@ public class GraphqlHandlerTest {
     caps = new ImmutableCapabilities("browserName", "cheese");
     payload = NewSessionPayload.create(caps);
 
-    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+    localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
       events,
       Duration.ofSeconds(2),
@@ -151,6 +154,47 @@ public class GraphqlHandlerTest {
         "data", singletonMap(
           "grid", singletonMap(
             "version", version))));
+  }
+
+  @Test
+  public void shouldBeAbleToGetSessionQueueSize() {
+    HttpRequest request = new HttpRequest(POST, "/session");
+    request.setContent(asJson(
+      ImmutableMap.of(
+        "capabilities", ImmutableMap.of(
+          "alwaysMatch", caps))));
+
+    localNewSessionQueue.offerLast(request, new RequestId(UUID.randomUUID()));
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+
+    Map<String, Object> topLevel = executeQuery(handler, "{ grid { sessionQueueSize } }");
+
+    assertThat(topLevel).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "grid", singletonMap(
+            "sessionQueueSize", 1L))));
+  }
+
+  @Test
+  public void shouldBeAbleToGetSessionQueueRequests() {
+    HttpRequest request = new HttpRequest(POST, "/session");
+    request.setContent(asJson(
+      ImmutableMap.of(
+        "capabilities", ImmutableMap.of(
+          "alwaysMatch", caps))));
+
+    localNewSessionQueue.offerLast(request, new RequestId(UUID.randomUUID()));
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+
+    Map<String, Object> topLevel = executeQuery(handler,
+      "{ grid { sessionQueueRequests } }");
+
+    assertThat(topLevel).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "grid", singletonMap(
+            "sessionQueueRequests", singletonList(JSON.toJson(caps))))));
   }
 
   @Test

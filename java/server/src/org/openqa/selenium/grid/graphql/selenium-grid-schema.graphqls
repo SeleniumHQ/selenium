@@ -48,4 +48,6 @@ type Grid {
   usedSlots: Int!
   sessionCount: Int!
   version: String!
-}
+  sessionQueueSize: Int!
+  sessionQueueRequests: [String]!
+  }
