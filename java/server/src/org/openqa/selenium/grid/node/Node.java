@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -107,6 +108,7 @@ import static org.openqa.selenium.remote.http.Route.post;
 public abstract class Node implements HasReadyState, Routable {
 
   private static final Logger LOG = Logger.getLogger(Node.class.getName());
+  private static BuildInfo INFO = new BuildInfo();
   protected final Tracer tracer;
   private final NodeId id;
   private final URI uri;
@@ -182,6 +184,10 @@ public abstract class Node implements HasReadyState, Routable {
 
   public URI getUri() {
     return uri;
+  }
+
+  public String getNodeVersion() {
+    return String.format("%s (revision %s)", INFO.getReleaseLabel(), INFO.getBuildRevision());
   }
 
   public abstract Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);

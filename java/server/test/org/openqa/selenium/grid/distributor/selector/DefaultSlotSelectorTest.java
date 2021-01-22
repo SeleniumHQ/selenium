@@ -207,7 +207,8 @@ public class DefaultSlotSelectorTest {
       uri,
       count,
       ImmutableSet.copyOf(slots),
-      UP);
+      UP,
+      "4.0.0");
   }
 
   private NodeStatus createNode(String... browsers) {

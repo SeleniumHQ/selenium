@@ -84,7 +84,8 @@ public class Grid {
         status.getAvailability(),
         status.getMaxSessionCount(),
         capabilities,
-        sessions));
+        sessions,
+        status.getVersion()));
     }
 
     return toReturn.build();

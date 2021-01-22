@@ -170,7 +170,7 @@ public class Hub extends TemplateGridServerCommand {
       distributor,
       queuer,
       serverOptions.getExternalUri(),
-      getFormattedVersion());
+      getServerVersion());
     HttpHandler readinessCheck = req -> {
       boolean ready = router.isReady() && bus.isReady();
       return new HttpResponse()
@@ -207,10 +207,10 @@ public class Hub extends TemplateGridServerCommand {
 
     Server<?> server = asServer(config).start();
 
-    LOG.info(String.format("Started Selenium Hub %s: %s", getFormattedVersion(), server.getUrl()));
+    LOG.info(String.format("Started Selenium Hub %s: %s", getServerVersion(), server.getUrl()));
   }
 
-  private String getFormattedVersion() {
+  private String getServerVersion() {
     BuildInfo info = new BuildInfo();
     return String.format("%s (revision %s)", info.getReleaseLabel(), info.getBuildRevision());
   }

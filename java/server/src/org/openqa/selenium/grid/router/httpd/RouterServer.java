@@ -133,17 +133,12 @@ public class RouterServer extends TemplateGridServerCommand {
       distributorUrl,
       secret);
 
-    BuildInfo info = new BuildInfo();
-    String gridVersion = String.format(
-      "%s (revision %s)",
-      info.getReleaseLabel(),
-      info.getBuildRevision());
     GraphqlHandler graphqlHandler = new GraphqlHandler(
       tracer,
       distributor,
       queuer,
       serverOptions.getExternalUri(),
-      gridVersion);
+      getServerVersion());
 
     Route handler = Route.combine(
       new Router(tracer, clientFactory, sessions, queuer, distributor).with(networkOptions.getSpecComplianceChecks()),
@@ -160,10 +155,10 @@ public class RouterServer extends TemplateGridServerCommand {
     Server<?> server = asServer(config).start();
 
     LOG.info(String.format(
-      "Started Selenium Router %s: %s", getFormattedVersion(), server.getUrl()));
+      "Started Selenium Router %s: %s", getServerVersion(), server.getUrl()));
   }
 
-  private String getFormattedVersion() {
+  private String getServerVersion() {
     BuildInfo info = new BuildInfo();
     return String.format("%s (revision %s)", info.getReleaseLabel(), info.getBuildRevision());
   }

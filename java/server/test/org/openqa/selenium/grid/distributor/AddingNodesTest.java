@@ -253,7 +253,8 @@ public class AddingNodesTest {
           Instant.now(),
           Optional.of(new Session(
             new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
-      UP);
+      UP,
+      status.getVersion());
 
     bus.fire(new NodeStatusEvent(crafted));
 
@@ -373,7 +374,8 @@ public class AddingNodesTest {
             CAPS,
             Instant.now(),
             Optional.ofNullable(sess))),
-        UP);
+        UP,
+        getNodeVersion());
     }
 
     @Override
