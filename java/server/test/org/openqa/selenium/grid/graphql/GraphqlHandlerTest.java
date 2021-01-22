@@ -198,6 +198,20 @@ public class GraphqlHandlerTest {
   }
 
   @Test
+  public void shouldBeReturnAnEmptyListIfQueueIsEmpty() {
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+
+    Map<String, Object> topLevel = executeQuery(handler,
+      "{ grid { sessionQueueRequests } }");
+
+    assertThat(topLevel).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "grid", singletonMap(
+            "sessionQueueRequests", Collections.emptyList()))));
+  }
+
+  @Test
   public void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
 
@@ -238,6 +252,42 @@ public class GraphqlHandlerTest {
         "data", singletonMap(
           "grid", singletonMap(
             "nodes", singletonList(singletonMap("uri", nodeUri))))));
+  }
+
+  @Test
+  public void shouldBeAbleToGetSessionCount() throws URISyntaxException {
+    String nodeUrl = "http://localhost:5556";
+    URI nodeUri = new URI(nodeUrl);
+
+    Node node = LocalNode.builder(tracer, events, nodeUri, publicUri, registrationSecret)
+      .add(caps, new TestSessionFactory((id, caps) -> new org.openqa.selenium.grid.data.Session(
+        id,
+        nodeUri,
+        stereotype,
+        caps,
+        Instant.now()))).build();
+
+    distributor.add(node);
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
+    Either<SessionNotCreatedException, CreateSessionResponse> response =
+      distributor.newSession(createRequest(payload));
+    if (response.isRight()) {
+      Session session = response.right().getSession();
+
+      assertThat(session).isNotNull();
+      GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
+      Map<String, Object> topLevel = executeQuery(handler,
+        "{ grid { sessionCount } }");
+
+      assertThat(topLevel).isEqualTo(
+        singletonMap(
+          "data", singletonMap(
+            "grid", singletonMap(
+              "sessionCount", 1L ))));
+    } else {
+      fail("Session creation failed", response.left());
+    }
   }
 
   @Test
