@@ -535,8 +535,7 @@ public class NewSessionPayload implements Closeable {
     StringBuilder res = new StringBuilder();
     try {
       writeTo(res);
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (IOException ignore) {
     }
     return res.toString();
   }
