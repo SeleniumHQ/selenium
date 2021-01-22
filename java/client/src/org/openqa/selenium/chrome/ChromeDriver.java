@@ -21,82 +21,13 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
-import org.openqa.selenium.html5.LocationContext;
-import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
- * This class is provided as a convenience for easily testing the Chrome browser. The control server
- * which each instance communicates with will live and die with the instance.
+ * It requires a <code>chromedriver</code> executable to be available in PATH.
  *
- * To avoid unnecessarily restarting the ChromeDriver server with each instance, use a
- * {@link RemoteWebDriver} coupled with the desired {@link ChromeDriverService}, which is managed
- * separately. For example: <pre>{@code
- *
- * import static org.junit.Assert.assertEquals;
- *
- * import org.junit.*;
- * import org.junit.runner.RunWith;
- * import org.junit.runners.JUnit4;
- * import org.openqa.selenium.By;
- * import org.openqa.selenium.WebDriver;
- * import org.openqa.selenium.WebElement;
- * import org.openqa.selenium.chrome.ChromeDriverService;
- * import org.openqa.selenium.chrome.ChromeOptions;
- * import org.openqa.selenium.remote.RemoteWebDriver;
- *
- * import java.io.File;
- * import java.io.IOException;
- *
- * {@literal @RunWith(JUnit4.class)}
- * public class ChromeTest {
- *
- *   private static ChromeDriverService service;
- *   private WebDriver driver;
- *
- *   {@literal @BeforeClass}
- *   public static void createAndStartService() throws IOException {
- *     service = new ChromeDriverService.Builder()
- *         .usingDriverExecutable(new File("path/to/my/chromedriver.exe"))
- *         .usingAnyFreePort()
- *         .build();
- *     service.start();
- *   }
- *
- *   {@literal @AfterClass}
- *   public static void createAndStopService() {
- *     service.stop();
- *   }
- *
- *   {@literal @Before}
- *   public void createDriver() {
- *     driver = new RemoteWebDriver(service.getUrl(), new ChromeOptions());
- *   }
- *
- *   {@literal @After}
- *   public void quitDriver() {
- *     driver.quit();
- *   }
- *
- *   {@literal @Test}
- *   public void testGoogleSearch() {
- *     driver.get("http://www.google.com");
- *     WebElement searchBox = driver.findElement(By.name("q"));
- *     searchBox.sendKeys("webdriver");
- *     searchBox.sendKeys(Keys.ENTER);
- *     assertEquals("webdriver - Google Search", driver.getTitle());
- *   }
- * }
- * }</pre>
- *
- * Note that unlike ChromeDriver, RemoteWebDriver doesn't directly implement
- * role interfaces such as {@link LocationContext} and {@link WebStorage}.
- * Therefore, to access that functionality, it needs to be
- * {@link org.openqa.selenium.remote.Augmenter augmented} and then cast
- * to the appropriate interface.
- *
- * @see ChromeDriverService#createDefaultService
+ * @see <a href="https://sites.google.com/a/chromium.org/chromedriver/">chromedriver</a>
  */
 public class ChromeDriver extends ChromiumDriver {
 

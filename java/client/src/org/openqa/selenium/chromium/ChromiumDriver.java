@@ -59,18 +59,7 @@ import java.util.logging.Logger;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
- * This class is provided as a convenience for easily testing the Chromium browser. The control server
- * which each instance communicates with will live and die with the instance.
- * <p>
- * To avoid unnecessarily restarting the ChromiumDriver server with each instance, use a
- * {@link RemoteWebDriver} coupled with the desired WebDriverService, which is managed
- * separately.
- * <p>
- * Note that unlike ChromiumDriver, RemoteWebDriver doesn't directly implement
- * role interfaces such as {@link LocationContext} and {@link WebStorage}.
- * Therefore, to access that functionality, it needs to be
- * {@link org.openqa.selenium.remote.Augmenter augmented} and then cast
- * to the appropriate interface.
+ * It is used as the base class for Chromium-based browser drivers (Chrome, Edgium).
  */
 public class ChromiumDriver extends RemoteWebDriver implements
   HasAuthentication,
