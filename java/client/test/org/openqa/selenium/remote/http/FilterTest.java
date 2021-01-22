@@ -25,6 +25,7 @@ import org.junit.experimental.categories.Category;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -118,6 +119,6 @@ public class FilterTest {
 
     handler.execute(new HttpRequest(GET, "/cheese"));
 
-    assertThat(ordered).isEqualTo(List.of("outer", "middle", "inner"));
+    assertThat(ordered).isEqualTo(Arrays.asList("outer", "middle", "inner"));
   }
 }

@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -40,12 +40,8 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.testing.UnitTests;
 
-import javax.print.DocFlavor;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +83,7 @@ public class NewSessionPayloadTest {
 
   @Test
   public void shouldDefaultToAssumingADownstreamOssDialect() {
-    Map<String, Object> caps = EMPTY_MAP;
+    Map<String, Object> caps = emptyMap();
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
     }
@@ -263,8 +259,8 @@ public class NewSessionPayloadTest {
   @Test
   public void shouldPreserveMetadata() throws IOException {
     Map<String, Object> raw = ImmutableMap.of(
-      "capabilities", Map.of("alwaysMatch", Map.of("browserName", "cheese")),
-        "se:meta", "cheese is good");
+      "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
+      "se:meta", "cheese is good");
 
     try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
       StringBuilder toParse = new StringBuilder();
