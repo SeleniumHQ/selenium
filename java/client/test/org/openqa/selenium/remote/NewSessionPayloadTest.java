@@ -267,7 +267,7 @@ public class NewSessionPayloadTest {
       payload.writeTo(toParse);
       Map<String, Object> seen = new Json().toType(toParse.toString(), MAP_TYPE);
 
-      assertThat(seen.get("se:meta")).isEqualTo("cheese is good");
+      assertThat(seen).containsEntry("se:meta", "cheese is good");
     }
   }
 
