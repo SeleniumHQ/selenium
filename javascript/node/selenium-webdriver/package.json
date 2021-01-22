@@ -43,7 +43,7 @@
     "sinon": "^7.5.0"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint --ignore-pattern node_modules --ignore-pattern generator --ext js lib/http.js \"**/*.js\"",
     "test": "npm run lint && mocha -t 600000 --recursive test",
     "test-jasmine": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
   },
