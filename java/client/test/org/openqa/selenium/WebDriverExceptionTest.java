@@ -63,6 +63,13 @@ public class WebDriverExceptionTest {
   }
 
   @Test
+  public void shouldBeAbleToGetMessageWithoutAdditionalInfo() {
+    String message = "Oops!";
+    WebDriverException ex = new WebDriverException(message);
+    assertThat(ex.getRawMessage()).isEqualTo(message);
+  }
+
+  @Test
   public void shouldContainMessageAndAdditionalInfo() {
     String message = "Oops!";
     WebDriverException ex = new WebDriverException(message);

@@ -52,10 +52,30 @@ public class WebDriverException extends RuntimeException {
     super(message, cause);
   }
 
+  /**
+   * Returns the detail message string of this exception that includes not only the original
+   * message passed to the exception constructor but also driver information, system
+   * information and extra information added by {@link #addInfo(String, String)} method.
+   *
+   * To get the original message use {@link #getRawMessage()}
+   *
+   * @return the detail message string of this exception.
+   */
   @Override
   public String getMessage() {
-    return super.getCause() instanceof WebDriverException
+    return getCause() instanceof WebDriverException
            ? super.getMessage() : createMessage(super.getMessage());
+  }
+
+  /**
+   * Returns the simple message string of this exception.
+   *
+   * @return the simple message string of this exception.
+   *
+   * @see #getMessage()
+   */
+  public String getRawMessage() {
+    return super.getMessage();
   }
 
   private String createMessage(String originalMessageString) {
