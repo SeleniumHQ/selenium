@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.log;
 
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
@@ -128,7 +129,7 @@ public class LoggingOptions {
     LOG.info("Using OpenTelemetry for tracing");
     SdkTracerManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
     List<SpanProcessor> exporters = new LinkedList<>();
-    exporters.add(SimpleSpanProcessor.builder(new SpanExporter() {
+    exporters.add(SimpleSpanProcessor.create(new SpanExporter() {
       @Override
       public CompletableResultCode export(Collection<SpanData> spans) {
 
@@ -154,7 +155,7 @@ public class LoggingOptions {
               (attributeKey, value) -> attributeMap.put(attributeKey.getKey(), value));
             map.put("attributes", attributeMap);
             String jsonString = getJsonString(map);
-            if (status.isOk()) {
+            if (status.getStatusCode() == StatusCode.OK) {
               LOG.log(Level.FINE, jsonString);
             } else {
               LOG.log(Level.WARNING, jsonString);
@@ -174,14 +175,14 @@ public class LoggingOptions {
         // no-op
         return CompletableResultCode.ofSuccess();
       }
-    }).build());
+    }));
 
     // The Jaeger exporter doesn't yet have a `TracerFactoryProvider`, so we
     // shall look up the class using reflection, and beg for forgiveness
     // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
-      exporter -> exporters.add(SimpleSpanProcessor.builder(exporter).build()));
+      exporter -> exporters.add(SimpleSpanProcessor.create(exporter)));
     tracerManagement.addSpanProcessor(SpanProcessor.composite(exporters));
 
     // OpenTelemetry default propagators are no-op since version 0.9.0.

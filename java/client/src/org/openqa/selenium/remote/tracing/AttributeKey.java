@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.api.trace.attributes.SemanticAttributes;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 public enum AttributeKey {
 
