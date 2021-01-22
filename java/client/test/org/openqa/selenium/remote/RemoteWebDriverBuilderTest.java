@@ -46,6 +46,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -53,13 +55,15 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.BrowserType.CHROME;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 
+import com.google.common.collect.ImmutableMap;
+
 @Category(UnitTests.class)
 public class RemoteWebDriverBuilderTest {
 
   private static final SessionId SESSION_ID = new SessionId(UUID.randomUUID());
   private static final HttpResponse CANNED_SESSION_RESPONSE = new HttpResponse()
-    .setContent(Contents.asJson(Map.of(
-      "value", Map.of(
+    .setContent(Contents.asJson(ImmutableMap.of(
+      "value", ImmutableMap.of(
         "sessionId", SESSION_ID,
         // Primula is a canned cheese. Boom boom!
         "capabilities", new ImmutableCapabilities("se:cheese", "primula")))));
@@ -336,14 +340,15 @@ public class RemoteWebDriverBuilderTest {
   private List<Capabilities> listCapabilities(HttpRequest request) {
     Map<String, Object> converted = new Json().toType(Contents.string(request), MAP_TYPE);
     Map<String, Object> w3cCaps = (Map<String, Object>) converted.get("capabilities");
-    Map<String, Object> always = (Map<String, Object>) w3cCaps.getOrDefault("alwaysMatch", Map.of());
+    Map<String, Object> always = (Map<String, Object>) w3cCaps.getOrDefault("alwaysMatch", emptyMap());
     Capabilities alwaysMatch = new ImmutableCapabilities(always);
-    List<Map<String, Object>> first = (List<Map<String, Object>>) w3cCaps.getOrDefault("firstMatch", List.of(Map.of()));
+    List<Map<String, Object>> first = (List<Map<String, Object>>) w3cCaps
+      .getOrDefault("firstMatch", singletonList(emptyMap()));
 
     return first.stream()
       .map(ImmutableCapabilities::new)
       .map(alwaysMatch::merge)
-      .collect(Collectors.toUnmodifiableList());
+      .collect(Collectors.toList());
   }
 
   static class FakeDriverService extends DriverService {
