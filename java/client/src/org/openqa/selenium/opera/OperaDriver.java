@@ -35,7 +35,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * A {@link WebDriver} implementation that controls a Blink-based Opera browser running on the local
  * machine. It requires an <code>operadriver</code> executable to be available in PATH.
  *
- * @see <a href="https://github.com/operasoftware/operachromiumdriver">opersdriver</a>
+ * @see <a href="https://github.com/operasoftware/operachromiumdriver">operadriver</a>
  */
 public class OperaDriver extends RemoteWebDriver
     implements LocationContext, WebStorage {

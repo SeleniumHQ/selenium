@@ -21,8 +21,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
 
 /**
  * A {@link WebDriver} implementation that controls an Edge browser running on the local machine.
