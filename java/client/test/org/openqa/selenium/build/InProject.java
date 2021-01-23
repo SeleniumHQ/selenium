@@ -67,7 +67,6 @@ public class InProject {
       }
     }
 
-    // Find the rakefile first
     dir = Paths.get(".").toAbsolutePath();
     Path pwd = dir;
     while (dir != null && !dir.equals(dir.getParent())) {
