@@ -48,7 +48,7 @@ public class ByChainedTest {
 
     ByChained by = new ByChained();
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+      .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -98,7 +98,7 @@ public class ByChainedTest {
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+      .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -166,7 +166,7 @@ public class ByChainedTest {
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+      .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -299,7 +299,13 @@ public class ByChainedTest {
   @Test
   public void testEquals() {
     assertThat(new ByChained(By.id("cheese"), By.name("photo")))
-        .isEqualTo(new ByChained(By.id("cheese"), By.name("photo")));
+      .isEqualTo(new ByChained(By.id("cheese"), By.name("photo")));
+  }
+
+  @Test
+  public void testToString() {
+    assertThat(new ByChained(By.id("cheese"), By.name("photo")).toString())
+      .isEqualTo("By.chained({By.id: cheese,By.name: photo})");
   }
 
   private interface AllDriver extends SearchContext {
