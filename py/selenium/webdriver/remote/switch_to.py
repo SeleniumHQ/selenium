@@ -27,7 +27,8 @@ from selenium.webdriver.remote.webelement import WebElement
 
 class SwitchTo:
     def __init__(self, driver):
-        self._driver = driver
+        import weakref
+        self._driver = weakref.proxy(driver)
 
     @property
     def active_element(self) -> WebElement:
