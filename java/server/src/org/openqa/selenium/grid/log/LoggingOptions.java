@@ -155,7 +155,7 @@ public class LoggingOptions {
             if (status.getStatusCode() == StatusCode.ERROR) {
               LOG.log(Level.WARNING, jsonString);
             } else {
-              LOG.log(Level.INFO, jsonString);
+              LOG.log(Level.FINE, jsonString);
             }
           });
         });
