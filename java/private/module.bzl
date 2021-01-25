@@ -105,17 +105,16 @@ def _java_module_impl(ctx):
     module_info_jar = ctx.actions.declare_file("%s-module-info.jar" % ctx.attr.name)
     args = ctx.actions.args()
     args.add_all(["--module-name", name])
-#    args.add_all(["--in", raw_merged_jar])
     args.add_all(["--in", ctx.file.target])
     args.add_all(["--output", module_info_jar])
     args.add_all(ctx.attr.hides, before_each = "--hides")
     args.add_all(ctx.attr.uses, before_each = "--uses")
     args.add_all(module_path_jars, before_each = "--module-path")
+    args.add_all(ctx.attr.opens_to, before_each = "--open-to")
 
     ctx.actions.run(
         executable = ctx.executable._module_generator,
         outputs = [module_info_jar],
-#        inputs = depset([raw_merged_jar], transitive = [info.module_path for info in all_infos]),
         inputs = depset([ctx.file.target], transitive = [info.module_path for info in all_infos]),
         arguments = [args],
     )
@@ -209,6 +208,10 @@ java_module = rule(
         ),
         "hides": attr.string_list(
             doc = "List of package names to hide",
+            default = [],
+        ),
+        "opens_to": attr.string_list(
+            doc = "List of modules this module is open to",
             default = [],
         ),
         "uses": attr.string_list(

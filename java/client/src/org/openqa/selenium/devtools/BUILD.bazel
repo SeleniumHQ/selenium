@@ -55,6 +55,9 @@ java_export(
     exports = [
         ":devtools-prototypes",
     ],
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     deps = [
         ":devtools-prototypes",
         "//java:auto-service",

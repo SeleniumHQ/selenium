@@ -31,6 +31,9 @@ java_export(
         "org.openqa.selenium.interactions.internal",
         "org.openqa.selenium.internal",
     ],
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
     pom_template = ":template-pom",
     visibility = ["//visibility:public"],

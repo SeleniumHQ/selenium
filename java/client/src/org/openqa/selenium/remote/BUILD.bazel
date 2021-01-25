@@ -15,6 +15,9 @@ java_export(
         ":get-attribute",
         ":is-displayed",
     ],
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     uses = [
         "org.openqa.selenium.remote.AugmenterProvider",
         "org.openqa.selenium.remote.session.CapabilitiesFilter",

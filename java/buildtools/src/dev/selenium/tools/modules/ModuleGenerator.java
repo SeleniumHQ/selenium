@@ -77,10 +77,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static com.github.javaparser.ParseStart.COMPILATION_UNIT;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_MANDATED;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_MODULE;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
-import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
+import static net.bytebuddy.jar.asm.Opcodes.*;
 
 public class ModuleGenerator {
 
@@ -277,7 +274,7 @@ public class ModuleGenerator {
     ModuleVisitor moduleVisitor = classWriter.visitModule(moduleName, isOpen ? ACC_OPEN : 0, null);
     moduleVisitor.visitRequire("java.base", ACC_MANDATED, null);
 
-    moduleDeclaration.accept(new MyModuleVisitor(classLoader, hides, moduleVisitor), null);
+    moduleDeclaration.accept(new MyModuleVisitor(classLoader, exportedPackages, hides, moduleVisitor), null);
 
     moduleVisitor.visitEnd();
 
@@ -360,13 +357,16 @@ public class ModuleGenerator {
   private static class MyModuleVisitor extends VoidVisitorAdapter<Void> {
 
     private final ClassLoader classLoader;
-    private Set<String> seenExports;
+    private final Set<String> seenExports;
+    private final Set<String> packages;
     private final ModuleVisitor byteBuddyVisitor;
 
-    MyModuleVisitor(ClassLoader classLoader, Set<String> excluded, ModuleVisitor byteBuddyVisitor) {
+    MyModuleVisitor(ClassLoader classLoader, Set<String> packages, Set<String> excluded, ModuleVisitor byteBuddyVisitor) {
       this.classLoader = classLoader;
       this.byteBuddyVisitor = byteBuddyVisitor;
+
       // Set is modifiable
+      this.packages = new HashSet<>(packages);
       this.seenExports = new HashSet<>(excluded);
     }
 
@@ -408,7 +408,8 @@ public class ModuleGenerator {
 
     @Override
     public void visit(ModuleOpensDirective n, Void arg) {
-      throw new UnsupportedOperationException(n.toString());
+//      packages.forEach(pkg -> byteBuddyVisitor.visitOpen(pkg, ACC_MANDATED | ACC_SYNTHETIC, n.getNameAsString()));
+      packages.forEach(pkg -> byteBuddyVisitor.visitOpen(pkg.replace('.', '/'), 0, n.getNameAsString()));
     }
 
     private int getByteBuddyModifier(NodeList<Modifier> modifiers) {

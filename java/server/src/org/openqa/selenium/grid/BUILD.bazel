@@ -60,6 +60,9 @@ java_export(
         "org.openqa.selenium.remote.locators.CustomLocator",
         "org.openqa.selenium.remote.service.DriverService$Builder",
     ],
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     visibility = [
         "//visibility:public",
     ],

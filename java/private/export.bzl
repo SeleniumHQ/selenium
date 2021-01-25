@@ -13,6 +13,7 @@ def java_export(
         pom_template = None,
         hides = [],
         uses = [],
+        opens_to = [],
         exports = [],
         tags = [],
         visibility = None,
@@ -56,6 +57,7 @@ def java_export(
        target = "%s-project" % name,
        deps = kwargs.get("deps", []) + kwargs.get("runtime_deps", []),
        exports = exports,
+       opens_to = opens_to,
        tags = tags,
     )
 

@@ -14,6 +14,9 @@ java_export(
     exports = [
         ":cdp",
     ],
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     deps = [
         ":cdp",
         "//java:auto-service",
