@@ -65,8 +65,8 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
   @Override
   public ChromeOptions merge(Capabilities extraCapabilities) {
     ChromeOptions newInstance = new ChromeOptions();
-    this.asMap().forEach(newInstance::setCapability);
-    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    newInstance.mergeInPlace(this);
+    newInstance.mergeInPlace(extraCapabilities);
     return newInstance;
   }
 

@@ -21,7 +21,9 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toList;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 
@@ -31,6 +33,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,10 +64,10 @@ import java.util.stream.Stream;
 public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOptions<ChromiumOptions> {
 
   private String binary;
-  private List<String> args = new ArrayList<>();
-  private List<File> extensionFiles = new ArrayList<>();
-  private List<String> extensions = new ArrayList<>();
-  private Map<String, Object> experimentalOptions = new HashMap<>();
+  private final List<String> args = new ArrayList<>();
+  private final List<File> extensionFiles = new ArrayList<>();
+  private final List<String> extensions = new ArrayList<>();
+  private final Map<String, Object> experimentalOptions = new HashMap<>();
 
   private final String CAPABILITY;
 
@@ -231,5 +234,16 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
     toReturn.put(CAPABILITY, unmodifiableMap(options));
 
     return unmodifiableMap(toReturn);
+  }
+
+  protected void mergeInPlace(Capabilities capabilities) {
+    capabilities.asMap().forEach(this::setCapability);
+    if (capabilities instanceof ChromiumOptions) {
+      ChromiumOptions<?> options = (ChromiumOptions<?>) capabilities;
+      addArguments(options.args);
+      addExtensions(options.extensionFiles);
+      addEncodedExtensions(options.extensions);
+      options.experimentalOptions.forEach(this::setExperimentalOption);
+    }
   }
 }

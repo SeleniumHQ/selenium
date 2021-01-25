@@ -19,6 +19,8 @@ package org.openqa.selenium.chrome;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
 
@@ -56,5 +58,15 @@ public class ChromeOptionsTest {
     assertThat(ChromeDriverLogLevel.fromString("SEVERE")).isEqualTo(SEVERE);
   }
 
+  @Test
+  public void mergingOptionsMergesArguments() {
+    ChromeOptions one = new ChromeOptions().addArguments("verbose");
+    ChromeOptions two = new ChromeOptions().addArguments("silent");
+    ChromeOptions merged = one.merge(two);
 
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+  }
 }
