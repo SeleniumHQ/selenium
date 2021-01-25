@@ -173,6 +173,11 @@ def _java_module_impl(ctx):
             name = name,
             module_path = depset(direct = [module_jar], transitive = [info.module_path for info in all_infos]),
         ),
+        OutputGroupInfo(
+            module_jar = [module_jar],
+            module_source = [src_jar],
+            _source_jars = [src_jar],
+        ),
         java_info,
     ]
 

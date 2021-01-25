@@ -61,6 +61,14 @@ def java_export(
        tags = tags,
     )
 
+    native.filegroup(
+        name = "%s-maven-module" % name,
+        srcs = [
+            ":%s-module" % name,
+        ],
+        output_group = "module_jar",
+    )
+
     javadoc(
         name = "%s-docs" % name,
         deps = [
@@ -79,7 +87,7 @@ def java_export(
         coordinates = maven_coordinates,
         pom = "%s-pom" % name,
         javadocs = "%s-docs" % name,
-        artifact_jar = ":%s-maven-artifact" % name,
+        artifact_jar = ":%s-maven-module" % name,
         source_jar = ":%s-maven-source" % name,
         visibility = visibility,
     )
