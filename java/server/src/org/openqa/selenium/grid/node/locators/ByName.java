@@ -29,7 +29,7 @@ import org.openqa.selenium.remote.locators.CustomLocator;
  */
 
 @AutoService(CustomLocator.class)
-public class ByName extends CustomLocator {
+public class ByName implements CustomLocator {
   @Override
   public String getLocatorName() {
     return "name";
