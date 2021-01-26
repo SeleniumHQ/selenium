@@ -230,9 +230,6 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           case "name":
             return amendLocatorToCssSelector(parameters, "*[name='" + value + "']");
 
-          case "tag name":
-            return amendLocatorToCssSelector(parameters, cssEscape(value));
-
           default:
             // Do nothing
             break;
