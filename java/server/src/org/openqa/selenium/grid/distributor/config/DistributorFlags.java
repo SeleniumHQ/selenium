@@ -49,6 +49,16 @@ public class DistributorFlags implements HasRoles {
   @ConfigValue(section = "distributor", name = "hostname", example = "\"localhost\"")
   private String distributorServerHost;
 
+  @Parameter(
+    names = {"--distributor-implementation"},
+    description = "Full classname of non-default distributor implementation")
+  @ConfigValue(
+    section = "distributor",
+    name = "implementation",
+    example = "org.openqa.selenium.grid.distributor.local.LocalDistributor")
+  private String implementation;
+
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(DISTRIBUTOR_ROLE);

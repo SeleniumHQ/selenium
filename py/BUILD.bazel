@@ -5,10 +5,10 @@ load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
 
 BROWSER_VERSIONS = [
-    "v84",
     "v85",
     "v86",
     "v87",
+    "v88",
 ]
 
 copy_file(
@@ -30,6 +30,12 @@ copy_file(
 )
 
 copy_file(
+    name = "mutation-listener",
+    src = "//javascript/cdp-support:mutation-listener.js",
+    out = "selenium/webdriver/remote/mutation-listener.js",
+)
+
+copy_file(
     name = "firefox-driver-prefs",
     src = "//third_party/js/selenium:webdriver_json",
     out = "selenium/webdriver/firefox/webdriver_prefs.json",
@@ -46,6 +52,7 @@ py_library(
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
+        ":mutation-listener",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -77,26 +84,26 @@ py_package(
 
 py_wheel(
     name = "selenium-wheel",
-    distribution = "selenium",
+    classifiers = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: MacOS :: MacOS X",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Software Development :: Libraries",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+    ],
     description_file = "README.rst",
+    distribution = "selenium",
     homepage = "www.selenium.dev",
     license = "Apache 2.0",
-    classifiers = [
-        'Development Status :: 5 - Production/Stable',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
-        'Operating System :: POSIX',
-        'Operating System :: Microsoft :: Windows',
-        'Operating System :: MacOS :: MacOS X',
-        'Topic :: Software Development :: Testing',
-        'Topic :: Software Development :: Libraries',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9'
-    ],
-    python_tag = "py3",
     python_requires = "~=3.7",
+    python_tag = "py3",
     requires = [
         "urllib3[secure]==1.26.2",
         "trio==0.17.0",
@@ -211,14 +218,58 @@ py_library(
 py_test_suite(
     name = "test-chrome",
     size = "large",
-    srcs = glob([
-        "test/selenium/webdriver/chrome/**/*.py",
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
-    ]),
+    srcs = glob(
+        [
+            "test/selenium/webdriver/chrome/**/*.py",
+            "test/selenium/webdriver/common/**/*.py",
+            "test/selenium/webdriver/support/**/*.py",
+        ],
+        exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
+    ),
     args = [
         "--instafail",
         "--driver=Chrome",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        requirement("attrs"),
+        requirement("idna"),
+        requirement("iniconfig"),
+        requirement("importlib_metadata"),
+        requirement("h11"),
+        requirement("more_itertools"),
+        requirement("multidict"),
+        requirement("outcome"),
+        requirement("pluggy"),
+        requirement("py"),
+        requirement("pytest"),
+        requirement("pytest-instafail"),
+        requirement("pytest-trio"),
+        requirement("sortedcontainers"),
+        requirement("sniffio"),
+        requirement("zipp"),
+    ],
+)
+
+py_test_suite(
+    name = "test-chrome-headless",
+    size = "large",
+    srcs = glob(
+        [
+            "test/selenium/webdriver/chrome/**/*.py",
+            "test/selenium/webdriver/common/**/*.py",
+            "test/selenium/webdriver/support/**/*.py",
+        ],
+    ),
+    args = [
+        "--instafail",
+        "--driver=Chrome",
+        "--headless=true",
     ],
     tags = [
         "no-sandbox",

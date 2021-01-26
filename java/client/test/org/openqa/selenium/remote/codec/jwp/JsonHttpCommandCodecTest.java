@@ -36,19 +36,21 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+@Category(UnitTests.class)
 public class JsonHttpCommandCodecTest {
 
   private final JsonHttpCommandCodec codec = new JsonHttpCommandCodec();

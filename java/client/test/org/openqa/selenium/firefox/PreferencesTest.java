@@ -22,10 +22,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.Reader;
 import java.io.StringReader;
 
+@Category(UnitTests.class)
 public class PreferencesTest {
 
   private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";

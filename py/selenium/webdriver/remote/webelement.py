@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
-import hashlib
 import os
+from base64 import b64decode, encodebytes
+from hashlib import md5 as md5_hash
 import pkgutil
 import warnings
 import zipfile
@@ -29,29 +29,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
 
-from six import add_metaclass
 
-# Python 3 imports
-try:
-    str = basestring
-except NameError:
-    pass
-
-try:
-    from base64 import encodebytes
-except ImportError:  # Python 2
-    from base64 import encodestring as encodebytes
-
-
-# TODO: when dropping Python 2.7, use built in importlib_resources.files
-# not relying on __package__ here as it can be `None` in some situations (see #4558)
+# TODO: When moving to supporting python 3.9 as the minimum version we can
+# use built in importlib_resources.files.
 _pkg = '.'.join(__name__.split('.')[:-1])
 getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
-@add_metaclass(ABCMeta)
-class BaseWebElement(object):
+class BaseWebElement(metaclass=ABCMeta):
     """
     Abstract Base Class for WebElement.
     ABC's will allow custom types to be registered as a WebElement to pass type checks.
@@ -81,16 +67,16 @@ class WebElement(BaseWebElement):
             type(self), self._parent.session_id, self._id)
 
     @property
-    def tag_name(self):
+    def tag_name(self) -> str:
         """This element's ``tagName`` property."""
         return self._execute(Command.GET_ELEMENT_TAG_NAME)['value']
 
     @property
-    def text(self):
+    def text(self) -> str:
         """The text of the element."""
         return self._execute(Command.GET_ELEMENT_TEXT)['value']
 
-    def click(self):
+    def click(self) -> None:
         """Clicks the element."""
         self._execute(Command.CLICK_ELEMENT)
 
@@ -105,11 +91,11 @@ class WebElement(BaseWebElement):
         else:
             self._execute(Command.SUBMIT_ELEMENT)
 
-    def clear(self):
+    def clear(self) -> None:
         """Clears the text if it's a text entry element."""
         self._execute(Command.CLEAR_ELEMENT)
 
-    def get_property(self, name):
+    def get_property(self, name) -> str:
         """
         Gets the given property of the element.
 
@@ -127,7 +113,7 @@ class WebElement(BaseWebElement):
             # if we hit an end point that doesnt understand getElementProperty lets fake it
             return self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
 
-    def get_attribute(self, name):
+    def get_attribute(self, name) -> str:
         """Gets the given attribute or property of the element.
 
         This method will first try to return the value of a property with the
@@ -158,19 +144,19 @@ class WebElement(BaseWebElement):
         else:
             resp = self._execute(Command.GET_ELEMENT_ATTRIBUTE, {'name': name})
             attribute_value = resp.get('value')
-            if attribute_value is not None:
+            if attribute_value:
                 if name != 'value' and attribute_value.lower() in ('true', 'false'):
                     attribute_value = attribute_value.lower()
         return attribute_value
 
-    def is_selected(self):
+    def is_selected(self) -> bool:
         """Returns whether the element is selected.
 
         Can be used to check if a checkbox or radio button is selected.
         """
         return self._execute(Command.IS_ELEMENT_SELECTED)['value']
 
-    def is_enabled(self):
+    def is_enabled(self) -> bool:
         """Returns whether the element is enabled."""
         return self._execute(Command.IS_ELEMENT_ENABLED)['value']
 
@@ -508,7 +494,7 @@ class WebElement(BaseWebElement):
         warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
-    def send_keys(self, *value):
+    def send_keys(self, *value) -> None:
         """Simulates typing into the element.
 
         :Args:
@@ -535,8 +521,8 @@ class WebElement(BaseWebElement):
         # the same behaviour as for java binding
         if self.parent._is_remote:
             local_files = list(map(lambda keys_to_send:
-                                   self.parent.file_detector.is_local_file(keys_to_send),
-                                   ''.join(value).split('\n')))
+                                   self.parent.file_detector.is_local_file(str(keys_to_send)),
+                                   ''.join(str(value)).split('\n')))
             if None not in local_files:
                 remote_files = []
                 for file in local_files:
@@ -548,7 +534,7 @@ class WebElement(BaseWebElement):
                        'value': keys_to_typing(value)})
 
     # RenderedWebElement Items
-    def is_displayed(self):
+    def is_displayed(self) -> bool:
         """Whether the element is visible to a user."""
         # Only go into this conditional for browsers that don't use the atom themselves
         if self._w3c:
@@ -559,7 +545,7 @@ class WebElement(BaseWebElement):
             return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
 
     @property
-    def location_once_scrolled_into_view(self):
+    def location_once_scrolled_into_view(self) -> dict:
         """THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover
         where on the screen an element is so that we can click it. This method
         should cause the element to be scrolled into view.
@@ -578,7 +564,7 @@ class WebElement(BaseWebElement):
             return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
 
     @property
-    def size(self):
+    def size(self) -> dict:
         """The size of the element."""
         size = {}
         if self._w3c:
@@ -589,13 +575,13 @@ class WebElement(BaseWebElement):
                     "width": size["width"]}
         return new_size
 
-    def value_of_css_property(self, property_name):
+    def value_of_css_property(self, property_name) -> str:
         """The value of a CSS property."""
         return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {
             'propertyName': property_name})['value']
 
     @property
-    def location(self):
+    def location(self) -> dict:
         """The location of the element in the renderable canvas."""
         if self._w3c:
             old_loc = self._execute(Command.GET_ELEMENT_RECT)['value']
@@ -606,7 +592,7 @@ class WebElement(BaseWebElement):
         return new_loc
 
     @property
-    def rect(self):
+    def rect(self) -> dict:
         """A dictionary with the size and location of the element."""
         if self._w3c:
             return self._execute(Command.GET_ELEMENT_RECT)['value']
@@ -616,7 +602,7 @@ class WebElement(BaseWebElement):
             return rect
 
     @property
-    def screenshot_as_base64(self):
+    def screenshot_as_base64(self) -> str:
         """
         Gets the screenshot of the current element as a base64 encoded string.
 
@@ -628,7 +614,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.ELEMENT_SCREENSHOT)['value']
 
     @property
-    def screenshot_as_png(self):
+    def screenshot_as_png(self) -> str:
         """
         Gets the screenshot of the current element as a binary data.
 
@@ -637,9 +623,9 @@ class WebElement(BaseWebElement):
 
                 element_png = element.screenshot_as_png
         """
-        return base64.b64decode(self.screenshot_as_base64.encode('ascii'))
+        return b64decode(self.screenshot_as_base64.encode('ascii'))
 
-    def screenshot(self, filename):
+    def screenshot(self, filename) -> bool:
         """
         Saves a screenshot of the current element to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -673,7 +659,7 @@ class WebElement(BaseWebElement):
         return self._parent
 
     @property
-    def id(self):
+    def id(self) -> str:
         """Internal ID used by selenium.
 
         This is mainly for internal use. Simple use cases such as checking if 2
@@ -762,7 +748,7 @@ class WebElement(BaseWebElement):
                              {"using": by, "value": value})['value']
 
     def __hash__(self):
-        return int(hashlib.md5(self._id.encode('utf-8')).hexdigest(), 16)
+        return int(md5_hash(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
         fp = BytesIO()

@@ -21,14 +21,7 @@ The Utils methods.
 import socket
 from selenium.webdriver.common.keys import Keys
 
-try:
-    # Python 2
-    basestring
-    _is_connectable_exceptions = (socket.error,)
-except NameError:
-    # Python 3
-    basestring = str
-    _is_connectable_exceptions = (socket.error, ConnectionResetError)
+_is_connectable_exceptions = (socket.error, ConnectionResetError)
 
 
 def free_port():
@@ -145,7 +138,7 @@ def keys_to_typing(value):
     for val in value:
         if isinstance(val, Keys):
             typing.append(val)
-        elif isinstance(val, int):
+        elif isinstance(val, int) or isinstance(val, float):
             val = str(val)
             for i in range(len(val)):
                 typing.append(val[i])

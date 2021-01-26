@@ -44,7 +44,11 @@ public class GridModelTest {
     events,
     Duration.ofSeconds(2),
     Duration.ofSeconds(2));
-  LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, events, localNewSessionQueue);
+  LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+    tracer,
+    events,
+    localNewSessionQueue,
+    secret);
   private final Distributor distributor = new LocalDistributor(
       tracer,
       events,

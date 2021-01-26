@@ -1,4 +1,10 @@
-# Selenium [![Travis Status](https://travis-ci.com/SeleniumHQ/selenium.svg?branch=trunk)](https://travis-ci.com/SeleniumHQ/selenium/builds) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/trunk?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/trunk)
+# Selenium 
+
+[![Python workflow](https://github.com/SeleniumHQ/selenium/workflows/Python%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Python+workflow%22)
+[![Ruby workflow](https://github.com/SeleniumHQ/selenium/workflows/Ruby%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Ruby+workflow%22)
+[![JavaScript workflow](https://github.com/SeleniumHQ/selenium/workflows/JavaScript%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22JavaScript+workflow%22)
+[![Java workflow](https://github.com/SeleniumHQ/selenium/workflows/Java%20workflow/badge.svg)](https://github.com/SeleniumHQ/selenium/actions?query=workflow%3A%22Java+workflow%22)
+
 
 <a href="https://selenium.dev"><img src="https://selenium.dev/images/selenium_logo_square_green.png" width="180" alt="Selenium"/></a>
 
@@ -31,6 +37,50 @@ API documentation:
 
 Please read [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/trunk/CONTRIBUTING.md)
 before submitting your pull requests.
+
+## Requirements
+
+* [Bazelisk](https://github.com/bazelbuild/bazelisk), a Bazel wrapper that automatically downloads
+  the version of Bazel specified in `.bazelversion` file and transparently passes through all
+  command-line arguments to the real Bazel binary.
+* The latest version of the [Java 11 OpenJDK](https://openjdk.java.net/)
+* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE).
+  * To test this, try running the command `javac`. This command won't exist if you only have the JRE
+  installed. If you're met with a list of command-line options, you're referencing the JDK properly.
+* [Python 3.7+](https://www.python.org/downloads/)
+* `python` on the PATH
+* [The Requests Library](http://python-requests.org) for Python: `pip install requests`
+* [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
+* MacOS users should have the latest version of Xcode installed, including the command-line tools.
+The following command should work:
+
+```bash
+xcode-select --install
+```
+
+* Windows users should have the latest version of Visual Studio command line tools and build tools installed
+  * `BAZEL_VS` environment variable should point to the location of the build tools,
+     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools`
+  * `BAZEL_VC` environment variable should point to the location of the command line tools,
+     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC`
+  * `BAZEL_VC_FULL_VERSION` environment variable should contain the version of the installed command line tools,
+     e.g. `14.27.29110`
+
+### Optional Requirements
+
+* Ruby 2.0
+
+### Internet Explorer Driver
+
+If you plan to compile the
+[IE driver](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver),
+you also need:
+
+* [Visual Studio 2008](https://www.visualstudio.com/)
+* 32 and 64-bit cross compilers
+
+The build will work on any platform, but the tests for IE will be
+skipped silently if you are not building on Windows.
 
 ## Building
 
@@ -87,50 +137,7 @@ In this case, `javascript/atoms` is the module directory,
 As you see *build targets* scroll past in the log,
 you may want to run them individually.
 
-## Requirements
 
-* [Bazelisk](https://github.com/bazelbuild/bazelisk), a Bazel wrapper that automatically downloads
-  the version of Bazel specified in `.bazelversion` file and transparently passes through all
-  command-line arguments to the real Bazel binary.
-* The latest version of the [Java 11 OpenJDK](https://openjdk.java.net/)
-* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE).
-  * To test this, try running the command `javac`. This command won't exist if you only have the JRE
-  installed. If you're met with a list of command-line options, you're referencing the JDK properly.
-* [Python](https://www.python.org/)
-* `python` on the PATH
-* [The Requests Library](http://python-requests.org) for Python: `pip install requests`
-* [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
-* MacOS users should have the latest version of Xcode installed, including the command-line tools.
-The following command should work:
-
-```bash
-xcode-select --install
-```
-
-* Windows users should have the latest version of Visual Studio command line tools and build tools installed
-  * `BAZEL_VS` environment variable should point to the location of the build tools,
-     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools`
-  * `BAZEL_VC` environment variable should point to the location of the command line tools,
-     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC`
-  * `BAZEL_VC_FULL_VERSION` environment variable should contain the version of the installed command line tools,
-     e.g. `14.27.29110`
-
-### Optional Requirements
-
-* Python 3.7+ (if you want to run Python tests for this version)
-* Ruby 2.0
-
-### Internet Explorer Driver
-
-If you plan to compile the
-[IE driver](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver),
-you also need:
-
-* [Visual Studio 2008](https://www.visualstudio.com/)
-* 32 and 64-bit cross compilers
-
-The build will work on any platform, but the tests for IE will be
-skipped silently if you are not building on Windows.
 
 ## Common Tasks (Bazel)
 

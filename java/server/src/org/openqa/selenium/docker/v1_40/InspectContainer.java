@@ -26,8 +26,11 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -42,6 +45,7 @@ class InspectContainer {
     this.client = Require.nonNull("HTTP client", client);
   }
 
+  @SuppressWarnings("unchecked")
   public ContainerInfo apply(ContainerId id) {
     Require.nonNull("Container id", id);
 
@@ -55,6 +59,12 @@ class InspectContainer {
     Map<String, Object> rawInspectInfo = JSON.toType(Contents.string(res), MAP_TYPE);
     Map<String, Object> networkSettings = (Map<String, Object>) rawInspectInfo.get("NetworkSettings");
     String ip = (String) networkSettings.get("IPAddress");
-    return new ContainerInfo(id, ip);
+    ArrayList<Object> mounts = (ArrayList<Object>) rawInspectInfo.get("Mounts");
+    List<Map<String, Object>> mountedVolumes = mounts
+      .stream()
+      .map(mount -> (Map<String, Object>) mount)
+      .collect(Collectors.toList());
+
+    return new ContainerInfo(id, ip, mountedVolumes);
   }
 }

@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -213,6 +215,51 @@ public class LocalNewSessionQueueTest {
   public void shouldBeClearAEmptyQueue() {
     int count = sessionQueue.clear();
     assertEquals(count, 0);
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueSize() {
+    boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
+    assertTrue(added);
+
+    int size = sessionQueue.getQueueSize();
+    assertEquals(1, size);
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueContents() {
+    long timestamp = Instant.now().getEpochSecond();
+
+    ImmutableCapabilities chromeCaps = new ImmutableCapabilities(
+      "browserName", "chrome",
+      "platform", "mac",
+      "version", "87");
+    NewSessionPayload chromePayload = NewSessionPayload.create(chromeCaps);
+    HttpRequest chromeRequest = createRequest(chromePayload, POST, "/session");
+    chromeRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
+    RequestId chromeRequestId = new RequestId(UUID.randomUUID());
+    boolean addedChromeRequest = sessionQueue.offerLast(chromeRequest, chromeRequestId);
+    assertTrue(addedChromeRequest);
+
+    ImmutableCapabilities firefoxCaps = new ImmutableCapabilities(
+      "browserName", "firefox",
+      "platform", "windows",
+      "version", "84");
+    NewSessionPayload firefoxPayload = NewSessionPayload.create(firefoxCaps);
+    HttpRequest firefoxRequest = createRequest(firefoxPayload, POST, "/session");
+    firefoxRequest.addHeader(SESSIONREQUEST_TIMESTAMP_HEADER, Long.toString(timestamp));
+    RequestId firefoxRequestId = new RequestId(UUID.randomUUID());
+    boolean addFirefoxRequest = sessionQueue.offerLast(firefoxRequest, firefoxRequestId);
+    assertTrue(addFirefoxRequest);
+
+    Map<String, Object> response = sessionQueue.getQueueContents();
+    assertThat(response).isNotNull();
+
+    assertEquals(2, response.get("request-count"));
+
+    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
+    assertEquals(chromeCaps, capabilitiesList.get(0));
+    assertEquals(firefoxCaps, capabilitiesList.get(1));
   }
 
   private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {

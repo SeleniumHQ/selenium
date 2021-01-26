@@ -17,46 +17,45 @@
 
 package org.openqa.selenium.remote;
 
-import static com.google.common.net.MediaType.JSON_UTF_8;
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
 
 /**
  * Create a new Selenium session using the W3C WebDriver protocol. This class will not generate any
@@ -77,25 +76,26 @@ import java.util.stream.StreamSupport;
  * In addition, we've added some metadata to the session, setting the "{@code cloud.key}" to be the
  * secret passphrase of our account with the cloud "Selenium as a Service" provider.
  * <p>
- * If no call to {@link #withDriverService(DriverService)} or {@link #url(URL)} is made, the builder
- * will use {@link ServiceLoader} to find all instances of {@link DriverService.Builder} and will
- * call {@link DriverService.Builder#score(Capabilities)} for each alternative until a new session
- * can be created.
+ * If no call to {@link #withDriverService(DriverService)} or {@link #address(URI)} is made, the
+ * builder will use {@link ServiceLoader} to find all instances of {@link WebDriverInfo} and will
+ * call {@link WebDriverInfo#createDriver(Capabilities)} for the first supported set of
+ * capabilities.
  */
 @Beta
 public class RemoteWebDriverBuilder {
-
+  private static final Logger LOG = Logger.getLogger(RemoteWebDriverBuilder.class.getName());
   private static final Set<String> ILLEGAL_METADATA_KEYS = ImmutableSet.of(
-      "alwaysMatch",
-      "capabilities",
-      "firstMatch");
-  private static final AcceptedW3CCapabilityKeys OK_KEYS = new AcceptedW3CCapabilityKeys();
-
-  private final List<Map<String, Object>> options = new ArrayList<>();
-  private final Map<String, Object> metadata = new TreeMap<>();
+    "alwaysMatch",
+    "capabilities",
+    "desiredCapabilities",
+    "firstMatch");
+  private final List<Capabilities> requestedCapabilities = new ArrayList<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
-  private URL remoteHost;
-  private DriverService service;
+  private final Map<String, Object> metadata = new TreeMap<>();
+  private Function<ClientConfig, HttpHandler> handlerFactory = config -> HttpClient.Factory.createDefault().createClient(config);
+  private ClientConfig clientConfig = ClientConfig.defaultConfig();
+  private URI remoteHost = null;
+  private DriverService driverService;
 
   RemoteWebDriverBuilder() {
     // Access through RemoteWebDriver.builder
@@ -106,10 +106,17 @@ public class RemoteWebDriverBuilder {
    * the arguments given to this method.
    */
   public RemoteWebDriverBuilder oneOf(Capabilities maybeThis, Capabilities... orOneOfThese) {
-    options.clear();
+    Require.nonNull("Capabilities to use", maybeThis);
+
+    if (!requestedCapabilities.isEmpty()) {
+      LOG.log(getDebugLogLevel(), "Removing existing requested capabilities: " + requestedCapabilities);
+      requestedCapabilities.clear();
+    }
+
     addAlternative(maybeThis);
-    for (Capabilities anOrOneOfThese : orOneOfThese) {
-      addAlternative(anOrOneOfThese);
+    for (Capabilities caps : orOneOfThese) {
+      Require.nonNull("Capabilities to use", caps);
+      addAlternative(caps);
     }
     return this;
   }
@@ -120,8 +127,8 @@ public class RemoteWebDriverBuilder {
    * available for two different kinds of browser, and you'd like to test it).
    */
   public RemoteWebDriverBuilder addAlternative(Capabilities options) {
-    Map<String, Object> serialized = validate(Require.nonNull("Driver options", options));
-    this.options.add(serialized);
+    Require.nonNull("Capabilities to use", options);
+    requestedCapabilities.add(new ImmutableCapabilities(options));
     return this;
   }
 
@@ -132,10 +139,20 @@ public class RemoteWebDriverBuilder {
    * parameter can be {@code null}.
    */
   public RemoteWebDriverBuilder addMetadata(String key, Object value) {
+    Require.nonNull("Metadata key", key);
+    Require.nonNull("Metadata value", value);
+
     if (ILLEGAL_METADATA_KEYS.contains(key)) {
-      throw new IllegalArgumentException(key + " is a reserved key");
+      throw new IllegalArgumentException(String.format("Cannot add %s as metadata key", key));
     }
-    metadata.put(Require.nonNull("Key", key), Require.nonNull("Value", value));
+
+    Object previous = metadata.put(key, value);
+    if (previous != null) {
+      LOG.log(
+        getDebugLogLevel(),
+        String.format("Overwriting metadata %s. Previous value %s, new value %s", key, previous, value));
+    }
+
     return this;
   }
 
@@ -145,48 +162,133 @@ public class RemoteWebDriverBuilder {
    * {@link #addAlternative(Capabilities)} or {@link #oneOf(Capabilities, Capabilities...)} even
    * after this method call.
    */
-  public RemoteWebDriverBuilder setCapability(String capabilityName, String value) {
-    if (!OK_KEYS.test(capabilityName)) {
-      throw new IllegalArgumentException("Capability is not valid");
-    }
-    if (value == null) {
-      throw new IllegalArgumentException("Null values are not allowed");
+  public RemoteWebDriverBuilder setCapability(String capabilityName, Object value) {
+    Require.nonNull("Capability name", capabilityName);
+    Require.nonNull("Capability value", value);
+
+    Object previous = additionalCapabilities.put(capabilityName, value);
+    if (previous != null) {
+      LOG.log(
+        getDebugLogLevel(),
+        String.format("Overwriting capability %s. Previous value %s, new value %s", capabilityName, previous, value));
     }
 
-    additionalCapabilities.put(capabilityName, value);
     return this;
   }
 
   /**
-   * @see #url(URL)
+   * @see #address(URI)
    */
-  public RemoteWebDriverBuilder url(String url) {
+  public RemoteWebDriverBuilder address(String uri) {
+    Require.nonNull("Address", uri);
     try {
-      return url(new URL(url));
-    } catch (MalformedURLException e) {
-      throw new UncheckedIOException(e);
+      return address(new URI(uri));
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException("Unable to create URI from " + uri);
     }
   }
 
   /**
-   * Set the URL of the remote server. If this URL is not set, then it assumed that a local running
+   * @see #address(URI)
+   */
+  public RemoteWebDriverBuilder address(URL url) {
+    Require.nonNull("Address", url);
+    try {
+      return address(url.toURI());
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException("Unable to create URI from " + url);
+    }
+  }
+
+  /**
+   * Set the URI of the remote server. If this URI is not set, then it assumed that a local running
    * remote webdriver session is needed. It is an error to call this method and also
    * {@link #withDriverService(DriverService)}.
    */
-  public RemoteWebDriverBuilder url(URL url) {
-    this.remoteHost = Require.nonNull("Remote server URL", url);
-    validateDriverServiceAndUrlConstraint();
+  public RemoteWebDriverBuilder address(URI uri) {
+    Require.nonNull("URI", uri);
+
+    if (driverService != null || (clientConfig.baseUri() != null && !clientConfig.baseUri().equals(uri))) {
+      throw new IllegalArgumentException(
+        "Attempted to set the base uri on both this builder and the http client config. " +
+        "Please set in only one place. " + uri);
+    }
+
+    remoteHost = uri;
+
+    return this;
+  }
+
+  /**
+   * Allows precise control of the {@link ClientConfig} to use with remote
+   * instances. If {@link ClientConfig#baseUri(URI)} has been called, then
+   * that will be used as the base URI for the session.
+   */
+  public RemoteWebDriverBuilder config(ClientConfig config) {
+    Require.nonNull("HTTP client config", config);
+
+    if (config.baseUri() != null) {
+      if (remoteHost != null || driverService != null) {
+        throw new IllegalArgumentException("Base URI has already been set. Cannot also set it via client config");
+      }
+    }
+
+    this.clientConfig = config;
+
     return this;
   }
 
   /**
    * Use the given {@link DriverService} to set up the webdriver instance. It is an error to set
-   * both this and also call {@link #url(URL)}.
+   * both this and also call {@link #address(URI)}.
    */
   public RemoteWebDriverBuilder withDriverService(DriverService service) {
-    this.service = Require.nonNull("Driver service", service);
-    validateDriverServiceAndUrlConstraint();
+    Require.nonNull("Driver service", service);
+
+    if (clientConfig.baseUri() != null || remoteHost != null) {
+      throw new IllegalArgumentException("Base URI has already been set. Cannot also set driver service.");
+    }
+
+    this.driverService = service;
+
     return this;
+  }
+
+  @VisibleForTesting
+  RemoteWebDriverBuilder connectingWith(Function<ClientConfig, HttpHandler> handlerFactory) {
+    Require.nonNull("Handler factory", handlerFactory);
+    this.handlerFactory = handlerFactory;
+    return this;
+  }
+
+  @VisibleForTesting
+  WebDriver getLocalDriver() {
+    if (remoteHost != null || clientConfig.baseUri() != null || driverService != null) {
+      return null;
+    }
+
+    Set<WebDriverInfo> infos = StreamSupport.stream(
+         ServiceLoader.load(WebDriverInfo.class).spliterator(),
+         false)
+         .filter(WebDriverInfo::isAvailable)
+         .collect(Collectors.toSet());
+
+    Capabilities additional = new ImmutableCapabilities(additionalCapabilities);
+    Optional<Supplier<WebDriver>> first = requestedCapabilities.stream()
+      .map(caps -> caps.merge(additional))
+      .flatMap(caps ->
+        infos.stream()
+          .filter(WebDriverInfo::isAvailable)
+          .filter(info -> info.isSupporting(caps))
+          .map(info -> (Supplier<WebDriver>) () -> info.createDriver(caps)
+            .orElseThrow(() -> new SessionNotCreatedException("Unable to create session with " + caps))))
+      .findFirst();
+
+    if (!first.isPresent()) {
+      throw new SessionNotCreatedException("Unable to find matching driver for capabilities");
+    }
+
+    return first.get().get();
   }
 
   /**
@@ -194,241 +296,146 @@ public class RemoteWebDriverBuilder {
    * {@link RemoteWebDriver}.
    */
   public WebDriver build() {
-    if (options.isEmpty() && additionalCapabilities.isEmpty()) {
-      throw new SessionNotCreatedException("Refusing to create session without any capabilities");
+    if (requestedCapabilities.isEmpty() && additionalCapabilities.isEmpty()) {
+      throw new SessionNotCreatedException("One set of browser options must be specified");
     }
 
-    Plan plan = getPlan();
-
-    CommandExecutor executor;
-    if (plan.isUsingDriverService()) {
-      AtomicReference<DriverService> serviceRef = new AtomicReference<>();
-
-      executor = new SpecCompliantExecutor(
-          () -> {
-            if (serviceRef.get() != null && serviceRef.get().isRunning()) {
-              throw new SessionNotCreatedException(
-                  "Attempt to start the underlying service more than once");
-            }
-            try {
-              DriverService service = plan.getDriverService();
-              serviceRef.set(service);
-              service.start();
-              return service.getUrl();
-            } catch (IOException e) {
-              throw new SessionNotCreatedException(e.getMessage(), e);
-            }
-          },
-          plan::writePayload,
-          () -> serviceRef.get().stop());
-    } else {
-      executor = new SpecCompliantExecutor(() -> remoteHost, plan::writePayload, () -> {});
+    Set<String> clobberedCapabilities = getClobberedCapabilities();
+    if (!clobberedCapabilities.isEmpty()) {
+      throw new IllegalArgumentException(String.format(
+        "Unable to create session. Additional capabilities %s overwrite capabilities in requested options",
+        clobberedCapabilities));
     }
+
+    WebDriver driver = getLocalDriver();
+    if (driver == null) {
+      driver = getRemoteDriver();
+    }
+
+    return new Augmenter().augment(driver);
+  }
+
+  private WebDriver getRemoteDriver() {
+    startDriverServiceIfNecessary();
+
+    ClientConfig driverClientConfig = clientConfig;
+    URI baseUri = getBaseUri();
+    if (baseUri != null) {
+      driverClientConfig = driverClientConfig.baseUri(baseUri);
+    }
+
+    HttpHandler handler = Require.nonNull("Http handler", handlerFactory.apply(driverClientConfig))
+      .with(new AddWebDriverSpecHeaders().andThen(new ErrorFilter()));
+
+    byte[] payload = getPayloadUtf8Bytes();
+    Optional<ProtocolHandshake.Result> result = new ProtocolHandshake().createSession(
+      handler,
+      new ByteArrayInputStream(payload),
+      payload.length);
+
+    CommandExecutor executor = result.map(res -> createExecutor(handler, res))
+      .orElseThrow(() -> new SessionNotCreatedException("Unable to create a new session."));
 
     return new RemoteWebDriver(executor, new ImmutableCapabilities());
   }
 
-  private Map<String, Object> validate(Capabilities options) {
-    return options.asMap().entrySet().stream()
-        // Ensure that the keys are ok
-        .peek(
-            entry -> {
-              if (!OK_KEYS.test(entry.getKey())) {
-                throw new IllegalArgumentException(
-                    "Capability key is not a valid w3c key: " + entry.getKey());
-              }
-            })
-        // And remove null values, as these are ignored.
-        .filter(entry -> entry.getValue() != null)
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
-  }
-
-  @VisibleForTesting
-  Plan getPlan() {
-    return new Plan();
-  }
-
-  private void validateDriverServiceAndUrlConstraint() {
-    if (remoteHost != null && service != null) {
-      throw new IllegalArgumentException(
-          "You may only set one of the remote url or the driver service to use.");
-    }
-  }
-
-  @VisibleForTesting
-  class Plan {
-
-    private Plan() {
-      // Not for public consumption
-    }
-
-    boolean isUsingDriverService() {
-      return remoteHost == null;
-    }
-
-    @VisibleForTesting
-    URL getRemoteHost() {
+  private URI getBaseUri() {
+    if (remoteHost != null) {
       return remoteHost;
     }
 
-    DriverService getDriverService() {
-      if (service != null) {
-        return service;
+    if (driverService != null && driverService.isRunning()) {
+      try {
+        return driverService.getUrl().toURI();
+      } catch (URISyntaxException e) {
+        throw new IllegalStateException("Unable to get driver service URI", e);
       }
-
-      ServiceLoader<DriverService.Builder> allLoaders =
-          ServiceLoader.load(DriverService.Builder.class);
-
-      // We need to extract each of the capabilities from the payload.
-      return options
-          .stream()
-          .map(HashMap::new) // Make a copy so we don't alter the original values
-          .peek(map -> map.putAll(additionalCapabilities))
-          .map(ImmutableCapabilities::new)
-          .map(
-              caps ->
-                  StreamSupport.stream(allLoaders.spliterator(), true)
-                      .filter(builder -> builder.score(caps) > 0)
-                      .findFirst()
-                      .orElse(null))
-          .filter(Objects::nonNull)
-          .map(
-              bs -> {
-                try {
-                  return bs.build();
-                } catch (Throwable e) {
-                  return null;
-                }
-              })
-          .filter(Objects::nonNull)
-          .findFirst()
-          .orElseThrow(() -> new IllegalStateException("Unable to find a driver service"));
     }
 
-
-    @VisibleForTesting
-    void writePayload(JsonOutput out) {
-      out.beginObject();
-
-      out.name("capabilities");
-      out.beginObject();
-      // Try and minimise payload by finding keys that have the same value in every option. This isn't
-      // terribly efficient, but we expect the number of entries to be very low in almost every case,
-      // so this should be fine.
-      Map<String, Object> always = new HashMap<>(options.isEmpty() ? new HashMap<>() : options.get(0));
-      for (Map<String, Object> option : options) {
-        for (Map.Entry<String, Object> entry : option.entrySet()) {
-          if (!always.containsKey(entry.getKey())) {
-            continue;
-          }
-
-          if (!always.get(entry.getKey()).equals(entry.getValue())) {
-            always.remove(entry.getKey());
-          }
-        }
-      }
-      always.putAll(additionalCapabilities);
-
-      // Only write alwaysMatch if there are actually things to write
-      if (!always.isEmpty()) {
-        out.name("alwaysMatch");
-        out.beginObject();
-        always.forEach((key, value) -> {
-          out.name(key);
-          out.write(value);
-        });
-        out.endObject();
-      }
-
-      // Only write firstMatch if there are also things to write
-      if (!options.isEmpty()) {
-        out.name("firstMatch");
-        out.beginArray();
-        options.forEach(option -> {
-          out.beginObject();
-          option.entrySet().stream()
-              .filter(entry -> !always.containsKey(entry.getKey()))
-              .filter(entry -> !additionalCapabilities.containsKey(entry.getKey()))
-              .forEach(entry -> {
-                out.name(entry.getKey());
-                out.write(entry.getValue());
-              });
-          out.endObject();
-        });
-        out.endArray();
-      }
-
-      out.endObject();  // Close the "capabilities" entry
-
-      metadata.forEach((key, value) -> {
-        out.name(key);
-        out.write(value);
-      });
-
-      out.endObject();
-    }
+    return clientConfig.baseUri();
   }
 
-  private static class SpecCompliantExecutor implements CommandExecutor {
-
-    private final CommandCodec<HttpRequest> commandCodec = new W3CHttpCommandCodec();
-    private final ResponseCodec<HttpResponse> responseCodec = new W3CHttpResponseCodec();
-
-    private final Supplier<URL> onStart;
-    private final Consumer<JsonOutput> writePayload;
-    private final Runnable onQuit;
-    private HttpClient client;
-
-    public SpecCompliantExecutor(
-        Supplier<URL> onStart,
-        Consumer<JsonOutput> writePayload,
-        Runnable onQuit) {
-      this.onStart = onStart;
-      this.writePayload = writePayload;
-      this.onQuit = onQuit;
+  private DriverService startDriverServiceIfNecessary() {
+    if (driverService == null) {
+      return null;
     }
 
-    @Override
-    public Response execute(Command command) {
-      HttpRequest request;
+    try {
+      driverService.start();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
 
-      if (DriverCommand.NEW_SESSION.equals(command.getName())) {
-        URL url = onStart.get();
-        this.client = HttpClient.Factory.createDefault().createClient(url);
+    return driverService;
+  }
 
-        request = new HttpRequest(POST, "/session");
-        request.setHeader("Cache-Control", "none");
-        request.setHeader("Content-Type", JSON_UTF_8.toString());
-        StringBuilder payload = new StringBuilder();
-        try (JsonOutput jsonOutput = new Json().newOutput(payload)) {
-          writePayload.accept(jsonOutput);
-        }
-        request.setContent(utf8String(payload.toString()));
-      } else {
-        request = commandCodec.encode(command);
+  private CommandExecutor createExecutor(HttpHandler handler, ProtocolHandshake.Result result) {
+    Dialect dialect = result.getDialect();
+    Function<Command, HttpRequest> commandEncoder = dialect.getCommandCodec()::encode;
+    Function<HttpResponse, Response> responseDecoder = dialect.getResponseCodec()::decode;
+
+    Response newSessionResponse = result.createResponse();
+    String id = newSessionResponse.getSessionId();
+
+    CommandExecutor baseExecutor = cmd -> commandEncoder.andThen(handler::execute).andThen(responseDecoder).apply(cmd);
+
+    CommandExecutor handleNewSession = cmd -> {
+      if (DriverCommand.NEW_SESSION.equals(cmd.getName())) {
+        return newSessionResponse;
       }
+      return baseExecutor.execute(cmd);
+    };
 
+    CommandExecutor addSessionId = cmd -> {
+      Response res = handleNewSession.execute(cmd);
+      if (res.getSessionId() == null) {
+        res.setSessionId(id);
+      }
+      return res;
+    };
+
+    CommandExecutor stopService = cmd -> {
       try {
-        HttpResponse response = client.execute(request);
-        Response decodedResponse = responseCodec.decode(response);
-
-        if (decodedResponse.getSessionId() == null && decodedResponse.getValue() instanceof Map) {
-          Map<?, ?> value = (Map<?, ?>) decodedResponse.getValue();
-          if (value.get("sessionId") instanceof String) {
-            decodedResponse.setSessionId((String) value.get("sessionId"));
+        return addSessionId.execute(cmd);
+      } finally {
+        if (driverService != null && QUIT.equals(cmd.getName())) {
+          try {
+            driverService.stop();
+          } catch (Exception e) {
+            // Fall through.
           }
         }
-
-        if (decodedResponse.getSessionId() == null && response.getTargetHost() != null) {
-          decodedResponse.setSessionId(getSessionId(response.getTargetHost()).orElse(null));
-        }
-
-        return decodedResponse;
-      } finally {
-        if (DriverCommand.QUIT.equals(command.getName())) {
-          onQuit.run();
-        }
       }
+    };
+
+    return stopService;
+  }
+
+  private Set<String> getClobberedCapabilities() {
+    Set<String> names = additionalCapabilities.keySet();
+    return requestedCapabilities.stream()
+      .map(Capabilities::getCapabilityNames)
+      .flatMap(Collection::stream)
+      .filter(names::contains)
+      .collect(Collectors.toSet());
+  }
+
+  private byte[] getPayloadUtf8Bytes() {
+    Map<String, Object> roughPayload = new TreeMap<>(metadata);
+
+    Map<String, Object> w3cCaps = new TreeMap<>();
+    w3cCaps.put("alwaysMatch", additionalCapabilities);
+    if (!requestedCapabilities.isEmpty()) {
+      w3cCaps.put("firstMatch", requestedCapabilities);
+    }
+    roughPayload.put("capabilities", w3cCaps);
+
+    try (NewSessionPayload payload = NewSessionPayload.create(roughPayload)) {
+      StringBuilder json = new StringBuilder();
+      payload.writeTo(json);
+      return json.toString().getBytes(UTF_8);
+    } catch (IOException e) {
+      throw new SessionNotCreatedException("Unable to create session roughPayload", e);
     }
   }
 }

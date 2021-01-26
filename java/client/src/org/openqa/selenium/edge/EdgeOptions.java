@@ -56,4 +56,12 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
   public EdgeOptions() {
     super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);
   }
+
+  @Override
+  public EdgeOptions merge(Capabilities extraCapabilities) {
+    EdgeOptions newInstance = new EdgeOptions();
+    newInstance.mergeInPlace(this);
+    newInstance.mergeInPlace(extraCapabilities);
+    return newInstance;
+  }
 }

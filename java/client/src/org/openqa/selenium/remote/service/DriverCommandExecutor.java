@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.WebDriverException;
@@ -79,14 +80,17 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
    */
   @Override
   public Response execute(Command command) throws IOException {
+    boolean newlyStarted = false;
     if (DriverCommand.NEW_SESSION.equals(command.getName())) {
+      boolean wasRunningBefore = service.isRunning();
       service.start();
+      newlyStarted = !wasRunningBefore && service.isRunning();
     }
 
     if (DriverCommand.QUIT.equals(command.getName())) {
       CompletableFuture<Response> commandComplete = CompletableFuture.supplyAsync(() -> {
         try {
-          return super.execute(command);
+          return invokeExecute(command);
         } catch (Throwable t) {
           Throwable rootCause = Throwables.getRootCause(t);
           if (rootCause instanceof IllegalStateException
@@ -109,7 +113,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
 
       try {
         Response response = (Response) CompletableFuture.anyOf(commandComplete, processFinished)
-            .get(service.getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
+          .get(service.getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
         service.stop();
         return response;
       } catch (ExecutionException | TimeoutException e) {
@@ -118,9 +122,10 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
         Thread.currentThread().interrupt();
         throw new WebDriverException("Timed out waiting for driver server to stop.", e);
       }
+
     } else {
       try {
-        return super.execute(command);
+        return invokeExecute(command);
       } catch (Throwable t) {
         Throwable rootCause = Throwables.getRootCause(t);
         if (rootCause instanceof ConnectException &&
@@ -128,9 +133,23 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
             !service.isRunning()) {
           throw new WebDriverException("The driver server has unexpectedly died!", t);
         }
+        // an attempt to execute a command in the newly started driver server has failed
+        // hence need to stop it
+        if (newlyStarted && service.isRunning()) {
+          try {
+            service.stop();
+          } catch (Exception ignored) {
+            // fall through
+          }
+        }
         Throwables.throwIfUnchecked(t);
         throw new WebDriverException(t);
       }
     }
+  }
+
+  @VisibleForTesting
+  Response invokeExecute(Command command) throws IOException {
+    return super.execute(command);
   }
 }

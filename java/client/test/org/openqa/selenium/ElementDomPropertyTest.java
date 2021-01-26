@@ -19,8 +19,8 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -85,7 +85,7 @@ public class ElementDomPropertyTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
+  @NotYetImplemented(EDGIUM)
   public void testShouldGetClassPropertiesOfAnElement() {
     driver.get(pages.xhtmlTestPage);
     WebElement heading = driver.findElement(By.cssSelector(".nameA"));
@@ -123,7 +123,7 @@ public class ElementDomPropertyTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(MARIONETTE)
+  @NotYetImplemented(FIREFOX)
   public void testCanReturnATextApproximationOfTheStyleProperty() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("red-item"));
@@ -188,7 +188,7 @@ public class ElementDomPropertyTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(MARIONETTE)
+  @NotYetImplemented(FIREFOX)
   public void testGetValueOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));

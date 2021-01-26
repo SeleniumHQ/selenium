@@ -19,10 +19,12 @@ package org.openqa.selenium.remote;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -31,16 +33,19 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
+@Category(UnitTests.class)
 public class NewSessionPayloadTest {
 
   @Test
@@ -78,7 +83,7 @@ public class NewSessionPayloadTest {
 
   @Test
   public void shouldDefaultToAssumingADownstreamOssDialect() {
-    Map<String, Object> caps = EMPTY_MAP;
+    Map<String, Object> caps = emptyMap();
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
     }
@@ -248,6 +253,21 @@ public class NewSessionPayloadTest {
       Map<String, Object> seen = new Json().toType(toParse.toString(), MAP_TYPE);
 
       assertNull(seen.get("requiredCapabilities"));
+    }
+  }
+
+  @Test
+  public void shouldPreserveMetadata() throws IOException {
+    Map<String, Object> raw = ImmutableMap.of(
+      "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
+      "se:meta", "cheese is good");
+
+    try (NewSessionPayload payload = NewSessionPayload.create(raw)) {
+      StringBuilder toParse = new StringBuilder();
+      payload.writeTo(toParse);
+      Map<String, Object> seen = new Json().toType(toParse.toString(), MAP_TYPE);
+
+      assertThat(seen).containsEntry("se:meta", "cheese is good");
     }
   }
 

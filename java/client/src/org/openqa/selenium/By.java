@@ -92,9 +92,8 @@ public abstract class By {
   }
 
   /**
-   * Find elements based on the value of the "class" attribute. If an element has multiple classes, then
-   * this will match against each of them. For example, if the value is "one two onone", then the
-   * class names "one" and "two" will match.
+   * Find elements based on the value of the "class" attribute. Only one class name should be
+   * used. If an element has multiple classes, please use {@link By#cssSelector(String)}.
    *
    * @param className The value of the "class" attribute to search for.
    * @return A By which locates elements by the value of the "class" attribute.
@@ -136,6 +135,24 @@ public abstract class By {
    * @return A list of WebElements matching the selector.
    */
   public abstract List<WebElement> findElements(SearchContext context);
+
+  protected WebDriver getWebDriver(SearchContext context) {
+    if (!(context instanceof WrapsDriver)) {
+      throw new IllegalArgumentException("Context does not wrap a webdriver: " + context);
+    }
+
+    return ((WrapsDriver) context).getWrappedDriver();
+  }
+
+  protected JavascriptExecutor getJavascriptExecutor(SearchContext context) {
+    WebDriver driver = getWebDriver(context);
+
+    if (!(context instanceof JavascriptExecutor)) {
+      throw new IllegalArgumentException("Context does not provide a mechanism to execute JS: " + context);
+    }
+
+    return (JavascriptExecutor) driver;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -407,6 +424,9 @@ public abstract class By {
       if (className == null) {
         throw new IllegalArgumentException(
             "Cannot find elements when the class name expression is null.");
+      }
+      if (className.matches(".*\\s.*")) {
+        throw new InvalidSelectorException("Compound class names not permitted");
       }
 
       this.className = className;

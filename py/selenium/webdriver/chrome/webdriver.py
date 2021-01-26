@@ -33,9 +33,9 @@ class WebDriver(ChromiumDriver):
     """
 
     def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
-                 options=None, service_args=None,
+                 options: Options = None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 chrome_options=None, service=None, keep_alive=True):
+                 chrome_options=None, service: Service = None, keep_alive=True):
         """
         Creates a new instance of the chrome driver.
         Starts the service and then creates new instance of chrome driver.
@@ -58,13 +58,10 @@ class WebDriver(ChromiumDriver):
                           DeprecationWarning, stacklevel=2)
             options = chrome_options
 
-        if service is None:
+        if not service:
             service = Service(executable_path, port, service_args, service_log_path)
 
         super(WebDriver, self).__init__(DesiredCapabilities.CHROME['browserName'], "goog",
                                         port, options,
                                         service_args, desired_capabilities,
                                         service_log_path, service, keep_alive)
-
-    def create_options(self):
-        return Options()

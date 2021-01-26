@@ -1,3 +1,4 @@
+load("//common/private:selenium_test.bzl", "BROWSERS", "DEFAULT_BROWSER", "selenium_test")
 load(":package.bzl", "package_name")
 
 def _test_class_name(src_file):
@@ -30,7 +31,7 @@ public class %s {
     return [
         DefaultInfo(
             files = depset([src_file]),
-        )
+        ),
     ]
 
 _write_suite = rule(
@@ -38,7 +39,7 @@ _write_suite = rule(
     attrs = {
         "package": attr.string(),
         "suite_name": attr.string(),
-        "test_classes": attr.string_list()
+        "test_classes": attr.string_list(),
     },
 )
 
@@ -62,22 +63,24 @@ _test_attrs = [
     "use_testrunner",
 ]
 
-def java_test_suite(
-        name,
-        srcs,
-        size = None,
-        suite_name = None,
-        test_identifiers = ["Test.java"],
-        deps = [],
-        tags = [],
-        **kwargs):
+def _suite_name(name, suite_name):
     if not suite_name:
-        suite_name = "".join([p.capitalize() for p in name.replace("-", " ").replace("_", " ").split(" ")])
+        return "".join([p.capitalize() for p in name.replace("-", " ").replace("_", " ").split(" ")])
+    return suite_name
+
+def _generate_common_targets(
+        name,
+        size,
+        suite_name,
+        srcs,
+        deps,
+        tags,
+        test_identifiers,
+        **kwargs):
+    suite_name = _suite_name(name, suite_name)
 
     pkg = package_name()
     test_classes = [pkg + src[:-len(".java")].replace("/", ".") for src in srcs if _matches(test_identifiers, src)]
-
-    additional_tags = [] if size == "small" else ["no-sandbox"]
 
     libargs = {}
     for (key, value) in kwargs.items():
@@ -91,7 +94,7 @@ def java_test_suite(
         srcs = srcs,
         deps = deps,
         tags = tags,
-        **libargs,
+        **libargs
     )
 
     _write_suite(
@@ -99,6 +102,31 @@ def java_test_suite(
         package = pkg[:-1],
         suite_name = suite_name,
         test_classes = test_classes,
+    )
+
+def java_test_suite(
+        name,
+        srcs,
+        size = None,
+        suite_name = None,
+        test_identifiers = ["Test.java"],
+        deps = [],
+        tags = [],
+        **kwargs):
+    suite_name = _suite_name(name, suite_name)
+    pkg = package_name()
+    test_classes = [pkg + src[:-len(".java")].replace("/", ".") for src in srcs if _matches(test_identifiers, src)]
+    additional_tags = [] if size == "small" else ["no-sandbox"]
+
+    _generate_common_targets(
+        name,
+        size,
+        suite_name,
+        srcs,
+        deps,
+        tags,
+        test_identifiers,
+        **kwargs
     )
 
     # Skip linting for the generated test suite
@@ -110,5 +138,44 @@ def java_test_suite(
         deps = deps + ["%s-suite-lib" % name],
         shard_count = len(test_classes),
         tags = tags + additional_tags,
-        **kwargs,
+        **kwargs
+    )
+
+def java_selenium_test_suite(
+        name,
+        browsers = BROWSERS.keys(),
+        srcs = None,
+        test_identifiers = ["Test.java"],
+        deps = None,
+        data = [],
+        jvm_flags = [],
+        tags = [],
+        **kwargs):
+    suite_name = _suite_name(name, None)
+    pkg = package_name()
+    test_classes = [pkg + src[:-len(".java")].replace("/", ".") for src in srcs if _matches(test_identifiers, src)]
+
+    amended_flags = {k: v for (k, v) in kwargs.items() if k != "size"}
+
+    _generate_common_targets(
+        name,
+        "large",
+        suite_name,
+        srcs,
+        deps,
+        tags,
+        test_identifiers,
+        **amended_flags
+    )
+
+    selenium_test(
+        name = name,
+        test_class = pkg + suite_name,
+        browsers = browsers,
+        size = "large",
+        srcs = [":%s-suite-src" % name],
+        deps = deps + ["%s-suite-lib" % name],
+        data = data,
+        jvm_flags = jvm_flags,
+        tags = tags,
     )

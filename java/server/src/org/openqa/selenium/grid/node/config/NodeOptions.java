@@ -22,6 +22,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
@@ -78,17 +80,21 @@ public class NodeOptions {
   }
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
-    /* Danger! Java stereotype ahead! */ Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
+    /* Danger! Java stereotype ahead! */
+    Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
     int maxSessions = getMaxSessions();
 
-    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers = discoverDrivers(maxSessions, factoryFactory);
+    Map<WebDriverInfo, Collection<SessionFactory>> allDrivers =
+      discoverDrivers(maxSessions, factoryFactory);
 
-    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories = ImmutableMultimap.builder();
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories =
+      ImmutableMultimap.builder();
 
     addDriverFactoriesFromConfig(sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
+    addDriverConfigs(factoryFactory, sessionFactories);
 
     return sessionFactories.build().asMap();
   }
@@ -100,7 +106,8 @@ public class NodeOptions {
       Runtime.getRuntime().availableProcessors());
   }
 
-  private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+  private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities,
+    SessionFactory> sessionFactories) {
     config.getAll(NODE_SECTION, "driver-factories").ifPresent(allConfigs -> {
       if (allConfigs.size() % 2 != 0) {
         throw new ConfigException("Expected each driver class to be mapped to a config");
@@ -123,7 +130,8 @@ public class NodeOptions {
     try {
       // Use the context class loader since this is what the `--ext`
       // flag modifies.
-      Class<?> ClassClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
+      Class<?> ClassClazz =
+        Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
       Method create = ClassClazz.getMethod("create", Config.class, Capabilities.class);
 
       if (!Modifier.isStatic(create.getModifiers())) {
@@ -145,6 +153,82 @@ public class NodeOptions {
     }
   }
 
+  private void addDriverConfigs(
+    Function<Capabilities, Collection<SessionFactory>> factoryFactory,
+    ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
+    Multimap<WebDriverInfo, SessionFactory> driverConfigs = HashMultimap.create();
+    int configElements = 3;
+    config.getAll(NODE_SECTION, "driver-configuration").ifPresent(drivers -> {
+      if (drivers.size() % configElements != 0) {
+        throw new ConfigException("Expected each driver config to have three elements " +
+                                  "(name, stereotype and max-sessions)");
+      }
+
+      drivers.stream()
+        .filter(driver -> !driver.contains("="))
+        .peek(driver -> LOG.warning(driver + " does not have the required 'key=value' " +
+                                    "structure for the configuration"))
+        .findFirst()
+        .ifPresent(ignore -> {
+          throw new ConfigException("One or more driver configs does not have the " +
+                                    "required 'key=value' structure");
+        });
+
+      List<Map<String, String>> driversMap = new ArrayList<>();
+      IntStream.range(0, drivers.size()/configElements).boxed()
+        .forEach(i -> {
+          ImmutableMap<String, String> configMap = ImmutableMap.of(
+            drivers.get(i*configElements).split("=")[0],
+            drivers.get(i*configElements).split("=")[1],
+            drivers.get(i*configElements+1).split("=")[0],
+            drivers.get(i*configElements+1).split("=")[1],
+            drivers.get(i*configElements+2).split("=")[0],
+            drivers.get(i*configElements+2).split("=")[1]
+          );
+          driversMap.add(configMap);
+        });
+
+      List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
+      ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
+
+      List<WebDriverInfo> infos = new ArrayList<>();
+      ServiceLoader.load(WebDriverInfo.class).forEach(infos::add);
+
+      driversMap.forEach(configMap -> {
+        if (!configMap.containsKey("stereotype")) {
+          throw new ConfigException("Driver config is missing stereotype value. " + configMap);
+        }
+        Capabilities stereotype = JSON.toType(configMap.get("stereotype"), Capabilities.class);
+        String configName = configMap.getOrDefault("name", "Custom Slot Config");
+        int driverMaxSessions = Integer.parseInt(configMap.getOrDefault("max-sessions", "1"));
+        Require.positive("Driver max sessions", driverMaxSessions);
+
+        WebDriverInfo info = infos.stream()
+          .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
+          .findFirst()
+          .orElseThrow(() ->
+                         new ConfigException("Unable to find matching driver for %s", stereotype));
+
+        WebDriverInfo driverInfoConfig = createConfiguredDriverInfo(info, stereotype, configName);
+
+        builders.stream()
+          .filter(builder -> builder.score(stereotype) > 0)
+          .forEach(builder -> {
+            int maxSessions = Math.min(info.getMaximumSimultaneousSessions(), driverMaxSessions);
+            for (int i = 0; i < maxSessions; i++) {
+              driverConfigs.putAll(driverInfoConfig, factoryFactory.apply(stereotype));
+            }
+          });
+      });
+    });
+    driverConfigs.asMap().entrySet()
+      .stream()
+      .peek(this::report)
+      .forEach(
+        entry ->
+          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+  }
+
   private void addDetectedDrivers(
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
@@ -152,15 +236,31 @@ public class NodeOptions {
       return;
     }
 
-    allDrivers.entrySet().stream()
+    // Only specified drivers should be added, not all the detected ones
+    if (config.getAll(NODE_SECTION, "drivers").isPresent()) {
+      return;
+    }
+
+    allDrivers.entrySet()
+      .stream()
       .peek(this::report)
-      .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+      .forEach(
+        entry ->
+          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
   }
 
   private void addSpecificDrivers(
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    List<String> drivers = config.getAll(NODE_SECTION, "drivers").orElse(new ArrayList<>()).stream()
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true) &&
+        config.getAll(NODE_SECTION, "drivers").isPresent()) {
+      String logMessage = "Specific drivers cannot be added if 'detect-drivers' is set to false";
+      LOG.warning(logMessage);
+      throw new ConfigException(logMessage);
+    }
+
+    List<String> drivers = config.getAll(NODE_SECTION, "drivers").orElse(new ArrayList<>())
+      .stream()
       .map(String::toLowerCase)
       .collect(Collectors.toList());
 
@@ -168,12 +268,13 @@ public class NodeOptions {
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
       .sorted(Comparator.comparing(entry -> entry.getKey().getDisplayName().toLowerCase()))
       .peek(this::report)
-      .forEach(entry -> sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+      .forEach(
+        entry ->
+          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
-    int maxSessions,
-    Function<WebDriverInfo, Collection<SessionFactory>> factoryFactory) {
+    int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true)) {
       return ImmutableMap.of();
@@ -197,12 +298,48 @@ public class NodeOptions {
         .filter(builder -> builder.score(caps) > 0)
         .forEach(builder -> {
           for (int i = 0; i < Math.min(info.getMaximumSimultaneousSessions(), maxSessions); i++) {
-            toReturn.putAll(info, factoryFactory.apply(info));
+            toReturn.putAll(info, factoryFactory.apply(caps));
           }
         });
     });
 
     return toReturn.asMap();
+  }
+
+  private WebDriverInfo createConfiguredDriverInfo(
+    WebDriverInfo detectedDriver, Capabilities canonicalCapabilities, String displayName) {
+    return new WebDriverInfo() {
+      @Override
+      public String getDisplayName() {
+        return displayName;
+      }
+
+      @Override
+      public Capabilities getCanonicalCapabilities() {
+        return canonicalCapabilities;
+      }
+
+      @Override
+      public boolean isSupporting(Capabilities capabilities) {
+        return detectedDriver.isSupporting(capabilities);
+      }
+
+      @Override
+      public boolean isAvailable() {
+        return detectedDriver.isAvailable();
+      }
+
+      @Override
+      public int getMaximumSimultaneousSessions() {
+        return detectedDriver.getMaximumSimultaneousSessions();
+      }
+
+      @Override
+      public Optional<WebDriver> createDriver(Capabilities capabilities)
+        throws SessionNotCreatedException {
+        return Optional.empty();
+      }
+    };
   }
 
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {

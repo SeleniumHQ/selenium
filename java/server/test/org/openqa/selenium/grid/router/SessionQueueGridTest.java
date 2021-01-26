@@ -56,6 +56,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -80,6 +81,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 public class SessionQueueGridTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private HttpClient.Factory clientFactory;
+  private Secret registrationSecret;
   private Server<?> server;
 
   @Before
@@ -92,6 +94,8 @@ public class SessionQueueGridTest {
       nodeUri.toURL(), handler,
       HttpClient.Factory.createDefault());
 
+    registrationSecret = new Secret("cheese");
+
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
     NewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
@@ -99,10 +103,13 @@ public class SessionQueueGridTest {
       bus,
       Duration.ofSeconds(5),
       Duration.ofSeconds(10));
-    NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    NewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      bus,
+      localNewSessionQueue,
+      registrationSecret);
     handler.addHandler(queuer);
 
-    Secret registrationSecret = new Secret("hereford hop");
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -172,24 +179,30 @@ public class SessionQueueGridTest {
   @Test
   public void shouldBeAbleToClearQueue() {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
-    ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(2);
+    ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     // The grid has two slots with same capabilities.
     // Two sessions can be created successfully.
-    // Third session request will be retried.
+    // Third session request will be waiting in the queue since Grid is full.
     try {
       Callable<HttpResponse> sessionCreationTask = () -> createSession(caps);
 
-      List<Future<HttpResponse>> futureList = fixedThreadPoolService.invokeAll(Arrays.asList(
-        sessionCreationTask,
-        sessionCreationTask,
-        sessionCreationTask));
+      HttpResponse firstSessionResponse =
+        fixedThreadPoolService.submit(sessionCreationTask).get(20, SECONDS);
+      assertThat(firstSessionResponse.getStatus()).isEqualTo(HTTP_OK);
+
+      HttpResponse secondSessionResponse =
+        fixedThreadPoolService.submit(sessionCreationTask).get(20, SECONDS);
+      assertThat(secondSessionResponse.getStatus()).isEqualTo(HTTP_OK);
+
+      Future<HttpResponse> thirdSessionrFuture = fixedThreadPoolService.submit(sessionCreationTask);
 
       Callable<HttpResponse> clearTask = () -> {
-        HttpRequest request = new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
+        HttpRequest request =
+          new HttpRequest(DELETE, "/se/grid/newsessionqueuer/queue");
         HttpClient client = clientFactory.createClient(server.getUrl());
-        return client.execute(request);
+        return client.with(new AddSecretFilter(registrationSecret)).execute(request);
       };
 
       Future<HttpResponse> clearQueueResponse = scheduler.schedule(clearTask, 3, SECONDS);
@@ -197,22 +210,8 @@ public class SessionQueueGridTest {
       // Clearing the new session request will cancel the third session request in the queue.
       clearQueueResponse.get(10, SECONDS);
 
-      int failureCount = 0;
-      int successCount = 0;
-      for (Future<HttpResponse> future : futureList) {
-        HttpResponse httpResponse = future.get(40, SECONDS);
-
-        if (httpResponse.getStatus() == HTTP_OK) {
-          successCount++;
-        }
-        if (httpResponse.getStatus() == HTTP_INTERNAL_ERROR) {
-          failureCount++;
-        }
-      }
-
-      assertEquals(failureCount, 1);
-      assertEquals(successCount, 2);
-
+      HttpResponse thirdSessionResponse = thirdSessionrFuture.get();
+      assertThat(thirdSessionResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
     } catch (InterruptedException e) {
       fail("Unable to create session. Thread Interrupted");
     } catch (ExecutionException e) {

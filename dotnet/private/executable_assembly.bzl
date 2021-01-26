@@ -87,7 +87,12 @@ def create_executable_assembly(ctx, extra_srcs, extra_deps):
     result = providers.values()
     dependency_files_list = _copy_dependency_files(ctx, result[0])
 
-    runtimeconfig = write_runtimeconfig(ctx.actions, ctx.file.runtimeconfig_template, result[0].out.basename.replace("." + result[0].out.extension, ""), result[0].actual_tfm)
+    runtimeconfig = write_runtimeconfig(
+        ctx.actions,
+        ctx.file.runtimeconfig_template,
+        result[0].out.basename.replace("." + result[0].out.extension, ""),
+        result[0].actual_tfm,
+    )
 
     data_runfiles = [] if ctx.attr.data == None else [d.files for d in ctx.attr.data]
 

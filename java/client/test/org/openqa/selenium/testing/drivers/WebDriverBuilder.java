@@ -61,10 +61,12 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   private static final Map<Browser, Function<Capabilities, Capabilities>> capabilitySuppliers =
     new ImmutableMap.Builder<Browser, Function<Capabilities, Capabilities>>()
-      .put(Browser.CHROME, original -> new ChromeOptions().merge(original))
-      .put(Browser.FIREFOX, original -> new FirefoxOptions(original)
+      .put(Browser.CHROME, original -> new ChromeOptions().merge(original)
+           .setHeadless(Boolean.getBoolean("webdriver.chrome.headless"))
+      )
+      .put(Browser.LEGACY_FIREFOX_XPI, original -> new FirefoxOptions(original)
         .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
-      .put(Browser.MARIONETTE, original -> new FirefoxOptions(original)
+      .put(Browser.FIREFOX, original -> new FirefoxOptions(original)
         .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false")))
       )
       .put(Browser.IE, original -> {
@@ -77,10 +79,10 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         }
         return options;
       })
-      .put(Browser.CHROMIUMEDGE, original -> new EdgeOptions().merge(original))
-      .put(Browser.EDGE, original -> new EdgeHtmlOptions().merge(original))
+      .put(Browser.EDGIUM, original -> new EdgeOptions().merge(original))
+      .put(Browser.EDGE_HTML, original -> new EdgeHtmlOptions().merge(original))
       .put(Browser.HTMLUNIT, original -> new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY).merge(original))
-      .put(Browser.OPERABLINK, original -> new OperaOptions().merge(original))
+      .put(Browser.OPERA, original -> new OperaOptions().merge(original))
       .put(Browser.SAFARI, original -> {
         SafariOptions options = new SafariOptions(original);
         if (Boolean.getBoolean("selenium.safari.tp")) {

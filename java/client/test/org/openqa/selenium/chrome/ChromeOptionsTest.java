@@ -19,32 +19,40 @@ package org.openqa.selenium.chrome;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
 
+import java.io.File;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.UnitTests;
 
+@Category(UnitTests.class)
 public class ChromeOptionsTest {
 
   @Test
   public void optionsAsMapShouldBeImmutable() {
     Map<String, Object> options = new ChromeOptions().asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> options.put("browserType", "firefox"));
+      .isThrownBy(() -> options.put("browserType", "firefox"));
 
     Map<String, Object> googOptions = (Map<String, Object>) options.get(ChromeOptions.CAPABILITY);
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> googOptions.put("binary", ""));
+      .isThrownBy(() -> googOptions.put("binary", ""));
 
     List<String> extensions = (List<String>) googOptions.get("extensions");
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> extensions.add("x"));
+      .isThrownBy(() -> extensions.add("x"));
 
     List<String> args = (List<String>) googOptions.get("args");
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> args.add("-help"));
+      .isThrownBy(() -> args.add("-help"));
   }
 
   @Test
@@ -53,5 +61,80 @@ public class ChromeOptionsTest {
     assertThat(ChromeDriverLogLevel.fromString("SEVERE")).isEqualTo(SEVERE);
   }
 
+  @Test
+  public void mergingOptionsMergesArguments() {
+    ChromeOptions one = new ChromeOptions().addArguments("verbose");
+    ChromeOptions two = new ChromeOptions().addArguments("silent");
+    ChromeOptions merged = one.merge(two);
 
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+  }
+
+  @Test
+  public void mergingOptionsMergesEncodedExtensions() {
+    String ext1 = Base64.getEncoder().encodeToString("ext1".getBytes());
+    String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
+
+    ChromeOptions one = new ChromeOptions().addEncodedExtensions(ext1);
+    ChromeOptions two = new ChromeOptions().addEncodedExtensions(ext2);
+    ChromeOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("extensions").asInstanceOf(LIST)
+      .containsExactly(ext1, ext2);
+  }
+
+  @Test
+  public void mergingOptionsMergesExtensions() {
+    File ext1 = TestUtilities.createTmpFile("ext1");
+    String ext1Encoded = Base64.getEncoder().encodeToString("ext1".getBytes());
+    File ext2 = TestUtilities.createTmpFile("ext2");
+    String ext2Encoded = Base64.getEncoder().encodeToString("ext2".getBytes());
+
+    ChromeOptions one = new ChromeOptions().addExtensions(ext1);
+    ChromeOptions two = new ChromeOptions().addExtensions(ext2);
+    ChromeOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("extensions").asInstanceOf(LIST)
+      .containsExactly(ext1Encoded, ext2Encoded);
+  }
+
+  @Test
+  public void mergingOptionsMergesEncodedExtensionsAndFileExtensions() {
+    File ext1 = TestUtilities.createTmpFile("ext1");
+    String ext1Encoded = Base64.getEncoder().encodeToString("ext1".getBytes());
+    String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
+
+    ChromeOptions one = new ChromeOptions().addExtensions(ext1);
+    ChromeOptions two = new ChromeOptions().addEncodedExtensions(ext2);
+    ChromeOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("extensions").asInstanceOf(LIST)
+      .containsExactly(ext1Encoded, ext2);
+  }
+
+  @Test
+  public void mergingOptionsMergesExperimentalOptions() {
+    ChromeOptions one = new ChromeOptions()
+      .setExperimentalOption("opt1", "val1")
+      .setExperimentalOption("opt2", "val2");
+    ChromeOptions two = new ChromeOptions()
+      .setExperimentalOption("opt2", "val4")
+      .setExperimentalOption("opt3", "val3");
+    ChromeOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .containsEntry("opt1", "val1")
+      .containsEntry("opt2", "val4")
+      .containsEntry("opt3", "val3");
+  }
 }

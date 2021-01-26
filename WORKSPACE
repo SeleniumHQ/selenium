@@ -51,11 +51,10 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "bazel_toolchains",
-    sha256 = "8e0633dfb59f704594f19ae996a35650747adc621ada5e8b9fb588f808c89cb0",
-    strip_prefix = "bazel-toolchains-3.7.0",
+    sha256 = "1adf5db506a7e3c465a26988514cfc3971af6d5b3c2218925cd6e71ee443fc3f",
+    strip_prefix = "bazel-toolchains-4.0.0",
     urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/releases/download/3.7.0/bazel-toolchains-3.7.0.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/releases/download/3.7.0/bazel-toolchains-3.7.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/4.0.0/bazel-toolchains-4.0.0.tar.gz"
     ],
 )
 
@@ -97,10 +96,24 @@ rules_proto_toolchains()
 
 http_archive(
     name = "rules_jvm_external",
-    sha256 = "d85951a92c0908c80bd8551002d66cb23c3434409c814179c0ff026b53544dab",
-    strip_prefix = "rules_jvm_external-3.3",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.3.zip",
+    sha256 = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169",
+    strip_prefix = "rules_jvm_external-4.0",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/4.0.zip",
+    patch_args = [
+        "-p1",
+    ],
+    patches = [
+        "//java:rules_jvm_external_visibility.patch",
+    ],
 )
+
+load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
+
+rules_jvm_external_deps()
+
+load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
+
+rules_jvm_external_setup()
 
 load("//java:maven_deps.bzl", "selenium_java_deps")
 
@@ -125,8 +138,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "121f17d8b421ce72f3376431c3461cd66bfe14de49059edc7bb008d5aebd16be",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.3.1/rules_nodejs-2.3.1.tar.gz"],
+    sha256 = "b3521b29c7cb0c47a1a735cce7e7e811a4f80d8e3720cf3a1b624533e4bb7cb6",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/2.3.2/rules_nodejs-2.3.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
@@ -160,9 +173,9 @@ http_archive(
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "2fc3fe7be1daed0dcb249cced962ee10a1303de20b0d8837f2d99150fcbfca2e",
-    strip_prefix = "rules_docker-feaaebdd3162fb643494af07698f56ca9aba1241",
-    urls = ["https://github.com/bazelbuild/rules_docker/archive/feaaebdd3162fb643494af07698f56ca9aba1241.zip"],
+    sha256 = "df3ef4a4b53b0145c9751c1e2a840f900e322e7798612a46257abe285d046dc5",
+    strip_prefix = "rules_docker-7da0de3d094aae5601c45ae0855b64fb2771cd72",
+    urls = ["https://github.com/bazelbuild/rules_docker/archive/7da0de3d094aae5601c45ae0855b64fb2771cd72.zip"],
 )
 
 load(
@@ -239,3 +252,7 @@ k8s_defaults(
     kind = "deployment",
     namespace = "selenium",
 )
+
+load("//common:repositories.bzl", "pin_browsers")
+
+pin_browsers()

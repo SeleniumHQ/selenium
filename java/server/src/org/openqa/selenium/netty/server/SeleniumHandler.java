@@ -19,7 +19,7 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.openqa.selenium.grid.web.ErrorHandler;
+import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -35,18 +35,13 @@ class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
   public SeleniumHandler(HttpHandler seleniumHandler) {
     super(HttpRequest.class);
-    this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler);
+    this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler).with(new ErrorFilter());
   }
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) {
     EXECUTOR.submit(() -> {
-      HttpResponse res;
-      try {
-        res = seleniumHandler.execute(msg);
-      } catch (Throwable e) {
-        res = new ErrorHandler(e).execute(msg);
-      }
+      HttpResponse res = seleniumHandler.execute(msg);
       ctx.writeAndFlush(res);
     });
   }

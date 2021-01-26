@@ -22,6 +22,9 @@ java_export(
         "//java/client/src/org/openqa/selenium/support/ui:elements",
         "//java/client/src/org/openqa/selenium/support/ui:wait",
     ],
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     deps = [
         ":page-factory",
         "//java/client/src/org/openqa/selenium:core",

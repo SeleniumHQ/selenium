@@ -1,13 +1,12 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_library", "java_selenium_test_suite", "java_test_suite")
 
-
 SMALL_TESTS = [
     "ArchitectureTest.java",
     "ByTest.java",
     "CookieTest.java",
     "DimensionTest.java",
-    "ImmutableCapabilitiesTest.java",
+    "CapabilitiesTest.java",
     "KeysTest.java",
     "OutputTypeTest.java",
     "PersistentCapabilitiesTest.java",
@@ -16,6 +15,9 @@ SMALL_TESTS = [
     "ProxyTest.java",
     "RequireTest.java",
     "WebDriverExceptionTest.java",
+    "print/PrintOptionsTest.java",
+    "print/PageMarginTest.java",
+    "print/PageSizeTest.java",
 ]
 
 java_test_suite(
@@ -25,6 +27,7 @@ java_test_suite(
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),

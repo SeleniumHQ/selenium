@@ -13,6 +13,9 @@ build --explicit_java_test_deps
 # Ensure builds are unpolluted by the user env
 build --incompatible_strict_action_env
 
+# Except for the PATH environment variable
+build --action_env=PATH
+
 # For build stamping
 build --workspace_status_command=scripts/build-info.py
 
@@ -34,4 +37,4 @@ build --test_env=PATH  # Remove once browser pinning works
 build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
 
-test --test_timeout=180
+test --test_timeout=1800

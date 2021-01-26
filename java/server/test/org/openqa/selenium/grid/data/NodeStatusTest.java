@@ -53,7 +53,8 @@ public class NodeStatusTest {
             stereotype,
             new ImmutableCapabilities("peas", "sausages"),
             Instant.now())))),
-      UP);
+      UP,
+      "4.0.0");
 
     Json json = new Json();
     String source = json.toJson(status);

@@ -884,6 +884,11 @@ namespace OpenQA.Selenium.Support.Events
                 get { return this.wrappedOptions.Logs; }
             }
 
+            public INetwork Network
+            {
+                get { return this.wrappedOptions.Network; }
+            }
+
             /// <summary>
             /// Provides access to the timeouts defined for this driver.
             /// </summary>

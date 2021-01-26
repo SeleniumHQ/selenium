@@ -139,31 +139,7 @@ module Selenium
     # :standalone, #hub, #node
     #
 
-    attr_accessor :role
-
-    #
-    # The server port
-    #
-
-    attr_accessor :port
-
-    #
-    # The server timeout
-    #
-
-    attr_accessor :timeout
-
-    #
-    # Whether to launch the server in the background
-    #
-
-    attr_accessor :background
-
-    #
-    # Path to log file, or 'true' for stdout.
-    #
-
-    attr_accessor :log
+    attr_accessor :role, :port, :timeout, :background, :log
 
     #
     # @param [String] jar Path to the server jar.
@@ -225,7 +201,7 @@ module Selenium
     private
 
     def selenium4?
-      @jar.match?(/[^\.][4]\./) || @jar.include?('deploy')
+      @jar.match?(/[^.]4\./) || @jar.include?('deploy')
     end
 
     def stop_process

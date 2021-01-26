@@ -10,9 +10,13 @@ java_test_suite(
     name = "small-tests",
     size = "small",
     srcs = glob(
-        ["*Test.java"],
+        ["*.java"],
         exclude = LARGE_TESTS,
     ),
+    javacopts = [
+        "--release",
+        "11",
+    ],
     tags = [
         "no-sandbox",
     ],
@@ -24,6 +28,7 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),

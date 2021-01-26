@@ -25,6 +25,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.print.PrintOptions;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -200,6 +201,14 @@ public interface DriverCommand {
   static CommandPayload GET_ELEMENT_VALUE_OF_CSS_PROPERTY(String id, String name) {
     return new CommandPayload(GET_ELEMENT_VALUE_OF_CSS_PROPERTY, ImmutableMap.of("id", id, "propertyName", name));
   }
+  String GET_ELEMENT_ARIA_ROLE = "getElementAriaRole";
+  static CommandPayload GET_ELEMENT_ARIA_ROLE(String id) {
+    return new CommandPayload(GET_ELEMENT_ARIA_ROLE, ImmutableMap.of("id", id));
+  }
+  String GET_ELEMENT_ACCESSIBLE_NAME = "getElementAccessibleName";
+  static CommandPayload GET_ELEMENT_ACCESSIBLE_NAME(String id) {
+    return new CommandPayload(GET_ELEMENT_ACCESSIBLE_NAME, ImmutableMap.of("id", id));
+  }
   String ELEMENT_EQUALS = "elementEquals";
 
   String SCREENSHOT = "screenshot";
@@ -218,6 +227,11 @@ public interface DriverCommand {
   String SET_ALERT_CREDENTIALS = "setAlertCredentials";
 
   String SET_TIMEOUT = "setTimeout";
+
+  String PRINT_PAGE = "printPage";
+  static CommandPayload PRINT_PAGE(PrintOptions options) {
+    return new CommandPayload(PRINT_PAGE, ImmutableMap.of("options", options));
+  }
 
   @Deprecated
   static CommandPayload SET_IMPLICIT_WAIT_TIMEOUT(long time, TimeUnit unit) {

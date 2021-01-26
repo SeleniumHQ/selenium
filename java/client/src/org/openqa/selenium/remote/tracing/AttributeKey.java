@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.api.trace.attributes.SemanticAttributes;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 public enum AttributeKey {
 
@@ -41,6 +41,8 @@ public enum AttributeKey {
   HTTP_CLIENT_IP(SemanticAttributes.HTTP_CLIENT_IP.getKey()),
   HTTP_SCHEME(SemanticAttributes.HTTP_SCHEME.getKey()),
   HTTP_FLAVOR(SemanticAttributes.HTTP_FLAVOR.getKey()),
+
+  ERROR("error"),
 
   LOGGER_CLASS("logger"),
 

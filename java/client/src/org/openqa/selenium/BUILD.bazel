@@ -25,10 +25,14 @@ java_export(
         "mobile/*.java",
         "net/*.java",
         "virtualauthenticator/*.java",
+        "print/*.java",
     ]),
     hides = [
         "org.openqa.selenium.interactions.internal",
         "org.openqa.selenium.internal",
+    ],
+    opens_to = [
+        "org.openqa.selenium.json",
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
     pom_template = ":template-pom",
@@ -60,12 +64,12 @@ java_export(
     ] + CDP_DEPS,
 )
 
-javadoc(
-    name = "core-docs",
-    deps = [
-        ":core",
-    ],
-)
+#javadoc(
+#    name = "core-docs",
+#    deps = [
+#        ":core",
+#    ],
+#)
 
 java_dist_zip(
     name = "client-zip",

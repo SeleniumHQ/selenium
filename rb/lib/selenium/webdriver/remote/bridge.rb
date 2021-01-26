@@ -35,7 +35,7 @@ module Selenium
         # @api private
         #
 
-        def initialize(http_client: nil, url:)
+        def initialize(url:, http_client: nil)
           uri = url.is_a?(URI) ? url : URI.parse(url)
           uri.path += '/' unless uri.path.end_with?('/')
 
@@ -393,6 +393,10 @@ module Selenium
           execute :release_actions
         end
 
+        def print_page(options = {})
+          execute :print_page, {}, {options: options}
+        end
+
         def click_element(element)
           execute :element_click, id: element
         end
@@ -620,7 +624,7 @@ module Selenium
           [how, what]
         end
 
-        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/.freeze
+        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/.freeze
         UNICODE_CODE_POINT = 30
 
         # Escapes invalid characters in CSS selector.

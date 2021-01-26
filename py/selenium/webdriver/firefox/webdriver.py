@@ -14,15 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-try:
-    basestring
-except NameError:  # Python 3.x
-    basestring = str
 
-import base64
-import shutil
+from base64 import b64decode
+from shutil import rmtree
 import warnings
 from contextlib import contextmanager
+from typing import NoReturn
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -103,14 +100,14 @@ class WebDriver(RemoteWebDriver):
         if executable_path != DEFAULT_EXECUTABLE_PATH:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if capabilities is not None or desired_capabilities is not None:
+        if capabilities or desired_capabilities:
             warnings.warn('capabilities and desired_capabilities have been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if firefox_binary is not None:
+        if firefox_binary:
             warnings.warn('firefox_binary has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         self.binary = None
-        if firefox_profile is not None:
+        if firefox_profile:
             warnings.warn('firefox_profile has been deprecated, please pass in an Options object',
                           DeprecationWarning, stacklevel=2)
         self.profile = None
@@ -123,7 +120,7 @@ class WebDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        if service_args is not None:
+        if service_args:
             warnings.warn('service_args has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 
@@ -131,12 +128,12 @@ class WebDriver(RemoteWebDriver):
 
         # If desired capabilities is set, alias it to capabilities.
         # If both are set ignore desired capabilities.
-        if capabilities is None and desired_capabilities:
+        if not capabilities and desired_capabilities:
             capabilities = desired_capabilities
 
-        if capabilities is None:
+        if not capabilities:
             capabilities = DesiredCapabilities.FIREFOX.copy()
-        if options is None:
+        if not options:
             options = Options()
 
         capabilities = dict(capabilities)
@@ -145,21 +142,21 @@ class WebDriver(RemoteWebDriver):
             self.binary = capabilities["binary"]
 
         # options overrides capabilities
-        if options is not None:
-            if options.binary is not None:
+        if options:
+            if options.binary:
                 self.binary = options.binary
-            if options.profile is not None:
+            if options.profile:
                 self.profile = options.profile
 
         # firefox_binary and firefox_profile
         # override options
-        if firefox_binary is not None:
-            if isinstance(firefox_binary, basestring):
+        if firefox_binary:
+            if isinstance(firefox_binary, str):
                 firefox_binary = FirefoxBinary(firefox_binary)
             self.binary = firefox_binary
             options.binary = firefox_binary
-        if firefox_profile is not None:
-            if isinstance(firefox_profile, basestring):
+        if firefox_profile:
+            if isinstance(firefox_profile, str):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
             options.profile = firefox_profile
@@ -170,7 +167,7 @@ class WebDriver(RemoteWebDriver):
         if capabilities.get("acceptInsecureCerts"):
             options.accept_insecure_certs = capabilities.get("acceptInsecureCerts")
 
-        if self.service is None:
+        if not self.service:
             self.service = Service(
                 executable_path,
                 service_args=service_args,
@@ -190,7 +187,7 @@ class WebDriver(RemoteWebDriver):
 
         self._is_remote = False
 
-    def quit(self):
+    def quit(self) -> NoReturn:
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
@@ -203,11 +200,11 @@ class WebDriver(RemoteWebDriver):
         else:
             self.binary.kill()
 
-        if self.profile is not None:
+        if self.profile:
             try:
-                shutil.rmtree(self.profile.path)
-                if self.profile.tempfolder is not None:
-                    shutil.rmtree(self.profile.tempfolder)
+                rmtree(self.profile.path)
+                if self.profile.tempfolder:
+                    rmtree(self.profile.tempfolder)
             except Exception as e:
                 print(str(e))
 
@@ -217,7 +214,7 @@ class WebDriver(RemoteWebDriver):
 
     # Extension commands:
 
-    def set_context(self, context):
+    def set_context(self, context) -> NoReturn:
         self.execute("SET_CONTEXT", {"context": context})
 
     @contextmanager
@@ -242,7 +239,7 @@ class WebDriver(RemoteWebDriver):
         finally:
             self.set_context(initial_context)
 
-    def install_addon(self, path, temporary=None):
+    def install_addon(self, path, temporary=None) -> str:
         """
         Installs Firefox addon.
 
@@ -257,11 +254,11 @@ class WebDriver(RemoteWebDriver):
                 driver.install_addon('/path/to/firebug.xpi')
         """
         payload = {"path": path}
-        if temporary is not None:
+        if temporary:
             payload["temporary"] = temporary
         return self.execute("INSTALL_ADDON", payload)["value"]
 
-    def uninstall_addon(self, identifier):
+    def uninstall_addon(self, identifier) -> NoReturn:
         """
         Uninstalls Firefox addon using its identifier.
 
@@ -272,7 +269,7 @@ class WebDriver(RemoteWebDriver):
         """
         self.execute("UNINSTALL_ADDON", {"id": identifier})
 
-    def get_full_page_screenshot_as_file(self, filename):
+    def get_full_page_screenshot_as_file(self, filename) -> bool:
         """
         Saves a full document screenshot of the current window to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -300,7 +297,7 @@ class WebDriver(RemoteWebDriver):
             del png
         return True
 
-    def save_full_page_screenshot(self, filename):
+    def save_full_page_screenshot(self, filename) -> bool:
         """
         Saves a full document screenshot of the current window to a PNG image file. Returns
            False if there is any IOError, else returns True. Use full paths in
@@ -317,7 +314,7 @@ class WebDriver(RemoteWebDriver):
         """
         return self.get_full_page_screenshot_as_file(filename)
 
-    def get_full_page_screenshot_as_png(self):
+    def get_full_page_screenshot_as_png(self) -> str:
         """
         Gets the full document screenshot of the current window as a binary data.
 
@@ -326,9 +323,9 @@ class WebDriver(RemoteWebDriver):
 
                 driver.get_full_page_screenshot_as_png()
         """
-        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
+        return b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
 
-    def get_full_page_screenshot_as_base64(self):
+    def get_full_page_screenshot_as_base64(self) -> str:
         """
         Gets the full document screenshot of the current window as a base64 encoded string
            which is useful in embedded images in HTML.

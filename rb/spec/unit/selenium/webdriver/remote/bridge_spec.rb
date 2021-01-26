@@ -43,11 +43,12 @@ module Selenium
               }
             )
 
-            expect(http).to receive(:request)
+            allow(http).to receive(:request)
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
             bridge.create_session(Capabilities.ie)
+            expect(http).to have_received(:request).with(any_args, payload)
           end
 
           it 'passes options as capabilities' do
@@ -62,11 +63,12 @@ module Selenium
               }
             )
 
-            expect(http).to receive(:request)
+            allow(http).to receive(:request)
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
             bridge.create_session(Chrome::Options.new(args: %w[foo bar]).as_json)
+            expect(http).to have_received(:request).with(any_args, payload)
           end
 
           it 'supports responses with "value" -> "capabilities" capabilities' do

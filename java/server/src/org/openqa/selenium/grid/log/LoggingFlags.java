@@ -32,19 +32,19 @@ public class LoggingFlags implements HasRoles {
 
   @Parameter(description = "Configure logging", hidden = true, names = "--configure-logging", arity = 1)
   @ConfigValue(section = "logging", name = "enable", example = "true")
-  private Boolean configureLogging = true;
+  private Boolean configureLogging;
 
-  @Parameter(description = "Use structured logs", names = "--structured-logs")
+  @Parameter(description = "Use structured logs", names = "--structured-logs", arity = 1)
   @ConfigValue(section = "logging", name = "structured-logs", example = "false")
-  private Boolean structuredLogs = false;
+  private Boolean structuredLogs;
 
   @Parameter(description = "Use plain log lines", names = "--plain-logs", arity = 1)
   @ConfigValue(section = "logging", name = "plain-logs", example = "true")
-  private Boolean plainLogs = true;
+  private Boolean plainLogs;
 
   @Parameter(description = "Enable trace collection", hidden = true, names = "--tracing", arity = 1)
   @ConfigValue(section = "logging", name = "tracing", example = "true")
-  private Boolean enableTracing = true;
+  private Boolean enableTracing;
 
   @Parameter(description = "File to write out logs", hidden = true, names = "--log", arity = 1)
   @ConfigValue(section = "logging", name = "log-file", example = "true")
@@ -52,7 +52,13 @@ public class LoggingFlags implements HasRoles {
 
   @Parameter(description = "Log encoding", names = "--log-encoding", arity = 1)
   @ConfigValue(section = "logging", name = "log-encoding", example = "UTF-8")
-  private String logEncoding = null;
+  private String logEncoding;
+
+  @Parameter(description = "Log level. Default logging level is INFO. Log levels are described here " +
+                           "https://docs.oracle.com/javase/7/docs/api/java/util/logging/Level.html",
+    names = "--log-level", arity = 1)
+  @ConfigValue(section = "logging", name = "log-level", example = "INFO")
+  private String logLevel;
 
   @Override
   public Set<Role> getRoles() {

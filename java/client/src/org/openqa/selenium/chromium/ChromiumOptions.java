@@ -59,25 +59,19 @@ import java.util.stream.Stream;
  *
  * @since Since chromedriver v17.0.963.0
  */
-public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOptions<ChromiumOptions> {
+public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDriverOptions<ChromiumOptions<?>> {
 
   private String binary;
-  private List<String> args = new ArrayList<>();
-  private List<File> extensionFiles = new ArrayList<>();
-  private List<String> extensions = new ArrayList<>();
-  private Map<String, Object> experimentalOptions = new HashMap<>();
+  private final List<String> args = new ArrayList<>();
+  private final List<File> extensionFiles = new ArrayList<>();
+  private final List<String> extensions = new ArrayList<>();
+  private final Map<String, Object> experimentalOptions = new HashMap<>();
 
   private final String CAPABILITY;
 
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
     this.CAPABILITY = capability;
     setCapability(capabilityType, browserType);
-  }
-
-  @Override
-  public T merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return (T) this;
   }
 
   /**
@@ -238,5 +232,16 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
     toReturn.put(CAPABILITY, unmodifiableMap(options));
 
     return unmodifiableMap(toReturn);
+  }
+
+  protected void mergeInPlace(Capabilities capabilities) {
+    capabilities.asMap().forEach(this::setCapability);
+    if (capabilities instanceof ChromiumOptions) {
+      ChromiumOptions<?> options = (ChromiumOptions<?>) capabilities;
+      addArguments(options.args);
+      addExtensions(options.extensionFiles);
+      addEncodedExtensions(options.extensions);
+      options.experimentalOptions.forEach(this::setExperimentalOption);
+    }
   }
 }

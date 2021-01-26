@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Map;
+import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableMap;
 
 public class NewSessionErrorResponse {
 
@@ -43,9 +44,10 @@ public class NewSessionErrorResponse {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
-        "message", message,
-        "requestId", requestId);
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("message", message);
+    toReturn.put("requestId", requestId);
+    return unmodifiableMap(toReturn);
   }
 
   private static NewSessionErrorResponse fromJson(JsonInput input) {

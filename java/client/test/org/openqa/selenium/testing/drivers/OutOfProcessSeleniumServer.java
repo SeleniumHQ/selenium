@@ -18,6 +18,9 @@
 package org.openqa.selenium.testing.drivers;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.build.BazelBuild;
+import org.openqa.selenium.build.DevMode;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
@@ -26,6 +29,7 @@ import org.openqa.selenium.os.CommandLine;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -77,7 +81,7 @@ public class OutOfProcessSeleniumServer {
     try {
       URL url = new URL(baseUrl + "/status");
       log.info("Waiting for server status on URL " + url);
-      new UrlChecker().waitUntilAvailable(5, SECONDS, url);
+      new UrlChecker().waitUntilAvailable(10, SECONDS, url);
       log.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
       log.severe("Server failed to start: " + e.getMessage());
@@ -113,6 +117,19 @@ public class OutOfProcessSeleniumServer {
   }
 
   private String buildServerAndClasspath() {
+    if (DevMode.isInDevMode()) {
+      Path serverJar = InProject.locate(
+        "bazel-bin/java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar");
+      if (serverJar == null) {
+        new BazelBuild().build("grid");
+        serverJar = InProject.locate(
+          "bazel-bin/java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar");
+      }
+      if (serverJar != null) {
+        return serverJar.toAbsolutePath().toString();
+      }
+    }
+
     if (System.getProperty("selenium.browser.remote.path") != null) {
       return System.getProperty("selenium.browser.remote.path");
     }

@@ -34,6 +34,7 @@ type Node {
   maxSession: Int!
   sessions: [Session]!
   capabilities: String!
+  version: String!
 }
 
 type GridQuery {
@@ -44,7 +45,10 @@ type GridQuery {
 type Grid {
   uri: Uri!
   nodes: [Node!]!
-  totalSlots: Int
-  usedSlots: Int
+  totalSlots: Int!
+  usedSlots: Int!
   sessionCount: Int!
-}
+  version: String!
+  sessionQueueSize: Int!
+  sessionQueueRequests: [String]!
+  }

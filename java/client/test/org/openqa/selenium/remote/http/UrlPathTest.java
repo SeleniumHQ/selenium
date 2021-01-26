@@ -18,12 +18,15 @@
 package org.openqa.selenium.remote.http;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
+@Category(UnitTests.class)
 public class UrlPathTest {
 
   @Test

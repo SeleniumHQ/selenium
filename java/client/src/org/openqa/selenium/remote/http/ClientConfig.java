@@ -52,8 +52,8 @@ public class ClientConfig {
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
       null,
-      Duration.ofMinutes(2),
-      Duration.ofHours(3),
+      Duration.ofSeconds(10),
+      Duration.ofMinutes(3),
       new AddSeleniumUserAgent(),
       null);
   }
@@ -117,5 +117,16 @@ public class ClientConfig {
 
   public Proxy proxy() {
     return proxy;
+  }
+
+  @Override
+  public String toString() {
+    return "ClientConfig{" +
+      "baseUri=" + baseUri +
+      ", connectionTimeout=" + connectionTimeout +
+      ", readTimeout=" + readTimeout +
+      ", filters=" + filters +
+      ", proxy=" + proxy +
+      '}';
   }
 }

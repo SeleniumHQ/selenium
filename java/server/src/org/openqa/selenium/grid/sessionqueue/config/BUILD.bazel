@@ -6,11 +6,13 @@ java_library(
     srcs = glob(["*.java"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
         "//java:auto-service",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue",
+        "//java/server/src/org/openqa/selenium/remote/server/jmx",
         artifact("com.beust:jcommander"),
         artifact("io.opentelemetry:opentelemetry-api"),
     ],

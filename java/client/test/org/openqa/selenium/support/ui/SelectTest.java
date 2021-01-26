@@ -26,15 +26,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Category(UnitTests.class)
 public class SelectTest {
 
   @Test

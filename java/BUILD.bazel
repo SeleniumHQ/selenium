@@ -40,8 +40,8 @@ java_library(
 spotbugs_config(
     name = "spotbugs-config",
     effort = "default",
-    fail_on_warning = True,
     exclude_filter = "spotbugs-excludes.xml",
+    fail_on_warning = True,
     visibility = [
         "//visibility:public",
     ],

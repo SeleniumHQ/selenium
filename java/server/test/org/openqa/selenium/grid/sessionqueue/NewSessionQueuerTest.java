@@ -33,6 +33,7 @@ import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
@@ -54,6 +55,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -89,6 +92,7 @@ public class NewSessionQueuerTest {
   private HttpRequest request;
   private static int count = 0;
   private static final Json JSON = new Json();
+  private final Secret registrationSecret = new Secret("secret");
   private NewSessionQueue sessionQueue;
 
 
@@ -104,10 +108,10 @@ public class NewSessionQueuerTest {
         Duration.ofSeconds(1),
         Duration.ofSeconds(1000));
 
-    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
+    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue, registrationSecret);
 
     HttpClient client = new PassthroughHttpClient(local);
-    remote = new RemoteNewSessionQueuer(tracer, client);
+    remote = new RemoteNewSessionQueuer(tracer, client, registrationSecret);
 
     payload = NewSessionPayload.create(caps);
     request = createRequest(payload, POST, "/session");
@@ -224,6 +228,34 @@ public class NewSessionQueuerTest {
 
     assertEquals(count, 1);
     assertFalse(remote.remove(requestId).isPresent());
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueContents() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    sessionQueue.offerLast(request, requestId);
+
+    Map<String, Object> response = local.getQueueContents();
+    assertThat(response).isNotNull();
+
+    assertEquals(1, response.get("request-count"));
+
+    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
+    assertEquals(caps, capabilitiesList.get(0));
+  }
+
+  @Test
+  public void shouldBeAbleToGetQueueContentsRemotely() {
+    RequestId requestId = new RequestId(UUID.randomUUID());
+    sessionQueue.offerLast(request, requestId);
+
+    Map<String, Object> response = sessionQueue.getQueueContents();
+    assertThat(response).isNotNull();
+
+    assertEquals(1, response.get("request-count"));
+
+    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
+    assertEquals(caps, capabilitiesList.get(0));
   }
 
   @Test
@@ -414,10 +446,10 @@ public class NewSessionQueuerTest {
         Duration.ofSeconds(4),
         Duration.ofSeconds(0));
 
-    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue);
+    local = new LocalNewSessionQueuer(tracer, bus, sessionQueue, registrationSecret);
 
     HttpClient client = new PassthroughHttpClient(local);
-    remote = new RemoteNewSessionQueuer(tracer, client);
+    remote = new RemoteNewSessionQueuer(tracer, client, registrationSecret);
 
     AtomicBoolean isPresent = new AtomicBoolean();
     bus.addListener(NewSessionRequestEvent.listener(reqId -> {

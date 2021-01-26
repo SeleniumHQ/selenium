@@ -18,15 +18,18 @@
 package org.openqa.selenium.edge;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import com.google.common.io.Files;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +42,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Category(UnitTests.class)
 public class EdgeOptionsTest {
 
   @Test
@@ -103,4 +107,15 @@ public class EdgeOptionsTest {
     }
   }
 
+  @Test
+  public void mergingOptionsMergesArguments() {
+    EdgeOptions one = new EdgeOptions().addArguments("verbose");
+    EdgeOptions two = new EdgeOptions().addArguments("silent");
+    EdgeOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+  }
 }

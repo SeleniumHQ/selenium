@@ -34,13 +34,14 @@ import java.util.Map;
 
 public class Node {
 
+  private static final Json JSON = new Json();
   private final NodeId id;
   private final URI uri;
   private final Availability status;
   private final int maxSession;
   private final Map<Capabilities, Integer> capabilities;
-  private static final Json JSON = new Json();
   private final Map<Session, Slot> activeSessions;
+  private final String version;
 
 
   public Node(NodeId id,
@@ -48,13 +49,15 @@ public class Node {
               Availability status,
               int maxSession,
               Map<Capabilities, Integer> capabilities,
-              Map<Session, Slot> activeSessions) {
+              Map<Session, Slot> activeSessions,
+              String version) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
     this.status = status;
     this.maxSession = maxSession;
     this.capabilities = Require.nonNull("Node capabilities", capabilities);
     this.activeSessions = Require.nonNull("Active sessions", activeSessions);
+    this.version = Require.nonNull("Grid Node version", version);
   }
 
   public List<org.openqa.selenium.grid.graphql.Session> getSessions() {
@@ -95,6 +98,10 @@ public class Node {
 
   public Availability getStatus() {
     return status;
+  }
+
+  public String getVersion() {
+    return version;
   }
 
   private org.openqa.selenium.grid.graphql.Session createGraphqlSession(

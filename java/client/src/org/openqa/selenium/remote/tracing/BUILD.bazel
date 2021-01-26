@@ -30,5 +30,6 @@ java_library(
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("io.opentelemetry:opentelemetry-context"),
+        artifact("io.opentelemetry:opentelemetry-semconv"),
     ],
 )

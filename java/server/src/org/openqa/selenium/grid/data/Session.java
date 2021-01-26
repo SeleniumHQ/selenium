@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
@@ -28,6 +27,9 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Represents a running instance of a WebDriver session. It is identified by a {@link SessionId}.
@@ -74,12 +76,13 @@ public class Session {
 
   private Map<String, Object> toJson() {
     // Deliberately shaped like the return value for the W3C New Session command's return value.
-    return ImmutableMap.of(
-      "capabilities", getCapabilities(),
-      "sessionId", getId().toString(),
-      "stereotype", getStereotype(),
-      "start", getStartTime(),
-      "uri", getUri());
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("capabilities", getCapabilities());
+    toReturn.put("sessionId", getId().toString());
+    toReturn.put("stereotype", getStereotype());
+    toReturn.put("start", getStartTime());
+    toReturn.put("uri", getUri());
+    return unmodifiableMap(toReturn);
   }
 
   private static Session fromJson(JsonInput input) {

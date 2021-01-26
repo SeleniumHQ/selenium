@@ -53,6 +53,100 @@ module Selenium
       end
 
       describe 'cookie management' do
+        after { driver.manage.delete_all_cookies }
+
+        it 'should show http only when insecure' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'security',
+                                   value: 'insecure',
+                                   http_only: true
+
+          expect(driver.manage.cookie_named('security')[:http_only]).to eq true
+        end
+
+        it 'should not show secure when insecure' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'security',
+                                   value: 'secure',
+                                   secure: true
+
+          cookies = driver.manage.all_cookies
+          expect(cookies.size).to eq(0)
+        end
+
+        it 'should respect path' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'path',
+                                   value: 'specified',
+                                   path: '/child'
+          cookies = driver.manage.all_cookies
+          expect(cookies.size).to eq(0)
+
+          driver.navigate.to url_for('child/childPage.html')
+          expect(driver.manage.cookie_named('path')[:path]).to eq '/child'
+        end
+
+        it 'should add expiration with DateTime' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          expected = (Date.today + 2).to_datetime
+          driver.manage.add_cookie name: 'expiration',
+                                   value: 'datetime',
+                                   expires: expected
+
+          actual = driver.manage.cookie_named('expiration')[:expires]
+          expect(actual).to be_kind_of(DateTime)
+          expect(actual).to eq(expected)
+        end
+
+        it 'should add expiration with Time' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          expected = (Date.today + 2).to_datetime
+          driver.manage.add_cookie name: 'expiration',
+                                   value: 'time',
+                                   expires: expected.to_time
+
+          actual = driver.manage.cookie_named('expiration')[:expires]
+          expect(actual).to be_kind_of(DateTime)
+          expect(actual).to eq(expected)
+        end
+
+        it 'should add expiration with Number' do
+          driver.navigate.to url_for('xhtmlTest.html')
+
+          expected = (Date.today + 2).to_datetime
+          driver.manage.add_cookie name: 'expiration',
+                                   value: 'number',
+                                   expires: expected.to_time.to_f
+
+          actual = driver.manage.cookie_named('expiration')[:expires]
+          expect(actual).to be_kind_of(DateTime)
+          expect(actual).to eq(expected)
+        end
+
+        it 'should add sameSite cookie with attribute Strict', only: {browser: %i[chrome edge firefox]} do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'samesite', value: 'strict', same_site: 'Strict'
+
+          expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Strict')
+        end
+
+        it 'should add sameSite cookie with attribute Lax', only: {browser: %i[chrome edge firefox]} do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'samesite',
+                                   value: 'lax',
+                                   same_site: 'Lax'
+          expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Lax')
+        end
+
+        it 'should get one' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          driver.manage.add_cookie name: 'foo', value: 'bar'
+
+          expect(driver.manage.cookie_named('foo')[:value]).to eq('bar')
+        end
+
         it 'should get all' do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
@@ -62,26 +156,6 @@ module Selenium
           expect(cookies.size).to eq(1)
           expect(cookies.first[:name]).to eq('foo')
           expect(cookies.first[:value]).to eq('bar')
-        end
-
-        it 'should add sameSite cookie with attribute Strict', only: {browser: %i[chrome edge firefox]} do
-          driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Strict'
-
-          expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Strict')
-        end
-
-        it 'should add sameSite cookie with attribute Lax', only: {browser: %i[chrome edge firefox]} do
-          driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Lax'
-          expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Lax')
-        end
-
-        it 'should get named cookie' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'foo', value: 'bar'
-
-          expect(driver.manage.cookie_named('foo')[:value]).to eq('bar')
         end
 
         it 'should delete one' do
@@ -99,19 +173,6 @@ module Selenium
           driver.manage.add_cookie name: 'bar', value: 'foo'
           driver.manage.delete_all_cookies
           expect(driver.manage.all_cookies).to be_empty
-        end
-
-        it 'should use DateTime for expires' do
-          driver.navigate.to url_for('xhtmlTest.html')
-
-          expected = (Date.today + 2).to_datetime
-          driver.manage.add_cookie name: 'foo',
-                                   value: 'bar',
-                                   expires: expected
-
-          actual = driver.manage.cookie_named('foo')[:expires]
-          expect(actual).to be_kind_of(DateTime)
-          expect(actual).to eq(expected)
         end
       end
 

@@ -71,4 +71,4 @@ def test_use_webview():
     options.use_chromium = True
     options.use_webview = True
     caps = options.to_capabilities()
-    assert caps['browserName'] == "WebView2"
+    assert caps['browserName'] == "webview2"

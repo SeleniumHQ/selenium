@@ -48,6 +48,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
   public final String description;
   public final String type;
   public final String example;
+  public final boolean prefixed;
   public final boolean repeats;
   public final boolean quotable;
   public final Set<String> flags;
@@ -61,6 +62,7 @@ public class DescribedOption implements Comparable<DescribedOption> {
     this.optionName = configValue.name();
     this.type = getType(type);
     this.description = parameter.description();
+    this.prefixed = configValue.prefixed();
     this.repeats = isCollection(type);
     this.quotable = isTomlStringType(type);
     this.example = configValue.example();

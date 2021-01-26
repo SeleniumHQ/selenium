@@ -21,6 +21,7 @@ import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.NonSplittingSplitter;
 import org.openqa.selenium.grid.config.Role;
 
 import java.net.URL;
@@ -43,22 +44,26 @@ public class NodeFlags implements HasRoles {
   @Parameter(
       names = {"--detect-drivers"}, arity = 1,
       description = "Autodetect which drivers are available on the current system, " +
-                    "and add them to the node. Defaults to true.")
+                    "and add them to the Node. Defaults to true.")
   @ConfigValue(section = "node", name = "detect-drivers", example = "true")
   public Boolean autoconfigure;
 
   @Parameter(
     names = {"-I", "--driver-implementation"},
-    description = "Drivers that should be checked. If specified, will skip autoconfiguration. Example: -I \"firefox\" -I \"chrome\"")
+    description = "Drivers that should be checked. If specified, will skip autoconfiguration. " +
+                  "Example: -I \"firefox\" -I \"chrome\"")
   @ConfigValue(section = "node", name = "drivers", example = "[\"firefox\", \"chrome\"]")
   public Set<String> driverNames = new HashSet<>();
 
   @Parameter(
     names = {"--driver-factory"},
-    description = "Mapping of fully qualified class name to a browser configuration that this matches against. " +
-      "`--driver-factory org.openqa.selenium.example.LynxDriverFactory '{\"browserName\": \"lynx\"}')",
+    description = "Mapping of fully qualified class name to a browser configuration that this " +
+                  "matches against. " +
+                  "--driver-factory org.openqa.selenium.example.LynxDriverFactory " +
+                  "'{\"browserName\": \"lynx\"}'",
     arity = 2,
-    variableArity = true)
+    variableArity = true,
+    splitter = NonSplittingSplitter.class)
   @ConfigValue(
     section = "node",
     name = "driver-factories",
@@ -67,9 +72,34 @@ public class NodeFlags implements HasRoles {
 
   @Parameter(
     names = {"--public-url"},
-    description = "Public URL of the Grid as a whole (typically the address of the hub or the router)")
+    description = "Public URL of the Grid as a whole (typically the address of the Hub " +
+                  "or the Router)")
   @ConfigValue(section = "node", name = "grid-url", example = "\"https://grid.example.com\"")
   public URL gridUri;
+
+  @Parameter(
+    names = {"--driver-configuration"},
+    description = "List of configured drivers a Node supports. " +
+                  "It is recommended to provide this type of configuration through a toml config " +
+                  "file to improve readability." +
+                  "--drivers-configuration name=\"Firefox Nightly\" max-sessions=2 " +
+                  "stereotype='{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
+                  "\"moz:firefoxOptions\": " +
+                  "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}'",
+    arity = 3,
+    variableArity = true,
+    splitter = NonSplittingSplitter.class)
+  @ConfigValue(
+    section = "node",
+    name = "driver-configuration",
+    prefixed = true,
+    example = "\n" +
+              "name = \"Firefox Nightly\"\n" +
+              "max-sessions = 2\n" +
+              "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
+              "\"moz:firefoxOptions\": " +
+              "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
+  public List<String> driverConfiguration;
 
   @Override
   public Set<Role> getRoles() {

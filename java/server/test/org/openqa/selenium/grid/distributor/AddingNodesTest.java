@@ -107,7 +107,11 @@ public class AddingNodesTest {
       bus,
       Duration.ofSeconds(2),
       Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      bus,
+      localNewSessionQueue,
+      registrationSecret);
     Distributor local = new LocalDistributor(
       tracer,
       bus,
@@ -121,14 +125,19 @@ public class AddingNodesTest {
 
     stereotype = new ImmutableCapabilities("browserName", "gouda");
 
-    wait = new FluentWait<>(new Object()).ignoring(Throwable.class).withTimeout(Duration.ofSeconds(2));
+    wait = new FluentWait<>(
+      new Object()).ignoring(Throwable.class).withTimeout(Duration.ofSeconds(2));
   }
 
   @Test
   public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+    Node node = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(
+          CAPS,
+          new TestSessionFactory(
+            (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 
@@ -141,85 +150,14 @@ public class AddingNodesTest {
   }
 
   @Test
-  public void shouldNotRegisterALocalNodeWithWrongRegistrationSecret() throws URISyntaxException {
-    URI sessionUri = new URI("http://example:1234");
-    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-        externalUrl,
-        handler,
-        HttpClient.Factory.createDefault());
-
-    Secret registrationSecret = new Secret("my_secret");
-
-    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
-      .build();
-    handler.addHandler(node);
-
-    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    Distributor secretDistributor = new LocalDistributor(
-      tracer,
-      bus,
-      clientFactory,
-      sessions,
-      queuer,
-      registrationSecret);
-
-    bus.fire(new NodeStatusEvent(node.getStatus()));
-
-    assertEquals(0, secretDistributor.getAvailableNodes().size());
-  }
-
-  @Test
-  public void shouldRegisterALocalNodeWithCorrectRegistrationSecret() throws URISyntaxException {
-    URI sessionUri = new URI("http://example:1234");
-    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-        externalUrl,
-        handler,
-        HttpClient.Factory.createDefault());
-
-    Secret registrationSecret = new Secret("my_secret");
-
-    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
-        .build();
-    handler.addHandler(node);
-
-    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
-      tracer,
-      bus,
-      Duration.ofSeconds(2),
-      Duration.ofSeconds(2));
-    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, localNewSessionQueue);
-    Distributor secretDistributor = new LocalDistributor(
-        tracer,
-        bus,
-        clientFactory,
-        sessions,
-        queuer,
-        registrationSecret);
-
-    bus.fire(new NodeStatusEvent(node.getStatus()));
-
-    wait.until(obj -> secretDistributor.getStatus().hasCapacity());
-
-    assertEquals(1, secretDistributor.getAvailableNodes().size());
-  }
-
-  @Test
   public void shouldBeAbleToRegisterACustomNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = new CustomNode(
         bus,
         new NodeId(UUID.randomUUID()),
         externalUrl.toURI(),
-        c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, stereotype, c, Instant.now()));
+        c -> new Session(
+          new SessionId(UUID.randomUUID()), sessionUri, stereotype, c, Instant.now()));
     handler.addHandler(node);
 
     distributor.add(node);
@@ -233,8 +171,12 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+    Node node = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(
+          CAPS,
+          new TestSessionFactory(
+            (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 
@@ -247,13 +189,22 @@ public class AddingNodesTest {
   }
 
   @Test
-  public void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents() throws URISyntaxException {
+  public void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents()
+    throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node firstNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+    Node firstNode = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+      .add(
+        CAPS,
+        new TestSessionFactory(
+          (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
       .build();
-    Node secondNode = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-      .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+    Node secondNode = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+      .add(
+        CAPS,
+        new TestSessionFactory(
+          (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
       .build();
     handler.addHandler(firstNode);
     handler.addHandler(secondNode);
@@ -272,8 +223,12 @@ public class AddingNodesTest {
   public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
-        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
+    Node node = LocalNode
+      .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
+        .add(
+          CAPS,
+          new TestSessionFactory(
+            (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
     handler.addHandler(node);
 
@@ -296,8 +251,10 @@ public class AddingNodesTest {
           new SlotId(status.getId(), UUID.randomUUID()),
           CAPS,
           Instant.now(),
-          Optional.of(new Session(new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
-      UP);
+          Optional.of(new Session(
+            new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
+      UP,
+      status.getVersion());
 
     bus.fire(new NodeStatusEvent(crafted));
 
@@ -396,7 +353,12 @@ public class AddingNodesTest {
       Session sess = null;
       if (running != null) {
         try {
-          sess = new Session(running.getId(), new URI("http://localhost:14568"), CAPS, running.getCapabilities(), Instant.now());
+          sess = new Session(
+            running.getId(),
+            new URI("http://localhost:14568"),
+            CAPS,
+            running.getCapabilities(),
+            Instant.now());
         } catch (URISyntaxException e) {
           throw new RuntimeException(e);
         }
@@ -412,7 +374,8 @@ public class AddingNodesTest {
             CAPS,
             Instant.now(),
             Optional.ofNullable(sess))),
-        UP);
+        UP,
+        getNodeVersion());
     }
 
     @Override

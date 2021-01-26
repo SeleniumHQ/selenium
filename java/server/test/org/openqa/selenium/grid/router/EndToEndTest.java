@@ -102,6 +102,7 @@ public class EndToEndTest {
   public Supplier<TestData> values;
 
   private Server<?> server;
+  private TearDownFixture[] fixtures;
 
   private HttpClient.Factory clientFactory;
 
@@ -109,12 +110,13 @@ public class EndToEndTest {
   public void setFields() {
     TestData data = values.get();
     this.server = data.server;
+    this.fixtures = data.fixtures;
     this.clientFactory = HttpClient.Factory.createDefault();
   }
 
   @After
   public void stopServers() {
-    Safely.safelyCall(values.get().fixtures);
+    Safely.safelyCall(this.fixtures);
   }
 
 
@@ -139,7 +141,7 @@ public class EndToEndTest {
       "port = " + PortProber.findFreePort(),
       "registration-secret = \"provolone\"",
       "[sessionqueue]",
-      "session-request-timeout = 2",
+      "session-request-timeout = 10",
       "session-retry-interval = 1"
     };
     Config config = new MemoizedConfig(
@@ -179,7 +181,7 @@ public class EndToEndTest {
       "[server]",
       "registration-secret = \"feta\"",
       "[sessionqueue]",
-      "session-request-timeout = 2",
+      "session-request-timeout = 10",
       "session-retry-interval = 1"
     };
 
@@ -226,7 +228,7 @@ public class EndToEndTest {
       "[server]",
       "registration-secret = \"colby\"",
       "[sessionqueue]",
-      "session-request-timeout = 2",
+      "session-request-timeout = 10",
       "session-retry-interval = 1"
     };
 
@@ -308,11 +310,7 @@ public class EndToEndTest {
       eventServer::stop);
   }
 
-  private static void waitUntilReady(Server<?> server, Duration duration) {
-    waitUntilReady(server, duration, false);
-  }
-
-  private static void waitUntilReady(Server<?> server, Duration duration, boolean printOutput) {
+  private static void waitUntilReady(Server<?> server, Duration duration, boolean logOutput) {
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
     new FluentWait<>(client)
@@ -320,12 +318,17 @@ public class EndToEndTest {
       .pollingEvery(Duration.ofSeconds(1))
       .until(c -> {
         HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-        if (printOutput) {
+        if (logOutput) {
           System.out.println(Contents.string(response));
         }
         Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return Boolean.TRUE.equals(status.get("ready"));
+        return Boolean.TRUE.equals(status != null &&
+                                   Boolean.parseBoolean(status.get("ready").toString()));
       });
+  }
+
+  private static void waitUntilReady(Server<?> server, Duration duration) {
+    waitUntilReady(server, duration, false);
   }
 
   private static Config setRandomPort(Config config) {
@@ -395,7 +398,7 @@ public class EndToEndTest {
     // Kill the session, and wait until the grid says it's ready
     driver.quit();
 
-    waitUntilReady(server, Duration.ofSeconds(200), true);
+    waitUntilReady(server, Duration.ofSeconds(100), true);
 
     // And now we're good to go.
     driver = new RemoteWebDriver(server.getUrl(), caps);
@@ -431,10 +434,6 @@ public class EndToEndTest {
 
   @Test
   public void shouldRejectSessionRequestIfCapsNotSupported() {
-    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
-    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
-    driver.get("http://www.google.com");
-
     try {
       Capabilities unsupportedCaps = new ImmutableCapabilities("browserName", "brie");
       WebDriver disposable = new RemoteWebDriver(server.getUrl(), unsupportedCaps);
@@ -443,8 +442,6 @@ public class EndToEndTest {
     } catch (SessionNotCreatedException expected) {
       // Fall through
     }
-
-    driver.quit();
   }
 
   @Test

@@ -36,6 +36,11 @@ import java.util.Objects;
  */
 public final class Require {
 
+  private static final String ARG_MUST_BE_SET = "%s must be set";
+  private static final String MUST_EXIST = "%s must exist: %s";
+  private static final String MUST_BE_DIR = "%s must be a directory: %s";
+  private static final String MUST_BE_FILE = "%s must be a regular file: %s";
+
   private Require() {
     // An utility class
   }
@@ -48,14 +53,15 @@ public final class Require {
 
   public static <T> T nonNull(String argName, T arg) {
     if (arg == null) {
-      throw new IllegalArgumentException(argName + " must be set");
+      throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
     }
     return arg;
   }
 
   public static <T> T nonNull(String argName, T arg, String message, Object... args) {
     if (arg == null) {
-      throw new IllegalArgumentException(String.join(" ", argName, String.format(message, args)));
+      throw new IllegalArgumentException(
+        String.join(" ", argName, String.format(message, args)));
     }
     return arg;
   }
@@ -76,7 +82,7 @@ public final class Require {
 
     public T nonNull() {
       if (arg == null) {
-        throw new IllegalArgumentException(argName + " must be set");
+        throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
       }
       return arg;
     }
@@ -90,7 +96,7 @@ public final class Require {
 
     public T equalTo(Object other) {
       if (arg == null) {
-        throw new IllegalArgumentException(argName + " must be set");
+        throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
       }
       if (!Objects.equals(arg, other)) {
         throw new IllegalArgumentException(argName + " must be equal to `" + other + "`");
@@ -100,7 +106,7 @@ public final class Require {
 
     public T instanceOf(Class<?> cls) {
       if (arg == null) {
-        throw new IllegalArgumentException(argName + " must be set");
+        throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
       }
       if (!cls.isInstance(arg)) {
         throw new IllegalArgumentException(argName + " must be an instance of " + cls);
@@ -111,7 +117,7 @@ public final class Require {
 
   public static Duration nonNegative(String argName, Duration arg) {
     if (arg == null) {
-      throw new IllegalArgumentException(argName + " must be set");
+      throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
     }
     if (arg.isNegative()) {
       throw new IllegalArgumentException(argName + " must be set to 0 or more");
@@ -131,16 +137,17 @@ public final class Require {
 
   public static int nonNegative(String argName, Integer number) {
     if (number == null) {
-      throw new IllegalArgumentException(argName + " must be set");
+      throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
     }
     if (number < 0) {
       throw new IllegalArgumentException(argName + " cannot be less than 0");
     }
     return number;
   }
+
   public static int positive(String argName, Integer number, String message) {
     if (number == null) {
-      throw new IllegalArgumentException(argName + " must be set");
+      throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
     }
     if (number <= 0) {
       if (message == null) {
@@ -150,6 +157,21 @@ public final class Require {
       }
     }
     return number;
+  }
+
+  public static double positive(String argName, Double number, String message) {
+    if (number <= 0) {
+      if (message == null) {
+        throw new IllegalArgumentException(argName + " must be greater than 0");
+      } else {
+        throw new IllegalArgumentException(message);
+      }
+    }
+    return number;
+  }
+
+  public static double positive(String argName, Double number) {
+    return positive(argName, number, null);
   }
 
   public static int positive(String argName, Integer number) {
@@ -172,7 +194,7 @@ public final class Require {
 
     public int greaterThan(int max, String message) {
       if (number == null) {
-        throw new IllegalArgumentException(argName + " must be set");
+        throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
       }
       if (number <= max) {
         throw new IllegalArgumentException(message);
@@ -197,26 +219,30 @@ public final class Require {
 
     public File isFile() {
       if (file == null) {
-        throw new IllegalArgumentException(argName + " must be set");
+        throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
       }
       if (!file.exists()) {
-        throw new IllegalArgumentException(argName + " must exist: " + file.getAbsolutePath());
+        throw new IllegalArgumentException(
+          String.format(MUST_EXIST, argName, file.getAbsolutePath()));
       }
       if (!file.isFile()) {
-        throw new IllegalArgumentException(argName + " must be a regular file: " + file.getAbsolutePath());
+        throw new IllegalArgumentException(
+          String.format(MUST_BE_FILE, argName, file.getAbsolutePath()));
       }
       return file;
     }
 
     public File isDirectory() {
       if (file == null) {
-        throw new IllegalArgumentException(argName + " must be set");
+        throw new IllegalArgumentException(String.format(ARG_MUST_BE_SET, argName));
       }
       if (!file.exists()) {
-        throw new IllegalArgumentException(argName + " must exist: " + file.getAbsolutePath());
+        throw new IllegalArgumentException(
+          String.format(MUST_EXIST, argName, file.getAbsolutePath()));
       }
       if (!file.isDirectory()) {
-        throw new IllegalArgumentException(argName + " must be a directory: " + file.getAbsolutePath());
+        throw new IllegalArgumentException(
+          String.format(MUST_BE_DIR, argName, file.getAbsolutePath()));
       }
       return file;
     }
@@ -258,7 +284,7 @@ public final class Require {
 
     public T instanceOf(Class<?> cls) {
       if (state == null) {
-        throw new IllegalStateException(name + " must be set");
+        throw new IllegalStateException(String.format(ARG_MUST_BE_SET, name));
       }
       if (!cls.isInstance(state)) {
         throw new IllegalStateException(name + " must be an instance of " + cls);
@@ -283,26 +309,26 @@ public final class Require {
 
     public File isFile() {
       if (file == null) {
-        throw new IllegalStateException(name + " must be set");
+        throw new IllegalStateException(String.format(ARG_MUST_BE_SET, name));
       }
       if (!file.exists()) {
-        throw new IllegalStateException(name + " must exist: " + file.getAbsolutePath());
+        throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
       }
       if (!file.isFile()) {
-        throw new IllegalStateException(name + " must be a regular file: " + file.getAbsolutePath());
+        throw new IllegalStateException(String.format(MUST_BE_FILE, name, file.getAbsolutePath()));
       }
       return file;
     }
 
     public File isDirectory() {
       if (file == null) {
-        throw new IllegalStateException(name + " must be set");
+        throw new IllegalStateException(String.format(ARG_MUST_BE_SET, name));
       }
       if (!file.exists()) {
-        throw new IllegalStateException(name + " must exist: " + file.getAbsolutePath());
+        throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
       }
       if (!file.isDirectory()) {
-        throw new IllegalStateException(name + " must be a directory: " + file.getAbsolutePath());
+        throw new IllegalStateException(String.format(MUST_BE_DIR, name, file.getAbsolutePath()));
       }
       return file;
     }
@@ -324,26 +350,26 @@ public final class Require {
 
     public Path isFile() {
       if (path == null) {
-        throw new IllegalStateException(name + " must be set");
+        throw new IllegalStateException(String.format(ARG_MUST_BE_SET, name));
       }
       if (!Files.exists(path)) {
-        throw new IllegalStateException(name + " must exist: " + path);
+        throw new IllegalStateException(String.format(MUST_EXIST, name, path));
       }
       if (!Files.isRegularFile(path)) {
-        throw new IllegalStateException(name + " must be a regular file: " + path);
+        throw new IllegalStateException(String.format(MUST_BE_FILE, name, path));
       }
       return path;
     }
 
     public Path isDirectory() {
       if (path == null) {
-        throw new IllegalStateException(name + " must be set");
+        throw new IllegalStateException(String.format(ARG_MUST_BE_SET, name));
       }
       if (!Files.exists(path)) {
-        throw new IllegalStateException(name + " must exist: " + path);
+        throw new IllegalStateException(String.format(MUST_EXIST, name, path));
       }
       if (!Files.isDirectory(path)) {
-        throw new IllegalStateException(name + " must be a directory: " + path);
+        throw new IllegalStateException(String.format(MUST_BE_DIR, name, path));
       }
       return path;
     }

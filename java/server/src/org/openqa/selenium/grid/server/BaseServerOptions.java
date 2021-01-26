@@ -23,6 +23,9 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
+import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.io.File;
 import java.net.URI;
@@ -30,6 +33,8 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+@ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=BaseServerConfig",
+    description = "Server config")
 public class BaseServerOptions {
 
   private static final String SERVER_SECTION = "server";
@@ -40,12 +45,14 @@ public class BaseServerOptions {
 
   public BaseServerOptions(Config config) {
     this.config = config;
+    new JMXHelper().register(this);
   }
 
   public Optional<String> getHostname() {
     return config.get(SERVER_SECTION, "hostname");
   }
 
+  @ManagedAttribute(name = "Port")
   public int getPort() {
     if (port == -1) {
       int newPort = config.getInt(SERVER_SECTION, "port")
@@ -61,6 +68,7 @@ public class BaseServerOptions {
     return port;
   }
 
+  @ManagedAttribute(name = "MaxServerThreads")
   public int getMaxServerThreads() {
     int count = config.getInt(SERVER_SECTION, "max-threads")
         .orElse(200);
@@ -72,6 +80,7 @@ public class BaseServerOptions {
     return count;
   }
 
+  @ManagedAttribute(name = "Uri")
   public URI getExternalUri() {
     // Assume the host given is addressable if it's been set
     String host = getHostname()
@@ -88,7 +97,14 @@ public class BaseServerOptions {
     int port = getPort();
 
     try {
-      return new URI((isSecure() || isSelfSigned()) ? "https" : "http", null, host, port, null, null, null);
+      return new URI(
+        (isSecure() || isSelfSigned()) ? "https" : "http",
+        null,
+        host,
+        port,
+        null,
+        null,
+        null);
     } catch (URISyntaxException e) {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
     }
@@ -99,7 +115,8 @@ public class BaseServerOptions {
   }
 
   public boolean isSecure() {
-    return config.get(SERVER_SECTION, "https-private-key").isPresent() && config.get(SERVER_SECTION, "https-certificate").isPresent();
+    return config.get(SERVER_SECTION, "https-private-key").isPresent()
+           && config.get(SERVER_SECTION, "https-certificate").isPresent();
   }
 
   public File getPrivateKey() {
@@ -107,15 +124,19 @@ public class BaseServerOptions {
     if (privateKey != null) {
       return new File(privateKey);
     }
-    throw new ConfigException("you must provide a private key via --https-private-key when using --https");
+    throw new ConfigException("Please provide a private key via --https-private-key " +
+                              "when using --https");
   }
 
   public File getCertificate() {
-    String certificatePath = config.get(SERVER_SECTION, "https-certificate").orElse(null);
+    String certificatePath = config
+      .get(SERVER_SECTION, "https-certificate")
+      .orElse(null);
     if (certificatePath != null) {
       return new File(certificatePath);
     }
-    throw new ConfigException("you must provide a certificate via --https-certificate when using --https");
+    throw new ConfigException("Please provide a certificate via --https-certificate " +
+                              "when using --https");
   }
 
   public boolean isSelfSigned() {

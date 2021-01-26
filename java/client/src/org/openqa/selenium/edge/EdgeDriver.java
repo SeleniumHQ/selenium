@@ -21,79 +21,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
 
 /**
  * A {@link WebDriver} implementation that controls an Edge browser running on the local machine.
- * This class is provided as a convenience for easily testing the Edge browser. The control server
- * which each instance communicates with will live and die with the instance.
+ * It requires an <code>edgedriver</code> executable to be available in PATH.
  *
- * To avoid unnecessarily restarting the Microsoft WebDriver server with each instance, use a
- * {@link RemoteWebDriver} coupled with the desired {@link EdgeDriverService}, which is managed
- * separately. For example: <pre>{@code
- *
- * import org.junit.jupiter.api.*;
- * import org.openqa.selenium.By;
- * import org.openqa.selenium.WebDriver;
- * import org.openqa.selenium.WebDriverException;
- * import org.openqa.selenium.WebElement;
- * import org.openqa.selenium.edge.EdgeDriverService;
- * import org.openqa.selenium.edge.EdgeOptions;
- * import org.openqa.selenium.remote.RemoteWebDriver;
- * import org.openqa.selenium.remote.service.DriverService;
- *
- * import java.io.IOException;
- * import java.util.ServiceLoader;
- * import java.util.stream.StreamSupport;
- *
- * import static org.junit.jupiter.api.Assertions.assertEquals;
- *
- * public class EdgeTest {
- *
- *     private static EdgeDriverService service;
- *     private WebDriver driver;
- *
- *     {@Literal @BeforeAll}
- *     public static void createAndStartService() {
- *         // Setting this property to false in order to launch Chromium Edge
- *         // Otherwise, old Edge will be launched by default
- *         System.setProperty("webdriver.edge.edgehtml", "false");
- *         EdgeDriverService.Builder builder = = new EdgeDriverService.Builder();
- *         service = builder.build();
- *         try {
- *             service.start();
- *         }
- *         catch (IOException e) {
- *             throw new RuntimeException(e);
- *         }
- *     }
- *
- *     {@Literal @AfterAll}
- *     public static void createAndStopService() {
- *         service.stop();
- *     }
- *
- *     {@Literal @BeforeEach}
- *     public void createDriver() {
- *         driver = new RemoteWebDriver(service.getUrl(),
- *                 new EdgeOptions());
- *     }
- *
- *     {@Literal @AfterEach}
- *     public void quitDriver() {
- *         driver.quit();
- *     }
- *
- *     {@Literal @Test}
- *     public void testBingSearch() {
- *         driver.get("http://www.bing.com");
- *         WebElement searchBox = driver.findElement(By.name("q"));
- *         searchBox.sendKeys("webdriver");
- *         searchBox.submit();
- *         assertEquals("webdriver - Bing", driver.getTitle());
- *     }
- * }}</pre>
+ * @see <a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/">Microsoft WebDriver</a>
  */
 public class EdgeDriver extends ChromiumDriver {
 

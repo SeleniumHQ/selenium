@@ -13,6 +13,7 @@ java_library(
         "NotYetImplemented.java",
         "NotYetImplementedList.java",
         "SwitchToTopAfterTest.java",
+        "UnitTests.java",
     ],
     visibility = [
         "//java/client/test:__subpackages__",

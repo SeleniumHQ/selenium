@@ -43,21 +43,20 @@ module Selenium
         end
 
         it 'reads existing prefs' do
-          expect(File).to receive(:read).with('/some/path/Default/Preferences')
-                                        .and_return('{"autofill": {"enabled": false}}')
+          allow(File).to receive(:read).and_return('{"autofill": {"enabled": false}}')
 
           expect(model_profile['autofill.enabled']).to eq(false)
+          expect(File).to have_received(:read).with('/some/path/Default/Preferences')
         end
 
         it 'writes out prefs' do
-          expect(File).to receive(:read).with('/some/path/Default/Preferences')
-                                        .and_return('{"autofill": {"enabled": false}}')
+          allow(File).to receive(:read).and_return('{"autofill": {"enabled": false}}')
 
           model_profile['some.other.pref'] = 123
 
           mock_io = StringIO.new
           expect(FileUtils).to receive(:mkdir_p).with('/tmp/some/path/Default')
-          expect(File).to receive(:open).with('/tmp/some/path/Default/Preferences', 'w').and_yield(mock_io)
+          allow(File).to receive(:open).with('/tmp/some/path/Default/Preferences', 'w').and_yield(mock_io)
 
           model_profile.layout_on_disk
 
@@ -65,6 +64,7 @@ module Selenium
 
           expect(result['autofill']['enabled']).to eq(false)
           expect(result['some']['other']['pref']).to eq(123)
+          expect(File).to have_received(:read).with('/some/path/Default/Preferences')
         end
       end
     end # Chrome

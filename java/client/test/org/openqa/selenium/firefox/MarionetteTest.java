@@ -25,7 +25,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 
 import org.junit.After;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.nio.file.Path;
 
-@Ignore(FIREFOX)
+@Ignore(LEGACY_FIREFOX_XPI)
 public class MarionetteTest extends JUnit4TestBase {
 
   private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";

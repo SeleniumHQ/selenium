@@ -17,31 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import java.net.URL;
-import java.util.Base64;
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -77,16 +54,43 @@ import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
+import org.openqa.selenium.print.PrintOptions;
+import org.openqa.selenium.Pdf;
+import org.openqa.selenium.PrintsPage;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
+import java.net.URL;
+import java.time.Duration;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+
 @Augmentable
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputDevices,
                                         HasCapabilities, Interactive, TakesScreenshot,
-                                        HasVirtualAuthenticator {
+                                        HasVirtualAuthenticator, PrintsPage {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -108,7 +112,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
 
   // For cglib
   protected RemoteWebDriver() {
-    init(new ImmutableCapabilities());
+    this.capabilities=init(new ImmutableCapabilities());
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
@@ -125,7 +129,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     }
     this.executor = executor;
 
-    init(capabilities);
+    capabilities=init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
@@ -149,7 +153,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     return new RemoteWebDriverBuilder();
   }
 
-  private void init(Capabilities capabilities) {
+  private Capabilities init(Capabilities capabilities) {
     capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
     logger.addHandler(LoggingHandler.getInstance());
@@ -181,6 +185,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       LoggingHandler.getInstance(), logTypesToInclude);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
+
+    return capabilities;
   }
 
   /**
@@ -215,29 +221,25 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
         "The underlying command executor returned a null response.");
     }
 
-    if (response.getValue() == null) {
+    Object responseValue = response.getValue();
+
+    if (responseValue == null) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response without payload: " +
         response.toString());
     }
 
-    if (!(response.getValue() instanceof Map)) {
+    if (!(responseValue instanceof Map)) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response with a non well formed payload: " +
         response.toString());
     }
 
-    Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
-    MutableCapabilities returnedCapabilities = new MutableCapabilities();
-    for (Map.Entry<String, Object> entry : rawCapabilities.entrySet()) {
-      // Handle the platform later
-      if (PLATFORM.equals(entry.getKey()) || PLATFORM_NAME.equals(entry.getKey())) {
-        continue;
-      }
-      returnedCapabilities.setCapability(entry.getKey(), entry.getValue());
-    }
-    String platformString = (String) rawCapabilities.getOrDefault(PLATFORM,
-                                                                  rawCapabilities.get(PLATFORM_NAME));
+    Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
+    MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
+    String platformString = (String) rawCapabilities.getOrDefault(
+      PLATFORM,
+      rawCapabilities.get(PLATFORM_NAME));
     Platform platform;
     try {
       if (platformString == null || "".equals(platformString)) {
@@ -286,6 +288,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
 
   @Override
   public Capabilities getCapabilities() {
+    if(capabilities == null){
+      return new ImmutableCapabilities();
+    }
     return capabilities;
   }
 
@@ -325,6 +330,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
           DriverCommand.SCREENSHOT,
           result == null ? "null" : result.getClass().getName() + " instance"));
     }
+  }
+
+  @Override
+  public Pdf print(PrintOptions printOptions) throws WebDriverException {
+    Response response = execute(DriverCommand.PRINT_PAGE(printOptions));
+
+    Object result = response.getValue();
+    return new Pdf((String) result);
   }
 
   @Override
@@ -472,7 +485,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   }
 
   private boolean isJavascriptEnabled() {
-    return capabilities.is(SUPPORTS_JAVASCRIPT);
+    return getCapabilities().is(SUPPORTS_JAVASCRIPT);
   }
 
   @Override

@@ -62,6 +62,16 @@ public class Docker {
       .orElseThrow(() -> new DockerException("Unable to create container: " + config));
   }
 
+  public ContainerInfo inspect(ContainerId id) {
+    Require.nonNull("Container id", id);
+
+    LOG.info("Inspecting container with id: " + id);
+
+    return getDocker()
+      .map(protocol -> protocol.inspectContainer(id))
+      .orElseThrow(() -> new DockerException("Unable to inspect container: " + id));
+  }
+
   private Optional<DockerProtocol> getDocker() {
     if (dockerClient.isPresent()) {
       return dockerClient;

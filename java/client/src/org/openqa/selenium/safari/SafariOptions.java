@@ -87,8 +87,10 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
   @Override
   public SafariOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    SafariOptions newInstance = new SafariOptions();
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
+    return newInstance;
   }
 
   /**
@@ -115,7 +117,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   // Setters
-  
+
   /**
    * Instruct the SafariDriver to enable the Automatic Inspection if true, otherwise disable
    * the automatic inspection. Defaults to disabling the automatic inspection.

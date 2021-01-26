@@ -29,10 +29,10 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.JdkLoggerFactory;
-import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
+import org.openqa.selenium.remote.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.WrapExceptions;
+import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.Message;
@@ -96,7 +96,7 @@ public class NettyServer implements Server<NettyServer> {
       sslCtx = null;
     }
 
-    this.handler = handler.with(new WrapExceptions().andThen(new AddWebDriverSpecHeaders()));
+    this.handler = handler.with(new ErrorFilter().andThen(new AddWebDriverSpecHeaders()));
 
     bossGroup = new NioEventLoopGroup(1);
     workerGroup = new NioEventLoopGroup();

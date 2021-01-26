@@ -17,22 +17,21 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.api.OpenTelemetry;
-import io.opentelemetry.api.common.AttributeConsumer;
-import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.context.propagation.DefaultContextPropagators;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
-import io.opentelemetry.sdk.trace.MultiSpanProcessor;
+import io.opentelemetry.sdk.trace.SdkTracerManagement;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-import io.opentelemetry.sdk.trace.TracerSdkManagement;
+import io.opentelemetry.sdk.trace.data.EventData;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import io.opentelemetry.sdk.trace.data.SpanData.Event;
+import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.api.trace.propagation.HttpTraceContext;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -41,19 +40,8 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.*;
+import java.util.*;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -75,6 +63,8 @@ public class LoggingOptions {
 
   public static final Json JSON = new Json();
 
+  private Level level = Level.INFO;
+
   private final Config config;
 
   public LoggingOptions(Config config) {
@@ -93,14 +83,34 @@ public class LoggingOptions {
     return config.get(LOGGING_SECTION, "log-encoding").orElse(null);
   }
 
+  public void setLoggingLevel() {
+    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(Level.INFO.getName());
+
+    if (Level.ALL.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.ALL;
+    } else if (Level.CONFIG.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.CONFIG;
+    } else if (Level.FINE.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINE;
+    } else if (Level.FINER.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINER;
+    } else if (Level.FINEST.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.FINEST;
+    } else if (Level.OFF.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.OFF;
+    } else if (Level.SEVERE.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.SEVERE;
+    } else if (Level.WARNING.getName().equalsIgnoreCase(configLevel)) {
+      level = Level.WARNING;
+    }
+  }
+
   public Tracer getTracer() {
     boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing").orElse(true);
     if (!tracingEnabled) {
       LOG.info("Using null tracer");
       return new NullTracer();
     }
-
-    LOG.info("Using OpenTelemetry for tracing");
 
     Tracer localTracer = tracer;
     if (localTracer == null) {
@@ -117,10 +127,9 @@ public class LoggingOptions {
 
   private Tracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
-    TracerSdkManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
-
+    SdkTracerManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
     List<SpanProcessor> exporters = new LinkedList<>();
-    exporters.add(SimpleSpanProcessor.builder(new SpanExporter() {
+    exporters.add(SimpleSpanProcessor.create(new SpanExporter() {
       @Override
       public CompletableResultCode export(Collection<SpanData> spans) {
 
@@ -129,8 +138,8 @@ public class LoggingOptions {
 
           String traceId = span.getTraceId();
           String spanId = span.getSpanId();
-          SpanData.Status status = span.getStatus();
-          List<Event> eventList = span.getEvents();
+          StatusData status = span.getStatus();
+          List<EventData> eventList = span.getEvents();
           eventList.forEach(event -> {
             Map<String, Object> map = new HashMap<>();
             map.put("eventTime", event.getEpochNanos());
@@ -142,16 +151,12 @@ public class LoggingOptions {
             Attributes attributes = event.getAttributes();
             Map<String, Object> attributeMap = new HashMap<>();
 
-            attributes.forEach(new AttributeConsumer() {
-              @Override
-              public <T> void accept(AttributeKey<T> key, T value) {
-                attributeMap.put(key.getKey(), value);
-              }
-            });
+            attributes.forEach(
+              (attributeKey, value) -> attributeMap.put(attributeKey.getKey(), value));
             map.put("attributes", attributeMap);
             String jsonString = getJsonString(map);
-            if (status.isOk()) {
-              LOG.log(Level.INFO, jsonString);
+            if (status.getStatusCode() == StatusCode.OK) {
+              LOG.log(Level.FINE, jsonString);
             } else {
               LOG.log(Level.WARNING, jsonString);
             }
@@ -170,23 +175,23 @@ public class LoggingOptions {
         // no-op
         return CompletableResultCode.ofSuccess();
       }
-    }).build());
+    }));
 
     // The Jaeger exporter doesn't yet have a `TracerFactoryProvider`, so we
-    //shall look up the class using reflection, and beg for forgiveness
+    // shall look up the class using reflection, and beg for forgiveness
     // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
-      exporter -> exporters.add(SimpleSpanProcessor.builder(exporter).build()));
-    tracerManagement.addSpanProcessor(MultiSpanProcessor.create(exporters));
+      exporter -> exporters.add(SimpleSpanProcessor.create(exporter)));
+    tracerManagement.addSpanProcessor(SpanProcessor.composite(exporters));
 
     // OpenTelemetry default propagators are no-op since version 0.9.0.
     // Hence, required propagators need to defined and added.
-    ContextPropagators propagators = DefaultContextPropagators.builder()
-      .addTextMapPropagator(HttpTraceContext.getInstance()).build();
+    ContextPropagators propagators = ContextPropagators.create(
+      TextMapPropagator.composite(W3CTraceContextPropagator.getInstance()));
 
     return new OpenTelemetryTracer(
-      OpenTelemetry.getGlobalTracer("default"),
+      GlobalOpenTelemetry.getTracer("default"),
       propagators.getTextMapPropagator());
   }
 
@@ -209,18 +214,22 @@ public class LoggingOptions {
 
     // Now configure the root logger, since everything should flow up to that
     Logger logger = logManager.getLogger("");
+    setLoggingLevel();
+    logger.setLevel(level);
     OutputStream out = getOutputStream();
     String encoding = getLogEncoding();
 
     if (isUsingPlainLogs()) {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new TerseFormatter());
+      handler.setLevel(level);
       configureLogEncoding(logger, encoding, handler);
     }
 
     if (isUsingStructuredLogging()) {
       Handler handler = new FlushingHandler(out);
       handler.setFormatter(new JsonFormatter());
+      handler.setLevel(level);
       configureLogEncoding(logger, encoding, handler);
     }
   }

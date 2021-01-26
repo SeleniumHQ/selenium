@@ -298,7 +298,7 @@ module Selenium
       def create_bridge(**opts)
         opts[:url] ||= service_url(opts)
         caps = opts.delete(:capabilities)
-        # Note: This is deprecated
+        # NOTE: This is deprecated
         cap_array = caps.is_a?(Hash) ? [caps] : Array(caps)
 
         desired_capabilities = opts.delete(:desired_capabilities)

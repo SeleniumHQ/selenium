@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 
@@ -245,7 +245,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
-    assumeFalse(Browser.detect() == Browser.OPERA &&
+    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
@@ -271,7 +271,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
-    assumeFalse(Browser.detect() == Browser.OPERA &&
+    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
@@ -308,7 +308,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -335,7 +335,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -350,7 +350,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
 
@@ -409,7 +409,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE)
+  @NotYetImplemented(value = FIREFOX)
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -420,7 +420,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE)
+  @NotYetImplemented(value = FIREFOX)
   @NotYetImplemented(value = SAFARI, reason = "Enters dot instead of comma")
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
@@ -462,7 +462,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform(driver).is(Platform.MAC));
@@ -483,7 +483,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordReveseShiftHomeSelectionDeletes() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform(driver).is(Platform.MAC));
@@ -514,7 +514,7 @@ public class TypingTest extends JUnit4TestBase {
   // and linux, but not on the MAC.
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
+  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform(driver).is(Platform.MAC));

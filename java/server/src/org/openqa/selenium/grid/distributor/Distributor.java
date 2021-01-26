@@ -67,6 +67,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -118,6 +119,8 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
  */
 public abstract class Distributor implements HasReadyState, Predicate<HttpRequest>, Routable {
 
+  private static final Logger LOG = Logger.getLogger(Distributor.class.getName());
+
   private final Route routes;
   protected final Tracer tracer;
   private final SlotSelector slotSelector;
@@ -142,21 +145,24 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     Json json = new Json();
     routes = Route.combine(
       post("/se/grid/distributor/node")
-          .to(() -> new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
+          .to(() ->
+                new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
           .with(requiresSecret),
       post("/se/grid/distributor/node/{nodeId}/drain")
-          .to((Map<String, String> params) -> new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .to((Map<String, String> params) ->
+                new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
           .with(requiresSecret),
       delete("/se/grid/distributor/node/{nodeId}")
-          .to(params -> new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+          .to(params ->
+                new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
           .with(requiresSecret),
       get("/se/grid/distributor/status")
           .to(() -> new GetDistributorStatus(this))
           .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(
-    HttpRequest request) throws SessionNotCreatedException {
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(HttpRequest request)
+    throws SessionNotCreatedException {
 
     Span span = newSpanAsChildOf(tracer, request, "distributor.create_session_response");
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
@@ -170,10 +176,13 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
       Iterator<Capabilities> iterator = payload.stream().iterator();
       attributeMap.put("request.payload", EventAttribute.setValue(payload.toString()));
-      span.addEvent("Session request received by the distributor", attributeMap);
+      String sessionReceivedMessage = "Session request received by the distributor";
+      span.addEvent(sessionReceivedMessage, attributeMap);
+      LOG.info(String.format("%s: \n %s", sessionReceivedMessage, payload));
 
       if (!iterator.hasNext()) {
-        SessionNotCreatedException exception = new SessionNotCreatedException("No capabilities found");
+        SessionNotCreatedException exception =
+          new SessionNotCreatedException("No capabilities found in session request payload");
         EXCEPTION.accept(attributeMap, exception);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
           EventAttribute.setValue("Unable to create session. No capabilities found: " +
@@ -199,13 +208,21 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
         if (!hostsWithCaps) {
           String errorMessage = String.format(
-            "No host supports the capabilities required: %s",
-            payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
+            "No Node supports the required capabilities: %s",
+            payload.stream().map(Capabilities::toString)
+              .collect(Collectors.joining(", ")));
           SessionNotCreatedException exception = new SessionNotCreatedException(errorMessage);
+          span.setAttribute(AttributeKey.ERROR.getKey(), true);
+          span.setStatus(Status.ABORTED);
+
+          EXCEPTION.accept(attributeMap, exception);
+          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+            EventAttribute.setValue("Unable to create session: " + exception.getMessage()));
+          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
           return Either.left(exception);
         }
 
-        // Find a host that supports the capabilities present in the new session
+        // Find a Node that supports the capabilities present in the new session
         Set<SlotId> slotIds = slotSelector.selectSlot(firstRequest.getCapabilities(), model);
         if (!slotIds.isEmpty()) {
           selected = Optional.of(reserve(slotIds.iterator().next(), firstRequest));
@@ -230,19 +247,22 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
         span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
         attributeMap.put(AttributeKey.SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
 
-        span.addEvent("Session created by the distributor", attributeMap);
+        String sessionCreatedMessage = "Session created by the distributor";
+        span.addEvent(sessionCreatedMessage, attributeMap);
+        LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, caps));
         return Either.right(sessionResponse);
 
       } else {
         String errorMessage =
             String.format(
                 "Unable to find provider for session: %s",
-                payload.stream().map(Capabilities::toString).collect(Collectors.joining(", ")));
+                payload.stream().map(Capabilities::toString)
+                  .collect(Collectors.joining(", ")));
         SessionNotCreatedException exception = new RetrySessionRequestException(errorMessage);
         return Either.left(exception);
       }
     } catch (SessionNotCreatedException e) {
-      span.setAttribute("error", true);
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.ABORTED);
 
       EXCEPTION.accept(attributeMap, e);
@@ -252,12 +272,13 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       SessionNotCreatedException exception = new RetrySessionRequestException(e.getMessage());
       return Either.left(exception);
     } catch (IOException e) {
-      span.setAttribute("error", true);
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.UNKNOWN);
 
       EXCEPTION.accept(attributeMap, e);
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
+        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " +
+                                e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(new SessionNotCreatedException(e.getMessage(), e));
@@ -276,7 +297,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
 
   protected abstract Set<NodeStatus> getAvailableNodes();
 
-  protected abstract Supplier<CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request);
+  protected abstract Supplier<CreateSessionResponse> reserve(SlotId slot,
+                                                             CreateSessionRequest request);
 
   @Override
   public boolean test(HttpRequest httpRequest) {

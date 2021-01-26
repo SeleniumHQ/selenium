@@ -89,10 +89,10 @@ jest_test(
         "--ci",
         "--colors",
         "--config",
-        "$(location  jest.config.js)"
+        "$(location  jest.config.js)",
     ],
     data = [
+        "jest.config.js",
         ":build",
-        "jest.config.js"
-    ]
+    ],
 )

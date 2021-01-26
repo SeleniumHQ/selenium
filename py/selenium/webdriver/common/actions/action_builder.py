@@ -25,9 +25,9 @@ from .pointer_input import PointerInput
 
 class ActionBuilder(object):
     def __init__(self, driver, mouse=None, keyboard=None):
-        if mouse is None:
+        if not mouse:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")
-        if keyboard is None:
+        if not keyboard:
             keyboard = KeyInput(interaction.KEY)
         self.devices = [mouse, keyboard]
         self._key_action = KeyActions(keyboard)

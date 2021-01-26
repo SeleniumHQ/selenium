@@ -32,12 +32,14 @@ public class Slot {
   private final Capabilities stereotype;
   private final Optional<Session> session;
   private final Instant lastStarted;
+  private final SlotMatcher slotMatcher;
 
   public Slot(SlotId id, Capabilities stereotype, Instant lastStarted, Optional<Session> session) {
     this.id = Require.nonNull("Slot ID", id);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.lastStarted = Require.nonNull("Last started", lastStarted);
     this.session = Require.nonNull("Session", session);
+    this.slotMatcher = new DefaultSlotMatcher();
   }
 
   public SlotId getId() {
@@ -57,15 +59,7 @@ public class Slot {
   }
 
   public boolean isSupporting(Capabilities caps) {
-    // Simple implementation --- only checks current values
-    Capabilities stereotype = getStereotype();
-
-    return stereotype.getCapabilityNames().stream()
-      .map(name -> Objects.equals(
-        stereotype.getCapability(name),
-        caps.getCapability(name)))
-      .reduce(Boolean::logicalAnd)
-      .orElse(false);
+    return slotMatcher.matches(getStereotype(), caps);
   }
 
   @Override

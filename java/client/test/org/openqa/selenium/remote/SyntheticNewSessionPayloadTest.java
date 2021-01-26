@@ -25,8 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -51,6 +53,7 @@ import java.util.Map;
  * <p>
  * This test has been broken out to make this behaviour clearer, and to allow for this comment.
  */
+@Category(UnitTests.class)
 public class SyntheticNewSessionPayloadTest {
 
   @Test

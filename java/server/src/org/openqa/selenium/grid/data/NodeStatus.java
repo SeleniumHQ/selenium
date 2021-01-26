@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
@@ -26,9 +24,14 @@ import org.openqa.selenium.json.TypeToken;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 
 public class NodeStatus {
 
@@ -37,26 +40,23 @@ public class NodeStatus {
   private final int maxSessionCount;
   private final Set<Slot> slots;
   private final Availability availability;
+  private final String version;
 
   public NodeStatus(
       NodeId nodeId,
       URI externalUri,
       int maxSessionCount,
       Set<Slot> slots,
-      Availability availability) {
+      Availability availability,
+      String version) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count",
         maxSessionCount,
 "Make sure that a driver is available on $PATH");
-    this.slots = ImmutableSet.copyOf(Require.nonNull("Slots", slots));
+    this.slots = unmodifiableSet(new HashSet<>(Require.nonNull("Slots", slots)));
     this.availability = Require.nonNull("Availability", availability);
-
-    ImmutableSet.Builder<Session> sessions = ImmutableSet.builder();
-
-    for (Slot slot : slots) {
-      slot.getSession().ifPresent(sessions::add);
-    }
+    this.version = Require.nonNull("Grid Node version", version);
   }
 
   public boolean hasCapability(Capabilities caps) {
@@ -94,6 +94,10 @@ public class NodeStatus {
     return availability;
   }
 
+  public String getVersion() {
+    return version;
+  }
+
   public float getLoad() {
     float inUse = slots.parallelStream()
       .filter(slot -> slot.getSession().isPresent())
@@ -122,22 +126,25 @@ public class NodeStatus {
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
            Objects.equals(this.slots, that.slots) &&
-           Objects.equals(this.availability, that.availability);
+           Objects.equals(this.availability, that.availability) &&
+           Objects.equals(this.version, that.version);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nodeId, externalUri, maxSessionCount, slots);
+    return Objects.hash(nodeId, externalUri, maxSessionCount, slots, version);
   }
 
   private Map<String, Object> toJson() {
-    return new ImmutableMap.Builder<String, Object>()
-        .put("id", nodeId)
-        .put("uri", externalUri)
-        .put("maxSessions", maxSessionCount)
-        .put("slots", slots)
-        .put("availability", availability)
-        .build();
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("id", nodeId);
+    toReturn.put("uri", externalUri);
+    toReturn.put("maxSessions", maxSessionCount);
+    toReturn.put("slots", slots);
+    toReturn.put("availability", availability);
+    toReturn.put("version", version);
+
+    return unmodifiableMap(toReturn);
   }
 
   public static NodeStatus fromJson(JsonInput input) {
@@ -146,6 +153,7 @@ public class NodeStatus {
     int maxSessions = 0;
     Set<Slot> slots = null;
     Availability availability = null;
+    String version = null;
 
     input.beginObject();
     while (input.hasNext()) {
@@ -171,6 +179,10 @@ public class NodeStatus {
           uri = input.read(URI.class);
           break;
 
+        case "version":
+          version = input.read(String.class);
+          break;
+
         default:
           input.skipValue();
           break;
@@ -183,6 +195,7 @@ public class NodeStatus {
       uri,
       maxSessions,
       slots,
-      availability);
+      availability,
+      version);
   }
 }

@@ -18,6 +18,7 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),

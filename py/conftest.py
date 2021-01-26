@@ -53,6 +53,8 @@ def pytest_addoption(parser):
                      help='location of the service executable binary')
     parser.addoption('--browser-args', action='store', dest='args',
                      help='arguments to start the browser with')
+    parser.addoption('--headless', action='store', dest='headless',
+                     help="Allow tests to run in headless")
 
 
 def pytest_ignore_collect(path, config):
@@ -112,6 +114,8 @@ def driver(request):
     if driver_instance is None:
         if driver_class == 'Firefox':
             options = get_options(driver_class, request.config)
+        if driver_class == 'Chrome':
+            options = get_options(driver_class, request.config)
         if driver_class == 'Remote':
             capabilities = DesiredCapabilities.FIREFOX.copy()
             kwargs.update({'desired_capabilities': capabilities})
@@ -136,6 +140,7 @@ def driver(request):
 def get_options(driver_class, config):
     browser_path = config.option.binary
     browser_args = config.option.args
+    headless = bool(config.option.headless)
     options = None
 
     if driver_class == 'ChromiumEdge':
@@ -152,6 +157,12 @@ def get_options(driver_class, config):
         if browser_args is not None:
             for arg in browser_args.split():
                 options.add_argument(arg)
+
+    if headless:
+        if not options:
+            options = getattr(webdriver, f"{driver_class}Options")()
+
+        options.headless = headless
     return options
 
 

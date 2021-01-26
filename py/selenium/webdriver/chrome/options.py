@@ -22,5 +22,5 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 class Options(ChromiumOptions):
 
     @property
-    def default_capabilities(self):
+    def default_capabilities(self) -> dict:
         return DesiredCapabilities.CHROME.copy()

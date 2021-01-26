@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -31,6 +32,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.html5.LocationContext;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
+@Category(UnitTests.class)
 public class AugmenterTest {
 
   private Augmenter getAugmenter() {

@@ -33,11 +33,14 @@ import com.github.javaparser.ast.modules.ModuleProvidesDirective;
 import com.github.javaparser.ast.modules.ModuleRequiresDirective;
 import com.github.javaparser.ast.modules.ModuleUsesDirective;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import net.bytebuddy.jar.asm.ClassReader;
+import net.bytebuddy.jar.asm.ClassVisitor;
 import net.bytebuddy.jar.asm.ClassWriter;
+import net.bytebuddy.jar.asm.MethodVisitor;
 import net.bytebuddy.jar.asm.ModuleVisitor;
-
+import net.bytebuddy.jar.asm.Type;
 import org.openqa.selenium.io.TemporaryFilesystem;
-import dev.selenium.tools.zip.StableZipEntry;
+import rules.jvm.external.zip.StableZipEntry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -56,11 +59,13 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -81,9 +86,12 @@ import static net.bytebuddy.jar.asm.Opcodes.ACC_MANDATED;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_MODULE;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
+import static net.bytebuddy.jar.asm.Opcodes.ASM9;
 
 public class ModuleGenerator {
-  
+
+  private static final String SERVICE_LOADER = ServiceLoader.class.getName().replace('.', '/');
+
   public static void main(String[] args) throws IOException {
     Path outJar = null;
     Path inJar = null;
@@ -155,12 +163,14 @@ public class ModuleGenerator {
     Path temp = tempDir.toPath();
 
     // It doesn't matter what we use for writing to the stream: jdeps doesn't use it. *facepalm*
-    List<String> jdepsArgs = new LinkedList<>(
-      List.of(
-        "--api-only",
-        "--multi-release", "9"));
+    List<String> jdepsArgs = new LinkedList<>(List.of("--api-only", "--multi-release", "9"));
     if (!modulePath.isEmpty()) {
-      jdepsArgs.addAll(List.of("--module-path", modulePath.stream().map(Object::toString).collect(Collectors.joining(File.pathSeparator))));
+      jdepsArgs.addAll(
+          List.of(
+              "--module-path",
+              modulePath.stream()
+                  .map(Object::toString)
+                  .collect(Collectors.joining(File.pathSeparator))));
     }
     jdepsArgs.addAll(List.of("--generate-module-info", temp.toAbsolutePath().toString()));
     jdepsArgs.add(inJar.toAbsolutePath().toString());
@@ -182,58 +192,71 @@ public class ModuleGenerator {
     }
     if (result != 0) {
       throw new RuntimeException(
-        "Unable to process module:\n" +
-          "jdeps " + String.join(" ", jdepsArgs) + "\n" +
-          new String(bos.toByteArray()));
+          "Unable to process module:\n"
+              + "jdeps "
+              + String.join(" ", jdepsArgs)
+              + "\n"
+              + new String(bos.toByteArray()));
     }
 
     AtomicReference<Path> moduleInfo = new AtomicReference<>();
     // Fortunately, we know the directory where the output is written
-    Files.walkFileTree(temp, new SimpleFileVisitor<>() {
-      @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-        if ("module-info.java".equals(file.getFileName().toString())) {
-          moduleInfo.set(file);
-        }
-        return FileVisitResult.TERMINATE;
-      }
-    });
+    Files.walkFileTree(
+        temp,
+        new SimpleFileVisitor<>() {
+          @Override
+          public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+            if ("module-info.java".equals(file.getFileName().toString())) {
+              moduleInfo.set(file);
+            }
+            return FileVisitResult.TERMINATE;
+          }
+        });
 
     if (moduleInfo.get() == null) {
       throw new RuntimeException("Unable to read module info");
     }
 
-    ParserConfiguration parserConfig = new ParserConfiguration()
-      .setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_11);
+    ParserConfiguration parserConfig =
+        new ParserConfiguration().setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_11);
 
     Provider provider = Providers.provider(moduleInfo.get());
 
-    ParseResult<CompilationUnit> parseResult = new JavaParser(parserConfig)
-      .parse(COMPILATION_UNIT, provider);
+    ParseResult<CompilationUnit> parseResult =
+        new JavaParser(parserConfig).parse(COMPILATION_UNIT, provider);
 
-    CompilationUnit unit = parseResult.getResult()
-      .orElseThrow(() -> new RuntimeException("Unable to parse " + moduleInfo.get()));
+    CompilationUnit unit =
+        parseResult
+            .getResult()
+            .orElseThrow(() -> new RuntimeException("Unable to parse " + moduleInfo.get()));
 
-    ModuleDeclaration moduleDeclaration = unit.getModule()
-      .orElseThrow(() -> new RuntimeException("No module declaration in " + moduleInfo.get()));
+    ModuleDeclaration moduleDeclaration =
+        unit.getModule()
+            .orElseThrow(
+                () -> new RuntimeException("No module declaration in " + moduleInfo.get()));
 
     moduleDeclaration.setName(moduleName);
     moduleDeclaration.setOpen(isOpen);
 
-    uses.forEach(service -> moduleDeclaration.addDirective(new ModuleUsesDirective(new Name(service))));
+    Set<String> allUses = new TreeSet<>(uses);
+    allUses.addAll(readServicesFromClasses(inJar));
+    allUses.forEach(
+        service -> moduleDeclaration.addDirective(new ModuleUsesDirective(new Name(service))));
 
     // Prepare a classloader to help us find classes.
     ClassLoader classLoader;
     if (modulePath != null) {
-      URL[] urls = Stream.concat(Stream.of(inJar.toAbsolutePath()), modulePath.stream())
-        .map(path -> {
-          try {
-            return path.toUri().toURL();
-          } catch (MalformedURLException e) {
-            throw new UncheckedIOException(e);
-          }
-        })
-        .toArray(URL[]::new);
+      URL[] urls =
+          Stream.concat(Stream.of(inJar.toAbsolutePath()), modulePath.stream())
+              .map(
+                  path -> {
+                    try {
+                      return path.toUri().toURL();
+                    } catch (MalformedURLException e) {
+                      throw new UncheckedIOException(e);
+                    }
+                  })
+              .toArray(URL[]::new);
 
       classLoader = new URLClassLoader(urls);
     } else {
@@ -246,38 +269,45 @@ public class ModuleGenerator {
     Set<String> exportedPackages = new HashSet<>();
     if (!isOpen) {
       if (!exports.isEmpty()) {
-        exports.forEach(export -> {
-          if (!packages.contains(export)) {
-            throw new RuntimeException(String.format("Exported package '%s' not found in jar. %s", export, packages));
-          }
-          exportedPackages.add(export);
-          moduleDeclaration.addDirective(new ModuleExportsDirective(new Name(export), new NodeList<>()));
-        });
+        exports.forEach(
+            export -> {
+              if (!packages.contains(export)) {
+                throw new RuntimeException(
+                    String.format("Exported package '%s' not found in jar. %s", export, packages));
+              }
+              exportedPackages.add(export);
+              moduleDeclaration.addDirective(
+                  new ModuleExportsDirective(new Name(export), new NodeList<>()));
+            });
       } else {
-        packages.forEach(export -> {
-          if (!hides.contains(export)) {
-            exportedPackages.add(export);
-            moduleDeclaration.addDirective(new ModuleExportsDirective(new Name(export), new NodeList<>()));
-          }
-        });
+        packages.forEach(
+            export -> {
+              if (!hides.contains(export)) {
+                exportedPackages.add(export);
+                moduleDeclaration.addDirective(
+                    new ModuleExportsDirective(new Name(export), new NodeList<>()));
+              }
+            });
       }
     }
 
-    openTo.forEach(module -> moduleDeclaration.addDirective(new ModuleOpensDirective(new Name(module), new NodeList(exportedPackages.stream().map(Name::new).collect(Collectors.toSet())))));
+    openTo.forEach(
+        module ->
+            moduleDeclaration.addDirective(
+                new ModuleOpensDirective(
+                    new Name(module),
+                    new NodeList(
+                        exportedPackages.stream().map(Name::new).collect(Collectors.toSet())))));
 
     ClassWriter classWriter = new ClassWriter(0);
     classWriter.visit(
-      /* version 9 */
-      53,
-      ACC_MODULE,
-      "module-info",
-      null,
-      null,
-      null);
+        /* version 9 */
+        53, ACC_MODULE, "module-info", null, null, null);
     ModuleVisitor moduleVisitor = classWriter.visitModule(moduleName, isOpen ? ACC_OPEN : 0, null);
     moduleVisitor.visitRequire("java.base", ACC_MANDATED, null);
 
-    moduleDeclaration.accept(new MyModuleVisitor(classLoader, hides, moduleVisitor), null);
+    moduleDeclaration.accept(
+        new MyModuleVisitor(classLoader, exportedPackages, hides, moduleVisitor), null);
 
     moduleVisitor.visitEnd();
 
@@ -288,7 +318,7 @@ public class ModuleGenerator {
     manifest.getMainAttributes().put(Attributes.Name.MULTI_RELEASE, "true");
 
     try (OutputStream os = Files.newOutputStream(outJar);
-         JarOutputStream jos = new JarOutputStream(os, manifest)) {
+        JarOutputStream jos = new JarOutputStream(os, manifest)) {
       jos.setLevel(ZipOutputStream.STORED);
 
       ZipEntry dir = new StableZipEntry("META-INF/");
@@ -313,11 +343,67 @@ public class ModuleGenerator {
     TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tempDir);
   }
 
+  private static Collection<String> readServicesFromClasses(Path inJar) {
+    Set<String> serviceNames = new HashSet<>();
+
+    try (InputStream is = Files.newInputStream(inJar);
+        JarInputStream jis = new JarInputStream(is)) {
+      for (JarEntry entry = jis.getNextJarEntry(); entry != null; entry = jis.getNextJarEntry()) {
+        if (entry.isDirectory() || !entry.getName().endsWith(".class")) {
+          continue;
+        }
+
+        ClassReader reader = new ClassReader(jis);
+        reader.accept(
+            new ClassVisitor(ASM9) {
+              private Type serviceClass;
+
+              @Override
+              public MethodVisitor visitMethod(
+                  int access,
+                  String name,
+                  String descriptor,
+                  String signature,
+                  String[] exceptions) {
+                return new MethodVisitor(ASM9) {
+                  @Override
+                  public void visitMethodInsn(
+                      int opcode,
+                      String owner,
+                      String name,
+                      String descriptor,
+                      boolean isInterface) {
+                    if (SERVICE_LOADER.equals(owner) && "load".equals(name)) {
+                      if (serviceClass != null) {
+                        serviceNames.add(serviceClass.getClassName());
+                        serviceClass = null;
+                      }
+                    }
+                  }
+
+                  @Override
+                  public void visitLdcInsn(Object value) {
+                    if (value instanceof Type) {
+                      serviceClass = (Type) value;
+                    }
+                  }
+                };
+              }
+            },
+            0);
+      }
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    return serviceNames;
+  }
+
   private static Set<String> inferPackages(Path inJar) {
     Set<String> packageNames = new TreeSet<>();
 
     try (InputStream is = Files.newInputStream(inJar);
-         JarInputStream jis = new JarInputStream(is)) {
+        JarInputStream jis = new JarInputStream(is)) {
       for (JarEntry entry = jis.getNextJarEntry(); entry != null; entry = jis.getNextJarEntry()) {
 
         if (entry.isDirectory()) {
@@ -343,7 +429,9 @@ public class ModuleGenerator {
             continue;
           }
 
-          name = Arrays.stream(Arrays.copyOfRange(segments, 3, segments.length)).collect(Collectors.joining("/"));
+          name =
+              Arrays.stream(Arrays.copyOfRange(segments, 3, segments.length))
+                  .collect(Collectors.joining("/"));
         }
 
         name = name.replace("/", ".");
@@ -360,22 +448,27 @@ public class ModuleGenerator {
   private static class MyModuleVisitor extends VoidVisitorAdapter<Void> {
 
     private final ClassLoader classLoader;
-    private Set<String> seenExports;
+    private final Set<String> seenExports;
+    private final Set<String> packages;
     private final ModuleVisitor byteBuddyVisitor;
 
-    MyModuleVisitor(ClassLoader classLoader, Set<String> excluded, ModuleVisitor byteBuddyVisitor) {
+    MyModuleVisitor(
+        ClassLoader classLoader,
+        Set<String> packages,
+        Set<String> excluded,
+        ModuleVisitor byteBuddyVisitor) {
       this.classLoader = classLoader;
       this.byteBuddyVisitor = byteBuddyVisitor;
+
       // Set is modifiable
+      this.packages = new HashSet<>(packages);
       this.seenExports = new HashSet<>(excluded);
     }
 
     @Override
     public void visit(ModuleRequiresDirective n, Void arg) {
       byteBuddyVisitor.visitRequire(
-        n.getNameAsString(),
-        getByteBuddyModifier(n.getModifiers()),
-        null);
+          n.getNameAsString(), getByteBuddyModifier(n.getModifiers()), null);
     }
 
     @Override
@@ -387,18 +480,16 @@ public class ModuleGenerator {
       seenExports.add(n.getNameAsString());
 
       byteBuddyVisitor.visitExport(
-        n.getNameAsString().replace('.', '/'),
-        0,
-        n.getModuleNames().stream().map(Name::asString).toArray(String[]::new));
+          n.getNameAsString().replace('.', '/'),
+          0,
+          n.getModuleNames().stream().map(Name::asString).toArray(String[]::new));
     }
 
     @Override
     public void visit(ModuleProvidesDirective n, Void arg) {
       byteBuddyVisitor.visitProvide(
-        getClassName(n.getNameAsString()),
-        n.getWith().stream()
-          .map(type -> getClassName(type.asString()))
-          .toArray(String[]::new));
+          getClassName(n.getNameAsString()),
+          n.getWith().stream().map(type -> getClassName(type.asString())).toArray(String[]::new));
     }
 
     @Override
@@ -408,18 +499,20 @@ public class ModuleGenerator {
 
     @Override
     public void visit(ModuleOpensDirective n, Void arg) {
-      throw new UnsupportedOperationException(n.toString());
+      packages.forEach(
+          pkg -> byteBuddyVisitor.visitOpen(pkg.replace('.', '/'), 0, n.getNameAsString()));
     }
 
     private int getByteBuddyModifier(NodeList<Modifier> modifiers) {
       return modifiers.stream()
-        .mapToInt(mod -> {
-          if (mod.getKeyword() == Modifier.Keyword.TRANSITIVE) {
-            return ACC_TRANSITIVE;
-          }
-          throw new RuntimeException("Unknown modifier: " + mod);
-        })
-        .reduce(0, (l, r) -> l | r);
+          .mapToInt(
+              mod -> {
+                if (mod.getKeyword() == Modifier.Keyword.TRANSITIVE) {
+                  return ACC_TRANSITIVE;
+                }
+                throw new RuntimeException("Unknown modifier: " + mod);
+              })
+          .reduce(0, (l, r) -> l | r);
     }
 
     private String getClassName(String possibleClassName) {

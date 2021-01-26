@@ -76,7 +76,7 @@ public class TestChromeDriver extends ChromeDriver {
     }
 
     if (originalCapabilities != null) {
-      options.merge(originalCapabilities);
+      options = options.merge(originalCapabilities);
     }
 
     return options;

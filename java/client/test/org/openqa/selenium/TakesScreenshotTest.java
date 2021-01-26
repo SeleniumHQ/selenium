@@ -45,11 +45,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailab
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 /**
@@ -138,7 +138,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
-  @Ignore(FIREFOX)
+  @Ignore(LEGACY_FIREFOX_XPI)
   @Test
   public void testShouldCaptureScreenshotOfAnElement() throws Exception {
     driver.get(appServer.whereIs("screen/screen.html"));
@@ -160,11 +160,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
-  @Ignore(MARIONETTE)
+  @Ignore(value = EDGIUM, reason = "takes only visible viewport")
+  @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "takes only visible viewport")
   @NotYetImplemented(SAFARI)
-  @Ignore(EDGE)
+  @Ignore(EDGE_HTML)
   public void testShouldCaptureScreenshotOfPageWithLongX() {
     driver.get(appServer.whereIs("screen/screen_x_long.html"));
 
@@ -184,11 +184,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
-  @Ignore(MARIONETTE)
+  @Ignore(value = EDGIUM, reason = "takes only visible viewport")
+  @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "takes only visible viewport")
   @NotYetImplemented(SAFARI)
-  @Ignore(EDGE)
+  @Ignore(EDGE_HTML)
   public void testShouldCaptureScreenshotOfPageWithLongY() {
     driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
@@ -208,12 +208,12 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "cuts captured image at driver level")
-  @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
+  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
-  @Ignore(MARIONETTE)
+  @Ignore(value = EDGIUM, reason = "takes only visible viewport")
+  @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
-  @Ignore(EDGE)
+  @Ignore(EDGE_HTML)
   public void testShouldCaptureScreenshotOfPageWithTooLongX() {
     driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
 
@@ -233,12 +233,12 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "cuts captured image at driver level")
-  @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
+  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
-  @Ignore(MARIONETTE)
+  @Ignore(value = EDGIUM, reason = "takes only visible viewport")
+  @Ignore(FIREFOX)
   @NotYetImplemented(SAFARI)
-  @Ignore(EDGE)
+  @Ignore(EDGE_HTML)
   public void testShouldCaptureScreenshotOfPageWithTooLongY() {
     driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
 
@@ -258,12 +258,12 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "returns null")
-  @Ignore(value = FIREFOX, reason = "failed due NS_ERROR_FAILURE at context.drawWindow")
+  @Ignore(value = LEGACY_FIREFOX_XPI, reason = "failed due NS_ERROR_FAILURE at context.drawWindow")
   @NotYetImplemented(value = SAFARI, reason = "An unknown server-side error")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
-  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
-  @Ignore(MARIONETTE)
-  @Ignore(EDGE)
+  @Ignore(value = EDGIUM, reason = "takes only visible viewport")
+  @Ignore(FIREFOX)
+  @Ignore(EDGE_HTML)
   public void testShouldCaptureScreenshotOfPageWithTooLongXandY() {
     driver.get(appServer.whereIs("screen/screen_too_long.html"));
 
@@ -315,7 +315,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @Ignore(EDGIUM)
   public void testShouldCaptureScreenshotAtIFramePage() {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -341,7 +341,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(FIREFOX)
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
     driver.get(appServer.whereIs("screen/screen_frames.html"));
 
@@ -371,8 +371,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
-  @Ignore(MARIONETTE)
+  @Ignore(EDGIUM)
+  @Ignore(FIREFOX)
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 

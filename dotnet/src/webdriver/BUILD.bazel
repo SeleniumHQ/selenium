@@ -2,10 +2,12 @@ load("//common:defs.bzl", "copy_file")
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load(
     "//dotnet:defs.bzl",
-    "merged_assembly",
+    "devtools_version_targets",
     "generated_assembly_info",
+    "merged_assembly",
     "nuget_package",
-    "nuget_push")
+    "nuget_push",
+)
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_COMPANY",
@@ -14,6 +16,7 @@ load(
     "ASSEMBLY_PRODUCT",
     "ASSEMBLY_VERSION",
     "SE_VERSION",
+    "SUPPORTED_DEVTOOLS_VERSIONS",
     "SUPPORTED_NET_FRAMEWORKS",
     "SUPPORTED_NET_STANDARD_VERSIONS",
 )
@@ -48,11 +51,7 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/cdp:generate-v84",
-        "//dotnet/src/webdriver/cdp:generate-v85",
-        "//dotnet/src/webdriver/cdp:generate-v86",
-        "//dotnet/src/webdriver/cdp:generate-v87",
-    ],
+    ] + devtools_version_targets(),
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -97,11 +96,7 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/cdp:generate-v84",
-        "//dotnet/src/webdriver/cdp:generate-v85",
-        "//dotnet/src/webdriver/cdp:generate-v86",
-        "//dotnet/src/webdriver/cdp:generate-v87",
-    ],
+    ] + devtools_version_targets(),
     out = "WebDriver",
     resources = [
         "//javascript/atoms/fragments:find-elements.js",
@@ -137,11 +132,7 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/cdp:generate-v84",
-        "//dotnet/src/webdriver/cdp:generate-v85",
-        "//dotnet/src/webdriver/cdp:generate-v86",
-        "//dotnet/src/webdriver/cdp:generate-v87",
-    ],
+    ] + devtools_version_targets(),
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
@@ -187,11 +178,7 @@ generated_assembly_info(
         "Support/*.cs",
     ]) + [
         ":assembly-info",
-        "//dotnet/src/webdriver/cdp:generate-v84",
-        "//dotnet/src/webdriver/cdp:generate-v85",
-        "//dotnet/src/webdriver/cdp:generate-v86",
-        "//dotnet/src/webdriver/cdp:generate-v87",
-    ],
+    ] + devtools_version_targets(),
     out = "strongnamed/WebDriver",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
@@ -233,50 +220,50 @@ generated_assembly_info(
 copy_file(
     name = "logo",
     src = "//common/images:selenium_logo_small.png",
-    out = "icon.png"
+    out = "icon.png",
 )
 
 nuget_package(
     name = "package",
     src = "WebDriver.nuspec",
-    package_id = "Selenium.WebDriver",
-    package_version = "{}".format(SE_VERSION),
     create_symbol_package = True,
     is_windows = select({
         "@bazel_tools//src/conditions:host_windows": True,
         "//conditions:default": False,
     }),
+    package_id = "Selenium.WebDriver",
+    package_version = "{}".format(SE_VERSION),
     visibility = ["//visibility:public"],
     deps = [
+        ":logo",
         ":net45",
         ":net46",
         ":net47",
         ":net48",
+        ":net5.0",
         ":netstandard2.0",
         ":netstandard2.1",
-        ":net5.0",
-        ":logo",
     ],
 )
 
 nuget_package(
     name = "package-strongnamed",
     src = "WebDriver.StrongNamed.nuspec",
-    package_id = "Selenium.WebDriver.StrongNamed",
-    package_version = "{}".format(SE_VERSION),
     is_windows = select({
         "@bazel_tools//src/conditions:host_windows": True,
         "//conditions:default": False,
     }),
+    package_id = "Selenium.WebDriver.StrongNamed",
+    package_version = "{}".format(SE_VERSION),
     visibility = ["//visibility:public"],
     deps = [
         ":net45-strongnamed",
         ":net46-strongnamed",
         ":net47-strongnamed",
         ":net48-strongnamed",
+        ":net5.0-strongnamed",
         ":netstandard2.0-strongnamed",
         ":netstandard2.1-strongnamed",
-        ":net5.0-strongnamed",
     ],
 )
 
