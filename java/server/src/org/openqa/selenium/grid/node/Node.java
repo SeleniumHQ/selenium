@@ -108,7 +108,7 @@ import static org.openqa.selenium.remote.http.Route.post;
 public abstract class Node implements HasReadyState, Routable {
 
   private static final Logger LOG = Logger.getLogger(Node.class.getName());
-  private static BuildInfo INFO = new BuildInfo();
+  private static final BuildInfo INFO = new BuildInfo();
   protected final Tracer tracer;
   private final NodeId id;
   private final URI uri;
