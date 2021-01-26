@@ -38,19 +38,18 @@ import java.util.stream.Collectors;
 
 public class Grid {
 
+  private static final Json JSON = new Json();
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
   private final Map<String, Object> queueInfoMap;
-  private final NewSessionQueuer newSessionQueuer;
   private final String version;
-  private static final Json JSON = new Json();
 
   public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri,
               String version) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
-    this.newSessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
-    this.queueInfoMap = newSessionQueuer.getQueueContents();
+    NewSessionQueuer sessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
+    this.queueInfoMap = sessionQueuer.getQueueContents();
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
     this.version = Require.nonNull("Grid's version", version);
   }
