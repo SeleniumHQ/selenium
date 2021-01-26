@@ -68,7 +68,7 @@ public class PrintPageTest extends JUnit4TestBase {
     PageSize pageSize = new PageSize();
 
     printOptions.setPageRanges("1-2");
-    printOptions.setOrientation(PrintOptions.Orientation.Landscape);
+    printOptions.setOrientation(PrintOptions.Orientation.LANDSCAPE);
     printOptions.setPageSize(pageSize);
 
     Pdf pdf = printer.print(printOptions);

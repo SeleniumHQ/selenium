@@ -22,10 +22,10 @@ import org.openqa.selenium.internal.Require;
 public class PrintOptions {
 
   public enum Orientation {
-    Portrait,
-    Landscape
+    PORTRAIT,
+    LANDSCAPE
   }
-  private Orientation orientation = Orientation.Portrait;
+  private Orientation orientation = Orientation.PORTRAIT;
   private double scale = 1.0;
   private boolean background = false;
   private boolean shrinkToFit = true;
