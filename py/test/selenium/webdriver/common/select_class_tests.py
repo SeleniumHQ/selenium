@@ -18,7 +18,6 @@
 import pytest
 
 from selenium.common.exceptions import (
-    ElementNotSelectableException,
     NoSuchElementException,
     UnexpectedTagNameException)
 from selenium.webdriver.support.ui import Select
@@ -50,12 +49,9 @@ def testSelectDisabledByIndex(driver, pages):
     selected = sel.first_selected_option
     sel.select_by_index(1)
     assert selected == sel.first_selected_option
-    
-
 
 def testSelectByValueSingle(driver, pages):
     pages.load("formPage.html")
-
     for select in [singleSelectValues1]:
         sel = Select(driver.find_element(By.NAME, select['name']))
         for x in range(len(select['values'])):
