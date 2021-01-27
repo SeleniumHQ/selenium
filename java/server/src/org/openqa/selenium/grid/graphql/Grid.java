@@ -66,15 +66,15 @@ public class Grid {
     ImmutableList.Builder<Node> toReturn = ImmutableList.builder();
 
     for (NodeStatus status : distributorStatus.get().getNodes()) {
-      Map<Capabilities, Integer> capabilities = new HashMap<>();
+      Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<org.openqa.selenium.grid.data.Session, Slot> sessions = new HashMap<>();
 
       for (Slot slot : status.getSlots()) {
         slot.getSession().ifPresent(session -> sessions.put(session, slot));
 
-        int count = capabilities.getOrDefault(slot.getStereotype(), 0);
+        int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
         count++;
-        capabilities.put(slot.getStereotype(), count);
+        stereotypes.put(slot.getStereotype(), count);
       }
 
       toReturn.add(new Node(
@@ -82,7 +82,7 @@ public class Grid {
         status.getUri(),
         status.getAvailability(),
         status.getMaxSessionCount(),
-        capabilities,
+        stereotypes,
         sessions,
         status.getVersion()));
     }
