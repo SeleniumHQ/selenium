@@ -182,7 +182,6 @@ const Name = {
   LEGACY_ACTION_DOUBLE_CLICK: 'legacyAction:doubleclick',
   LEGACY_ACTION_MOUSE_DOWN: 'legacyAction:mouseDown',
   LEGACY_ACTION_MOUSE_UP: 'legacyAction:mouseUp',
-  LEGACY_ACTION_MOUSE_MOVE: 'legacyAction:mouseMove',
   LEGACY_ACTION_SEND_KEYS: 'legacyAction:sendKeys',
   LEGACY_ACTION_TOUCH_DOWN: 'legacyAction:touchDown',
   LEGACY_ACTION_TOUCH_UP: 'legacyAction:touchUp',
