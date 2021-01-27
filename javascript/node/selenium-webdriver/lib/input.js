@@ -165,7 +165,8 @@ class FileDetector {
    * @return {!Promise<string>} A promise for the processed file path.
    * @package
    */
-  handleFile(driver, path) { // eslint-disable-line
+  handleFile(driver, path) {
+    // eslint-disable-line
     return Promise.resolve(path)
   }
 }
@@ -1144,38 +1145,6 @@ async function executeLegacy(executor, sequences) {
             action.button
           )
         )
-        break
-      }
-      case Action.Type.POINTER_MOVE: {
-        if (action.origin === Origin.VIEWPORT) {
-          throw new UnsupportedOperationError(
-            `pointer movements relative to ${Origin.VIEWPORT} are not` +
-              ' supported in bridge mode'
-          )
-        }
-
-        let x = action.x
-        let y = action.y
-        const cmd = new Command(Name.LEGACY_ACTION_MOUSE_MOVE)
-        if (action.origin && action.origin !== Origin.POINTER) {
-          const el = /** @type {!./webdriver.WebElement} */ (action.origin)
-
-          // Need to translate frame of reference from center of element's first
-          // client rect to the top-left of its bounding client rect. See:
-          // https://w3c.github.io/webdriver/webdriver-spec.html#dfn-center-point
-          let diff = await executor.execute(
-            new Command(Name.EXECUTE_SCRIPT)
-              .setParameter('script', INTERNAL_COMPUTE_OFFSET_SCRIPT)
-              .setParameter('args', [el])
-          )
-          x += diff[0]
-          y += diff[1]
-
-          const id = await el.getId()
-          cmd.setParameter('element', id)
-        }
-        cmd.setParameter('xoffset', x).setParameter('yoffset', y)
-        await executor.execute(cmd)
         break
       }
       default: {
