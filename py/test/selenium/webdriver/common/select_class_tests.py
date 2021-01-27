@@ -47,13 +47,10 @@ def testSelectByIndexSingle(driver, pages):
 def testSelectDisabledByIndex(driver, pages):
     pages.load("formPage.html")
     sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-    if driver.w3c:
-        selected = sel.first_selected_option
-        sel.select_by_index(1)
-        assert selected == sel.first_selected_option
-    else:
-        with pytest.raises(ElementNotSelectableException):
-            sel.select_by_index(1)
+    selected = sel.first_selected_option
+    sel.select_by_index(1)
+    assert selected == sel.first_selected_option
+    
 
 
 def testSelectByValueSingle(driver, pages):
@@ -71,13 +68,9 @@ def testSelectByValueSingle(driver, pages):
 def testSelectDisabledByValue(driver, pages):
     pages.load("formPage.html")
     sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-    if driver.w3c:
-        selected = sel.first_selected_option
-        sel.select_by_value('bar')
-        assert selected == sel.first_selected_option
-    else:
-        with pytest.raises(ElementNotSelectableException):
-            sel.select_by_value('bar')
+    selected = sel.first_selected_option
+    sel.select_by_value('bar')
+    assert selected == sel.first_selected_option
 
 
 def testSelectByVisibleTextSingle(driver, pages):
@@ -112,13 +105,9 @@ def testSelectByVisibleTextSingle(driver, pages):
 def testSelectDisabledByVisibleText(driver, pages):
     pages.load("formPage.html")
     sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-    if driver.w3c:
-        selected = sel.first_selected_option
-        sel.select_by_visible_text('Bar')
-        assert selected == sel.first_selected_option
-    else:
-        with pytest.raises(ElementNotSelectableException):
-            sel.select_by_visible_text('Bar')
+    selected = sel.first_selected_option
+    sel.select_by_visible_text('Bar')
+    assert selected == sel.first_selected_option
 
 
 def testSelectByIndexMultiple(driver, pages):
