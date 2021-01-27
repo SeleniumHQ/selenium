@@ -33,7 +33,8 @@ type Node {
   status: Status!
   maxSession: Int!
   sessions: [Session]!
-  capabilities: String!
+  sessionCount: Int!
+  stereotypes: String!
   version: String!
 }
 
@@ -51,4 +52,4 @@ type Grid {
   version: String!
   sessionQueueSize: Int!
   sessionQueueRequests: [String]!
-  }
+}

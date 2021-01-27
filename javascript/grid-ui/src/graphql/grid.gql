@@ -6,9 +6,12 @@ query {
 			uri
 			status
 			maxSession
-			capabilities
+			stereotypes
+			version
+			sessionCount
 		}
 		totalSlots
 		usedSlots
+		version
 	}
 }
