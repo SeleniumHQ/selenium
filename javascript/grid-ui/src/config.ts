@@ -18,11 +18,13 @@ export const GridConfig = {
 	},
 
 	/** Server config */
+	// For development
+	// Install https://www.npmjs.com/package/cors-anywhere on an empty directory
+	// Run: node node_modules/cors-anywhere/server.js
+	// Then start the Selenium Server on port 4444 (which is the default).
 	serverUri:
-		// TODO(phanirithvij) add a cli flag somewhere (?)
 		process.env.NODE_ENV === "development"
-			? "http://localhost:5000/graphql"
-			// ? "http://localhost:4444/graphql"
+			? "http://localhost:8080/http://localhost:4444/graphql"
 			: document.location.protocol + "//" + document.location.host + "/graphql",
 
 	/** Keybinds config */

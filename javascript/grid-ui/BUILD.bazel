@@ -32,6 +32,7 @@ _RUNTIME_DEPS = [
     "@npm//clsx",
     "@npm//@material-ui/core",
     "@npm//@material-ui/icons",
+    "@npm//@apollo/client",
 ]
 
 copy_to_bin(
