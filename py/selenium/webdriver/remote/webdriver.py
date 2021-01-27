@@ -43,8 +43,7 @@ from .webelement import WebElement
 from selenium.common.exceptions import (InvalidArgumentException,
                                         JavascriptException,
                                         WebDriverException,
-                                        NoSuchCookieException,
-                                        UnknownMethodException)
+                                        NoSuchCookieException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
@@ -1120,7 +1119,6 @@ class WebDriver(BaseWebDriver):
             find_element_js = "return ({}).apply(null, arguments);".format(raw_function)
             return self.execute_script(find_element_js, by.to_dict())
 
-
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
@@ -1289,7 +1287,6 @@ class WebDriver(BaseWebDriver):
         if windowHandle != 'current':
             warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
         position = self.get_window_rect()
-
 
         return {k: position[k] for k in ('x', 'y')}
 

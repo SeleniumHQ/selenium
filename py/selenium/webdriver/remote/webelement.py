@@ -545,7 +545,6 @@ class WebElement(BaseWebElement):
         return {"x": round(old_loc['x']),
                 "y": round(old_loc['y'])}
 
-
     @property
     def size(self) -> dict:
         """The size of the element."""
