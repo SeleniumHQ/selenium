@@ -42,7 +42,6 @@ class SwitchTo:
         """
         return self._driver.execute(Command.W3C_GET_ACTIVE_ELEMENT)['value']
 
-
     @property
     def alert(self) -> Alert:
         """

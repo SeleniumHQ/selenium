@@ -19,10 +19,6 @@
 The ActionChains implementation,
 """
 
-import time
-
-from selenium.webdriver.remote.command import Command
-
 from .utils import keys_to_typing
 from .actions.action_builder import ActionBuilder
 
@@ -100,7 +96,7 @@ class ActionChains(object):
         self.w3c_actions.pointer_action.click()
         self.w3c_actions.key_action.pause()
         self.w3c_actions.key_action.pause()
-        
+
         return self
 
     def click_and_hold(self, on_element=None):
@@ -113,7 +109,7 @@ class ActionChains(object):
         """
         if on_element:
             self.move_to_element(on_element)
-        
+
         self.w3c_actions.pointer_action.click_and_hold()
         self.w3c_actions.key_action.pause()
 
@@ -129,11 +125,11 @@ class ActionChains(object):
         """
         if on_element:
             self.move_to_element(on_element)
-     
+
         self.w3c_actions.pointer_action.context_click()
         self.w3c_actions.key_action.pause()
         self.w3c_actions.key_action.pause()
-        
+
         return self
 
     def double_click(self, on_element=None):
@@ -150,7 +146,7 @@ class ActionChains(object):
         self.w3c_actions.pointer_action.double_click()
         for _ in range(4):
             self.w3c_actions.key_action.pause()
-        
+
         return self
 
     def drag_and_drop(self, source, target):
@@ -220,10 +216,10 @@ class ActionChains(object):
         """
         if element:
             self.click(element)
-   
+
         self.w3c_actions.key_action.key_up(value)
         self.w3c_actions.pointer_action.pause()
-        
+ 
         return self
 
     def move_by_offset(self, xoffset, yoffset):
@@ -237,7 +233,7 @@ class ActionChains(object):
 
         self.w3c_actions.pointer_action.move_by(xoffset, yoffset)
         self.w3c_actions.key_action.pause()
-        
+ 
         return self
 
     def move_to_element(self, to_element):
@@ -247,10 +243,10 @@ class ActionChains(object):
         :Args:
          - to_element: The WebElement to move to.
         """
- 
+
         self.w3c_actions.pointer_action.move_to(to_element)
         self.w3c_actions.key_action.pause()
-   
+
         return self
 
     def move_to_element_with_offset(self, to_element, xoffset, yoffset):
@@ -268,15 +264,15 @@ class ActionChains(object):
                                                 int(xoffset),
                                                 int(yoffset))
         self.w3c_actions.key_action.pause()
-        
+  
         return self
 
     def pause(self, seconds):
         """ Pause all inputs for the specified duration in seconds """
-    
+
         self.w3c_actions.pointer_action.pause(seconds)
         self.w3c_actions.key_action.pause(seconds)
-        
+
         return self
 
     def release(self, on_element=None):
@@ -308,7 +304,7 @@ class ActionChains(object):
         for key in typing:
             self.key_down(key)
             self.key_up(key)
-        
+ 
         return self
 
     def send_keys_to_element(self, element, *keys_to_send):
