@@ -1089,14 +1089,6 @@ describe('input.Actions', function () {
             },
           },
           {
-            name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-            parameters: {
-              element: 'abc123',
-              xoffset: 0,
-              yoffset: 0,
-            },
-          },
-          {
             name: command.Name.LEGACY_ACTION_CLICK,
             parameters: { button: input.Button.LEFT },
           },
@@ -1270,14 +1262,6 @@ describe('input.Actions', function () {
             },
           },
           {
-            name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-            parameters: {
-              element: 'abc123',
-              xoffset: 7,
-              yoffset: 10,
-            },
-          },
-          {
             name: command.Name.LEGACY_ACTION_DOUBLE_CLICK,
             parameters: { button: input.Button.LEFT },
           },
@@ -1348,20 +1332,8 @@ describe('input.Actions', function () {
           },
         },
         {
-          name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-          parameters: {
-            element: 'abc123',
-            xoffset: -1,
-            yoffset: 14,
-          },
-        },
-        {
           name: command.Name.LEGACY_ACTION_CLICK,
           parameters: { button: input.Button.LEFT },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-          parameters: { xoffset: 10, yoffset: 15 },
         },
         {
           name: command.Name.LEGACY_ACTION_DOUBLE_CLICK,
@@ -1426,14 +1398,6 @@ describe('input.Actions', function () {
           },
         },
         {
-          name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-          parameters: {
-            element: 'abc123',
-            xoffset: 15,
-            yoffset: 20,
-          },
-        },
-        {
           name: command.Name.LEGACY_ACTION_MOUSE_DOWN,
           parameters: { button: input.Button.LEFT },
         },
@@ -1442,14 +1406,6 @@ describe('input.Actions', function () {
           parameters: {
             script: input.INTERNAL_COMPUTE_OFFSET_SCRIPT,
             args: [e2],
-          },
-        },
-        {
-          name: command.Name.LEGACY_ACTION_MOUSE_MOVE,
-          parameters: {
-            element: 'def456',
-            xoffset: 25,
-            yoffset: 30,
           },
         },
         {

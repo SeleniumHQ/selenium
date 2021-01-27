@@ -126,43 +126,6 @@ class LegacyActionSequence {
   }
 
   /**
-   * Moves the mouse. The location to move to may be specified in terms of the
-   * mouse's current location, an offset relative to the top-left corner of an
-   * element, or an element (in which case the middle of the element is used).
-   *
-   * @param {(!./webdriver.WebElement|{x: number, y: number})} location The
-   *     location to drag to, as either another WebElement or an offset in
-   *     pixels.
-   * @param {{x: number, y: number}=} opt_offset If the target {@code location}
-   *     is defined as a {@link ./webdriver.WebElement}, this parameter defines
-   *     an offset within that element. The offset should be specified in pixels
-   *     relative to the top-left corner of the element's bounding box. If
-   *     omitted, the element's center will be used as the target offset.
-   * @return {!LegacyActionSequence} A self reference.
-   */
-  mouseMove(location, opt_offset) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_MOUSE_MOVE)
-
-    if (typeof location.x === 'number') {
-      setOffset(/** @type {{x: number, y: number}} */ (location))
-    } else {
-      cmd.setParameter('element', location.getId())
-      if (opt_offset) {
-        setOffset(opt_offset)
-      }
-    }
-
-    this.schedule_('mouseMove', cmd)
-    return this
-
-    /** @param {{x: number, y: number}} offset The offset to use. */
-    function setOffset(offset) {
-      cmd.setParameter('xoffset', offset.x || 0)
-      cmd.setParameter('yoffset', offset.y || 0)
-    }
-  }
-
-  /**
    * Schedules a mouse action.
    * @param {string} description A simple descriptive label for the scheduled
    *     action.
@@ -389,7 +352,8 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    * @throws {Error} If the key is not a valid modifier key.
    */
-  sendKeys(var_args) { // eslint-disable-line
+  sendKeys(var_args) {
+    // eslint-disable-line
     let keys = flatten(arguments)
     return this.scheduleKeyboardAction_('sendKeys', keys)
   }
