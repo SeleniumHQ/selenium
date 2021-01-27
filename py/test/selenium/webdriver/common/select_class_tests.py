@@ -50,6 +50,7 @@ def testSelectDisabledByIndex(driver, pages):
     sel.select_by_index(1)
     assert selected == sel.first_selected_option
 
+
 def testSelectByValueSingle(driver, pages):
     pages.load("formPage.html")
     for select in [singleSelectValues1]:
