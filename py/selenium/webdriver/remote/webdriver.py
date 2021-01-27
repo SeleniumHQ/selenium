@@ -303,7 +303,7 @@ class WebDriver(BaseWebDriver):
                 converted[key] = self._wrap_value(val)
             return converted
         elif isinstance(value, self._web_element_cls):
-            return {'ELEMENT': value.id, 'element-6066-11e4-a52e-4f735466cecf': value.id}
+            return {'element-6066-11e4-a52e-4f735466cecf': value.id}
         elif isinstance(value, list):
             return list(self._wrap_value(item) for item in value)
         else:
@@ -315,12 +315,8 @@ class WebDriver(BaseWebDriver):
 
     def _unwrap_value(self, value):
         if isinstance(value, dict):
-            if 'ELEMENT' in value or 'element-6066-11e4-a52e-4f735466cecf' in value:
-                wrapped_id = value.get('ELEMENT', None)
-                if wrapped_id:
-                    return self.create_web_element(value['ELEMENT'])
-                else:
-                    return self.create_web_element(value['element-6066-11e4-a52e-4f735466cecf'])
+            if 'element-6066-11e4-a52e-4f735466cecf' in value:
+                return self.create_web_element(value['element-6066-11e4-a52e-4f735466cecf'])
             else:
                 for key, val in value.items():
                     value[key] = self._unwrap_value(val)
