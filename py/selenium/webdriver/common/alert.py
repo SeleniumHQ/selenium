@@ -89,3 +89,4 @@ class Alert(object):
         """
         self.driver.execute(Command.W3C_SET_ALERT_VALUE, {'value': keys_to_typing(keysToSend),
                                                               'text': keysToSend})
+                                                              
