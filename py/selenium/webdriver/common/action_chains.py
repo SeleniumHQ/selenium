@@ -219,7 +219,7 @@ class ActionChains(object):
 
         self.w3c_actions.key_action.key_up(value)
         self.w3c_actions.pointer_action.pause()
- 
+
         return self
 
     def move_by_offset(self, xoffset, yoffset):
@@ -233,7 +233,7 @@ class ActionChains(object):
 
         self.w3c_actions.pointer_action.move_by(xoffset, yoffset)
         self.w3c_actions.key_action.pause()
- 
+
         return self
 
     def move_to_element(self, to_element):
@@ -264,7 +264,7 @@ class ActionChains(object):
                                                 int(xoffset),
                                                 int(yoffset))
         self.w3c_actions.key_action.pause()
-  
+
         return self
 
     def pause(self, seconds):
@@ -304,7 +304,7 @@ class ActionChains(object):
         for key in typing:
             self.key_down(key)
             self.key_up(key)
- 
+
         return self
 
     def send_keys_to_element(self, element, *keys_to_send):
