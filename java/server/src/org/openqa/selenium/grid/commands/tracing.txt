@@ -15,8 +15,8 @@ on macOS or Linux:
 ```
   java -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporter-jaeger:0.13.1 \
-          io.grpc:grpc-netty:1.33.1) \
+          io.opentelemetry:opentelemetry-exporter-jaeger:0.14.1 \
+          io.grpc:grpc-netty:1.34.1) \
        standalone
 ```
 
@@ -35,8 +35,8 @@ this can be done via system properties. Modifying our example:
        -DJAEGER_AGENT_PORT=14250 \
        -jar selenium.jar \
        --ext $(coursier fetch -p \
-          io.opentelemetry:opentelemetry-exporters-jaeger:0.13.1 \
-          io.grpc:grpc-netty:1.33.1) \
+          io.opentelemetry:opentelemetry-exporter-jaeger:0.14.1 \
+          io.grpc:grpc-netty:1.34.1) \
        standalone
 ```
 
