@@ -41,22 +41,83 @@ public class NodeStatus {
   private final Set<Slot> slots;
   private final Availability availability;
   private final String version;
+  private final Map<String, String> osInfo;
 
   public NodeStatus(
-      NodeId nodeId,
-      URI externalUri,
-      int maxSessionCount,
-      Set<Slot> slots,
-      Availability availability,
-      String version) {
+    NodeId nodeId,
+    URI externalUri,
+    int maxSessionCount,
+    Set<Slot> slots,
+    Availability availability,
+    String version,
+    Map<String, String> osInfo) {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count",
-        maxSessionCount,
-"Make sure that a driver is available on $PATH");
+      maxSessionCount,
+      "Make sure that a driver is available on $PATH");
     this.slots = unmodifiableSet(new HashSet<>(Require.nonNull("Slots", slots)));
     this.availability = Require.nonNull("Availability", availability);
     this.version = Require.nonNull("Grid Node version", version);
+    this.osInfo = Require.nonNull("Node host OS info", osInfo);
+  }
+
+  public static NodeStatus fromJson(JsonInput input) {
+    NodeId nodeId = null;
+    URI uri = null;
+    int maxSessions = 0;
+    Set<Slot> slots = null;
+    Availability availability = null;
+    String version = null;
+    Map<String, String> osInfo = null;
+
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "availability":
+          availability = input.read(Availability.class);
+          break;
+
+        case "id":
+          nodeId = input.read(NodeId.class);
+          break;
+
+        case "maxSessions":
+          maxSessions = input.read(Integer.class);
+          break;
+
+        case "slots":
+          slots = input.read(new TypeToken<Set<Slot>>() {
+          }.getType());
+          break;
+
+        case "uri":
+          uri = input.read(URI.class);
+          break;
+
+        case "version":
+          version = input.read(String.class);
+          break;
+
+        case "osInfo":
+          osInfo = input.read(Map.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    input.endObject();
+
+    return new NodeStatus(
+      nodeId,
+      uri,
+      maxSessions,
+      slots,
+      availability,
+      version,
+      osInfo);
   }
 
   public boolean hasCapability(Capabilities caps) {
@@ -98,6 +159,10 @@ public class NodeStatus {
     return version;
   }
 
+  public Map<String, String> getOsInfo() {
+    return osInfo;
+  }
+
   public float getLoad() {
     float inUse = slots.parallelStream()
       .filter(slot -> slot.getSession().isPresent())
@@ -113,7 +178,6 @@ public class NodeStatus {
         .max()
         .orElse(0);
   }
-
 
   @Override
   public boolean equals(Object o) {
@@ -143,59 +207,8 @@ public class NodeStatus {
     toReturn.put("slots", slots);
     toReturn.put("availability", availability);
     toReturn.put("version", version);
+    toReturn.put("osInfo", osInfo);
 
     return unmodifiableMap(toReturn);
-  }
-
-  public static NodeStatus fromJson(JsonInput input) {
-    NodeId nodeId = null;
-    URI uri = null;
-    int maxSessions = 0;
-    Set<Slot> slots = null;
-    Availability availability = null;
-    String version = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-
-      switch (input.nextName()) {
-        case "availability":
-          availability = input.read(Availability.class);
-          break;
-
-        case "id":
-          nodeId = input.read(NodeId.class);
-          break;
-
-        case "maxSessions":
-          maxSessions = input.read(Integer.class);
-          break;
-
-        case "slots":
-          slots = input.read(new TypeToken<Set<Slot>>(){}.getType());
-          break;
-
-        case "uri":
-          uri = input.read(URI.class);
-          break;
-
-        case "version":
-          version = input.read(String.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-
-    return new NodeStatus(
-      nodeId,
-      uri,
-      maxSessions,
-      slots,
-      availability,
-      version);
   }
 }
