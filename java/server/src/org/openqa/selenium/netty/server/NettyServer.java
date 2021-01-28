@@ -57,6 +57,7 @@ public class NettyServer implements Server<NettyServer> {
   private final HttpHandler handler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
   private final SslContext sslCtx;
+  private final boolean allowCors;
 
   private Channel channel;
 
@@ -102,6 +103,7 @@ public class NettyServer implements Server<NettyServer> {
     workerGroup = new NioEventLoopGroup();
 
     port = options.getPort();
+    allowCors = options.getAllowCORS();
 
     try {
       externalUrl = options.getExternalUri().toURL();
@@ -142,7 +144,7 @@ public class NettyServer implements Server<NettyServer> {
     b.group(bossGroup, workerGroup)
       .channel(NioServerSocketChannel.class)
       .handler(new LoggingHandler(LogLevel.DEBUG))
-      .childHandler(new SeleniumHttpInitializer(sslCtx, handler, websocketHandler));
+      .childHandler(new SeleniumHttpInitializer(sslCtx, handler, websocketHandler, allowCors));
 
     try {
       channel = b.bind(port).sync().channel();
