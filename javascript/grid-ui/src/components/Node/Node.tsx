@@ -1,14 +1,30 @@
-import {Box, Card, CardContent, Grid, GridSize, makeStyles, Typography} from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  GridSize,
+  IconButton,
+  makeStyles,
+  Typography
+} from '@material-ui/core';
 import * as React from 'react';
 import chromeLogo from "../../assets/browsers/chrome.svg";
 import edgeLogo from "../../assets/browsers/edge.svg";
 import operaBlinkLogo from "../../assets/browsers/opera.svg";
 import firefoxLogo from "../../assets/browsers/firefox.svg";
 import safariLogo from "../../assets/browsers/safari.svg";
-import safariTechnologyPreviewLogo from "../../assets/browsers/safari.svg";
+import safariTechnologyPreviewLogo from "../../assets/browsers/safari-technology-preview.png";
+import unknownBrowserLogo from "../../assets/browsers/unknown.svg";
 import macLogo from "../../assets/operating-systems/mac.svg";
 import windowsLogo from "../../assets/operating-systems/windows.svg";
 import linuxLogo from "../../assets/operating-systems/linux.svg";
+import unknownOsLogo from "../../assets/operating-systems/unknown.svg";
 import InfoIcon from '@material-ui/icons/Info';
 import NodeType from "../../models/node";
 
@@ -32,6 +48,9 @@ const useStyles = makeStyles({
     marginTop: 5,
     marginRight: 5,
   },
+  buttonMargin: {
+    padding: 1,
+  }
 });
 
 const browserLogoPath = (browser: string): string => {
@@ -49,7 +68,7 @@ const browserLogoPath = (browser: string): string => {
     case "Safari Technology Preview":
       return safariTechnologyPreviewLogo;
     default:
-      return "";
+      return unknownBrowserLogo;
   }
 };
 
@@ -64,11 +83,18 @@ const osLogoPath = (os: string): string => {
   if (osLowerCase.includes("nix") || osLowerCase.includes("nux") || osLowerCase.includes("aix")) {
     return linuxLogo;
   }
-  return "";
+  return unknownOsLogo;
 };
 
 export default function Node(props) {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const handleDialogOpen = () => {
+    setOpen(true);
+  };
+  const handleDialogClose = () => {
+    setOpen(false);
+  };
   const nodeInfo: NodeType = props.node;
   const sessionCount = nodeInfo.sessionCount ?? 0;
   const currentLoad = sessionCount / nodeInfo.maxSession;
@@ -96,7 +122,7 @@ export default function Node(props) {
                 <Box fontWeight="fontWeightBold" mr={1} display='inline'>
                   URI:
                 </Box>
-                {props.node.uri}
+                {nodeInfo.uri}
               </Typography>
             </Grid>
             <Grid item xs={2}>
@@ -105,13 +131,49 @@ export default function Node(props) {
                   gutterBottom
                   variant="h6"
               >
-                {/*TODO: User proper logos after getting OS info from backend*/}
                 <img
                     src={osLogoPath(nodeInfo.osInfo.name)}
                     className={classes.osLogo}
                     alt="OS Logo"
                 />
-                <InfoIcon/>
+                <IconButton className={classes.buttonMargin} onClick={handleDialogOpen}>
+                  <InfoIcon/>
+                </IconButton>
+                <Dialog onClose={handleDialogClose} aria-labelledby="node-info-dialog" open={open}>
+                  <DialogTitle id="node-info-dialog">
+                    <img
+                        src={osLogoPath(nodeInfo.osInfo.name)}
+                        className={classes.osLogo}
+                        alt="OS Logo"
+                    />
+                    <Box fontWeight="fontWeightBold" mr={1} display='inline'>
+                      URI:
+                    </Box>
+                    {nodeInfo.uri}
+                  </DialogTitle>
+                  <DialogContent dividers>
+                    <Typography gutterBottom>
+                      OS Arch: {nodeInfo.osInfo.arch}
+                    </Typography>
+                    <Typography gutterBottom>
+                      OS Name: {nodeInfo.osInfo.name}
+                    </Typography>
+                    <Typography gutterBottom>
+                      OS Version: {nodeInfo.osInfo.version}
+                    </Typography>
+                    <Typography gutterBottom>
+                      Total slots: {nodeInfo.slotCount}
+                    </Typography>
+                    <Typography gutterBottom>
+                      Grid version: {nodeInfo.version}
+                    </Typography>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary" variant="outlined">
+                      Close
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -163,7 +225,7 @@ export default function Node(props) {
               >
                 <Grid item xs={3}
                 >
-                  <Box pt={2} mt={2}>
+                  <Box pt={1} mt={2}>
                     <Typography
                         variant="body2"
                         gutterBottom
@@ -173,7 +235,7 @@ export default function Node(props) {
                   </Box>
                 </Grid>
                 <Grid item xs={4}>
-                  <Box pt={2} mt={2}>
+                  <Box pt={1} mt={2}>
                     <Typography
                         variant="body2"
                         gutterBottom
@@ -183,7 +245,7 @@ export default function Node(props) {
                   </Box>
                 </Grid>
                 <Grid item xs={5}>
-                  <Box pt={2} mt={2}>
+                  <Box pt={1} mt={2}>
                     <Typography
                         color="textPrimary"
                         gutterBottom

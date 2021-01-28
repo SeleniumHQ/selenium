@@ -5,11 +5,6 @@ export const GridConfig = {
 		/** The xhr polling time interval used in core/Status.ts */
 		xhrPollingIntervalMillis: 5000,
 	},
-	/** Console.tsx */
-	console: {
-		/** default number of entries in the Table per page */
-		numEntriesPerPage: 8,
-	},
 
 	/** RingSystem.tsx */
 	ringsystem: {

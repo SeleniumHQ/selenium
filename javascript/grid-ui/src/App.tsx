@@ -10,10 +10,8 @@ import ReactModal from "react-modal";
 /* 3 */
 // import "./App.css";
 // import HelpPage from "./screens/HelpPage/HelpPage";
-// import Console from "./screens/Console/Console";
 // import NavBar from "./components/NavBar/NavBar";
 import {GridConfig} from "./config";
-// import NodePage from "./screens/Node/NodePage";
 import NodeType from "./models/node";
 import Overview from "./screens/Overview/Overview";
 

@@ -150,7 +150,6 @@ export default function Overview() {
   const {loading, error, data} = useQuery(GRID_QUERY);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>`Error! ${error.message}`</p>;
-  console.log(data);
 
   const gridVersion = data.grid.version;
   const nodes = data.grid.nodes.map((node) => {
@@ -163,9 +162,9 @@ export default function Overview() {
     const newNode: NodeType = {
       uri: node.uri,
       id: node.id,
-      capabilities: [],
       status: node.status,
       maxSession: node.maxSession,
+      slotCount: node.slotCount,
       version: node.version,
       osInfo: osInfo,
       sessionCount: node.sessionCount ?? 0,
