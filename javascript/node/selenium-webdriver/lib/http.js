@@ -312,7 +312,6 @@ const COMMAND_MAP = new Map([
   ],
   [cmd.Name.LEGACY_ACTION_MOUSE_DOWN, post('/session/:sessionId/buttondown')],
   [cmd.Name.LEGACY_ACTION_MOUSE_UP, post('/session/:sessionId/buttonup')],
-  [cmd.Name.LEGACY_ACTION_MOUSE_MOVE, post('/session/:sessionId/moveto')],
   [cmd.Name.LEGACY_ACTION_SEND_KEYS, post('/session/:sessionId/keys')],
   [cmd.Name.LEGACY_ACTION_TOUCH_DOWN, post('/session/:sessionId/touch/down')],
   [cmd.Name.LEGACY_ACTION_TOUCH_UP, post('/session/:sessionId/touch/up')],
