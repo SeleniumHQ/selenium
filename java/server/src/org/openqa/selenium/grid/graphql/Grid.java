@@ -87,6 +87,7 @@ public class Grid {
         status.getUri(),
         status.getAvailability(),
         status.getMaxSessionCount(),
+        status.getSlots().size(),
         stereotypes,
         sessions,
         status.getVersion(),
@@ -107,10 +108,7 @@ public class Grid {
 
   public int getTotalSlots() {
     return distributorStatus.get().getNodes().stream()
-      .mapToInt(status -> {
-        int slotCount = status.getSlots().size();
-        return Math.min(status.getMaxSessionCount(), slotCount);
-      })
+      .mapToInt(status -> status.getSlots().size())
       .sum();
   }
 
@@ -123,6 +121,7 @@ public class Grid {
   }
 
   public List<String> getSessionQueueRequests() {
+    //noinspection unchecked
     return ((List<Capabilities>) queueInfoMap.get("request-payloads")).stream()
       .map(JSON::toJson)
       .collect(Collectors.toList());

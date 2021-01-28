@@ -38,6 +38,7 @@ type Node {
   uri: Uri!
   status: Status!
   maxSession: Int!
+  slotCount: Int!
   sessions: [Session]!
   sessionCount: Int!
   stereotypes: String!

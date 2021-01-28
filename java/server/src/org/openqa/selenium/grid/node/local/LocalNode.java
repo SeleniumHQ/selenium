@@ -534,7 +534,7 @@ public class LocalNode extends Node {
     private final URI gridUri;
     private final Secret registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
-    private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
+    private int maxCount = Runtime.getRuntime().availableProcessors();
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofMinutes(5);
     private HealthCheck healthCheck;

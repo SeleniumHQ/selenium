@@ -43,12 +43,14 @@ public class Node {
   private final Map<Session, Slot> activeSessions;
   private final String version;
   private final OsInfo osInfo;
+  private final int slotCount;
 
 
   public Node(NodeId id,
               URI uri,
               Availability status,
               int maxSession,
+              int slotCount,
               Map<Capabilities, Integer> stereotypes,
               Map<Session, Slot> activeSessions,
               String version,
@@ -57,6 +59,7 @@ public class Node {
     this.uri = Require.nonNull("Node uri", uri);
     this.status = status;
     this.maxSession = maxSession;
+    this.slotCount = slotCount;
     this.stereotypes = Require.nonNull("Node stereotypes", stereotypes);
     this.activeSessions = Require.nonNull("Active sessions", activeSessions);
     this.version = Require.nonNull("Grid Node version", version);
@@ -67,6 +70,10 @@ public class Node {
     return activeSessions.entrySet().stream()
       .map(this::createGraphqlSession)
       .collect(ImmutableList.toImmutableList());
+  }
+
+  public int getSlotCount() {
+    return slotCount;
   }
 
   public int getSessionCount() {
