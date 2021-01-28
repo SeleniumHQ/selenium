@@ -142,6 +142,7 @@ public class RouterServer extends TemplateGridServerCommand {
 
     Route handler = Route.combine(
       new Router(tracer, clientFactory, sessions, queuer, distributor).with(networkOptions.getSpecComplianceChecks()),
+      Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
 

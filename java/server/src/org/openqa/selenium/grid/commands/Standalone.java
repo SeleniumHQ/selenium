@@ -199,6 +199,7 @@ public class Standalone extends TemplateGridServerCommand {
       ui,
       router,
       Route.prefix("/wd/hub").to(combine(router)),
+      Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 

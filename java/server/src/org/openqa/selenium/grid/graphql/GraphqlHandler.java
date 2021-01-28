@@ -54,6 +54,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
@@ -105,6 +106,9 @@ public class GraphqlHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    if (req.getMethod() == OPTIONS) {
+      return new HttpResponse();
+    }
     try (Span span = newSpanAsChildOf(tracer, req, "grid.status")) {
       HttpResponse response;
       Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);

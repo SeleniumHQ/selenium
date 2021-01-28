@@ -40,6 +40,11 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
   private static final int CHUNK_SIZE = 1024 * 1024;
+  private final boolean allowCors;
+
+  public ResponseConverter(boolean allowCors) {
+    this.allowCors = allowCors;
+  }
 
   @Override
   public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)
@@ -99,6 +104,12 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
         }
         first.headers().add(name, value);
       }
+    }
+
+    if (allowCors) {
+      first.headers().add("Access-Control-Allow-Origin", "*");
+      first.headers().add("Access-Control-Allow-Methods", "GET,POST,DELETE");
+      first.headers().add("Access-Control-Allow-Headers", "Accept,Content-Type");
     }
   }
 }
