@@ -6,6 +6,9 @@ import operaBlinkLogo from "../../assets/browsers/opera.svg";
 import firefoxLogo from "../../assets/browsers/firefox.svg";
 import safariLogo from "../../assets/browsers/safari.svg";
 import safariTechnologyPreviewLogo from "../../assets/browsers/safari.svg";
+import macLogo from "../../assets/operating-systems/mac.svg";
+import windowsLogo from "../../assets/operating-systems/windows.svg";
+import linuxLogo from "../../assets/operating-systems/linux.svg";
 import InfoIcon from '@material-ui/icons/Info';
 import NodeType from "../../models/node";
 
@@ -50,6 +53,19 @@ const browserLogoPath = (browser: string): string => {
   }
 };
 
+const osLogoPath = (os: string): string => {
+  const osLowerCase: string = os.toLowerCase();
+  if (osLowerCase.includes("win")) {
+    return windowsLogo;
+  }
+  if (osLowerCase.includes("mac")) {
+    return macLogo;
+  }
+  if (osLowerCase.includes("nix") || osLowerCase.includes("nux") || osLowerCase.includes("aix")) {
+    return linuxLogo;
+  }
+  return "";
+};
 
 export default function Node(props) {
   const classes = useStyles();
@@ -59,8 +75,7 @@ export default function Node(props) {
   // Assuming we will put 3 stereotypes per column.
   const stereotypeColumns = Math.round(nodeInfo.slotStereotypes.length / 3);
   // Then we need to know how many columns we will display.
-  const columnWidth: GridSize = 6;
-  // const columnWidth = 12 / 12;
+  const columnWidth: GridSize = 12 / stereotypeColumns as any;
 
   return (
       <Card
@@ -92,7 +107,7 @@ export default function Node(props) {
               >
                 {/*TODO: User proper logos after getting OS info from backend*/}
                 <img
-                    src={chromeLogo}
+                    src={osLogoPath(nodeInfo.osInfo.name)}
                     className={classes.osLogo}
                     alt="OS Logo"
                 />
@@ -122,7 +137,6 @@ export default function Node(props) {
                             nodeInfo.slotStereotypes
                                 .slice(index * 3, Math.min((index * 3) + 3, nodeInfo.slotStereotypes.length))
                                 .map((slotStereotype: any, idx) => {
-                                  console.log(slotStereotype)
                                   return (<Typography
                                           color="textPrimary"
                                           variant="h6"
