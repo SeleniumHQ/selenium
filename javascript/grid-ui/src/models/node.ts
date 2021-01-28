@@ -1,3 +1,4 @@
+import OsInfoType from "./os-info";
 import CapabilitiesType from "./capabilities";
 
 interface NodeType {
@@ -15,6 +16,8 @@ interface NodeType {
     sessionCount: number;
     /** Grid Node version */
     version: string;
+    /** Grid Node OS information */
+    osInfo: OsInfoType;
     /** Node stereotypes.
      * Not an ideal type, but it simplifies the parsing.
      * There is room for improvement here. */

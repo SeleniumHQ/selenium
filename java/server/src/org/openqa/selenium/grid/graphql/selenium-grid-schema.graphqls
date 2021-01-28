@@ -27,6 +27,12 @@ type Slot {
   lastStarted: String!
 }
 
+type OsInfo {
+  arch: String!
+  name: String!
+  version: String!
+}
+
 type Node {
   id: ID!
   uri: Uri!
@@ -36,6 +42,7 @@ type Node {
   sessionCount: Int!
   stereotypes: String!
   version: String!
+  osInfo: OsInfo!
 }
 
 type GridQuery {

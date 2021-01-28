@@ -9,6 +9,11 @@ query {
 			stereotypes
 			version
 			sessionCount
+			osInfo {
+				version
+				name
+				arch
+			}
 		}
 		totalSlots
 		usedSlots

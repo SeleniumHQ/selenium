@@ -25,6 +25,7 @@ import Node from "../../components/Node/Node";
 import {useQuery} from "@apollo/client";
 import NodeType from "../../models/node";
 import {Link} from "@material-ui/core";
+import OsInfoType from "../../models/os-info";
 
 function Copyright() {
   return (
@@ -153,14 +154,20 @@ export default function Overview() {
 
   const gridVersion = data.grid.version;
   const nodes = data.grid.nodes.map((node) => {
+    const osInfo: OsInfoType = {
+      name: node.osInfo.name,
+      version: node.osInfo.version,
+      arch: node.osInfo.arch,
+    }
     const slotStereotypes = JSON.parse(node.stereotypes);
     const newNode: NodeType = {
       uri: node.uri,
-      capabilities: [],
       id: node.id,
+      capabilities: [],
       status: node.status,
       maxSession: node.maxSession,
       version: node.version,
+      osInfo: osInfo,
       sessionCount: node.sessionCount ?? 0,
       slotStereotypes: slotStereotypes,
     };

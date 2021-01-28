@@ -251,7 +251,8 @@ public class GridModel {
       status.getMaxSessionCount(),
       status.getSlots(),
       availability,
-      status.getVersion());
+      status.getVersion(),
+      status.getOsInfo());
   }
 
   private void release(SessionId id) {
@@ -361,7 +362,8 @@ public class GridModel {
       status.getMaxSessionCount(),
       newSlots,
       status.getAvailability(),
-      status.getVersion()));
+      status.getVersion(),
+      status.getOsInfo()));
   }
 
   private static class AvailabilityAndNode {

@@ -42,6 +42,7 @@ public class Node {
   private final Map<Capabilities, Integer> stereotypes;
   private final Map<Session, Slot> activeSessions;
   private final String version;
+  private final OsInfo osInfo;
 
 
   public Node(NodeId id,
@@ -50,7 +51,8 @@ public class Node {
               int maxSession,
               Map<Capabilities, Integer> stereotypes,
               Map<Session, Slot> activeSessions,
-              String version) {
+              String version,
+              OsInfo osInfo) {
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("Node uri", uri);
     this.status = status;
@@ -58,6 +60,7 @@ public class Node {
     this.stereotypes = Require.nonNull("Node stereotypes", stereotypes);
     this.activeSessions = Require.nonNull("Active sessions", activeSessions);
     this.version = Require.nonNull("Grid Node version", version);
+    this.osInfo = Require.nonNull("Grid Node OS info", osInfo);
   }
 
   public List<org.openqa.selenium.grid.graphql.Session> getSessions() {
@@ -106,6 +109,10 @@ public class Node {
 
   public String getVersion() {
     return version;
+  }
+
+  public OsInfo getOsInfo() {
+    return osInfo;
   }
 
   private org.openqa.selenium.grid.graphql.Session createGraphqlSession(

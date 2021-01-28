@@ -77,6 +77,11 @@ public class Grid {
         stereotypes.put(slot.getStereotype(), count);
       }
 
+      OsInfo osInfo = new OsInfo(
+        status.getOsInfo().get("arch"),
+        status.getOsInfo().get("name"),
+        status.getOsInfo().get("version"));
+
       toReturn.add(new Node(
         status.getId(),
         status.getUri(),
@@ -84,7 +89,8 @@ public class Grid {
         status.getMaxSessionCount(),
         stereotypes,
         sessions,
-        status.getVersion()));
+        status.getVersion(),
+        osInfo));
     }
 
     return toReturn.build();

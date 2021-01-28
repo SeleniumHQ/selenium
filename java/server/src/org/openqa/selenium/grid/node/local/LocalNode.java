@@ -183,6 +183,15 @@ public class LocalNode extends Node {
     new JMXHelper().register(this);
   }
 
+  public static Builder builder(
+    Tracer tracer,
+    EventBus bus,
+    URI uri,
+    URI gridUri,
+    Secret registrationSecret) {
+    return new Builder(tracer, bus, uri, gridUri, registrationSecret);
+  }
+
   @Override
   public boolean isReady() {
     return bus.isReady();
@@ -484,7 +493,8 @@ public class LocalNode extends Node {
       maxSessionCount,
       slots,
       isDraining() ? DRAINING : UP,
-      getNodeVersion());
+      getNodeVersion(),
+      getOsInfo());
   }
 
   @Override
@@ -514,15 +524,6 @@ public class LocalNode extends Node {
       "capabilities", factories.stream()
         .map(SessionSlot::getStereotype)
         .collect(Collectors.toSet()));
-  }
-
-  public static Builder builder(
-    Tracer tracer,
-    EventBus bus,
-    URI uri,
-    URI gridUri,
-    Secret registrationSecret) {
-    return new Builder(tracer, bus, uri, gridUri, registrationSecret);
   }
 
   public static class Builder {
