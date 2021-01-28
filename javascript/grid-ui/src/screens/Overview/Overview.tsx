@@ -26,6 +26,7 @@ import {useQuery} from "@apollo/client";
 import NodeType from "../../models/node";
 import {Link} from "@material-ui/core";
 import OsInfoType from "../../models/os-info";
+import {GridConfig} from "../../config";
 
 function Copyright() {
   return (
@@ -147,7 +148,8 @@ export default function Overview() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const {loading, error, data} = useQuery(GRID_QUERY);
+  const {loading, error, data} = useQuery(GRID_QUERY,
+      {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
   if (loading) return <p>Loading...</p>;
   if (error) return <p>`Error! ${error.message}`</p>;
 
