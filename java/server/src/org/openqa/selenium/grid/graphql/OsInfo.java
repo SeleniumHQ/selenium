@@ -15,11 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.grid.graphql;
 
-public enum HttpMethod {
-  DELETE,
-  GET,
-  POST,
-  OPTIONS
+public class OsInfo {
+  private final String arch;
+  private final String name;
+  private final String version;
+
+  public OsInfo(String arch, String name, String version) {
+    this.arch = arch;
+    this.name = name;
+    this.version = version;
+  }
+
+  public String getArch() {
+    return arch;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getVersion() {
+    return version;
+  }
 }

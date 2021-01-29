@@ -378,7 +378,6 @@ public class NodeTest {
                 case "node":
                   seen = input.read(NodeStatus.class);
                   break;
-
                 default:
                   input.skipValue();
               }
