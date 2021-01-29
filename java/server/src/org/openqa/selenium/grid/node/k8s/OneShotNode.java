@@ -345,7 +345,8 @@ public class OneShotNode extends Node {
             Optional.empty() :
             Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
       isDraining() ? DRAINING : UP,
-      getNodeVersion());
+      getNodeVersion(),
+      getOsInfo());
   }
 
   @Override

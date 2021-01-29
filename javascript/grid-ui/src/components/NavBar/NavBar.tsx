@@ -1,18 +1,17 @@
 // https://github.com/vercel/next.js/issues/11230#issuecomment-643595034
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { ReactComponent as SearchIcon } from "../../assets/icons/search2.svg";
-import { ReactComponent as TimesIcon } from "../../assets/icons/times.svg";
+import React, {useState} from "react";
+import {Link} from "react-router-dom";
+import {ReactComponent as SearchIcon} from "../../assets/icons/search2.svg";
+import {ReactComponent as TimesIcon} from "../../assets/icons/times.svg";
 import seleniumIcon from "../../assets/selenium.svg";
 import "../../css/icons.css";
 import styles from "./NavBar.module.css";
 import searchHighlight from "../../core/Search";
 import "./NavBar.css";
-import KeyBoardHelp from "../KeyBoard/KeyBoardHelp";
 
 /**
- * 	NavBar component, includes search bar and search functions
+ *    NavBar component, includes search bar and search functions
  *  Look at `core/Search.ts` for the highlight function
  */
 export default function NavBar() {
@@ -139,7 +138,6 @@ export default function NavBar() {
 						</li>
 					</ul>
 				</div>
-				<KeyBoardHelp />
 			</nav>
 		</React.Fragment>
 	);

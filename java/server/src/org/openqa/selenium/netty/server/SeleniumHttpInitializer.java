@@ -40,14 +40,17 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
   private HttpHandler seleniumHandler;
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler;
   private SslContext sslCtx;
+  private final boolean allowCors;
 
   SeleniumHttpInitializer(
     SslContext sslCtx,
     HttpHandler seleniumHandler,
-    BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler) {
+    BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler,
+    boolean allowCors) {
     this.sslCtx = sslCtx;
     this.seleniumHandler = Require.nonNull("HTTP handler", seleniumHandler);
     this.webSocketHandler = Require.nonNull("WebSocket handler", webSocketHandler);
+    this.allowCors = allowCors;
   }
 
   @Override
@@ -68,7 +71,7 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
     // Regular HTTP magic
     ch.pipeline().addLast("se-request", new RequestConverter());
-    ch.pipeline().addLast("se-response", new ResponseConverter());
+    ch.pipeline().addLast("se-response", new ResponseConverter(allowCors));
     ch.pipeline().addLast("se-handler", new SeleniumHandler(seleniumHandler));
   }
 }

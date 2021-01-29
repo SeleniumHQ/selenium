@@ -63,19 +63,13 @@ class Alert(object):
         """
         Gets the text of the Alert.
         """
-        if self.driver.w3c:
-            return self.driver.execute(Command.W3C_GET_ALERT_TEXT)["value"]
-        else:
-            return self.driver.execute(Command.GET_ALERT_TEXT)["value"]
+        return self.driver.execute(Command.W3C_GET_ALERT_TEXT)["value"]
 
     def dismiss(self):
         """
         Dismisses the alert available.
         """
-        if self.driver.w3c:
-            self.driver.execute(Command.W3C_DISMISS_ALERT)
-        else:
-            self.driver.execute(Command.DISMISS_ALERT)
+        self.driver.execute(Command.W3C_DISMISS_ALERT)
 
     def accept(self):
         """
@@ -84,10 +78,7 @@ class Alert(object):
         Usage::
         Alert(driver).accept() # Confirm a alert dialog.
         """
-        if self.driver.w3c:
-            self.driver.execute(Command.W3C_ACCEPT_ALERT)
-        else:
-            self.driver.execute(Command.ACCEPT_ALERT)
+        self.driver.execute(Command.W3C_ACCEPT_ALERT)
 
     def send_keys(self, keysToSend):
         """
@@ -95,11 +86,5 @@ class Alert(object):
 
         :Args:
          - keysToSend: The text to be sent to Alert.
-
-
         """
-        if self.driver.w3c:
-            self.driver.execute(Command.W3C_SET_ALERT_VALUE, {'value': keys_to_typing(keysToSend),
-                                                              'text': keysToSend})
-        else:
-            self.driver.execute(Command.SET_ALERT_VALUE, {'text': keysToSend})
+        self.driver.execute(Command.W3C_SET_ALERT_VALUE, {'value': keys_to_typing(keysToSend), 'text': keysToSend})

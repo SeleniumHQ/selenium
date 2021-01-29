@@ -77,14 +77,21 @@ public class Grid {
         stereotypes.put(slot.getStereotype(), count);
       }
 
+      OsInfo osInfo = new OsInfo(
+        status.getOsInfo().get("arch"),
+        status.getOsInfo().get("name"),
+        status.getOsInfo().get("version"));
+
       toReturn.add(new Node(
         status.getId(),
         status.getUri(),
         status.getAvailability(),
         status.getMaxSessionCount(),
+        status.getSlots().size(),
         stereotypes,
         sessions,
-        status.getVersion()));
+        status.getVersion(),
+        osInfo));
     }
 
     return toReturn.build();
@@ -101,10 +108,7 @@ public class Grid {
 
   public int getTotalSlots() {
     return distributorStatus.get().getNodes().stream()
-      .mapToInt(status -> {
-        int slotCount = status.getSlots().size();
-        return Math.min(status.getMaxSessionCount(), slotCount);
-      })
+      .mapToInt(status -> status.getSlots().size())
       .sum();
   }
 
@@ -117,6 +121,7 @@ public class Grid {
   }
 
   public List<String> getSessionQueueRequests() {
+    //noinspection unchecked
     return ((List<Capabilities>) queueInfoMap.get("request-payloads")).stream()
       .map(JSON::toJson)
       .collect(Collectors.toList());

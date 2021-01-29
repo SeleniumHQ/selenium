@@ -59,7 +59,9 @@ public class LocalNodeFactory {
       eventOptions.getEventBus(),
       serverOptions.getExternalUri(),
       nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
-      secretOptions.getRegistrationSecret());
+      secretOptions.getRegistrationSecret())
+      .maximumConcurrentSessions(nodeOptions.getMaxSessions());
+
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
