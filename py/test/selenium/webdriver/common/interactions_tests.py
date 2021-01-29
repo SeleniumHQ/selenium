@@ -233,17 +233,11 @@ def test_can_reset_interactions(driver, pages):
     actions = ActionChains(driver)
     actions.click()
     actions.key_down('A')
-    if driver.w3c:
-        assert all((len(device.actions) > 0 for device in actions.w3c_actions.devices))
-    else:
-        assert len(actions._actions) > 0
+    assert all((len(device.actions) > 0 for device in actions.w3c_actions.devices))
 
     actions.reset_actions()
 
-    if driver.w3c:
-        assert all((len(device.actions) == 0 for device in actions.w3c_actions.devices))
-    else:
-        assert len(actions._actions) == 0
+    assert all((len(device.actions) == 0 for device in actions.w3c_actions.devices))
 
 
 def test_can_pause(driver, pages):
