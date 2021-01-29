@@ -183,6 +183,15 @@ public class LocalNode extends Node {
     new JMXHelper().register(this);
   }
 
+  public static Builder builder(
+    Tracer tracer,
+    EventBus bus,
+    URI uri,
+    URI gridUri,
+    Secret registrationSecret) {
+    return new Builder(tracer, bus, uri, gridUri, registrationSecret);
+  }
+
   @Override
   public boolean isReady() {
     return bus.isReady();
@@ -484,7 +493,8 @@ public class LocalNode extends Node {
       maxSessionCount,
       slots,
       isDraining() ? DRAINING : UP,
-      getNodeVersion());
+      getNodeVersion(),
+      getOsInfo());
   }
 
   @Override
@@ -516,15 +526,6 @@ public class LocalNode extends Node {
         .collect(Collectors.toSet()));
   }
 
-  public static Builder builder(
-    Tracer tracer,
-    EventBus bus,
-    URI uri,
-    URI gridUri,
-    Secret registrationSecret) {
-    return new Builder(tracer, bus, uri, gridUri, registrationSecret);
-  }
-
   public static class Builder {
 
     private final Tracer tracer;
@@ -533,7 +534,7 @@ public class LocalNode extends Node {
     private final URI gridUri;
     private final Secret registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
-    private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
+    private int maxCount = Runtime.getRuntime().availableProcessors();
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofMinutes(5);
     private HealthCheck healthCheck;

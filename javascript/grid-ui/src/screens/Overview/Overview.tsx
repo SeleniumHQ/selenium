@@ -25,6 +25,8 @@ import Node from "../../components/Node/Node";
 import {useQuery} from "@apollo/client";
 import NodeType from "../../models/node";
 import {Link} from "@material-ui/core";
+import OsInfoType from "../../models/os-info";
+import {GridConfig} from "../../config";
 
 function Copyright() {
   return (
@@ -146,21 +148,27 @@ export default function Overview() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const {loading, error, data} = useQuery(GRID_QUERY);
+  const {loading, error, data} = useQuery(GRID_QUERY,
+      {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
   if (loading) return <p>Loading...</p>;
   if (error) return <p>`Error! ${error.message}`</p>;
-  console.log(data);
 
   const gridVersion = data.grid.version;
   const nodes = data.grid.nodes.map((node) => {
+    const osInfo: OsInfoType = {
+      name: node.osInfo.name,
+      version: node.osInfo.version,
+      arch: node.osInfo.arch,
+    }
     const slotStereotypes = JSON.parse(node.stereotypes);
     const newNode: NodeType = {
       uri: node.uri,
-      capabilities: [],
       id: node.id,
       status: node.status,
       maxSession: node.maxSession,
+      slotCount: node.slotCount,
       version: node.version,
+      osInfo: osInfo,
       sessionCount: node.sessionCount ?? 0,
       slotStereotypes: slotStereotypes,
     };
