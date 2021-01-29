@@ -18,6 +18,7 @@ import chromeLogo from "../../assets/browsers/chrome.svg";
 import edgeLogo from "../../assets/browsers/edge.svg";
 import operaBlinkLogo from "../../assets/browsers/opera.svg";
 import firefoxLogo from "../../assets/browsers/firefox.svg";
+import internetExplorerLogo from "../../assets/browsers/internet-explorer.svg";
 import safariLogo from "../../assets/browsers/safari.svg";
 import safariTechnologyPreviewLogo from "../../assets/browsers/safari-technology-preview.png";
 import unknownBrowserLogo from "../../assets/browsers/unknown.svg";
@@ -27,6 +28,7 @@ import linuxLogo from "../../assets/operating-systems/linux.svg";
 import unknownOsLogo from "../../assets/operating-systems/unknown.svg";
 import InfoIcon from '@material-ui/icons/Info';
 import NodeType from "../../models/node";
+import LinearProgress, {LinearProgressProps} from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles({
   root: {
@@ -45,7 +47,7 @@ const useStyles = makeStyles({
   browserLogo: {
     width: 24,
     height: 24,
-    marginTop: 5,
+    marginBottom: 5,
     marginRight: 5,
   },
   buttonMargin: {
@@ -63,6 +65,8 @@ const browserLogoPath = (browser: string): string => {
       return operaBlinkLogo;
     case "firefox":
       return firefoxLogo;
+    case "internet explorer":
+      return internetExplorerLogo;
     case "safari":
       return safariLogo;
     case "Safari Technology Preview":
@@ -85,6 +89,26 @@ const osLogoPath = (os: string): string => {
   }
   return unknownOsLogo;
 };
+
+const browserVersion = (stereotype: any): string => {
+  const version = stereotype.browserVersion ?? "";
+  return version.length > 0 ? " - v." + version : version;
+}
+
+function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
+  return (
+      <Box display="flex" alignItems="center">
+        <Box width="100%" mr={1}>
+          <LinearProgress variant="determinate" {...props} />
+        </Box>
+        <Box minWidth={35}>
+          <Typography variant="body2" color="textSecondary">{`${Math.round(
+              props.value,
+          )}%`}</Typography>
+        </Box>
+      </Box>
+  );
+}
 
 export default function Node(props) {
   const classes = useStyles();
@@ -154,6 +178,9 @@ export default function Node(props) {
                   </DialogTitle>
                   <DialogContent dividers>
                     <Typography gutterBottom>
+                      Node Id: {nodeInfo.id}
+                    </Typography>
+                    <Typography gutterBottom>
                       OS Arch: {nodeInfo.osInfo.arch}
                     </Typography>
                     <Typography gutterBottom>
@@ -211,6 +238,7 @@ export default function Node(props) {
                                             alt="Browser Logo"
                                         />
                                         {slotStereotype.slots}
+                                        {browserVersion(slotStereotype.stereotype)}
                                       </Typography>
                                   )
                                 })}
@@ -231,7 +259,7 @@ export default function Node(props) {
                         variant="body2"
                         gutterBottom
                     >
-                      Load: {currentLoad}%
+                      Sessions: {sessionCount}
                     </Typography>
                   </Box>
                 </Grid>
@@ -255,6 +283,10 @@ export default function Node(props) {
                       {props.node.version}
                     </Typography>
                   </Box>
+                </Grid>
+                <Grid item xs={12}
+                >
+                  <LinearProgressWithLabel value={currentLoad as any}/>
                 </Grid>
               </Grid>
             </Grid>
