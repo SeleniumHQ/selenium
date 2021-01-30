@@ -1,0 +1,8 @@
+query {
+	grid {
+		uri
+		totalSlots
+		usedSlots
+		version
+	}
+}

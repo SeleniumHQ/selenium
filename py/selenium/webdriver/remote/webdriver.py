@@ -43,8 +43,7 @@ from .webelement import WebElement
 from selenium.common.exceptions import (InvalidArgumentException,
                                         JavascriptException,
                                         WebDriverException,
-                                        NoSuchCookieException,
-                                        UnknownMethodException)
+                                        NoSuchCookieException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
@@ -292,10 +291,6 @@ class WebDriver(BaseWebDriver):
         if not self.caps:
             self.caps = response.get('capabilities')
 
-        # Double check to see if we have a W3C Compliant browser
-        self.w3c = not response.get('status')  # using not automatically results in boolean
-        self.command_executor.w3c = self.w3c
-
     def _wrap_value(self, value):
         if isinstance(value, dict):
             converted = {}
@@ -303,7 +298,7 @@ class WebDriver(BaseWebDriver):
                 converted[key] = self._wrap_value(val)
             return converted
         elif isinstance(value, self._web_element_cls):
-            return {'ELEMENT': value.id, 'element-6066-11e4-a52e-4f735466cecf': value.id}
+            return {'element-6066-11e4-a52e-4f735466cecf': value.id}
         elif isinstance(value, list):
             return list(self._wrap_value(item) for item in value)
         else:
@@ -311,16 +306,12 @@ class WebDriver(BaseWebDriver):
 
     def create_web_element(self, element_id: str) -> WebElement:
         """Creates a web element with the specified `element_id`."""
-        return self._web_element_cls(self, element_id, w3c=self.w3c)
+        return self._web_element_cls(self, element_id)
 
     def _unwrap_value(self, value):
         if isinstance(value, dict):
-            if 'ELEMENT' in value or 'element-6066-11e4-a52e-4f735466cecf' in value:
-                wrapped_id = value.get('ELEMENT', None)
-                if wrapped_id:
-                    return self.create_web_element(value['ELEMENT'])
-                else:
-                    return self.create_web_element(value['element-6066-11e4-a52e-4f735466cecf'])
+            if 'element-6066-11e4-a52e-4f735466cecf' in value:
+                return self.create_web_element(value['element-6066-11e4-a52e-4f735466cecf'])
             else:
                 for key, val in value.items():
                     value[key] = self._unwrap_value(val)
@@ -738,11 +729,7 @@ class WebDriver(BaseWebDriver):
                 raise JavascriptException("Pinned script could not be found")
 
         converted_args = list(args)
-        command = None
-        if self.w3c:
-            command = Command.W3C_EXECUTE_SCRIPT
-        else:
-            command = Command.EXECUTE_SCRIPT
+        command = Command.W3C_EXECUTE_SCRIPT
 
         return self.execute(command, {
             'script': script,
@@ -764,10 +751,7 @@ class WebDriver(BaseWebDriver):
                 driver.execute_async_script(script)
         """
         converted_args = list(args)
-        if self.w3c:
-            command = Command.W3C_EXECUTE_SCRIPT_ASYNC
-        else:
-            command = Command.EXECUTE_ASYNC_SCRIPT
+        command = Command.W3C_EXECUTE_SCRIPT_ASYNC
 
         return self.execute(command, {
             'script': script,
@@ -833,10 +817,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.current_window_handle
         """
-        if self.w3c:
-            return self.execute(Command.W3C_GET_CURRENT_WINDOW_HANDLE)['value']
-        else:
-            return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
+        return self.execute(Command.W3C_GET_CURRENT_WINDOW_HANDLE)['value']
 
     @property
     def window_handles(self) -> List[str]:
@@ -848,10 +829,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.window_handles
         """
-        if self.w3c:
-            return self.execute(Command.W3C_GET_WINDOW_HANDLES)['value']
-        else:
-            return self.execute(Command.GET_WINDOW_HANDLES)['value']
+        return self.execute(Command.W3C_GET_WINDOW_HANDLES)['value']
 
     def maximize_window(self) -> NoReturn:
         """
@@ -859,9 +837,6 @@ class WebDriver(BaseWebDriver):
         """
         params = None
         command = Command.W3C_MAXIMIZE_WINDOW
-        if not self.w3c:
-            command = Command.MAXIMIZE_WINDOW
-            params = {'windowHandle': 'current'}
         self.execute(command, params)
 
     def fullscreen_window(self) -> NoReturn:
@@ -962,16 +937,9 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_cookie('my_cookie')
         """
-        if self.w3c:
-            try:
-                return self.execute(Command.GET_COOKIE, {'name': name})['value']
-            except NoSuchCookieException:
-                return None
-        else:
-            cookies = self.get_cookies()
-            for cookie in cookies:
-                if cookie['name'] == name:
-                    return cookie
+        try:
+            return self.execute(Command.GET_COOKIE, {'name': name})['value']
+        except NoSuchCookieException:
             return None
 
     def delete_cookie(self, name) -> NoReturn:
@@ -1033,12 +1001,8 @@ class WebDriver(BaseWebDriver):
 
                 driver.implicitly_wait(30)
         """
-        if self.w3c:
-            self.execute(Command.SET_TIMEOUTS, {
-                'implicit': int(float(time_to_wait) * 1000)})
-        else:
-            self.execute(Command.IMPLICIT_WAIT, {
-                'ms': float(time_to_wait) * 1000})
+        self.execute(Command.SET_TIMEOUTS, {
+            'implicit': int(float(time_to_wait) * 1000)})
 
     def set_script_timeout(self, time_to_wait) -> NoReturn:
         """
@@ -1053,12 +1017,8 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_script_timeout(30)
         """
-        if self.w3c:
-            self.execute(Command.SET_TIMEOUTS, {
-                'script': int(float(time_to_wait) * 1000)})
-        else:
-            self.execute(Command.SET_SCRIPT_TIMEOUT, {
-                'ms': float(time_to_wait) * 1000})
+        self.execute(Command.SET_TIMEOUTS, {
+            'script': int(float(time_to_wait) * 1000)})
 
     def set_page_load_timeout(self, time_to_wait) -> NoReturn:
         """
@@ -1122,18 +1082,18 @@ class WebDriver(BaseWebDriver):
 
         :rtype: WebElement
         """
-        if self.w3c:
-            if by == By.ID:
-                by = By.CSS_SELECTOR
-                value = '[id="%s"]' % value
-            elif by == By.TAG_NAME:
-                by = By.CSS_SELECTOR
-            elif by == By.CLASS_NAME:
-                by = By.CSS_SELECTOR
-                value = ".%s" % value
-            elif by == By.NAME:
-                by = By.CSS_SELECTOR
-                value = '[name="%s"]' % value
+        if by == By.ID:
+            by = By.CSS_SELECTOR
+            value = '[id="%s"]' % value
+        elif by == By.TAG_NAME:
+            by = By.CSS_SELECTOR
+        elif by == By.CLASS_NAME:
+            by = By.CSS_SELECTOR
+            value = ".%s" % value
+        elif by == By.NAME:
+            by = By.CSS_SELECTOR
+            value = '[name="%s"]' % value
+
         return self.execute(Command.FIND_ELEMENT, {
             'using': by,
             'value': value})['value']
@@ -1155,18 +1115,17 @@ class WebDriver(BaseWebDriver):
             find_element_js = "return ({}).apply(null, arguments);".format(raw_function)
             return self.execute_script(find_element_js, by.to_dict())
 
-        if self.w3c:
-            if by == By.ID:
-                by = By.CSS_SELECTOR
-                value = '[id="%s"]' % value
-            elif by == By.TAG_NAME:
-                by = By.CSS_SELECTOR
-            elif by == By.CLASS_NAME:
-                by = By.CSS_SELECTOR
-                value = ".%s" % value
-            elif by == By.NAME:
-                by = By.CSS_SELECTOR
-                value = '[name="%s"]' % value
+        if by == By.ID:
+            by = By.CSS_SELECTOR
+            value = '[id="%s"]' % value
+        elif by == By.TAG_NAME:
+            by = By.CSS_SELECTOR
+        elif by == By.CLASS_NAME:
+            by = By.CSS_SELECTOR
+            value = ".%s" % value
+        elif by == By.NAME:
+            by = By.CSS_SELECTOR
+            value = '[name="%s"]' % value
 
         # Return empty list if driver returns null
         # See https://github.com/SeleniumHQ/selenium/issues/4555
@@ -1271,15 +1230,9 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_size(800,600)
         """
-        if self.w3c:
-            if windowHandle != 'current':
-                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
-            self.set_window_rect(width=int(width), height=int(height))
-        else:
-            self.execute(Command.SET_WINDOW_SIZE, {
-                'width': int(width),
-                'height': int(height),
-                'windowHandle': windowHandle})
+        if windowHandle != 'current':
+            warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+        self.set_window_rect(width=int(width), height=int(height))
 
     def get_window_size(self, windowHandle='current') -> dict:
         """
@@ -1290,13 +1243,10 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_window_size()
         """
-        command = Command.GET_WINDOW_SIZE
-        if self.w3c:
-            if windowHandle != 'current':
-                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
-            size = self.get_window_rect()
-        else:
-            size = self.execute(command, {'windowHandle': windowHandle})
+
+        if windowHandle != 'current':
+            warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+        size = self.get_window_rect()
 
         if size.get('value', None):
             size = size['value']
@@ -1316,17 +1266,9 @@ class WebDriver(BaseWebDriver):
 
                 driver.set_window_position(0,0)
         """
-        if self.w3c:
-            if windowHandle != 'current':
-                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
-            return self.set_window_rect(x=int(x), y=int(y))
-        else:
-            self.execute(Command.SET_WINDOW_POSITION,
-                         {
-                             'x': int(x),
-                             'y': int(y),
-                             'windowHandle': windowHandle
-                         })
+        if windowHandle != 'current':
+            warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+        return self.set_window_rect(x=int(x), y=int(y))
 
     def get_window_position(self, windowHandle='current') -> dict:
         """
@@ -1337,13 +1279,10 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_window_position()
         """
-        if self.w3c:
-            if windowHandle != 'current':
-                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
-            position = self.get_window_rect()
-        else:
-            position = self.execute(Command.GET_WINDOW_POSITION,
-                                    {'windowHandle': windowHandle})['value']
+
+        if windowHandle != 'current':
+            warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+        position = self.get_window_rect()
 
         return {k: position[k] for k in ('x', 'y')}
 
@@ -1373,8 +1312,6 @@ class WebDriver(BaseWebDriver):
                 driver.set_window_rect(width=100, height=200)
                 driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
-        if not self.w3c:
-            raise UnknownMethodException("set_window_rect is only supported for W3C compatible browsers")
 
         if (not x and not y) and (not height and not width):
             raise InvalidArgumentException("x and y or height and width need values")
@@ -1452,7 +1389,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.log_types
         """
-        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value'] if self.w3c else []
+        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value']
 
     def get_log(self, log_type):
         """

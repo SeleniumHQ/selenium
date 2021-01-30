@@ -40,10 +40,7 @@ class SwitchTo:
 
                 element = driver.switch_to.active_element
         """
-        if self._driver.w3c:
-            return self._driver.execute(Command.W3C_GET_ACTIVE_ELEMENT)['value']
-        else:
-            return self._driver.execute(Command.GET_ACTIVE_ELEMENT)['value']
+        return self._driver.execute(Command.W3C_GET_ACTIVE_ELEMENT)['value']
 
     @property
     def alert(self) -> Alert:
@@ -85,7 +82,7 @@ class SwitchTo:
                 driver.switch_to.frame(1)
                 driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])
         """
-        if isinstance(frame_reference, str) and self._driver.w3c:
+        if isinstance(frame_reference, str):
             try:
                 frame_reference = self._driver.find_element(By.ID, frame_reference)
             except NoSuchElementException:
@@ -134,11 +131,8 @@ class SwitchTo:
 
                 driver.switch_to.window('main')
         """
-        if self._driver.w3c:
-            self._w3c_window(window_name)
-            return
-        data = {'name': window_name}
-        self._driver.execute(Command.SWITCH_TO_WINDOW, data)
+        self._w3c_window(window_name)
+        return
 
     def _w3c_window(self, window_name):
         def send_handle(h):

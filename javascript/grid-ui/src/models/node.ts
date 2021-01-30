@@ -1,17 +1,16 @@
 import OsInfoType from "./os-info";
-import CapabilitiesType from "./capabilities";
 
 interface NodeType {
     /** Node id */
     id: string;
-    /** A set of capabilities that this node has */
-    capabilities: CapabilitiesType[];
     /** Node URI */
     uri: string;
     /** Node status (UP, DRAINING, UNAVAILABLE)  */
     status: string;
     /** Max. number of concurrent sessions */
     maxSession: number;
+    /** Number of slots */
+    slotCount: number;
     /** Number of current sessions */
     sessionCount: number;
     /** Grid Node version */

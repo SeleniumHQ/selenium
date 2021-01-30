@@ -56,10 +56,10 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
 public class GraphqlHandler implements HttpHandler {
 
@@ -177,12 +177,12 @@ public class GraphqlHandler implements HttpHandler {
       .scalar(Types.Uri)
       .scalar(Types.Url)
       .type("GridQuery", typeWiring -> typeWiring
-          .dataFetcher("grid", new GridData(
-            distributor,
-            newSessionQueuer,
-            publicUri,
-            version))
-          .dataFetcher("session", new SessionData(distributor)))
+        .dataFetcher("grid", new GridData(
+          distributor,
+          newSessionQueuer,
+          publicUri,
+          version))
+        .dataFetcher("session", new SessionData(distributor)))
       .build();
   }
 
