@@ -7,7 +7,7 @@ scalar Uri
 enum Status {
   UP
   DRAINING
-  UNAVAILABLE
+  DOWN
 }
 
 type Session {
