@@ -60,4 +60,5 @@ type Grid {
   version: String!
   sessionQueueSize: Int!
   sessionQueueRequests: [String]!
+  sessions: [Session]!
 }
