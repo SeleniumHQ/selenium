@@ -628,25 +628,6 @@ describe('input.Actions', function () {
       ])
     })
 
-    it('mouse movements cannot be relative to the viewport', async function () {
-      const actions = new input.Actions(
-        new StubExecutor(Promise.reject(new error.UnknownCommandError())),
-        { bridge: true }
-      )
-
-      try {
-        await actions.move({ x: 10, y: 15 }).perform()
-        return Promise.reject(Error('should have failed!'))
-      } catch (err) {
-        if (
-          !(err instanceof error.UnsupportedOperationError) ||
-          !err.message.startsWith('pointer movements relative to viewport')
-        ) {
-          throw err
-        }
-      }
-    })
-
     describe('detects clicks', function () {
       it('press/release for same button is a click', async function () {
         const executor = new StubExecutor(

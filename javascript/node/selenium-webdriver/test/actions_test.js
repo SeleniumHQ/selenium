@@ -50,24 +50,6 @@ test.suite(function (env) {
       return driver.quit()
     })
 
-    it('move()', async function () {
-      await driver.get(fileServer.whereIs('/data/actions/drag.html'))
-
-      let slide = await driver.findElement(By.id('slide'))
-      assert.equal(await slide.getCssValue('left'), '0px')
-      assert.equal(await slide.getCssValue('top'), '0px')
-
-      await driver
-        .actions()
-        .move({ origin: slide })
-        .press()
-        .move({ x: 100, y: 100, origin: Origin.POINTER })
-        .release()
-        .perform()
-      assert.equal(await slide.getCssValue('left'), '101px')
-      assert.equal(await slide.getCssValue('top'), '101px')
-    })
-
     it('can send keys to focused element', async function () {
       await driver.get(test.Pages.formPage)
 

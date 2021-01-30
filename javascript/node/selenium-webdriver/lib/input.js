@@ -365,26 +365,6 @@ class Pointer extends Device {
   release(button = Button.LEFT) {
     return { type: Action.Type.POINTER_UP, button }
   }
-
-  /**
-   * Creates an action for moving the pointer `x` and `y` pixels from the
-   * specified `origin`. The `origin` may be defined as the pointer's
-   * {@linkplain Origin.POINTER current position}, the
-   * {@linkplain Origin.VIEWPORT viewport}, or the center of a specific
-   * {@linkplain ./webdriver.WebElement WebElement}.
-   *
-   * @param {{
-   *   x: (number|undefined),
-   *   y: (number|undefined),
-   *   duration: (number|undefined),
-   *   origin: (!Origin|!./webdriver.WebElement|undefined),
-   * }=} options the move options.
-   * @return {!Action} The new action.
-   * @package
-   */
-  move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT }) {
-    return { type: Action.Type.POINTER_MOVE, origin, duration, x, y }
-  }
 }
 
 /**
@@ -812,34 +792,6 @@ class Actions {
   }
 
   /**
-   * Inserts an action for moving the mouse `x` and `y` pixels relative to the
-   * specified `origin`. The `origin` may be defined as the mouse's
-   * {@linkplain ./input.Origin.POINTER current position}, the
-   * {@linkplain ./input.Origin.VIEWPORT viewport}, or the center of a specific
-   * {@linkplain ./webdriver.WebElement WebElement}.
-   *
-   * You may adjust how long the remote end should take, in milliseconds, to
-   * perform the move using the `duration` parameter (defaults to 100 ms).
-   * The number of incremental move events generated over this duration is an
-   * implementation detail for the remote end.
-   *
-   * @param {{
-   *   x: (number|undefined),
-   *   y: (number|undefined),
-   *   duration: (number|undefined),
-   *   origin: (!Origin|!./webdriver.WebElement|undefined),
-   * }=} options The move options. Defaults to moving the mouse to the top-left
-   *     corner of the viewport over 100ms.
-   * @return {!Actions} a self reference.
-   */
-  move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT } = {}) {
-    return this.insert(
-      this.mouse_,
-      this.mouse_.move({ x, y, duration, origin })
-    )
-  }
-
-  /**
    * Short-hand for performing a simple left-click (down/up) with the mouse.
    *
    * @param {./webdriver.WebElement=} element If specified, the mouse will
@@ -1064,6 +1016,8 @@ async function executeLegacy(executor, sequences) {
 
   for (let i = 0; i < actions.length; i++) {
     const action = actions[i]
+    console.log('%%%%%%%%%%%%%%%%%%%%', action)
+    console.trace()
     switch (action.type) {
       case Action.Type.PAUSE: {
         await promise.delayed(action.duration || 0)
