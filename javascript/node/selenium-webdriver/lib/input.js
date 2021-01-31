@@ -1016,8 +1016,6 @@ async function executeLegacy(executor, sequences) {
 
   for (let i = 0; i < actions.length; i++) {
     const action = actions[i]
-    console.log('%%%%%%%%%%%%%%%%%%%%', action)
-    console.trace()
     switch (action.type) {
       case Action.Type.PAUSE: {
         await promise.delayed(action.duration || 0)
