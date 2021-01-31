@@ -195,10 +195,7 @@ class WebDriver(RemoteWebDriver):
             # We don't care about the message because something probably has gone wrong
             pass
 
-        if self.w3c:
-            self.service.stop()
-        else:
-            self.binary.kill()
+        self.service.stop()
 
         if self.profile:
             try:

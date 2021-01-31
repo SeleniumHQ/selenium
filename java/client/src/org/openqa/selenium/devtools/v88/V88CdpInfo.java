@@ -24,6 +24,6 @@ import org.openqa.selenium.devtools.CdpInfo;
 public class V88CdpInfo extends CdpInfo {
 
   public V88CdpInfo() {
-    super(86, V88Domains::new);
+    super(88, V88Domains::new);
   }
 }

@@ -25,13 +25,13 @@ import org.openqa.selenium.By;
  * (essentially {@code {"using": "locator-name", "value": "arguments"}})
  * and calls it in the context of the server.
  */
-public abstract class CustomLocator {
+public interface CustomLocator {
 
   /**
    * @return The locator name, which is the value of the {@code using}
    *   property of the JSON payload.
    */
-  public abstract String getLocatorName();
+  String getLocatorName();
 
-  public abstract By createBy(Object usingParameter);
+  By createBy(Object usingParameter);
 }

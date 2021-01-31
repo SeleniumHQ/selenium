@@ -18,6 +18,7 @@
 package org.openqa.selenium.edge;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 
 import com.google.common.io.Files;
@@ -106,4 +107,15 @@ public class EdgeOptionsTest {
     }
   }
 
+  @Test
+  public void mergingOptionsMergesArguments() {
+    EdgeOptions one = new EdgeOptions().addArguments("verbose");
+    EdgeOptions two = new EdgeOptions().addArguments("silent");
+    EdgeOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+  }
 }

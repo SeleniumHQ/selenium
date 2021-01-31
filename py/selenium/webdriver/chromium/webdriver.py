@@ -64,16 +64,14 @@ class ChromiumDriver(RemoteWebDriver):
 
         _ignore_proxy = None
         if not options:
-            # desired_capabilities stays as passed in
-            if not desired_capabilities:
-                desired_capabilities = self.create_options().to_capabilities()
-        else:
-            if not desired_capabilities:
-                desired_capabilities = options.to_capabilities()
-            else:
-                desired_capabilities.update(options.to_capabilities())
-            if options._ignore_local_proxy:
-                _ignore_proxy = options._ignore_local_proxy
+            options = self.create_options()
+
+        if desired_capabilities:
+            for key, value in desired_capabilities.items():
+                options.set_capability(key, value)
+
+        if options._ignore_local_proxy:
+            _ignore_proxy = options._ignore_local_proxy
 
         self.vendor_prefix = vendor_prefix
 
@@ -204,5 +202,5 @@ class ChromiumDriver(RemoteWebDriver):
         finally:
             self.service.stop()
 
-    def create_options(self):
-        pass
+    def create_options(self) -> Options:
+        return Options()

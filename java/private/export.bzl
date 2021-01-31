@@ -13,6 +13,7 @@ def java_export(
         pom_template = None,
         hides = [],
         uses = [],
+        opens_to = [],
         exports = [],
         tags = [],
         visibility = None,
@@ -56,7 +57,16 @@ def java_export(
        target = "%s-project" % name,
        deps = kwargs.get("deps", []) + kwargs.get("runtime_deps", []),
        exports = exports,
+       opens_to = opens_to,
        tags = tags,
+    )
+
+    native.filegroup(
+        name = "%s-maven-module" % name,
+        srcs = [
+            ":%s-module" % name,
+        ],
+        output_group = "module_jar",
     )
 
     javadoc(
@@ -77,7 +87,7 @@ def java_export(
         coordinates = maven_coordinates,
         pom = "%s-pom" % name,
         javadocs = "%s-docs" % name,
-        artifact_jar = ":%s-maven-artifact" % name,
+        artifact_jar = ":%s-maven-module" % name,
         source_jar = ":%s-maven-source" % name,
         visibility = visibility,
     )

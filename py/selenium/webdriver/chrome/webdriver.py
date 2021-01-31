@@ -65,6 +65,3 @@ class WebDriver(ChromiumDriver):
                                         port, options,
                                         service_args, desired_capabilities,
                                         service_log_path, service, keep_alive)
-
-    def create_options(self) -> Options:
-        return Options()

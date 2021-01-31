@@ -304,8 +304,8 @@ public class ByChainedTest {
 
   @Test
   public void testToString() {
-    assertThat(new ByChained(By.id("cheese"), By.name("photo")).toString())
-      .isEqualTo("By.chained({By.id: cheese,By.name: photo})");
+    assertThat(new ByChained(By.id("cheese"), By.name("photo")))
+      .hasToString("By.chained({By.id: cheese,By.name: photo})");
   }
 
   private interface AllDriver extends SearchContext {

@@ -195,6 +195,7 @@ public class Hub extends TemplateGridServerCommand {
       ui,
       router.with(networkOptions.getSpecComplianceChecks()),
       Route.prefix("/wd/hub").to(combine(router.with(networkOptions.getSpecComplianceChecks()))),
+      Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
 

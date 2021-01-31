@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  */
 
 @AutoService(CustomLocator.class)
-public class ById extends CustomLocator {
+public class ById implements CustomLocator {
   @Override
   public String getLocatorName() {
     return "id";

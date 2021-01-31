@@ -6,9 +6,18 @@ query {
 			uri
 			status
 			maxSession
-			capabilities
+			slotCount
+			stereotypes
+			version
+			sessionCount
+			osInfo {
+				version
+				name
+				arch
+			}
 		}
 		totalSlots
 		usedSlots
+		version
 	}
 }
