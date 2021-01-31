@@ -57,7 +57,7 @@ public class RemoteTags {
   private static String convertCapsToJsonString(Capabilities capabilities) {
     StringBuilder text = new StringBuilder();
     try (JsonOutput json = JSON.newOutput(text).setPrettyPrint(false)) {
-      json.write(capabilities.asMap());
+      json.write(capabilities);
       text.append('\n');
     }
     return text.toString();
