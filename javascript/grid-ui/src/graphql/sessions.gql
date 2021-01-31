@@ -1,0 +1,18 @@
+query {
+    grid {
+        sessions {
+            id,
+            capabilities,
+            startTime,
+            uri,
+            nodeId,
+            nodeUri,
+            sessionDurationMillis,
+            slot {
+                id,
+                stereotype,
+                lastStarted
+            }
+        }
+    }
+}

@@ -18,40 +18,24 @@
 package org.openqa.selenium.grid.graphql;
 
 import com.google.common.base.Suppliers;
-
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+
 public class SessionData implements DataFetcher {
 
-  private final Distributor distributor;
   private final Supplier<DistributorStatus> distributorStatus;
 
   public SessionData(Distributor distributor) {
-    this.distributor = Require.nonNull("Distributor", distributor);
-    distributorStatus = Suppliers.memoize(distributor::getStatus);
-  }
-
-  private static class SessionInSlot {
-    private final org.openqa.selenium.grid.data.Session session;
-    private final NodeStatus node;
-    private final Slot slot;
-
-    SessionInSlot(org.openqa.selenium.grid.data.Session session, NodeStatus node, Slot slot) {
-      this.session = session;
-      this.node = node;
-      this.slot = slot;
-    }
+    distributorStatus = Suppliers.memoize(Require.nonNull("Distributor", distributor)::getStatus);
   }
 
   @Override
@@ -94,5 +78,17 @@ public class SessionData implements DataFetcher {
       }
     }
     return null;
+  }
+
+  private static class SessionInSlot {
+    private final org.openqa.selenium.grid.data.Session session;
+    private final NodeStatus node;
+    private final Slot slot;
+
+    SessionInSlot(org.openqa.selenium.grid.data.Session session, NodeStatus node, Slot slot) {
+      this.session = session;
+      this.node = node;
+      this.slot = slot;
+    }
   }
 }

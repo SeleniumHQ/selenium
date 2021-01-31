@@ -7,7 +7,7 @@ scalar Uri
 enum Status {
   UP
   DRAINING
-  UNAVAILABLE
+  DOWN
 }
 
 type Session {
@@ -60,4 +60,5 @@ type Grid {
   version: String!
   sessionQueueSize: Int!
   sessionQueueRequests: [String]!
+  sessions: [Session]!
 }
