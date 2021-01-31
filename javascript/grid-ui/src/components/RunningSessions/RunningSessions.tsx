@@ -8,19 +8,16 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import {loader} from "graphql.macro";
-import {useQuery} from "@apollo/client";
-import {GridConfig} from "../../config";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItem} from "@material-ui/core";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/Info";
 import browserLogo from "../../util/browser-logo";
 import osLogo from "../../util/os-logo";
 import browserVersion from "../../util/browser-version";
+import EnhancedTableToolbar from "../EnhancedTableToolbar";
 
 interface SessionData {
   id: string,
@@ -110,8 +107,6 @@ const headCells: HeadCell[] = [
   {id: 'nodeUri', numeric: false, label: 'Node URI'},
 ];
 
-const GRID_SESSIONS_QUERY = loader("../../graphql/sessions.gql");
-
 interface EnhancedTableProps {
   classes: ReturnType<typeof useStyles>;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof SessionData) => void;
@@ -153,32 +148,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     </TableHead>
   );
 }
-
-const useToolbarStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
-    },
-    title: {
-      flex: '1 1 100%',
-    },
-  }),
-);
-
-const EnhancedTableToolbar = (props) => {
-  const classes = useToolbarStyles();
-
-  return (
-    <Toolbar
-      className={classes.root}
-    >
-      <Typography className={classes.title} variant="h3" id="tableTitle" component="div">
-        {props.title}
-      </Typography>
-    </Toolbar>
-  );
-};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -225,7 +194,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export default function Sessions() {
+export default function RunningSessions(props) {
+  const {sessions} = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof SessionData>('startTime');
@@ -241,12 +211,7 @@ export default function Sessions() {
     setRowOpen("");
   };
 
-  const {loading, error, data} = useQuery(GRID_SESSIONS_QUERY,
-    {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>`Error! ${error.message}`</p>;
-
-  const rows = data.grid.sessions.map((session) => {
+  const rows = sessions.map((session) => {
     return createSessionData(
       session.id,
       session.capabilities,
@@ -257,10 +222,6 @@ export default function Sessions() {
       session.sessionDurationMillis,
       session.slot,
     );
-  });
-
-  const queue = data.grid.sessionQueueRequests.map((queuedSession) => {
-    return JSON.stringify(JSON.parse(queuedSession));
   });
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof SessionData) => {
@@ -307,24 +268,8 @@ export default function Sessions() {
 
   return (
     <div className={classes.root}>
-      {queue.length > 0 && (
-        <div className={classes.queueList}>
-          <EnhancedTableToolbar title={`Queue (${queue.length})`}/>
-          <List component="nav" aria-label="main mailbox folders">
-            {queue.map((queueItem, index) => {
-              return (
-                <ListItem className={classes.queueListItem} key={index}>
-                  <pre>
-                    {queueItem}
-                  </pre>
-                </ListItem>
-              )
-            })}
-          </List>
-        </div>
-      )}
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar title={"Sessions"}/>
+        <EnhancedTableToolbar title={"Running"}/>
         <TableContainer>
           <Table
             className={classes.table}

@@ -9,7 +9,7 @@ import Overview from "./screens/Overview/Overview";
 import {Box, Link, makeStyles} from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
-import Sessions from "./components/Sessions/Sessions";
+import Sessions from "./screens/Sessions/Sessions";
 
 export const client = new ApolloClient({
 	cache: new InMemoryCache(),
