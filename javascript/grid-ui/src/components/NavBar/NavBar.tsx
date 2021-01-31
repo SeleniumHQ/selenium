@@ -8,6 +8,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DashboardIcon from "@material-ui/icons/Dashboard";
+import AssessmentIcon from '@material-ui/icons/Assessment';
 import clsx from 'clsx';
 import * as React from 'react';
 
@@ -78,6 +79,12 @@ export default function NavBar(props) {
 							<DashboardIcon/>
 						</ListItemIcon>
 						<ListItemText primary="Overview"/>
+					</ListItemLink>
+					<ListItemLink href={"#sessions"}>
+						<ListItemIcon>
+							<AssessmentIcon/>
+						</ListItemIcon>
+						<ListItemText primary="Sessions"/>
 					</ListItemLink>
 				</div>
 			</List>

@@ -16,7 +16,7 @@ import {
 import * as React from 'react';
 import chromeLogo from "../../assets/browsers/chrome.svg";
 import edgeLogo from "../../assets/browsers/edge.svg";
-import operaBlinkLogo from "../../assets/browsers/opera.svg";
+import operaLogo from "../../assets/browsers/opera.svg";
 import firefoxLogo from "../../assets/browsers/firefox.svg";
 import internetExplorerLogo from "../../assets/browsers/internet-explorer.svg";
 import safariLogo from "../../assets/browsers/safari.svg";
@@ -62,7 +62,9 @@ const browserLogoPath = (browser: string): string => {
     case "MicrosoftEdge":
       return edgeLogo;
     case "operablink":
-      return operaBlinkLogo;
+      return operaLogo;
+    case "opera":
+      return operaLogo;
     case "firefox":
       return firefoxLogo;
     case "internet explorer":

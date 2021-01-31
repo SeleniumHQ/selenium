@@ -59,7 +59,7 @@ export default function Overview() {
       slotStereotypes: slotStereotypes,
     };
     return newNode;
-  })
+  });
 
   return (
     <Grid container spacing={3}>

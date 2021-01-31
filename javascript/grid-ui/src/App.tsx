@@ -14,6 +14,7 @@ import Overview from "./screens/Overview/Overview";
 import {Box, Link, makeStyles} from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
+import Sessions from "./components/Sessions/Sessions";
 
 export const client = new ApolloClient({
 	cache: new InMemoryCache(),
@@ -73,6 +74,7 @@ function App() {
 					<main className={classes.content}>
 						<Container maxWidth={false} className={classes.container}>
 							<Switch>
+								<Route exact path={"/sessions"} component={Sessions}/>
 								<Route exact path={"/"} component={Overview}/>
 							</Switch>
 						</Container>
