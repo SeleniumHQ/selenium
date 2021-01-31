@@ -149,16 +149,12 @@ public class LoggingOptions {
             map.put("eventName", event.getName());
 
             Attributes attributes = event.getAttributes();
-            Map<String, Object> attributeMap = new HashMap<>();
-
-            attributes.forEach(
-              (attributeKey, value) -> attributeMap.put(attributeKey.getKey(), value));
-            map.put("attributes", attributeMap);
+            map.put("attributes", attributes.asMap());
             String jsonString = getJsonString(map);
-            if (status.getStatusCode() == StatusCode.OK) {
-              LOG.log(Level.FINE, jsonString);
-            } else {
+            if (status.getStatusCode() == StatusCode.ERROR) {
               LOG.log(Level.WARNING, jsonString);
+            } else {
+              LOG.log(Level.FINE, jsonString);
             }
           });
         });
