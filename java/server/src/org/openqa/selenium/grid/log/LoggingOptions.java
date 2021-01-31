@@ -17,15 +17,13 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
-import io.opentelemetry.sdk.trace.SdkTracerManagement;
+import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.data.EventData;
 import io.opentelemetry.sdk.trace.data.SpanData;
@@ -127,7 +125,6 @@ public class LoggingOptions {
 
   private Tracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
-    SdkTracerManagement tracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
     List<SpanProcessor> exporters = new LinkedList<>();
     exporters.add(SimpleSpanProcessor.create(new SpanExporter() {
       @Override
@@ -179,15 +176,26 @@ public class LoggingOptions {
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
       exporter -> exporters.add(SimpleSpanProcessor.create(exporter)));
-    tracerManagement.addSpanProcessor(SpanProcessor.composite(exporters));
 
     // OpenTelemetry default propagators are no-op since version 0.9.0.
     // Hence, required propagators need to defined and added.
-    ContextPropagators propagators = ContextPropagators.create(
-      TextMapPropagator.composite(W3CTraceContextPropagator.getInstance()));
+    ContextPropagators propagators =
+      ContextPropagators.create((W3CTraceContextPropagator.getInstance()));
+
+    SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
+      .addSpanProcessor(SpanProcessor.composite(exporters))
+      .build();
+
+    OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder()
+      .setTracerProvider(sdkTracerProvider)
+      .setPropagators(propagators)
+      .buildAndRegisterGlobal();
+
+    Runtime.getRuntime()
+      .addShutdownHook(new Thread(() -> openTelemetrySdk.getTracerManagement().shutdown()));
 
     return new OpenTelemetryTracer(
-      GlobalOpenTelemetry.getTracer("default"),
+      openTelemetrySdk.getTracer("default"),
       propagators.getTextMapPropagator());
   }
 
