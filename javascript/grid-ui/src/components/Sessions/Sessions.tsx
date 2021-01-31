@@ -1,5 +1,5 @@
 import React from 'react';
-import {createStyles, lighten, makeStyles, Theme} from '@material-ui/core/styles';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,20 +16,11 @@ import Switch from '@material-ui/core/Switch';
 import {loader} from "graphql.macro";
 import {useQuery} from "@apollo/client";
 import {GridConfig} from "../../config";
-import chromeLogo from "../../assets/browsers/chrome.svg";
-import edgeLogo from "../../assets/browsers/edge.svg";
-import operaLogo from "../../assets/browsers/opera.svg";
-import firefoxLogo from "../../assets/browsers/firefox.svg";
-import internetExplorerLogo from "../../assets/browsers/internet-explorer.svg";
-import safariLogo from "../../assets/browsers/safari.svg";
-import safariTechnologyPreviewLogo from "../../assets/browsers/safari-technology-preview.png";
-import unknownBrowserLogo from "../../assets/browsers/unknown.svg";
-import macLogo from "../../assets/operating-systems/mac.svg";
-import windowsLogo from "../../assets/operating-systems/windows.svg";
-import linuxLogo from "../../assets/operating-systems/linux.svg";
-import unknownOsLogo from "../../assets/operating-systems/unknown.svg";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@material-ui/core";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItem} from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/Info";
+import browserLogo from "../../util/browser-logo";
+import osLogo from "../../util/os-logo";
+import browserVersion from "../../util/browser-version";
 
 interface SessionData {
   id: string,
@@ -74,47 +65,6 @@ function createSessionData(
   };
 }
 
-const browserLogoPath = (browser: string): string => {
-  switch (browser.toLowerCase()) {
-    case "chrome":
-      return chromeLogo;
-    case "microsoftedge":
-      return edgeLogo;
-    case "operablink":
-      return operaLogo;
-    case "opera":
-      return operaLogo;
-    case "firefox":
-      return firefoxLogo;
-    case "internet explorer":
-      return internetExplorerLogo;
-    case "safari":
-      return safariLogo;
-    case "safari technology preview":
-      return safariTechnologyPreviewLogo;
-    default:
-      return unknownBrowserLogo;
-  }
-};
-
-const browserVersion = (version: string): string => {
-  return version.length > 0 ? " - v." + version : version;
-}
-
-const osLogoPath = (os: string): string => {
-  const osLowerCase: string = os.toLowerCase();
-  if (osLowerCase.includes("win")) {
-    return windowsLogo;
-  }
-  if (osLowerCase.includes("mac")) {
-    return macLogo;
-  }
-  if (osLowerCase.includes("nix") || osLowerCase.includes("nux") || osLowerCase.includes("aix")) {
-    return linuxLogo;
-  }
-  return unknownOsLogo;
-};
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -147,18 +97,17 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 }
 
 interface HeadCell {
-  disablePadding: boolean;
   id: keyof SessionData;
   label: string;
   numeric: boolean;
 }
 
 const headCells: HeadCell[] = [
-  {id: 'id', numeric: false, disablePadding: false, label: 'ID'},
-  {id: 'rawCapabilities', numeric: false, disablePadding: false, label: 'Capabilities'},
-  {id: 'startTime', numeric: false, disablePadding: false, label: 'Start time'},
-  {id: 'sessionDurationMillis', numeric: true, disablePadding: false, label: 'Duration'},
-  {id: 'nodeUri', numeric: false, disablePadding: false, label: 'Node URI'},
+  {id: 'id', numeric: false, label: 'ID'},
+  {id: 'rawCapabilities', numeric: false, label: 'Capabilities'},
+  {id: 'startTime', numeric: false, label: 'Start time'},
+  {id: 'sessionDurationMillis', numeric: true, label: 'Duration'},
+  {id: 'nodeUri', numeric: false, label: 'Node URI'},
 ];
 
 const GRID_SESSIONS_QUERY = loader("../../graphql/sessions.gql");
@@ -183,7 +132,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            padding={'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -211,23 +160,13 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(1),
     },
-    highlight:
-      theme.palette.type === 'light'
-        ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-        : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
     title: {
       flex: '1 1 100%',
     },
   }),
 );
 
-const EnhancedTableToolbar = () => {
+const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
 
   return (
@@ -235,7 +174,7 @@ const EnhancedTableToolbar = () => {
       className={classes.root}
     >
       <Typography className={classes.title} variant="h3" id="tableTitle" component="div">
-        Sessions
+        {props.title}
       </Typography>
     </Toolbar>
   );
@@ -272,7 +211,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     buttonMargin: {
       padding: 1,
-    }
+    },
+    queueList: {
+      minWidth: 750,
+      backgroundColor: theme.palette.background.paper,
+      marginBottom: 20,
+    },
+    queueListItem: {
+      borderBottomWidth: 1,
+      borderBottomStyle: 'solid',
+      borderBottomColor: '#e0e0e0',
+    },
   }),
 );
 
@@ -308,6 +257,10 @@ export default function Sessions() {
       session.sessionDurationMillis,
       session.slot,
     );
+  });
+
+  const queue = data.grid.sessionQueueRequests.map((queuedSession) => {
+    return JSON.stringify(JSON.parse(queuedSession));
   });
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof SessionData) => {
@@ -354,8 +307,24 @@ export default function Sessions() {
 
   return (
     <div className={classes.root}>
+      {queue.length > 0 && (
+        <div className={classes.queueList}>
+          <EnhancedTableToolbar title={`Queue (${queue.length})`}/>
+          <List component="nav" aria-label="main mailbox folders">
+            {queue.map((queueItem, index) => {
+              return (
+                <ListItem className={classes.queueListItem} key={index}>
+                  <pre>
+                    {queueItem}
+                  </pre>
+                </ListItem>
+              )
+            })}
+          </List>
+        </div>
+      )}
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar/>
+        <EnhancedTableToolbar title={"Sessions"}/>
         <TableContainer>
           <Table
             className={classes.table}
@@ -390,12 +359,12 @@ export default function Sessions() {
                       </TableCell>
                       <TableCell align="right">
                         <img
-                          src={osLogoPath(row.platformName as string)}
+                          src={osLogo(row.platformName as string)}
                           className={classes.logo}
                           alt="OS Logo"
                         />
                         <img
-                          src={browserLogoPath(row.browserName as string)}
+                          src={browserLogo(row.browserName as string)}
                           className={classes.logo}
                           alt="Browser Logo"
                         />
@@ -407,12 +376,12 @@ export default function Sessions() {
                                 open={rowOpen === row.id}>
                           <DialogTitle id="session-info-dialog">
                             <img
-                              src={osLogoPath(row.platformName as string)}
+                              src={osLogo(row.platformName as string)}
                               className={classes.logo}
                               alt="OS Logo"
                             />
                             <img
-                              src={browserLogoPath(row.browserName as string)}
+                              src={browserLogo(row.browserName as string)}
                               className={classes.logo}
                               alt="Browser Logo"
                             />

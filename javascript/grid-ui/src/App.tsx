@@ -2,11 +2,6 @@ import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import React from "react";
 import ReactModal from "react-modal";
-// css import order is important
-/* 1 */
-// import "./css/theme.css";
-/* 2 */
-// import "./css/theme-selenium.css";
 import {GridConfig} from "./config";
 import NodeType from "./models/node";
 import TopBar from "./components/TopBar/TopBar";

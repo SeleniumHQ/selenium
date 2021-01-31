@@ -14,21 +14,12 @@ import {
   Typography
 } from '@material-ui/core';
 import * as React from 'react';
-import chromeLogo from "../../assets/browsers/chrome.svg";
-import edgeLogo from "../../assets/browsers/edge.svg";
-import operaLogo from "../../assets/browsers/opera.svg";
-import firefoxLogo from "../../assets/browsers/firefox.svg";
-import internetExplorerLogo from "../../assets/browsers/internet-explorer.svg";
-import safariLogo from "../../assets/browsers/safari.svg";
-import safariTechnologyPreviewLogo from "../../assets/browsers/safari-technology-preview.png";
-import unknownBrowserLogo from "../../assets/browsers/unknown.svg";
-import macLogo from "../../assets/operating-systems/mac.svg";
-import windowsLogo from "../../assets/operating-systems/windows.svg";
-import linuxLogo from "../../assets/operating-systems/linux.svg";
-import unknownOsLogo from "../../assets/operating-systems/unknown.svg";
 import InfoIcon from '@material-ui/icons/Info';
 import NodeType from "../../models/node";
 import LinearProgress, {LinearProgressProps} from '@material-ui/core/LinearProgress';
+import browserLogo from "../../util/browser-logo";
+import osLogo from "../../util/os-logo";
+import browserVersion from "../../util/browser-version";
 
 const useStyles = makeStyles({
   root: {
@@ -54,48 +45,6 @@ const useStyles = makeStyles({
     padding: 1,
   }
 });
-
-const browserLogoPath = (browser: string): string => {
-  switch (browser) {
-    case "chrome":
-      return chromeLogo;
-    case "MicrosoftEdge":
-      return edgeLogo;
-    case "operablink":
-      return operaLogo;
-    case "opera":
-      return operaLogo;
-    case "firefox":
-      return firefoxLogo;
-    case "internet explorer":
-      return internetExplorerLogo;
-    case "safari":
-      return safariLogo;
-    case "Safari Technology Preview":
-      return safariTechnologyPreviewLogo;
-    default:
-      return unknownBrowserLogo;
-  }
-};
-
-const osLogoPath = (os: string): string => {
-  const osLowerCase: string = os.toLowerCase();
-  if (osLowerCase.includes("win")) {
-    return windowsLogo;
-  }
-  if (osLowerCase.includes("mac")) {
-    return macLogo;
-  }
-  if (osLowerCase.includes("nix") || osLowerCase.includes("nux") || osLowerCase.includes("aix")) {
-    return linuxLogo;
-  }
-  return unknownOsLogo;
-};
-
-const browserVersion = (stereotype: any): string => {
-  const version = stereotype.browserVersion ?? "";
-  return version.length > 0 ? " - v." + version : version;
-}
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
   return (
@@ -159,9 +108,9 @@ export default function Node(props) {
                   variant="h6"
               >
                 <img
-                    src={osLogoPath(nodeInfo.osInfo.name)}
-                    className={classes.osLogo}
-                    alt="OS Logo"
+                  src={osLogo(nodeInfo.osInfo.name)}
+                  className={classes.osLogo}
+                  alt="OS Logo"
                 />
                 <IconButton className={classes.buttonMargin} onClick={handleDialogOpen}>
                   <InfoIcon/>
@@ -169,9 +118,9 @@ export default function Node(props) {
                 <Dialog onClose={handleDialogClose} aria-labelledby="node-info-dialog" open={open}>
                   <DialogTitle id="node-info-dialog">
                     <img
-                        src={osLogoPath(nodeInfo.osInfo.name)}
-                        className={classes.osLogo}
-                        alt="OS Logo"
+                      src={osLogo(nodeInfo.osInfo.name)}
+                      className={classes.osLogo}
+                      alt="OS Logo"
                     />
                     <Box fontWeight="fontWeightBold" mr={1} display='inline'>
                       URI:
@@ -230,18 +179,23 @@ export default function Node(props) {
                                 .slice(index * 3, Math.min((index * 3) + 3, nodeInfo.slotStereotypes.length))
                                 .map((slotStereotype: any, idx) => {
                                   return (<Typography
-                                          color="textPrimary"
-                                          variant="h6"
-                                          key={idx}
-                                      >
-                                        <img
-                                            src={browserLogoPath(slotStereotype.stereotype.browserName)}
-                                            className={classes.browserLogo}
-                                            alt="Browser Logo"
-                                        />
-                                        {slotStereotype.slots}
-                                        {browserVersion(slotStereotype.stereotype)}
-                                      </Typography>
+                                      color="textPrimary"
+                                      variant="h6"
+                                      key={idx}
+                                    >
+                                      <img
+                                        src={browserLogo(slotStereotype.stereotype.browserName)}
+                                        className={classes.browserLogo}
+                                        alt="Browser Logo"
+                                      />
+                                      {slotStereotype.slots}
+                                      {
+                                        browserVersion(
+                                          slotStereotype.stereotype.browserVersion ??
+                                          slotStereotype.stereotype.version
+                                        )
+                                      }
+                                    </Typography>
                                   )
                                 })}
                         </Grid>
