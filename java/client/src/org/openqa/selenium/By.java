@@ -339,7 +339,7 @@ public abstract class By {
       private final String using;
       private final Object value;
 
-      public Parameters(String using, String value) {
+      public Parameters(String using, Object value) {
         this.using = Require.nonNull("Search mechanism", using);
         // There may be subclasses where the value is optional. Allow for this.
         this.value = value;
