@@ -11,6 +11,7 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import clsx from 'clsx';
 import * as React from 'react';
+import {Box, CircularProgress, CircularProgressProps, Typography} from "@material-ui/core";
 
 const drawerWidth = 240;
 
@@ -48,15 +49,41 @@ const useStyles = makeStyles((theme) => ({
 			width: theme.spacing(9),
 		},
 	},
+	concurrencyBackground: {
+		backgroundColor: theme.palette.secondary.main,
+	},
 }));
 
 function ListItemLink(props) {
 	return <ListItem button component="a" {...props} />;
 }
 
+function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
+	return (
+		<Box position="relative" display="inline-flex">
+			<CircularProgress variant="determinate" size={80} {...props} />
+			<Box
+				top={0}
+				left={0}
+				bottom={0}
+				right={0}
+				position="absolute"
+				display="flex"
+				alignItems="center"
+				justifyContent="center"
+			>
+				<Typography variant="h4" component="div" color="textSecondary">{`${Math.round(
+					props.value,
+				)}%`}</Typography>
+			</Box>
+		</Box>
+	);
+}
+
 export default function NavBar(props) {
 	const classes = useStyles();
-	const open = props.open;
+	const {open, maxSession, sessionCount} = props;
+	const currentLoad = Math.min(((sessionCount / maxSession) * 100), 100);
 
 	return (
 		<Drawer
@@ -88,8 +115,34 @@ export default function NavBar(props) {
 					</ListItemLink>
 				</div>
 			</List>
-			{/*<Divider/>*/}
-			{/*<List>{secondaryListItems}</List>*/}
+			<Box flexGrow={1}/>
+			<Box
+				p={2}
+				m={2}
+				className={classes.concurrencyBackground}
+			>
+				<Typography
+					align="center"
+					gutterBottom
+					variant="h4"
+				>
+					Concurrency
+				</Typography>
+				<Box
+					display="flex"
+					justifyContent="center"
+					mt={2}
+					mb={2}
+				>
+					<CircularProgressWithLabel value={currentLoad}/>
+				</Box>
+				<Typography
+					align="center"
+					variant="h4"
+				>
+					{sessionCount} / {maxSession}
+				</Typography>
+			</Box>
 		</Drawer>
 	);
 }

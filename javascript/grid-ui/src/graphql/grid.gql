@@ -2,7 +2,9 @@ query Summary {
 	grid {
 		uri
 		totalSlots
-		usedSlots
+		maxSession
+		sessionCount
+		sessionQueueSize
 		version
 	}
 }

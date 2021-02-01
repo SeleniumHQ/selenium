@@ -65,7 +65,7 @@ type GridQuery {
 type Grid {
   uri: Uri!
   totalSlots: Int!
-  usedSlots: Int!
+  maxSession: Int!
   sessionCount: Int!
   version: String!
   sessionQueueSize: Int!

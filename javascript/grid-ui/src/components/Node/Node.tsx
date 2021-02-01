@@ -148,7 +148,7 @@ export default function Node(props) {
                     </Typography>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary" variant="outlined">
+                    <Button onClick={handleDialogClose} color="primary" variant="contained">
                       Close
                     </Button>
                   </DialogActions>
@@ -242,7 +242,7 @@ export default function Node(props) {
                 </Grid>
                 <Grid item xs={12}
                 >
-                  <LinearProgressWithLabel value={currentLoad as any}/>
+                  <LinearProgressWithLabel value={currentLoad as number}/>
                 </Grid>
               </Grid>
             </Grid>
