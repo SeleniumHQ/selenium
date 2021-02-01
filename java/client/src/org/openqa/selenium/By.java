@@ -17,12 +17,13 @@
 
 package org.openqa.selenium;
 
-import java.io.Serializable;
+import org.openqa.selenium.internal.Require;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -176,255 +177,130 @@ public abstract class By {
     return "[unknown locator]";
   }
 
-  public abstract static class StandardLocator extends By {
-    @Override
-    public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
-    }
-
-    public abstract <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder);
-    public abstract <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder);
-  }
-
-  public static class ById extends StandardLocator implements Serializable {
-
-    private static final long serialVersionUID = 5341968046120372169L;
+  public static class ById extends PreW3CLocator {
 
     private final String id;
 
     public ById(String id) {
-      if (id == null) {
-        throw new IllegalArgumentException("Cannot find elements when the id is null.");
-      }
+      super(
+        "id",
+        Require.argument("Id", id).nonNull("Cannot find elements when id is null."),
+        new ByCssSelector(Stream.of(id.split("\\s+")).map(str -> "#" + str).collect(joining(" "))));
 
       this.id = id;
-    }
-
-    @Override
-    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("id", id);
-    }
-
-    @Override
-    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("id", id);
     }
 
     @Override
     public String toString() {
       return "By.id: " + id;
     }
-
-    private Map<String, Object> toJson() {
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "css selector");
-      asJson.put("value", Stream.of(id.split("\\s+")).map(str -> "#" + str).collect(joining(" ")));
-      return Collections.unmodifiableMap(asJson);
-    }
   }
 
-  public static class ByLinkText extends StandardLocator implements Serializable {
-
-    private static final long serialVersionUID = 1967414585359739708L;
+  public static class ByLinkText extends BaseW3CLocator {
 
     private final String linkText;
 
     public ByLinkText(String linkText) {
-      if (linkText == null) {
-        throw new IllegalArgumentException("Cannot find elements when the link text is null.");
-      }
+      super(
+        "link text",
+        Require.argument("Link text", linkText)
+          .nonNull("Cannot find elements when the link text is null."));
 
       this.linkText = linkText;
-    }
-
-    @Override
-    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("link text", linkText);
-    }
-
-    @Override
-    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("link text", linkText);
     }
 
     @Override
     public String toString() {
       return "By.linkText: " + linkText;
     }
-
-    private Map<String, Object> toJson() {
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "link text");
-      asJson.put("value", linkText);
-      return Collections.unmodifiableMap(asJson);
-    }
   }
 
-  public static class ByPartialLinkText extends StandardLocator implements Serializable {
-
-    private static final long serialVersionUID = 1163955344140679054L;
+  public static class ByPartialLinkText extends BaseW3CLocator {
 
     private final String partialLinkText;
 
     public ByPartialLinkText(String partialLinkText) {
-      if (partialLinkText == null) {
-        throw new IllegalArgumentException("Cannot find elements when the link text is null.");
-      }
+      super(
+        "partial link text",
+        Require.argument("Partial link text", partialLinkText)
+          .nonNull("Cannot find elements when the link text is null."));
 
       this.partialLinkText = partialLinkText;
-    }
-
-    @Override
-    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("partial link text", partialLinkText);
-    }
-
-    @Override
-    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("partial link text", partialLinkText);
     }
 
     @Override
     public String toString() {
       return "By.partialLinkText: " + partialLinkText;
     }
-
-    private Map<String, Object> toJson() {
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "partial link text");
-      asJson.put("value", partialLinkText);
-      return Collections.unmodifiableMap(asJson);
-    }
   }
 
-  public static class ByName extends StandardLocator implements Serializable {
-
-    private static final long serialVersionUID = 376317282960469555L;
-
+  public static class ByName extends PreW3CLocator {
     private final String name;
 
     public ByName(String name) {
-      if (name == null) {
-        throw new IllegalArgumentException("Cannot find elements when name text is null.");
-      }
+      super(
+        "name",
+        Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
+        new ByCssSelector(String.format("*[name='%s']", name.replace("'", "\\'"))));
 
       this.name = name;
-    }
-
-    @Override
-    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("name", name);
-    }
-
-    @Override
-    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("name", name);
     }
 
     @Override
     public String toString() {
       return "By.name: " + name;
     }
-
-    private Map<String, Object> toJson() {
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "css selector");
-      asJson.put("value", String.format("*[name='%s']", name.replace("'", "\\'")));
-      return Collections.unmodifiableMap(asJson);
-    }
   }
 
-  public static class ByTagName extends StandardLocator implements Serializable {
-
-    private static final long serialVersionUID = 4699295846984948351L;
+  public static class ByTagName extends BaseW3CLocator {
 
     private final String tagName;
 
     public ByTagName(String tagName) {
-      if (tagName == null) {
-        throw new IllegalArgumentException("Cannot find elements when the tag name is null.");
-      }
+      super(
+        "tag name",
+        Require.argument("Tag name", tagName)
+          .nonNull("Cannot find elements when the tag name is null."));
 
       this.tagName = tagName;
-    }
-
-    @Override
-    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("tag name", tagName);
-    }
-
-    @Override
-    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("tag name", tagName);
     }
 
     @Override
     public String toString() {
       return "By.tagName: " + tagName;
     }
-
-    private Map<String, Object> toJson() {
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "tag name");
-      asJson.put("value", tagName);
-      return Collections.unmodifiableMap(asJson);
-    }
   }
 
-  public static class ByXPath extends StandardLocator implements Serializable {
-
-    private static final long serialVersionUID = -6727228887685051584L;
+  public static class ByXPath extends BaseW3CLocator {
 
     private final String xpathExpression;
 
     public ByXPath(String xpathExpression) {
-      if (xpathExpression == null) {
-        throw new IllegalArgumentException(
-            "Cannot find elements when the XPath is null.");
-      }
+      super(
+        "xpath",
+        Require.argument("XPath", xpathExpression)
+          .nonNull("Cannot find elements when the XPath is null."));
 
       this.xpathExpression = xpathExpression;
-    }
-
-    @Override
-    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("xpath", xpathExpression);
-    }
-
-    @Override
-    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("xpath", xpathExpression);
     }
 
     @Override
     public String toString() {
       return "By.xpath: " + xpathExpression;
     }
-
-    private Map<String, Object> toJson() {
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "xpath");
-      asJson.put("value", xpathExpression);
-      return Collections.unmodifiableMap(asJson);
-    }
   }
 
-  public static class ByClassName extends StandardLocator implements Serializable {
-
-    private static final long serialVersionUID = -8737882849130394673L;
+  public static class ByClassName extends PreW3CLocator {
 
     private final String className;
 
     public ByClassName(String className) {
-      if (className == null) {
-        throw new IllegalArgumentException(
-            "Cannot find elements when the class name expression is null.");
-      }
+      super(
+        "class",
+        Require.argument("Class name", className)
+          .nonNull("Cannot find elements when the class name expression is null."),
+      new ByCssSelector(Stream.of(className.split("\\s+")).map(str -> "." + str).collect(joining(" "))));
+
       if (className.matches(".*\\s.*")) {
         throw new InvalidSelectorException("Compound class names not permitted");
       }
@@ -433,85 +309,135 @@ public abstract class By {
     }
 
     @Override
-    public <T extends SearchContext> WebElement findElement(T driver,
-      BiFunction<String, String, WebElement> finder) {
-      return finder.apply("class name", className);
-    }
-
-    @Override
-    public <T extends SearchContext> List<WebElement> findElements(T driver,
-      BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("class name", className);
-    }
-
-    /**
-     * Generate a partial XPath expression that matches an element whose specified attribute
-     * contains the given CSS word. So to match &lt;div class='foo bar'&gt; you would say "//div[" +
-     * containingWord("class", "foo") + "]".
-     *    private Map<String, Object> toJson() {
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "link text");
-      asJson.put("value", linkText);
-      return Collections.unmodifiableMap(asJson);
-    }
-
-     * @param attribute name
-     * @param word name
-     * @return XPath fragment
-     */
-    private String containingWord(String attribute, String word) {
-      return "contains(concat(' ',normalize-space(@" + attribute + "),' '),' " + word + " ')";
-    }
-
-    @Override
     public String toString() {
       return "By.className: " + className;
     }
-
-    private Map<String, Object> toJson() {
-
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "css selector");
-      asJson.put("value", Stream.of(className.split("\\s+")).map(str -> "." + str).collect(joining(" ")));
-      return Collections.unmodifiableMap(asJson);
-    }
-
   }
 
-  public static class ByCssSelector extends StandardLocator implements Serializable {
-
-    private static final long serialVersionUID = -3910258723099459239L;
-
+  public static class ByCssSelector extends BaseW3CLocator {
     private final String cssSelector;
 
     public ByCssSelector(String cssSelector) {
-      if (cssSelector == null) {
-        throw new IllegalArgumentException("Cannot find elements when the selector is null");
-      }
+      super(
+        "css selector",
+        Require.argument("CSS selector", cssSelector)
+          .nonNull("Cannot find elements when the selector is null"));
 
       this.cssSelector = cssSelector;
-    }
-
-    @Override
-    public <T extends SearchContext> WebElement findElement(T driver, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("css selector", cssSelector);
-    }
-
-    @Override
-    public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("css selector", cssSelector);
     }
 
     @Override
     public String toString() {
       return "By.cssSelector: " + cssSelector;
     }
+  }
 
-    private Map<String, Object> toJson() {
-      Map<String, Object> asJson = new HashMap<>();
-      asJson.put("using", "css selector");
-      asJson.put("value", cssSelector);
-      return Collections.unmodifiableMap(asJson);
+  public interface Remotable {
+    Parameters getRemoteParameters();
+
+    class Parameters {
+      private final String using;
+      private final Object value;
+
+      public Parameters(String using, String value) {
+        this.using = Require.nonNull("Search mechanism", using);
+        // There may be subclasses where the value is optional. Allow for this.
+        this.value = value;
+      }
+
+      public String using() {
+        return using;
+      }
+
+      public Object value() {
+        return value;
+      }
+
+      @Override
+      public String toString() {
+        return "[" + using + ": " + value + "]";
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (!(o instanceof Parameters)) {
+          return false;
+        }
+        Parameters that = (Parameters) o;
+        return using.equals(that.using) && Objects.equals(value, that.value);
+      }
+
+      @Override
+      public int hashCode() {
+        return Objects.hash(using, value);
+      }
+
+      private Map<String, Object> toJson() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("using", using);
+        params.put("value", value);
+        return Collections.unmodifiableMap(params);
+      }
+    }
+  }
+
+  private static abstract class BaseW3CLocator extends By implements Remotable {
+
+    private final Parameters params;
+
+    protected BaseW3CLocator(String using, String value) {
+      this.params = new Parameters(using, value);
+    }
+
+    @Override
+    public WebElement findElement(SearchContext context) {
+      Require.nonNull("Search Context", context);
+      return context.findElement(this);
+    }
+
+    @Override
+    public List<WebElement> findElements(SearchContext context) {
+      Require.nonNull("Search Context", context);
+      return context.findElements(this);
+    }
+
+    @Override
+    public final Parameters getRemoteParameters() {
+      return params;
+    }
+
+    protected final Map<String, Object> toJson() {
+      return getRemoteParameters().toJson();
+    }
+  }
+
+  private static abstract class PreW3CLocator extends By implements Remotable {
+
+    private final Parameters remoteParams;
+    private final ByCssSelector fallback;
+
+    private PreW3CLocator(String using, String value, ByCssSelector fallback) {
+      this.remoteParams = new Remotable.Parameters(using, value);
+      this.fallback = fallback;
+    }
+
+    @Override
+    public WebElement findElement(SearchContext context) {
+      return context.findElement(fallback);
+    }
+
+    @Override
+    public List<WebElement> findElements(SearchContext context) {
+      return context.findElements(fallback);
+    }
+
+    @Override
+    final public Parameters getRemoteParameters() {
+      return remoteParams;
+    }
+
+    final protected Map<String, Object> toJson() {
+      return fallback.toJson();
     }
   }
 }
