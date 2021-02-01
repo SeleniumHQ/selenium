@@ -14,19 +14,12 @@ import {
   Typography
 } from '@material-ui/core';
 import * as React from 'react';
-import chromeLogo from "../../assets/browsers/chrome.svg";
-import edgeLogo from "../../assets/browsers/edge.svg";
-import operaBlinkLogo from "../../assets/browsers/opera.svg";
-import firefoxLogo from "../../assets/browsers/firefox.svg";
-import safariLogo from "../../assets/browsers/safari.svg";
-import safariTechnologyPreviewLogo from "../../assets/browsers/safari-technology-preview.png";
-import unknownBrowserLogo from "../../assets/browsers/unknown.svg";
-import macLogo from "../../assets/operating-systems/mac.svg";
-import windowsLogo from "../../assets/operating-systems/windows.svg";
-import linuxLogo from "../../assets/operating-systems/linux.svg";
-import unknownOsLogo from "../../assets/operating-systems/unknown.svg";
 import InfoIcon from '@material-ui/icons/Info';
 import NodeType from "../../models/node";
+import LinearProgress, {LinearProgressProps} from '@material-ui/core/LinearProgress';
+import browserLogo from "../../util/browser-logo";
+import osLogo from "../../util/os-logo";
+import browserVersion from "../../util/browser-version";
 
 const useStyles = makeStyles({
   root: {
@@ -45,7 +38,7 @@ const useStyles = makeStyles({
   browserLogo: {
     width: 24,
     height: 24,
-    marginTop: 5,
+    marginBottom: 5,
     marginRight: 5,
   },
   buttonMargin: {
@@ -53,38 +46,20 @@ const useStyles = makeStyles({
   }
 });
 
-const browserLogoPath = (browser: string): string => {
-  switch (browser) {
-    case "chrome":
-      return chromeLogo;
-    case "MicrosoftEdge":
-      return edgeLogo;
-    case "operablink":
-      return operaBlinkLogo;
-    case "firefox":
-      return firefoxLogo;
-    case "safari":
-      return safariLogo;
-    case "Safari Technology Preview":
-      return safariTechnologyPreviewLogo;
-    default:
-      return unknownBrowserLogo;
-  }
-};
-
-const osLogoPath = (os: string): string => {
-  const osLowerCase: string = os.toLowerCase();
-  if (osLowerCase.includes("win")) {
-    return windowsLogo;
-  }
-  if (osLowerCase.includes("mac")) {
-    return macLogo;
-  }
-  if (osLowerCase.includes("nix") || osLowerCase.includes("nux") || osLowerCase.includes("aix")) {
-    return linuxLogo;
-  }
-  return unknownOsLogo;
-};
+function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
+  return (
+      <Box display="flex" alignItems="center">
+        <Box width="100%" mr={1}>
+          <LinearProgress variant="determinate" {...props} />
+        </Box>
+        <Box minWidth={35}>
+          <Typography variant="body2" color="textSecondary">{`${Math.round(
+              props.value,
+          )}%`}</Typography>
+        </Box>
+      </Box>
+  );
+}
 
 export default function Node(props) {
   const classes = useStyles();
@@ -133,9 +108,9 @@ export default function Node(props) {
                   variant="h6"
               >
                 <img
-                    src={osLogoPath(nodeInfo.osInfo.name)}
-                    className={classes.osLogo}
-                    alt="OS Logo"
+                  src={osLogo(nodeInfo.osInfo.name)}
+                  className={classes.osLogo}
+                  alt="OS Logo"
                 />
                 <IconButton className={classes.buttonMargin} onClick={handleDialogOpen}>
                   <InfoIcon/>
@@ -143,9 +118,9 @@ export default function Node(props) {
                 <Dialog onClose={handleDialogClose} aria-labelledby="node-info-dialog" open={open}>
                   <DialogTitle id="node-info-dialog">
                     <img
-                        src={osLogoPath(nodeInfo.osInfo.name)}
-                        className={classes.osLogo}
-                        alt="OS Logo"
+                      src={osLogo(nodeInfo.osInfo.name)}
+                      className={classes.osLogo}
+                      alt="OS Logo"
                     />
                     <Box fontWeight="fontWeightBold" mr={1} display='inline'>
                       URI:
@@ -153,6 +128,9 @@ export default function Node(props) {
                     {nodeInfo.uri}
                   </DialogTitle>
                   <DialogContent dividers>
+                    <Typography gutterBottom>
+                      Node Id: {nodeInfo.id}
+                    </Typography>
                     <Typography gutterBottom>
                       OS Arch: {nodeInfo.osInfo.arch}
                     </Typography>
@@ -170,7 +148,7 @@ export default function Node(props) {
                     </Typography>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary" variant="outlined">
+                    <Button onClick={handleDialogClose} color="primary" variant="contained">
                       Close
                     </Button>
                   </DialogActions>
@@ -201,17 +179,23 @@ export default function Node(props) {
                                 .slice(index * 3, Math.min((index * 3) + 3, nodeInfo.slotStereotypes.length))
                                 .map((slotStereotype: any, idx) => {
                                   return (<Typography
-                                          color="textPrimary"
-                                          variant="h6"
-                                          key={idx}
-                                      >
-                                        <img
-                                            src={browserLogoPath(slotStereotype.stereotype.browserName)}
-                                            className={classes.browserLogo}
-                                            alt="Browser Logo"
-                                        />
-                                        {slotStereotype.slots}
-                                      </Typography>
+                                      color="textPrimary"
+                                      variant="h6"
+                                      key={idx}
+                                    >
+                                      <img
+                                        src={browserLogo(slotStereotype.stereotype.browserName)}
+                                        className={classes.browserLogo}
+                                        alt="Browser Logo"
+                                      />
+                                      {slotStereotype.slots}
+                                      {
+                                        browserVersion(
+                                          slotStereotype.stereotype.browserVersion ??
+                                          slotStereotype.stereotype.version
+                                        )
+                                      }
+                                    </Typography>
                                   )
                                 })}
                         </Grid>
@@ -231,7 +215,7 @@ export default function Node(props) {
                         variant="body2"
                         gutterBottom
                     >
-                      Load: {currentLoad}%
+                      Sessions: {sessionCount}
                     </Typography>
                   </Box>
                 </Grid>
@@ -255,6 +239,10 @@ export default function Node(props) {
                       {props.node.version}
                     </Typography>
                   </Box>
+                </Grid>
+                <Grid item xs={12}
+                >
+                  <LinearProgressWithLabel value={currentLoad as number}/>
                 </Grid>
               </Grid>
             </Grid>

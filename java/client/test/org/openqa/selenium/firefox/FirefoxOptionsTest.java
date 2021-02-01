@@ -23,6 +23,8 @@ import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
@@ -68,9 +70,9 @@ public class FirefoxOptionsTest {
   @Test
   public void canInitFirefoxOptionsWithCapabilities() {
     FirefoxOptions options = new FirefoxOptions(new ImmutableCapabilities(
-        MARIONETTE, false,
-        PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER,
-        ACCEPT_INSECURE_CERTS, true));
+      MARIONETTE, false,
+      PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER,
+      ACCEPT_INSECURE_CERTS, true));
 
     assertThat(options.isLegacy()).isTrue();
     assertThat(options.getCapability(PAGE_LOAD_STRATEGY)).isEqualTo(EAGER);
@@ -80,7 +82,7 @@ public class FirefoxOptionsTest {
   @Test
   public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptions() {
     FirefoxOptions options = new FirefoxOptions().setLegacy(true).merge(
-        new ImmutableCapabilities(PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER));
+      new ImmutableCapabilities(PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER));
     Capabilities caps = new ImmutableCapabilities(FIREFOX_OPTIONS, options);
 
     FirefoxOptions options2 = new FirefoxOptions(caps);
@@ -93,7 +95,7 @@ public class FirefoxOptionsTest {
   public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptionsAsMap() {
     FirefoxProfile profile = new FirefoxProfile();
     Capabilities caps = new ImmutableCapabilities(
-        FIREFOX_OPTIONS, ImmutableMap.of("profile", profile));
+      FIREFOX_OPTIONS, ImmutableMap.of("profile", profile));
 
     FirefoxOptions options = new FirefoxOptions(caps);
 
@@ -150,8 +152,8 @@ public class FirefoxOptionsTest {
     Map<String, Object> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
     assertThat(json.get(FIREFOX_OPTIONS))
-        .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("binary", "/i/like/cheese");
+      .asInstanceOf(InstanceOfAssertFactories.MAP)
+      .containsEntry("binary", "/i/like/cheese");
   }
 
   @Test
@@ -177,7 +179,7 @@ public class FirefoxOptionsTest {
       FirefoxOptions options = new FirefoxOptions();
 
       FirefoxBinary firefoxBinary =
-          options.getBinaryOrNull().orElseThrow(() -> new AssertionError("No binary"));
+        options.getBinaryOrNull().orElseThrow(() -> new AssertionError("No binary"));
 
       assertThat(firefoxBinary.getPath()).isEqualTo(binary.toString());
     } finally {
@@ -249,7 +251,7 @@ public class FirefoxOptionsTest {
     try {
       property.set(unlikelyProfileName);
       assertThatExceptionOfType(WebDriverException.class)
-          .isThrownBy(FirefoxOptions::new);
+        .isThrownBy(FirefoxOptions::new);
     } finally {
       property.reset();
     }
@@ -258,7 +260,7 @@ public class FirefoxOptionsTest {
   @Test
   public void callingToStringWhenTheBinaryDoesNotExistShouldNotCauseAnException() {
     FirefoxOptions options =
-        new FirefoxOptions().setBinary("there's nothing better in life than cake or peas.");
+      new FirefoxOptions().setBinary("there's nothing better in life than cake or peas.");
     options.toString();
     // The binary does not exist on this machine, but could do elsewhere. Be chill.
   }
@@ -277,45 +279,46 @@ public class FirefoxOptionsTest {
   @Test
   public void canConvertOptionsWithArgsToCapabilitiesAndRestoreBack() {
     FirefoxOptions options = new FirefoxOptions(
-        new MutableCapabilities(new FirefoxOptions().addArguments("-a", "-b")));
+      new MutableCapabilities(new FirefoxOptions().addArguments("-a", "-b")));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
-        .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("args", Arrays.asList("-a", "-b"));
+      .asInstanceOf(InstanceOfAssertFactories.MAP)
+      .containsEntry("args", Arrays.asList("-a", "-b"));
   }
 
   @Test
   public void canConvertOptionsWithPrefsToCapabilitiesAndRestoreBack() {
     FirefoxOptions options = new FirefoxOptions(
-        new MutableCapabilities(new FirefoxOptions()
-                                    .addPreference("string.pref", "some value")
-                                    .addPreference("int.pref", 42)
-                                    .addPreference("boolean.pref", true)));
+      new MutableCapabilities(
+        new FirefoxOptions()
+          .addPreference("string.pref", "some value")
+          .addPreference("int.pref", 42)
+          .addPreference("boolean.pref", true)));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
-        .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .extractingByKey("prefs")
-        .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("string.pref", "some value")
-        .containsEntry("int.pref", 42)
-        .containsEntry("boolean.pref", true);
+      .asInstanceOf(InstanceOfAssertFactories.MAP)
+      .extractingByKey("prefs")
+      .asInstanceOf(InstanceOfAssertFactories.MAP)
+      .containsEntry("string.pref", "some value")
+      .containsEntry("int.pref", 42)
+      .containsEntry("boolean.pref", true);
   }
 
   @Test
   public void canConvertOptionsWithBinaryToCapabilitiesAndRestoreBack() {
     FirefoxOptions options = new FirefoxOptions(
-        new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
+      new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
-        .asInstanceOf(InstanceOfAssertFactories.MAP)
-        .containsEntry("binary", new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
+      .asInstanceOf(InstanceOfAssertFactories.MAP)
+      .containsEntry("binary", new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
   }
 
   @Test
   public void roundTrippingToCapabilitiesAndBackWorks() {
     FirefoxOptions expected = new FirefoxOptions()
-        .setLegacy(true)
-        .addPreference("cake", "walk");
+      .setLegacy(true)
+      .addPreference("cake", "walk");
 
     // Convert to a Map so we can create a standalone capabilities instance, which we then use to
     // create a new set of options. This is the round trip, ladies and gentlemen.
@@ -328,19 +331,49 @@ public class FirefoxOptionsTest {
   public void optionsAsMapShouldBeImmutable() {
     Map<String, Object> options = new FirefoxOptions().asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> options.put("browserName", "chrome"));
+      .isThrownBy(() -> options.put("browserName", "chrome"));
 
     Map<String, Object> mozOptions = (Map<String, Object>) options.get(FIREFOX_OPTIONS);
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> mozOptions.put("prefs", emptyMap()));
+      .isThrownBy(() -> mozOptions.put("prefs", emptyMap()));
 
     Map<String, Object> prefs = (Map<String, Object>) mozOptions.get("prefs");
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> prefs.put("x", true));
+      .isThrownBy(() -> prefs.put("x", true));
 
     List<String> args = (List<String>) mozOptions.get("args");
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> args.add("-help"));
+      .isThrownBy(() -> args.add("-help"));
+  }
+
+  @Test
+  public void mergingOptionsMergesArguments() {
+    FirefoxOptions one = new FirefoxOptions().addArguments("verbose");
+    FirefoxOptions two = new FirefoxOptions().addArguments("silent");
+    FirefoxOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(FirefoxOptions.FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+  }
+
+  @Test
+  public void mergingOptionsMergesPreferences() {
+    FirefoxOptions one = new FirefoxOptions()
+      .addPreference("opt1", "val1")
+      .addPreference("opt2", "val2");
+    FirefoxOptions two = new FirefoxOptions()
+      .addPreference("opt2", "val4")
+      .addPreference("opt3", "val3");
+    FirefoxOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .extractingByKey(FirefoxOptions.FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("prefs").asInstanceOf(MAP)
+      .containsEntry("opt1", "val1")
+      .containsEntry("opt2", "val4")
+      .containsEntry("opt3", "val3");
   }
 
   private static class JreSystemProperty {
