@@ -28,19 +28,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GRID_QUERY = loader("../../graphql/grid.gql");
+const NODES_QUERY = loader("../../graphql/nodes.gql");
 
 
 export default function Overview() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const {loading, error, data} = useQuery(GRID_QUERY,
-      {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
+  const {loading, error, data} = useQuery(NODES_QUERY,
+    {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
   if (loading) return <p>Loading...</p>;
   if (error) return <p>`Error! ${error.message}`</p>;
 
-  const nodes = data.grid.nodes.map((node) => {
+  const nodes = data.nodesInfo.nodes.map((node) => {
     const osInfo: OsInfoType = {
       name: node.osInfo.name,
       version: node.osInfo.version,

@@ -336,7 +336,7 @@ export default function RunningSessions(props) {
                             <Typography gutterBottom>
                               Capabilities:
                             </Typography>
-                            <Typography gutterBottom>
+                            <Typography gutterBottom component={'span'}>
                               <pre>
                                 {JSON.stringify(JSON.parse(row.rawCapabilities as string), null, 2)}
                               </pre>

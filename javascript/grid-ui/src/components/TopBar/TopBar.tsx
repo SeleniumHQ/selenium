@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GRID_SUMMARY_QUERY = loader("../../graphql/grid-summary.gql");
+const GRID_QUERY = loader("../../graphql/grid.gql");
 
 
 export default function TopBar() {
@@ -65,7 +65,7 @@ export default function TopBar() {
     setOpen(false);
   };
 
-  const {loading, error, data} = useQuery(GRID_SUMMARY_QUERY,
+  const {loading, error, data} = useQuery(GRID_QUERY,
     {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
   if (loading) return <p>Loading...</p>;
   if (error) return <p>`Error! ${error.message}`</p>;

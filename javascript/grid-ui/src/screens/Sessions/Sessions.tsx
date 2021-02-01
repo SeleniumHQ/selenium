@@ -18,8 +18,8 @@ export default function Sessions() {
 
   return (
     <Grid container spacing={3}>
-      <QueuedSessions sessionQueueRequests={data.grid.sessionQueueRequests}/>
-      <RunningSessions sessions={data.grid.sessions}/>
+      <QueuedSessions sessionQueueRequests={data.sessionsInfo.sessionQueueRequests}/>
+      <RunningSessions sessions={data.sessionsInfo.sessions}/>
     </Grid>
   );
 }

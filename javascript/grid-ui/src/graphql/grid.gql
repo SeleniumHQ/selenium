@@ -1,21 +1,6 @@
-query {
+query Summary {
 	grid {
 		uri
-		nodes {
-			id
-			uri
-			status
-			maxSession
-			slotCount
-			stereotypes
-			version
-			sessionCount
-			osInfo {
-				version
-				name
-				arch
-			}
-		}
 		totalSlots
 		usedSlots
 		version
