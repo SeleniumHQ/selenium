@@ -29,6 +29,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -38,19 +39,18 @@ import java.util.stream.Collectors;
 
 public class Grid {
 
+  private static final Json JSON = new Json();
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
   private final Map<String, Object> queueInfoMap;
-  private final NewSessionQueuer newSessionQueuer;
   private final String version;
-  private static final Json JSON = new Json();
 
   public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri,
               String version) {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
-    this.newSessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
-    this.queueInfoMap = newSessionQueuer.getQueueContents();
+    NewSessionQueuer sessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
+    this.queueInfoMap = sessionQueuer.getQueueContents();
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
     this.version = Require.nonNull("Grid's version", version);
   }
@@ -67,25 +67,32 @@ public class Grid {
     ImmutableList.Builder<Node> toReturn = ImmutableList.builder();
 
     for (NodeStatus status : distributorStatus.get().getNodes()) {
-      Map<Capabilities, Integer> capabilities = new HashMap<>();
+      Map<Capabilities, Integer> stereotypes = new HashMap<>();
       Map<org.openqa.selenium.grid.data.Session, Slot> sessions = new HashMap<>();
 
       for (Slot slot : status.getSlots()) {
         slot.getSession().ifPresent(session -> sessions.put(session, slot));
 
-        int count = capabilities.getOrDefault(slot.getStereotype(), 0);
+        int count = stereotypes.getOrDefault(slot.getStereotype(), 0);
         count++;
-        capabilities.put(slot.getStereotype(), count);
+        stereotypes.put(slot.getStereotype(), count);
       }
+
+      OsInfo osInfo = new OsInfo(
+        status.getOsInfo().get("arch"),
+        status.getOsInfo().get("name"),
+        status.getOsInfo().get("version"));
 
       toReturn.add(new Node(
         status.getId(),
         status.getUri(),
         status.getAvailability(),
         status.getMaxSessionCount(),
-        capabilities,
+        status.getSlots().size(),
+        stereotypes,
         sessions,
-        status.getVersion()));
+        status.getVersion(),
+        osInfo));
     }
 
     return toReturn.build();
@@ -102,15 +109,14 @@ public class Grid {
 
   public int getTotalSlots() {
     return distributorStatus.get().getNodes().stream()
-      .mapToInt(status -> {
-        int slotCount = status.getSlots().size();
-        return Math.min(status.getMaxSessionCount(), slotCount);
-      })
+      .mapToInt(status -> status.getSlots().size())
       .sum();
   }
 
-  public int getUsedSlots() {
-    return getSessionCount();
+  public int getMaxSession() {
+    return distributorStatus.get().getNodes().stream()
+      .mapToInt(NodeStatus::getMaxSessionCount)
+      .sum();
   }
 
   public int getSessionQueueSize() {
@@ -118,9 +124,32 @@ public class Grid {
   }
 
   public List<String> getSessionQueueRequests() {
+    //noinspection unchecked
     return ((List<Capabilities>) queueInfoMap.get("request-payloads")).stream()
       .map(JSON::toJson)
       .collect(Collectors.toList());
+  }
+
+  public List<Session> getSessions() {
+    List<Session> sessions = new ArrayList<>();
+    for (NodeStatus status : distributorStatus.get().getNodes()) {
+      for (Slot slot : status.getSlots()) {
+        if (slot.getSession().isPresent()) {
+          org.openqa.selenium.grid.data.Session session = slot.getSession().get();
+          sessions.add(
+            new org.openqa.selenium.grid.graphql.Session(
+              session.getId().toString(),
+              session.getCapabilities(),
+              session.getStartTime(),
+              session.getUri(),
+              status.getId().toString(),
+              status.getUri(),
+              slot)
+          );
+        }
+      }
+    }
+    return sessions;
   }
 
 }

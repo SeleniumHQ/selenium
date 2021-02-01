@@ -1,33 +1,19 @@
+import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
+import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import React from "react";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { ApolloClient } from "apollo-client";
-import { HttpLink } from "apollo-link-http";
 import ReactModal from "react-modal";
-import { ApolloProvider } from "react-apollo";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import fetch from 'node-fetch';
-
-// css import order is important
-/* 1 */ import "./css/theme.css";
-/* 2 */ import "./css/theme-selenium.css";
-/* 3 */ import "./App.css";
-
-import HelpPage from "./screens/HelpPage/HelpPage";
-import Console from "./screens/Console/Console";
-import NavBar from "./components/NavBar/NavBar";
-import { GridConfig } from "./config";
-import NodePage from "./screens/Node/NodePage";
+import {GridConfig} from "./config";
 import NodeType from "./models/node";
-
-const cache = new InMemoryCache();
-const link = new HttpLink({
-	uri: GridConfig.serverUri,
-  fetch: fetch
-});
+import TopBar from "./components/TopBar/TopBar";
+import Overview from "./screens/Overview/Overview";
+import {Box, Link, makeStyles} from "@material-ui/core";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
+import Sessions from "./screens/Sessions/Sessions";
 
 export const client = new ApolloClient({
-	cache,
-	link,
+	cache: new InMemoryCache(),
+	uri: GridConfig.serverUri,
 });
 
 declare global {
@@ -40,20 +26,58 @@ declare global {
 	}
 }
 
+function Copyright() {
+	return (
+		<Typography variant="body2" color="textSecondary" align="center">
+			{'All rights reserved - '}
+			<Link color="inherit" href="https://sfconservancy.org/" target={"_blank"}>
+				Software Freedom Conservancy
+			</Link>{' '}
+			{new Date().getFullYear()}
+			{'.'}
+		</Typography>
+	);
+}
+
+
+const useStyles = makeStyles((theme) => ({
+	root: {
+		display: "flex",
+	},
+	content: {
+		flexGrow: 1,
+		height: '100vh',
+		overflow: 'auto',
+		paddingTop: theme.spacing(8),
+	},
+	container: {
+		paddingTop: theme.spacing(4),
+		paddingBottom: theme.spacing(4),
+	},
+}));
+
+
 if (process.env.NODE_ENV !== 'test') ReactModal.setAppElement("#root");
 
 function App() {
+	const classes = useStyles();
 	return (
 		<ApolloProvider client={client}>
 			<Router>
-				<NavBar />
-				<Switch>
-					<Route exact path="/" component={Console} />
-					<Route exact path="/node/:id" component={NodePage} />
-					<Route exact path="/home" component={HelpPage} />
-					<Route exact path="/console" component={Console} />
-					<Route component={HelpPage} />
-				</Switch>
+				<div className={classes.root}>
+					<TopBar/>
+					<main className={classes.content}>
+						<Container maxWidth={false} className={classes.container}>
+							<Switch>
+								<Route exact path={"/sessions"} component={Sessions}/>
+								<Route exact path={"/"} component={Overview}/>
+							</Switch>
+						</Container>
+						<Box pt={4}>
+							<Copyright/>
+						</Box>
+					</main>
+				</div>
 			</Router>
 		</ApolloProvider>
 	);

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.data;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -54,7 +55,11 @@ public class NodeStatusTest {
             new ImmutableCapabilities("peas", "sausages"),
             Instant.now())))),
       UP,
-      "4.0.0");
+      "4.0.0",
+      ImmutableMap.of(
+        "name", "Max OS X",
+        "arch", "x86_64",
+        "version", "10.15.7"));
 
     Json json = new Json();
     String source = json.toJson(status);

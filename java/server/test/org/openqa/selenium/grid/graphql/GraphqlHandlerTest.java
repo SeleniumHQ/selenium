@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.graphql;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -24,7 +25,9 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.data.*;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -57,8 +60,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -77,15 +80,13 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-
 public class GraphqlHandlerTest {
 
+  private static final Json JSON = new Json();
   private final Secret registrationSecret = new Secret("stilton");
   private final URI publicUri = new URI("http://example.com/grid-o-matic");
   private final String version = "4.0.0";
   private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
-  private static final Json JSON = new Json();
   private Distributor distributor;
   private NewSessionQueuer queuer;
   private Tracer tracer;
@@ -188,12 +189,12 @@ public class GraphqlHandlerTest {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
-      "{ grid { sessionQueueRequests } }");
+      "{ sessionsInfo { sessionQueueRequests } }");
 
     assertThat(topLevel).isEqualTo(
       singletonMap(
         "data", singletonMap(
-          "grid", singletonMap(
+          "sessionsInfo", singletonMap(
             "sessionQueueRequests", singletonList(JSON.toJson(caps))))));
   }
 
@@ -202,12 +203,12 @@ public class GraphqlHandlerTest {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
-      "{ grid { sessionQueueRequests } }");
+      "{ sessionsInfo { sessionQueueRequests } }");
 
     assertThat(topLevel).isEqualTo(
       singletonMap(
         "data", singletonMap(
-          "grid", singletonMap(
+          "sessionsInfo", singletonMap(
             "sessionQueueRequests", Collections.emptyList()))));
   }
 
@@ -215,12 +216,12 @@ public class GraphqlHandlerTest {
   public void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
 
-    Map<String, Object> topLevel = executeQuery(handler, "{ grid { nodes { uri } } }");
+    Map<String, Object> topLevel = executeQuery(handler, "{ nodesInfo { nodes { uri } } }");
 
     assertThat(topLevel).describedAs(topLevel.toString()).isEqualTo(
       singletonMap(
         "data", singletonMap(
-          "grid", singletonMap(
+          "nodesInfo", singletonMap(
             "nodes", Collections.emptyList()))));
   }
 
@@ -245,12 +246,12 @@ public class GraphqlHandlerTest {
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queuer, publicUri, version);
-    Map<String, Object> topLevel = executeQuery(handler, "{ grid { nodes { uri } } }");
+    Map<String, Object> topLevel = executeQuery(handler, "{ nodesInfo { nodes { uri } } }");
 
     assertThat(topLevel).describedAs(topLevel.toString()).isEqualTo(
       singletonMap(
         "data", singletonMap(
-          "grid", singletonMap(
+          "nodesInfo", singletonMap(
             "nodes", singletonList(singletonMap("uri", nodeUri))))));
   }
 

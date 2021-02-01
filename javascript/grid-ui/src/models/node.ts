@@ -1,16 +1,26 @@
-import CapabilitiesType from "./capabilities";
+import OsInfoType from "./os-info";
 
 interface NodeType {
-    /** The id assigned by the hub to the node */
+    /** Node id */
     id: string;
-    /** A set of capabilities that this node has */
-    capabilities: CapabilitiesType[];
-    /** The url of the node */
+    /** Node URI */
     uri: string;
-    /** The status of the node can be one of UP, DRAINING, UNAVAILABLE, (IDLE?) */
+    /** Node status (UP, DRAINING, UNAVAILABLE)  */
     status: string;
-    /** The maximum number of sessions this node can handle */
+    /** Max. number of concurrent sessions */
     maxSession: number;
+    /** Number of slots */
+    slotCount: number;
+    /** Number of current sessions */
+    sessionCount: number;
+    /** Grid Node version */
+    version: string;
+    /** Grid Node OS information */
+    osInfo: OsInfoType;
+    /** Node stereotypes.
+     * Not an ideal type, but it simplifies the parsing.
+     * There is room for improvement here. */
+    slotStereotypes: [];
 }
 
 export default NodeType;

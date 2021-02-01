@@ -1,146 +1,149 @@
-// https://github.com/vercel/next.js/issues/11230#issuecomment-643595034
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import {makeStyles} from '@material-ui/core/styles';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import clsx from 'clsx';
+import * as React from 'react';
+import {Box, CircularProgress, CircularProgressProps, Typography} from "@material-ui/core";
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { ReactComponent as SearchIcon } from "../../assets/icons/search2.svg";
-import { ReactComponent as TimesIcon } from "../../assets/icons/times.svg";
-import seleniumIcon from "../../assets/selenium.svg";
-import "../../css/icons.css";
-import styles from "./NavBar.module.css";
-import searchHighlight from "../../core/Search";
-import "./NavBar.css";
-import KeyBoardHelp from "../KeyBoard/KeyBoardHelp";
+const drawerWidth = 240;
 
-/**
- * 	NavBar component, includes search bar and search functions
- *  Look at `core/Search.ts` for the highlight function
- */
-export default function NavBar() {
-	let [prevSearch, setPrevSearch] = useState<any>();
-	let [prevTerm, setPrevTerm] = useState<string>("");
+const useStyles = makeStyles((theme) => ({
+	root: {
+		display: 'flex',
+	},
+	toolbarIcon: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'flex-end',
+		padding: '0 8px',
+		...theme.mixins.toolbar,
+		backgroundColor: theme.palette.primary.main,
+	},
+	drawerPaper: {
+		position: 'relative',
+		whiteSpace: 'nowrap',
+		width: drawerWidth,
+		minHeight: '100vh',
+		transition: theme.transitions.create('width', {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.enteringScreen,
+		}),
+	},
+	drawerPaperClose: {
+		overflowX: 'hidden',
+		minHeight: '100vh',
+		transition: theme.transitions.create('width', {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.leavingScreen,
+		}),
+		width: theme.spacing(7),
+		[theme.breakpoints.up('sm')]: {
+			width: theme.spacing(9),
+		},
+	},
+	concurrencyBackground: {
+		backgroundColor: theme.palette.secondary.main,
+	},
+}));
 
-	const searchTerminDOM = (term: string) => {
-		if (prevSearch) {
-			prevSearch.revert();
-		}
-		if (term && term !== "") {
-			prevSearch = searchHighlight(term);
-			setPrevSearch(prevSearch);
-		}
-		setPrevTerm(term);
-	};
+function ListItemLink(props) {
+	return <ListItem button component="a" {...props} />;
+}
 
-	const rerunSearch = () => searchTerminDOM(prevTerm);
-	window.rerunSearch = rerunSearch;
-
-	const clearSearch = () => {
-		const searchBar = document.getElementById("search-by") as HTMLInputElement;
-		searchBar.value = "";
-		// revert prev search as well
-		searchTerminDOM("");
-	};
-
+function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
 	return (
-		<React.Fragment>
-			<nav id="sidebar">
-				<div id="header-wrapper">
-					<div id="header" style={{ height: "70px" }}>
-						<Link id="logo" to="/home">
-							<img
-								src={seleniumIcon}
-								alt="logo"
-								className={styles.iconDetails}
-							/>
-							<div
-								style={{
-									marginLeft: "60px",
-									marginTop: "5px",
-								}}
-							>
-								<h3 className={styles.h4}>Selenium Grid</h3>
-							</div>
-						</Link>
-					</div>
-
-					<div className="searchbox">
-						<label htmlFor="search-by">
-							<SearchIcon className="icon-green" />
-						</label>
-						<input
-							data-search-input=""
-							id="search-by"
-							type="search"
-							placeholder="Search..."
-							autoComplete="off"
-							onChange={(ev) => searchTerminDOM(ev.target.value)}
-						/>
-						<span data-search-clear="">
-							<TimesIcon className="icon-green" onClick={clearSearch} />
-						</span>
-					</div>
-				</div>
-				<div className="highlightable ps-container ps-theme-default ps-active-y">
-					<ul className="topics">
-						<li data-nav-id="/console" title="Console" className="dd-item">
-							<Link to="/console">Console</Link>
-						</li>
-						<li data-nav-id="/docs/" title="Docs" className="dd-item parent">
-							<a href="https://www.selenium.dev/documentation/en/grid/">
-								Docs
-								<i className="fas fa-check read-icon"></i>
-							</a>
-
-							<ul>
-								<li
-									data-nav-id="/grid/purposes_and_main_functionalities/"
-									title="Purposes and main functionalities"
-									className="dd-item "
-								>
-									<a href="https://www.selenium.dev/documentation/en/grid/purposes_and_main_functionalities/">
-										Purposes and functionalities
-										<i className="fas fa-check read-icon"></i>
-									</a>
-								</li>
-
-								<li
-									data-nav-id="/grid/when_to_use_grid/"
-									title="When to use Grid"
-									className="dd-item "
-								>
-									<a href="https://www.selenium.dev/documentation/en/grid/when_to_use_grid/">
-										When to use Grid
-										<i className="fas fa-check read-icon"></i>
-									</a>
-								</li>
-
-								<li
-									data-nav-id="/grid/grid_4/"
-									title="Grid 4"
-									className="dd-item"
-								>
-									<a href="https://www.selenium.dev/documentation/en/grid/grid_4/">
-										Grid 4<i className="fas fa-check read-icon"></i>
-									</a>
-
-									<ul>
-										<li
-											data-nav-id="/grid/grid_4/components_of_a_grid/"
-											title="Components"
-											className="dd-item "
-										>
-											<a href="https://www.selenium.dev/documentation/en/grid/grid_4/components_of_a_grid/">
-												Components
-												<i className="fas fa-check read-icon"></i>
-											</a>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-				<KeyBoardHelp />
-			</nav>
-		</React.Fragment>
+		<Box position="relative" display="inline-flex">
+			<CircularProgress variant="determinate" size={80} {...props} />
+			<Box
+				top={0}
+				left={0}
+				bottom={0}
+				right={0}
+				position="absolute"
+				display="flex"
+				alignItems="center"
+				justifyContent="center"
+			>
+				<Typography variant="h4" component="div" color="textSecondary">{`${Math.round(
+					props.value,
+				)}%`}</Typography>
+			</Box>
+		</Box>
 	);
 }
+
+export default function NavBar(props) {
+	const classes = useStyles();
+	const {open, maxSession, sessionCount} = props;
+	const currentLoad = Math.min(((sessionCount / maxSession) * 100), 100);
+
+	return (
+		<Drawer
+			variant="permanent"
+			classes={{
+				paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+			}}
+			open={open}
+		>
+			<div className={classes.toolbarIcon}>
+				<IconButton color={"secondary"}>
+					<ChevronLeftIcon/>
+				</IconButton>
+			</div>
+			<Divider/>
+			<List>
+				<div>
+					<ListItemLink href={"#"}>
+						<ListItemIcon>
+							<DashboardIcon/>
+						</ListItemIcon>
+						<ListItemText primary="Overview"/>
+					</ListItemLink>
+					<ListItemLink href={"#sessions"}>
+						<ListItemIcon>
+							<AssessmentIcon/>
+						</ListItemIcon>
+						<ListItemText primary="Sessions"/>
+					</ListItemLink>
+				</div>
+			</List>
+			<Box flexGrow={1}/>
+			<Box
+				p={2}
+				m={2}
+				className={classes.concurrencyBackground}
+			>
+				<Typography
+					align="center"
+					gutterBottom
+					variant="h4"
+				>
+					Concurrency
+				</Typography>
+				<Box
+					display="flex"
+					justifyContent="center"
+					mt={2}
+					mb={2}
+				>
+					<CircularProgressWithLabel value={currentLoad}/>
+				</Box>
+				<Typography
+					align="center"
+					variant="h4"
+				>
+					{sessionCount} / {maxSession}
+				</Typography>
+			</Box>
+		</Drawer>
+	);
+}
+

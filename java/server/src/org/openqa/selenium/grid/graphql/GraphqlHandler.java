@@ -54,11 +54,12 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
 public class GraphqlHandler implements HttpHandler {
 
@@ -105,6 +106,9 @@ public class GraphqlHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    if (req.getMethod() == OPTIONS) {
+      return new HttpResponse();
+    }
     try (Span span = newSpanAsChildOf(tracer, req, "grid.status")) {
       HttpResponse response;
       Map<String, Object> inputs = JSON.toType(Contents.string(req), MAP_TYPE);
@@ -169,16 +173,15 @@ public class GraphqlHandler implements HttpHandler {
   }
 
   private RuntimeWiring buildRuntimeWiring() {
+    GridData gridData = new GridData(distributor, newSessionQueuer, publicUri, version);
     return RuntimeWiring.newRuntimeWiring()
       .scalar(Types.Uri)
       .scalar(Types.Url)
       .type("GridQuery", typeWiring -> typeWiring
-          .dataFetcher("grid", new GridData(
-            distributor,
-            newSessionQueuer,
-            publicUri,
-            version))
-          .dataFetcher("session", new SessionData(distributor)))
+        .dataFetcher("grid", gridData)
+        .dataFetcher("sessionsInfo", gridData)
+        .dataFetcher("nodesInfo", gridData)
+        .dataFetcher("session", new SessionData(distributor)))
       .build();
   }
 

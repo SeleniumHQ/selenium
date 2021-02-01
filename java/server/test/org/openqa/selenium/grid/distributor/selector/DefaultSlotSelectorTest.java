@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor.selector;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,11 +61,11 @@ import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class DefaultSlotSelectorTest {
 
+  private final Random random = new Random();
+  private final DefaultSlotSelector selector = new DefaultSlotSelector();
   private Tracer tracer;
   private EventBus bus;
   private URI uri;
-  private final Random random = new Random();
-  private final DefaultSlotSelector selector = new DefaultSlotSelector();
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -208,7 +209,11 @@ public class DefaultSlotSelectorTest {
       count,
       ImmutableSet.copyOf(slots),
       UP,
-      "4.0.0");
+      "4.0.0",
+      ImmutableMap.of(
+        "name", "Max OS X",
+        "arch", "x86_64",
+        "version", "10.15.7"));
   }
 
   private NodeStatus createNode(String... browsers) {

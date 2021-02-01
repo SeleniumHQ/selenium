@@ -182,6 +182,7 @@ public class LocalNodeTest {
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
       .add(caps, new TestSessionFactory(VerifyingHandler::new))
+      .maximumConcurrentSessions(3)
       .build();
 
     List<Callable<SessionId>> callables = new ArrayList<>();
