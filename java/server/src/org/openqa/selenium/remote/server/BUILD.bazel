@@ -22,7 +22,6 @@ java_library(
         "RequiresSession.java",
         "Session.java",
         "StaticResourceHandler.java",
-        "WebDriverServlet.java",
     ] + glob([
         "commandhandler/*.java",
         "handler/*.java",
