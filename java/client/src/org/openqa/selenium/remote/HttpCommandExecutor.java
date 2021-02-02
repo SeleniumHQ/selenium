@@ -33,8 +33,10 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Collections.emptyMap;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -56,8 +58,16 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private LocalLogs logs = LocalLogs.getNullLogger();
 
+  private static URL getDefaultServerURL() {
+    try {
+      return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
+    } catch (MalformedURLException e) {
+      throw new WebDriverException(e);
+    }
+  }
+
   public HttpCommandExecutor(URL addressOfRemoteServer) {
-    this(emptyMap(), Require.nonNull("Remote server address", addressOfRemoteServer));
+    this(emptyMap(), addressOfRemoteServer);
   }
 
   public HttpCommandExecutor(ClientConfig config) {
@@ -75,9 +85,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     Map<String, CommandInfo> additionalCommands,
     URL addressOfRemoteServer)
   {
-    this(additionalCommands,
-         Require.nonNull("Remote server address", addressOfRemoteServer),
-         defaultClientFactory);
+    this(additionalCommands, addressOfRemoteServer, defaultClientFactory);
   }
 
   public HttpCommandExecutor(
@@ -87,7 +95,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   {
     this(additionalCommands,
          ClientConfig.defaultConfig()
-           .baseUrl(Require.nonNull("Remote server address", addressOfRemoteServer)),
+           .baseUrl(Optional.ofNullable(addressOfRemoteServer)
+                      .orElseGet(HttpCommandExecutor::getDefaultServerURL)),
          httpClientFactory);
   }
 
@@ -96,7 +105,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     ClientConfig config,
     HttpClient.Factory httpClientFactory)
   {
-    remoteServer = Require.nonNull("Remote server address", config.baseUrl());
+    if (config.baseUri() == null) {
+      config = config.baseUrl(getDefaultServerURL());
+    }
+    remoteServer = config.baseUrl();
     this.additionalCommands = additionalCommands;
     this.httpClientFactory = httpClientFactory;
     this.client = httpClientFactory.createClient(config);

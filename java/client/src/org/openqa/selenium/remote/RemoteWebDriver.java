@@ -64,7 +64,6 @@ import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Base64;
@@ -130,16 +129,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     this.capabilities = init(new ImmutableCapabilities());
   }
 
-  private static URL getDefaultServerURL() {
-    try {
-      return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
   public RemoteWebDriver(Capabilities capabilities) {
-    this(getDefaultServerURL(), capabilities);
+    this((URL) null, capabilities);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
