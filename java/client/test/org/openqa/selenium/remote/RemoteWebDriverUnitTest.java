@@ -245,7 +245,7 @@ public class RemoteWebDriverUnitTest {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> fixture.driver.findElement(By.id("id")));
+      .isThrownBy(() -> fixture.driver.findElement(By.cssSelector("id")));
   }
 
   @Test

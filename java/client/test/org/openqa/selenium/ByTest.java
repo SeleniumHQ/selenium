@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -47,11 +48,11 @@ public class ByTest {
   public void shouldUseFindsByNameToLocateElementsByName() {
     final AllDriver driver = mock(AllDriver.class);
 
-    By.name("cheese").findElement(driver);
-    By.name("peas").findElements(driver);
+    By.cssSelector("cheese").findElement(driver);
+    By.cssSelector("peas").findElements(driver);
 
-    verify(driver).findElement(By.name("cheese"));
-    verify(driver).findElements(By.name("peas"));
+    verify(driver).findElement(By.cssSelector("cheese"));
+    verify(driver).findElements(By.cssSelector("peas"));
     verifyNoMoreInteractions(driver);
   }
 
@@ -68,18 +69,6 @@ public class ByTest {
   }
 
   @Test
-  public void doesNotUseXPathIfContextFindsById() {
-    AllDriver context = mock(AllDriver.class);
-
-    By.id("foo").findElement(context);
-    By.id("bar").findElements(context);
-
-    verify(context).findElement(By.id("foo"));
-    verify(context).findElements(By.id("bar"));
-    verifyNoMoreInteractions(context);
-  }
-
-  @Test
   public void searchesByTagNameIfSupported() {
     AllDriver context = mock(AllDriver.class);
 
@@ -88,18 +77,6 @@ public class ByTest {
 
     verify(context).findElement(By.tagName("foo"));
     verify(context).findElements(By.tagName("bar"));
-    verifyNoMoreInteractions(context);
-  }
-
-  @Test
-  public void searchesByClassNameIfSupported() {
-    AllDriver context = mock(AllDriver.class);
-
-    By.className("foo").findElement(context);
-    By.className("bar").findElements(context);
-
-    verify(context).findElement(By.className("foo"));
-    verify(context).findElements(By.className("bar"));
     verifyNoMoreInteractions(context);
   }
 
@@ -129,13 +106,7 @@ public class ByTest {
 
   @Test
   public void ensureMultipleClassNamesAreNotAccepted() {
-    try {
-      By by = By.className("one two");
-    } catch (InvalidSelectorException ignore) {
-      // Expected
-    } catch (Exception e) {
-      fail("Multiple class names locator failed with a different exception, " + e);
-    }
+    assertThatExceptionOfType(InvalidSelectorException.class).isThrownBy(() -> By.className("one two"));
   }
 
   @Test

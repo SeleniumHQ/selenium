@@ -302,13 +302,10 @@ public class AugmenterTest {
 
     @Override
     public WebElement findElement(By locator) {
-      return super.findElement(locator);
-    }
-
-    @Override
-    protected WebElement findElement(String by, String using) {
-      if ("id".equals(by)) {
-        throw new NoSuchElementException("Boom");
+      if (locator instanceof By.Remotable) {
+        if ("id".equals(((By.Remotable) locator).getRemoteParameters().using())) {
+          throw new NoSuchElementException("Boom");
+        }
       }
       return null;
     }

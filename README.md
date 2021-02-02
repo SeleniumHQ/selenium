@@ -165,6 +165,18 @@ bazel test --test_size_filters=small,medium java/...
 Bazel's "test" command will run *all* tests in the package, including integration tests. Expect
 the ```test java/...``` to launch browsers and consume a considerable amount of time and resources.
 
+## Editing Code
+
+Most of the team use either Intellij IDEA or VS.Code for their day-to-day editing. If you're
+working in IntelliJ, then we highly recommend installing the [Bazel IJ
+plugin](https://plugins.jetbrains.com/plugin/8609-bazel) which is documented on
+[its own site](https://plugins.jetbrains.com/plugin/8609-bazel).
+
+If you do use IntelliJ and the Bazel plugin, there is a project view checked into the tree
+in [scripts/ij.bazelproject](scripts/ij.bazelproject) which will make it easier to get up
+running, and editing code :)
+
+
 ## Tour
 
 The codebase is generally segmented around the languages used to

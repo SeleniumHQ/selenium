@@ -99,7 +99,7 @@ public class RelativeLocator {
     return new RelativeBy(By.tagName(tagName));
   }
 
-  public static class RelativeBy extends By {
+  public static class RelativeBy extends By implements By.Remotable {
     private final Object root;
     private final List<Map<String, Object>> filters;
 
@@ -208,7 +208,7 @@ public class RelativeLocator {
       JavascriptExecutor js = extractJsExecutor(context);
 
       @SuppressWarnings("unchecked")
-      List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, this.toJson());
+      List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
       return elements;
     }
 
@@ -221,7 +221,6 @@ public class RelativeLocator {
         amend(ImmutableMap.of(
           "kind", direction,
           "args", ImmutableList.of(asAtomLocatorParameter(locator)))));
-
     }
 
     private List<Map<String, Object>> amend(Map<String, Object> toAdd) {
@@ -248,11 +247,17 @@ public class RelativeLocator {
       throw new IllegalArgumentException("Cannot find elements, since the context cannot execute JS: " + context);
     }
 
+    @Override
+    public Parameters getRemoteParameters() {
+      return new Parameters(
+        "relative",
+        ImmutableMap.of("root", root, "filters", filters));
+    }
+
     private Map<String, Object> toJson() {
       return ImmutableMap.of(
-        "relative", ImmutableMap.of(
-          "root", root,
-          "filters", filters));
+        "using", "relative",
+        "value", ImmutableMap.of("root", root, "filters", filters));
     }
   }
 
