@@ -17,15 +17,11 @@
 
 package org.openqa.selenium.grid.node.locators;
 
-import static java.util.stream.Collectors.joining;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.locators.CustomLocator;
-
-import java.util.stream.Stream;
 
 /**
  * A class implementing {link @CustomLocator} and to be used as a fallback locator on the server
