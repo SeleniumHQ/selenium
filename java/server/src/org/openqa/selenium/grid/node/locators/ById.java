@@ -42,9 +42,6 @@ public class ById implements CustomLocator {
   @Override
   public By createBy(Object usingParameter) {
     Require.argument("Locator value", usingParameter).instanceOf(String.class);
-    String id = Stream.of(
-      String.valueOf(usingParameter)
-        .split("\\s+")).map(str -> "#" + str).collect(joining(" "));
-    return By.cssSelector(id);
+    return By.id((String) usingParameter);
   }
 }
