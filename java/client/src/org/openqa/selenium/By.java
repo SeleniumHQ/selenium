@@ -259,6 +259,10 @@ public abstract class By {
         Require.argument("Tag name", tagName)
           .nonNull("Cannot find elements when the tag name is null."));
 
+      if (tagName.isEmpty()) {
+        throw new InvalidSelectorException("Tag name must not be blank");
+      }
+
       this.tagName = tagName;
     }
 

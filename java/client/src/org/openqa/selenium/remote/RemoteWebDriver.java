@@ -104,11 +104,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   // multiple constructors and we occasionally add a new one, and `init`
   // may be overridden by the user
   {
-    remotableBys.put(By.cssSelector("").getClass(), Mechanism.REMOTE);
-    remotableBys.put(By.linkText("").getClass(), Mechanism.REMOTE);
-    remotableBys.put(By.partialLinkText("").getClass(), Mechanism.REMOTE);
-    remotableBys.put(By.tagName("").getClass(), Mechanism.REMOTE);
-    remotableBys.put(By.xpath("").getClass(), Mechanism.REMOTE);
+    remotableBys.put(By.cssSelector("a").getClass(), Mechanism.REMOTE);
+    remotableBys.put(By.linkText("a").getClass(), Mechanism.REMOTE);
+    remotableBys.put(By.partialLinkText("a").getClass(), Mechanism.REMOTE);
+    remotableBys.put(By.tagName("a").getClass(), Mechanism.REMOTE);
+    remotableBys.put(By.xpath("//a").getClass(), Mechanism.REMOTE);
   }
 
   private ErrorHandler errorHandler = new ErrorHandler();
