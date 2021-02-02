@@ -11,8 +11,8 @@ java_library(
     deps = [
         "//java:auto-service",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/jmx",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue",
-        "//java/server/src/org/openqa/selenium/remote/server/jmx",
         artifact("com.beust:jcommander"),
         artifact("io.opentelemetry:opentelemetry-api"),
     ],

@@ -15,16 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server.jmx;
+package org.openqa.selenium.grid.jmx;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ManagedOperation {
-  String name() default "";
+public @interface ManagedService {
+  String objectName() default "";
   String description() default "";
 }

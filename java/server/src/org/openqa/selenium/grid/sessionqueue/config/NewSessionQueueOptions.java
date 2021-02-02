@@ -18,10 +18,10 @@
 package org.openqa.selenium.grid.sessionqueue.config;
 
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
-import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
-import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.time.Duration;
 

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server.jmx;
+package org.openqa.selenium.grid.jmx;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
