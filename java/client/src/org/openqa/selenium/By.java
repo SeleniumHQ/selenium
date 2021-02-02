@@ -135,6 +135,10 @@ public abstract class By {
   public abstract List<WebElement> findElements(SearchContext context);
 
   protected WebDriver getWebDriver(SearchContext context) {
+    if (context instanceof WebDriver) {
+      return (WebDriver) context;
+    }
+
     if (!(context instanceof WrapsDriver)) {
       throw new IllegalArgumentException("Context does not wrap a webdriver: " + context);
     }
