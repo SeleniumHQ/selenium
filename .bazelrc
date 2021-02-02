@@ -1,5 +1,7 @@
 try-import .bazelrc.local
 
+build --flag_alias=pin_browsers=//common:pin_browsers
+
 # Set the default java toolchain
 build --java_toolchain=@bazel_tools//tools/jdk:toolchain_java11
 
