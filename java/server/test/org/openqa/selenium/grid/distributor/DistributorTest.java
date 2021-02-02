@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.assertj.core.api.AbstractAssert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -517,6 +516,7 @@ public class DistributorTest {
       .add(lightest)
       .add(massive);
 
+    wait.until(obj -> distributor.getStatus().getNodes().size() == 4);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
