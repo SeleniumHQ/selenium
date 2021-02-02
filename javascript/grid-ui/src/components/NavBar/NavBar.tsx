@@ -9,9 +9,11 @@ import {makeStyles} from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import AssessmentIcon from '@material-ui/icons/Assessment';
+import HelpIcon from '@material-ui/icons/Help';
 import clsx from 'clsx';
 import * as React from 'react';
 import {Box, CircularProgress, CircularProgressProps, Typography} from "@material-ui/core";
+import {useLocation} from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -82,8 +84,14 @@ function CircularProgressWithLabel(props: CircularProgressProps & { value: numbe
 
 export default function NavBar(props) {
 	const classes = useStyles();
-	const {open, maxSession, sessionCount} = props;
+	const {open, maxSession, sessionCount, nodeCount} = props;
 	const currentLoad = Math.min(((sessionCount / maxSession) * 100), 100);
+
+	const location = useLocation();
+	// Not showing the overall status when the user is on the Overview page and there is only one node, because polling
+	// is not happening at the same time and it could be confusing for the user. So, displaying it when there is more
+	// than one node, or when the user is on a different page and there is at least one node registered.
+	const showOverallConcurrency = nodeCount > 1 || (location.pathname !== "/" && nodeCount > 0);
 
 	return (
 		<Drawer
@@ -113,36 +121,45 @@ export default function NavBar(props) {
 						</ListItemIcon>
 						<ListItemText primary="Sessions"/>
 					</ListItemLink>
+					<ListItemLink href={"#help"}>
+						<ListItemIcon>
+							<HelpIcon/>
+						</ListItemIcon>
+						<ListItemText primary="Help"/>
+					</ListItemLink>
 				</div>
 			</List>
 			<Box flexGrow={1}/>
-			<Box
-				p={2}
-				m={2}
-				className={classes.concurrencyBackground}
-			>
-				<Typography
-					align="center"
-					gutterBottom
-					variant="h4"
-				>
-					Concurrency
-				</Typography>
+			{showOverallConcurrency && (
 				<Box
-					display="flex"
-					justifyContent="center"
-					mt={2}
-					mb={2}
+					p={2}
+					m={2}
+					className={classes.concurrencyBackground}
 				>
-					<CircularProgressWithLabel value={currentLoad}/>
+					<Typography
+						align="center"
+						gutterBottom
+						variant="h4"
+					>
+						Concurrency
+					</Typography>
+					<Box
+						display="flex"
+						justifyContent="center"
+						mt={2}
+						mb={2}
+					>
+						<CircularProgressWithLabel value={currentLoad}/>
+					</Box>
+					<Typography
+						align="center"
+						variant="h4"
+					>
+						{sessionCount} / {maxSession}
+					</Typography>
 				</Box>
-				<Typography
-					align="center"
-					variant="h4"
-				>
-					{sessionCount} / {maxSession}
-				</Typography>
-			</Box>
+
+			)}
 		</Drawer>
 	);
 }

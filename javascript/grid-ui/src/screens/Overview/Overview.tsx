@@ -9,6 +9,7 @@ import {useQuery} from "@apollo/client";
 import NodeType from "../../models/node";
 import OsInfoType from "../../models/os-info";
 import {GridConfig} from "../../config";
+import NoData from "../../components/NoData/NoData";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -60,6 +61,15 @@ export default function Overview() {
     };
     return newNode;
   });
+
+  if (nodes.length === 0) {
+    const shortMessage = "The Grid has no registered Nodes yet.";
+    return (
+      <Grid container spacing={3}>
+        <NoData message={shortMessage}/>
+      </Grid>
+    )
+  }
 
   return (
     <Grid container spacing={3}>
