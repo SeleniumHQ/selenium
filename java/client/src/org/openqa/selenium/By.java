@@ -24,9 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
@@ -185,7 +182,7 @@ public abstract class By {
       super(
         "id",
         Require.argument("Id", id).nonNull("Cannot find elements when id is null."),
-        new ByCssSelector(Stream.of(id.split("\\s+")).map(str -> "#" + str).collect(joining(" "))));
+        "#%s");
 
       this.id = id;
     }
@@ -241,7 +238,7 @@ public abstract class By {
       super(
         "name",
         Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
-        new ByCssSelector(String.format("*[name='%s']", name.replace("'", "\\'"))));
+        String.format("*[name='%s']", name.replace("'", "\\'")));
 
       this.name = name;
     }
@@ -299,7 +296,7 @@ public abstract class By {
         "class",
         Require.argument("Class name", className)
           .nonNull("Cannot find elements when the class name expression is null."),
-      new ByCssSelector(Stream.of(className.split("\\s+")).map(str -> "." + str).collect(joining(" "))));
+      ".%s");
 
       if (className.matches(".*\\s.*")) {
         throw new InvalidSelectorException("Compound class names not permitted");
@@ -382,7 +379,6 @@ public abstract class By {
   }
 
   private static abstract class BaseW3CLocator extends By implements Remotable {
-
     private final Parameters params;
 
     protected BaseW3CLocator(String using, String value) {
@@ -412,13 +408,12 @@ public abstract class By {
   }
 
   private static abstract class PreW3CLocator extends By implements Remotable {
-
     private final Parameters remoteParams;
     private final ByCssSelector fallback;
 
-    private PreW3CLocator(String using, String value, ByCssSelector fallback) {
+    private PreW3CLocator(String using, String value, String formatString) {
       this.remoteParams = new Remotable.Parameters(using, value);
-      this.fallback = fallback;
+      this.fallback = new ByCssSelector(String.format(formatString, cssEscape(value)));
     }
 
     @Override
@@ -438,6 +433,14 @@ public abstract class By {
 
     final protected Map<String, Object> toJson() {
       return fallback.toJson();
+    }
+
+    private String cssEscape(String using) {
+      using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
+      if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
+        using = "\\" + (30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+      }
+      return using;
     }
   }
 }
