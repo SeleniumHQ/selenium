@@ -386,7 +386,7 @@ public abstract class By {
     }
   }
 
-  private static abstract class BaseW3CLocator extends By implements Remotable {
+  private abstract static class BaseW3CLocator extends By implements Remotable {
     private final Parameters params;
 
     protected BaseW3CLocator(String using, String value) {
@@ -415,7 +415,7 @@ public abstract class By {
     }
   }
 
-  private static abstract class PreW3CLocator extends By implements Remotable {
+  private abstract static class PreW3CLocator extends By implements Remotable {
     private final Parameters remoteParams;
     private final ByCssSelector fallback;
 
@@ -435,11 +435,11 @@ public abstract class By {
     }
 
     @Override
-    final public Parameters getRemoteParameters() {
+    public final Parameters getRemoteParameters() {
       return remoteParams;
     }
 
-    final protected Map<String, Object> toJson() {
+    protected final Map<String, Object> toJson() {
       return fallback.toJson();
     }
 
