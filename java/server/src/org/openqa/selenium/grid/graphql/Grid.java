@@ -98,6 +98,10 @@ public class Grid {
     return toReturn.build();
   }
 
+  public int getNodeCount() {
+    return distributorStatus.get().getNodes().size();
+  }
+
   public int getSessionCount() {
     return distributorStatus.get().getNodes().stream()
       .map(NodeStatus::getSlots)
