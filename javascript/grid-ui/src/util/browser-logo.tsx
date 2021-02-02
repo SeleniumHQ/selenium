@@ -2,7 +2,7 @@ import chromeLogo from "../assets/browsers/chrome.svg";
 import edgeLogo from "../assets/browsers/edge.svg";
 import operaLogo from "../assets/browsers/opera.svg";
 import firefoxLogo from "../assets/browsers/firefox.svg";
-import internetExplorerLogo from "../assets/browsers/internet-explorer.svg";
+import internetExplorerLogo from "../assets/browsers/internet-explorer.png";
 import safariLogo from "../assets/browsers/safari.svg";
 import safariTechnologyPreviewLogo from "../assets/browsers/safari-technology-preview.png";
 import unknownBrowserLogo from "../assets/browsers/unknown.svg";
