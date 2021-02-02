@@ -20,12 +20,12 @@ package org.openqa.selenium.grid.server;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
-import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
-import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.io.File;
 import java.net.URI;

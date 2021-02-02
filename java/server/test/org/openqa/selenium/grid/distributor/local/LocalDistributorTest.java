@@ -252,10 +252,11 @@ public class LocalDistributorTest {
 
     // Only use one node.
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory(VerifyingHandler::new))
-        .add(caps, new TestSessionFactory(VerifyingHandler::new))
-        .add(caps, new TestSessionFactory(VerifyingHandler::new))
-        .build();
+      .add(caps, new TestSessionFactory(VerifyingHandler::new))
+      .add(caps, new TestSessionFactory(VerifyingHandler::new))
+      .add(caps, new TestSessionFactory(VerifyingHandler::new))
+      .maximumConcurrentSessions(3)
+      .build();
     distributor.add(node);
 
     HttpRequest req = new HttpRequest(HttpMethod.POST, "/session")

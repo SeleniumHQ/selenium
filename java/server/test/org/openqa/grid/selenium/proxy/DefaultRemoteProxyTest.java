@@ -19,7 +19,7 @@ package org.openqa.grid.selenium.proxy;
 
 import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.JMXHelper;
 
 import java.util.concurrent.TimeoutException;
 

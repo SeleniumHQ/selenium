@@ -15,15 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.reactor;
+package org.openqa.selenium.grid.jmx;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class ReactorClientDomainSocketTest extends DomainSocketsTestBase {
-
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new ReactorClient.Factory();
-  }
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ManagedOperation {
+  String name() default "";
+  String description() default "";
 }

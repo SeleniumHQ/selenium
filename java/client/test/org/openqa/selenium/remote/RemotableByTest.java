@@ -34,9 +34,12 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS_STRING;
+
+import com.google.common.collect.ImmutableMap;
 
 public class RemotableByTest {
 
@@ -53,7 +56,8 @@ public class RemotableByTest {
     });
     driver.findElement(By.cssSelector("#foo"));
 
-    assertThat(parameters.get()).isEqualTo(Map.of("using", "css selector", "value", "#foo"));
+    assertThat(parameters.get())
+      .isEqualTo(ImmutableMap.of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -63,7 +67,7 @@ public class RemotableByTest {
     WebDriver driver = createDriver(
       cmd -> {
         parameters.set(cmd.getParameters());
-        return createResponse(List.of(new RemoteWebElement()));
+        return createResponse(singletonList(new RemoteWebElement()));
       }
     );
 
@@ -74,7 +78,8 @@ public class RemotableByTest {
       }
     });
 
-    assertThat(parameters.get()).isEqualTo(Map.of("using", "css selector", "value", "#foo"));
+    assertThat(parameters.get())
+      .isEqualTo(ImmutableMap.of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -102,7 +107,8 @@ public class RemotableByTest {
 
     driver.findElement(new CustomBy());
 
-    assertThat(parameters.get()).isEqualTo(Map.of("using", "magic", "value", "abracadabra"));
+    assertThat(parameters.get())
+      .isEqualTo(ImmutableMap.of("using", "magic", "value", "abracadabra"));
   }
 
   @Test
@@ -113,7 +119,7 @@ public class RemotableByTest {
       cmd -> createError(new InvalidArgumentException("Nope")),
       cmd -> {
         parameters.set(cmd.getParameters());
-        return createResponse(List.of(new RemoteWebElement()));
+        return createResponse(singletonList(new RemoteWebElement()));
       }
     );
 
@@ -131,7 +137,8 @@ public class RemotableByTest {
 
     driver.findElement(new CustomBy());
 
-    assertThat(parameters.get()).isEqualTo(Map.of("using", "css selector", "value", "not-magic"));
+    assertThat(parameters.get())
+      .isEqualTo(ImmutableMap.of("using", "css selector", "value", "not-magic"));
   }
 
   @Test
@@ -151,12 +158,12 @@ public class RemotableByTest {
 
       // Second search tries both mechanisms, and succeeds because fallback to search context works
       cmd -> createError(new InvalidArgumentException("remoting fail")),
-      cmd -> createResponse(List.of(new RemoteWebElement())),
+      cmd -> createResponse(singletonList(new RemoteWebElement())),
 
       // Third search goes straight to using the fallback
       cmd -> {
         parameters.set(cmd.getParameters());
-        return createResponse(List.of(new RemoteWebElement()));
+        return createResponse(singletonList(new RemoteWebElement()));
       }
     );
 
@@ -182,7 +189,8 @@ public class RemotableByTest {
     driver.findElement(new CustomBy("two"));
     driver.findElement(new CustomBy("three"));
 
-    assertThat(parameters.get()).isEqualTo(Map.of("using", "css selector", "value", "three"));
+    assertThat(parameters.get())
+      .isEqualTo(ImmutableMap.of("using", "css selector", "value", "three"));
   }
 
   private Response createResponse(Object value) {
@@ -202,7 +210,7 @@ public class RemotableByTest {
   }
 
   @SafeVarargs
-  private WebDriver createDriver(Function<Command, Response>... responses) {
+  private final WebDriver createDriver(Function<Command, Response>... responses) {
     Iterator<Function<Command, Response>> iterator = Arrays.stream(responses).iterator();
     CommandExecutor executor = cmd -> iterator.next().apply(cmd);
 

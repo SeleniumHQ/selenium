@@ -10,33 +10,33 @@ _versions = {
     # looking for the current stable version for any platform, and using the "lookup"
     # feature to find out "Version information". The "Branch Base Position" gives you
     # the version.
-    # 800218 = 86.0.4240.198
+    # 827102 = 88.0.4324.96
     "chrome": {
         "linux": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/800218/chrome-linux.zip",
-            "sha256": "01140ec2c7f397023541f65ecd26cf8c5b9a59af90c887dbf7c3ee0344870077",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/827102/chrome-linux.zip",
+            "sha256": "e2720836e44063796a9be3c9fa6522a753f92a7ed5e3686a5e9246b0e45cf161",
         },
         "mac": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Mac/800218/chrome-mac.zip",
-            "sha256": "2e0a534510dba96a4e52effb31bede2cababc9328e624c8c538867f8e71b6292",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Mac/827102/chrome-mac.zip",
+            "sha256": "9e053a67e2be04c39ab51021aff30010681d2e9c616a3b8195a9ae32c5aed3b5",
         },
         "windows": {
-            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/800218/chrome-win.zip",
+            "url": "https://storage.googleapis.com/chromium-browser-snapshots/Win_x64/827102/chrome-win.zip",
             "sha256": None,
         },
     },
     # Versions found by visiting https://chromedriver.chromium.org/downloads
     "chromedriver": {
         "linux": {
-            "url": "https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip",
-            "sha256": "d498eaacc414adbaf638333b59390cdfea5d780f941f57f41fd90280df78b159",
+            "url": "https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_linux64.zip",
+            "sha256": "817ca10b63f01bb2f6ead37658c83cd68bcd912ea6a4f0a761d152080a1b1e42",
         },
         "mac": {
-            "url": "https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_mac64.zip",
-            "sha256": "351ae30e9feab7ca6ccb94a549afcd62d6355561b78b8386cd4271d480a2fdc6",
+            "url": "https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_mac64.zip",
+            "sha256": "b7171a5bf9cdc1afe10b7f7812e13d275342e861518a7db6ff1ce5666e65bf86",
         },
         "windows": {
-            "url": "https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_win32.zip",
+            "url": "https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_win32.zip",
             "sha256": None,
         },
     },

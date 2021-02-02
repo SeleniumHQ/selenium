@@ -71,8 +71,9 @@ export default function TopBar() {
   if (error) return <p>`Error! ${error.message}`</p>;
 
   const gridVersion = data.grid.version;
-  const maxSession = data.grid.maxSession;
+  const maxSession = data.grid.maxSession ?? 0;
   const sessionCount = data.grid.sessionCount ?? 0;
+  const nodeCount = data.grid.nodeCount ?? 0;
 
   return (
     <div className={classes.root}>
@@ -123,7 +124,7 @@ export default function TopBar() {
           </Box>
         </Toolbar>
       </AppBar>
-      <NavBar open={open} maxSession={maxSession} sessionCount={sessionCount}/>
+      <NavBar open={open} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
     </div>
   );
 }

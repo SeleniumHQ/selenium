@@ -15,9 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.grid.jmx;
 
-interface MimeType {
-  String EMPTY = "";
-  String CROSS_DOMAIN_RPC = "application/xdrpc";
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ManagedAttribute {
+  String name() default "";
+  String description() default "";
+  String getter() default "";
+  String setter() default "";
+  String units() default "";
 }
