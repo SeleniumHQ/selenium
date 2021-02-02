@@ -18,12 +18,12 @@
 package org.openqa.selenium.grid.session.remote;
 
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
@@ -32,11 +32,11 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
-import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
@@ -48,8 +48,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @ManagedService
 public class ServicedSession extends RemoteSession {

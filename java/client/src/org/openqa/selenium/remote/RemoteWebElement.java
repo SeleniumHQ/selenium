@@ -212,54 +212,28 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
 
   @Override
   public List<WebElement> findElements(By locator) {
-    if (locator instanceof By.StandardLocator) {
-      return ((By.StandardLocator) locator).findElements(this, this::findElements);
-    } else {
-      return locator.findElements(this);
-    }
+    return parent.findElements(parent, this, locator);
   }
 
   @Override
-  public WebElement findElement(By by) {
-    if (by instanceof By.StandardLocator) {
-      return ((By.StandardLocator) by).findElement(this, this::findElement);
-    } else {
-      return by.findElement(this);
-    }
+  public WebElement findElement(By locator) {
+    return parent.findElement(parent, this, locator);
   }
 
+  /**
+   * @deprecated Rely on using {@link By.Remotable} instead
+   */
+  @Deprecated
   protected WebElement findElement(String using, String value) {
-    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT(id, using, value));
-
-    Object responseValue = response.getValue();
-    if (responseValue == null) { // see https://github.com/SeleniumHQ/selenium/issues/5809
-      throw new NoSuchElementException(String.format("Cannot locate an element using %s=%s", using, value));
-    }
-    WebElement element;
-    try {
-      element = (WebElement) responseValue;
-    } catch (ClassCastException ex) {
-      throw new WebDriverException("Returned value cannot be converted to WebElement: " + value, ex);
-    }
-    parent.setFoundBy(this, element, using, value);
-    return element;
+    throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
   }
 
-  @SuppressWarnings("unchecked")
+  /**
+   * @deprecated Rely on using {@link By.Remotable} instead
+   */
+  @Deprecated
   protected List<WebElement> findElements(String using, String value) {
-    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS(id, using, value));
-    Object responseValue = response.getValue();
-    if (responseValue == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
-      return Collections.emptyList();
-    }
-    List<WebElement> allElements;
-    try {
-      allElements = (List<WebElement>) responseValue;
-    } catch (ClassCastException ex) {
-      throw new WebDriverException("Returned value cannot be converted to List<WebElement>: " + responseValue, ex);
-    }
-    allElements.forEach(element -> parent.setFoundBy(this, element, using, value));
-    return allElements;
+    throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
   }
 
   protected Response execute(CommandPayload payload) {

@@ -2,11 +2,6 @@ import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import React from "react";
 import ReactModal from "react-modal";
-// css import order is important
-/* 1 */
-// import "./css/theme.css";
-/* 2 */
-// import "./css/theme-selenium.css";
 import {GridConfig} from "./config";
 import NodeType from "./models/node";
 import TopBar from "./components/TopBar/TopBar";
@@ -14,6 +9,7 @@ import Overview from "./screens/Overview/Overview";
 import {Box, Link, makeStyles} from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
+import Sessions from "./screens/Sessions/Sessions";
 
 export const client = new ApolloClient({
 	cache: new InMemoryCache(),
@@ -73,6 +69,7 @@ function App() {
 					<main className={classes.content}>
 						<Container maxWidth={false} className={classes.container}>
 							<Switch>
+								<Route exact path={"/sessions"} component={Sessions}/>
 								<Route exact path={"/"} component={Overview}/>
 							</Switch>
 						</Container>

@@ -72,7 +72,9 @@ public class JsonOutput implements Closeable {
   // we'll also escape "<" and "&"
   private static final Map<Integer, String> ESCAPES;
   static {
-    Map<Integer, String> builder = new LinkedHashMap<>();
+    // increased initial capacity to avoid hash collisions, especially for the following ranges:
+    // '0' to '9', 'a' to 'z', 'A' to 'Z'
+    Map<Integer, String> builder = new LinkedHashMap<>(128);
 
     for (int i = 0; i <= 0x1f; i++) {
       // We want nice looking escapes for these, which are called out

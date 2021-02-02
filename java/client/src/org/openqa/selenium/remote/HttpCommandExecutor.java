@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Collections.emptyMap;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -56,6 +57,14 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   private ResponseCodec<HttpResponse> responseCodec;
 
   private LocalLogs logs = LocalLogs.getNullLogger();
+
+  private static URL getDefaultServerURL() {
+    try {
+      return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
+    } catch (MalformedURLException e) {
+      throw new WebDriverException(e);
+    }
+  }
 
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     this(emptyMap(), addressOfRemoteServer);
@@ -85,7 +94,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     HttpClient.Factory httpClientFactory)
   {
     this(additionalCommands,
-         ClientConfig.defaultConfig().baseUrl(addressOfRemoteServer),
+         ClientConfig.defaultConfig()
+           .baseUrl(Optional.ofNullable(addressOfRemoteServer)
+                      .orElseGet(HttpCommandExecutor::getDefaultServerURL)),
          httpClientFactory);
   }
 
@@ -94,18 +105,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     ClientConfig config,
     HttpClient.Factory httpClientFactory)
   {
-    try {
-      if (config.baseUri() != null) {
-        remoteServer = config.baseUrl();
-      } else {
-        remoteServer = new URL(
-          System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
-        config = config.baseUrl(remoteServer);
-      }
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
+    if (config.baseUri() == null) {
+      config = config.baseUrl(getDefaultServerURL());
     }
-
+    remoteServer = config.baseUrl();
     this.additionalCommands = additionalCommands;
     this.httpClientFactory = httpClientFactory;
     this.client = httpClientFactory.createClient(config);

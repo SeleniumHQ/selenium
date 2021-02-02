@@ -24,10 +24,9 @@ import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
-import io.opentelemetry.sdk.trace.SdkTracerManagement;
+import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.data.EventData;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.StatusData;
@@ -577,26 +576,34 @@ public class TracerTest {
   }
 
   private Tracer createTracer(List<SpanData> exportTo) {
-    SdkTracerManagement sdkTracerManagement = OpenTelemetrySdk.getGlobalTracerManagement();
-    sdkTracerManagement.addSpanProcessor(SimpleSpanProcessor.builder(new SpanExporter() {
-      @Override
-      public CompletableResultCode export(Collection<SpanData> spans) {
-        exportTo.addAll(spans);
-        return CompletableResultCode.ofSuccess();
-      }
+    ContextPropagators propagators =
+      ContextPropagators.create((W3CTraceContextPropagator.getInstance()));
+    SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
+      .addSpanProcessor(SimpleSpanProcessor.create(new SpanExporter() {
+        @Override
+        public CompletableResultCode export(Collection<SpanData> spans) {
+          exportTo.addAll(spans);
+          return CompletableResultCode.ofSuccess();
+        }
 
-      @Override public CompletableResultCode flush() {
-        return CompletableResultCode.ofSuccess();
-      }
+        @Override public CompletableResultCode flush() {
+          return CompletableResultCode.ofSuccess();
+        }
 
-      @Override
-      public CompletableResultCode shutdown() {
-        return CompletableResultCode.ofSuccess();
-      }
-    }).build());
+        @Override
+        public CompletableResultCode shutdown() {
+          return CompletableResultCode.ofSuccess();
+        }
+      }))
+      .build();
 
-    ContextPropagators propagators = ContextPropagators.create(
-      TextMapPropagator.composite(W3CTraceContextPropagator.getInstance()));
+    OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder()
+      .setTracerProvider(sdkTracerProvider)
+      .setPropagators(propagators)
+      .buildAndRegisterGlobal();
+
+    Runtime.getRuntime()
+      .addShutdownHook(new Thread(() -> openTelemetrySdk.getTracerManagement().shutdown()));
 
     return new OpenTelemetryTracer(
       GlobalOpenTelemetry.getTracer("test"),

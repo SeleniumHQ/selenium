@@ -113,8 +113,10 @@ public class Grid {
       .sum();
   }
 
-  public int getUsedSlots() {
-    return getSessionCount();
+  public int getMaxSession() {
+    return distributorStatus.get().getNodes().stream()
+      .mapToInt(NodeStatus::getMaxSessionCount)
+      .sum();
   }
 
   public int getSessionQueueSize() {

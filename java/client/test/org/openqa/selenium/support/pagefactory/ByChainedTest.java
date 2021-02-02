@@ -68,9 +68,9 @@ public class ByChainedTest {
     elems12.add(elem1);
     elems12.add(elem2);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElements(By.cssSelector("cheese"))).thenReturn(elems12);
 
-    ByChained by = new ByChained(By.name("cheese"));
+    ByChained by = new ByChained(By.cssSelector("cheese"));
     assertThat(by.findElement(driver)).isEqualTo(elem1);
   }
 
@@ -83,9 +83,9 @@ public class ByChainedTest {
     elems12.add(elem1);
     elems12.add(elem2);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElements(By.tagName("cheese"))).thenReturn(elems12);
 
-    ByChained by = new ByChained(By.name("cheese"));
+    ByChained by = new ByChained(By.tagName("cheese"));
     assertThat(by.findElements(driver)).isEqualTo(elems12);
   }
 
@@ -132,11 +132,11 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
-    when(elem1.findElements(By.name("photo"))).thenReturn(elems34);
-    when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
+    when(driver.findElements(By.cssSelector("cheese"))).thenReturn(elems12);
+    when(elem1.findElements(By.cssSelector("photo"))).thenReturn(elems34);
+    when(elem2.findElements(By.cssSelector("photo"))).thenReturn(elems5);
 
-    ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
+    ByChained by = new ByChained(By.cssSelector("cheese"), By.cssSelector("photo"));
     assertThat(by.findElement(driver)).isEqualTo(elem3);
   }
 
@@ -219,11 +219,11 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
-    when(elem1.findElements(By.name("photo"))).thenReturn(elems);
-    when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
+    when(driver.findElements(By.tagName("cheese"))).thenReturn(elems12);
+    when(elem1.findElements(By.tagName("photo"))).thenReturn(elems);
+    when(elem2.findElements(By.tagName("photo"))).thenReturn(elems5);
 
-    ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
+    ByChained by = new ByChained(By.tagName("cheese"), By.tagName("photo"));
     assertThat(by.findElement(driver)).isEqualTo(elem5);
   }
 
@@ -249,11 +249,11 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
-    when(elem1.findElements(By.name("photo"))).thenReturn(elems);
-    when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
+    when(driver.findElements(By.linkText("cheese"))).thenReturn(elems12);
+    when(elem1.findElements(By.linkText("photo"))).thenReturn(elems);
+    when(elem2.findElements(By.linkText("photo"))).thenReturn(elems5);
 
-    ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
+    ByChained by = new ByChained(By.linkText("cheese"), By.linkText("photo"));
     assertThat(by.findElements(driver)).isEqualTo(elems5);
   }
 

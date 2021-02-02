@@ -23,7 +23,6 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service:1.0-rc7",
             "com.google.auto.service:auto-service-annotations:1.0-rc7",
             "com.graphql-java:graphql-java:16.1",
-            "com.typesafe.netty:netty-reactive-streams:2.0.5",
             "io.grpc:grpc-context:1.35.0",
             "io.lettuce:lettuce-core:6.0.2.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
@@ -49,9 +48,6 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-sdk-trace:%s" % opentelemetry_version,
             "io.ous:jtoml:2.0.0",
             "it.ozimov:embedded-redis:0.7.3",
-            "io.projectreactor:reactor-core:3.4.2",
-            "io.projectreactor.netty:reactor-netty:1.0.3",
-            "io.projectreactor.netty:reactor-netty-http:1.0.3",
             "javax.servlet:javax.servlet-api:4.0.1",
             maven.artifact(
                 group = "junit",
