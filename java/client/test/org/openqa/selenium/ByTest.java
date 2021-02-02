@@ -118,8 +118,7 @@ public class ByTest {
     Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
 
     assertThat(blob.get("using")).isEqualTo("css selector");
-    assertThat(blob.get("value")).isEqualTo("#one #two");
-
+    assertThat(blob.get("value")).isEqualTo("#one\\ two");
   }
 
   private interface AllDriver extends SearchContext {
