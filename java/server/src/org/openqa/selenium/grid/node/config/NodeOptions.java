@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -259,10 +260,25 @@ public class NodeOptions {
       throw new ConfigException(logMessage);
     }
 
+    if (allDrivers.isEmpty()) {
+      LOG.warning("Specific drivers cannot be added. There are no drivers detected on PATH.");
+      return;
+    }
+
+    List<String> allDriverNames =
+      allDrivers.keySet().stream()
+        .map(key -> key.getDisplayName().toLowerCase()).collect(Collectors.toList());
+
     List<String> drivers = config.getAll(NODE_SECTION, "drivers").orElse(new ArrayList<>())
       .stream()
       .map(String::toLowerCase)
       .collect(Collectors.toList());
+
+    drivers.forEach(specificDriver -> {
+      if (!allDriverNames.contains(specificDriver)) {
+        LOG.log(Level.WARNING, "Could not find {0} driver on PATH.", specificDriver);
+      }
+    });
 
     allDrivers.entrySet().stream()
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
@@ -286,6 +302,8 @@ public class NodeOptions {
         .filter(WebDriverInfo::isAvailable)
         .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
         .collect(Collectors.toList());
+
+    LOG.log(Level.INFO,"Discovered {0} driver(s)", infos.size());
 
     // Same
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
