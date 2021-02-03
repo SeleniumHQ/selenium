@@ -32,6 +32,24 @@ module Selenium
           File.read(File.join(dir, 'user.js'))
         end
 
+        it 'uses default preferences' do
+          prefs = read_generated_prefs
+          expect(prefs).to include('user_pref("browser.newtabpage.enabled", false)')
+          expect(prefs).to include('user_pref("browser.startup.homepage", "about:blank")')
+          expect(prefs).to include('user_pref("startup.homepage_welcome_url", "about:blank")')
+          expect(prefs).to include('user_pref("browser.usedOnWindows10.introURL", "about:blank")')
+          expect(prefs).to include('user_pref("network.captive-portal-service.enabled", false)')
+          expect(prefs).to include('user_pref("security.csp.enable", false)')
+        end
+
+        it 'can override welcome page' do
+          profile['startup.homepage_welcome_url'] = "http://google.com"
+
+          prefs = read_generated_prefs
+          expect(prefs).to include('user_pref("browser.startup.homepage", "about:blank")')
+          expect(prefs).to include('user_pref("startup.homepage_welcome_url", "http://google.com")')
+        end
+
         it 'should set additional preferences' do
           profile['foo.number'] = 123
           profile['foo.boolean'] = true
