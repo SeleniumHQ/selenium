@@ -29,7 +29,6 @@ module Selenium
         # see: http://chromedriver.chromium.org/capabilities
         CAPABILITIES = {args: 'args',
                         binary: 'binary',
-                        extensions: 'extensions',
                         local_state: 'localState',
                         prefs: 'prefs',
                         detach: 'detach',
@@ -39,6 +38,9 @@ module Selenium
                         emulation: 'mobileEmulation',
                         perf_logging_prefs: 'perfLoggingPrefs',
                         window_types: 'windowTypes'}.freeze
+
+        # NOTE: special handling of 'extensions' to validate when set instead of when used
+        attr_reader :extensions
 
         # Create a new Options instance.
         #
@@ -64,21 +66,23 @@ module Selenium
         # @option opts [Array<String>] :window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(profile: nil, encoded_extensions: [], **opts)
+        def initialize(profile: nil, **opts)
           super(**opts)
 
           @profile = profile
-          @options[:encoded_extensions] = encoded_extensions
 
-          @options[:args] ||= []
-          @options[:prefs] ||= {}
-          @options[:emulation] ||= {}
-          @options[:local_state] ||= {}
-          @options[:exclude_switches] ||= []
-          @options[:perf_logging_prefs] ||= {}
-          @options[:window_types] ||= []
-          @options[:extensions] ||= []
-          @options[:extensions].each(&method(:validate_extension))
+          @options = {args: [],
+                      prefs: {},
+                      emulation: {},
+                      extensions: [],
+                      local_state: {},
+                      exclude_switches: [],
+                      perf_logging_prefs: {},
+                      window_types: []}.merge(@options)
+
+          @encoded_extensions = @options.delete(:encoded_extensions) || []
+          @extensions = []
+          (@options.delete(:extensions)).each(&method(:validate_extension))
         end
 
         #
@@ -93,7 +97,21 @@ module Selenium
 
         def add_extension(path)
           validate_extension(path)
-          @options[:extensions] << path
+        end
+
+        #
+        # Add an extension by local path.
+        #
+        # @example
+        #   extensions = ['/path/to/extension.crx', '/path/to/other.crx']
+        #   options = Selenium::WebDriver::Chrome::Options.new
+        #   options.extensions = extensions
+        #
+        # @param [Array<String>] :extensions A list of paths to (.crx) Chrome extensions to install on startup
+        #
+
+        def extensions=(extensions)
+          extensions.each(&method(:validate_extension))
         end
 
         #
@@ -107,9 +125,8 @@ module Selenium
         #
 
         def add_encoded_extension(encoded)
-          @options[:encoded_extensions] << encoded
+          @encoded_extensions << encoded
         end
-        alias_method :encoded_extension=, :add_encoded_extension
 
         #
         # Add a command-line argument to use when starting Chrome.
@@ -178,15 +195,16 @@ module Selenium
         private
 
         def process_browser_options(browser_options)
-          options = browser_options[KEY]
+          options = browser_options[self.class::KEY]
           options['binary'] ||= binary_path if binary_path
-          options['args'] << "--user-data-dir=#{@profile.directory}" if @profile
-          merge_extensions(options)
-        end
+          if @profile
+            options['args'] ||= []
+            options['args'] << "--user-data-dir=#{@profile.directory}"
+          end
 
-        def merge_extensions(browser_options)
-          encoded_extensions = browser_options.delete(:encoded_extensions)
-          browser_options[:extensions] = extensions.map(&method(:encode_extension)) + encoded_extensions
+          return if (@encoded_extensions + @extensions).empty?
+
+          options['extensions'] = @encoded_extensions + @extensions.map(&method(:encode_extension))
         end
 
         def binary_path
@@ -200,6 +218,8 @@ module Selenium
         def validate_extension(path)
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
           raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
+
+          @extensions << path
         end
 
         def camelize?(key)

@@ -107,7 +107,7 @@ module Selenium
         describe '#add_encoded_extension' do
           it 'adds an encoded extension' do
             options.add_encoded_extension('foo')
-            expect(options.instance_variable_get('@options')[:encoded_extensions]).to include('foo')
+            expect(options.instance_variable_get('@encoded_extensions')).to include('foo')
           end
         end
 
@@ -220,10 +220,7 @@ module Selenium
                                                'prefs' => {'foo' => 'bar',
                                                            'key_that_should_not_be_camelcased' => 'baz'},
                                                'binary' => '/foo/bar',
-                                               # TODO: verify this is correct behavior;
-                                               # I would expect extensions to come back encoded
-                                               'extensions' => %w[foo.crx bar.crx],
-                                               'encodedExtensions' => %w[encoded_foobar],
+                                               'extensions' => %w[encoded_foobar encoded_foo encoded_bar],
                                                'foo' => 'bar',
                                                'mobileEmulation' => {'deviceName' => 'mine'},
                                                'localState' => {'foo' => 'bar'},

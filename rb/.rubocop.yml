@@ -62,7 +62,7 @@ Metrics/ClassLength:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
 
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Max: 9
   Exclude:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/support/color.rb'

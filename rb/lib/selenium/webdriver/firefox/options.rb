@@ -24,12 +24,14 @@ module Selenium
         KEY = 'moz:firefoxOptions'
 
         # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
-        # NOTE: special handling of 'profile' to validate on construction instead of use
         CAPABILITIES = {binary: 'binary',
                         args: 'args',
                         log: 'log',
                         prefs: 'prefs'}.freeze
         BROWSER = 'firefox'
+
+        # NOTE: special handling of 'profile' to validate when set instead of when used
+        attr_reader :profile
 
         #
         # Create a new Options instance, only for W3C-capable versions of Firefox.
@@ -53,7 +55,8 @@ module Selenium
           @options[:args] ||= []
           @options[:prefs] ||= {}
           @options[:log] ||= {level: log_level} if log_level
-          process_profile(@options[:profile]) if @options.key?(:profile)
+
+          process_profile(@options.delete(:profile))
         end
 
         #
@@ -116,10 +119,6 @@ module Selenium
           process_profile(profile)
         end
 
-        def profile
-          @options[:profile]
-        end
-
         def log_level
           @options.dig(:log, :level)
         end
@@ -133,17 +132,18 @@ module Selenium
         def process_browser_options(browser_options)
           options = browser_options[KEY]
           options['binary'] ||= Firefox.path if Firefox.path
-          options['profile'] = options.delete(:profile) if profile
+          options['profile'] = @profile if @profile
         end
 
         def process_profile(profile)
-          @options[:profile] = if profile.nil?
-                                 nil
-                               elsif profile.is_a? Profile
-                                 profile
-                               else
-                                 Profile.from_name(profile)
-                               end
+          @profile = case profile
+                     when nil
+                       nil
+                     when Profile
+                       profile
+                     else
+                       Profile.from_name(profile)
+                     end
         end
       end # Options
     end # Firefox

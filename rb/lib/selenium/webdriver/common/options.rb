@@ -82,11 +82,15 @@ module Selenium
         end
         browser_options = defined?(self.class::KEY) ? {self.class::KEY => options} : options
 
-        process_browser_options(browser_options) if private_methods(false).include?(:process_browser_options)
+        process_browser_options(browser_options)
         generate_as_json(w3c_options.merge(browser_options))
       end
 
       private
+
+      def process_browser_options(_browser_options)
+        nil
+      end
 
       def camelize?(_key)
         true
