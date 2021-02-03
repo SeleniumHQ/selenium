@@ -148,10 +148,9 @@ public class LocalDistributor extends Distributor {
       writeLock.lock();
       try {
         if (!requestIds.isEmpty()) {
-          boolean hasCapacity = nodes
-            .keySet()
-            .stream()
-            .anyMatch(key -> nodes.get(key).getStatus().hasCapacity());
+          Set<NodeStatus> availableNodes = ImmutableSet.copyOf(getAvailableNodes());
+          boolean hasCapacity = availableNodes.stream()
+            .anyMatch(NodeStatus::hasCapacity);
           if (hasCapacity) {
             RequestId reqId = requestIds.poll();
             if (reqId != null) {
