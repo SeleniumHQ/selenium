@@ -83,7 +83,6 @@ const error = require('./lib/error')
 const Symbols = require('./lib/symbols')
 const webdriver = require('./lib/webdriver')
 const remote = require('./remote')
-const fs = require('fs')
 
 /**
  * Custom command names supported by Chromium WebDriver.

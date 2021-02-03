@@ -32,6 +32,8 @@ const Symbols = require('./symbols')
 const cdpTargets = ['page', 'browser']
 const cdp = require('../devtools/CDPConnection')
 const WebSocket = require('ws')
+const http = require('../http/index')
+const fs = require('fs')
 const { Capabilities } = require('./capabilities')
 
 // Capability names that are defined in the W3C spec.
@@ -1368,7 +1370,7 @@ class WebDriver {
         .toString()
     } catch {
       mutationListener = fs
-        .readFileSync('./lib/atoms/mutation-listener.js', 'utf-8')
+        .readFileSync('./atoms/mutation-listener.js', 'utf-8')
         .toString()
     }
 
