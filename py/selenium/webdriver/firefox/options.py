@@ -187,3 +187,4 @@ class Options(ArgOptions):
         userAgent = str(userAgent)
         self.set_preference('general.useragent.override', userAgent)
         
+        
