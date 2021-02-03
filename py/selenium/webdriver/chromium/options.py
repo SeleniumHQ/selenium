@@ -183,3 +183,8 @@ class ChromiumOptions(ArgOptions):
     @property
     def default_capabilities(self) -> dict:
         return DesiredCapabilities.CHROME.copy()
+    
+    def add_userAgent(self, userAgent):
+        "Adds the useragent to the browser instance"
+        userAgent = str(userAgent)
+        self.add_argument('user-agent=' + userAgent)    
