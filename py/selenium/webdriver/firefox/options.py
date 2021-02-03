@@ -183,6 +183,7 @@ class Options(ArgOptions):
         return DesiredCapabilities.FIREFOX.copy()
     
     def add_userAgent(self, userAgent):
+        "Adds the useragent to the browser instance"
         userAgent = str(userAgent)
         self.set_preference('general.useragent.override', userAgent)
         
