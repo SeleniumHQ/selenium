@@ -181,3 +181,8 @@ class Options(ArgOptions):
     @property
     def default_capabilities(self) -> dict:
         return DesiredCapabilities.FIREFOX.copy()
+    
+    def add_userAgent(self, userAgent):
+        userAgent = str(userAgent)
+        self.set_preference('general.useragent.override', userAgent)
+        
