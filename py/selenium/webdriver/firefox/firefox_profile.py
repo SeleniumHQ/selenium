@@ -364,3 +364,8 @@ class FirefoxProfile(object):
             raise AddonFormatError('Add-on id could not be found.')
 
         return details
+    
+    def add_userAgent(self, userAgent):
+        "Adds the useragent to the browser instance"
+        userAgent = str(userAgent)
+        self.set_preference('general.useragent.override', userAgent)
