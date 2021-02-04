@@ -685,6 +685,11 @@ public class EventFiringWebDriver implements
       return this;
     }
 
+    @Override
+    public Duration getImplicitWaitTimeout() {
+      return timeouts.getImplicitWaitTimeout();
+    }
+
     @Deprecated
     @Override
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
@@ -697,6 +702,11 @@ public class EventFiringWebDriver implements
       return this;
     }
 
+    @Override
+    public Duration getScriptTimeout() {
+      return timeouts.getScriptTimeout();
+    }
+
     @Deprecated
     @Override
     public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
@@ -707,6 +717,11 @@ public class EventFiringWebDriver implements
     public Timeouts pageLoadTimeout(Duration duration) {
       timeouts.pageLoadTimeout(duration);
       return this;
+    }
+
+    @Override
+    public Duration getPageLoadTimeout() {
+      return timeouts.getPageLoadTimeout();
     }
   }
 

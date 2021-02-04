@@ -52,6 +52,15 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   }
 
   @Test
+  public void shouldSetAndGetImplicitWaitTimeout() {
+    Duration timeout = driver.manage().timeouts().getImplicitWaitTimeout();
+    assertThat(timeout).hasMillis(0);
+    driver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
+    Duration timeout2 = driver.manage().timeouts().getImplicitWaitTimeout();
+    assertThat(timeout2).hasMillis(3000);
+  }
+
+  @Test
   public void testShouldImplicitlyWaitForASingleElement() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
