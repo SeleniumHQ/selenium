@@ -29,6 +29,11 @@ const input = require('./input')
 const logging = require('./logging')
 const promise = require('./promise')
 const Symbols = require('./symbols')
+const cdpTargets = ['page', 'browser']
+const cdp = require('../devtools/CDPConnection')
+const WebSocket = require('ws')
+const http = require('../http/index')
+const fs = require('fs')
 const { Capabilities } = require('./capabilities')
 
 // Capability names that are defined in the W3C spec.
@@ -1149,6 +1154,258 @@ class WebDriver {
     return this.execute(
       new command.Command(command.Name.PRINT_PAGE).setParameters(resultObj)
     )
+  }
+
+  /**
+   * Creates a new WebSocket connection.
+   * @return {!Promise<resolved>} A new CDP instance.
+   */
+  async createCDPConnection(target) {
+    const caps = await this.getCapabilities()
+    const seOptions = caps['map_'].get('se:options') || new Map()
+    const vendorInfo =
+      caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
+      new Map()
+    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress']
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
+
+    return new Promise((resolve, reject) => {
+      try {
+        this._wsConnection = new WebSocket(this._wsUrl)
+      } catch (err) {
+        reject(err)
+        return
+      }
+
+      this._wsConnection.on('open', () => {
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
+        resolve(this._cdpConnection)
+      })
+
+      this._wsConnection.on('error', (error) => {
+        reject(error)
+      })
+    })
+  }
+
+  /**
+   * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
+   * @param {string} debuggerAddress
+   * @param {string} target
+   * @return {string} Returns parsed webSocketDebuggerUrl obtained from the http request
+   */
+  async getWsUrl(debuggerAddress, target) {
+    if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
+      throw new error.InvalidArgumentError('invalid target value')
+    }
+    let path = '/json/version'
+
+    if (target === 'page') {
+      path = '/json'
+    }
+    let request = new http.Request('GET', path)
+    let client = new http.HttpClient('http://' + debuggerAddress)
+    let response = await client.send(request)
+    let url = JSON.parse(response.body)['webSocketDebuggerUrl']
+    if (target.toLowerCase() === 'page') {
+      url = JSON.parse(response.body)[0]['webSocketDebuggerUrl']
+    }
+
+    return url
+  }
+
+  /**
+   * Sets a listener for Fetch.authRequired event from CDP
+   * If event is triggered, it enter username and password
+   * and allows the test to move forward
+   * @param {string} username
+   * @param {string} password
+   * @param connection CDP Connection
+   */
+  async register(username, password, connection) {
+    await connection.execute(
+      'Network.setCacheDisabled',
+      this.getRandomNumber(1, 10),
+      {
+        cacheDisabled: true,
+      },
+      null
+    )
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Fetch.authRequired') {
+        const requestParams = params['params']
+        connection.execute(
+          'Fetch.continueWithAuth',
+          this.getRandomNumber(1, 10),
+          {
+            requestId: requestParams['requestId'],
+            authChallengeResponse: {
+              response: 'ProvideCredentials',
+              username: username,
+              password: password,
+            },
+          }
+        )
+      } else if (params.method === 'Fetch.requestPaused') {
+        const requestPausedParams = params['params']
+        connection.execute(
+          'Fetch.continueRequest',
+          this.getRandomNumber(1, 10),
+          {
+            requestId: requestPausedParams['requestId'],
+          }
+        )
+      }
+    })
+
+    await connection.execute(
+      'Fetch.enable',
+      1,
+      {
+        handleAuthRequests: true,
+      },
+      null
+    )
+  }
+
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogEvent(connection, callback) {
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.consoleAPICalled') {
+        const consoleEventParams = params['params']
+        let event = {
+          type: consoleEventParams['type'],
+          timestamp: new Date(consoleEventParams['timestamp']),
+          args: consoleEventParams['args'],
+        }
+
+        callback(event)
+      }
+    })
+  }
+
+  /**
+   *
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLogException(connection, callback) {
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+
+    this._wsConnection.on('message', (message) => {
+      const params = JSON.parse(message)
+
+      if (params.method === 'Runtime.exceptionThrown') {
+        const exceptionEventParams = params['params']
+        let event = {
+          exceptionDetails: exceptionEventParams['exceptionDetails'],
+          timestamp: new Date(exceptionEventParams['timestamp']),
+        }
+
+        callback(event)
+      }
+    })
+  }
+
+  /**
+   * @param connection
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async logMutationEvents(connection, callback) {
+    await connection.execute(
+      'Runtime.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+    await connection.execute(
+      'Page.enable',
+      this.getRandomNumber(1, 10),
+      {},
+      null
+    )
+
+    await connection.execute(
+      'Runtime.addBinding',
+      this.getRandomNumber(1, 10),
+      {
+        name: '__webdriver_attribute',
+      },
+      null
+    )
+
+    let mutationListener = ''
+    try {
+      // Depending on what is running the code it could appear in 2 different places which is why we try
+      // here and then the other location
+      mutationListener = fs
+        .readFileSync(
+          './javascript/node/selenium-webdriver/lib/atoms/mutation-listener.js',
+          'utf-8'
+        )
+        .toString()
+    } catch {
+      mutationListener = fs
+        .readFileSync('./atoms/mutation-listener.js', 'utf-8')
+        .toString()
+    }
+
+    this.executeScript(mutationListener)
+
+    await connection.execute(
+      'Page.addScriptToEvaluateOnNewDocument',
+      this.getRandomNumber(1, 10),
+      {
+        source: mutationListener,
+      },
+      null
+    )
+
+    this._wsConnection.on('message', async (message) => {
+      const params = JSON.parse(message)
+      if (params.method === 'Runtime.bindingCalled') {
+        let payload = JSON.parse(params['params']['payload'])
+        let elements = await this.findElements({
+          css: '*[data-__webdriver_id=' + payload['target'],
+        })
+
+        if (elements.length === 0) {
+          return
+        }
+
+        let event = {
+          element: elements[0],
+          attribute_name: payload['name'],
+          current_value: payload['value'],
+          old_value: payload['oldValue'],
+        }
+        callback(event)
+      }
+    })
   }
 }
 
