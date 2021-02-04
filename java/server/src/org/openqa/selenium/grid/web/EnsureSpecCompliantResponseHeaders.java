@@ -17,20 +17,12 @@
 
 package org.openqa.selenium.grid.web;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.net.MediaType;
-
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.Set;
 
 public class EnsureSpecCompliantResponseHeaders implements Filter {
 
