@@ -33,9 +33,9 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
-import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
-import org.openqa.selenium.remote.server.jmx.ManagedService;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;

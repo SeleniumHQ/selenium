@@ -344,21 +344,21 @@ public class JsonInput implements Closeable {
     input.read();  // Skip leading quote
 
     StringBuilder builder = new StringBuilder();
-    while (input.peek() != '"' && input.peek() != Input.EOF) {
-      char read = input.read();
-      if (read == '\\') {
-        readEscape(builder);
-      } else {
-        builder.append(read);
+    char c;
+    while (true) {
+      c = input.read();
+      switch (c) {
+        case Input.EOF:
+          throw new JsonException("Unterminated string: " + builder + ". " + input);
+        case '"': // terminate string
+          return builder.toString();
+        case '\\': // quoted char
+          readEscape(builder);
+          break;
+        default:
+          builder.append(c);
       }
     }
-
-    char last = input.read();// Skip trailing quote
-    if (last != '"') {
-      throw new JsonException("Unterminated string: " + builder + ". " + input);
-    }
-
-    return builder.toString();
   }
 
   private void readEscape(StringBuilder builder) {

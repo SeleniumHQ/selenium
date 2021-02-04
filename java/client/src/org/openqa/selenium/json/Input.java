@@ -26,72 +26,83 @@ import java.io.UncheckedIOException;
 /**
  * Similar to a {@link Reader} but with the ability to peek a single character ahead.
  * <p>
- * For the sake of providing a useful {@link #toString()} implementation, keeps a small circular
- * buffer of the most recently read characters.
+ * For the sake of providing a useful {@link #toString()} implementation, keeps the most recently
+ * read characters in the input buffer.
  */
 class Input {
-
   public static final char EOF = (char) -1;
+  // the number of chars to buffer
+  private static final int BUFFER_SIZE = 4096;
+  // the number of chars to remember, safe to set to 0
+  private static final int MEMORY_SIZE = 128;
+
   private final Reader source;
-  private boolean read;
-  private char peekedChar;
-  private char[] lastRead = new char[128];
-  private int insertAt = 0;
-  private boolean filled = false;
+  // a buffer used to minimize read calls and to keep the chars to remember
+  private final char[] buffer;
+  // the filled area in the buffer
+  private int filled;
+  // the last position read in the buffer
+  private int position;
 
   public Input(Reader source) {
     this.source = Require.nonNull("Source", source);
+    this.buffer = new char[BUFFER_SIZE + MEMORY_SIZE];
+    this.filled = 0;
+    this.position = -1;
   }
 
   public char peek() {
-    init();
-    return peekedChar;
+    return fill() ? buffer[position + 1] : EOF;
   }
 
   public char read() {
-    init();
-    read = false;
-    append();
-    return peekedChar;
+    return fill() ? buffer[++position] : EOF;
   }
 
   @Override
   public String toString() {
-    String preamble = "Last " + (filled ?  lastRead.length : insertAt) + " characters read: ";
-    if (!filled) {
-      return preamble + new String(lastRead, 0, insertAt);
+    int offset;
+    int length;
+
+    if (position < MEMORY_SIZE) {
+      offset = 0;
+      length = position + 1;
+    } else {
+      offset = position + 1 - MEMORY_SIZE;
+      length = MEMORY_SIZE;
     }
 
-    // We filled the array. The insertion point would overwrite the first thing we should read.
-    char[] buf = new char[lastRead.length];
-    int lengthToRead = lastRead.length - insertAt;
-    System.arraycopy(lastRead, insertAt, buf, 0, lengthToRead);
-    System.arraycopy(lastRead, 0, buf, lengthToRead, insertAt);
-
-    return preamble + new String(buf);
+    return "Last " + length + " characters read: " + new String(buffer, offset, length);
   }
 
-  private void init() {
-    if (read) {
-      return;
+  private boolean fill() {
+    // do we need to fill the buffer?
+    while (filled == position + 1) {
+      try {
+        // free the buffer, keep only the chars to remember
+        int shift = filled - MEMORY_SIZE;
+        if (shift > 0) {
+          position -= shift;
+          filled -= shift;
+
+          System.arraycopy(buffer, shift, buffer, 0, filled);
+        }
+
+        // try to fill the buffer
+        int n = source.read(buffer, filled, buffer.length - filled);
+
+        if (n == -1) {
+          // EOF reached
+          return false;
+        } else {
+          // n might be 0, the outer loop will handle this
+          filled += n;
+        }
+      } catch (IOException e) {
+        throw new UncheckedIOException(e.getMessage(), e);
+      }
     }
 
-    try {
-      peekedChar = (char) source.read();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e.getMessage(), e);
-    }
-    read = true;
-  }
-
-  private void append() {
-    if (peekedChar == Input.EOF) {
-      return;
-    }
-    lastRead[insertAt] = peekedChar;
-    insertAt = ++insertAt % lastRead.length;
-    if (insertAt == 0) {
-      filled = true;
-    }
+    return true;
   }
 }

@@ -1,5 +1,5 @@
-query {
-    grid {
+query GetSessions {
+    sessionsInfo {
         sessions {
             id
             capabilities

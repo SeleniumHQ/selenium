@@ -93,6 +93,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     setCapability(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     setAcceptInsecureCerts(true);
+    setCapability("moz:debuggerAddress", true);
   }
 
   public FirefoxOptions(Capabilities source) {
@@ -328,6 +329,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     FirefoxOptions newInstance = new FirefoxOptions();
     this.asMap().forEach(newInstance::setCapability);
     capabilities.asMap().forEach(newInstance::setCapability);
+    newInstance.mirror(this);
     if (capabilities instanceof FirefoxOptions) {
       newInstance.mirror((FirefoxOptions) capabilities);
     }

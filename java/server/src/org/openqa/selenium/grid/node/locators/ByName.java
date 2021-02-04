@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.node.locators;
 
 import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.locators.CustomLocator;
@@ -38,7 +37,6 @@ public class ByName implements CustomLocator {
   @Override
   public By createBy(Object usingParameter) {
     Require.argument("Locator value", usingParameter).instanceOf(String.class);
-    String name = String.valueOf(usingParameter).replace("'", "\\'");
-    return By.cssSelector(String.format("*[name='%s']", name));
+    return By.name((String) usingParameter);
   }
 }

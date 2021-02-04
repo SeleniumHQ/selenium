@@ -6,7 +6,7 @@ export const GridConfig = {
 		xhrPollingIntervalMillis: 5000,
 	},
 
-	/** Server config */
+	/** Server config (Start the Selenium Server with the "--allow-cors true" flag)*/
 	serverUri:
 		process.env.NODE_ENV === "development"
 			? "http://localhost:4444/graphql"

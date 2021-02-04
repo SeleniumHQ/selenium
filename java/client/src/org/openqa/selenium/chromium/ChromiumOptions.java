@@ -241,6 +241,9 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
       addArguments(options.args);
       addExtensions(options.extensionFiles);
       addEncodedExtensions(options.extensions);
+      if (options.binary != null) {
+        setBinary(options.binary);
+      }
       options.experimentalOptions.forEach(this::setExperimentalOption);
     }
   }

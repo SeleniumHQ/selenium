@@ -14,8 +14,8 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/jmx",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//java/server/src/org/openqa/selenium/remote/server/jmx",
         artifact("com.google.guava:guava"),
     ],
 )

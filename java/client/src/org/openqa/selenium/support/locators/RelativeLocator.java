@@ -23,9 +23,7 @@ import com.google.common.io.Resources;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
@@ -99,7 +97,7 @@ public class RelativeLocator {
     return new RelativeBy(By.tagName(tagName));
   }
 
-  public static class RelativeBy extends By {
+  public static class RelativeBy extends By implements By.Remotable {
     private final Object root;
     private final List<Map<String, Object>> filters;
 
@@ -205,10 +203,10 @@ public class RelativeLocator {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      JavascriptExecutor js = extractJsExecutor(context);
+      JavascriptExecutor js = getJavascriptExecutor(context);
 
       @SuppressWarnings("unchecked")
-      List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, this.toJson());
+      List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
       return elements;
     }
 
@@ -221,7 +219,6 @@ public class RelativeLocator {
         amend(ImmutableMap.of(
           "kind", direction,
           "args", ImmutableList.of(asAtomLocatorParameter(locator)))));
-
     }
 
     private List<Map<String, Object>> amend(Map<String, Object> toAdd) {
@@ -231,28 +228,17 @@ public class RelativeLocator {
         .build();
     }
 
-    private JavascriptExecutor extractJsExecutor(SearchContext context) {
-      if (context instanceof JavascriptExecutor) {
-        return (JavascriptExecutor) context;
-      }
-
-      Object current = context;
-      while (current instanceof WrapsDriver) {
-        WebDriver driver = ((WrapsDriver) context).getWrappedDriver();
-        if (driver instanceof JavascriptExecutor) {
-          return (JavascriptExecutor) driver;
-        }
-        current = driver;
-      }
-
-      throw new IllegalArgumentException("Cannot find elements, since the context cannot execute JS: " + context);
+    @Override
+    public Parameters getRemoteParameters() {
+      return new Parameters(
+        "relative",
+        ImmutableMap.of("root", root, "filters", filters));
     }
 
     private Map<String, Object> toJson() {
       return ImmutableMap.of(
-        "relative", ImmutableMap.of(
-          "root", root,
-          "filters", filters));
+        "using", "relative",
+        "value", ImmutableMap.of("root", root, "filters", filters));
     }
   }
 

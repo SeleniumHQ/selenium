@@ -9,6 +9,9 @@ import {useQuery} from "@apollo/client";
 import NodeType from "../../models/node";
 import OsInfoType from "../../models/os-info";
 import {GridConfig} from "../../config";
+import NoData from "../../components/NoData/NoData";
+import Loading from "../../components/Loading/Loading";
+import Error from "../../components/Error/Error";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -24,23 +27,36 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   fixedHeight: {
-    height: 280,
+    height: 310,
   },
 }));
 
-const GRID_QUERY = loader("../../graphql/grid.gql");
+const NODES_QUERY = loader("../../graphql/nodes.gql");
 
 
 export default function Overview() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const {loading, error, data} = useQuery(GRID_QUERY,
-      {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>`Error! ${error.message}`</p>;
+  const {loading, error, data} = useQuery(NODES_QUERY,
+    {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
+  if (loading) {
+    return (
+      <Grid container spacing={3}>
+        <Loading/>
+      </Grid>
+    );
+  }
+  if (error) {
+    const message = "There has been an error while loading the Nodes from the Grid."
+    return (
+      <Grid container spacing={3}>
+        <Error message={message} errorMessage={error.message}/>
+      </Grid>
+    )
+  }
 
-  const nodes = data.grid.nodes.map((node) => {
+  const nodes = data.nodesInfo.nodes.map((node) => {
     const osInfo: OsInfoType = {
       name: node.osInfo.name,
       version: node.osInfo.version,
@@ -60,6 +76,15 @@ export default function Overview() {
     };
     return newNode;
   });
+
+  if (nodes.length === 0) {
+    const shortMessage = "The Grid has no registered Nodes yet.";
+    return (
+      <Grid container spacing={3}>
+        <NoData message={shortMessage}/>
+      </Grid>
+    )
+  }
 
   return (
     <Grid container spacing={3}>
