@@ -17,29 +17,36 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.net.MediaType;
+
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Collection;
 import java.util.Set;
 
-public class EnsureSpecCompliantHeaders implements Filter {
-
-  private final Filter filter;
-
-  public EnsureSpecCompliantHeaders(Collection<String> allowedOriginHosts, Set<String> skipChecksOn) {
-    Require.nonNull("Allowed origins list", allowedOriginHosts);
-    Require.nonNull("URLs to skip checks on", skipChecksOn);
-
-    filter = new CheckOriginHeader(allowedOriginHosts, skipChecksOn)
-      .andThen(new CheckContentTypeHeader(skipChecksOn))
-      .andThen(new EnsureSpecCompliantResponseHeaders());
-  }
+public class EnsureSpecCompliantResponseHeaders implements Filter {
 
   @Override
   public HttpHandler apply(HttpHandler httpHandler) {
     Require.nonNull("Next handler", httpHandler);
-    return filter.apply(httpHandler);
+
+    return req -> {
+      HttpResponse res = httpHandler.execute(req);
+      if (res.getHeader("Content-Type") == null) {
+        res.addHeader("Content-Type", JSON_UTF_8);
+      }
+      if (res.getHeader("Cache-Control") == null) {
+        res.addHeader("Cache-Control", "no-cache");
+      }
+      return res;
+    };
   }
 }

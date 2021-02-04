@@ -64,7 +64,8 @@ module Selenium
           expect(driver.manage.cookie_named('security')[:http_only]).to eq true
         end
 
-        it 'should not show secure when insecure' do
+        it 'should not add secure when http', except: {browser: :firefox,
+                                                       reason: 'https://github.com/mozilla/geckodriver/issues/1840'} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'security',
                                    value: 'secure',

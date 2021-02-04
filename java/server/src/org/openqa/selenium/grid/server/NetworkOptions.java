@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.web.CheckContentTypeHeader;
 import org.openqa.selenium.grid.web.CheckOriginHeader;
+import org.openqa.selenium.grid.web.EnsureSpecCompliantResponseHeaders;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -51,6 +52,8 @@ public class NetworkOptions {
   public Filter getSpecComplianceChecks() {
     // Base case: we do nothing
     Filter toReturn = httpHandler -> httpHandler;
+
+    toReturn = toReturn.andThen(new EnsureSpecCompliantResponseHeaders());
 
     if (config.getBool(NETWORK_SECTION, "relax-checks").orElse(false)) {
       return toReturn;

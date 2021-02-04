@@ -105,6 +105,7 @@ public class EndToEndTest {
   private TearDownFixture[] fixtures;
 
   private HttpClient.Factory clientFactory;
+  private HttpClient client;
 
   @Before
   public void setFields() {
@@ -112,13 +113,14 @@ public class EndToEndTest {
     this.server = data.server;
     this.fixtures = data.fixtures;
     this.clientFactory = HttpClient.Factory.createDefault();
+    this.client = clientFactory.createClient(server.getUrl());
   }
 
   @After
   public void stopServers() {
+    Safely.safelyCall(client::close);
     Safely.safelyCall(this.fixtures);
   }
-
 
   private static TestData createStandalone() {
     StringBuilder rawCaps = new StringBuilder();
@@ -325,6 +327,8 @@ public class EndToEndTest {
         return Boolean.TRUE.equals(status != null &&
                                    Boolean.parseBoolean(status.get("ready").toString()));
       });
+
+    Safely.safelyCall(client::close);
   }
 
   private static void waitUntilReady(Server<?> server, Duration duration) {
@@ -414,7 +418,6 @@ public class EndToEndTest {
             "capabilities", ImmutableMap.of(
                 "alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);
 
     assertEquals(200, response.getStatus());
@@ -452,7 +455,6 @@ public class EndToEndTest {
             "desiredCapabilities", ImmutableMap.of(
                 "browserName", "cheese"))));
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);
 
     assertEquals(200, response.getStatus());
@@ -477,6 +479,18 @@ public class EndToEndTest {
   @Test
   public void shouldDoProtocolTranslationFromJWPLocalEndToW3CRemoteEnd() {
 
+  }
+
+  @Test
+  public void responseShouldHaveContentTypeAndCacheControlHeaders() {
+    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
+
+    HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+
+    assertThat(response.getHeader("Content-Type"))
+      .isEqualTo("application/json; charset=utf-8");
+    assertThat(response.getHeader("Cache-Control"))
+      .isEqualTo("no-cache");
   }
 
   private static class TestData {
