@@ -75,7 +75,7 @@ export default function Node(props) {
   const currentLoad = sessionCount === 0 ? 0 :
       Math.min(((sessionCount / nodeInfo.maxSession) * 100), 100).toFixed(2);
   // Assuming we will put 3 stereotypes per column.
-  const stereotypeColumns = Math.round(nodeInfo.slotStereotypes.length / 3);
+  const stereotypeColumns = Math.ceil(nodeInfo.slotStereotypes.length / 3);
   // Then we need to know how many columns we will display.
   const columnWidth: GridSize = 12 / stereotypeColumns as any;
 
