@@ -22,6 +22,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
@@ -261,7 +262,7 @@ public class FirefoxOptionsTest {
   public void callingToStringWhenTheBinaryDoesNotExistShouldNotCauseAnException() {
     FirefoxOptions options =
       new FirefoxOptions().setBinary("there's nothing better in life than cake or peas.");
-    options.toString();
+    assertThatNoException().isThrownBy(options::toString);
     // The binary does not exist on this machine, but could do elsewhere. Be chill.
   }
 

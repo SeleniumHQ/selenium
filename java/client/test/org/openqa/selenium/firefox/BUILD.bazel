@@ -8,8 +8,8 @@ LARGE_TESTS = [
 ]
 
 java_test_suite(
-    name = "medium-tests",
-    size = "medium",
+    name = "small-tests",
+    size = "small",
     srcs = glob(
         ["*.java"],
         exclude = LARGE_TESTS,
