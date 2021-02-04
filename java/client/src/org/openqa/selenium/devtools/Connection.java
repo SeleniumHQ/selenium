@@ -20,7 +20,10 @@ package org.openqa.selenium.devtools;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -60,7 +63,7 @@ public class Connection implements Closeable {
   });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
-  private final Map<Long, Consumer<JsonInput>> methodCallbacks = new LinkedHashMap<>();
+  private final Map<Long, Consumer<Either<JsonInput, Throwable>>> methodCallbacks = new LinkedHashMap<>();
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
 
   public Connection(HttpClient client, String url) {
@@ -100,13 +103,17 @@ public class Connection implements Closeable {
 
     CompletableFuture<X> result = new CompletableFuture<>();
     if (command.getSendsResponse()) {
-      methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), input -> {
-        try {
-          X value = command.getMapper().apply(input);
-          result.complete(value);
-        } catch (Throwable e) {
-          LOG.log(Level.WARNING, String.format("Unable to map result for %s", command.getMethod()), e);
-          result.completeExceptionally(e);
+      methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), inputOrException -> {
+        if (inputOrException.isLeft()) {
+          try {
+            X value = command.getMapper().apply(inputOrException.left());
+            result.complete(value);
+          } catch (Throwable e) {
+            LOG.log(Level.WARNING, String.format("Unable to map result for %s", command.getMethod()), e);
+            result.completeExceptionally(e);
+          }
+        } else {
+          result.completeExceptionally(inputOrException.right());
         }
       }));
     }
@@ -195,8 +202,9 @@ public class Connection implements Closeable {
     LOG.log(getDebugLogLevel(), () -> String.format("<- %s", asString));
 
     Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
-    if (raw.get("id") instanceof Number && raw.get("result") != null) {
-      Consumer<JsonInput> consumer = methodCallbacks.remove(((Number) raw.get("id")).longValue());
+    if (raw.get("id") instanceof Number
+        && (raw.get("result") != null || raw.get("error") != null)) {
+      Consumer<Either<JsonInput, Throwable>> consumer = methodCallbacks.remove(((Number) raw.get("id")).longValue());
       if (consumer == null) {
         return;
       }
@@ -207,7 +215,12 @@ public class Connection implements Closeable {
         while (input.hasNext()) {
           switch (input.nextName()) {
             case "result":
-              consumer.accept(input);
+              consumer.accept(Either.left(input));
+              break;
+
+            case "error":
+              consumer.accept(Either.right(new WebDriverException(asString)));
+              input.skipValue();
               break;
 
             default:

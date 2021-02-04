@@ -109,8 +109,12 @@ public class DevTools implements Closeable {
           // Set auto-attach to true and run for the hills.
           connection.send(cdpSession, getDomains().target().setAutoAttach()),
           // Clear the existing logs
-          connection.send(cdpSession, getDomains().log().clear()))
-          .get(timeout.toMillis(), MILLISECONDS);
+          connection.send(cdpSession, getDomains().log().clear())
+            .exceptionally(t -> {
+              t.printStackTrace();
+              return null;
+            })
+      ).get(timeout.toMillis(), MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Thread has been interrupted", e);
