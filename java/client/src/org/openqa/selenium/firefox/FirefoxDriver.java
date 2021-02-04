@@ -170,7 +170,6 @@ public class FirefoxDriver extends RemoteWebDriver
 
   protected FirefoxBinary binary;
   private RemoteWebStorage webStorage;
-  private Connection connection;
   private DevTools devTools;
 
   public FirefoxDriver() {
@@ -331,7 +330,6 @@ public class FirefoxDriver extends RemoteWebDriver
 
   @Override
   public DevTools getDevTools() {
-    System.out.println(getCapabilities());
     if (devTools == null) {
       Object debuggerAddress = getCapabilities().getCapability("moz:debuggerAddress");
       if (debuggerAddress == null) {
@@ -353,12 +351,11 @@ public class FirefoxDriver extends RemoteWebDriver
           throw new WebDriverException("The driver did not provide CDP endpoint");
         }
 
-        System.out.println(debuggerUrl);
         URI wsUri = new URI((String) debuggerUrl);
         ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
         HttpClient wsClient = clientFactory.createClient(wsConfig);
 
-        connection = new Connection(wsClient, wsUri.toString());
+        Connection connection = new Connection(wsClient, wsUri.toString());
         CdpInfo cdpInfo = new CdpVersionFinder().match("86.0").orElseGet(NoOpCdpInfo::new);
         devTools = new DevTools(cdpInfo::getDomains, connection);
       } catch (URISyntaxException e) {
