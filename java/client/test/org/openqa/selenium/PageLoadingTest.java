@@ -59,6 +59,15 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  public void shouldSetAndGetPageLoadTimeout() {
+    Duration timeout = driver.manage().timeouts().getPageLoadTimeout();
+    assertThat(timeout).hasMillis(300000);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofMillis(3000));
+    Duration timeout2 = driver.manage().timeouts().getPageLoadTimeout();
+    assertThat(timeout2).hasMillis(3000);
+  }
+
+  @Test
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest

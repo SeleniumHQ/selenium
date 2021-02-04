@@ -268,58 +268,43 @@ export default function RunningSessions(props) {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar title={"Running"}/>
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id as string);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id as string)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                    >
-                      <TableCell component="th" id={labelId} scope="row">
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="right">
-                        <img
-                          src={osLogo(row.platformName as string)}
-                          className={classes.logo}
-                          alt="OS Logo"
-                        />
-                        <img
-                          src={browserLogo(row.browserName as string)}
-                          className={classes.logo}
-                          alt="Browser Logo"
-                        />
-                        {browserVersion(row.browserVersion as string)}
-                        <IconButton className={classes.buttonMargin} onClick={() => handleDialogOpen(row.id as string)}>
-                          <InfoIcon/>
-                        </IconButton>
-                        <Dialog onClose={handleDialogClose} aria-labelledby="session-info-dialog"
-                                open={rowOpen === row.id}>
-                          <DialogTitle id="session-info-dialog">
+      {rows.length > 0 && (
+        <div>
+          <Paper className={classes.paper}>
+            <EnhancedTableToolbar title={"Running"}/>
+            <TableContainer>
+              <Table
+                className={classes.table}
+                aria-labelledby="tableTitle"
+                size={dense ? 'small' : 'medium'}
+                aria-label="enhanced table"
+              >
+                <EnhancedTableHead
+                  classes={classes}
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                />
+                <TableBody>
+                  {stableSort(rows, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const isItemSelected = isSelected(row.id as string);
+                      const labelId = `enhanced-table-checkbox-${index}`;
+                      return (
+                        <TableRow
+                          hover
+                          onClick={(event) => handleClick(event, row.id as string)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.id}
+                          selected={isItemSelected}
+                        >
+                          <TableCell component="th" id={labelId} scope="row">
+                            {row.id}
+                          </TableCell>
+                          <TableCell align="right">
                             <img
                               src={osLogo(row.platformName as string)}
                               className={classes.logo}
@@ -331,52 +316,72 @@ export default function RunningSessions(props) {
                               alt="Browser Logo"
                             />
                             {browserVersion(row.browserVersion as string)}
-                          </DialogTitle>
-                          <DialogContent dividers>
-                            <Typography gutterBottom>
-                              Capabilities:
-                            </Typography>
-                            <Typography gutterBottom component={'span'}>
+                            <IconButton className={classes.buttonMargin}
+                                        onClick={() => handleDialogOpen(row.id as string)}>
+                              <InfoIcon/>
+                            </IconButton>
+                            <Dialog onClose={handleDialogClose} aria-labelledby="session-info-dialog"
+                                    open={rowOpen === row.id}>
+                              <DialogTitle id="session-info-dialog">
+                                <img
+                                  src={osLogo(row.platformName as string)}
+                                  className={classes.logo}
+                                  alt="OS Logo"
+                                />
+                                <img
+                                  src={browserLogo(row.browserName as string)}
+                                  className={classes.logo}
+                                  alt="Browser Logo"
+                                />
+                                {browserVersion(row.browserVersion as string)}
+                              </DialogTitle>
+                              <DialogContent dividers>
+                                <Typography gutterBottom>
+                                  Capabilities:
+                                </Typography>
+                                <Typography gutterBottom component={'span'}>
                               <pre>
                                 {JSON.stringify(JSON.parse(row.rawCapabilities as string), null, 2)}
                               </pre>
-                            </Typography>
-                          </DialogContent>
-                          <DialogActions>
-                            <Button onClick={handleDialogClose} color="primary" variant="outlined">
-                              Close
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                      </TableCell>
-                      <TableCell align="right">{row.startTime}</TableCell>
-                      <TableCell align="right">{row.sessionDurationMillis}</TableCell>
-                      <TableCell align="right">{row.nodeUri}</TableCell>
+                                </Typography>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button onClick={handleDialogClose} color="primary" variant="outlined">
+                                  Close
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </TableCell>
+                          <TableCell align="right">{row.startTime}</TableCell>
+                          <TableCell align="right">{row.sessionDurationMillis}</TableCell>
+                          <TableCell align="right">{row.nodeUri}</TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow style={{height: (dense ? 33 : 53) * emptyRows}}>
+                      <TableCell colSpan={6}/>
                     </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{height: (dense ? 33 : 53) * emptyRows}}>
-                  <TableCell colSpan={6}/>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 15]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense}/>}
-        label="Dense padding"
-      />
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 15]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+          </Paper>
+          <FormControlLabel
+            control={<Switch checked={dense} onChange={handleChangeDense}/>}
+            label="Dense padding"
+          />
+        </div>
+      )}
     </div>
   );
 }

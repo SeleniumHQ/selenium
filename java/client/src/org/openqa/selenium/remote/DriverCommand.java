@@ -226,6 +226,7 @@ public interface DriverCommand {
   }
   String SET_ALERT_CREDENTIALS = "setAlertCredentials";
 
+  String GET_TIMEOUTS = "getTimeouts";
   String SET_TIMEOUT = "setTimeout";
 
   String PRINT_PAGE = "printPage";

@@ -43,9 +43,11 @@ import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueuerOptions;
 import org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer;
+import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
@@ -140,7 +142,10 @@ public class RouterServer extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getServerVersion());
 
+    Routable ui = GridUiRoute.getGridUi();
+
     Route handler = Route.combine(
+      ui,
       new Router(tracer, clientFactory, sessions, queuer, distributor).with(networkOptions.getSpecComplianceChecks()),
       Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),

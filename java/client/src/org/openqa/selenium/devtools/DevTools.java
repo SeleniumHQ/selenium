@@ -93,24 +93,27 @@ public class DevTools implements Closeable {
     // Grab the first "page" type, and glom on to that.
     // TODO: Find out which one might be the current one
     TargetID targetId = infos.stream()
-        .filter(info -> "page".equals(info.getType()))
-        .map(TargetInfo::getTargetId)
-        .findAny()
-        .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
+      .filter(info -> "page".equals(info.getType()))
+      .map(TargetInfo::getTargetId)
+      .findAny()
+      .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
 
     // Start the session.
-    cdpSession =
-        connection
-            .sendAndWait(cdpSession, getDomains().target().attachToTarget(targetId), timeout);
+    cdpSession = connection
+      .sendAndWait(cdpSession, getDomains().target().attachToTarget(targetId), timeout);
 
     try {
       // We can do all of these in parallel, and we don't care about the result.
       CompletableFuture.allOf(
-          // Set auto-attach to true and run for the hills.
-          connection.send(cdpSession, getDomains().target().setAutoAttach()),
-          // Clear the existing logs
-          connection.send(cdpSession, getDomains().log().clear()))
-          .get(timeout.toMillis(), MILLISECONDS);
+        // Set auto-attach to true and run for the hills.
+        connection.send(cdpSession, getDomains().target().setAutoAttach()),
+        // Clear the existing logs
+        connection.send(cdpSession, getDomains().log().clear())
+          .exceptionally(t -> {
+            t.printStackTrace();
+            return null;
+          })
+      ).get(timeout.toMillis(), MILLISECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Thread has been interrupted", e);

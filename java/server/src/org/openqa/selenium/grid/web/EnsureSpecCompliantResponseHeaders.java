@@ -15,29 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.locators;
+package org.openqa.selenium.grid.web;
 
-import com.google.auto.service.AutoService;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.locators.CustomLocator;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
 
-/**
- * A class implementing {link @CustomLocator} and to be used as a fallback locator on the server
- * side.
- */
-
-@AutoService(CustomLocator.class)
-public class ById implements CustomLocator {
-  @Override
-  public String getLocatorName() {
-    return "id";
-  }
+public class EnsureSpecCompliantResponseHeaders implements Filter {
 
   @Override
-  public By createBy(Object usingParameter) {
-    Require.argument("Locator value", usingParameter).instanceOf(String.class);
-    return By.id((String) usingParameter);
+  public HttpHandler apply(HttpHandler httpHandler) {
+    Require.nonNull("Next handler", httpHandler);
+
+    return req -> {
+      HttpResponse res = httpHandler.execute(req);
+      if (res.getHeader("Content-Type") == null) {
+        res.addHeader("Content-Type", JSON_UTF_8);
+      }
+      if (res.getHeader("Cache-Control") == null) {
+        res.addHeader("Cache-Control", "no-cache");
+      }
+      return res;
+    };
   }
 }
