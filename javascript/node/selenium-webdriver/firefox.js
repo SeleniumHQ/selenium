@@ -124,6 +124,7 @@ const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
+const cdp = require('./devtools/CDPConnection')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 
@@ -665,6 +666,38 @@ class Driver extends webdriver.WebDriver {
         id
       )
     )
+  }
+
+  /**
+  * Creates a new WebSocket connection.
+  * @return {!Promise<resolved>} A new CDP instance.
+  */
+  async createCDPConnection(target) {
+    const caps = await this.getCapabilities()
+    const seOptions = caps['map_'].get('se:options') || new Map()
+    const vendorInfo =
+      caps['map_'].get('moz:debuggerAddress') ||
+      new Map()
+    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress']
+    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
+
+    return new Promise((resolve, reject) => {
+      try {
+        this._wsConnection = new WebSocket(this._wsUrl)
+      } catch (err) {
+        reject(err)
+        return
+      }
+
+      this._wsConnection.on('open', () => {
+        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
+        resolve(this._cdpConnection)
+      })
+
+      this._wsConnection.on('error', (error) => {
+        reject(error)
+      })
+    })
   }
 }
 
