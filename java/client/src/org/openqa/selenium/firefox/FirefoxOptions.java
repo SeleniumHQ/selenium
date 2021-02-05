@@ -185,11 +185,19 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     if (that.profile != null) { setProfile(that.profile); }
   }
 
+  /**
+   * @deprecated This method will be deleted and will not be replaced.
+   */
+  @Deprecated
   public FirefoxOptions setLegacy(boolean legacy) {
     setCapability(MARIONETTE, !legacy);
     return this;
   }
 
+  /**
+   * @deprecated This method will be deleted and will not be replaced.
+   */
+  @Deprecated
   public boolean isLegacy() {
     return legacy;
   }
