@@ -88,12 +88,12 @@ _versions = {
     # Versions found by visiting https://github.com/mozilla/geckodriver/releases
     "geckodriver": {
         "linux": {
-            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz",
-            "sha256": "61bfc547a623d7305256611a81ecd24e6bf9dac555529ed6baeafcf8160900da",
+            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-linux64.tar.gz",
+            "sha256": "5071803fb85a1b3dca2da4d00450adba485cc6f521fa3898363c032aa0f3879a",
         },
         "mac": {
-            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-macos.tar.gz",
-            "sha256": "c288ff6db39adfd5eea0e25b4c3e71bfd9fb383eccf521cdd65f67ea78eb1761",
+            "url": "https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-macos.tar.gz",
+            "sha256": "a97f2ffa02a249fd0739208264bcc75f9dbc431ebb4e9cb63e2815f1e2d1a7e5",
         },
         "windows": {
             "url": None,
