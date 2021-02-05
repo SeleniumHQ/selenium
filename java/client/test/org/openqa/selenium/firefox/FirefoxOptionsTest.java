@@ -17,30 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
-import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singleton;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.PageLoadStrategy.EAGER;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.DEBUG;
-import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.ERROR;
-import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.WARN;
-import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -64,6 +41,28 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singleton;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.PageLoadStrategy.EAGER;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.DEBUG;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.ERROR;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.WARN;
+import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
 @Category(UnitTests.class)
 public class FirefoxOptionsTest {
@@ -219,7 +218,7 @@ public class FirefoxOptionsTest {
 
       property.set("false");
       FirefoxOptions options = new FirefoxOptions().merge(caps);
-      assertThat(options.isLegacy()).isFalse();
+      assertThat(options.isLegacy()).isTrue();
     } finally {
       property.reset();
     }
