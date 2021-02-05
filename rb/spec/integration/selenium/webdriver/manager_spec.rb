@@ -23,103 +23,221 @@ module Selenium
   module WebDriver
     describe Manager do
       describe 'cookie management' do
+        before { driver.navigate.to url_for('xhtmlTest.html') }
+
         after { driver.manage.delete_all_cookies }
 
-        it 'should show http only when insecure' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'security',
-                                   value: 'insecure',
-                                   http_only: true
+        it 'should set correct defaults' do
+          driver.manage.add_cookie name: 'default',
+                                   value: 'value'
 
-          expect(driver.manage.cookie_named('security')[:http_only]).to eq true
+          cookie = driver.manage.cookie_named('default')
+          expect(cookie[:value]).to eq('value')
+          expect(cookie[:path]).to eq('/')
+          expect(cookie[:domain]).to eq('localhost')
+          expect(cookie[:http_only]).to eq(false)
+          expect(cookie[:secure]).to eq(false)
         end
 
-        it 'should not add secure when http', except: {browser: :firefox,
-                                                       reason: 'https://github.com/mozilla/geckodriver/issues/1840'} do
-          driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'security',
-                                   value: 'secure',
-                                   secure: true
+        it 'should set samesite property of Default by default',
+           only: {browser: %i[chrome edge firefox]},
+           except: [{browser: :chrome,
+                     reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3732'},
+                    {browser: :firefox,
+                     reason: 'https://github.com/mozilla/geckodriver/issues/1841'}] do
+          driver.manage.add_cookie name: 'samesite',
+                                   value: 'default'
 
-          cookies = driver.manage.all_cookies
-          expect(cookies.size).to eq(0)
+          expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Default')
         end
 
         it 'should respect path' do
-          driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'path',
                                    value: 'specified',
                                    path: '/child'
-          cookies = driver.manage.all_cookies
-          expect(cookies.size).to eq(0)
+
+          expect(driver.manage.all_cookies.size).to eq(0)
 
           driver.navigate.to url_for('child/childPage.html')
+
           expect(driver.manage.cookie_named('path')[:path]).to eq '/child'
         end
 
-        it 'should add expiration with DateTime' do
-          driver.navigate.to url_for('xhtmlTest.html')
+        it 'should respect setting on domain from a subdomain',
+           exclusive: {driver: :none,
+                       reason: "Can only be tested on site with subdomains"} do
+          driver.get("https://opensource.saucelabs.com")
 
-          expected = (Date.today + 2).to_datetime
-          driver.manage.add_cookie name: 'expiration',
-                                   value: 'datetime',
-                                   expires: expected
+          driver.manage.add_cookie name: 'domain',
+                                   value: 'specified',
+                                   domain: 'saucelabs.com'
 
-          actual = driver.manage.cookie_named('expiration')[:expires]
-          expect(actual).to be_kind_of(DateTime)
-          expect(actual).to eq(expected)
+          expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
+
+          driver.get("https://accounts.saucelabs.com")
+          expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
+
+          driver.get("https://saucelabs.com")
+          expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
         end
 
-        it 'should add expiration with Time' do
-          driver.navigate.to url_for('xhtmlTest.html')
-
-          expected = (Date.today + 2).to_datetime
-          driver.manage.add_cookie name: 'expiration',
-                                   value: 'time',
-                                   expires: expected.to_time
-
-          actual = driver.manage.cookie_named('expiration')[:expires]
-          expect(actual).to be_kind_of(DateTime)
-          expect(actual).to eq(expected)
+        it 'should not allow domain to be set for localhost',
+           exclude: {browser: :chrome,
+                     reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"} do
+          expect {
+            driver.manage.add_cookie name: 'domain',
+                                     value: 'localhost',
+                                     domain: 'localhost'
+          }.to raise_error(Error::UnableToSetCookieError)
         end
 
-        it 'should add expiration with Number' do
-          driver.navigate.to url_for('xhtmlTest.html')
-
-          expected = (Date.today + 2).to_datetime
-          driver.manage.add_cookie name: 'expiration',
-                                   value: 'number',
-                                   expires: expected.to_time.to_f
-
-          actual = driver.manage.cookie_named('expiration')[:expires]
-          expect(actual).to be_kind_of(DateTime)
-          expect(actual).to eq(expected)
+        it 'should not allow setting on a different domain',
+           except: {browser: :chrome,
+                    reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3734"} do
+          expect {
+            driver.manage.add_cookie name: 'domain',
+                                     value: 'different',
+                                     domain: 'selenium.dev'
+          }.to raise_error(Error::InvalidCookieDomainError)
         end
 
-        it 'should add sameSite cookie with attribute Strict', only: {browser: %i[chrome edge firefox]} do
-          driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'samesite', value: 'strict', same_site: 'Strict'
+        it 'should not allow setting on a subdomain from parent domain',
+           exclusive: {driver: :none,
+                       reason: "Can only be tested on site with subdomains"},
+           except: {browser: :chrome,
+                    reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3734'} do
+          driver.get("https://saucelabs.com")
 
-          expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Strict')
+          expect {
+            driver.manage.add_cookie name: 'domain',
+                                     value: 'subdomain',
+                                     domain: 'opensource.saucelabs.com'
+          }.to raise_exception(Error::InvalidCookieDomainError)
         end
 
-        it 'should add sameSite cookie with attribute Lax', only: {browser: %i[chrome edge firefox]} do
-          driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'samesite',
-                                   value: 'lax',
-                                   same_site: 'Lax'
-          expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Lax')
+        it 'should not be visible to javascript when http_only is true' do
+          driver.manage.add_cookie name: 'httponly',
+                                   value: 'true',
+                                   http_only: true
+
+          expect(driver.execute_script("return document.cookie")).to be_empty
+          expect(driver.manage.cookie_named('httponly')[:http_only]).to eq true
+        end
+
+        it 'should not add secure cookie when http',
+           except: {browser: :firefox,
+                    reason: 'https://github.com/mozilla/geckodriver/issues/1840'} do
+          driver.manage.add_cookie name: 'secure',
+                                   value: 'http',
+                                   secure: true
+
+          expect(driver.manage.all_cookies.size).to eq(0)
+        end
+
+        it 'should add secure cookie when https',
+           exclusive: {driver: :none,
+                       reason: "Can only be tested on https site"} do
+          driver.get 'https://www.selenium.dev'
+
+          driver.manage.add_cookie name: 'secure',
+                                   value: 'https',
+                                   secure: true
+
+          expect(driver.manage.cookie_named('secure')[:secure]).to eq(true)
+        end
+
+        context 'sameSite' do
+          it 'should allow adding with value Strict', only: {browser: %i[chrome edge firefox]} do
+            driver.manage.add_cookie name: 'samesite',
+                                     value: 'strict',
+                                     same_site: 'Strict'
+
+            expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Strict')
+          end
+
+          it 'should allow adding with value Lax', only: {browser: %i[chrome edge firefox]} do
+            driver.manage.add_cookie name: 'samesite',
+                                     value: 'lax',
+                                     same_site: 'Lax'
+            expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Lax')
+          end
+
+          it 'should allow adding with value None',
+             exclusive: {driver: :none,
+                         reason: "Can only be tested on https site"} do
+            driver.get 'https://selenium.dev'
+
+            driver.manage.add_cookie name: 'samesite',
+                                     value: 'none-secure',
+                                     same_site: 'None',
+                                     secure: true
+
+            expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('None')
+          end
+
+          it 'should not allow adding with value None when secure is false',
+             except: {browser: :firefox,
+                      reason: "https://github.com/mozilla/geckodriver/issues/1842"} do
+            expect {
+              driver.manage.add_cookie name: 'samesite',
+                                       value: 'none-insecure',
+                                       same_site: 'None',
+                                       secure: false
+            }.to raise_exception(Error::UnableToSetCookieError)
+          end
+        end
+
+        context 'expiration' do
+          it 'should allow adding with DateTime value' do
+            expected = (Date.today + 2).to_datetime
+            driver.manage.add_cookie name: 'expiration',
+                                     value: 'datetime',
+                                     expires: expected
+
+            actual = driver.manage.cookie_named('expiration')[:expires]
+            expect(actual).to be_kind_of(DateTime)
+            expect(actual).to eq(expected)
+          end
+
+          it 'should allow adding with Time value' do
+            expected = (Date.today + 2).to_datetime
+            driver.manage.add_cookie name: 'expiration',
+                                     value: 'time',
+                                     expires: expected.to_time
+
+            actual = driver.manage.cookie_named('expiration')[:expires]
+            expect(actual).to be_kind_of(DateTime)
+            expect(actual).to eq(expected)
+          end
+
+          it 'should allow adding with Number value' do
+            expected = (Date.today + 2).to_datetime
+            driver.manage.add_cookie name: 'expiration',
+                                     value: 'number',
+                                     expires: expected.to_time.to_f
+
+            actual = driver.manage.cookie_named('expiration')[:expires]
+            expect(actual).to be_kind_of(DateTime)
+            expect(actual).to eq(expected)
+          end
+
+          it 'should not allow adding when value is in the past' do
+            expected = (Date.today - 2).to_datetime
+            driver.manage.add_cookie name: 'expiration',
+                                     value: 'datetime',
+                                     expires: expected
+
+            expect(driver.manage.all_cookies.size).to eq(0)
+          end
         end
 
         it 'should get one' do
-          driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
           expect(driver.manage.cookie_named('foo')[:value]).to eq('bar')
         end
 
         it 'should get all' do
-          driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
           cookies = driver.manage.all_cookies
@@ -130,7 +248,6 @@ module Selenium
         end
 
         it 'should delete one' do
-          driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
           driver.manage.delete_cookie('foo')
@@ -138,8 +255,6 @@ module Selenium
         end
 
         it 'should delete all' do
-          driver.navigate.to url_for('xhtmlTest.html')
-
           driver.manage.add_cookie name: 'foo', value: 'bar'
           driver.manage.add_cookie name: 'bar', value: 'foo'
           driver.manage.delete_all_cookies

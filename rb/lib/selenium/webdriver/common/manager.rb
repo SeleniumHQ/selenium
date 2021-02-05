@@ -46,7 +46,7 @@ module Selenium
         raise ArgumentError, 'name is required' unless opts[:name]
         raise ArgumentError, 'value is required' unless opts[:value]
 
-        opts[:path] ||= '/'
+        # NOTE: This is required because of https://bugs.chromium.org/p/chromedriver/issues/detail?id=3732
         opts[:secure] ||= false
 
         same_site = opts.delete(:same_site)

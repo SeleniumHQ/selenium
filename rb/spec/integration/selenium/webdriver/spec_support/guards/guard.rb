@@ -54,7 +54,7 @@ module Selenium
             when :exclude
               "Test not guarded because it breaks test run; #{details}"
             when :exclusive
-              'Test does not apply to this configuration'
+              "Test does not apply to this configuration; #{details}"
             else
               "Test guarded; #{details}"
             end

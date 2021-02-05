@@ -122,7 +122,7 @@ module Selenium
 
         it 'Uses correct message for exclusive' do
           guard = Guards::Guard.new({reason: "Foo is bad"}, :exclusive)
-          expect(guard.message).to eq 'Test does not apply to this configuration'
+          expect(guard.message).to eq 'Test does not apply to this configuration; Foo is bad'
         end
 
         it 'Uses correct message for exclude' do
