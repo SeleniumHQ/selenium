@@ -102,7 +102,7 @@ public class EndToEndTest {
   public Supplier<TestData> values;
 
   private Server<?> server;
-  private TearDownFixture[] fixtures;
+  private TearDownFixture[] fixtures = new TearDownFixture[0];
 
   private HttpClient.Factory clientFactory;
   private HttpClient client;
@@ -118,7 +118,7 @@ public class EndToEndTest {
 
   @After
   public void stopServers() {
-    Safely.safelyCall(client::close);
+    Safely.safelyCall(() -> client.close());
     Safely.safelyCall(this.fixtures);
   }
 

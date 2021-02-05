@@ -18,10 +18,15 @@
 package org.openqa.selenium.remote.http.netty;
 
 import com.google.auto.service.AutoService;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
+import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
+import org.asynchttpclient.netty.channel.DefaultChannelPool;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
@@ -33,10 +38,23 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
-
+  private final static Timer TIMER;
+  static {
+    ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
+    HashedWheelTimer timer = new HashedWheelTimer(
+      threadFactory,
+      AsyncHttpClientConfigDefaults.defaultHashedWheelTimerTickDuration(),
+      TimeUnit.MILLISECONDS,
+      AsyncHttpClientConfigDefaults.defaultHashedWheelTimerSize());
+    timer.start();
+    TIMER = timer;
+  }
   private final ClientConfig config;
   private final AsyncHttpClient client;
   private final HttpHandler handler;
@@ -57,17 +75,19 @@ public class NettyClient implements HttpClient {
         .setAggregateWebSocketFrameFragments(true)
         .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
         .setWebSocketMaxFrameSize(Integer.MAX_VALUE)
-        .setConnectTimeout((int) config.connectionTimeout().toMillis());
-
-//    String info = config.baseUrl().getUserInfo();
-//    if (info != null && !info.equals("")) {
-//      String[] parts = info.split(":", 2);
-//      String user = parts[0];
-//      String pass = parts.length > 1 ? parts[1] : null;
-//      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true).build());
-//    }
+        .setNettyTimer(TIMER)
+        .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
+        .setReadTimeout(toClampedInt(config.readTimeout().toMillis()));
 
     return Dsl.asyncHttpClient(builder);
+  }
+
+  /**
+   * Converts a long to an int, clamping the maximum and minimum values to
+   * fit in an integer without overflowing.
+   */
+  private int toClampedInt(long value) {
+    return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value));
   }
 
   @Override
