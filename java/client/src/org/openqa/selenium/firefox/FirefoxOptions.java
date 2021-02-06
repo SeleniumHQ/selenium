@@ -334,9 +334,10 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   @Override
   public FirefoxOptions merge(Capabilities capabilities) {
+    Require.nonNull("Capabilities to merge", capabilities);
     FirefoxOptions newInstance = new FirefoxOptions();
-    this.asMap().forEach(newInstance::setCapability);
-    capabilities.asMap().forEach(newInstance::setCapability);
+    getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
+    capabilities.getCapabilityNames().forEach(name -> newInstance.setCapability(name, capabilities.getCapability(name)));
     newInstance.mirror(this);
     if (capabilities instanceof FirefoxOptions) {
       newInstance.mirror((FirefoxOptions) capabilities);
