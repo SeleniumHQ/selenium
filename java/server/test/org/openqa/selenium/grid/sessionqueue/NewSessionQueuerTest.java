@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.sessionqueue;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -56,7 +55,6 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -84,15 +82,15 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class NewSessionQueuerTest {
 
+  private static final Json JSON = new Json();
+  private static int count = 0;
+  private final Secret registrationSecret = new Secret("secret");
   private LocalNewSessionQueuer local;
   private RemoteNewSessionQueuer remote;
   private EventBus bus;
   private ImmutableCapabilities caps;
   private NewSessionPayload payload;
   private HttpRequest request;
-  private static int count = 0;
-  private static final Json JSON = new Json();
-  private final Secret registrationSecret = new Secret("secret");
   private NewSessionQueue sessionQueue;
 
 
@@ -235,13 +233,12 @@ public class NewSessionQueuerTest {
     RequestId requestId = new RequestId(UUID.randomUUID());
     sessionQueue.offerLast(request, requestId);
 
-    Map<String, Object> response = local.getQueueContents();
+    List<Object> response = local.getQueueContents();
     assertThat(response).isNotNull();
 
-    assertEquals(1, response.get("request-count"));
+    assertEquals(1, response.size());
 
-    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
-    assertEquals(caps, capabilitiesList.get(0));
+    assertEquals(caps, response.get(0));
   }
 
   @Test
@@ -249,13 +246,12 @@ public class NewSessionQueuerTest {
     RequestId requestId = new RequestId(UUID.randomUUID());
     sessionQueue.offerLast(request, requestId);
 
-    Map<String, Object> response = sessionQueue.getQueueContents();
+    List<Object> response = sessionQueue.getQueuedRequests();
     assertThat(response).isNotNull();
 
-    assertEquals(1, response.get("request-count"));
+    assertEquals(1, response.size());
 
-    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
-    assertEquals(caps, capabilitiesList.get(0));
+    assertEquals(caps, response.iterator().next());
   }
 
   @Test

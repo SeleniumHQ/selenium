@@ -37,7 +37,6 @@ import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -55,7 +54,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 public class LocalNewSessionQueueTest {
 
   private EventBus bus;
-  private Capabilities caps;
   private NewSessionQueue sessionQueue;
   private HttpRequest expectedSessionRequest;
   private RequestId requestId;
@@ -63,7 +61,7 @@ public class LocalNewSessionQueueTest {
   @Before
   public void setUp() {
     Tracer tracer = DefaultTestTracer.createTracer();
-    caps = new ImmutableCapabilities("browserName", "chrome");
+    Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     bus = new GuavaEventBus();
     requestId = new RequestId(UUID.randomUUID());
     sessionQueue = new LocalNewSessionQueue(
@@ -88,7 +86,7 @@ public class LocalNewSessionQueueTest {
 
     boolean added = sessionQueue.offerLast(expectedSessionRequest, requestId);
     assertTrue(added);
-    
+
     latch.await(5, TimeUnit.SECONDS);
 
     assertThat(latch.getCount()).isEqualTo(0);
@@ -252,14 +250,13 @@ public class LocalNewSessionQueueTest {
     boolean addFirefoxRequest = sessionQueue.offerLast(firefoxRequest, firefoxRequestId);
     assertTrue(addFirefoxRequest);
 
-    Map<String, Object> response = sessionQueue.getQueueContents();
+    List<Object> response = sessionQueue.getQueuedRequests();
     assertThat(response).isNotNull();
 
-    assertEquals(2, response.get("request-count"));
+    assertEquals(2, response.size());
 
-    List<Capabilities> capabilitiesList = (List<Capabilities>) response.get("request-payloads");
-    assertEquals(chromeCaps, capabilitiesList.get(0));
-    assertEquals(firefoxCaps, capabilitiesList.get(1));
+    assertEquals(chromeCaps, response.get(0));
+    assertEquals(firefoxCaps, response.get(1));
   }
 
   private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {

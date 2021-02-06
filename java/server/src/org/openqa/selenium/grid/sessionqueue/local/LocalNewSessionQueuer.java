@@ -34,13 +34,13 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 public class LocalNewSessionQueuer extends NewSessionQueuer {
 
-  private final EventBus bus;
   public final NewSessionQueue sessionRequests;
+  private final EventBus bus;
 
   public LocalNewSessionQueuer(
     Tracer tracer,
@@ -93,8 +93,8 @@ public class LocalNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public Map<String, Object> getQueueContents() {
-    return sessionRequests.getQueueContents();
+  public List<Object> getQueueContents() {
+    return sessionRequests.getQueuedRequests();
   }
 
   @Override

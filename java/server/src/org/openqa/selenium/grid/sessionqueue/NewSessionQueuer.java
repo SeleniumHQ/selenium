@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.delete;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.post;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.RequestId;
@@ -46,15 +39,23 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.post;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
-  private final Route routes;
   protected final Tracer tracer;
+  private final Route routes;
 
   protected NewSessionQueuer(Tracer tracer, Secret registrationSecret) {
     this.tracer = Require.nonNull("Tracer", tracer);
@@ -125,7 +126,7 @@ public abstract class NewSessionQueuer implements HasReadyState, Routable {
 
   public abstract int clearQueue();
 
-  public abstract Map<String, Object> getQueueContents();
+  public abstract List<Object> getQueueContents();
 
   @Override
   public boolean matches(HttpRequest req) {
