@@ -93,7 +93,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     setCapability(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     setAcceptInsecureCerts(true);
-    setCapability("moz:debuggerAddress", true);
+    // setCapability("moz:debuggerAddress", true);
   }
 
   public FirefoxOptions(Capabilities source) {
