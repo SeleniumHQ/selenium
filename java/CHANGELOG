@@ -1,3 +1,45 @@
+v4.0.0-beta-1
+=============
+
+* FirefoxDriver requires geckodriver 0.29.0 or later
+* Reworked `RemoteWebDriver.builder` to allow it to work as a primary
+  mechanism for creating a new `WebDriver` instance
+* DevTools support for Firefox added
+* Support multiple CDP versions simultaneously (currently v86-89)
+* New commands to Get Timeouts, Print to PDF, Get DOM Attribute, Get
+  DOM Property
+* Relative locators now return elements by proximity to last search
+  term.
+* Refreshed Grid UI
+* Legay XPI driver marked as deprecated
+* Removed reactor-netty httpclient
+* Reworked how custom element locators work. They will try to be
+  remoted directly, before using a local implementation if remoting
+  fails.
+* Allow `CustomLocator` instances to be bound to the server
+  automatically.
+* Ensured locators are converted to CSS locator consistently.
+* Ensure `Capabilities.merge` returns a new `Capabilities` instance
+  rather than modifying the existing one.
+* Add `--allow-cors` flag to enable CORS support in the server
+* Better declare services in our Java Module information
+* Removed obsolete browsers from BrowserType
+* Implemented the ability to get raw original message without
+  additional info from WebDriverException
+* Allow max-sessions to be configured per driver on the command line
+* Substantially improved javadocs for `WebDriverDecorator`
+* Distributor now uses a proper session queue
+* `FluentWait` performs waiting on the main thread to ensure
+  exceptions are thrown as expected.
+* Changing default timeouts for HTTP clients: connect timeout is 10s,
+  read timeout is 3 min
+* Moving to using immutable data structures where possible. `Point`
+  and `Rectangle` now have deprecated setters.
+* Added methods to get container logs from the Grid
+* Docker now mounts /dev/shm to browser containers.
+* Docker instances can now save videos of test runs
+* Docker containers now created with `autoRemoval` set to `true`
+
 v4.0.0-alpha-7
 ==============
 
