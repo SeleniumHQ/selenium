@@ -14,6 +14,9 @@ java_test_suite(
         ["*.java"],
         exclude = LARGE_TESTS,
     ),
+    tags = [
+        "requires-network"
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/remote",
