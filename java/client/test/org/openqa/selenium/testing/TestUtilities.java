@@ -60,6 +60,10 @@ public class TestUtilities {
     return getUserAgent(driver).contains("Firefox");
   }
 
+  public static boolean isFirefoxVersionNotLessThan(int version, WebDriver driver) {
+    return isFirefox(driver) && getFirefoxVersion(driver) >= version;
+  }
+
   public static boolean isInternetExplorer(WebDriver driver) {
     String userAgent = getUserAgent(driver);
     return userAgent != null && (userAgent.contains("MSIE") || userAgent.contains("Trident"));
