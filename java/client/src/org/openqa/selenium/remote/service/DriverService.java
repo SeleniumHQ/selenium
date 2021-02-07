@@ -171,6 +171,12 @@ public class DriverService {
     }
   }
 
+  private enum StartOrDie {
+    SERVER_STARTED,
+    PROCESS_IS_ACTIVE,
+    PROCESS_DIED
+  }
+
   /**
    * Starts this service if it is not already running. This method will block until the server has
    * been fully started and is ready to handle commands.
@@ -189,22 +195,30 @@ public class DriverService {
       process.copyOutputTo(getOutputStream());
       process.executeAsync();
 
-      CompletableFuture<Boolean> serverStarted = CompletableFuture.supplyAsync(() -> {
+      CompletableFuture<StartOrDie> serverStarted = CompletableFuture.supplyAsync(() -> {
         waitUntilAvailable();
-        return true;
+        return StartOrDie.SERVER_STARTED;
       });
 
-      CompletableFuture<Boolean> processFinished = CompletableFuture.supplyAsync(() -> {
-        process.waitFor(getTimeout().toMillis());
-        return false;
+      CompletableFuture<StartOrDie> processFinished = CompletableFuture.supplyAsync(() -> {
+        try {
+          process.waitFor(getTimeout().toMillis());
+        } catch (org.openqa.selenium.TimeoutException ex) {
+          return StartOrDie.PROCESS_IS_ACTIVE;
+        }
+        return StartOrDie.PROCESS_DIED;
       });
 
       try {
-        boolean started = (Boolean) CompletableFuture.anyOf(serverStarted, processFinished)
-            .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
-        if (!started) {
-          process = null;
-          throw new WebDriverException("Driver server process died prematurely.");
+        StartOrDie status = (StartOrDie) CompletableFuture.anyOf(serverStarted, processFinished)
+          .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
+        if (status == StartOrDie.SERVER_STARTED) {
+          processFinished.cancel(true);
+        } else {
+          if (status == StartOrDie.PROCESS_DIED) {
+            process = null;
+            throw new WebDriverException("Driver server process died prematurely.");
+          }
         }
       } catch (ExecutionException | TimeoutException e) {
         throw new WebDriverException("Timed out waiting for driver server to start.", e);
