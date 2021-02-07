@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
-  private final static Timer TIMER;
+  private static final Timer TIMER;
   static {
     ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
     HashedWheelTimer timer = new HashedWheelTimer(

@@ -31,8 +31,8 @@ import static org.openqa.selenium.remote.http.Route.get;
 public class GridUiRoute {
   private static final Logger LOG = Logger.getLogger("selenium");
 
-  private final static String GRID_RESOURCE = "javascript/grid-ui/build";
-  private final static String GRID_RESOURCE_WITH_PREFIX = String.format("/%s", GRID_RESOURCE);
+  private static final String GRID_RESOURCE = "javascript/grid-ui/build";
+  private static final String GRID_RESOURCE_WITH_PREFIX = String.format("/%s", GRID_RESOURCE);
 
   public static Routable getGridUi() {
     Routable ui;
