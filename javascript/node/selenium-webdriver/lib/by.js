@@ -252,7 +252,7 @@ class By {
   }
 
   toObject() {
-    var tmp = {}
+    const tmp = {}
     tmp[this.using] = this.value
     return tmp
   }

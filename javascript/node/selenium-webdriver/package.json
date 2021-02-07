@@ -25,7 +25,7 @@
   "dependencies": {
     "jszip": "^3.5.0",
     "rimraf": "^2.7.1",
-    "tmp": "^0.1.0",
+    "tmp": "^0.2.1",
     "ws": "^7.3.1"
   },
   "devDependencies": {

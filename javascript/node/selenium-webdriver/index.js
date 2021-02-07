@@ -598,9 +598,9 @@ class Builder {
   build() {
     // Create a copy for any changes we may need to make based on the current
     // environment.
-    var capabilities = new Capabilities(this.capabilities_)
+    const capabilities = new Capabilities(this.capabilities_)
 
-    var browser
+    let browser
     if (!this.ignoreEnv_ && process.env.SELENIUM_BROWSER) {
       this.log_.fine(`SELENIUM_BROWSER=${process.env.SELENIUM_BROWSER}`)
       browser = process.env.SELENIUM_BROWSER.split(/:/, 3)

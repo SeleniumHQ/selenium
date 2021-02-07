@@ -76,7 +76,7 @@ function requireAtom(module, bazelTarget) {
  * @return {string} The headers as a string.
  */
 function headersToString(headers) {
-  let ret = []
+  const ret = []
   headers.forEach(function (value, name) {
     ret.push(`${name.toLowerCase()}: ${value}`)
   })

@@ -169,7 +169,7 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    *   MicrosoftWebDriver cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously()
+    const exe = opt_exe || locateSynchronously()
     if (!exe) {
       throw Error(
         'The WebDriver for Edge could not be found on the current PATH. Please ' +
