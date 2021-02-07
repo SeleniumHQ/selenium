@@ -42,6 +42,8 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Instant;
@@ -152,6 +154,11 @@ public class DriverServiceSessionFactory implements SessionFactory {
             @Override
             public void stop() {
               service.stop();
+              try {
+                client.close();
+              } catch (IOException e) {
+                throw new UncheckedIOException(e);
+              }
             }
           });
       } catch (Exception e) {
