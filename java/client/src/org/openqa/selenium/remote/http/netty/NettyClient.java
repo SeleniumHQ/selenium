@@ -22,11 +22,9 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
 import org.asynchttpclient.config.AsyncHttpClientConfigDefaults;
-import org.asynchttpclient.netty.channel.DefaultChannelPool;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
@@ -38,13 +36,12 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
-  private final static Timer TIMER;
+  private static final Timer TIMER;
   static {
     ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
     HashedWheelTimer timer = new HashedWheelTimer(
