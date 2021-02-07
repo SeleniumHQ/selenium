@@ -2,6 +2,7 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_binary", "java_dist_zip", "java_export", "java_library", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
+load("//java/client/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 
 genrule(
     name = "executable-grid",
@@ -49,6 +50,9 @@ java_export(
         exclude = BASE_COMMAND_SRCS,
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     resource_jars = [
         "//javascript/grid-ui:react_jar",
@@ -59,9 +63,6 @@ java_export(
         "org.openqa.selenium.grid.config.HasRoles",
         "org.openqa.selenium.remote.locators.CustomLocator",
         "org.openqa.selenium.remote.service.DriverService$Builder",
-    ],
-    opens_to = [
-        "org.openqa.selenium.json",
     ],
     visibility = [
         "//visibility:public",
@@ -81,7 +82,7 @@ java_export(
         "//java/server/src/org/openqa/selenium/grid/router/httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionqueue/httpd",
-    ],
+    ] + CDP_DEPS,
     deps = [
         ":base-command",
         "//java/server/src/org/openqa/selenium/cli",
