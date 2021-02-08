@@ -866,6 +866,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
         return this;
       }
 
+      @Override
+      public Duration getImplicitWaitTimeout() {
+        Response response = execute(DriverCommand.GET_TIMEOUTS);
+        Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
+        long timeout = ((Number) rawSize.get("implicit")).longValue();
+        return Duration.ofMillis(timeout);
+      }
+
       @Deprecated
       @Override
       public Timeouts setScriptTimeout(long time, TimeUnit unit) {
@@ -878,6 +886,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
         return this;
       }
 
+      @Override
+      public Duration getScriptTimeout() {
+        Response response = execute(DriverCommand.GET_TIMEOUTS);
+        Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
+        long timeout = ((Number) rawSize.get("script")).longValue();
+        return Duration.ofMillis(timeout);
+      }
+
       @Deprecated
       @Override
       public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
@@ -888,6 +904,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       public Timeouts pageLoadTimeout(Duration duration) {
         execute(DriverCommand.SET_PAGE_LOAD_TIMEOUT(duration));
         return this;
+      }
+
+      @Override
+      public Duration getPageLoadTimeout() {
+        Response response = execute(DriverCommand.GET_TIMEOUTS);
+        Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
+        long timeout = ((Number) rawSize.get("pageLoad")).longValue();
+        return Duration.ofMillis(timeout);
       }
     } // timeouts class.
 

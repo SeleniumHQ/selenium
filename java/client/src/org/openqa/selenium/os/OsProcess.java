@@ -27,6 +27,7 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.CircularOutputStream;
@@ -169,7 +170,7 @@ class OsProcess {
       Thread.sleep(50);
     }
     if (timedOut) {
-      throw new InterruptedException(
+      throw new TimeoutException(
           String.format("Process timed out after waiting for %d ms.", timeout));
     }
 

@@ -631,6 +631,18 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
+  public void canHandleGetTimeoutsCommand() {
+    WebDriverFixture fixture = new WebDriverFixture(
+      echoCapabilities,
+      valueResponder(ImmutableMap.of("implicit", 100, "script", 200, "pageLoad", 300)));
+
+    fixture.driver.manage().timeouts().getImplicitWaitTimeout();
+
+    fixture.verifyCommands(
+      new CommandPayload(DriverCommand.GET_TIMEOUTS, emptyMap()));
+  }
+
+  @Test
   public void canHandleSetScriptTimeoutCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 

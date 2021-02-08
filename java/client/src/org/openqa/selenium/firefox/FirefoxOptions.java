@@ -185,11 +185,19 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     if (that.profile != null) { setProfile(that.profile); }
   }
 
+  /**
+   * @deprecated This method will be deleted and will not be replaced.
+   */
+  @Deprecated
   public FirefoxOptions setLegacy(boolean legacy) {
     setCapability(MARIONETTE, !legacy);
     return this;
   }
 
+  /**
+   * @deprecated This method will be deleted and will not be replaced.
+   */
+  @Deprecated
   public boolean isLegacy() {
     return legacy;
   }
@@ -326,9 +334,10 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   @Override
   public FirefoxOptions merge(Capabilities capabilities) {
+    Require.nonNull("Capabilities to merge", capabilities);
     FirefoxOptions newInstance = new FirefoxOptions();
-    this.asMap().forEach(newInstance::setCapability);
-    capabilities.asMap().forEach(newInstance::setCapability);
+    getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
+    capabilities.getCapabilityNames().forEach(name -> newInstance.setCapability(name, capabilities.getCapability(name)));
     newInstance.mirror(this);
     if (capabilities instanceof FirefoxOptions) {
       newInstance.mirror((FirefoxOptions) capabilities);

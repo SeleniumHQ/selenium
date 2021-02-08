@@ -64,6 +64,8 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
 
   @Override
   public ChromeOptions merge(Capabilities extraCapabilities) {
+    Require.nonNull("Capabilities to merge", extraCapabilities);
+
     ChromeOptions newInstance = new ChromeOptions();
     newInstance.mergeInPlace(this);
     newInstance.mergeInPlace(extraCapabilities);

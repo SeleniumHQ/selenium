@@ -92,8 +92,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   public InternetExplorerOptions(Capabilities source) {
     this();
-
-    merge(source);
+    source.getCapabilityNames().forEach(name -> setCapability(name, source.getCapability(name)));
   }
 
   @Override

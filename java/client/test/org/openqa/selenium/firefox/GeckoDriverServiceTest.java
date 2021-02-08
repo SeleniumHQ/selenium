@@ -17,20 +17,19 @@
 
 package org.openqa.selenium.firefox;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.testing.UnitTests;
+
+import java.io.File;
+import java.time.Duration;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.firefox.GeckoDriverService;
-import org.openqa.selenium.testing.UnitTests;
-
-import java.io.File;
-import java.time.Duration;
 
 @Category(UnitTests.class)
 public class GeckoDriverServiceTest {

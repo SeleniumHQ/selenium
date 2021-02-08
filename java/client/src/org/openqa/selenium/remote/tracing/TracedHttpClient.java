@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import java.io.IOException;
 import java.net.URL;
 
 public class TracedHttpClient implements HttpClient {
@@ -56,6 +57,11 @@ public class TracedHttpClient implements HttpClient {
       HTTP_RESPONSE.accept(span, response);
       return response;
     }
+  }
+
+  @Override
+  public void close() throws IOException {
+    delegate.close();
   }
 
   public static class Factory implements HttpClient.Factory {
