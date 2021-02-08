@@ -51,7 +51,6 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
 
 class HandleSession implements HttpHandler {
 
@@ -84,15 +83,15 @@ class HandleSession implements HttpHandler {
       HTTP_REQUEST_EVENT.accept(attributeMap, req);
 
       SessionId id = getSessionId(req.getUri()).map(SessionId::new)
-          .orElseThrow(() -> {
-            NoSuchSessionException exception = new NoSuchSessionException("Cannot find session: " + req);
-            EXCEPTION.accept(attributeMap, exception);
-            attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                             EventAttribute.setValue(
-                                 "Unable to execute request for an existing session: " + exception.getMessage()));
-            span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-            return exception;
-          });
+        .orElseThrow(() -> {
+          NoSuchSessionException exception = new NoSuchSessionException("Cannot find session: " + req);
+          EXCEPTION.accept(attributeMap, exception);
+          attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                           EventAttribute.setValue(
+                             "Unable to execute request for an existing session: " + exception.getMessage()));
+          span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+          return exception;
+        });
 
       SESSION_ID.accept(span, id);
       SESSION_ID_EVENT.accept(attributeMap, id);
@@ -126,11 +125,8 @@ class HandleSession implements HttpHandler {
     return span.wrap(
       () -> {
         Session session = sessions.get(id);
-          if (session instanceof HttpHandler) {
-            return (HttpHandler) session;
-          }
-          HttpClient client = httpClientFactory.createClient(Urls.fromUri(session.getUri()));
-          return new ReverseProxyHandler(tracer, client);
+        HttpClient client = httpClientFactory.createClient(Urls.fromUri(session.getUri()));
+        return new ReverseProxyHandler(tracer, client);
       }
     );
   }
