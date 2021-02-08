@@ -18,7 +18,10 @@
 package org.openqa.selenium.ie;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.ie.InternetExplorerDriver.FORCE_CREATE_PROCESS;
+import static org.openqa.selenium.ie.InternetExplorerDriver.IE_SWITCHES;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
 import static org.openqa.selenium.ie.InternetExplorerOptions.IE_OPTIONS;
@@ -110,5 +113,17 @@ public class InternetExplorerOptionsTest {
     seen.setCapability("requireWindowFocus", true);
 
     assertThat(seen.getCapability(IE_OPTIONS)).isEqualTo(expected.getCapability(IE_OPTIONS));
+  }
+
+  @Test
+  public void mergingOptionsMergesArguments() {
+    InternetExplorerOptions one = new InternetExplorerOptions().useCreateProcessApiToLaunchIe().addCommandSwitches("-private");
+    InternetExplorerOptions two = new InternetExplorerOptions();
+    InternetExplorerOptions merged = one.merge(two);
+
+    assertThat(merged.asMap()).asInstanceOf(MAP)
+      .containsEntry(FORCE_CREATE_PROCESS, true)
+      .extractingByKey(IE_SWITCHES).asInstanceOf(LIST)
+      .containsExactly("-private");
   }
 }
