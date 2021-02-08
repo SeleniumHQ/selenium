@@ -41,8 +41,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -80,14 +81,14 @@ public class SessionMapTest {
   public void shouldBeAbleToAddASession() {
     assertTrue(remote.add(expected));
 
-    assertEquals(expected, local.get(id));
+    assertThat(local.get(id)).isEqualTo(expected);
   }
 
   @Test
   public void shouldBeAbleToRetrieveASessionUri() {
     local.add(expected);
 
-    assertEquals(expected, remote.get(id));
+    assertThat(remote.get(id)).isEqualTo(expected);
   }
 
   @Test
@@ -100,7 +101,7 @@ public class SessionMapTest {
   public void shouldAllowSessionsToBeRemoved() {
     local.add(expected);
 
-    assertEquals(expected, remote.get(id));
+    assertThat(remote.get(id)).isEqualTo(expected);
 
     remote.remove(id);
 
@@ -113,12 +114,12 @@ public class SessionMapTest {
    */
   @Test
   public void removingASessionThatDoesNotExistIsNotAnError() {
-    remote.remove(id);
+    assertThatNoException().isThrownBy(() -> remote.remove(id));
   }
 
-  @Test(expected = NoSuchSessionException.class)
+  @Test
   public void shouldThrowAnExceptionIfGettingASessionThatDoesNotExist() {
-    remote.get(id);
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> remote.get(id));
   }
 
   @Test
