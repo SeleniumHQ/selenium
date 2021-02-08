@@ -58,6 +58,8 @@ public class Router implements HasReadyState, Routable {
     this.queuer = Require.nonNull("New Session Request Queuer", queuer);
     this.distributor = Require.nonNull("Distributor", distributor);
 
+    HandleSession sessionHandler = new HandleSession(tracer, clientFactory, sessions);
+
     routes =
       combine(
         get("/status")
@@ -66,7 +68,7 @@ public class Router implements HasReadyState, Routable {
         queuer.with(new SpanDecorator(tracer, req -> "session_queuer")),
         distributor.with(new SpanDecorator(tracer, req -> "distributor")),
         matching(req -> req.getUri().startsWith("/session/"))
-          .to(() -> new HandleSession(tracer, clientFactory, sessions)));
+          .to(() -> sessionHandler));
   }
 
   @Override
