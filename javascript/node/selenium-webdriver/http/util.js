@@ -35,9 +35,9 @@ const Executor = require('./index').Executor,
  *     a hash of the server status.
  */
 function getStatus(url) {
-  var client = new HttpClient(url)
-  var executor = new Executor(client)
-  var command = new Command(CommandName.GET_SERVER_STATUS)
+  const client = new HttpClient(url)
+  const executor = new Executor(client)
+  const command = new Command(CommandName.GET_SERVER_STATUS)
   return executor.execute(command)
 }
 

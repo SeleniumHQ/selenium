@@ -108,9 +108,9 @@ const Command = {
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url, vendorPrefix) {
-  let agent = new http.Agent({ keepAlive: true })
-  let client = url.then((url) => new http.HttpClient(url, agent))
-  let executor = new http.Executor(client)
+  const agent = new http.Agent({ keepAlive: true })
+  const client = url.then((url) => new http.HttpClient(url, agent))
+  const executor = new http.Executor(client)
   configureExecutor(executor, vendorPrefix)
   return executor
 }
