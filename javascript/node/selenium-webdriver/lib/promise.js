@@ -30,17 +30,7 @@
  * @return {boolean} Whether the value is a promise.
  */
 function isPromise(value) {
-  try {
-    // Use array notation so the Closure compiler does not obfuscate away our
-    // contract.
-    return (
-      value &&
-      (typeof value === 'object' || typeof value === 'function') &&
-      typeof value['then'] === 'function'
-    )
-  } catch (ex) {
-    return false
-  }
+  return Object.prototype.toString.call(value) === '[object Promise]'
 }
 
 /**
@@ -50,9 +40,7 @@ function isPromise(value) {
  * @return {!Promise<void>} The promise.
  */
 function delayed(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms)
-  })
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 /**
@@ -199,8 +187,8 @@ async function filter(array, fn, self = undefined) {
 
   for (let i = 0; i < n; i++) {
     if (i in arr) {
-      let value = arr[i]
-      let include = await fn.call(self, value, i, arr)
+      const value = arr[i]
+      const include = await fn.call(self, value, i, arr)
       if (include) {
         values[valuesLength++] = value
       }

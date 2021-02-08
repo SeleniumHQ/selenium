@@ -26,7 +26,7 @@ describe('error', function () {
       assert.throws(
         () => error.checkResponse({ error: 'foo', message: 'hi there' }),
         (e) => {
-          assert.equal(e.constructor, error.WebDriverError)
+          assert.strictEqual(e.constructor, error.WebDriverError)
           return true
         }
       )
@@ -71,8 +71,8 @@ describe('error', function () {
         assert.throws(
           () => error.checkResponse({ error: status, message: 'oops' }),
           (e) => {
-            assert.equal(expectedType, e.constructor)
-            assert.equal(e.message, 'oops')
+            assert.strictEqual(expectedType, e.constructor)
+            assert.strictEqual(e.message, 'oops')
             return true
           }
         )
@@ -139,7 +139,7 @@ describe('error', function () {
       assert.throws(
         () => error.throwDecodedError({ error: 'foo', message: 'hi there' }),
         (e) => {
-          assert.equal(e.constructor, error.WebDriverError)
+          assert.strictEqual(e.constructor, error.WebDriverError)
           return true
         }
       )
@@ -302,9 +302,9 @@ describe('error', function () {
         assert.throws(
           () => error.checkLegacyResponse(response),
           (e) => {
-            assert.equal(error.UnexpectedAlertOpenError, e.constructor)
-            assert.equal(e.message, 'hi')
-            assert.equal(e.getAlertText(), 'alert text here')
+            assert.strictEqual(error.UnexpectedAlertOpenError, e.constructor)
+            assert.strictEqual(e.message, 'hi')
+            assert.strictEqual(e.getAlertText(), 'alert text here')
             return true
           }
         )
@@ -320,9 +320,9 @@ describe('error', function () {
         assert.throws(
           () => error.checkLegacyResponse(response),
           (e) => {
-            assert.equal(error.UnexpectedAlertOpenError, e.constructor)
-            assert.equal(e.message, 'hi')
-            assert.equal(e.getAlertText(), '')
+            assert.strictEqual(error.UnexpectedAlertOpenError, e.constructor)
+            assert.strictEqual(e.message, 'hi')
+            assert.strictEqual(e.getAlertText(), '')
             return true
           }
         )
@@ -336,8 +336,8 @@ describe('error', function () {
         assert.throws(
           () => error.checkLegacyResponse(resp),
           (e) => {
-            assert.equal(expectedType, e.constructor)
-            assert.equal(e.message, 'hi')
+            assert.strictEqual(expectedType, e.constructor)
+            assert.strictEqual(e.message, 'hi')
             return true
           }
         )

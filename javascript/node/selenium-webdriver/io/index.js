@@ -204,13 +204,12 @@ exports.tmpDir = function () {
  */
 exports.tmpFile = function (opt_options) {
   return checkedCall((callback) => {
-    // |tmp.file| checks arguments length to detect options rather than doing a
-    // truthy check, so we must only pass options if there are some to pass.
-    if (opt_options) {
-      tmp.file(opt_options, callback)
-    } else {
-      tmp.file(callback)
-    }
+    /**  check fixed in v > 0.2.1 if
+     * (typeof options === 'function') {
+     *     return [{}, options];
+     * }
+     */
+    tmp.file(opt_options, callback)
   })
 }
 
@@ -224,7 +223,7 @@ exports.tmpFile = function (opt_options) {
  *     not be found.
  */
 exports.findInPath = function (file, opt_checkCwd) {
-  let dirs = []
+  const dirs = []
   if (opt_checkCwd) {
     dirs.push(process.cwd())
   }
@@ -329,7 +328,7 @@ exports.mkdirp = function mkdirp(dir) {
  *     will be relative to `rootPath`.
  */
 exports.walkDir = function (rootPath) {
-  let seen = []
+  const seen = []
   return (function walk(dir) {
     return checkedCall((callback) => fs.readdir(dir, callback)).then((files) =>
       Promise.all(

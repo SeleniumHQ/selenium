@@ -59,7 +59,7 @@ test.suite(function (env) {
           .manage()
           .logs()
           .get(logging.Type.BROWSER)
-          .then((entries) => assert.equal(entries.length, 0))
+          .then((entries) => assert.strictEqual(entries.length, 0))
       })
 
       // Firefox does not capture JS error console log messages.
@@ -85,8 +85,8 @@ test.suite(function (env) {
             .logs()
             .get(logging.Type.BROWSER)
             .then(function (entries) {
-              assert.equal(entries.length, 1)
-              assert.equal(entries[0].level.name, 'SEVERE')
+              assert.strictEqual(entries.length, 1)
+              assert.strictEqual(entries[0].level.name, 'SEVERE')
               // eslint-disable-next-line no-useless-escape
               assert.ok(/.*\"?and this is an error\"?/.test(entries[0].message))
             })
@@ -115,16 +115,16 @@ test.suite(function (env) {
             .logs()
             .get(logging.Type.BROWSER)
             .then(function (entries) {
-              assert.equal(entries.length, 3)
-              assert.equal(entries[0].level.name, 'DEBUG')
+              assert.strictEqual(entries.length, 3)
+              assert.strictEqual(entries[0].level.name, 'DEBUG')
               // eslint-disable-next-line no-useless-escape
               assert.ok(/.*\"?hello\"?/.test(entries[0].message))
 
-              assert.equal(entries[1].level.name, 'WARNING')
+              assert.strictEqual(entries[1].level.name, 'WARNING')
               // eslint-disable-next-line no-useless-escape
               assert.ok(/.*\"?this is a warning\"?/.test(entries[1].message))
 
-              assert.equal(entries[2].level.name, 'SEVERE')
+              assert.strictEqual(entries[2].level.name, 'SEVERE')
               // eslint-disable-next-line no-useless-escape
               assert.ok(/.*\"?and this is an error\"?/.test(entries[2].message))
             })
@@ -152,12 +152,12 @@ test.suite(function (env) {
             .manage()
             .logs()
             .get(logging.Type.BROWSER)
-            .then((entries) => assert.equal(entries.length, 3))
+            .then((entries) => assert.strictEqual(entries.length, 3))
           return driver
             .manage()
             .logs()
             .get(logging.Type.BROWSER)
-            .then((entries) => assert.equal(entries.length, 0))
+            .then((entries) => assert.strictEqual(entries.length, 0))
         })
 
       it('does not mix log types', async function () {
@@ -180,7 +180,7 @@ test.suite(function (env) {
           .manage()
           .logs()
           .get(logging.Type.DRIVER)
-          .then((entries) => assert.equal(entries.length, 0))
+          .then((entries) => assert.strictEqual(entries.length, 0))
       })
     })
 

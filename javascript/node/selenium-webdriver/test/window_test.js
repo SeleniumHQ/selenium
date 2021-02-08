@@ -65,12 +65,12 @@ test.suite(function (env) {
 
     await driver.findElement(By.linkText('Open new window')).click()
     await driver.wait(forNewWindowToBeOpened(originalHandles), 2000)
-    assert.equal(await driver.getTitle(), 'XHTML Test Page')
+    assert.strictEqual(await driver.getTitle(), 'XHTML Test Page')
 
     let newHandle = await getNewWindowHandle(originalHandles)
 
     await driver.switchTo().window(newHandle)
-    assert.equal(await driver.getTitle(), 'We Arrive Here')
+    assert.strictEqual(await driver.getTitle(), 'We Arrive Here')
   })
 
   it('can set the window position of the current window', async function () {
@@ -120,7 +120,7 @@ test.suite(function (env) {
       }
     }
 
-    assert.equal(
+    assert.strictEqual(
       (await driver.getAllWindowHandles()).length,
       originalHandles.length + 1
     )

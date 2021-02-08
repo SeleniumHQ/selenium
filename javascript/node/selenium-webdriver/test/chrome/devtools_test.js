@@ -43,31 +43,31 @@ test.suite(
 
     it('can send commands to devtools', async function () {
       await driver.get(test.Pages.ajaxyPage)
-      assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage)
+      assert.strictEqual(await driver.getCurrentUrl(), test.Pages.ajaxyPage)
 
       await driver.sendDevToolsCommand('Page.navigate', {
         url: test.Pages.echoPage,
       })
-      assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage)
+      assert.strictEqual(await driver.getCurrentUrl(), test.Pages.echoPage)
     })
 
     it('can send commands to devtools and get return', async function () {
       await driver.get(test.Pages.ajaxyPage)
-      assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage)
+      assert.strictEqual(await driver.getCurrentUrl(), test.Pages.ajaxyPage)
 
       await driver.get(test.Pages.echoPage)
-      assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage)
+      assert.strictEqual(await driver.getCurrentUrl(), test.Pages.echoPage)
 
       let history = await driver.sendAndGetDevToolsCommand(
         'Page.getNavigationHistory'
       )
       assert(history)
       assert(history.currentIndex >= 2)
-      assert.equal(
+      assert.strictEqual(
         history.entries[history.currentIndex].url,
         test.Pages.echoPage
       )
-      assert.equal(
+      assert.strictEqual(
         history.entries[history.currentIndex - 1].url,
         test.Pages.ajaxyPage
       )
@@ -100,7 +100,7 @@ test.suite(
       it('calls the event listener for console.log', async function () {
         const cdpConnection = await driver.createCDPConnection('page')
         await driver.onLogEvent(cdpConnection, function (event) {
-          assert.equal(event['args'][0]['value'], 'here')
+          assert.strictEqual(event['args'][0]['value'], 'here')
         })
         await driver.executeScript('console.log("here")')
       })
@@ -108,7 +108,7 @@ test.suite(
       it('calls the event listener for js exceptions', async function () {
         const cdpConnection = await driver.createCDPConnection('page')
         await driver.onLogException(cdpConnection, function (event) {
-          assert.equal(
+          assert.strictEqual(
             event['exceptionDetails']['stackTrace']['callFrames'][0][
               'functionName'
             ],
@@ -125,9 +125,9 @@ test.suite(
       it('calls the event listener on dom mutations', async function () {
         const cdpConnection = await driver.createCDPConnection('page')
         await driver.logMutationEvents(cdpConnection, function (event) {
-          assert.equal(event['attribute_name'], 'style')
-          assert.equal(event['current_value'], '')
-          assert.equal(event['old_value'], 'display:none;')
+          assert.strictEqual(event['attribute_name'], 'style')
+          assert.strictEqual(event['current_value'], '')
+          assert.strictEqual(event['old_value'], 'display:none;')
         })
 
         await driver.get(test.Pages.dynamicPage)
@@ -175,7 +175,7 @@ test.suite(
         await driver.register('random', 'random', pageCdpConnection)
         await driver.get(server.url() + '/protected')
         let source = await driver.getPageSource()
-        assert.equal(source.includes('Access granted!'), false)
+        assert.strictEqual(source.includes('Access granted!'), false)
       })
 
       it('grants access if username and password are a match', async function () {
@@ -184,7 +184,7 @@ test.suite(
         await driver.register('genie', 'bottle', pageCdpConnection)
         await driver.get(server.url() + '/protected')
         let source = await driver.getPageSource()
-        assert.equal(source.includes('Access granted!'), true)
+        assert.strictEqual(source.includes('Access granted!'), true)
         await server.stop()
       })
     })
@@ -207,7 +207,7 @@ test.suite(
           __dirname,
           '../../lib/test/data/firefox/webextension.xpi'
         )
-        assert.equal(
+        assert.strictEqual(
           fs.readFileSync(downloadPath, 'binary'),
           fs.readFileSync(goldenPath, 'binary')
         )

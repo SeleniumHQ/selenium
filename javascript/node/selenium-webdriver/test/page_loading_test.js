@@ -43,12 +43,12 @@ test.suite(function (env) {
 
   it('should wait for document to be loaded', async function () {
     await driver.get(Pages.simpleTestPage)
-    assert.equal(await driver.getTitle(), 'Hello WebDriver')
+    assert.strictEqual(await driver.getTitle(), 'Hello WebDriver')
   })
 
   it('should follow redirects sent in the http response headers', async function () {
     await driver.get(Pages.redirectPage)
-    assert.equal(await driver.getTitle(), 'We Arrive Here')
+    assert.strictEqual(await driver.getTitle(), 'We Arrive Here')
   })
 
   it('should be able to get a fragment on the current page', async function () {
@@ -62,13 +62,13 @@ test.suite(function (env) {
     await driver.switchTo().frame(0)
 
     let txt = await driver.findElement(By.css('span#pageNumber')).getText()
-    assert.equal(txt.trim(), '1')
+    assert.strictEqual(txt.trim(), '1')
 
     await driver.switchTo().defaultContent()
     await driver.switchTo().frame(1)
     txt = await driver.findElement(By.css('span#pageNumber')).getText()
 
-    assert.equal(txt.trim(), '2')
+    assert.strictEqual(txt.trim(), '2')
 
     // For safari, need to make sure browser is focused on the main frame or
     // subsequent tests will fail.
@@ -115,15 +115,15 @@ test.suite(function (env) {
 
     await driver.navigate().refresh()
 
-    assert.equal(await driver.getTitle(), 'XHTML Test Page')
+    assert.strictEqual(await driver.getTitle(), 'XHTML Test Page')
   })
 
   it('should return title of page if set', async function () {
     await driver.get(Pages.xhtmlTestPage)
-    assert.equal(await driver.getTitle(), 'XHTML Test Page')
+    assert.strictEqual(await driver.getTitle(), 'XHTML Test Page')
 
     await driver.get(Pages.simpleTestPage)
-    assert.equal(await driver.getTitle(), 'Hello WebDriver')
+    assert.strictEqual(await driver.getTitle(), 'Hello WebDriver')
   })
 
   describe('timeouts', function () {

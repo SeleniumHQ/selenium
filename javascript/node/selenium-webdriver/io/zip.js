@@ -180,8 +180,8 @@ function load(path) {
  */
 function unzip(src, dst) {
   return load(src).then((zip) => {
-    let promisedDirs = new Map()
-    let promises = []
+    const promisedDirs = new Map()
+    const promises = []
 
     zip.z_.forEach((relPath, file) => {
       let p
@@ -218,7 +218,6 @@ function unzip(src, dst) {
 }
 
 // PUBLIC API
-
-exports.Zip = Zip
-exports.load = load
-exports.unzip = unzip
+module.exports.Zip = Zip
+module.exports.load = load
+module.exports.unzip = unzip
