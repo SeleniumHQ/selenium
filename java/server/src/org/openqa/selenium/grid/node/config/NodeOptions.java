@@ -38,6 +38,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -77,6 +78,18 @@ public class NodeOptions {
 
   public Node getNode() {
     return config.getClass(NODE_SECTION, "implementation", Node.class, DEFAULT_IMPL);
+  }
+
+  public Duration getRegisterCycle() {
+    // If the user sets 0 or less, we default to 1s.
+    int seconds = Math.max(config.getInt(NODE_SECTION, "register-cycle").orElse(10), 1);
+    return Duration.ofSeconds(seconds);
+  }
+
+  public Duration getRegisterPeriod() {
+    // If the user sets 0 or less, we default to 1s.
+    int seconds = Math.max(config.getInt(NODE_SECTION, "register-period").orElse(120), 1);
+    return Duration.ofSeconds(seconds);
   }
 
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(

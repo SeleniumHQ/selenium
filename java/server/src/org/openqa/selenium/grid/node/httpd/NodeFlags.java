@@ -94,12 +94,25 @@ public class NodeFlags implements HasRoles {
     name = "driver-configuration",
     prefixed = true,
     example = "\n" +
-              "name = \"Firefox Nightly\"\n" +
-              "max-sessions = 2\n" +
-              "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
-              "\"moz:firefoxOptions\": " +
-              "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
+      "name = \"Firefox Nightly\"\n" +
+      "max-sessions = 2\n" +
+      "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
+      "\"moz:firefoxOptions\": " +
+      "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
   public List<String> driverConfiguration;
+
+  @Parameter(
+    names = "--register-cycle",
+    description = "How often, in seconds, the Node will try to register itself for the first time to the Distributor.")
+  @ConfigValue(section = "node", name = "register-cycle", example = "10")
+  public int registerCycle;
+
+  @Parameter(
+    names = "--register-period",
+    description = "How long, in seconds, will the Node try to register to the Distributor for the first time. " +
+      "After this period is completed, the Node will not attempt to register again.")
+  @ConfigValue(section = "node", name = "register-cycle", example = "120")
+  public int registerPeriod;
 
   @Override
   public Set<Role> getRoles() {
