@@ -53,7 +53,6 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   public void avoidRemote() {
     // TODO: Resolve why these tests don't work on the remote server
     assumeTrue(TestUtilities.isLocal());
-    assumeTrue(TestUtilities.getFirefoxVersion(driver) >= 12);
   }
 
   @Test

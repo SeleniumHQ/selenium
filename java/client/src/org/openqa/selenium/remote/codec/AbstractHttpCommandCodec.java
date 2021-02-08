@@ -61,6 +61,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ORIENTATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ROTATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_LOGS;
+import static org.openqa.selenium.remote.DriverCommand.GET_TIMEOUTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
 import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
@@ -193,6 +194,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(DELETE_COOKIE, delete(cookie + "/:name"));
 
     String timeouts = sessionId + "/timeouts";
+    defineCommand(GET_TIMEOUTS, get(timeouts));
     defineCommand(SET_TIMEOUT, post(timeouts));
     defineCommand(SET_SCRIPT_TIMEOUT, post(timeouts + "/async_script"));
     defineCommand(IMPLICITLY_WAIT, post(timeouts + "/implicit_wait"));

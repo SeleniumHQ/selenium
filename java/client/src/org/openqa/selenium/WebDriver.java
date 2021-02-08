@@ -345,6 +345,15 @@ public interface WebDriver extends SearchContext {
     }
 
     /**
+     * Gets the amount of time the driver should wait when searching for an element if it is
+     * not immediately present.
+     *
+     * @return The amount of time the driver should wait when searching for an element.
+     * @see <a href="https://www.w3.org/TR/webdriver/#get-timeouts">W3C WebDriver</a>
+     */
+    Duration getImplicitWaitTimeout();
+
+    /**
      * @deprecated Use {@link #setScriptTimeout(Duration)}
      *
      * Sets the amount of time to wait for an asynchronous script to finish execution before
@@ -373,6 +382,16 @@ public interface WebDriver extends SearchContext {
     }
 
     /**
+     * Gets the amount of time to wait for an asynchronous script to finish execution before
+     * throwing an error. If the timeout is negative, then the script will be allowed to run
+     * indefinitely.
+     *
+     * @return The amount of time to wait for an asynchronous script to finish execution.
+     * @see <a href="https://www.w3.org/TR/webdriver/#get-timeouts">W3C WebDriver</a>
+     */
+    Duration getScriptTimeout();
+
+    /**
      * @deprecated Use {@link #pageLoadTimeout(Duration)}
      *
      * Sets the amount of time to wait for a page load to complete before throwing an error.
@@ -395,6 +414,15 @@ public interface WebDriver extends SearchContext {
     default Timeouts pageLoadTimeout(Duration duration) {
       return pageLoadTimeout(duration.toMillis(), TimeUnit.MILLISECONDS);
     }
+
+    /**
+     * Gets the amount of time to wait for a page load to complete before throwing an error.
+     * If the timeout is negative, page loads can be indefinite.
+     *
+     * @return The amount of time to wait for a page load to complete.
+     * @see <a href="https://www.w3.org/TR/webdriver/#get-timeouts">W3C WebDriver</a>
+     */
+    Duration getPageLoadTimeout();
   }
 
   /**

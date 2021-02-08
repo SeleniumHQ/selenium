@@ -46,13 +46,10 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
-import org.openqa.selenium.grid.web.ClassPathResource;
 import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.NoHandler;
-import org.openqa.selenium.grid.web.ResourceHandler;
+import org.openqa.selenium.grid.web.GridUiRoute;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -69,14 +66,12 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
 import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class Standalone extends TemplateGridServerCommand {
@@ -183,17 +178,7 @@ public class Standalone extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getFormattedVersion());
 
-    Routable ui;
-    URL uiRoot = getClass().getResource("/javascript/grid-ui/build");
-    if (uiRoot != null) {
-      ResourceHandler uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, "javascript/grid-ui/build"));
-      ui = Route.combine(
-        get("/").to(() -> req -> new HttpResponse().setStatus(HTTP_MOVED_TEMP).addHeader("Location", "/ui/index.html")),
-        Route.prefix("/ui/").to(Route.matching(req -> true).to(() -> uiHandler)));
-    } else {
-      Json json = new Json();
-      ui = Route.matching(req -> false).to(() -> new NoHandler(json));
-    }
+    Routable ui = GridUiRoute.getGridUi();
 
     HttpHandler httpHandler = combine(
       ui,

@@ -18,10 +18,10 @@
 package org.openqa.selenium.devtools;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionNotLessThan;
 
 import org.junit.Before;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
 
 public abstract class DevToolsTestBase extends JUnit4TestBase {
 
@@ -30,6 +30,7 @@ public abstract class DevToolsTestBase extends JUnit4TestBase {
   @Before
   public void setUp() {
     assumeThat(driver).isInstanceOf(HasDevTools.class);
+    assumeThat(isFirefoxVersionNotLessThan(83, driver)).isTrue();
 
     devTools = ((HasDevTools) driver).getDevTools();
     devTools.createSessionIfThereIsNotOne();

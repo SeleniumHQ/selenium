@@ -19,27 +19,28 @@ package org.openqa.selenium.grid.sessionqueue;
 
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Require;
-
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class NewSessionQueue implements HasReadyState {
 
+  public static final String SESSIONREQUEST_TIMESTAMP_HEADER = "new-session-request-timestamp";
+  public static final String SESSIONREQUEST_ID_HEADER = "request-id";
   protected final Tracer tracer;
-
   protected final Duration retryInterval;
-
   protected final Duration requestTimeout;
 
-  public static final String SESSIONREQUEST_TIMESTAMP_HEADER = "new-session-request-timestamp";
-
-  public static final String SESSIONREQUEST_ID_HEADER = "request-id";
+  protected NewSessionQueue(Tracer tracer, Duration retryInterval, Duration requestTimeout) {
+    this.tracer = Require.nonNull("Tracer", tracer);
+    this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
+    this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
+  }
 
   public abstract boolean offerLast(HttpRequest request, RequestId requestId);
 
@@ -51,7 +52,7 @@ public abstract class NewSessionQueue implements HasReadyState {
 
   public abstract int getQueueSize();
 
-  public abstract Map<String,Object> getQueueContents();
+  public abstract List<Object> getQueuedRequests();
 
   public void addRequestHeaders(HttpRequest request, RequestId reqId) {
     long timestamp = Instant.now().getEpochSecond();
@@ -67,12 +68,6 @@ public abstract class NewSessionQueue implements HasReadyState {
     Duration duration = Duration.between(enque, deque);
 
     return duration.compareTo(requestTimeout) > 0;
-  }
-
-  protected NewSessionQueue(Tracer tracer, Duration retryInterval, Duration requestTimeout) {
-    this.tracer = Require.nonNull("Tracer", tracer);
-    this.retryInterval = Require.nonNull("Session request retry interval", retryInterval);
-    this.requestTimeout = Require.nonNull("Session request timeout", requestTimeout);
   }
 
 }

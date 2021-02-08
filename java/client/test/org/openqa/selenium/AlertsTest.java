@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -32,8 +31,6 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
 import org.junit.After;
 import org.junit.Test;
@@ -411,33 +408,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
-  @Ignore(value = EDGIUM, reason = "Edge does not trigger alerts on unload")
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(SAFARI)
-  @NotYetImplemented(EDGE_HTML)
-  public void testShouldHandleAlertOnPageUnload() {
-    assumeFalse("Firefox 27+ does not trigger alerts on before unload",
-                isFirefox(driver) && getFirefoxVersion(driver) >= 27);
-
-    String pageWithOnBeforeUnload = appServer.create(new Page()
-        .withOnBeforeUnload("return \"onbeforeunload\"")
-        .withBody("<p>Page with onbeforeunload event handler</p>"));
-    driver.get(appServer.create(new Page()
-        .withBody(String.format("<a id='link' href='%s'>open new page</a>", pageWithOnBeforeUnload))));
-
-    driver.findElement(By.id("link")).click();
-    driver.navigate().back();
-
-    Alert alert = wait.until(alertIsPresent());
-    String value = alert.getText();
-    alert.accept();
-
-    assertThat(value).isEqualTo("onbeforeunload");
-    wait.until(textInElementLocated(By.id("link"), "open new page"));
-  }
-
-  @Test
   @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Non W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
   @Ignore(value = CHROME, reason = "Non W3C conformant")
@@ -454,42 +424,6 @@ public class AlertsTest extends JUnit4TestBase {
 
     driver.findElement(By.id("link")).click();
     wait.until(titleIs("Success"));
-  }
-
-  @Test
-  @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
-  @Ignore(value = EDGIUM, reason = "Chrome does not trigger alerts on unload")
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(SAFARI)
-  @Ignore(value = IE, reason = "IE driver automatically dismisses alerts on window close")
-  @NotYetImplemented(EDGE_HTML)
-  public void testShouldHandleAlertOnWindowClose() {
-    assumeFalse("Firefox 27+ does not trigger alerts on unload",
-        isFirefox(driver) && getFirefoxVersion(driver) >= 27);
-
-    String pageWithOnBeforeUnload = appServer.create(new Page()
-        .withOnBeforeUnload("return \"onbeforeunload\"")
-        .withBody("<p>Page with onbeforeunload event handler</p>"));
-    driver.get(appServer.create(new Page()
-        .withBody(String.format(
-            "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>", pageWithOnBeforeUnload))));
-
-    String mainWindow = driver.getWindowHandle();
-    try {
-      driver.findElement(By.id("open-new-window")).click();
-      wait.until(ableToSwitchToWindow("newwindow"));
-      driver.close();
-
-      Alert alert = wait.until(alertIsPresent());
-      String value = alert.getText();
-      alert.accept();
-
-      assertThat(value).isEqualTo("onbeforeunload");
-
-    } finally {
-      driver.switchTo().window(mainWindow);
-      wait.until(textInElementLocated(By.id("open-new-window"), "open new window"));
-    }
   }
 
   @Test

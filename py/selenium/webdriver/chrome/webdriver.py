@@ -23,6 +23,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
+DEFAULT_KEEP_ALIVE = None
 
 
 class WebDriver(ChromiumDriver):
@@ -35,7 +36,7 @@ class WebDriver(ChromiumDriver):
     def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
                  options: Options = None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 chrome_options=None, service: Service = None, keep_alive=True):
+                 chrome_options=None, service: Service = None, keep_alive=DEFAULT_KEEP_ALIVE):
         """
         Creates a new instance of the chrome driver.
         Starts the service and then creates new instance of chrome driver.
@@ -48,7 +49,7 @@ class WebDriver(ChromiumDriver):
          - desired_capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Deprecated: Where to log information from the driver.
-         - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
+         - keep_alive - Deprecated: Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
         if executable_path != 'chromedriver':
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
@@ -57,7 +58,11 @@ class WebDriver(ChromiumDriver):
             warnings.warn('use options instead of chrome_options',
                           DeprecationWarning, stacklevel=2)
             options = chrome_options
-
+        if keep_alive != DEFAULT_KEEP_ALIVE:
+            warnings.warn('keep_alive has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        else:
+            keep_alive = True
         if not service:
             service = Service(executable_path, port, service_args, service_log_path)
 

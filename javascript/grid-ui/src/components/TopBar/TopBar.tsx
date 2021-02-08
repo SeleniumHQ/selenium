@@ -14,6 +14,7 @@ import seleniumGridLogo from '../../assets/selenium-grid-logo.svg';
 import {useQuery} from "@apollo/client";
 import {GridConfig} from "../../config";
 import NavBar from "../NavBar/NavBar";
+import Loading from "../Loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,13 +68,21 @@ export default function TopBar() {
 
   const {loading, error, data} = useQuery(GRID_QUERY,
     {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>`Error! ${error.message}`</p>;
+  if (loading) {
+    return (
+      <div className={classes.root}>
+        <CssBaseline/>
+        <AppBar position="fixed" className={classes.appBar}>
+          <Loading/>
+        </AppBar>
+      </div>
+    );
+  }
 
-  const gridVersion = data.grid.version;
-  const maxSession = data.grid.maxSession ?? 0;
-  const sessionCount = data.grid.sessionCount ?? 0;
-  const nodeCount = data.grid.nodeCount ?? 0;
+  const gridVersion = error ? "" : data.grid.version;
+  const maxSession = error ? 0 : data.grid.maxSession ?? 0;
+  const sessionCount = error ? 0 : data.grid.sessionCount ?? 0;
+  const nodeCount = error ? 0 : data.grid.nodeCount ?? 0;
 
   return (
     <div className={classes.root}>
@@ -118,13 +127,15 @@ export default function TopBar() {
                 Selenium Grid
               </Typography>
               <Typography variant="body2">
-                {gridVersion}
+                {error ? 'Connection lost...' : gridVersion}
               </Typography>
             </Box>
           </Box>
         </Toolbar>
       </AppBar>
-      <NavBar open={open} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
+      {!error && (
+        <NavBar open={open} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
+      )}
     </div>
   );
 }

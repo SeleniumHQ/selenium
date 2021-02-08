@@ -28,6 +28,7 @@ DEFAULT_PORT = 0
 DEFAULT_HOST = None
 DEFAULT_LOG_LEVEL = None
 DEFAULT_SERVICE_LOG_PATH = None
+DEFAULT_KEEP_ALIVE = None
 
 
 class WebDriver(RemoteWebDriver):
@@ -37,7 +38,7 @@ class WebDriver(RemoteWebDriver):
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
                  log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  options: Options = None, service: Service = None,
-                 desired_capabilities=None, keep_alive=False):
+                 desired_capabilities=None, keep_alive=DEFAULT_KEEP_ALIVE):
         """
         Creates a new instance of the Ie driver.
 
@@ -53,7 +54,7 @@ class WebDriver(RemoteWebDriver):
          - service_log_path - Deprecated: target of logging of service, may be "stdout", "stderr" or file path.
          - options - IE Options instance, providing additional IE options
          - desired_capabilities - Deprecated: alias of capabilities; this will make the signature consistent with RemoteWebDriver.
-         - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
+         - keep_alive - Deprecated: Whether to configure RemoteConnection to use HTTP keep-alive.
         """
         if executable_path != 'IEDriverServer.exe':
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
@@ -70,13 +71,22 @@ class WebDriver(RemoteWebDriver):
         if host != DEFAULT_HOST:
             warnings.warn('host has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-        self.host = host
         if log_level != DEFAULT_LOG_LEVEL:
             warnings.warn('log_level has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
+        if desired_capabilities:
+            warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if keep_alive != DEFAULT_KEEP_ALIVE:
+            warnings.warn('keep_alive has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        else:
+            keep_alive = False
+
+        self.host = host
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()

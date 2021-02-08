@@ -24,6 +24,7 @@ def _dmg_archive_impl(repository_ctx):
     repository_ctx.extract(
         archive = zip_name,
         stripPrefix = repository_ctx.attr.strip_prefix,
+        output = repository_ctx.attr.output,
     )
 
     repository_ctx.file(
@@ -39,6 +40,7 @@ dmg_archive = repository_rule(
         ),
         "sha256": attr.string(),
         "strip_prefix": attr.string(),
+        "output": attr.string(),
         "build_file_content": attr.string(),
         "build_file": attr.label(),
     },

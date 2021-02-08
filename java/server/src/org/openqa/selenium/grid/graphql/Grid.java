@@ -42,7 +42,7 @@ public class Grid {
   private static final Json JSON = new Json();
   private final URI uri;
   private final Supplier<DistributorStatus> distributorStatus;
-  private final Map<String, Object> queueInfoMap;
+  private final List<Object> queueInfoList;
   private final String version;
 
   public Grid(Distributor distributor, NewSessionQueuer newSessionQueuer, URI uri,
@@ -50,7 +50,7 @@ public class Grid {
     Require.nonNull("Distributor", distributor);
     this.uri = Require.nonNull("Grid's public URI", uri);
     NewSessionQueuer sessionQueuer = Require.nonNull("NewSessionQueuer", newSessionQueuer);
-    this.queueInfoMap = sessionQueuer.getQueueContents();
+    this.queueInfoList = sessionQueuer.getQueueContents();
     this.distributorStatus = Suppliers.memoize(distributor::getStatus);
     this.version = Require.nonNull("Grid's version", version);
   }
@@ -124,12 +124,11 @@ public class Grid {
   }
 
   public int getSessionQueueSize() {
-    return (int) queueInfoMap.get("request-count");
+    return queueInfoList.size();
   }
 
   public List<String> getSessionQueueRequests() {
-    //noinspection unchecked
-    return ((List<Capabilities>) queueInfoMap.get("request-payloads")).stream()
+    return queueInfoList.stream()
       .map(JSON::toJson)
       .collect(Collectors.toList());
   }

@@ -21,6 +21,7 @@ import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -87,9 +88,14 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
   @Override
   public SafariOptions merge(Capabilities extraCapabilities) {
+    Require.nonNull("Capabilities to merge", extraCapabilities);
+
     SafariOptions newInstance = new SafariOptions();
-    this.asMap().forEach(newInstance::setCapability);
-    extraCapabilities.asMap().forEach(newInstance::setCapability);
+
+    getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
+    extraCapabilities.getCapabilityNames()
+      .forEach(name -> newInstance.setCapability(name, extraCapabilities.getCapability(name)));
+
     return newInstance;
   }
 

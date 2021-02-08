@@ -53,6 +53,18 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "Default to 5s")
+  @NotYetImplemented(value = FIREFOX, reason = "Default to 5s")
+  @NotYetImplemented(value = SAFARI, reason = "Default to 5s")
+  public void shouldSetAndGetScriptTimeout() {
+    Duration timeout = driver.manage().timeouts().getScriptTimeout();
+    assertThat(timeout).hasMillis(30000);
+    driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(3000));
+    Duration timeout2 = driver.manage().timeouts().getScriptTimeout();
+    assertThat(timeout2).hasMillis(3000);
+  }
+
+  @Test
   public void shouldNotTimeoutIfCallbackInvokedImmediately() {
     driver.get(pages.ajaxyPage);
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1](123);");
