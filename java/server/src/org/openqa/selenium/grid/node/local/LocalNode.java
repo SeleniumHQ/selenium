@@ -470,13 +470,15 @@ public class LocalNode extends Node {
         Optional<Session> session = Optional.empty();
         if (!slot.isAvailable()) {
           ActiveSession activeSession = slot.getSession();
-          session = Optional.of(
-            new Session(
-              activeSession.getId(),
-              activeSession.getUri(),
-              slot.getStereotype(),
-              activeSession.getCapabilities(),
-              activeSession.getStartTime()));
+          if (activeSession != null) {
+            session = Optional.of(
+              new Session(
+                activeSession.getId(),
+                activeSession.getUri(),
+                slot.getStereotype(),
+                activeSession.getCapabilities(),
+                activeSession.getStartTime()));
+          }
         }
 
         return new Slot(
