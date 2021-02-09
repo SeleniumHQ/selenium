@@ -10,6 +10,7 @@ LARGE_TESTS = [
 
 java_library(
     name = "support",
+    testonly = True,
     srcs = [
         "DeploymentTypes.java",
     ],
@@ -17,7 +18,9 @@ java_library(
         "--release",
         "11",
     ],
-    testonly = True,
+    runtime_deps = [
+        artifact("org.slf4j:slf4j-jdk14"),
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
@@ -26,22 +29,23 @@ java_library(
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/org/openqa/selenium/grid",
     ],
-    runtime_deps = [
-        artifact("org.slf4j:slf4j-jdk14"),
-    ],
 )
 
 java_selenium_test_suite(
     name = "large-tests",
     size = "large",
+    srcs = LARGE_TESTS,
     browsers = [
         "chrome",
-#        "firefox",
+        #        "firefox",
+    ],
+    javacopts = [
+        "--release",
+        "11",
     ],
     tags = [
         "no-remote",
     ],
-    srcs = LARGE_TESTS,
     deps = [
         ":support",
         "//java/client/src/org/openqa/selenium/chrome",
@@ -59,10 +63,6 @@ java_selenium_test_suite(
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ] + CDP_DEPS,
-    javacopts = [
-        "--release",
-        "11",
-    ],
 )
 
 java_test_suite(

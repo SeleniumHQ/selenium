@@ -45,6 +45,9 @@ java_export(
         exclude = PROTOTYPE_SOURCES + GENERATOR_SOURCES,
     ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     resources = [
         ":mutation-listener",
@@ -54,9 +57,6 @@ java_export(
     ],
     exports = [
         ":devtools-prototypes",
-    ],
-    opens_to = [
-        "org.openqa.selenium.json",
     ],
     deps = [
         ":devtools-prototypes",

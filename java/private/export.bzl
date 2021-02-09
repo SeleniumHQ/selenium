@@ -1,8 +1,9 @@
 load(
-  "@rules_jvm_external//:defs.bzl",
-  "javadoc",
-  _java_export = "java_export",
-  "pom_file")
+    "@rules_jvm_external//:defs.bzl",
+    "javadoc",
+    "pom_file",
+    _java_export = "java_export",
+)
 load("@rules_jvm_external//private/rules:maven_project_jar.bzl", "maven_project_jar")
 load("@rules_jvm_external//private/rules:maven_publish.bzl", "maven_publish")
 load("//java/private:module.bzl", "java_module")
@@ -53,12 +54,12 @@ def java_export(
     )
 
     java_module(
-       name = "%s-module" % name,
-       target = "%s-project" % name,
-       deps = kwargs.get("deps", []) + kwargs.get("runtime_deps", []),
-       exports = exports,
-       opens_to = opens_to,
-       tags = tags,
+        name = "%s-module" % name,
+        target = "%s-project" % name,
+        deps = kwargs.get("deps", []) + kwargs.get("runtime_deps", []),
+        exports = exports,
+        opens_to = opens_to,
+        tags = tags,
     )
 
     native.filegroup(

@@ -15,7 +15,7 @@ java_test_suite(
         exclude = LARGE_TESTS,
     ),
     tags = [
-        "requires-network"
+        "requires-network",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/firefox",
