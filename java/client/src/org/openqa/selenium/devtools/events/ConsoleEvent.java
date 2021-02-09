@@ -19,6 +19,8 @@ package org.openqa.selenium.devtools.events;
 
 import com.google.common.collect.ImmutableList;
 
+import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,9 +50,20 @@ public class ConsoleEvent {
     return args;
   }
 
+  public List<String> getMessages() {
+    return args.stream()
+      .map(List.class::cast)
+      .map(lst -> lst.get(0))
+      .map(RemoteObject.class::cast)
+      .map(RemoteObject::getValue)
+      .map(Object::toString)
+      .collect(Collectors.toList());
+  }
+
   @Override
   public String toString() {
-    return String.format("%s [%s] %s",
+    return String.format(
+      "%s [%s] %s",
       timestamp,
       type,
       Stream.of(args).map(String::valueOf).collect(Collectors.joining(", ")));
