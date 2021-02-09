@@ -207,18 +207,20 @@ class UnboundZmqEventBus implements EventBus {
         if (poller.pollin(i)) {
           ZMQ.Socket socket = poller.getSocket(i);
 
-          EventName eventName = new EventName(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
+          EventName eventName = new EventName(new String(socket.recv(), UTF_8));
           Secret eventSecret =
-              JSON.toType(new String(socket.recv(ZMQ.DONTWAIT), UTF_8), Secret.class);
-          UUID id = UUID.fromString(new String(socket.recv(ZMQ.DONTWAIT), UTF_8));
-          String data = new String(socket.recv(ZMQ.DONTWAIT), UTF_8);
+              JSON.toType(new String(socket.recv(), UTF_8), Secret.class);
+          UUID id = UUID.fromString(new String(socket.recv(), UTF_8));
+          String data = new String(socket.recv(), UTF_8);
+
+          // Don't bother doing more work if we've seen this message.
+          if (recentMessages.contains(id)) {
+            return;
+          }
 
           Object converted = JSON.toType(data, Object.class);
           Event event = new Event(id, eventName, converted);
 
-          if (recentMessages.contains(id)) {
-            return;
-          }
           recentMessages.add(id);
 
           if (!Secret.matches(secret, eventSecret)) {
