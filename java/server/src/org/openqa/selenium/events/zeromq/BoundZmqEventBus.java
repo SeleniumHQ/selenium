@@ -68,8 +68,6 @@ class BoundZmqEventBus implements EventBus {
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
 
     delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret);
-
-    LOG.info("Event bus ready");
   }
 
   @Override
