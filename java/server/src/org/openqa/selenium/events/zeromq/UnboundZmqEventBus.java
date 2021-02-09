@@ -76,7 +76,7 @@ class UnboundZmqEventBus implements EventBus {
     }
     this.encodedSecret = builder.toString();
 
-    executor = Executors.newCachedThreadPool(r -> {
+    executor = Executors.newSingleThreadExecutor(r -> {
       Thread thread = new Thread(r);
       thread.setName("Event Bus");
       thread.setDaemon(true);
