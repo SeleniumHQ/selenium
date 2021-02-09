@@ -20,17 +20,14 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.firefox.GeckoDriverInfo;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -68,7 +65,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -96,11 +92,6 @@ public class NewSessionCreationTest {
 
   @Test
   public void ensureJsCannotCreateANewSession() throws URISyntaxException {
-    ChromeDriverInfo chromeDriverInfo = new ChromeDriverInfo();
-    assumeThat(chromeDriverInfo.isAvailable()).isTrue();
-    GeckoDriverInfo geckoDriverInfo = new GeckoDriverInfo();
-    assumeThat(geckoDriverInfo.isAvailable()).isTrue();
-
     SessionMap sessions = new LocalSessionMap(tracer, events);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,

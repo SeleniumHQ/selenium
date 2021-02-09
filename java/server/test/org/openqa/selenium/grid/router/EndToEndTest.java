@@ -29,28 +29,17 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.grid.commands.EventBusCommand;
-import org.openqa.selenium.grid.commands.Hub;
-import org.openqa.selenium.grid.commands.Standalone;
-import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.distributor.httpd.DistributorServer;
 import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.grid.node.httpd.NodeServer;
-import org.openqa.selenium.grid.router.httpd.RouterServer;
+import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.sessionmap.httpd.SessionMapServer;
-import org.openqa.selenium.grid.sessionqueue.httpd.NewSessionQueuerServer;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.Contents;
@@ -91,228 +80,52 @@ public class EndToEndTest {
   private final Json json = new Json();
 
   @Parameterized.Parameters(name = "End to End {0}")
-  public static Collection<Supplier<TestData>> buildGrids() {
+  public static Collection<Supplier<Deployment>> buildGrids() {
+    StringBuilder rawCaps = new StringBuilder();
+    try (JsonOutput out = new Json().newOutput(rawCaps)) {
+      out.setPrettyPrint(false).write(CAPS);
+    }
+
+    Config additionalConfig =
+        new TomlConfig(
+            new StringReader(
+                "[node]\n" +
+                    "detect-drivers = false\n" +
+                    "driver-factories = [\n" +
+                    String.format("\"%s\",", TestSessionFactoryFactory.class.getName()) + "\n" +
+                    String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
+                    "]"));
+
     return ImmutableSet.of(
-      EndToEndTest::createFullyDistributed,
-      EndToEndTest::createHubAndNode,
-      EndToEndTest::createStandalone);
+//      () -> DeploymentTypes.DISTRIBUTED.start(CAPS, additionalConfig),
+//      () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig),
+      () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig));
   }
 
   @Parameter
-  public Supplier<TestData> values;
+  public Supplier<Deployment> values;
 
   private Server<?> server;
-  private TearDownFixture[] fixtures = new TearDownFixture[0];
+  private TearDownFixture fixtures;
 
-  private HttpClient.Factory clientFactory;
   private HttpClient client;
 
   @Before
   public void setFields() {
-    TestData data = values.get();
-    this.server = data.server;
-    this.fixtures = data.fixtures;
-    this.clientFactory = HttpClient.Factory.createDefault();
+    Deployment data = values.get();
+    this.server = data.getServer();
+    this.fixtures = data;
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     this.client = clientFactory.createClient(server.getUrl());
   }
 
   @After
   public void stopServers() {
     Safely.safelyCall(() -> client.close());
-    Safely.safelyCall(this.fixtures);
+    Safely.safelyCall(() -> fixtures.tearDown());
   }
 
-  private static TestData createStandalone() {
-    StringBuilder rawCaps = new StringBuilder();
-    try (JsonOutput out = new Json().newOutput(rawCaps)) {
-      out.setPrettyPrint(false).write(CAPS);
-    }
-
-    String[] rawConfig = new String[]{
-      "[network]",
-      "relax-checks = true",
-      "",
-      "[node]",
-      "detect-drivers = false",
-      "driver-factories = [",
-      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
-      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
-      "]",
-      "",
-      "[server]",
-      "port = " + PortProber.findFreePort(),
-      "registration-secret = \"provolone\"",
-      "[sessionqueue]",
-      "session-request-timeout = 10",
-      "session-retry-interval = 1"
-    };
-    Config config = new MemoizedConfig(
-      new TomlConfig(new StringReader(String.join("\n", rawConfig))));
-
-    Server<?> server = new Standalone().asServer(config).start();
-
-    waitUntilReady(server, Duration.ofSeconds(5));
-
-    return new TestData(server, server::stop);
-  }
-
-  private static TestData createHubAndNode() {
-    StringBuilder rawCaps = new StringBuilder();
-    try (JsonOutput out = new Json().newOutput(rawCaps)) {
-      out.setPrettyPrint(false).write(CAPS);
-    }
-
-    int publish = PortProber.findFreePort();
-    int subscribe = PortProber.findFreePort();
-
-    String[] rawConfig = new String[] {
-      "[events]",
-      "publish = \"tcp://localhost:" + publish + "\"",
-      "subscribe = \"tcp://localhost:" + subscribe + "\"",
-      "",
-      "[network]",
-      "relax-checks = true",
-      "",
-      "[node]",
-      "detect-drivers = false",
-      "driver-factories = [",
-      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
-      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
-      "]",
-      "",
-      "[server]",
-      "registration-secret = \"feta\"",
-      "[sessionqueue]",
-      "session-request-timeout = 10",
-      "session-retry-interval = 1"
-    };
-
-    TomlConfig baseConfig = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
-    Config hubConfig = new CompoundConfig(
-      new MapConfig(ImmutableMap.of("events", ImmutableMap.of("bind", true))),
-      baseConfig);
-
-    Server<?> hub = new Hub().asServer(setRandomPort(hubConfig)).start();
-
-    Server<?> node = new NodeServer().asServer(setRandomPort(baseConfig)).start();
-    waitUntilReady(node, Duration.ofSeconds(5));
-
-    waitUntilReady(hub, Duration.ofSeconds(5));
-
-    return new TestData(hub, hub::stop, node::stop);
-  }
-
-  private static TestData createFullyDistributed() {
-    StringBuilder rawCaps = new StringBuilder();
-    try (JsonOutput out = new Json().newOutput(rawCaps)) {
-      out.setPrettyPrint(false).write(CAPS);
-    }
-
-    int publish = PortProber.findFreePort();
-    int subscribe = PortProber.findFreePort();
-
-    String[] rawConfig = new String[] {
-      "[events]",
-      "publish = \"tcp://localhost:" + publish + "\"",
-      "subscribe = \"tcp://localhost:" + subscribe + "\"",
-      "bind = false",
-      "",
-      "[network]",
-      "relax-checks = true",
-      "",
-      "[node]",
-      "detect-drivers = false",
-      "driver-factories = [",
-      String.format("\"%s\",", TestSessionFactoryFactory.class.getName()),
-      String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")),
-      "]",
-      "",
-      "[server]",
-      "registration-secret = \"colby\"",
-      "[sessionqueue]",
-      "session-request-timeout = 10",
-      "session-retry-interval = 1"
-    };
-
-    Config sharedConfig = new MemoizedConfig(new TomlConfig(new StringReader(String.join("\n", rawConfig))));
-
-    Server<?> eventServer = new EventBusCommand()
-      .asServer(new CompoundConfig(
-        new TomlConfig(new StringReader(String.join("\n", new String[] {
-          "[events]",
-          "publish = \"tcp://localhost:" + publish + "\"",
-          "subscribe = \"tcp://localhost:" + subscribe + "\"",
-          "bind = true"}))),
-        setRandomPort(sharedConfig)))
-      .start();
-    waitUntilReady(eventServer, Duration.ofSeconds(5));
-
-    Server<?> newSessionQueueServer = new NewSessionQueuerServer().asServer(setRandomPort(sharedConfig)).start();
-    waitUntilReady(newSessionQueueServer, Duration.ofSeconds(5));
-    Config newSessionQueueServerConfig = new TomlConfig(new StringReader(String.join(
-        "\n",
-        new String[] {
-            "[sessionqueuer]",
-            "hostname = \"localhost\"",
-            "port = " + newSessionQueueServer.getUrl().getPort()
-        }
-    )));
-
-    Server<?> sessionMapServer = new SessionMapServer().asServer(setRandomPort(sharedConfig)).start();
-    Config sessionMapConfig = new TomlConfig(new StringReader(String.join(
-      "\n",
-      new String[] {
-        "[sessions]",
-        "hostname = \"localhost\"",
-        "port = " + sessionMapServer.getUrl().getPort()
-      }
-    )));
-
-    Server<?> distributorServer = new DistributorServer()
-      .asServer(setRandomPort(new CompoundConfig(
-          sharedConfig,
-          sessionMapConfig,
-          newSessionQueueServerConfig)))
-      .start();
-    Config distributorConfig = new TomlConfig(new StringReader(String.join(
-      "\n",
-      new String[] {
-        "[distributor]",
-        "hostname = \"localhost\"",
-        "port = " + distributorServer.getUrl().getPort()
-      }
-    )));
-
-    Server<?> router = new RouterServer()
-      .asServer(setRandomPort(new CompoundConfig(
-          sharedConfig,
-          sessionMapConfig,
-          distributorConfig,
-          newSessionQueueServerConfig)))
-      .start();
-
-    Server<?> nodeServer = new NodeServer()
-      .asServer(setRandomPort(new CompoundConfig(
-          sharedConfig,
-          sessionMapConfig,
-          distributorConfig,
-          newSessionQueueServerConfig)))
-      .start();
-    waitUntilReady(nodeServer, Duration.ofSeconds(5));
-
-    waitUntilReady(router, Duration.ofSeconds(5));
-
-    return new TestData(
-      router,
-      router::stop,
-      nodeServer::stop,
-      distributorServer::stop,
-      sessionMapServer::stop,
-      newSessionQueueServer::stop,
-      eventServer::stop);
-  }
-
-  private static void waitUntilReady(Server<?> server, Duration duration, boolean logOutput) {
+  private static void waitUntilReady(Server<?> server, Duration duration) {
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
     new FluentWait<>(client)
@@ -320,26 +133,13 @@ public class EndToEndTest {
       .pollingEvery(Duration.ofSeconds(1))
       .until(c -> {
         HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-        if (logOutput) {
-          System.out.println(Contents.string(response));
-        }
+        System.out.println(Contents.string(response));
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status != null &&
                                    Boolean.parseBoolean(status.get("ready").toString()));
       });
 
     Safely.safelyCall(client::close);
-  }
-
-  private static void waitUntilReady(Server<?> server, Duration duration) {
-    waitUntilReady(server, duration, false);
-  }
-
-  private static Config setRandomPort(Config config) {
-    return new MemoizedConfig(
-      new CompoundConfig(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort()))),
-        config));
   }
 
   // Hahahaha. Java naming.
@@ -380,6 +180,8 @@ public class EndToEndTest {
 
     // Kill the session, and wait until the grid says it's ready
     driver.quit();
+
+    waitUntilReady(server, Duration.ofSeconds(20));
   }
 
   @Test
@@ -402,7 +204,7 @@ public class EndToEndTest {
     // Kill the session, and wait until the grid says it's ready
     driver.quit();
 
-    waitUntilReady(server, Duration.ofSeconds(100), true);
+    waitUntilReady(server, Duration.ofSeconds(100));
 
     // And now we're good to go.
     driver = new RemoteWebDriver(server.getUrl(), caps);
@@ -491,15 +293,5 @@ public class EndToEndTest {
       .isEqualTo("application/json; charset=utf-8");
     assertThat(response.getHeader("Cache-Control"))
       .isEqualTo("no-cache");
-  }
-
-  private static class TestData {
-    public final Server<?> server;
-    public final TearDownFixture[] fixtures;
-
-    public TestData(Server<?> server, TearDownFixture... fixtures) {
-      this.server = server;
-      this.fixtures = fixtures;
-    }
   }
 }
