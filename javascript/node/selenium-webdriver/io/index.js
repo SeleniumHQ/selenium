@@ -17,10 +17,10 @@
 
 'use strict'
 
-var fs = require('fs'),
-  path = require('path'),
-  rimraf = require('rimraf'),
-  tmp = require('tmp')
+const fs = require('fs')
+const path = require('path')
+const rimraf = require('rimraf')
+const tmp = require('tmp')
 
 /**
  * @param {!Function} fn .

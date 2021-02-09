@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionNotLessThan;
+import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
 
 public class NetworkInterceptorTest {
 
@@ -56,7 +56,7 @@ public class NetworkInterceptorTest {
     driver = new WebDriverBuilder().get();
 
     assumeThat(driver).isInstanceOf(HasDevTools.class);
-    assumeThat(isFirefoxVersionNotLessThan(83, driver)).isTrue();
+    assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
 
     appServer = new NettyAppServer(req -> new HttpResponse()
       .setStatus(200)

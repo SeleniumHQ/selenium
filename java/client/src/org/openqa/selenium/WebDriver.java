@@ -351,7 +351,9 @@ public interface WebDriver extends SearchContext {
      * @return The amount of time the driver should wait when searching for an element.
      * @see <a href="https://www.w3.org/TR/webdriver/#get-timeouts">W3C WebDriver</a>
      */
-    Duration getImplicitWaitTimeout();
+    default Duration getImplicitWaitTimeout() {
+      throw new UnsupportedCommandException();
+    }
 
     /**
      * @deprecated Use {@link #setScriptTimeout(Duration)}
@@ -389,7 +391,9 @@ public interface WebDriver extends SearchContext {
      * @return The amount of time to wait for an asynchronous script to finish execution.
      * @see <a href="https://www.w3.org/TR/webdriver/#get-timeouts">W3C WebDriver</a>
      */
-    Duration getScriptTimeout();
+    default Duration getScriptTimeout() {
+      throw new UnsupportedCommandException();
+    }
 
     /**
      * @deprecated Use {@link #pageLoadTimeout(Duration)}
@@ -422,7 +426,9 @@ public interface WebDriver extends SearchContext {
      * @return The amount of time to wait for a page load to complete.
      * @see <a href="https://www.w3.org/TR/webdriver/#get-timeouts">W3C WebDriver</a>
      */
-    Duration getPageLoadTimeout();
+    default Duration getPageLoadTimeout() {
+      throw new UnsupportedCommandException();
+    }
   }
 
   /**

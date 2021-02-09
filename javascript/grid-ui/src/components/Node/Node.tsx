@@ -43,6 +43,10 @@ const useStyles = makeStyles({
   },
   buttonMargin: {
     padding: 1,
+  },
+  slotInfo: {
+    marginBottom: 10,
+    marginRight: 0,
   }
 });
 
@@ -78,6 +82,35 @@ export default function Node(props) {
   const stereotypeColumns = Math.ceil(nodeInfo.slotStereotypes.length / 3);
   // Then we need to know how many columns we will display.
   const columnWidth: GridSize = 12 / stereotypeColumns as any;
+
+  function CreateStereotypeGridItem(slotStereotype: any, index: any) {
+    return (
+      <Grid container item alignItems='center' spacing={1}>
+        <Grid item key={index}>
+          <img
+            src={browserLogo(slotStereotype.stereotype.browserName)}
+            className={classes.browserLogo}
+            alt="Browser Logo"
+          />
+        </Grid>
+        <Grid item key={index}>
+          <Typography className={classes.slotInfo}>
+            {slotStereotype.slots}
+          </Typography>
+        </Grid>
+        <Grid item key={index}>
+          <Typography className={classes.slotInfo}>
+            {
+              browserVersion(
+                slotStereotype.stereotype.browserVersion ??
+                slotStereotype.stereotype.version
+              )
+            }
+          </Typography>
+        </Grid>
+      </Grid>
+    );
+  }
 
   return (
       <Card
@@ -178,24 +211,8 @@ export default function Node(props) {
                             nodeInfo.slotStereotypes
                                 .slice(index * 3, Math.min((index * 3) + 3, nodeInfo.slotStereotypes.length))
                                 .map((slotStereotype: any, idx) => {
-                                  return (<Typography
-                                      color="textPrimary"
-                                      variant="h6"
-                                      key={idx}
-                                    >
-                                      <img
-                                        src={browserLogo(slotStereotype.stereotype.browserName)}
-                                        className={classes.browserLogo}
-                                        alt="Browser Logo"
-                                      />
-                                      {slotStereotype.slots}
-                                      {
-                                        browserVersion(
-                                          slotStereotype.stereotype.browserVersion ??
-                                          slotStereotype.stereotype.version
-                                        )
-                                      }
-                                    </Typography>
+                                  return(
+                                    CreateStereotypeGridItem(slotStereotype, idx) 
                                   )
                                 })}
                         </Grid>
