@@ -19,7 +19,10 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
@@ -38,11 +41,13 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
@@ -57,7 +62,7 @@ class HandleSession implements HttpHandler {
   private final Tracer tracer;
   private final HttpClient.Factory httpClientFactory;
   private final SessionMap sessions;
-  private final Cache<SessionId, HttpHandler> knownSessions;
+  private final Cache<URL, HttpClient> httpClients;
 
   HandleSession(
     Tracer tracer,
@@ -67,9 +72,21 @@ class HandleSession implements HttpHandler {
     this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
     this.sessions = Require.nonNull("Sessions", sessions);
 
-    this.knownSessions = CacheBuilder.newBuilder()
+    this.httpClients = CacheBuilder.newBuilder()
       .expireAfterAccess(Duration.ofMinutes(1))
+      .removalListener(
+        (RemovalListener<URL, HttpClient>) removal -> {
+          try {
+            removal.getValue().close();
+          } catch (IOException e) {
+            throw new UncheckedIOException(e);
+          }
+        }
+      )
       .build();
+
+    new Regularly("Clean up http clients cache").submit(
+      httpClients::cleanUp, Duration.ofMinutes(1), Duration.ofMinutes(1));
   }
 
   @Override
@@ -98,12 +115,12 @@ class HandleSession implements HttpHandler {
 
       try {
         HttpTracing.inject(tracer, span, req);
-        HttpResponse res = knownSessions.get(id, loadSessionId(tracer, span, id)).execute(req);
+        HttpResponse res = loadSessionId(tracer, span, id).call().execute(req);
 
         HTTP_RESPONSE.accept(span, res);
 
         return res;
-      } catch (ExecutionException e) {
+      } catch (Exception e) {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
 
@@ -125,7 +142,8 @@ class HandleSession implements HttpHandler {
     return span.wrap(
       () -> {
         Session session = sessions.get(id);
-        HttpClient client = httpClientFactory.createClient(Urls.fromUri(session.getUri()));
+        URL url = Urls.fromUri(session.getUri());
+        HttpClient client = httpClients.get(url, () -> httpClientFactory.createClient(url));
         return new ReverseProxyHandler(tracer, client);
       }
     );
