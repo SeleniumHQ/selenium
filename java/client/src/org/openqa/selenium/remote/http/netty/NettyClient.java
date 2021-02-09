@@ -73,6 +73,7 @@ public class NettyClient implements HttpClient {
         .setWebSocketMaxBufferSize(Integer.MAX_VALUE)
         .setWebSocketMaxFrameSize(Integer.MAX_VALUE)
         .setNettyTimer(TIMER)
+        .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
         .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
         .setReadTimeout(toClampedInt(config.readTimeout().toMillis()));
 
