@@ -51,7 +51,7 @@ public class GetNewSessionResponse {
   private final EventBus bus;
   private final Tracer tracer;
   private final NewSessionQueue sessionRequests;
-  private final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
+  private static final Map<RequestId, NewSessionRequest> knownRequests = new ConcurrentHashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
   public GetNewSessionResponse(Tracer tracer, EventBus bus,
