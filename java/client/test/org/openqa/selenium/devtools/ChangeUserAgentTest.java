@@ -41,8 +41,10 @@ public class ChangeUserAgentTest extends DevToolsTestBase {
     Map<String, String> headers = driver.findElements(By.cssSelector("#headers tr")).stream()
       .map(row -> row.findElements(By.tagName("td")))
       .collect(Collectors.toMap(cells -> cells.get(0).getText(), cells -> cells.get(1).getText()));
-    assertThat(headers).containsEntry("User-Agent", "Camembert 1.0");
-    assertThat(headers).containsEntry("Accept-Language", "da, en-gb;q=0.9, *;q=0.8");
+    assertThat(headers)
+      .containsEntry("User-Agent", "Camembert 1.0")
+      .containsEntry("Accept-Language", "da, en-gb;q=0.9, *;q=0.8");
+
     Object platform = ((JavascriptExecutor) driver).executeScript("return window.navigator.platform");
     assertThat(platform).isEqualTo("FreeBSD");
   }
