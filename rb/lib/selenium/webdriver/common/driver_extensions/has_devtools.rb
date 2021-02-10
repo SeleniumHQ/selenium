@@ -29,9 +29,7 @@ module Selenium
         #
 
         def devtools
-          version = Integer(capabilities.browser_version.split('.').first)
-          WebDriver.logger.info "Using devtools version: #{version}"
-          @devtools ||= DevTools.new(url: debugger_address, version: version)
+          @devtools ||= DevTools.new(url: debugger_address, version: devtools_version)
         end
 
       end # HasDevTools

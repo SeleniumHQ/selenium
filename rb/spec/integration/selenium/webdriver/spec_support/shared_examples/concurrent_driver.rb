@@ -18,16 +18,16 @@
 # under the License.
 
 shared_examples_for 'driver that can be started concurrently' do |guard|
-  before(:all) { quit_driver }
+  let(:drivers) { [] }
+  let(:threads) { [] }
+
+  before { quit_driver }
 
   after do
     drivers.each(&:quit)
     threads.select(&:alive?).each(&:kill)
     create_driver!
   end
-
-  let(:drivers) { [] }
-  let(:threads) { [] }
 
   it 'starts multiple drivers sequentially', guard do
     expected_count = WebDriver::Platform.ci ? 2 : 4

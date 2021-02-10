@@ -82,9 +82,9 @@ module Selenium
         end
 
         it 'should not allow domain to be set for localhost',
-           except: [{browser: %i[chrome edge],
-                     reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"},
-                    {browser: %i[safari safari_preview]}] do
+           exclude: [{browser: %i[chrome edge],
+                      reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"}],
+           except: {browser: %i[safari safari_preview]} do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'localhost',
@@ -127,7 +127,7 @@ module Selenium
         end
 
         it 'should not add secure cookie when http',
-           except: {browser: :firefox,
+           except: {browser: %i[firefox firefox_nightly],
                     reason: 'https://github.com/mozilla/geckodriver/issues/1840'} do
           driver.manage.add_cookie name: 'secure',
                                    value: 'http',
@@ -149,7 +149,7 @@ module Selenium
         end
 
         context 'sameSite' do
-          it 'should allow adding with value Strict', only: {browser: %i[chrome edge firefox]} do
+          it 'should allow adding with value Strict', only: {browser: %i[chrome edge firefox firefox_nightly]} do
             driver.manage.add_cookie name: 'samesite',
                                      value: 'strict',
                                      same_site: 'Strict'
@@ -157,7 +157,7 @@ module Selenium
             expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Strict')
           end
 
-          it 'should allow adding with value Lax', only: {browser: %i[chrome edge firefox]} do
+          it 'should allow adding with value Lax', only: {browser: %i[chrome edge firefox firefox_nightly]} do
             driver.manage.add_cookie name: 'samesite',
                                      value: 'lax',
                                      same_site: 'Lax'
@@ -178,7 +178,7 @@ module Selenium
           end
 
           it 'should not allow adding with value None when secure is false',
-             except: [{browser: :firefox,
+             except: [{browser: %i[firefox firefox_nightly],
                        reason: "https://github.com/mozilla/geckodriver/issues/1842"},
                       {browser: %i[safari safari_preview]}] do
             expect {

@@ -28,6 +28,8 @@ module Selenium
 
       class Driver < WebDriver::Driver
         include DriverExtensions::HasAddons
+        include DriverExtensions::HasDevTools
+        include DriverExtensions::HasLogEvents
         include DriverExtensions::HasWebStorage
         include DriverExtensions::PrintsPage
 
@@ -37,6 +39,16 @@ module Selenium
 
         def bridge_class
           Bridge
+        end
+
+        private
+
+        def devtools_version
+          85
+        end
+
+        def debugger_address
+          capabilities['moz:debuggerAddress']
         end
       end # Driver
     end # Firefox

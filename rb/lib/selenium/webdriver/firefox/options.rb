@@ -21,6 +21,8 @@ module Selenium
   module WebDriver
     module Firefox
       class Options < WebDriver::Options
+        attr_accessor :debugger_address
+
         KEY = 'moz:firefoxOptions'
 
         # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
@@ -50,6 +52,8 @@ module Selenium
         #
 
         def initialize(log_level: nil, **opts)
+          @debugger_address = opts.delete(:debugger_address)
+
           super(**opts)
 
           @options[:args] ||= []
@@ -130,6 +134,7 @@ module Selenium
         private
 
         def process_browser_options(browser_options)
+          browser_options['moz:debuggerAddress'] = true if @debugger_address
           options = browser_options[KEY]
           options['binary'] ||= Firefox.path if Firefox.path
           options['profile'] = @profile if @profile

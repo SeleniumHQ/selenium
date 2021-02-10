@@ -80,6 +80,9 @@ module Selenium
             incoming_frame << socket.readpartial(1024)
 
             while (frame = incoming_frame.next)
+              # Firefox will periodically fail on unparsable empty frame
+              break if frame.to_s.empty?
+
               message = JSON.parse(frame.to_s)
               @messages << message
               WebDriver.logger.debug "DevTools <- #{message}"
@@ -112,7 +115,7 @@ module Selenium
 
       def page_target
         @page_target ||= begin
-          response = Net::HTTP.get(@uri.hostname, '/json', @uri.port)
+          response = Net::HTTP.get(@uri.hostname, '/json/list', @uri.port)
           targets = JSON.parse(response)
           targets.find { |target| target['type'] == 'page' }
         end
