@@ -47,6 +47,7 @@ public class HandlersForTests implements Routable {
 
     Route route = Route.combine(
       Route.get("/basicAuth").to(BasicAuthHandler::new),
+      Route.get("/echo").to(EchoHandler::new),
       Route.get("/cookie").to(CookieHandler::new),
       Route.get("/encoding").to(EncodingHandler::new),
       Route.matching(req -> req.getUri().startsWith("/generated/")).to(() -> new GeneratedJsTestHandler("/generated")),

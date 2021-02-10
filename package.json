@@ -1,11 +1,10 @@
 {
   "devDependencies": {
     "@babel/preset-react": "^7.12.13",
-    "@bazel/bazel": "^2.1.0",
-    "@bazel/buildifier": "^3.5.0",
+    "@bazel/buildifier": "^4.0.0",
     "@bazel/ibazel": "^0.14.0",
-    "@bazel/jasmine": "^2.3.2",
-    "@bazel/typescript": "^2.3.2",
+    "@bazel/jasmine": "^3.1.0",
+    "@bazel/typescript": "^3.1.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.6.3",
