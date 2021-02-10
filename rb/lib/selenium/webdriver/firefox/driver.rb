@@ -29,6 +29,7 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::HasAddons
         include DriverExtensions::HasWebStorage
+        include DriverExtensions::PrintsPage
 
         def browser
           :firefox
@@ -36,12 +37,6 @@ module Selenium
 
         def bridge_class
           Bridge
-        end
-
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
-
-          @bridge.print_page(options)
         end
       end # Driver
     end # Firefox

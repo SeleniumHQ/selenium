@@ -17,32 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative '../spec_helper'
-
 module Selenium
   module WebDriver
-    describe "PrintOptions" do
-      let(:magic_number) { 'JVBER' }
+    module DriverExtensions
+      module PrintsPage
+        def print_page(**options)
+          options[:page_ranges] &&= Array(options[:page_ranges])
 
-      before do
-        options = Selenium::WebDriver::Chrome::Options.new
-        options.add_argument('--headless')
-
-        @driver = Selenium::WebDriver.for :chrome, options: options
-        @driver.navigate.to url_for('printPage.html')
-      end
-
-      it 'should return base64 for print command' do
-        expect(@driver.print_page).to include(magic_number)
-      end
-
-      it 'should print with orientation' do
-        expect(@driver.print_page(orientation: 'landscape')).to include(magic_number)
-      end
-
-      it 'should print with valid params' do
-        expect(@driver.print_page(orientation: 'landscape', page_ranges: ['1-2'], page: {width: 30})).to include(magic_number)
-      end
-    end
-  end
-end
+          @bridge.print_page(options)
+        end
+      end # PrintsPage
+    end # DriverExtensions
+  end # WebDriver
+end # Selenium

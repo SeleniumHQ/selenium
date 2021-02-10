@@ -59,6 +59,51 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     interceptingTraffic = false;
   }
 
+  public static class UserAgent {
+
+    private final String userAgent;
+    private final Optional<String> acceptLanguage;
+    private final Optional<String> platform;
+
+    public UserAgent(String userAgent) {
+      this(userAgent, Optional.empty(), Optional.empty());
+    }
+
+    private UserAgent(String userAgent, Optional<String> acceptLanguage, Optional<String> platform) {
+      this.userAgent = userAgent;
+      this.acceptLanguage = acceptLanguage;
+      this.platform = platform;
+    }
+
+    public String userAgent() {
+      return userAgent;
+    }
+
+    public UserAgent acceptLanguage(String acceptLanguage) {
+      return new UserAgent(this.userAgent, Optional.of(acceptLanguage), this.platform);
+    }
+
+    public Optional<String> acceptLanguage() {
+      return acceptLanguage;
+    }
+
+    public UserAgent platform(String platform) {
+      return new UserAgent(this.userAgent, this.acceptLanguage, Optional.of(platform));
+    }
+
+    public Optional<String> platform() {
+      return platform;
+    }
+  }
+
+  public void setUserAgent(String userAgent) {
+    devTools.send(setUserAgentOverride(new UserAgent(userAgent)));
+  }
+
+  public void setUserAgent(UserAgent userAgent) {
+    devTools.send(setUserAgentOverride(userAgent));
+  }
+
   public void addAuthHandler(Predicate<URI> whenThisMatches, Supplier<Credentials> useTheseCredentials) {
     Require.nonNull("URI predicate", whenThisMatches);
     Require.nonNull("Credentials", useTheseCredentials);
@@ -196,6 +241,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
     return req;
   }
+
+  protected abstract Command<Void> setUserAgentOverride(UserAgent userAgent);
 
   protected abstract Command<Void> enableNetworkCaching();
 
