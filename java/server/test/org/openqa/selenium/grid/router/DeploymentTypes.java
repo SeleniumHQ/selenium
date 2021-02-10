@@ -178,7 +178,8 @@ public enum DeploymentTypes {
             "publish = \"tcp://localhost:" + publish + "\"",
             "subscribe = \"tcp://localhost:" + subscribe + "\"",
             "bind = true"}))),
-          setRandomPort())))
+          setRandomPort(),
+          sharedConfig)))
         .start();
       waitUntilReady(eventServer, Duration.ofSeconds(5));
 

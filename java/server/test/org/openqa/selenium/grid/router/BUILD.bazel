@@ -37,7 +37,7 @@ java_selenium_test_suite(
     srcs = LARGE_TESTS,
     browsers = [
         "chrome",
-        #        "firefox",
+        "firefox",
     ],
     javacopts = [
         "--release",
