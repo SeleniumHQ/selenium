@@ -27,16 +27,6 @@ module Selenium
                         start_page: 'ms:startPage'}.freeze
         BROWSER = 'MicrosoftEdge'
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
-
         #
         # Create a new Options instance for Edge.
         #
@@ -54,7 +44,9 @@ module Selenium
 
         def initialize(**opts)
           super(**opts)
-          @options[:extensions]&.each(&method(:validate_extension))
+
+          @options[:extension_paths] ||= []
+          @options[:extension_paths].each(&method(:validate_extension))
         end
 
         #
@@ -69,7 +61,6 @@ module Selenium
 
         def add_extension_path(path)
           validate_extension(path)
-          @options[:extension_paths] ||= []
           @options[:extension_paths] << path
         end
 

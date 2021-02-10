@@ -10,13 +10,13 @@ java_export(
         "org.openqa.selenium.remote.internal",
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     resources = [
         ":get-attribute",
         ":is-displayed",
-    ],
-    opens_to = [
-        "org.openqa.selenium.json",
     ],
     uses = [
         "org.openqa.selenium.remote.AugmenterProvider",

@@ -12,6 +12,9 @@ java_test_suite(
         ["*.java"],
         exclude = LARGE_TESTS,
     ),
+    tags = [
+        "requires-network",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/json",

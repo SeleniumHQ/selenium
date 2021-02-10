@@ -24,7 +24,7 @@ module Selenium
       autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
 
-      SUPPORTED_VERSIONS = [84, 85, 86, 87].freeze
+      SUPPORTED_VERSIONS = [85, 86, 87, 88].freeze
 
       def initialize(url:, version:)
         @messages = []

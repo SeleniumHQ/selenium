@@ -33,4 +33,12 @@ public class RemoteObject {
       ("\"" + ((String) value).replace("\"", "\\\"") + "\"") :
       String.valueOf(value);
   }
+
+  public String getType() {
+    return type;
+  }
+
+  public Object getValue() {
+    return value;
+  }
 }

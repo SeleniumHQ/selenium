@@ -305,13 +305,16 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void canConvertOptionsWithBinaryToCapabilitiesAndRestoreBack() {
+  public void canConvertOptionsWithBinaryToCapabilitiesAndRestoreBack() throws IOException {
+    // Don't assume Firefox is actually installed and available
+    Path tempFile = Files.createTempFile("firefoxoptions", "test");
+
     FirefoxOptions options = new FirefoxOptions(
-      new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
+      new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary(tempFile.toFile()))));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
       .asInstanceOf(InstanceOfAssertFactories.MAP)
-      .containsEntry("binary", new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
+      .containsEntry("binary", new FirefoxBinary(tempFile.toFile()).getPath().replaceAll("\\\\", "/"));
   }
 
   @Test

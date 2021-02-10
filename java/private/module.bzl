@@ -181,7 +181,6 @@ def _java_module_impl(ctx):
         java_info,
     ]
 
-
 java_module = rule(
     _java_module_impl,
     attrs = {
@@ -208,8 +207,8 @@ java_module = rule(
                 [_GatheredModuleInfo, JavaInfo],
             ],
             aspects = [
-                  _java_module_aspect,
-              ],
+                _java_module_aspect,
+            ],
         ),
         "hides": attr.string_list(
             doc = "List of package names to hide",

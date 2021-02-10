@@ -82,8 +82,14 @@ public class V86Events extends Events<ConsoleAPICalled, ExceptionThrown> {
   protected JavascriptException toJsException(ExceptionThrown event) {
     ExceptionDetails details = event.getExceptionDetails();
     Optional<StackTrace> maybeTrace = details.getStackTrace();
+    Optional<org.openqa.selenium.devtools.v86.runtime.model.RemoteObject>
+      maybeException = details.getException();
 
-    JavascriptException exception = new JavascriptException(event.getExceptionDetails().getText());
+    String message = maybeException
+      .flatMap(obj -> obj.getDescription().map(String::toString))
+      .orElseGet(details::getText);
+
+    JavascriptException exception = new JavascriptException(message);
 
     if (!maybeTrace.isPresent()) {
       StackTraceElement element = new StackTraceElement(

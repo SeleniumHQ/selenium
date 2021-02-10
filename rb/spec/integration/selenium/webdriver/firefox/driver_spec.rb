@@ -21,24 +21,28 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe "PrintOptions" do
-      let(:magic_number) { 'JVBER' }
+    module Firefox
+      describe Driver, exclusive: {driver: :firefox} do
+        describe '#print_options' do
+          let(:magic_number) { 'JVBER' }
 
-      before do
-        driver.navigate.to url_for('printPage.html')
-      end
+          before { driver.navigate.to url_for('printPage.html') }
 
-      it 'should return base64 for print command' do
-        expect(driver.print_page).to include(magic_number)
-      end
+          it 'should return base64 for print command' do
+            expect(driver.print_page).to include(magic_number)
+          end
 
-      it 'should print with orientation' do
-        expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
-      end
+          it 'should print with orientation' do
+            expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
+          end
 
-      it 'should print with valid params' do
-        expect(driver.print_page(orientation: 'landscape', page_ranges: ['1-2'], page: {width: 30})).to include(magic_number)
+          it 'should print with valid params' do
+            expect(driver.print_page(orientation: 'landscape',
+                                     page_ranges: ['1-2'],
+                                     page: {width: 30})).to include(magic_number)
+          end
+        end
       end
-    end
-  end
-end
+    end # Firefox
+  end # WebDriver
+end # Selenium

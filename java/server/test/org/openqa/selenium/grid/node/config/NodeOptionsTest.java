@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import com.google.common.collect.ImmutableMap;
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -49,8 +50,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-
-import com.google.common.collect.ImmutableMap;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -115,11 +114,9 @@ public class NodeOptionsTest {
       return Collections.emptySet();
     });
 
-    assertThat(reported).is(supporting("chrome"));
-    assertThat(reported).is(supporting("firefox"));
-    assertThat(reported).isNot(supporting("internet explorer"));
-    assertThat(reported).is(supporting("MicrosoftEdge"));
+    // There may be more drivers available, but we know that these are meant to be here.
     assertThat(reported).is(supporting("safari"));
+    assertThat(reported).isNot(supporting("internet explorer"));
   }
 
   @Test
