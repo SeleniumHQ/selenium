@@ -47,7 +47,7 @@ public class V86Network extends Network<AuthRequired, RequestPaused> {
 
   @Override
   protected Command<Void> setUserAgentOverride(UserAgent userAgent) {
-    return org.openqa.selenium.devtools.v89.network.Network.setUserAgentOverride(
+    return org.openqa.selenium.devtools.v86.network.Network.setUserAgentOverride(
       userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
   }
 
