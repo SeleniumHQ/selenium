@@ -19,26 +19,14 @@
 
 module Selenium
   module WebDriver
-    module Firefox
+    module DriverExtensions
+      module PrintsPage
+        def print_page(**options)
+          options[:page_ranges] &&= Array(options[:page_ranges])
 
-      #
-      # Driver implementation for Firefox using GeckoDriver.
-      # @api private
-      #
-
-      class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::PrintsPage
-
-        def browser
-          :firefox
+          @bridge.print_page(options)
         end
-
-        def bridge_class
-          Bridge
-        end
-      end # Driver
-    end # Firefox
+      end # PrintsPage
+    end # DriverExtensions
   end # WebDriver
 end # Selenium
