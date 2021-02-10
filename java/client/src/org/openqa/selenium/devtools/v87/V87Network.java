@@ -46,6 +46,12 @@ public class V87Network extends Network<AuthRequired, RequestPaused> {
   }
 
   @Override
+  protected Command<Void> setUserAgentOverride(UserAgent userAgent) {
+    return org.openqa.selenium.devtools.v89.network.Network.setUserAgentOverride(
+      userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
+  }
+
+  @Override
   protected Command<Void> enableNetworkCaching() {
     return org.openqa.selenium.devtools.v87.network.Network.setCacheDisabled(false);
   }
