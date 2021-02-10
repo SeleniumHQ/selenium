@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.router;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -50,7 +49,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore("Ignored until the Grid can support this")
 public class StressTest {
 
   private final ExecutorService executor =

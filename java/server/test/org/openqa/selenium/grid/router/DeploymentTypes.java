@@ -73,7 +73,7 @@ public enum DeploymentTypes {
         "registration-secret = \"provolone\"",
         "",
         "[sessionqueue]",
-        "session-request-timeout = 10",
+        "session-request-timeout = 100",
         "session-retry-interval = 1"
       };
       Config config = new MemoizedConfig(
@@ -109,7 +109,7 @@ public enum DeploymentTypes {
         "registration-secret = \"feta\"",
         "",
         "[sessionqueue]",
-        "session-request-timeout = 10",
+        "session-request-timeout = 100",
         "session-retry-interval = 1"
       };
       Config baseConfig = new MemoizedConfig(
@@ -162,7 +162,7 @@ public enum DeploymentTypes {
         "registration-secret = \"colby\"",
         "",
         "[sessionqueue]",
-        "session-request-timeout = 10",
+        "session-request-timeout = 100",
         "session-retry-interval = 1"
       };
 
@@ -255,8 +255,6 @@ public enum DeploymentTypes {
   }
   ;
 
-  public abstract Deployment start(Capabilities capabilities, Config additionalConfig);
-
   private static Config setRandomPort() {
     return new MapConfig(Map.of("server", Map.of("port", PortProber.findFreePort())));
   }
@@ -276,12 +274,14 @@ public enum DeploymentTypes {
                 HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
                 Map<String, Object> status = Values.get(response, MAP_TYPE);
                 return Boolean.TRUE.equals(
-                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
+                  status != null && Boolean.parseBoolean(status.get("ready").toString()));
               });
     } finally {
       Safely.safelyCall(client::close);
     }
   }
+
+  public abstract Deployment start(Capabilities capabilities, Config additionalConfig);
 
   public static class Deployment implements TearDownFixture {
     private final Server<?> server;
