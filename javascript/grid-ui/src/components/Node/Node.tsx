@@ -85,20 +85,20 @@ export default function Node(props) {
 
   function CreateStereotypeGridItem(slotStereotype: any, index: any) {
     return (
-      <Grid container item alignItems='center' spacing={1}>
-        <Grid item key={index}>
+      <Grid container item alignItems='center' spacing={1} key={index}>
+        <Grid item>
           <img
             src={browserLogo(slotStereotype.stereotype.browserName)}
             className={classes.browserLogo}
             alt="Browser Logo"
           />
         </Grid>
-        <Grid item key={index}>
+        <Grid item>
           <Typography className={classes.slotInfo}>
             {slotStereotype.slots}
           </Typography>
         </Grid>
-        <Grid item key={index}>
+        <Grid item>
           <Typography className={classes.slotInfo}>
             {
               browserVersion(
@@ -212,7 +212,7 @@ export default function Node(props) {
                                 .slice(index * 3, Math.min((index * 3) + 3, nodeInfo.slotStereotypes.length))
                                 .map((slotStereotype: any, idx) => {
                                   return(
-                                    CreateStereotypeGridItem(slotStereotype, idx) 
+                                    CreateStereotypeGridItem(slotStereotype, idx)
                                   )
                                 })}
                         </Grid>
@@ -259,7 +259,7 @@ export default function Node(props) {
                 </Grid>
                 <Grid item xs={12}
                 >
-                  <LinearProgressWithLabel value={currentLoad as number}/>
+                  <LinearProgressWithLabel value={Number(currentLoad)}/>
                 </Grid>
               </Grid>
             </Grid>
