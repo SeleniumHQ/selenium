@@ -246,15 +246,13 @@ class UnboundZmqEventBus implements EventBus {
 
   private void notifyListeners(EventName eventName, Event event) {
     List<Consumer<Event>> eventListeners = listeners.getOrDefault(eventName, new ArrayList<>());
-    eventListeners.stream().forEach(listener -> {
-      listenerNotificationExecutor.submit(() -> {
+    eventListeners
+      .forEach(listener -> listenerNotificationExecutor.submit(() -> {
         try {
           listener.accept(event);
-
         } catch (Throwable t) {
           LOG.log(Level.WARNING, t, () -> "Caught exception from listener: " + listener);
         }
-      });
-    });
+      }));
   }
 }
