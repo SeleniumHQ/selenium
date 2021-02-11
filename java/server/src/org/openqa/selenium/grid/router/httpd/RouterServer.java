@@ -142,7 +142,7 @@ public class RouterServer extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getServerVersion());
 
-    Routable ui = GridUiRoute.getGridUi();
+    Routable ui = new GridUiRoute();
 
     Route handler = Route.combine(
       ui,

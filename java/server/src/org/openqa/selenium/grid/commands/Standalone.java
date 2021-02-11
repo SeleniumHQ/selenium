@@ -178,7 +178,7 @@ public class Standalone extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getFormattedVersion());
 
-    Routable ui = GridUiRoute.getGridUi();
+    Routable ui = new GridUiRoute();
 
     HttpHandler httpHandler = combine(
       ui,

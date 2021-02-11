@@ -173,7 +173,7 @@ public class Hub extends TemplateGridServerCommand {
         .setContent(Contents.utf8String("Router is " + ready));
     };
 
-    Routable ui = GridUiRoute.getGridUi();
+    Routable ui = new GridUiRoute();
 
     HttpHandler httpHandler = combine(
       ui,

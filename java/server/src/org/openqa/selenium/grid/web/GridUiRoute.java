@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.web;
 
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
@@ -28,29 +29,40 @@ import java.util.logging.Logger;
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static org.openqa.selenium.remote.http.Route.get;
 
-public class GridUiRoute {
+public class GridUiRoute implements Routable {
+
   private static final Logger LOG = Logger.getLogger("selenium");
 
   private static final String GRID_RESOURCE = "javascript/grid-ui/build";
   private static final String GRID_RESOURCE_WITH_PREFIX = String.format("/%s", GRID_RESOURCE);
 
-  public static Routable getGridUi() {
-    Routable ui;
+  private final Route routes;
+
+  public GridUiRoute() {
     URL uiRoot = GridUiRoute.class.getResource(GRID_RESOURCE_WITH_PREFIX);
     if (uiRoot != null) {
       ResourceHandler uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, GRID_RESOURCE));
       HttpResponse uiRedirect = new HttpResponse()
         .setStatus(HTTP_MOVED_TEMP)
         .addHeader("Location", "/ui/index.html");
-      ui = Route.combine(
+      routes = Route.combine(
         get("/").to(() -> req -> uiRedirect),
         get("/grid/console").to(() -> req -> uiRedirect),
         Route.prefix("/ui/").to(Route.matching(req -> true).to(() -> uiHandler)));
     } else {
       LOG.warning("It was not possible to load the Grid UI.");
       Json json = new Json();
-      ui = Route.matching(req -> false).to(() -> new NoHandler(json));
+      routes = Route.matching(req -> false).to(() -> new NoHandler(json));
     }
-    return ui;
+  }
+
+  @Override
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
+  }
+
+  @Override
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }
