@@ -38,7 +38,7 @@ RSpec.configure do |c|
 
   c.before(:suite) do
     $DEBUG ||= ENV['DEBUG'] == 'true'
-    GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote
+    GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote && ENV['WD_REMOTE_URL'].nil?
     GlobalTestEnv.print_env
   end
 

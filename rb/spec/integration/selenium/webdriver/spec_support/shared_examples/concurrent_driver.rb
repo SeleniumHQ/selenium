@@ -18,6 +18,8 @@
 # under the License.
 
 shared_examples_for 'driver that can be started concurrently' do |guard|
+  before(:all) { quit_driver }
+
   after do
     drivers.each(&:quit)
     threads.select(&:alive?).each(&:kill)
@@ -26,8 +28,9 @@ shared_examples_for 'driver that can be started concurrently' do |guard|
   let(:drivers) { [] }
   let(:threads) { [] }
 
-  it 'starts 3 drivers sequentially', guard do
-    3.times do
+  it 'starts multiple drivers sequentially', guard do
+    expected_count = WebDriver::Platform.ci ? 2 : 4
+    expected_count.times do
       thread = Thread.new do
         drivers << create_driver!
       end
@@ -36,7 +39,7 @@ shared_examples_for 'driver that can be started concurrently' do |guard|
     end
 
     expect { threads.each(&:join) }.not_to raise_error
-    expect(drivers.count).to eq(3)
+    expect(drivers.count).to eq(expected_count)
 
     # make any wire call
     expect { drivers.each(&:title) }.not_to raise_error

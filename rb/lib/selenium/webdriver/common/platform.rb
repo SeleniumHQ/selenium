@@ -57,6 +57,8 @@ module Selenium
           :jenkins
         elsif ENV['APPVEYOR']
           :appveyor
+        elsif ENV['GITHUB_ACTIONS']
+          :github
         end
       end
 
