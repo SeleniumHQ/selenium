@@ -14,6 +14,7 @@ _RUNTIME_DEPS = [
     "@npm//clsx",
     "@npm//graphql",
     "@npm//graphql.macro",
+    "@npm//pretty-ms",
     "@npm//react",
     "@npm//react-dom",
     "@npm//react-modal",

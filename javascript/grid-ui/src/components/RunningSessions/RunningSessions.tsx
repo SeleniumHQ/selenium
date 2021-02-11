@@ -18,6 +18,7 @@ import browserLogo from "../../util/browser-logo";
 import osLogo from "../../util/os-logo";
 import browserVersion from "../../util/browser-version";
 import EnhancedTableToolbar from "../EnhancedTableToolbar";
+import prettyMilliseconds from "pretty-ms";
 
 interface SessionData {
   id: string,
@@ -362,7 +363,7 @@ export default function RunningSessions(props) {
                             </Dialog>
                           </TableCell>
                           <TableCell align="right">{row.startTime}</TableCell>
-                          <TableCell align="right">{row.sessionDurationMillis}</TableCell>
+                          <TableCell align="right">{prettyMilliseconds(Number(row.sessionDurationMillis))}</TableCell>
                           <TableCell align="right">{row.nodeUri}</TableCell>
                         </TableRow>
                       );

@@ -13,6 +13,8 @@ const browserLogo = (browser: string): string => {
       return chromeLogo;
     case "microsoftedge":
       return edgeLogo;
+    case "msedge":
+      return edgeLogo;
     case "operablink":
       return operaLogo;
     case "opera":
