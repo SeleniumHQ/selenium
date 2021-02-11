@@ -25,6 +25,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -328,15 +329,18 @@ public class RemoteWebDriverBuilder {
       .with(new AddWebDriverSpecHeaders().andThen(new ErrorFilter()));
 
     byte[] payload = getPayloadUtf8Bytes();
-    Optional<ProtocolHandshake.Result> result = new ProtocolHandshake().createSession(
+    Either<ProtocolHandshake.Result, String> result = new ProtocolHandshake().createSession(
       handler,
       new ByteArrayInputStream(payload),
       payload.length);
 
-    CommandExecutor executor = result.map(res -> createExecutor(handler, res))
-      .orElseThrow(() -> new SessionNotCreatedException("Unable to create a new session."));
-
-    return new RemoteWebDriver(executor, new ImmutableCapabilities());
+    if (result.isLeft()) {
+      CommandExecutor executor = result.mapLeft(res -> createExecutor(handler, res));
+      return new RemoteWebDriver(executor, new ImmutableCapabilities());
+    } else {
+      throw new SessionNotCreatedException(
+        String.format("Unable to create new remote session. Reason: %s", result.right()));
+    }
   }
 
   private URI getBaseUri() {

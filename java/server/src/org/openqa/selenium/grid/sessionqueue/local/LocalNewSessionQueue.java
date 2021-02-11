@@ -194,7 +194,8 @@ public class LocalNewSessionQueue extends NewSessionQueue {
         LOG.log(Level.INFO, "Request {0} timed out", requestId);
         sessionRequests.remove(sessionRequest);
         bus.fire(new NewSessionRejectedEvent(
-          new NewSessionErrorResponse(requestId, "New session request timed out")));
+          new NewSessionErrorResponse(requestId, String.format(
+            "New session request rejected after being in the queue for more than %s", requestTimeout))));
       } else {
         LOG.log(Level.INFO,
           "Adding request back to the queue. All slots are busy. Request: {0}",
@@ -234,10 +235,14 @@ public class LocalNewSessionQueue extends NewSessionQueue {
         }
       }
 
-      if (httpRequest.isPresent() && hasRequestTimedOut(httpRequest.get())) {
-        bus.fire(new NewSessionRejectedEvent(
-          new NewSessionErrorResponse(id, "New session request timed out")));
-        return Optional.empty();
+      if (httpRequest.isPresent()) {
+        HttpRequest request = httpRequest.get();
+        if (hasRequestTimedOut(request)) {
+          bus.fire(new NewSessionRejectedEvent(
+            new NewSessionErrorResponse(id, String.format(
+              "New session request rejected after being in the queue for more than %s", requestTimeout))));
+          return Optional.empty();
+        }
       }
       return httpRequest;
     } finally {

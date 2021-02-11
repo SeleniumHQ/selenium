@@ -24,6 +24,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
@@ -70,26 +71,26 @@ public class ProtocolHandshake {
 
       try (InputStream rawIn = os.asByteSource().openBufferedStream();
            BufferedInputStream contentStream = new BufferedInputStream(rawIn)) {
-        Optional<Result> result = createSession(client, contentStream, counter.getCount());
+        Either<Result, String> result = createSession(client, contentStream, counter.getCount());
 
-        if (result.isPresent()) {
-          Result toReturn = result.get();
+        if (result.isLeft()) {
+          Result toReturn = result.left();
           LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
           return toReturn;
+        } else {
+          throw new SessionNotCreatedException(
+            String.format(
+              "Unable to create new remote session. Reason: %s, " +
+              "desired capabilities = %s",
+              result.right(), desired));
         }
       }
     } finally {
       os.reset();
     }
-
-    throw new SessionNotCreatedException(
-      String.format(
-        "Unable to create new remote session. " +
-        "desired capabilities = %s",
-        desired));
   }
 
-  Optional<Result> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
+  Either<Result, String> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
@@ -118,12 +119,18 @@ public class ProtocolHandshake {
       response.getStatus(),
       blob);
 
+    if (initialResponse.getStatusCode() != 200) {
+      return Either.right(blob.get("message").toString());
+    }
+
     return Stream.of(
       new W3CHandshakeResponse().getResponseFunction(),
       new JsonWireProtocolResponse().getResponseFunction())
       .map(func -> func.apply(initialResponse))
       .filter(Objects::nonNull)
-      .findFirst();
+      .findFirst()
+      .<Either<Result, String>>map(Either::left)
+      .orElseGet(() -> Either.right("Handshake response does not match any supported protocol"));
   }
 
   public static class Result {
