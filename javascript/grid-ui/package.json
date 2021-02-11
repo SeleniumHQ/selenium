@@ -4,23 +4,23 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@apollo/client": "^3.3.7",
-    "@material-ui/core": "^4.10.2",
-    "@material-ui/icons": "^4.9.1",
+    "@apollo/client": "^3.3.9",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "@types/enzyme-adapter-react-16": "^1.0.6",
-    "@types/react": "^16.9.38",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-modal": "^3.10.6",
-    "@types/react-router-dom": "^5.1.5",
-    "graphql": "^15.1.0",
+    "@types/react": "^17.0.1",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-modal": "^3.12.0",
+    "@types/react-router-dom": "^5.1.7",
+    "graphql": "^15.5.0",
     "graphql.macro": "^1.4.2",
     "pretty-ms": "^7.0.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-modal": "^3.11.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-modal": "^3.12.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3",
-    "source-map-explorer": "^2.4.2"
+    "react-scripts": "4.0.2",
+    "source-map-explorer": "^2.5.2"
   },
   "scripts": {
     "start": "node node_modules/react-scripts/bin/react-scripts start",
@@ -49,6 +49,6 @@
     "@babel/preset-react": "^7.12.13",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.6.3"
+    "@testing-library/user-event": "^12.7.0"
   }
 }
