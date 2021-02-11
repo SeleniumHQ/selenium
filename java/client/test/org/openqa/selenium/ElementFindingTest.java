@@ -20,8 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -240,7 +239,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE_HTML)
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -330,7 +328,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE_HTML)
   public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -430,7 +427,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE_HTML)
   public void testShouldBeAbleToFindElementByXPathWithNamespace() {
     driver.get(pages.svgPage);
     WebElement element = driver.findElement(By.xpath("//svg:svg//svg:text"));
@@ -441,8 +437,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGIUM)
-  @NotYetImplemented(EDGE_HTML)
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     WebElement element = driver.findElement(By.xpath("//foo"));
@@ -598,7 +593,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE_HTML)
   public void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -613,7 +607,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE_HTML)
   public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -789,7 +782,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE_HTML)
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);
 

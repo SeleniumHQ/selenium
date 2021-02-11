@@ -26,8 +26,7 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.By.id;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -251,12 +250,11 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(FIREFOX)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(EDGE_HTML)
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
 
@@ -507,11 +505,10 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test(timeout = 10000)
   @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGIUM)
+  @NotYetImplemented(EDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502656")
-  @NotYetImplemented(EDGE_HTML)
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
     driver.get(pages.simpleTestPage);
 

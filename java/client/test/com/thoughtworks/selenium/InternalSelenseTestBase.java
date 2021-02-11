@@ -45,7 +45,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -175,10 +174,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       case CHROME:
         return new ChromeOptions();
 
-      case EDGE_HTML:
-        return new EdgeHtmlOptions();
-
-      case EDGIUM:
+      case EDGE:
         return new EdgeOptions();
 
       case IE:

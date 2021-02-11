@@ -29,16 +29,6 @@ BROWSERS = {
         "data": edge_data,
         "tags": _COMMON_TAGS + ["edge"],
     },
-    "edgehtml": {
-        "deps": ["//java/client/src/org/openqa/selenium/edgehtml"],
-        "jvm_flags": ["-Dselenium.browser=edgehtml"] +
-                     select({
-                         "//common:windows": ["-Dselenium.skiptest=false"],
-                         "//conditions:default": ["-Dselenium.skiptest=true"],
-                     }),
-        "data": [],
-        "tags": _COMMON_TAGS + ["exclusive", "edgehtml"],
-    },
     "firefox": {
         "deps": ["//java/client/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_jvm_flags,

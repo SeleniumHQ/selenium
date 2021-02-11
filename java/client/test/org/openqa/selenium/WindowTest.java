@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -45,7 +44,6 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(EDGE_HTML)
   public void testSetsTheSizeOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -56,7 +54,6 @@ public class WindowTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(EDGE_HTML)
   public void testSetsTheSizeOfTheCurrentWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -69,7 +66,6 @@ public class WindowTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(EDGE_HTML)
   public void testSetsTheSizeOfTheCurrentWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -95,7 +91,6 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(EDGE_HTML)
   public void testSetsThePositionOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -122,7 +117,6 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
-  @Ignore(EDGE_HTML)
   public void testCanMaximizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -136,7 +130,6 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
-  @Ignore(EDGE_HTML)
   public void testCanMaximizeTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -153,7 +146,6 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
-  @Ignore(EDGE_HTML)
   public void testCanMaximizeTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -182,7 +174,6 @@ public class WindowTest extends JUnit4TestBase {
   @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
-  @Ignore(EDGE_HTML)
   public void canFullscreenTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -201,7 +192,6 @@ public class WindowTest extends JUnit4TestBase {
   @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
-  @Ignore(EDGE_HTML)
   public void canFullscreenTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -219,7 +209,6 @@ public class WindowTest extends JUnit4TestBase {
   @Ignore(value = CHROME, travis = true)
   @Ignore(value = FIREFOX, gitHubActions = true)
   @Ignore(SAFARI)
-  @Ignore(EDGE_HTML)
   public void canFullscreenTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).

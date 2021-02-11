@@ -23,8 +23,6 @@ import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriverInfo;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.edgehtml.EdgeHtmlDriverInfo;
-import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverInfo;
 import org.openqa.selenium.firefox.xpi.XpiDriverInfo;
@@ -43,8 +41,7 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 public enum Browser {
   ALL(new ImmutableCapabilities(), "any", false),
   CHROME(new ChromeOptions(), new ChromeDriverInfo().getDisplayName(), true),
-  EDGE_HTML(new EdgeHtmlOptions(), new EdgeHtmlDriverInfo().getDisplayName(), false),
-  EDGIUM(new EdgeOptions(), new EdgeDriverInfo().getDisplayName(), true),
+  EDGE(new EdgeOptions(), new EdgeDriverInfo().getDisplayName(), true),
   HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), "HtmlUnit", false),
   LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), new XpiDriverInfo().getDisplayName(), false),
   IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false),
@@ -81,11 +78,7 @@ public enum Browser {
     }
 
     if ("edge".equalsIgnoreCase(browserName)) {
-      return EDGIUM;
-    }
-
-    if ("edgehtml".equalsIgnoreCase(browserName)) {
-      return EDGE_HTML;
+      return EDGE;
     }
 
     try {
