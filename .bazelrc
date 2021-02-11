@@ -40,3 +40,5 @@ build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
 
 test --test_timeout=1800
+
+test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results

@@ -223,7 +223,7 @@ async function buildProfile(template, extensions) {
     dir = await io.tmpDir()
     if (template) {
       await io.copyDir(
-        /** @type {string} */ (template),
+        /** @type {string} */(template),
         dir,
         /(parent\.lock|lock|\.parentlock)/
       )
@@ -433,11 +433,11 @@ function findGeckoDriver() {
   if (!exe) {
     throw Error(
       'The ' +
-        GECKO_DRIVER_EXE +
-        ' executable could not be found on the current ' +
-        'PATH. Please download the latest version from ' +
-        'https://github.com/mozilla/geckodriver/releases/ ' +
-        'and ensure it can be found on your PATH.'
+      GECKO_DRIVER_EXE +
+      ' executable could not be found on the current ' +
+      'PATH. Please download the latest version from ' +
+      'https://github.com/mozilla/geckodriver/releases/ ' +
+      'and ensure it can be found on your PATH.'
     )
   }
   return exe
@@ -458,8 +458,8 @@ function findInProgramFiles(file) {
     return exists
       ? files[0]
       : io.exists(files[1]).then(function (exists) {
-          return exists ? files[1] : null
-        })
+        return exists ? files[1] : null
+      })
   })
 }
 
@@ -593,7 +593,7 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() {}
+  setFileDetector() { }
 
   /**
    * Get the context that is currently in effect.
@@ -666,38 +666,6 @@ class Driver extends webdriver.WebDriver {
         id
       )
     )
-  }
-
-  /**
-  * Creates a new WebSocket connection.
-  * @return {!Promise<resolved>} A new CDP instance.
-  */
-  async createCDPConnection(target) {
-    const caps = await this.getCapabilities()
-    const seOptions = caps['map_'].get('se:options') || new Map()
-    const vendorInfo =
-      caps['map_'].get('moz:debuggerAddress') ||
-      new Map()
-    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress']
-    this._wsUrl = await this.getWsUrl(debuggerUrl, target)
-
-    return new Promise((resolve, reject) => {
-      try {
-        this._wsConnection = new WebSocket(this._wsUrl)
-      } catch (err) {
-        reject(err)
-        return
-      }
-
-      this._wsConnection.on('open', () => {
-        this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
-        resolve(this._cdpConnection)
-      })
-
-      this._wsConnection.on('error', (error) => {
-        reject(error)
-      })
-    })
   }
 }
 

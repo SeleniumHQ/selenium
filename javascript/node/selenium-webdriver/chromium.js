@@ -565,7 +565,7 @@ class Options extends Capabilities {
           return extension.toString('base64')
         }
         return io
-          .read(/** @type {string} */ (extension))
+          .read(/** @type {string} */(extension))
           .then((buffer) => buffer.toString('base64'))
       })
     }
@@ -618,7 +618,7 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() {}
+  setFileDetector() { }
 
   /**
    * Schedules a command to launch Chrome App with given ID.
@@ -819,10 +819,6 @@ class Driver extends webdriver.WebDriver {
       ),
       'Driver.stopCasting(' + deviceName + ')'
     )
-  }
-
-  getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 }
 
