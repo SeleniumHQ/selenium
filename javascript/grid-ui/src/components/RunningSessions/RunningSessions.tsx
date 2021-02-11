@@ -266,6 +266,18 @@ export default function RunningSessions(props) {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+  const displaySessionInfo = (id: string) => {
+    const handleInfoIconClick = () => {
+      handleDialogOpen(id);
+    }
+    return (
+      <IconButton className={classes.buttonMargin}
+                  onClick={handleInfoIconClick}>
+        <InfoIcon/>
+      </IconButton>
+    );
+  }
+
   return (
     <div className={classes.root}>
       {rows.length > 0 && (
@@ -316,10 +328,7 @@ export default function RunningSessions(props) {
                               alt="Browser Logo"
                             />
                             {browserVersion(row.browserVersion as string)}
-                            <IconButton className={classes.buttonMargin}
-                                        onClick={() => handleDialogOpen(row.id as string)}>
-                              <InfoIcon/>
-                            </IconButton>
+                            {displaySessionInfo(row.id as string)}
                             <Dialog onClose={handleDialogClose} aria-labelledby="session-info-dialog"
                                     open={rowOpen === row.id}>
                               <DialogTitle id="session-info-dialog">
