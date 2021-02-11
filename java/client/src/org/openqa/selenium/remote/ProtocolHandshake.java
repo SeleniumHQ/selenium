@@ -62,9 +62,9 @@ public class ProtocolHandshake {
     int threshold = (int) Math.min(Runtime.getRuntime().freeMemory() / 10, Integer.MAX_VALUE);
     FileBackedOutputStream os = new FileBackedOutputStream(threshold);
     try (
-        CountingOutputStream counter = new CountingOutputStream(os);
-        Writer writer = new OutputStreamWriter(counter, UTF_8);
-        NewSessionPayload payload = NewSessionPayload.create(desired)) {
+      CountingOutputStream counter = new CountingOutputStream(os);
+      Writer writer = new OutputStreamWriter(counter, UTF_8);
+      NewSessionPayload payload = NewSessionPayload.create(desired)) {
 
       payload.writeTo(writer);
 
@@ -83,10 +83,10 @@ public class ProtocolHandshake {
     }
 
     throw new SessionNotCreatedException(
-        String.format(
-            "Unable to create new remote session. " +
-            "desired capabilities = %s",
-            desired));
+      String.format(
+        "Unable to create new remote session. " +
+        "desired capabilities = %s",
+        desired));
   }
 
   Optional<Result> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
@@ -110,25 +110,25 @@ public class ProtocolHandshake {
       blob = new Json().toType(string(response), Map.class);
     } catch (JsonException e) {
       throw new WebDriverException(
-          "Unable to parse remote response: " + string(response), e);
+        "Unable to parse remote response: " + string(response), e);
     }
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        time,
-        response.getStatus(),
-        blob);
+      time,
+      response.getStatus(),
+      blob);
 
     return Stream.of(
-        new W3CHandshakeResponse().getResponseFunction(),
-        new JsonWireProtocolResponse().getResponseFunction())
-        .map(func -> func.apply(initialResponse))
-        .filter(Objects::nonNull)
-        .findFirst();
+      new W3CHandshakeResponse().getResponseFunction(),
+      new JsonWireProtocolResponse().getResponseFunction())
+      .map(func -> func.apply(initialResponse))
+      .filter(Objects::nonNull)
+      .findFirst();
   }
 
   public static class Result {
 
-    private static Function<Object, Proxy> massageProxy = obj -> {
+    private static final Function<Object, Proxy> massageProxy = obj -> {
       if (obj instanceof Proxy) {
         return (Proxy) obj;
       }
@@ -161,7 +161,7 @@ public class ProtocolHandshake {
       if (capabilities.containsKey(PROXY)) {
         //noinspection unchecked
         ((Map<String, Object>) capabilities)
-            .put(PROXY, massageProxy.apply(capabilities.get(PROXY)));
+          .put(PROXY, massageProxy.apply(capabilities.get(PROXY)));
       }
     }
 
