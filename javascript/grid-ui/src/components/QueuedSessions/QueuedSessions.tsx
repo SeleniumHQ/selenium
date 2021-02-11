@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      paddingTop: 30,
     },
     queueList: {
       minWidth: 750,

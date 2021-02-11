@@ -23,6 +23,7 @@ export default function Sessions() {
       </Grid>
     );
   }
+
   if (error) {
     const message = "There has been an error while loading the running and queued Sessions from the Grid."
     return (
@@ -42,8 +43,8 @@ export default function Sessions() {
 
   return (
     <Grid container spacing={3}>
-      <QueuedSessions sessionQueueRequests={data.sessionsInfo.sessionQueueRequests}/>
       <RunningSessions sessions={data.sessionsInfo.sessions}/>
+      <QueuedSessions sessionQueueRequests={data.sessionsInfo.sessionQueueRequests}/>
     </Grid>
   );
 }
