@@ -38,8 +38,16 @@ export default function Overview() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const {loading, error, data} = useQuery(NODES_QUERY,
-    {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
+  const {loading, error, data, stopPolling, startPolling} = useQuery(NODES_QUERY,
+    {fetchPolicy: "network-only"});
+
+  React.useEffect(() => {
+    startPolling(GridConfig.status.xhrPollingIntervalMillis);
+    return () => {
+      stopPolling();
+    };
+  });
+
   if (loading) {
     return (
       <Grid container spacing={3}>

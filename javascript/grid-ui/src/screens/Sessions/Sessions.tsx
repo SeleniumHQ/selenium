@@ -14,8 +14,16 @@ const GRID_SESSIONS_QUERY = loader("../../graphql/sessions.gql");
 
 export default function Sessions() {
 
-  const {loading, error, data} = useQuery(GRID_SESSIONS_QUERY,
-    {pollInterval: GridConfig.status.xhrPollingIntervalMillis, fetchPolicy: "network-only"});
+  const {loading, error, data, stopPolling, startPolling} = useQuery(GRID_SESSIONS_QUERY,
+    {fetchPolicy: "network-only"});
+
+  React.useEffect(() => {
+    startPolling(GridConfig.status.xhrPollingIntervalMillis);
+    return () => {
+      stopPolling();
+    };
+  });
+
   if (loading) {
     return (
       <Grid container spacing={3}>
