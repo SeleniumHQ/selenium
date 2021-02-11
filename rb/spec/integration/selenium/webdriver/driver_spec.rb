@@ -22,10 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
-      it_behaves_like 'driver that can be started concurrently', exclude: [{browser: %i[safari safari_preview]},
-                                                                           {driver: :remote,
-                                                                            platform: :linux,
-                                                                            reason: 8525}]
+      it_behaves_like 'driver that can be started concurrently', exclude: {browser: %i[safari safari_preview]}
 
       it 'creates default capabilities' do
         reset_driver! do |driver|

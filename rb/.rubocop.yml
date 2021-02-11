@@ -107,8 +107,7 @@ RSpec/AnyInstance:
   Enabled: false
 
 RSpec/BeforeAfterAll:
-  Exclude:
-    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+  Enabled: false
 
 RSpec/ContextWording:
   Enabled: false
