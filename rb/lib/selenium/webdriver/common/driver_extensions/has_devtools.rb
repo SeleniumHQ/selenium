@@ -21,6 +21,8 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasDevTools
+        attr_reader :page_events
+        attr_reader :network_events
 
         #
         # Retrieves connection to DevTools.
@@ -30,8 +32,31 @@ module Selenium
 
         def devtools
           version = Integer(capabilities.browser_version.split('.').first)
-          WebDriver.logger.info "Using devtools version: #{version}"
           @devtools ||= DevTools.new(url: debugger_address, version: version)
+        end
+
+        def record_page_events!
+          @page_events ||= {}
+          devtools.page.enable
+
+          devtools.page.class::EVENTS.each do |event|
+            devtools.page.on(event.last) do
+              @page_events[event.first] ||= 0
+              @page_events[event.first] += 1
+            end
+          end
+        end
+
+        def record_network_events!
+          @network_events ||= {}
+          devtools.network.enable
+
+          devtools.network.class::EVENTS.each do |event|
+            devtools.network.on(event.last) do
+              @network_events[event.first] ||= 0
+              @network_events[event.first] += 1
+            end
+          end
         end
 
       end # HasDevTools

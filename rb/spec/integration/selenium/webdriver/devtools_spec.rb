@@ -35,14 +35,12 @@ module Selenium
       end
 
       it 'supports events' do
-        callback = instance_double(Proc, call: nil)
+        driver.record_page_events!
 
-        driver.devtools.page.enable
-        driver.devtools.page.on(:load_event_fired) { callback.call }
         driver.navigate.to url_for('xhtmlTest.html')
         sleep 0.5
 
-        expect(callback).to have_received(:call)
+        expect(driver.page_events[:load_event_fired]).to eq 1
       end
 
       it 'authenticates on any request' do
