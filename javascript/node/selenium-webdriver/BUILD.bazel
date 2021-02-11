@@ -37,7 +37,7 @@ pkg_npm(
     ],
 )
 
-TEST_FILES = ["test/**/*_test.js"]
+TEST_FILES = glob(["test/**/*_test.js"])
 
 TEST_DATA = SRC_FILES + glob(
     [
