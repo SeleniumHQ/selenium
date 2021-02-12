@@ -242,8 +242,7 @@ The maven jars should now be in your local `~/.m2/repository`.
 
 ## Useful Resources
 
-Refer to the [Building Web
-Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver)
+Refer to the [Build Instructions](https://github.com/SeleniumHQ/selenium/wiki/Build-Instructions)
 wiki page for the last word on building the bits and pieces of Selenium.
 
 ## Running Browser Tests on Linux
