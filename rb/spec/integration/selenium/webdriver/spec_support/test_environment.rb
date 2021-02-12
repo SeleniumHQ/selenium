@@ -218,7 +218,7 @@ module Selenium
         end
 
         def create_edge_driver(opt = {})
-          WebDriver::EdgeChrome.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
+          WebDriver::Edge.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
           WebDriver::Driver.for :edge, opt
         end
       end

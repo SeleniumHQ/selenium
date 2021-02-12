@@ -17,21 +17,21 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/options'
+require 'selenium/webdriver/chrome/bridge'
 
 module Selenium
   module WebDriver
-    module EdgeChrome
-      class Options < Selenium::WebDriver::Chrome::Options
-        KEY = 'ms:edgeOptions'
-        BROWSER = 'MicrosoftEdge'
+    module Edge
+      class Bridge < WebDriver::Chrome::Bridge
 
-        private
+        COMMANDS = WebDriver::Chrome::Bridge::COMMANDS.merge(
+          send_command: [:post, 'session/:session_id/ms/cdp/execute']
+        ).freeze
 
-        def binary_path
-          EdgeChrome.path
+        def commands(command)
+          COMMANDS[command] || super
         end
-      end # Options
-    end # EdgeChrome
+      end # Bridge
+    end # Edge
   end # WebDriver
 end # Selenium

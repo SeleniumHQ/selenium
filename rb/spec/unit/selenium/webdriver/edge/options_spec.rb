@@ -21,7 +21,7 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module EdgeChrome
+    module Edge
       describe Options do
         subject(:options) { Options.new }
 
@@ -233,6 +233,6 @@ module Selenium
           end
         end
       end
-    end # EdgeChrome
+    end # Edge
   end # WebDriver
 end # Selenium

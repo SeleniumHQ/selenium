@@ -17,21 +17,32 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/bridge'
+require 'selenium/webdriver/chrome/driver'
 
 module Selenium
   module WebDriver
-    module EdgeChrome
-      class Bridge < WebDriver::Chrome::Bridge
+    module Edge
 
-        COMMANDS = WebDriver::Chrome::Bridge::COMMANDS.merge(
-          send_command: [:post, 'session/:session_id/ms/cdp/execute']
-        ).freeze
+      #
+      # Driver implementation for Microsoft Edge.
+      # @api private
+      #
 
-        def commands(command)
-          COMMANDS[command] || super
+      class Driver < Selenium::WebDriver::Chrome::Driver
+        def browser
+          :edge
         end
-      end # Bridge
-    end # EdgeChrome
+
+        def bridge_class
+          Bridge
+        end
+
+        private
+
+        def debugger_address
+          capabilities['ms:edgeOptions']['debuggerAddress']
+        end
+      end # Driver
+    end # Edge
   end # WebDriver
 end # Selenium

@@ -17,32 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/driver'
+require 'selenium/webdriver/chrome/service'
 
 module Selenium
   module WebDriver
-    module EdgeChrome
-
-      #
-      # Driver implementation for EdgeChrome.
-      # @api private
-      #
-
-      class Driver < Selenium::WebDriver::Chrome::Driver
-        def browser
-          :edge_chrome
-        end
-
-        def bridge_class
-          Bridge
-        end
-
-        private
-
-        def debugger_address
-          capabilities['ms:edgeOptions']['debuggerAddress']
-        end
-      end # Driver
-    end # EdgeChrome
+    module Edge
+      class Service < Selenium::WebDriver::Chrome::Service
+        DEFAULT_PORT = 9515
+        EXECUTABLE = 'msedgedriver'
+        MISSING_TEXT = <<~ERROR
+          Unable to find msedgedriver. Please download the server from
+          https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ and place it somewhere on your PATH.
+        ERROR
+        SHUTDOWN_SUPPORTED = true
+      end # Service
+    end # Edge
   end # WebDriver
 end # Selenium

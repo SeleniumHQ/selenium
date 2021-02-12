@@ -53,10 +53,6 @@ module Selenium
             Firefox::Driver.new(**opts)
           when :edge
             Edge::Driver.new(**opts)
-          when :edge_chrome
-            EdgeChrome::Driver.new(**opts)
-          when :edge_html
-            EdgeHtml::Driver.new(**opts)
           when :remote
             Remote::Driver.new(**opts)
           else

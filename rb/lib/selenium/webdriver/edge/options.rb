@@ -17,22 +17,21 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chrome/options'
+
 module Selenium
   module WebDriver
-    module EdgeHtml
+    module Edge
+      class Options < Selenium::WebDriver::Chrome::Options
+        KEY = 'ms:edgeOptions'
+        BROWSER = 'MicrosoftEdge'
 
-      #
-      # Driver implementation for Microsoft Edge.
-      # @api private
-      #
+        private
 
-      class Driver < WebDriver::Driver
-        include DriverExtensions::HasWebStorage
-
-        def browser
-          :edge_html
+        def binary_path
+          Edge.path
         end
-      end # Driver
-    end # EdgeHtml
+      end # Options
+    end # Edge
   end # WebDriver
 end # Selenium

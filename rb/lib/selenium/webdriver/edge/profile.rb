@@ -17,20 +17,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/service'
+require 'selenium/webdriver/chrome/profile'
 
 module Selenium
   module WebDriver
-    module EdgeChrome
-      class Service < Selenium::WebDriver::Chrome::Service
-        DEFAULT_PORT = 9515
-        EXECUTABLE = 'msedgedriver'
-        MISSING_TEXT = <<~ERROR
-          Unable to find msedgedriver. Please download the server from
-          https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ and place it somewhere on your PATH.
-        ERROR
-        SHUTDOWN_SUPPORTED = true
-      end # Service
-    end # EdgeChrome
+    module Edge
+      #
+      # @private
+      #
+
+      class Profile < Selenium::WebDriver::Chrome::Profile
+      end # Profile
+    end # Edge
   end # WebDriver
 end # Selenium
