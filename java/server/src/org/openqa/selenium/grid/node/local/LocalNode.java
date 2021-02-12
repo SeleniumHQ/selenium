@@ -341,7 +341,7 @@ public class LocalNode extends Node {
 
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
-      Session externalSession = createExternalSession(session, externalUri);
+      Session externalSession = createExternalSession(session, externalUri, slotToUse.isSupportingCdp());
       return Either.right(new CreateSessionResponse(
         externalSession,
         getEncoder(session.getDownstreamDialect()).apply(externalSession)));
@@ -363,7 +363,7 @@ public class LocalNode extends Node {
       throw new NoSuchSessionException("Cannot find session with id: " + id);
     }
 
-    return createExternalSession(slot.getSession(), externalUri);
+    return createExternalSession(slot.getSession(), externalUri, slot.isSupportingCdp());
   }
 
   @Override
@@ -437,19 +437,21 @@ public class LocalNode extends Node {
     tempFileSystems.invalidate(id);
   }
 
-  private Session createExternalSession(ActiveSession other, URI externalUri) {
+  private Session createExternalSession(ActiveSession other, URI externalUri, boolean isSupportingCdp) {
     Capabilities toUse = ImmutableCapabilities.copyOf(other.getCapabilities());
 
-    // Rewrite the se:options if necessary
-    Object rawSeleniumOptions = other.getCapabilities().getCapability("se:options");
-    if (rawSeleniumOptions instanceof Map) {
-      @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
-      Map<String, Object> updated = new TreeMap<>(original);
+    // Rewrite the se:options if necessary to send the cdp url back
+    if (isSupportingCdp) {
+      Object rawSeleniumOptions = other.getCapabilities().getCapability("se:options");
+      if (rawSeleniumOptions instanceof Map) {
+        @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
+        Map<String, Object> updated = new TreeMap<>(original);
 
-      String cdpPath = String.format("/session/%s/se/cdp", other.getId());
-      updated.put("cdp", rewrite(cdpPath));
+        String cdpPath = String.format("/session/%s/se/cdp", other.getId());
+        updated.put("cdp", rewrite(cdpPath));
 
-      toUse = new PersistentCapabilities(toUse).setCapability("se:options", updated);
+        toUse = new PersistentCapabilities(toUse).setCapability("se:options", updated);
+      }
     }
 
     return new Session(other.getId(), externalUri, other.getStereotype(), toUse, Instant.now());

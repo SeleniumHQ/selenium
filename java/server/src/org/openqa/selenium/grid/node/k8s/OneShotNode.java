@@ -236,16 +236,18 @@ public class OneShotNode extends Node {
   }
 
   private Capabilities rewriteCapabilities(RemoteWebDriver driver) {
-    // Rewrite the se:options if necessary
-    Object rawSeleniumOptions = driver.getCapabilities().getCapability("se:options");
-    if (rawSeleniumOptions == null || rawSeleniumOptions instanceof Map) {
-      @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
-      Map<String, Object> updated = new TreeMap<>(original == null ? new HashMap<>() : original);
+    // Rewrite the se:options if necessary to add cdp url
+    if (driverInfo.isSupportingCdp()) {
+      Object rawSeleniumOptions = driver.getCapabilities().getCapability("se:options");
+      if (rawSeleniumOptions == null || rawSeleniumOptions instanceof Map) {
+        @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
+        Map<String, Object> updated = new TreeMap<>(original == null ? new HashMap<>() : original);
 
-      String cdpPath = String.format("/session/%s/se/cdp", driver.getSessionId());
-      updated.put("cdp", rewrite(cdpPath));
+        String cdpPath = String.format("/session/%s/se/cdp", driver.getSessionId());
+        updated.put("cdp", rewrite(cdpPath));
 
-      return new PersistentCapabilities(driver.getCapabilities()).setCapability("se:options", updated);
+        return new PersistentCapabilities(driver.getCapabilities()).setCapability("se:options", updated);
+      }
     }
 
     return ImmutableCapabilities.copyOf(driver.getCapabilities());
@@ -287,7 +289,7 @@ public class OneShotNode extends Node {
           stop(sessionId);
         },
         "Node clean up: " + getId())
-      .start();
+        .start();
     }
 
     return res;
@@ -304,7 +306,8 @@ public class OneShotNode extends Node {
       getUri(),
       stereotype,
       capabilities,
-      sessionStart); }
+      sessionStart);
+  }
 
   @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {

@@ -338,6 +338,11 @@ public class NodeOptions {
       }
 
       @Override
+      public boolean isSupportingCdp() {
+        return detectedDriver.isSupportingCdp();
+      }
+
+      @Override
       public boolean isAvailable() {
         return detectedDriver.isAvailable();
       }
