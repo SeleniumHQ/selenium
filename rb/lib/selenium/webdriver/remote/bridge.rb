@@ -436,14 +436,6 @@ module Selenium
                             'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
         end
 
-        def screen_orientation=(orientation)
-          execute :set_screen_orientation, {}, {orientation: orientation}
-        end
-
-        def screen_orientation
-          execute :get_screen_orientation
-        end
-
         #
         # element properties
         #

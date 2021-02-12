@@ -29,7 +29,6 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
-        include DriverExtensions::Rotatable
         include DriverExtensions::HasRemoteStatus
         include DriverExtensions::HasWebStorage
 
