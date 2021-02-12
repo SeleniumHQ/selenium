@@ -21,8 +21,7 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasDevTools
-        attr_reader :page_events
-        attr_reader :network_events
+        attr_reader :page_events, :network_events
 
         #
         # Retrieves connection to DevTools.

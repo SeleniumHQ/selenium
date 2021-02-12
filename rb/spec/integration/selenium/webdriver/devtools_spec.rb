@@ -113,6 +113,32 @@ module Selenium
         expect(mutation.current_value).to eq('')
         expect(mutation.old_value).to eq('display:none;')
       end
+
+      context 'network' do
+        it 'blocks assets' do
+          driver.record_network_events!
+          driver.intercept(patterns: {url: ['*.png']})
+
+          driver.navigate.to url_for('formPage.html')
+
+          expect(driver.network_events[:loading_failed]).to eq 2
+        end
+      end
+
+      context 'intercepts' do
+        it 'replaces asset' do
+          patterns = {url: "*.png"}
+          data = File.open(File.expand_path('se.png', __dir__), 'rb').read
+          request = {headers: {"content-type" => "image/png"},
+                     body: Base64.strict_encode64(data)}
+
+          driver.intercept(patterns: patterns, request: request)
+
+          driver.navigate.to url_for('formPage.html')
+
+          expect(driver.find_element(id: 'imageButton').size.width).to eq 25
+        end
+      end
     end
   end
 end
