@@ -24,6 +24,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
@@ -46,6 +47,7 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -154,18 +156,28 @@ public class OneShotNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    Either<WebDriverException, CreateSessionResponse> result = createNewSession(sessionRequest);
+
+    if (result.isRight()) {
+      return Optional.of(result.right());
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  public Either<WebDriverException, CreateSessionResponse> createNewSession(CreateSessionRequest sessionRequest) {
     if (driver != null) {
       throw new IllegalStateException("Only expected one session at a time");
     }
 
     Optional<WebDriver> driver = driverInfo.createDriver(sessionRequest.getCapabilities());
     if (!driver.isPresent()) {
-      return Optional.empty();
+      return Either.left(new WebDriverException("Unable to create a driver instance"));
     }
 
     if (!(driver.get() instanceof RemoteWebDriver)) {
       driver.get().quit();
-      return Optional.empty();
+      return Either.left(new WebDriverException("Driver is not a RemoteWebDriver instance"));
     }
 
     this.driver = (RemoteWebDriver) driver.get();
@@ -181,7 +193,7 @@ public class OneShotNode extends Node {
 
     events.fire(new NodeDrainStarted(getId()));
 
-    return Optional.of(
+    return Either.right(
       new CreateSessionResponse(
         getSession(sessionId),
         JSON.toJson(ImmutableMap.of(
