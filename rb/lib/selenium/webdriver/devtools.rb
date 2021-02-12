@@ -23,6 +23,7 @@ module Selenium
       autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
       autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
+      autoload :Request, 'selenium/webdriver/devtools/request'
 
       SUPPORTED_VERSIONS = [85, 86, 87, 88].freeze
 
@@ -89,7 +90,8 @@ module Selenium
               next unless message['method']
 
               callbacks[message['method']].each do |callback|
-                Thread.new { callback.call(message['params']) }
+                params = message['params'] # take in current thread!
+                Thread.new { callback.call(params) }
               end
             end
           end
