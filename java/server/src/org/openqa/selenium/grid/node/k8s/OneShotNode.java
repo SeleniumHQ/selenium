@@ -22,9 +22,9 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
@@ -177,7 +177,7 @@ public class OneShotNode extends Node {
 
     if (!(driver.get() instanceof RemoteWebDriver)) {
       driver.get().quit();
-      return Either.left(new WebDriverException("Not a remote web driver instance"));
+      return Either.left(new WebDriverException("Driver is not a RemoteWebDriver instance"));
     }
 
     this.driver = (RemoteWebDriver) driver.get();
