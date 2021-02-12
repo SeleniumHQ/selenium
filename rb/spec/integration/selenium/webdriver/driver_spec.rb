@@ -39,6 +39,11 @@ module Selenium
         end
       end
 
+      it 'should get driver status' do
+        status = driver.status
+        expect(status).to include('ready', 'message')
+      end
+
       it 'should get the page title' do
         driver.navigate.to url_for('xhtmlTest.html')
         expect(driver.title).to eq('XHTML Test Page')

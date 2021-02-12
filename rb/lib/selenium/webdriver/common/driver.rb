@@ -79,6 +79,16 @@ module Selenium
       end
 
       #
+      # information about whether a remote end is in a state in which it can create new sessions,
+      # and may include additional meta information.
+      #
+      # @return [Hash]
+      #
+      def status
+        @bridge.status
+      end
+
+      #
       # @return [Navigation]
       # @see Navigation
       #
