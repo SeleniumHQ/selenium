@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.firefox.xpi;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -33,6 +29,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
+
+import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @Deprecated
 @AutoService(WebDriverInfo.class)
@@ -51,6 +50,11 @@ public class XpiDriverInfo implements WebDriverInfo {
   @Override
   public boolean isSupporting(Capabilities capabilities) {
     return capabilities.is(MARIONETTE);
+  }
+
+  @Override
+  public boolean isSupportingCdp() {
+    return false;
   }
 
   @Override
