@@ -28,6 +28,8 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.RetrySessionRequestException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -47,6 +49,7 @@ import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
@@ -252,17 +255,28 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    Either<SessionNotCreatedException, CreateSessionResponse> result =
+      createNewSession(sessionRequest);
+
+    if (result.isRight()) {
+      return Optional.of(result.right());
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  public Either<SessionNotCreatedException, CreateSessionResponse> createNewSession(CreateSessionRequest sessionRequest) {
     Require.nonNull("Session request", sessionRequest);
 
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       attributeMap
-          .put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
-      LOG.fine("Creating new session using span: " + span);
+        .put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
       attributeMap.put("session.request.capabilities",
-                       EventAttribute.setValue(sessionRequest.getCapabilities().toString()));
+        EventAttribute.setValue(sessionRequest.getCapabilities().toString()));
       attributeMap.put("session.request.downstreamdialect",
-                       EventAttribute.setValue(sessionRequest.getDownstreamDialects().toString()));
+        EventAttribute.setValue(sessionRequest.getDownstreamDialects().toString()));
+
       int currentSessionCount = getCurrentSessionCount();
       span.setAttribute("current.session.count", currentSessionCount);
       attributeMap.put("current.session.count", EventAttribute.setValue(currentSessionCount));
@@ -272,11 +286,12 @@ public class LocalNode extends Node {
         span.setStatus(Status.RESOURCE_EXHAUSTED);
         attributeMap.put("max.session.count", EventAttribute.setValue(maxSessionCount));
         span.addEvent("Max session count reached", attributeMap);
-        return Optional.empty();
+        return Either.left(new RetrySessionRequestException("Max session count exceeded."));
       }
       if (isDraining()) {
         span.setStatus(Status.UNAVAILABLE.withDescription("The node is draining. Cannot accept new sessions."));
-        return Optional.empty();
+        return Either.left(
+          new RetrySessionRequestException("The node is draining. Retry with another node."));
       }
 
       // Identify possible slots to use as quickly as possible to enable concurrent session starting
@@ -296,8 +311,8 @@ public class LocalNode extends Node {
       if (slotToUse == null) {
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND);
-        span.addEvent("No slot matched capabilities ", attributeMap);
-        return Optional.empty();
+        span.addEvent("No slot matched capabilities currently. All slots are busy.", attributeMap);
+        return Either.left(new RetrySessionRequestException("All slots are busy"));
       }
 
       Optional<ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
@@ -307,7 +322,7 @@ public class LocalNode extends Node {
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND);
         span.addEvent("No slots available for capabilities ", attributeMap);
-        return Optional.empty();
+        return Either.left(new SessionNotCreatedException("Unable to create session with the driver"));
       }
 
       ActiveSession session = possibleSession.get();
@@ -327,9 +342,9 @@ public class LocalNode extends Node {
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
       Session externalSession = createExternalSession(session, externalUri);
-      return Optional.of(new CreateSessionResponse(
-          externalSession,
-          getEncoder(session.getDownstreamDialect()).apply(externalSession)));
+      return Either.right(new CreateSessionResponse(
+        externalSession,
+        getEncoder(session.getDownstreamDialect()).apply(externalSession)));
     }
   }
 

@@ -15,9 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.distributor;
-
-import org.openqa.selenium.SessionNotCreatedException;
+package org.openqa.selenium;
 
 public class RetrySessionRequestException extends SessionNotCreatedException {
   public RetrySessionRequestException(String msg) {

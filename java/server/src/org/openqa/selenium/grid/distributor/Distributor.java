@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
