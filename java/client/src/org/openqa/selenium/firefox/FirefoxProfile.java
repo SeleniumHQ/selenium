@@ -325,7 +325,7 @@ public class FirefoxProfile {
     TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(profileDir);
   }
 
-  public String toJson() throws IOException {
+  String toJson() throws IOException {
     File file = layoutOnDisk();
     try {
       return Zip.zip(file);

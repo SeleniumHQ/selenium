@@ -1,6 +1,10 @@
 v4.0.0-beta-1
 =============
 
+* All `*Options` classes now serialise with w3c-safe keys. This means
+  that support for legacy options (eg. `firefox_binary` rather than
+  using the setting in `moz:firefoxOptions`) will need to be set
+  directly via a call to `setCapability`.
 * FirefoxDriver requires geckodriver 0.29.0 or later
 * Reworked `RemoteWebDriver.builder` to allow it to work as a primary
   mechanism for creating a new `WebDriver` instance

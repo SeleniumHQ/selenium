@@ -99,7 +99,7 @@ public class FirefoxOptionsTest {
 
     FirefoxOptions options = new FirefoxOptions(caps);
 
-    assertThat(options.getProfile()).isSameAs(profile);
+    assertThat(options.getProfile()).isEqualTo(profile);
   }
 
   @Test
@@ -110,31 +110,28 @@ public class FirefoxOptionsTest {
   @Test
   public void shouldKeepRelativePathToBinaryAsIs() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("some/path");
-  }
-
-  @Test
-  public void shouldConvertPathToBinaryToUseForwardSlashes() {
-    FirefoxOptions options = new FirefoxOptions().setBinary("some\\path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("some/path");
+    assertThat(options.getBinary())
+      .extracting(FirefoxBinary::getFile)
+      .extracting(String::valueOf)
+      .isEqualTo("some/path");
   }
 
   @Test
   public void shouldKeepWindowsDriveLetterInPathToBinary() {
     FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("F:/some/path");
-  }
-
-  @Test
-  public void canUseForwardSlashesInWindowsPaths() {
-    FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("F:/some/path");
+    assertThat(options.getBinary())
+      .extracting(FirefoxBinary::getFile)
+      .extracting(String::valueOf)
+      .isEqualTo("F:\\some\\path");
   }
 
   @Test
   public void shouldKeepWindowsNetworkFileSystemRootInPathToBinary() {
     FirefoxOptions options = new FirefoxOptions().setBinary("\\\\server\\share\\some\\path");
-    assertThat(options.getCapability(BINARY)).isEqualTo("//server/share/some/path");
+    assertThat(options.getBinary())
+      .extracting(FirefoxBinary::getFile)
+      .extracting(String::valueOf)
+      .isEqualTo("\\\\server\\share\\some\\path");
   }
 
   @Test
@@ -143,8 +140,7 @@ public class FirefoxOptionsTest {
     fakeExecutable.deleteOnExit();
     FirefoxBinary binary = new FirefoxBinary(fakeExecutable);
     FirefoxOptions options = new FirefoxOptions().setBinary(binary);
-    assertThat(options.getCapability(BINARY)).isEqualTo(binary);
-    assertThat(options.getBinary()).isEqualTo(binary);
+    assertThat(options.getBinary().getFile()).isEqualTo(binary.getFile());
   }
 
   @Test
@@ -314,7 +310,7 @@ public class FirefoxOptionsTest {
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
       .asInstanceOf(InstanceOfAssertFactories.MAP)
-      .containsEntry("binary", new FirefoxBinary(tempFile.toFile()).getPath().replaceAll("\\\\", "/"));
+      .containsEntry("binary", tempFile.toFile().getPath().replaceAll("\\\\", "/"));
   }
 
   @Test
@@ -332,7 +328,10 @@ public class FirefoxOptionsTest {
 
   @Test
   public void optionsAsMapShouldBeImmutable() {
-    Map<String, Object> options = new FirefoxOptions().asMap();
+    Map<String, Object> options = new FirefoxOptions()
+      .addPreference("alpha", "beta")
+      .addArguments("--cheese")
+      .asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
       .isThrownBy(() -> options.put("browserName", "chrome"));
 
