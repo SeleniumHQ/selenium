@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.log;
+package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 
