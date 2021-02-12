@@ -208,6 +208,9 @@ module Selenium
         end
 
         def create_chrome_driver(opt = {})
+          opt[:capabilities] = WebDriver::Chrome::Options.new(logging_prefs: {browser: 'ALL',
+                                                                              driver: 'ALL',
+                                                                              performance: 'ALL'})
           WebDriver::Chrome.path = ENV['CHROME_BINARY'] if ENV['CHROME_BINARY']
           WebDriver::Driver.for :chrome, opt
         end
@@ -218,6 +221,9 @@ module Selenium
         end
 
         def create_edge_driver(opt = {})
+          opt[:capabilities] = WebDriver::Edge::Options.new(logging_prefs: {browser: 'ALL',
+                                                                            driver: 'ALL',
+                                                                            performance: 'ALL'})
           WebDriver::Edge.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
           WebDriver::Driver.for :edge, opt
         end

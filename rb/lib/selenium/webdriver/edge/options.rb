@@ -26,6 +26,12 @@ module Selenium
         KEY = 'ms:edgeOptions'
         BROWSER = 'MicrosoftEdge'
 
+        protected
+
+        def enable_logging(browser_options)
+          browser_options['ms:loggingPrefs'] = @logging_prefs
+        end
+
         private
 
         def binary_path
