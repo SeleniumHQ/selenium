@@ -14,6 +14,19 @@ config_setting(
     },
 )
 
+bool_flag(
+    name = "headless",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "use_headless_browser",
+    flag_values = {
+        ":headless": "true",
+    },
+)
+
+
 config_setting(
     name = "linux",
     constraint_values = ["@platforms//os:linux"],

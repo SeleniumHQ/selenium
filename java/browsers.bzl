@@ -26,6 +26,11 @@ chrome_jvm_flags = select({
     "//conditions:default": [
         "-Dselenium.skiptest=true",
     ],
+}) + select({
+    "//common:use_headless_browser": [
+        "-Dwebdriver.headless=true",
+    ],
+    "//conditions:default": [],
 })
 
 edge_data = select({
@@ -48,6 +53,11 @@ edge_jvm_flags = select({
     "//conditions:default": [
         "-Dselenium.skiptest=true",
     ],
+}) + select({
+    "//common:use_headless_browser": [
+        "-Dwebdriver.headless=true",
+    ],
+    "//conditions:default": [],
 })
 
 firefox_data = select({
@@ -78,4 +88,9 @@ firefox_jvm_flags = select({
     "//conditions:default": [
         "-Dselenium.skiptest=true",
     ],
+}) + select({
+    "//common:use_headless_browser": [
+        "-Dwebdriver.headless=true",
+    ],
+    "//conditions:default": [],
 })

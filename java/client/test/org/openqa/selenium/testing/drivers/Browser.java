@@ -43,17 +43,35 @@ public enum Browser {
   CHROME(new ChromeOptions(), new ChromeDriverInfo().getDisplayName(), true) {
     @Override
     public Capabilities getCapabilities() {
-      String binary = System.getProperty("webdriver.chrome.binary");
+      ChromeOptions options = new ChromeOptions();
 
-      return binary == null ? new ChromeOptions() : new ChromeOptions().setBinary(binary);
+      String binary = System.getProperty("webdriver.chrome.binary");
+      if (binary != null) {
+        options.setBinary(binary);
+      }
+
+      if (Boolean.getBoolean("webdriver.headless")) {
+        options.setHeadless(true);
+      }
+
+      return options;
     }
   },
   EDGE(new EdgeOptions(), new EdgeDriverInfo().getDisplayName(), true) {
     @Override
     public Capabilities getCapabilities() {
-      String binary = System.getProperty("webdriver.edge.binary");
+      EdgeOptions options = new EdgeOptions();
 
-      return binary == null ? new EdgeOptions() : new EdgeOptions().setBinary(binary);
+      String binary = System.getProperty("webdriver.edge.binary");
+      if (binary != null) {
+        options.setBinary(binary);
+      }
+
+      if (Boolean.getBoolean("webdriver.headless")) {
+        options.setHeadless(true);
+      }
+
+      return options;
     }
   },
   HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), "HtmlUnit", false),
@@ -62,9 +80,18 @@ public enum Browser {
   FIREFOX(new FirefoxOptions(), new GeckoDriverInfo().getDisplayName(), false) {
     @Override
     public Capabilities getCapabilities() {
-      String binary = System.getProperty("webdriver.firefox.bin");
+      FirefoxOptions options = new FirefoxOptions();
 
-      return binary == null ? new FirefoxOptions() : new FirefoxOptions().setBinary(binary);
+      String binary = System.getProperty("webdriver.firefox.bin");
+      if (binary != null) {
+        options.setBinary(binary);
+      }
+
+      if (Boolean.getBoolean("webdriver.headless")) {
+        options.setHeadless(true);
+      }
+
+      return options;
     }
   },
   LEGACY_OPERA(new OperaOptions(), new OperaDriverInfo().getDisplayName(), false),
