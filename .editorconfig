@@ -17,6 +17,7 @@ trim_trailing_whitespace = false
 indent_style = space
 indent_size = 2
 continuation_indent_size = 2
+ij_continuation_indent_size = 2
 
 [*.py]
 indent_style = space

@@ -284,33 +284,12 @@
       <option name="JD_KEEP_EMPTY_EXCEPTION" value="false" />
       <option name="JD_KEEP_EMPTY_RETURN" value="false" />
     </JavaCodeStyleSettings>
-    <JetCodeStyleSettings>
-      <option name="PACKAGES_TO_USE_STAR_IMPORTS">
-        <value>
-          <package name="java.util" alias="false" withSubpackages="false" />
-          <package name="kotlinx.android.synthetic" alias="false" withSubpackages="true" />
-          <package name="io.ktor" alias="false" withSubpackages="true" />
-        </value>
-      </option>
-      <option name="PACKAGES_IMPORT_LAYOUT">
-        <value>
-          <package name="" alias="false" withSubpackages="true" />
-          <package name="java" alias="false" withSubpackages="true" />
-          <package name="javax" alias="false" withSubpackages="true" />
-          <package name="kotlin" alias="false" withSubpackages="true" />
-          <package name="" alias="true" withSubpackages="true" />
-        </value>
-      </option>
-    </JetCodeStyleSettings>
     <MarkdownNavigatorCodeStyleSettings>
       <option name="RIGHT_MARGIN" value="72" />
     </MarkdownNavigatorCodeStyleSettings>
     <XML>
       <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
     </XML>
-    <editorconfig>
-      <option name="ENABLED" value="false" />
-    </editorconfig>
     <codeStyleSettings language="CFML">
       <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
       <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
@@ -324,13 +303,6 @@
       <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" value="true" />
       <option name="FOR_STATEMENT_WRAP" value="1" />
       <option name="ASSIGNMENT_WRAP" value="5" />
-    </codeStyleSettings>
-    <codeStyleSettings language="CSS">
-      <indentOptions>
-        <option name="INDENT_SIZE" value="2" />
-        <option name="CONTINUATION_INDENT_SIZE" value="4" />
-        <option name="TAB_SIZE" value="2" />
-      </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="CoffeeScript">
       <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
