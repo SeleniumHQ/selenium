@@ -31,6 +31,10 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.TracedHttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -53,6 +57,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   private final HttpClient client;
   private final HttpClient.Factory httpClientFactory;
   private final Map<String, CommandInfo> additionalCommands;
+  private final Tracer tracer;
   private CommandCodec<HttpRequest> commandCodec;
   private ResponseCodec<HttpResponse> responseCodec;
 
@@ -110,8 +115,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     }
     remoteServer = config.baseUrl();
     this.additionalCommands = additionalCommands;
-    this.httpClientFactory = httpClientFactory;
-    this.client = httpClientFactory.createClient(config);
+    tracer = OpenTelemetryTracer.getInstance();
+    this.httpClientFactory = new TracedHttpClient.Factory(tracer, httpClientFactory);
+    this.client = this.httpClientFactory.createClient(config);
   }
 
   /**
@@ -143,72 +149,75 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   @Override
   public Response execute(Command command) throws IOException {
-    if (command.getSessionId() == null) {
-      if (QUIT.equals(command.getName())) {
-        return new Response();
-      }
-      if (!GET_ALL_SESSIONS.equals(command.getName())
-          && !NEW_SESSION.equals(command.getName())) {
-        throw new NoSuchSessionException(
-          "Session ID is null. Using WebDriver after calling quit()?");
-      }
-    }
-
-    if (NEW_SESSION.equals(command.getName())) {
-      if (commandCodec != null) {
-        throw new SessionNotCreatedException("Session already exists");
-      }
-      ProtocolHandshake handshake = new ProtocolHandshake();
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
-      ProtocolHandshake.Result result = handshake.createSession(client, command);
-      Dialect dialect = result.getDialect();
-      commandCodec = dialect.getCommandCodec();
-      for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
-        defineCommand(entry.getKey(), entry.getValue());
-      }
-      responseCodec = dialect.getResponseCodec();
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
-      return result.createResponse();
-    }
-
-    if (commandCodec == null || responseCodec == null) {
-      throw new WebDriverException(
-        "No command or response codec has been defined. Unable to proceed");
-    }
-
-    HttpRequest httpRequest = commandCodec.encode(command);
-
-    // Ensure that we set the required headers
-    if (httpRequest.getHeader("Content-Type") == null) {
-      httpRequest.addHeader("Content-Type", JSON_UTF_8);
-    }
-
-    try {
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
-      HttpResponse httpResponse = client.execute(httpRequest);
-      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
-
-      Response response = responseCodec.decode(httpResponse);
-      if (response.getSessionId() == null) {
-        if (httpResponse.getTargetHost() != null) {
-          response.setSessionId(getSessionId(httpResponse.getTargetHost()).orElse(null));
-        } else {
-          // Spam in the session id from the request
-          response.setSessionId(command.getSessionId().toString());
+    try (Span commandSpan = tracer.getCurrentContext().createSpan("command")) {
+      commandSpan.setAttribute("command", command.toString());
+      if (command.getSessionId() == null) {
+        if (QUIT.equals(command.getName())) {
+          return new Response();
+        }
+        if (!GET_ALL_SESSIONS.equals(command.getName())
+            && !NEW_SESSION.equals(command.getName())) {
+          throw new NoSuchSessionException(
+            "Session ID is null. Using WebDriver after calling quit()?");
         }
       }
-      if (QUIT.equals(command.getName())) {
-        client.close();
-        httpClientFactory.cleanupIdleClients();
+
+      if (NEW_SESSION.equals(command.getName())) {
+        if (commandCodec != null) {
+          throw new SessionNotCreatedException("Session already exists");
+        }
+        ProtocolHandshake handshake = new ProtocolHandshake();
+        log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
+        ProtocolHandshake.Result result = handshake.createSession(client, command);
+        Dialect dialect = result.getDialect();
+        commandCodec = dialect.getCommandCodec();
+        for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+          defineCommand(entry.getKey(), entry.getValue());
+        }
+        responseCodec = dialect.getResponseCodec();
+        log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
+        return result.createResponse();
       }
-      return response;
-    } catch (UnsupportedCommandException e) {
-      if (e.getMessage() == null || "".equals(e.getMessage())) {
-        throw new UnsupportedOperationException(
-          "No information from server. Command name was: " + command.getName(),
-          e.getCause());
+
+      if (commandCodec == null || responseCodec == null) {
+        throw new WebDriverException(
+          "No command or response codec has been defined. Unable to proceed");
       }
-      throw e;
+
+      HttpRequest httpRequest = commandCodec.encode(command);
+
+      // Ensure that we set the required headers
+      if (httpRequest.getHeader("Content-Type") == null) {
+        httpRequest.addHeader("Content-Type", JSON_UTF_8);
+      }
+
+      try {
+        log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
+        HttpResponse httpResponse = client.execute(httpRequest);
+        log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
+
+        Response response = responseCodec.decode(httpResponse);
+        if (response.getSessionId() == null) {
+          if (httpResponse.getTargetHost() != null) {
+            response.setSessionId(getSessionId(httpResponse.getTargetHost()).orElse(null));
+          } else {
+            // Spam in the session id from the request
+            response.setSessionId(command.getSessionId().toString());
+          }
+        }
+        if (QUIT.equals(command.getName())) {
+          client.close();
+          httpClientFactory.cleanupIdleClients();
+        }
+        return response;
+      } catch (UnsupportedCommandException e) {
+        if (e.getMessage() == null || "".equals(e.getMessage())) {
+          throw new UnsupportedOperationException(
+            "No information from server. Command name was: " + command.getName(),
+            e.getCause());
+        }
+        throw e;
+      }
     }
   }
 }
