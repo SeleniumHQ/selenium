@@ -137,8 +137,8 @@ selenium_register_dotnet()
 
 http_archive(
     name="build_bazel_rules_nodejs",
-    sha256="dd4dc46066e2ce034cba0c81aa3e862b27e8e8d95871f567359f7a534cccb666",
-    urls=["https://github.com/bazelbuild/rules_nodejs/releases/download/3.1.0/rules_nodejs-3.1.0.tar.gz"],
+    sha256="fcc6dccb39ca88d481224536eb8f9fa754619676c6163f87aa6af94059b02b12",
+    urls=["https://github.com/bazelbuild/rules_nodejs/releases/download/3.2.0/rules_nodejs-3.2.0.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
