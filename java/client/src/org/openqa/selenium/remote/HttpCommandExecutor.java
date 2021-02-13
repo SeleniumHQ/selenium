@@ -33,10 +33,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Collections.emptyMap;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -58,20 +56,14 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private LocalLogs logs = LocalLogs.getNullLogger();
 
-  private static URL getDefaultServerURL() {
-    try {
-      return new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
   public HttpCommandExecutor(URL addressOfRemoteServer) {
-    this(emptyMap(), addressOfRemoteServer);
+    this(emptyMap(), Require.nonNull("Server URL", addressOfRemoteServer));
   }
 
   public HttpCommandExecutor(ClientConfig config) {
-    this(emptyMap(), config, defaultClientFactory);
+    this(emptyMap(),
+         Require.nonNull("HTTP client configuration", config),
+         defaultClientFactory);
   }
 
   /**
@@ -85,7 +77,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     Map<String, CommandInfo> additionalCommands,
     URL addressOfRemoteServer)
   {
-    this(additionalCommands, addressOfRemoteServer, defaultClientFactory);
+    this(Require.nonNull("Additional commands", additionalCommands),
+         Require.nonNull("Server URL", addressOfRemoteServer),
+         defaultClientFactory);
   }
 
   public HttpCommandExecutor(
@@ -95,8 +89,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   {
     this(additionalCommands,
          ClientConfig.defaultConfig()
-           .baseUrl(Optional.ofNullable(addressOfRemoteServer)
-                      .orElseGet(HttpCommandExecutor::getDefaultServerURL)),
+           .baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
          httpClientFactory);
   }
 
@@ -105,12 +98,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     ClientConfig config,
     HttpClient.Factory httpClientFactory)
   {
-    if (config.baseUri() == null) {
-      config = config.baseUrl(getDefaultServerURL());
-    }
-    remoteServer = config.baseUrl();
-    this.additionalCommands = additionalCommands;
-    this.httpClientFactory = httpClientFactory;
+    remoteServer = Require.nonNull("HTTP client configuration", config).baseUrl();
+    this.additionalCommands = Require.nonNull("Additional commands", additionalCommands);
+    this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
     this.client = this.httpClientFactory.createClient(config);
   }
 
