@@ -109,6 +109,7 @@ module Selenium
       #
 
       def logs
+        WebDriver.logger.deprecate('Manager#logs', 'Chrome::Driver#logs')
         @logs ||= Logs.new(@bridge)
       end
 

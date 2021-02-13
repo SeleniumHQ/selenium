@@ -48,7 +48,7 @@ module Selenium
         end
 
         def driver_instance
-          @driver_instance ||= create_driver!
+          @driver_instance || create_driver!
         end
 
         def reset_driver!(time = 0)
@@ -153,7 +153,7 @@ module Selenium
               instance.quit
             end
           else
-            instance
+            @driver_instance = instance
           end
         rescue StandardError => e
           @create_driver_error = e

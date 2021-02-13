@@ -21,7 +21,7 @@ module Selenium
   module WebDriver
     module Chrome
       class Options < WebDriver::Options
-        attr_accessor :profile
+        attr_accessor :profile, :logging_prefs
 
         KEY = 'goog:chromeOptions'
         BROWSER = 'chrome'
@@ -80,6 +80,7 @@ module Selenium
                       perf_logging_prefs: {},
                       window_types: []}.merge(@options)
 
+          @logging_prefs = options.delete(:logging_prefs) || {}
           @encoded_extensions = @options.delete(:encoded_extensions) || []
           @extensions = []
           (@options.delete(:extensions)).each(&method(:validate_extension))
@@ -194,7 +195,13 @@ module Selenium
 
         private
 
+        def enable_logging(browser_options)
+          browser_options['goog:loggingPrefs'] = @logging_prefs
+        end
+
         def process_browser_options(browser_options)
+          enable_logging(browser_options) unless @logging_prefs.empty?
+
           options = browser_options[self.class::KEY]
           options['binary'] ||= binary_path if binary_path
           if @profile

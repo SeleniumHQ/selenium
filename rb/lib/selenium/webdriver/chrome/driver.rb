@@ -33,6 +33,7 @@ module Selenium
         include DriverExtensions::DownloadsFiles
         include DriverExtensions::HasDevTools
         include DriverExtensions::HasAuthentication
+        include DriverExtensions::HasLogs
         include DriverExtensions::HasLogEvents
         include DriverExtensions::PrintsPage
 
