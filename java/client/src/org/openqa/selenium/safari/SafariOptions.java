@@ -26,7 +26,6 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -63,8 +62,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     String AUTOMATIC_INSPECTION  = "safari:automaticInspection";
     String AUTOMATIC_PROFILING = "safari:automaticProfiling";
   }
-
-//  private Map<String, Object> options = new TreeMap<>();
 
   public SafariOptions() {
     setUseTechnologyPreview(false);

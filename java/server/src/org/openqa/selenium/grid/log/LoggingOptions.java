@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.log;
 
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
