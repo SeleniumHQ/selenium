@@ -3,7 +3,7 @@ load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
 
-_edge_version = "89.0.713.0"
+_edge_version = "89.0.774.27"
 
 _versions = {
     # The chrome version number is found by visiting http://omahaproxy.appspot.com,
@@ -47,8 +47,8 @@ _versions = {
             "sha256": None,
         },
         "mac": {
-            "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdgeCanary-89.0.713.0.pkg?platform=Mac&Consent=0&channel=Canary",
-            "sha256": "25dfe56b00d5f0af1f9d7ed3d84442fd9d783aa2abe1be93c9ea8e7088f5e5c6",
+            "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdgeBeta-89.0.774.27.pkg?platform=Mac&Consent=0&channel=Beta",
+            "sha256": "c5f47bf3421764fad659eabd3e2479aa041238dbf77c43cfb785fd26dd907118",
         },
         "windows": {
             "url": None,
@@ -63,7 +63,7 @@ _versions = {
         },
         "mac": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % _edge_version,
-            "sha256": "0282fa65d7f303f59fc4f8001b3d1ce25a44b0394a449f18291f68b6d0f9e691",
+            "sha256": "ac3001b0d48b5f4fcefa596c36bc9e2e7f1cbdf480c91d98020f7ca6a10ace41",
         },
         "windows": {
             "url": "https://msedgedriver.azureedge.net/87.0.669.0/edgedriver_win64.zip",
@@ -145,7 +145,7 @@ def _edge():
         url = _versions["edge"]["mac"]["url"],
         sha256 = _versions["edge"]["mac"]["sha256"],
         move = {
-            "MicrosoftEdgeCanary-%s.pkg/Payload/Microsoft Edge Canary.app" % _edge_version: "Edge.app",
+            "MicrosoftEdgeBeta-%s.pkg/Payload/Microsoft Edge Beta.app" % _edge_version: "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )

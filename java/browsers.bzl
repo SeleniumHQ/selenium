@@ -40,7 +40,7 @@ edge_data = select({
 edge_jvm_flags = select({
     "//common:use_pinned_macos_edge": [
         "-Dwebdriver.edge.driver=$(location @mac_edgedriver//:msedgedriver)",
-        "-Dwebdriver.edge.binary=\"$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge Canary\"",
+        "-Dwebdriver.edge.binary=\"$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge Beta\"",
     ],
     "//common:use_local_msedgedriver": [
         "-Dwebdriver.edge.driver=$(location //common:msedgedriver)",
