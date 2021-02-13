@@ -58,7 +58,12 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.remote.tracing.TracedHttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
@@ -134,7 +139,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
-    this(new HttpCommandExecutor(remoteAddress), capabilities);
+    this(createTracedExecutorWithTracedHttpClient(remoteAddress), capabilities);
+  }
+
+  private static CommandExecutor createTracedExecutorWithTracedHttpClient(URL remoteAddress) {
+    Tracer tracer = OpenTelemetryTracer.getInstance();
+    CommandExecutor executor = new HttpCommandExecutor(
+      Collections.emptyMap(),
+      ClientConfig.defaultConfig().baseUrl(remoteAddress),
+      new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
+    return new TracedCommandExecutor(executor, tracer);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
