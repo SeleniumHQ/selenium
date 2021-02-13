@@ -770,6 +770,7 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @Ignore(FIREFOX)
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(pages.missedJsReferencePage);
     driver.switchTo().frame("inner");
@@ -777,6 +778,21 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.switchTo().defaultContent();
     assertThatExceptionOfType(StaleElementReferenceException.class)
         .isThrownBy(element::getText);
+  }
+
+  @SwitchToTopAfterTest
+  @Test
+  @Ignore(CHROME)
+  @Ignore(EDGE)
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  public void testAnElementInAFrameCannotBeAccessedFromAnotherFrame() {
+    driver.get(pages.missedJsReferencePage);
+    driver.switchTo().frame("inner");
+    WebElement element = driver.findElement(By.id("oneline"));
+    driver.switchTo().defaultContent();
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(element::getText);
   }
 
   @SwitchToTopAfterTest
