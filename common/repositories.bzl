@@ -73,12 +73,12 @@ _versions = {
     # Versions found by visiting https://ftp.mozilla.org/pub/firefox/releases/
     "firefox": {
         "linux": {
-            "url": "https://ftp.mozilla.org/pub/firefox/releases/83.0/linux-x86_64/en-US/firefox-83.0.tar.bz2",
-            "sha256": "93ff827fdcba92ddb71851c46ac8192a727ed61402e896c6262943e382f92412",
+            "url": "https://ftp.mozilla.org/pub/firefox/releases/85.0.2/linux-x86_64/en-US/firefox-85.0.2.tar.bz2",
+            "sha256": "98763f4b1526811967d71e1bbb9552a9a3fd877321ecb497083b9e313b528c31",
         },
         "mac": {
-            "url": "https://ftp.mozilla.org/pub/firefox/releases/83.0/mac/en-US/Firefox%2083.0.dmg",
-            "sha256": "7e527884e40039c6c97929591754b92394aa965fd61d42158fea5df075636ec6",
+            "url": "https://ftp.mozilla.org/pub/firefox/releases/85.0.2/mac/en-US/Firefox%2085.0.2.dmg",
+            "sha256": "c6a7f39bc0a3c9df99c6c31aa13cb9d6d89d606c8961cb1de5e4b279c2b30273",
         },
         "windows": {
             "url": None,
