@@ -40,12 +40,33 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 public enum Browser {
   ALL(new ImmutableCapabilities(), "any", false),
-  CHROME(new ChromeOptions(), new ChromeDriverInfo().getDisplayName(), true),
-  EDGE(new EdgeOptions(), new EdgeDriverInfo().getDisplayName(), true),
+  CHROME(new ChromeOptions(), new ChromeDriverInfo().getDisplayName(), true) {
+    @Override
+    public Capabilities getCapabilities() {
+      String binary = System.getProperty("webdriver.chrome.binary");
+
+      return binary == null ? new ChromeOptions() : new ChromeOptions().setBinary(binary);
+    }
+  },
+  EDGE(new EdgeOptions(), new EdgeDriverInfo().getDisplayName(), true) {
+    @Override
+    public Capabilities getCapabilities() {
+      String binary = System.getProperty("webdriver.edge.binary");
+
+      return binary == null ? new EdgeOptions() : new EdgeOptions().setBinary(binary);
+    }
+  },
   HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), "HtmlUnit", false),
   LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), new XpiDriverInfo().getDisplayName(), false),
   IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false),
-  FIREFOX(new FirefoxOptions(), new GeckoDriverInfo().getDisplayName(), false),
+  FIREFOX(new FirefoxOptions(), new GeckoDriverInfo().getDisplayName(), false) {
+    @Override
+    public Capabilities getCapabilities() {
+      String binary = System.getProperty("webdriver.firefox.bin");
+
+      return binary == null ? new FirefoxOptions() : new FirefoxOptions().setBinary(binary);
+    }
+  },
   LEGACY_OPERA(new OperaOptions(), new OperaDriverInfo().getDisplayName(), false),
   OPERA(new OperaOptions(), new OperaDriverInfo().getDisplayName(), false),
   SAFARI(new SafariOptions(), new SafariDriverInfo().getDisplayName(), false);

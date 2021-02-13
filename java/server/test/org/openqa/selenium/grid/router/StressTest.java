@@ -95,9 +95,7 @@ public class StressTest {
 
   @Test
   public void multipleSimultaneousSessions() throws Exception {
-
     assertThat(server.isStarted()).isTrue();
-
 
     CompletableFuture<?>[] futures = new CompletableFuture<?>[10];
     for (int i = 0; i < futures.length; i++) {
