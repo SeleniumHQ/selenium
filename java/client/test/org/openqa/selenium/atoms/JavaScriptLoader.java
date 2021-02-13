@@ -18,8 +18,7 @@
 package org.openqa.selenium.atoms;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assume.assumeThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.common.io.Resources;
 
@@ -34,9 +33,9 @@ class JavaScriptLoader {
 
   static String loadResource(String resourcePath) throws IOException {
     URL resourceUrl = JavaScriptLoader.class.getResource(resourcePath);
-    assumeThat(
-        "Resource not found; are you running with `bazel test`? " + resourcePath,
-        resourceUrl, notNullValue());
+    assumeThat(resourceUrl)
+      .isNotNull()
+      .as("Resource not found; are you running with `bazel test`? " + resourcePath);
     return Resources.toString(resourceUrl, UTF_8);
   }
 }
