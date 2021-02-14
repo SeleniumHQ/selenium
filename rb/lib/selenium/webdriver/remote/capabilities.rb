@@ -102,7 +102,7 @@ module Selenium
 
           def safari(opts = {})
             new({
-              browser_name: Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari',
+              browser_name: Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari'
             }.merge(opts))
           end
 

@@ -159,9 +159,8 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', except: [{browser: :safari},
-                                                                      {driver: :remote, browser: :ie}],
-                                                             only: {browser: %i[edge chrome firefox ie]} do
+        it 'can release pressed buttons via release action', except: [{browser: %i[safari safari_preview]},
+                                                                      {driver: :remote, browser: :ie}] do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

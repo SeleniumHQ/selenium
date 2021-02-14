@@ -84,7 +84,7 @@ module Selenium
         it 'should not allow domain to be set for localhost',
            except: [{browser: %i[chrome edge],
                      reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"},
-                     {browser: %i[safari safari_preview]}] do
+                    {browser: %i[safari safari_preview]}] do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'localhost',
@@ -94,8 +94,8 @@ module Selenium
 
         it 'should not allow setting on a different domain',
            except: [{browser: %i[chrome edge],
-                      reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"},
-                     {browser: %i[safari safari_preview]}] do
+                     reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"},
+                    {browser: %i[safari safari_preview]}] do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'different',
@@ -179,9 +179,8 @@ module Selenium
 
           it 'should not allow adding with value None when secure is false',
              except: [{browser: :firefox,
-                      reason: "https://github.com/mozilla/geckodriver/issues/1842"},
+                       reason: "https://github.com/mozilla/geckodriver/issues/1842"},
                       {browser: %i[safari safari_preview]}] do
-
             expect {
               driver.manage.add_cookie name: 'samesite',
                                        value: 'none-insecure',
