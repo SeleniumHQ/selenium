@@ -381,7 +381,7 @@ module Selenium
                        Chrome::Driver::EXTENSIONS
                      when :firefox
                        Firefox::Driver::EXTENSIONS
-                     when :safari
+                     when :safari, :safari_technology_preview
                        Safari::Driver::EXTENSIONS
                      else
                        []

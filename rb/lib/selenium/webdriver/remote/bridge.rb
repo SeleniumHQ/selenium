@@ -65,7 +65,7 @@ module Selenium
             extend(WebDriver::Firefox::Features)
           when 'msedge'
             extend(WebDriver::Edge::Features)
-          when 'safari'
+          when 'Safari', 'Safari Technology Preview'
             extend(WebDriver::Safari::Features)
           end
         end
@@ -81,7 +81,7 @@ module Selenium
         def browser
           @browser ||= begin
             name = @capabilities.browser_name
-            name ? name.tr(' ', '_').to_sym : 'unknown'
+            name ? name.tr(' ', '_').downcase.to_sym : 'unknown'
           end
         end
 
