@@ -34,8 +34,8 @@ class JavaScriptLoader {
   static String loadResource(String resourcePath) throws IOException {
     URL resourceUrl = JavaScriptLoader.class.getResource(resourcePath);
     assumeThat(resourceUrl)
-      .isNotNull()
-      .as("Resource not found; are you running with `bazel test`? " + resourcePath);
+      .withFailMessage("Resource %s not found; are you running with `bazel test`? ", resourcePath)
+      .isNotNull();
     return Resources.toString(resourceUrl, UTF_8);
   }
 }
