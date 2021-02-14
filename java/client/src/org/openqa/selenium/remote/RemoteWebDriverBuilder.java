@@ -28,6 +28,7 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -35,6 +36,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -55,8 +57,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.logging.Level.WARNING;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 /**
  * Create a new Selenium session using the W3C WebDriver protocol. This class will not generate any
@@ -325,8 +329,11 @@ public class RemoteWebDriverBuilder {
       driverClientConfig = driverClientConfig.baseUri(baseUri);
     }
 
-    HttpHandler handler = Require.nonNull("Http handler", handlerFactory.apply(driverClientConfig))
-      .with(new AddWebDriverSpecHeaders().andThen(new ErrorFilter()));
+    HttpHandler client = handlerFactory.apply(driverClientConfig);
+    HttpHandler handler = Require.nonNull("Http handler", client)
+      .with(new CloseHttpClientFilter(client)
+        .andThen(new AddWebDriverSpecHeaders())
+        .andThen(new ErrorFilter()));
 
     byte[] payload = getPayloadUtf8Bytes();
     Either<ProtocolHandshake.Result, String> result = new ProtocolHandshake().createSession(
@@ -440,6 +447,36 @@ public class RemoteWebDriverBuilder {
       return json.toString().getBytes(UTF_8);
     } catch (IOException e) {
       throw new SessionNotCreatedException("Unable to create session roughPayload", e);
+    }
+  }
+
+  private static class CloseHttpClientFilter implements Filter {
+
+    private final HttpHandler client;
+
+    CloseHttpClientFilter(HttpHandler client) {
+      this.client = Require.nonNull("Http client", client);
+    }
+
+    @Override
+    public HttpHandler apply(HttpHandler next) {
+      return req -> {
+        try {
+          return next.execute(req);
+        } finally {
+          if (req.getMethod() == DELETE && client instanceof Closeable) {
+            HttpSessionId.getSessionId(req.getUri()).ifPresent(id -> {
+              if (("/session/" + id).equals(req.getUri())) {
+                try {
+                  ((Closeable) client).close();
+                } catch (IOException e) {
+                  LOG.log(WARNING, "Exception swallowed while closing http client", e);
+                }
+              }
+            });
+          }
+        }
+      };
     }
   }
 }
