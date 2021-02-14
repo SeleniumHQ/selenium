@@ -182,7 +182,7 @@ module Selenium
           expect(near.map { |e| e.attribute('id') }).to eq(%w[third ninth center second eighth])
         end
 
-        it 'should find near another within custom distance' do
+        it 'should find near another within custom distance', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('relative_locators.html')
 
           near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth', distance: 100}})

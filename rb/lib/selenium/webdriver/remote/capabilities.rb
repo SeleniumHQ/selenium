@@ -101,11 +101,8 @@ module Selenium
           alias_method :ff, :firefox
 
           def safari(opts = {})
-            browser = Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari'
-
             new({
-              browser_name: browser,
-              platform_name: :mac
+              browser_name: Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari',
             }.merge(opts))
           end
 

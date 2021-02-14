@@ -32,8 +32,7 @@ module Selenium
         end
 
         def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {firstMatch: [browserName: "safari",
-                                                       platformName: "mac"]}}).to_json
+          body = (body || {capabilities: {firstMatch: [browserName: "safari"]}}).to_json
           endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
@@ -50,8 +49,7 @@ module Selenium
 
         context 'with :desired capabilities' do
           it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {firstMatch: [browserName: "safari",
-                                                              platformName: 'mac']}})
+            expect_request(body: {capabilities: {firstMatch: [browserName: "safari"]}})
 
             expect {
               expect { Driver.new(desired_capabilities: :safari) }.to have_deprecated(:desired_capabilities)
@@ -61,7 +59,6 @@ module Selenium
           it 'accepts Capabilities.safari' do
             capabilities = Remote::Capabilities.safari(invalid: 'foobar')
             expect_request(body: {capabilities: {firstMatch: [browserName: "safari",
-                                                              platformName: "mac",
                                                               invalid: 'foobar']}})
 
             expect {
@@ -134,7 +131,6 @@ module Selenium
           caps = Remote::Capabilities.safari(invalid: 'foobar')
           browser_opts = {automatic_inspection: true}
           expect_request(body: {capabilities: {firstMatch: [browserName: "safari",
-                                                            platformName: "mac",
                                                             invalid: "foobar",
                                                             "safari:automaticInspection": true]}})
 
@@ -152,15 +148,13 @@ module Selenium
 
         context 'with :capabilities' do
           it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {firstMatch: [browserName: "safari",
-                                                              platformName: 'mac']}})
+            expect_request(body: {capabilities: {firstMatch: [browserName: "safari"]}})
             expect { Driver.new(capabilities: :safari) }.not_to raise_exception
           end
 
           it 'accepts Capabilities.safari' do
             capabilities = Remote::Capabilities.safari(invalid: 'foobar')
             expect_request(body: {capabilities: {firstMatch: [browserName: "safari",
-                                                              platformName: 'mac',
                                                               invalid: 'foobar']}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception

@@ -41,7 +41,7 @@ module Selenium
 
         it 'should set samesite property of Default by default',
            only: {browser: %i[chrome edge firefox]},
-           except: [{browser: :chrome,
+           except: [{browser: %i[chrome edge],
                      reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3732'},
                     {browser: :firefox,
                      reason: 'https://github.com/mozilla/geckodriver/issues/1841'}] do
@@ -82,8 +82,9 @@ module Selenium
         end
 
         it 'should not allow domain to be set for localhost',
-           exclude: {browser: :chrome,
-                     reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"} do
+           except: [{browser: %i[chrome edge],
+                     reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"},
+                     {browser: %i[safari safari_preview]}] do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'localhost',
@@ -92,8 +93,9 @@ module Selenium
         end
 
         it 'should not allow setting on a different domain',
-           except: {browser: :chrome,
-                    reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3734"} do
+           except: [{browser: %i[chrome edge],
+                      reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"},
+                     {browser: %i[safari safari_preview]}] do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'different',
@@ -176,8 +178,10 @@ module Selenium
           end
 
           it 'should not allow adding with value None when secure is false',
-             except: {browser: :firefox,
-                      reason: "https://github.com/mozilla/geckodriver/issues/1842"} do
+             except: [{browser: :firefox,
+                      reason: "https://github.com/mozilla/geckodriver/issues/1842"},
+                      {browser: %i[safari safari_preview]}] do
+
             expect {
               driver.manage.add_cookie name: 'samesite',
                                        value: 'none-insecure',
