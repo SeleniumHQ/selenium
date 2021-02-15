@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
@@ -43,104 +45,112 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets the <see cref="Type"/> that is valid for this <see cref="CommandInfoRepository"/>
+        /// </summary>
+        protected override Type RepositoryCommandInfoType
+        {
+            get { return typeof(HttpCommandInfo); }
+        }
+
+        /// <summary>
         /// Initializes the dictionary of commands for the CommandInfoRepository
         /// </summary>
         protected override void InitializeCommandDictionary()
         {
-            this.TryAddCommand(DriverCommand.Status, new CommandInfo(CommandInfo.GetCommand, "/status"));
-            this.TryAddCommand(DriverCommand.NewSession, new CommandInfo(CommandInfo.PostCommand, "/session"));
-            this.TryAddCommand(DriverCommand.Quit, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}"));
-            this.TryAddCommand(DriverCommand.GetTimeouts, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/timeouts"));
-            this.TryAddCommand(DriverCommand.SetTimeouts, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/timeouts"));
-            this.TryAddCommand(DriverCommand.Get, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/url"));
-            this.TryAddCommand(DriverCommand.GetCurrentUrl, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/url"));
-            this.TryAddCommand(DriverCommand.GoBack, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/back"));
-            this.TryAddCommand(DriverCommand.GoForward, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/forward"));
-            this.TryAddCommand(DriverCommand.Refresh, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/refresh"));
-            this.TryAddCommand(DriverCommand.GetTitle, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/title"));
-            this.TryAddCommand(DriverCommand.GetCurrentWindowHandle, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/window"));
-            this.TryAddCommand(DriverCommand.Close, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/window"));
-            this.TryAddCommand(DriverCommand.SwitchToWindow, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window"));
-            this.TryAddCommand(DriverCommand.GetWindowHandles, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/window/handles"));
-            this.TryAddCommand(DriverCommand.NewWindow, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/new"));
-            this.TryAddCommand(DriverCommand.SwitchToFrame, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/frame"));
-            this.TryAddCommand(DriverCommand.SwitchToParentFrame, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/frame/parent"));
+            this.TryAddCommand(DriverCommand.Status, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/status"));
+            this.TryAddCommand(DriverCommand.NewSession, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session"));
+            this.TryAddCommand(DriverCommand.Quit, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}"));
+            this.TryAddCommand(DriverCommand.GetTimeouts, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/timeouts"));
+            this.TryAddCommand(DriverCommand.SetTimeouts, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/timeouts"));
+            this.TryAddCommand(DriverCommand.Get, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/url"));
+            this.TryAddCommand(DriverCommand.GetCurrentUrl, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/url"));
+            this.TryAddCommand(DriverCommand.GoBack, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/back"));
+            this.TryAddCommand(DriverCommand.GoForward, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/forward"));
+            this.TryAddCommand(DriverCommand.Refresh, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/refresh"));
+            this.TryAddCommand(DriverCommand.GetTitle, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/title"));
+            this.TryAddCommand(DriverCommand.GetCurrentWindowHandle, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/window"));
+            this.TryAddCommand(DriverCommand.Close, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/window"));
+            this.TryAddCommand(DriverCommand.SwitchToWindow, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/window"));
+            this.TryAddCommand(DriverCommand.GetWindowHandles, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/window/handles"));
+            this.TryAddCommand(DriverCommand.NewWindow, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/window/new"));
+            this.TryAddCommand(DriverCommand.SwitchToFrame, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/frame"));
+            this.TryAddCommand(DriverCommand.SwitchToParentFrame, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/frame/parent"));
 
-            this.TryAddCommand(DriverCommand.GetWindowRect, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/window/rect"));
-            this.TryAddCommand(DriverCommand.SetWindowRect, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/rect"));
+            this.TryAddCommand(DriverCommand.GetWindowRect, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/window/rect"));
+            this.TryAddCommand(DriverCommand.SetWindowRect, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/window/rect"));
 
-            this.TryAddCommand(DriverCommand.MaximizeWindow, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/maximize"));
-            this.TryAddCommand(DriverCommand.MinimizeWindow, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/minimize"));
-            this.TryAddCommand(DriverCommand.FullScreenWindow, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/window/fullscreen"));
-            this.TryAddCommand(DriverCommand.GetActiveElement, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/active"));
-            this.TryAddCommand(DriverCommand.FindElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element"));
-            this.TryAddCommand(DriverCommand.FindElements, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/elements"));
-            this.TryAddCommand(DriverCommand.FindChildElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/element"));
-            this.TryAddCommand(DriverCommand.FindChildElements, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/elements"));
-            this.TryAddCommand(DriverCommand.IsElementSelected, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/selected"));
-            this.TryAddCommand(DriverCommand.ClickElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/click"));
-            this.TryAddCommand(DriverCommand.ClearElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/clear"));
-            this.TryAddCommand(DriverCommand.SendKeysToElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/value"));
-            this.TryAddCommand(DriverCommand.GetElementAttribute, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/attribute/{name}"));
-            this.TryAddCommand(DriverCommand.GetElementProperty, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/property/{name}"));
-            this.TryAddCommand(DriverCommand.GetElementValueOfCssProperty, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/css/{name}"));
-            this.TryAddCommand(DriverCommand.GetComputedAccessibleLabel, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/computedlabel"));
-            this.TryAddCommand(DriverCommand.GetComputedAccessibleRole, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/computedrole"));
-            this.TryAddCommand(DriverCommand.GetElementText, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/text"));
-            this.TryAddCommand(DriverCommand.GetElementTagName, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/name"));
-            this.TryAddCommand(DriverCommand.GetElementRect, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/rect"));
-            this.TryAddCommand(DriverCommand.IsElementEnabled, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/enabled"));
-            this.TryAddCommand(DriverCommand.GetPageSource, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/source"));
-            this.TryAddCommand(DriverCommand.ExecuteScript, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/execute/sync"));
-            this.TryAddCommand(DriverCommand.ExecuteAsyncScript, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/execute/async"));
-            this.TryAddCommand(DriverCommand.GetAllCookies, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/cookie"));
-            this.TryAddCommand(DriverCommand.GetCookie, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/cookie/{name}"));
-            this.TryAddCommand(DriverCommand.AddCookie, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/cookie"));
-            this.TryAddCommand(DriverCommand.DeleteCookie, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/cookie/{name}"));
-            this.TryAddCommand(DriverCommand.DeleteAllCookies, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/cookie"));
-            this.TryAddCommand(DriverCommand.Actions, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/actions"));
-            this.TryAddCommand(DriverCommand.CancelActions, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/actions"));
-            this.TryAddCommand(DriverCommand.DismissAlert, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/alert/dismiss"));
-            this.TryAddCommand(DriverCommand.AcceptAlert, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/alert/accept"));
-            this.TryAddCommand(DriverCommand.GetAlertText, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/alert/text"));
-            this.TryAddCommand(DriverCommand.SetAlertValue, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/alert/text"));
-            this.TryAddCommand(DriverCommand.Screenshot, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/screenshot"));
-            this.TryAddCommand(DriverCommand.ElementScreenshot, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/screenshot"));
-            this.TryAddCommand(DriverCommand.Print, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/print"));
+            this.TryAddCommand(DriverCommand.MaximizeWindow, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/window/maximize"));
+            this.TryAddCommand(DriverCommand.MinimizeWindow, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/window/minimize"));
+            this.TryAddCommand(DriverCommand.FullScreenWindow, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/window/fullscreen"));
+            this.TryAddCommand(DriverCommand.GetActiveElement, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/active"));
+            this.TryAddCommand(DriverCommand.FindElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element"));
+            this.TryAddCommand(DriverCommand.FindElements, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/elements"));
+            this.TryAddCommand(DriverCommand.FindChildElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/element"));
+            this.TryAddCommand(DriverCommand.FindChildElements, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/elements"));
+            this.TryAddCommand(DriverCommand.IsElementSelected, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/selected"));
+            this.TryAddCommand(DriverCommand.ClickElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/click"));
+            this.TryAddCommand(DriverCommand.ClearElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/clear"));
+            this.TryAddCommand(DriverCommand.SendKeysToElement, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/value"));
+            this.TryAddCommand(DriverCommand.GetElementAttribute, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/attribute/{name}"));
+            this.TryAddCommand(DriverCommand.GetElementProperty, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/property/{name}"));
+            this.TryAddCommand(DriverCommand.GetElementValueOfCssProperty, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/css/{name}"));
+            this.TryAddCommand(DriverCommand.GetComputedAccessibleLabel, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/computedlabel"));
+            this.TryAddCommand(DriverCommand.GetComputedAccessibleRole, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/computedrole"));
+            this.TryAddCommand(DriverCommand.GetElementText, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/text"));
+            this.TryAddCommand(DriverCommand.GetElementTagName, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/name"));
+            this.TryAddCommand(DriverCommand.GetElementRect, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/rect"));
+            this.TryAddCommand(DriverCommand.IsElementEnabled, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/enabled"));
+            this.TryAddCommand(DriverCommand.GetPageSource, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/source"));
+            this.TryAddCommand(DriverCommand.ExecuteScript, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/execute/sync"));
+            this.TryAddCommand(DriverCommand.ExecuteAsyncScript, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/execute/async"));
+            this.TryAddCommand(DriverCommand.GetAllCookies, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/cookie"));
+            this.TryAddCommand(DriverCommand.GetCookie, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/cookie/{name}"));
+            this.TryAddCommand(DriverCommand.AddCookie, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/cookie"));
+            this.TryAddCommand(DriverCommand.DeleteCookie, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/cookie/{name}"));
+            this.TryAddCommand(DriverCommand.DeleteAllCookies, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/cookie"));
+            this.TryAddCommand(DriverCommand.Actions, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/actions"));
+            this.TryAddCommand(DriverCommand.CancelActions, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/actions"));
+            this.TryAddCommand(DriverCommand.DismissAlert, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/alert/dismiss"));
+            this.TryAddCommand(DriverCommand.AcceptAlert, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/alert/accept"));
+            this.TryAddCommand(DriverCommand.GetAlertText, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/alert/text"));
+            this.TryAddCommand(DriverCommand.SetAlertValue, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/alert/text"));
+            this.TryAddCommand(DriverCommand.Screenshot, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/screenshot"));
+            this.TryAddCommand(DriverCommand.ElementScreenshot, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/screenshot"));
+            this.TryAddCommand(DriverCommand.Print, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/print"));
 
             // Commands below here are not included in the W3C specification,
             // but are required for full fidelity of execution with Selenium's
             // local-end implementation of WebDriver.
-            this.TryAddCommand(DriverCommand.GetSessionCapabilities, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}"));
-            this.TryAddCommand(DriverCommand.IsElementDisplayed, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/displayed"));
-            this.TryAddCommand(DriverCommand.ElementEquals, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/equals/{other}"));
-            this.TryAddCommand(DriverCommand.DefineDriverMapping, new CommandInfo(CommandInfo.PostCommand, "/config/drivers"));
-            this.TryAddCommand(DriverCommand.UploadFile, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/se/file"));
-            this.TryAddCommand(DriverCommand.SetAlertCredentials, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/alert/credentials"));
-            this.TryAddCommand(DriverCommand.GetSessionList, new CommandInfo(CommandInfo.GetCommand, "/sessions"));
-            this.TryAddCommand(DriverCommand.GetElementLocationOnceScrolledIntoView, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}/location_in_view"));
-            this.TryAddCommand(DriverCommand.DescribeElement, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/element/{id}"));
-            this.TryAddCommand(DriverCommand.GetOrientation, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/orientation"));
-            this.TryAddCommand(DriverCommand.SetOrientation, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/orientation"));
+            this.TryAddCommand(DriverCommand.GetSessionCapabilities, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}"));
+            this.TryAddCommand(DriverCommand.IsElementDisplayed, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/displayed"));
+            this.TryAddCommand(DriverCommand.ElementEquals, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/equals/{other}"));
+            this.TryAddCommand(DriverCommand.DefineDriverMapping, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/config/drivers"));
+            this.TryAddCommand(DriverCommand.UploadFile, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/file"));
+            this.TryAddCommand(DriverCommand.SetAlertCredentials, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/alert/credentials"));
+            this.TryAddCommand(DriverCommand.GetSessionList, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/sessions"));
+            this.TryAddCommand(DriverCommand.GetElementLocationOnceScrolledIntoView, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/location_in_view"));
+            this.TryAddCommand(DriverCommand.DescribeElement, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}"));
+            this.TryAddCommand(DriverCommand.GetOrientation, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/orientation"));
+            this.TryAddCommand(DriverCommand.SetOrientation, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/orientation"));
 
             // HTML5 commands
-            this.TryAddCommand(DriverCommand.GetLocation, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/location"));
-            this.TryAddCommand(DriverCommand.SetLocation, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/location"));
-            this.TryAddCommand(DriverCommand.GetAppCache, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/application_cache"));
-            this.TryAddCommand(DriverCommand.GetAppCacheStatus, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/application_cache/status"));
-            this.TryAddCommand(DriverCommand.ClearAppCache, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/application_cache/clear"));
-            this.TryAddCommand(DriverCommand.GetLocalStorageKeys, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage"));
-            this.TryAddCommand(DriverCommand.SetLocalStorageItem, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/local_storage"));
-            this.TryAddCommand(DriverCommand.ClearLocalStorage, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/local_storage"));
-            this.TryAddCommand(DriverCommand.GetLocalStorageItem, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage/key/{key}"));
-            this.TryAddCommand(DriverCommand.RemoveLocalStorageItem, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/local_storage/key/{key}"));
-            this.TryAddCommand(DriverCommand.GetLocalStorageSize, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/local_storage/size"));
-            this.TryAddCommand(DriverCommand.GetSessionStorageKeys, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/session_storage"));
-            this.TryAddCommand(DriverCommand.SetSessionStorageItem, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/session_storage"));
-            this.TryAddCommand(DriverCommand.ClearSessionStorage, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/session_storage"));
-            this.TryAddCommand(DriverCommand.GetSessionStorageItem, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/session_storage/key/{key}"));
-            this.TryAddCommand(DriverCommand.RemoveSessionStorageItem, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/session_storage/key/{key}"));
-            this.TryAddCommand(DriverCommand.GetSessionStorageSize, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/session_storage/size"));
+            this.TryAddCommand(DriverCommand.GetLocation, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/location"));
+            this.TryAddCommand(DriverCommand.SetLocation, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/location"));
+            this.TryAddCommand(DriverCommand.GetAppCache, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/application_cache"));
+            this.TryAddCommand(DriverCommand.GetAppCacheStatus, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/application_cache/status"));
+            this.TryAddCommand(DriverCommand.ClearAppCache, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/application_cache/clear"));
+            this.TryAddCommand(DriverCommand.GetLocalStorageKeys, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage"));
+            this.TryAddCommand(DriverCommand.SetLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/local_storage"));
+            this.TryAddCommand(DriverCommand.ClearLocalStorage, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/local_storage"));
+            this.TryAddCommand(DriverCommand.GetLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage/key/{key}"));
+            this.TryAddCommand(DriverCommand.RemoveLocalStorageItem, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/local_storage/key/{key}"));
+            this.TryAddCommand(DriverCommand.GetLocalStorageSize, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/local_storage/size"));
+            this.TryAddCommand(DriverCommand.GetSessionStorageKeys, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage"));
+            this.TryAddCommand(DriverCommand.SetSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/session_storage"));
+            this.TryAddCommand(DriverCommand.ClearSessionStorage, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/session_storage"));
+            this.TryAddCommand(DriverCommand.GetSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage/key/{key}"));
+            this.TryAddCommand(DriverCommand.RemoveSessionStorageItem, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/session_storage/key/{key}"));
+            this.TryAddCommand(DriverCommand.GetSessionStorageSize, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/session_storage/size"));
         }
     }
 }
