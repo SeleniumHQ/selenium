@@ -97,7 +97,30 @@ public class RemoteWebDriverBuilder {
   private final List<Capabilities> requestedCapabilities = new ArrayList<>();
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
   private final Map<String, Object> metadata = new TreeMap<>();
-  private Function<ClientConfig, HttpHandler> handlerFactory = config -> HttpClient.Factory.createDefault().createClient(config);
+  private Function<ClientConfig, HttpHandler> handlerFactory =
+      config -> {
+        HttpClient.Factory factory = HttpClient.Factory.createDefault();
+        HttpClient client = factory.createClient(config);
+        return client.with(
+          next -> req -> {
+            try {
+              return client.execute(req);
+            } finally {
+              if (req.getMethod() == DELETE) {
+                HttpSessionId.getSessionId(req.getUri()).ifPresent(id -> {
+                  if (("/session/" + id).equals(req.getUri())) {
+                    try {
+                      client.close();
+                    } catch (IOException e) {
+                      LOG.log(WARNING, "Swallowing exception while closing http client", e);
+                    }
+                    factory.cleanupIdleClients();
+                  }
+                });
+              }
+            }
+          });
+      };
   private ClientConfig clientConfig = ClientConfig.defaultConfig();
   private URI remoteHost = null;
   private DriverService driverService;
