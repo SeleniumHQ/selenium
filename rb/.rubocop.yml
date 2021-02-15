@@ -51,7 +51,7 @@ Metrics/BlockLength:
   Max: 18
   Exclude:
     - 'spec/**/*.rb'
-    - 'selenium-webdriver.gemspec'
+    - 'selenium-*.gemspec'
 
 Metrics/ClassLength:
   CountComments: false
