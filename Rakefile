@@ -102,31 +102,30 @@ task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:ube
 # Java targets required for release. These should all be java_export targets.
 # Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))'
 JAVA_RELEASE_TARGETS = %w[
-  //java/client/src/org/openqa/selenium/chrome:chrome.publish
-  //java/client/src/org/openqa/selenium/chromium:chromium.publish
-  //java/client/src/org/openqa/selenium/devtools/v86:v86.publish
-  //java/client/src/org/openqa/selenium/devtools/v87:v87.publish
-  //java/client/src/org/openqa/selenium/devtools/v88:v88.publish
-  //java/client/src/org/openqa/selenium/devtools/v89:v89.publish
-  //java/client/src/org/openqa/selenium/devtools:devtools.publish
-  //java/client/src/org/openqa/selenium/edge:edge.publish
-  //java/client/src/org/openqa/selenium/edgehtml:edgehtml.publish
-  //java/client/src/org/openqa/selenium/firefox/xpi:xpi.publish
-  //java/client/src/org/openqa/selenium/firefox:firefox.publish
-  //java/client/src/org/openqa/selenium/ie:ie.publish
-  //java/client/src/org/openqa/selenium/json:json.publish
-  //java/client/src/org/openqa/selenium/lift:lift.publish
-  //java/client/src/org/openqa/selenium/opera:opera.publish
+  //java/server/src/org/openqa/selenium/grid/sessionmap/redis:redis.publish
+  //java/server/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
+  //java/server/src/org/openqa/selenium/grid:grid.publish
+  //java/server/src/com/thoughtworks/selenium/webdriven:webdriven.publish
+  //java/client/src/org/openqa/selenium/support:support.publish
+  //java/client/src/org/openqa/selenium/safari:safari.publish
   //java/client/src/org/openqa/selenium/remote/http:http.publish
   //java/client/src/org/openqa/selenium/remote:remote.publish
-  //java/client/src/org/openqa/selenium/safari:safari.publish
-  //java/client/src/org/openqa/selenium/support:support.publish
-  //java/client/src/org/openqa/selenium:client-combined.publish
+  //java/client/src/org/openqa/selenium/opera:opera.publish
+  //java/client/src/org/openqa/selenium/lift:lift.publish
+  //java/client/src/org/openqa/selenium/json:json.publish
+  //java/client/src/org/openqa/selenium/ie:ie.publish
+  //java/client/src/org/openqa/selenium/firefox/xpi:xpi.publish
+  //java/client/src/org/openqa/selenium/firefox:firefox.publish
+  //java/client/src/org/openqa/selenium/edge:edge.publish
+  //java/client/src/org/openqa/selenium/devtools/v89:v89.publish
+  //java/client/src/org/openqa/selenium/devtools/v88:v88.publish
+  //java/client/src/org/openqa/selenium/devtools/v87:v87.publish
+  //java/client/src/org/openqa/selenium/devtools/v86:v86.publish
+  //java/client/src/org/openqa/selenium/devtools:devtools.publish
+  //java/client/src/org/openqa/selenium/chromium:chromium.publish
+  //java/client/src/org/openqa/selenium/chrome:chrome.publish
   //java/client/src/org/openqa/selenium:core.publish
-  //java/server/src/com/thoughtworks/selenium/webdriven:webdriven.publish
-  //java/server/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
-  //java/server/src/org/openqa/selenium/grid/sessionmap/redis:redis.publish
-  //java/server/src/org/openqa/selenium/grid:grid.publish
+  //java/client/src/org/openqa/selenium:client-combined.publish
 ]
 
 # Notice that because we're using rake, anything you can do in a normal rake
@@ -166,7 +165,7 @@ task support: [
 ]
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar'
+task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/grid:executable-grid'
 
 task test_javascript: [
   '//javascript/atoms:test-chrome:run',
@@ -366,7 +365,7 @@ task ios_driver: [
 task 'prep-release-zip': [
   '//java/client/src/org/openqa/selenium:client-zip',
   '//java/server/src/org/openqa/selenium/grid:server-zip',
-  '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar',
+  '//java/server/src/org/openqa/selenium/grid:executable-grid',
   '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'
 ] do
   ["build/dist/selenium-server-#{version}.zip", "build/dist/selenium-java-#{version}.zip",
@@ -380,7 +379,7 @@ task 'prep-release-zip': [
   chmod 0666, "build/dist/selenium-server-#{version}.zip"
   cp Rake::Task['//java/client/src/org/openqa/selenium:client-zip'].out, "build/dist/selenium-java-#{version}.zip", preserve: false
   chmod 0666, "build/dist/selenium-java-#{version}.zip"
-  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar'].out, "build/dist/selenium-server-#{version}.jar", preserve: false
+  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:executable-grid'].out, "build/dist/selenium-server-#{version}.jar", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.jar"
   cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'].out, "build/dist/selenium-html-runner-#{version}.jar", preserve: false
   chmod 0666, "build/dist/selenium-html-runner-#{version}.jar"
