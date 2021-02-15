@@ -29,11 +29,11 @@ lint_setup({
 
 http_archive(
     name = "platforms",
-    sha256 = "0fc19efca1dfc5c1448c98f050639e3a48beb0031701d55bea5eb546507970f2",
-    strip_prefix = "platforms-0.0.1",
     urls = [
-        "https://github.com/bazelbuild/platforms/archive/0.0.1.tar.gz",
+        "https://github.com/bazelbuild/platforms/releases/download/0.0.3/platforms-0.0.3.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.3/platforms-0.0.3.tar.gz",
     ],
+    sha256 = "460caee0fa583b908c622913334ec3c1b842572b9c23cf0d3da0c2543a1a157d",
 )
 
 http_archive(
