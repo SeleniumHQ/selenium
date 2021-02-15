@@ -21,6 +21,10 @@ _RUNTIME_DEPS = [
     "@npm//source-map-explorer",
 ]
 
+_TESTS = [
+    "src/**/*.test.ts*",
+]
+
 copy_to_bin(
     name = "copy_static_files",
     srcs = glob(
@@ -29,6 +33,7 @@ copy_to_bin(
             "public/css/*",
             "src/**/*",
         ],
+        exclude = _TESTS,
     ) + [
         "package.json",
         "tsconfig.json",
@@ -69,7 +74,7 @@ zip_file(
 
 copy_to_bin(
     name = "copy_test_files",
-    srcs = glob(["src/**/*.test.ts*"]),
+    srcs = glob(_TESTS),
 )
 
 react_scripts_test(
