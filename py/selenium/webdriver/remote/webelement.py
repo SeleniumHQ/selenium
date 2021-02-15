@@ -572,6 +572,16 @@ class WebElement(BaseWebElement):
         return self._execute(Command.GET_ELEMENT_RECT)['value']
 
     @property
+    def aria_role(self) -> str:
+        """ Returns the ARIA role of the current web element"""
+        return self._execute(Command.GET_ELEMENT_ARIA_ROLE)['value']
+
+    @property
+    def accessible_name(self) -> str:
+        """Returns the ARIA Lavel of the current webelement"""
+        return self._execute(Command.GET_ELEMENT_ARIA_LABEL)['value']
+
+    @property
     def screenshot_as_base64(self) -> str:
         """
         Gets the screenshot of the current element as a base64 encoded string.
