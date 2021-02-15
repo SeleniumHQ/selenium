@@ -18,9 +18,7 @@ interface NodeInfo {
   version: string;
   /** Grid Node OS information */
   osInfo: OsInfo;
-  /** Node stereotypes.
-   * Not an ideal type, but it simplifies the parsing.
-   * There is room for improvement here. */
+  /** Node stereotypes. */
   slotStereotypes: StereotypeInfo[];
 }
 

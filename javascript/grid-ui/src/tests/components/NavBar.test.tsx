@@ -1,12 +1,61 @@
-import React from 'react';
-import { shallow, mount } from 'enzyme';
+import * as React from 'react';
+import {render, screen} from '@testing-library/react';
 import NavBar from '../../components/NavBar/NavBar';
+import {createMemoryHistory} from 'history';
+import {Router} from 'react-router-dom';
 
-test('NavBar', () => {
-  const navBar = shallow(<NavBar />)
+it('renders menu options names', () => {
+  const history = createMemoryHistory();
+  render(
+    <Router history={history}>
+      <NavBar/>
+    </Router>
+  );
+  expect(screen.getByText("Sessions")).toBeInTheDocument();
+  expect(screen.getByText("Overview")).toBeInTheDocument();
+  expect(screen.getByText("Help")).toBeInTheDocument();
+});
 
-  const linkProp = navBar.getElements()[0].props.children.props.children[0].props.children[0].props.children.props;
+it('overall concurrency is not rendered on root path with a single node', () => {
+  const history = createMemoryHistory();
+  history.push("/");
+  render(
+    <Router history={history}>
+      <NavBar open={true} maxSession={0} sessionCount={0} nodeCount={1}/>
+    </Router>
+  );
+  expect(screen.queryByTestId('overall-concurrency')).not.toBeInTheDocument();
+});
 
-  expect(linkProp.id).toEqual('logo');
-  expect(linkProp.to).toEqual('/home');
+it('overall concurrency is rendered on root path with more than one node', () => {
+  const history = createMemoryHistory();
+  history.push("/");
+  render(
+    <Router history={history}>
+      <NavBar open={true} maxSession={0} sessionCount={0} nodeCount={2}/>
+    </Router>
+  );
+  expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument();
+});
+
+it('overall concurrency is rendered on root path with more than one node', () => {
+  const history = createMemoryHistory();
+  history.push("/");
+  render(
+    <Router history={history}>
+      <NavBar open={true} maxSession={0} sessionCount={0} nodeCount={2}/>
+    </Router>
+  );
+  expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument();
+});
+
+it('overall concurrency is rendered on a path different than and one node', () => {
+  const history = createMemoryHistory();
+  history.push("/sessions");
+  render(
+    <Router history={history}>
+      <NavBar open={true} maxSession={0} sessionCount={0} nodeCount={1}/>
+    </Router>
+  );
+  expect(screen.getByTestId('overall-concurrency')).toBeInTheDocument();
 });
