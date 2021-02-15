@@ -1,7 +1,7 @@
-interface OsInfoType {
-    name: string;
-    version: string;
-    arch: string;
+interface OsInfo {
+  name: string;
+  version: string;
+  arch: string;
 }
 
-export default OsInfoType;
+export default OsInfo;
