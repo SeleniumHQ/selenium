@@ -80,7 +80,7 @@ copy_to_bin(
 react_scripts_test(
     name = "test",
     args = [
-        "--node_options=--require=$(rootpath chdir.js)",
+        "--node_options=--require=./$(rootpath chdir.js)",
         "test",
         "--watchAll=false",
         "--no-cache",
