@@ -22,11 +22,11 @@
     "source-map-explorer": "^2.5.2"
   },
   "scripts": {
-    "start": "node node_modules/react-scripts/bin/react-scripts start",
-    "build": "node node_modules/react-scripts/bin/react-scripts build && python scripts/rmSourcemaps.py",
+    "start": "react-scripts start",
+    "build": "react-scripts build && python scripts/rmSourcemaps.py",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test": "node node_modules/react-scripts/bin/react-scripts test --watchAll=false",
-    "eject": "node node_modules/react-scripts/bin/react-scripts eject"
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
