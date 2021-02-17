@@ -115,7 +115,7 @@ export default function TopBar() {
           <IconButton
             edge="start"
             color="inherit"
-            aria-label="close drawer"
+            aria-label="help"
             href={"#help"}
             className={clsx(classes.menuButton, !connectionError && classes.menuButtonHidden)}
           >

@@ -149,6 +149,7 @@ export default function NavBar(props) {
             justifyContent="center"
             mt={2}
             mb={2}
+            data-testid={"concurrency-usage"}
           >
             <CircularProgressWithLabel value={currentLoad}/>
           </Box>
@@ -156,7 +157,13 @@ export default function NavBar(props) {
             align="center"
             variant="h4"
           >
-            {sessionCount} / {maxSession}
+            <Box display='inline' data-testid={"session-count"}>
+              {sessionCount}
+            </Box>
+            {' / '}
+            <Box display='inline' data-testid={"max-session"}>
+              {maxSession}
+            </Box>
           </Typography>
         </Box>
       )}

@@ -140,7 +140,10 @@ export default function Node(props) {
                 className={classes.osLogo}
                 alt="OS Logo"
               />
-              <IconButton className={classes.buttonMargin} onClick={handleDialogOpen}>
+              <IconButton
+                className={classes.buttonMargin}
+                onClick={handleDialogOpen}
+                data-testid={`node-info-${nodeInfo.id}`}>
                 <InfoIcon/>
               </IconButton>
               <Dialog onClose={handleDialogClose} aria-labelledby="node-info-dialog" open={open}>

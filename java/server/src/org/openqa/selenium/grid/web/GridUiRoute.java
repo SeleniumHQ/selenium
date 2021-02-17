@@ -48,7 +48,7 @@ public class GridUiRoute implements Routable {
       routes = Route.combine(
         get("/").to(() -> req -> uiRedirect),
         get("/grid/console").to(() -> req -> uiRedirect),
-        Route.prefix("/ui/").to(Route.matching(req -> true).to(() -> uiHandler)));
+        Route.prefix("/ui").to(Route.matching(req -> true).to(() -> uiHandler)));
     } else {
       LOG.warning("It was not possible to load the Grid UI.");
       Json json = new Json();
