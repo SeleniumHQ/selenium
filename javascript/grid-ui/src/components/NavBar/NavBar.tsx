@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   toolbarIcon: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
     padding: '0 8px',
     ...theme.mixins.toolbar,
     backgroundColor: theme.palette.primary.main,
@@ -84,7 +84,7 @@ function CircularProgressWithLabel(props: CircularProgressProps & { value: numbe
 
 export default function NavBar(props) {
   const classes = useStyles();
-  const {open, setOpen, width, maxSession, sessionCount, nodeCount} = props;
+  const {open, maxSession, sessionCount, nodeCount} = props;
   const currentLoad = Math.min(((sessionCount / (maxSession === 0 ? 1 : maxSession)) * 100), 100);
 
   const location = useLocation();
@@ -92,10 +92,6 @@ export default function NavBar(props) {
   // is not happening at the same time and it could be confusing for the user. So, displaying it when there is more
   // than one node, or when the user is on a different page and there is at least one node registered.
   const showOverallConcurrency = nodeCount > 1 || (location.pathname !== "/" && nodeCount > 0);
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Drawer
@@ -105,8 +101,8 @@ export default function NavBar(props) {
       }}
       open={open}
     >
-      <div className={classes.toolbarIcon} onClick={handleDrawerClose}>
-        <IconButton color={"secondary"} onClick={handleDrawerClose}>
+      <div className={classes.toolbarIcon}>
+        <IconButton color={"secondary"}>
           <ChevronLeftIcon/>
         </IconButton>
       </div>

@@ -7,6 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MenuIcon from '@material-ui/icons/Menu'
+import HelpIcon from '@material-ui/icons/Help';
 import clsx from 'clsx';
 import {loader} from "graphql.macro";
 import * as React from 'react';
@@ -15,8 +16,6 @@ import {useQuery} from "@apollo/client";
 import {GridConfig} from "../../config";
 import NavBar from "../NavBar/NavBar";
 import Loading from "../Loading/Loading";
-
-const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,20 +27,14 @@ const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
     display: "flex",
     width: `calc(100%)`,
+    alignItems: "center",
+    justifyContent: "center",
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
     }),
   },
   menuButton: {
@@ -67,8 +60,11 @@ const GRID_QUERY = loader("../../graphql/grid.gql");
 export default function TopBar() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const toggleDrawer = () => {
-    setOpen(!open);
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setOpen(false);
   };
 
   const {loading, error, data} = useQuery(GRID_QUERY,
@@ -88,20 +84,42 @@ export default function TopBar() {
   const maxSession = error ? 0 : data.grid.maxSession ?? 0;
   const sessionCount = error ? 0 : data.grid.sessionCount ?? 0;
   const nodeCount = error ? 0 : data.grid.nodeCount ?? 0;
-
+  const connectionError = !!error;
   return (
     <div className={classes.root}>
       <CssBaseline/>
-      <AppBar position="fixed" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar position="fixed" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
+          {!connectionError && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            >
+              <MenuIcon/>
+            </IconButton>
+          )}
+          {!connectionError && (
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="close drawer"
+              onClick={handleDrawerClose}
+              className={clsx(classes.menuButton, !open && classes.menuButtonHidden)}
+            >
+              <ChevronLeftIcon/>
+            </IconButton>
+          )}
           <IconButton
             edge="start"
             color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer}
-            className={clsx(classes.menuButton)}
+            aria-label="close drawer"
+            href={"#help"}
+            className={clsx(classes.menuButton, !connectionError && classes.menuButtonHidden)}
           >
-            <MenuIcon/>
+            <HelpIcon/>
           </IconButton>
           <Box className={classes.toolbarTitle}>
             <img
@@ -129,7 +147,9 @@ export default function TopBar() {
           </Box>
         </Toolbar>
       </AppBar>
-      <NavBar open={open} setOpen={setOpen} width={drawerWidth} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
+      {!error && (
+        <NavBar open={open} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
+      )}
     </div>
   );
 }
