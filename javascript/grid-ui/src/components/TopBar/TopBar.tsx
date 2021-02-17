@@ -16,6 +16,8 @@ import {GridConfig} from "../../config";
 import NavBar from "../NavBar/NavBar";
 import Loading from "../Loading/Loading";
 
+const drawerWidth = 240;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -26,14 +28,20 @@ const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
     display: "flex",
     width: `calc(100%)`,
-    alignItems: "center",
-    justifyContent: "center",
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
     }),
   },
   menuButton: {
@@ -59,11 +67,8 @@ const GRID_QUERY = loader("../../graphql/grid.gql");
 export default function TopBar() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const toggleDrawer = () => {
+    setOpen(!open);
   };
 
   const {loading, error, data} = useQuery(GRID_QUERY,
@@ -87,25 +92,16 @@ export default function TopBar() {
   return (
     <div className={classes.root}>
       <CssBaseline/>
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position="fixed" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            onClick={toggleDrawer}
+            className={clsx(classes.menuButton)}
           >
             <MenuIcon/>
-          </IconButton>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="close drawer"
-            onClick={handleDrawerClose}
-            className={clsx(classes.menuButton, !open && classes.menuButtonHidden)}
-          >
-            <ChevronLeftIcon/>
           </IconButton>
           <Box className={classes.toolbarTitle}>
             <img
@@ -133,9 +129,7 @@ export default function TopBar() {
           </Box>
         </Toolbar>
       </AppBar>
-      {!error && (
-        <NavBar open={open} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
-      )}
+      <NavBar open={open} setOpen={setOpen} width={drawerWidth} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
     </div>
   );
 }
