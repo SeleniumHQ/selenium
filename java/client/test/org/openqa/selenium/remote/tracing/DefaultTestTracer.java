@@ -25,8 +25,7 @@ import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 public class DefaultTestTracer {
 
   public static Tracer createTracer() {
-    ContextPropagators propagators =
-      ContextPropagators.noop();
+    ContextPropagators propagators = ContextPropagators.noop();
     SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
       .build();
 
