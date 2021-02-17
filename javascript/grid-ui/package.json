@@ -7,7 +7,6 @@
     "@apollo/client": "^3.3.9",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
-    "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.0",
     "@types/react-modal": "^3.12.0",
@@ -23,11 +22,11 @@
     "source-map-explorer": "^2.5.2"
   },
   "scripts": {
-    "start": "node node_modules/react-scripts/bin/react-scripts start",
-    "build": "node node_modules/react-scripts/bin/react-scripts build && python scripts/rmSourcemaps.py",
+    "start": "react-scripts start",
+    "build": "react-scripts build && python scripts/rmSourcemaps.py",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test": "node node_modules/react-scripts/bin/react-scripts test --watchAll=false",
-    "eject": "node node_modules/react-scripts/bin/react-scripts eject"
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -49,6 +48,12 @@
     "@babel/preset-react": "^7.12.13",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.7.0"
+    "@testing-library/user-event": "^12.7.0",
+    "typescript": "^3.9.7"
+  },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/src/tests/**/*.test.tsx"
+    ]
   }
 }
