@@ -84,7 +84,7 @@ namespace OpenQA.Selenium.DevTools.V87
             {
                 Patterns = new OpenQA.Selenium.DevTools.V87.Fetch.RequestPattern[]
                 {
-                    new OpenQA.Selenium.DevTools.V87.Fetch.RequestPattern() { UrlPattern = "*" },
+                    new OpenQA.Selenium.DevTools.V87.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Request },
                     new OpenQA.Selenium.DevTools.V87.Fetch.RequestPattern() { UrlPattern = "*", RequestStage = RequestStage.Response }
                 },
                 HandleAuthRequests = true
@@ -266,26 +266,30 @@ namespace OpenQA.Selenium.DevTools.V87
                     PostData = e.Request.PostData,
                     Headers = new Dictionary<string, string>(e.Request.Headers)
                 };
+
                 this.OnRequestPaused(wrapped);
             }
             else
             {
-                ResponsePausedEventArgs wrapped = new ResponsePausedEventArgs();
-                wrapped.ResponseData = new HttpResponseData()
+                ResponsePausedEventArgs wrappedResponse = new ResponsePausedEventArgs();
+                wrappedResponse.ResponseData = new HttpResponseData()
                 {
                     RequestId = e.RequestId,
-                    StatusCode = e.ResponseStatusCode.Value,
                     Url = e.Request.Url,
-                    ResourceType = e.ResourceType.ToString(),
-                    ErrorReason = e.ResponseErrorReason.HasValue ? e.ResponseErrorReason.Value.ToString() : ""
+                    ResourceType = e.ResourceType.ToString()
                 };
+
+                if (e.ResponseStatusCode.HasValue)
+                {
+                    wrappedResponse.ResponseData.StatusCode = e.ResponseStatusCode.Value;
+                }
 
                 foreach (var header in e.ResponseHeaders)
                 {
-                    wrapped.ResponseData.Headers.Add(header.Name, header.Value);
+                    wrappedResponse.ResponseData.Headers.Add(header.Name, header.Value);
                 }
 
-                this.OnResponsePaused(wrapped);
+                this.OnResponsePaused(wrappedResponse);
             }
         }
     }
