@@ -38,6 +38,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -107,6 +108,7 @@ public class LocalNode extends Node {
   private final EventBus bus;
   private final URI externalUri;
   private final URI gridUri;
+  private final Duration heartbeatPeriod;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
   private final List<SessionSlot> factories;
@@ -124,6 +126,7 @@ public class LocalNode extends Node {
     int maxSessionCount,
     Ticker ticker,
     Duration sessionTimeout,
+    Duration heartbeatPeriod,
     List<SessionSlot> factories,
     Secret registrationSecret) {
     super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
@@ -133,6 +136,7 @@ public class LocalNode extends Node {
     this.externalUri = Require.nonNull("Remote node URI", uri);
     this.gridUri = Require.nonNull("Grid URI", gridUri);
     this.maxSessionCount = Math.min(Require.positive("Max session count", maxSessionCount), factories.size());
+    this.heartbeatPeriod = heartbeatPeriod;
     this.factories = ImmutableList.copyOf(factories);
     Require.nonNull("Registration secret", registrationSecret);
 
@@ -168,6 +172,7 @@ public class LocalNode extends Node {
     this.regularly = new Regularly("Local Node: " + externalUri);
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
     regularly.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    regularly.submit(() -> bus.fire(new NodeHeartBeatEvent(getId())), heartbeatPeriod, heartbeatPeriod);
 
     bus.addListener(SessionClosedEvent.listener(id -> {
       try {
@@ -512,6 +517,7 @@ public class LocalNode extends Node {
       maxSessionCount,
       slots,
       isDraining() ? DRAINING : UP,
+      heartbeatPeriod,
       getNodeVersion(),
       getOsInfo());
   }
@@ -557,6 +563,7 @@ public class LocalNode extends Node {
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofMinutes(5);
     private HealthCheck healthCheck;
+    private Duration heartbeatPeriod;
 
     private Builder(
       Tracer tracer,
@@ -591,6 +598,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder heartbeatPeriod(Duration heartbeatPeriod) {
+      this.heartbeatPeriod = heartbeatPeriod;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
         tracer,
@@ -601,6 +613,7 @@ public class LocalNode extends Node {
         maxCount,
         ticker,
         sessionTimeout,
+        heartbeatPeriod,
         factories.build(),
         registrationSecret);
     }

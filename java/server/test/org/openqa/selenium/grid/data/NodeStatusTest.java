@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,6 +56,7 @@ public class NodeStatusTest {
             new ImmutableCapabilities("peas", "sausages"),
             Instant.now())))),
       UP,
+      Duration.ofSeconds(10),
       "4.0.0",
       ImmutableMap.of(
         "name", "Max OS X",

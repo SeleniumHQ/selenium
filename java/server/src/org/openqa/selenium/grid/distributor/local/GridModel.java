@@ -45,6 +45,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.grid.data.Availability.UP;
@@ -126,6 +128,22 @@ public class GridModel {
     }
   }
 
+  public GridModel touch(NodeId id) {
+    Require.nonNull("Node ID", id);
+
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      AvailabilityAndNode availabilityAndNode = findNode(id);
+      if (availabilityAndNode != null) {
+        availabilityAndNode.status.touch();
+      }
+      return this;
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
   public GridModel remove(NodeId id) {
     Require.nonNull("Node ID", id);
 
@@ -139,6 +157,51 @@ public class GridModel {
 
       nodes(availabilityAndNode.availability).remove(availabilityAndNode.status);
       return this;
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  public void purgeDeadNodes() {
+    long now = System.currentTimeMillis();
+    long timeout = 30000;
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Set<NodeStatus> lost = nodes(UP).stream()
+        .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis())
+        .collect(toSet());
+      Set<NodeStatus> resurrected = nodes(DOWN).stream()
+        .filter(status -> now - status.touched() <= status.heartbeatPeriod().toMillis())
+        .collect(toSet());
+      Set<NodeStatus> dead = nodes(DOWN).stream()
+        .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis() * 4)
+        .collect(toSet());
+      if (lost.size() > 0) {
+        LOG.info(String.format(
+          "Switching nodes %s from UP to DOWN",
+          lost.stream()
+            .map(node -> String.format("%s (uri: %s)", node.getId(), node.getUri()))
+            .collect(joining(", "))));
+        nodes(UP).removeAll(lost);
+        nodes(DOWN).addAll(lost);
+      }
+      if (resurrected.size() > 0) {
+        LOG.info(String.format(
+          "Switching nodes %s from DOWN to UP",
+          resurrected.stream()
+            .map(node -> String.format("%s (uri: %s)", node.getId(), node.getUri()))
+            .collect(joining(", "))));
+        nodes(UP).addAll(resurrected);
+      }
+      if (dead.size() > 0) {
+        LOG.info(String.format(
+          "Removing nodes %s that are DOWN for too long",
+          dead.stream()
+            .map(node -> String.format("%s (uri: %s)", node.getId(), node.getUri()))
+            .collect(joining(", "))));
+        nodes(DOWN).removeAll(dead);
+      }
     } finally {
       writeLock.unlock();
     }
@@ -251,6 +314,7 @@ public class GridModel {
       status.getMaxSessionCount(),
       status.getSlots(),
       availability,
+      status.heartbeatPeriod(),
       status.getVersion(),
       status.getOsInfo());
   }
@@ -362,6 +426,7 @@ public class GridModel {
       status.getMaxSessionCount(),
       newSlots,
       status.getAvailability(),
+      status.heartbeatPeriod(),
       status.getVersion(),
       status.getOsInfo()));
   }

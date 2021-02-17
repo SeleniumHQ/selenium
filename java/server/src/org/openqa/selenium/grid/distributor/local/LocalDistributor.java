@@ -41,6 +41,7 @@ import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -132,8 +133,12 @@ public class LocalDistributor extends Distributor {
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
+    bus.addListener(NodeHeartBeatEvent.listener(model::touch));
     bus.addListener(NodeDrainComplete.listener(this::remove));
     bus.addListener(NewSessionRequestEvent.listener(requestIds::offer));
+
+    Regularly regularly = new Regularly("Local Distributor");
+    regularly.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
 
     Thread shutdownHook = new Thread(this::callExecutorShutdown);
     Runtime.getRuntime().addShutdownHook(shutdownHook);

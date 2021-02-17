@@ -23,6 +23,7 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 import java.net.URI;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,8 +41,10 @@ public class NodeStatus {
   private final int maxSessionCount;
   private final Set<Slot> slots;
   private final Availability availability;
+  private Duration heartbeatPeriod;
   private final String version;
   private final Map<String, String> osInfo;
+  private long touched = System.currentTimeMillis();
 
   public NodeStatus(
     NodeId nodeId,
@@ -49,6 +52,7 @@ public class NodeStatus {
     int maxSessionCount,
     Set<Slot> slots,
     Availability availability,
+    Duration heartbeatPeriod,
     String version,
     Map<String, String> osInfo) {
     this.nodeId = Require.nonNull("Node id", nodeId);
@@ -58,6 +62,7 @@ public class NodeStatus {
       "Make sure that a driver is available on $PATH");
     this.slots = unmodifiableSet(new HashSet<>(Require.nonNull("Slots", slots)));
     this.availability = Require.nonNull("Availability", availability);
+    this.heartbeatPeriod = heartbeatPeriod;
     this.version = Require.nonNull("Grid Node version", version);
     this.osInfo = Require.nonNull("Node host OS info", osInfo);
   }
@@ -68,6 +73,7 @@ public class NodeStatus {
     int maxSessions = 0;
     Set<Slot> slots = null;
     Availability availability = null;
+    Duration heartbeatPeriod = null;
     String version = null;
     Map<String, String> osInfo = null;
 
@@ -76,6 +82,10 @@ public class NodeStatus {
       switch (input.nextName()) {
         case "availability":
           availability = input.read(Availability.class);
+          break;
+
+        case "heartbeatPeriod":
+          heartbeatPeriod = Duration.ofMillis(input.read(Long.class));
           break;
 
         case "id":
@@ -116,6 +126,7 @@ public class NodeStatus {
       maxSessions,
       slots,
       availability,
+      heartbeatPeriod,
       version,
       osInfo);
   }
@@ -179,6 +190,18 @@ public class NodeStatus {
         .orElse(0);
   }
 
+  public Duration heartbeatPeriod() {
+    return heartbeatPeriod;
+  }
+
+  public void touch() {
+    touched = System.currentTimeMillis();
+  }
+
+  public long touched() {
+    return touched;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof NodeStatus)) {
@@ -206,6 +229,7 @@ public class NodeStatus {
     toReturn.put("maxSessions", maxSessionCount);
     toReturn.put("slots", slots);
     toReturn.put("availability", availability);
+    toReturn.put("heartbeatPeriod", heartbeatPeriod.toMillis());
     toReturn.put("version", version);
     toReturn.put("osInfo", osInfo);
 

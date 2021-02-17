@@ -114,6 +114,13 @@ public class NodeFlags implements HasRoles {
   @ConfigValue(section = "node", name = "register-cycle", example = "120")
   public int registerPeriod;
 
+  @Parameter(
+    names = "--heartbeat-period",
+    description = "How often, in seconds, will the Node send heartbeat events to the Distributor " +
+                  "to inform it that the Node is up.")
+  @ConfigValue(section = "node", name = "heartbeat-period", example = "10")
+  public int heartbeatPeriod;
+
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(NODE_ROLE);
