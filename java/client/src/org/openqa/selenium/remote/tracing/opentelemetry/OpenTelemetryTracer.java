@@ -26,6 +26,7 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.common.CompletableResultCode;
+import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.SpanProcessor;
 import io.opentelemetry.sdk.trace.data.EventData;
@@ -34,6 +35,7 @@ import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 
+import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -130,6 +132,11 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
     maybeJaeger.ifPresent(
       exporter -> exporters.add(SimpleSpanProcessor.create(exporter)));
 
+    Resource serviceNameResource =
+      Resource.create(Attributes.of(
+        ResourceAttributes.SERVICE_NAME,
+        System.getProperty("JAEGER_SERVICE_NAME", "selenium")));
+
     // OpenTelemetry default propagators are no-op since version 0.9.0.
     // Hence, required propagators need to defined and added.
     ContextPropagators propagators =
@@ -137,6 +144,7 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
 
     SdkTracerProvider sdkTracerProvider = SdkTracerProvider.builder()
       .addSpanProcessor(SpanProcessor.composite(exporters))
+      .setResource(Resource.getDefault().merge(serviceNameResource))
       .build();
 
     OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder()
@@ -145,7 +153,7 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
       .buildAndRegisterGlobal();
 
     Runtime.getRuntime()
-      .addShutdownHook(new Thread(() -> openTelemetrySdk.getTracerManagement().shutdown()));
+      .addShutdownHook(new Thread(sdkTracerProvider::close));
 
     return new OpenTelemetryTracer(
       openTelemetrySdk.getTracer("default"),
