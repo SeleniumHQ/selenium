@@ -61,6 +61,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,6 +92,7 @@ public class OneShotNode extends Node {
   private final EventBus events;
   private final WebDriverInfo driverInfo;
   private final Capabilities stereotype;
+  private final Duration heartbeatPeriod;
   private final URI gridUri;
   private final UUID slotId = UUID.randomUUID();
   private RemoteWebDriver driver;
@@ -103,6 +105,7 @@ public class OneShotNode extends Node {
     Tracer tracer,
     EventBus events,
     Secret registrationSecret,
+    Duration heartbeatPeriod,
     NodeId id,
     URI uri,
     URI gridUri,
@@ -110,6 +113,7 @@ public class OneShotNode extends Node {
     WebDriverInfo driverInfo) {
     super(tracer, id, uri, registrationSecret);
 
+    this.heartbeatPeriod = heartbeatPeriod;
     this.events = Require.nonNull("Event bus", events);
     this.gridUri = Require.nonNull("Public Grid URI", gridUri);
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
@@ -147,6 +151,7 @@ public class OneShotNode extends Node {
       loggingOptions.getTracer(),
       eventOptions.getEventBus(),
       secretOptions.getRegistrationSecret(),
+      nodeOptions.getHeartbeatPeriod(),
       new NodeId(UUID.randomUUID()),
       serverOptions.getExternalUri(),
       nodeOptions.getPublicGridUri().orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
@@ -360,6 +365,7 @@ public class OneShotNode extends Node {
             Optional.empty() :
             Optional.of(new Session(sessionId, getUri(), stereotype, capabilities, Instant.now())))),
       isDraining() ? DRAINING : UP,
+      heartbeatPeriod,
       getNodeVersion(),
       getOsInfo());
   }

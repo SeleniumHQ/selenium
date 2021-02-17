@@ -92,6 +92,12 @@ public class NodeOptions {
     return Duration.ofSeconds(seconds);
   }
 
+  public Duration getHeartbeatPeriod() {
+    // If the user sets 0 or less, we default to 1s.
+    int seconds = Math.max(config.getInt(NODE_SECTION, "heartbeat-period").orElse(10), 1);
+    return Duration.ofSeconds(seconds);
+  }
+
   public Map<Capabilities, Collection<SessionFactory>> getSessionFactories(
     /* Danger! Java stereotype ahead! */
     Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
