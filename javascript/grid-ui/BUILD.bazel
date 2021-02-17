@@ -86,7 +86,6 @@ react_scripts_test(
         "--no-cache",
         "--no-watchman",
         "--ci",
-#        "--showConfig",
     ],
     data = _RUNTIME_DEPS + [
         "copy_test_files",
@@ -94,8 +93,5 @@ react_scripts_test(
         "@npm//@testing-library/react",
         "@npm//@testing-library/user-event",
     ],
-    # Need to set the pwd to avoid jest needing a runfiles helper
-    # Windows users with permissions can use --enable_runfiles
-    # to make this test work
     tags = ["no-bazelci-windows", "no-sandbox"],
 )
