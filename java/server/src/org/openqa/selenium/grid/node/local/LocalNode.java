@@ -563,7 +563,7 @@ public class LocalNode extends Node {
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofMinutes(5);
     private HealthCheck healthCheck;
-    private Duration heartbeatPeriod;
+    private Duration heartbeatPeriod = Duration.ofSeconds(10);
 
     private Builder(
       Tracer tracer,
