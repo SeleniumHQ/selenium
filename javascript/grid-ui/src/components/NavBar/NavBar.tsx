@@ -134,7 +134,7 @@ export default function NavBar(props) {
         </div>
       </List>
       <Box flexGrow={1}/>
-      {showOverallConcurrency && (
+      {showOverallConcurrency && open && (
         <Box
           p={2}
           m={2}

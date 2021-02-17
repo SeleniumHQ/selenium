@@ -17,9 +17,13 @@ export const client = new ApolloClient({
 });
 
 function Copyright() {
+  // noinspection HtmlUnknownAnchorTarget
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'All rights reserved - '}
+      <Link href="#help">
+        Help
+      </Link>
+      {' - All rights reserved - '}
       <Link href="https://sfconservancy.org/" target={"_blank"}>
         Software Freedom Conservancy
       </Link>{' '}
