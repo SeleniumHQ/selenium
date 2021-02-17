@@ -52,7 +52,7 @@
   },
   "jest": {
     "testMatch": [
-      "<rootDir>/src/__tests__/**/*.test.tsx"
+      "<rootDir>/src/tests/**/*.test.tsx"
     ]
   }
 }
