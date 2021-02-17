@@ -63,7 +63,7 @@ public class Connection implements Closeable {
   });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
-  private final Map<Long, Consumer<Either<JsonInput, Throwable>>> methodCallbacks = new LinkedHashMap<>();
+  private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new LinkedHashMap<>();
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
 
   public Connection(HttpClient client, String url) {
@@ -104,16 +104,16 @@ public class Connection implements Closeable {
     CompletableFuture<X> result = new CompletableFuture<>();
     if (command.getSendsResponse()) {
       methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), inputOrException -> {
-        if (inputOrException.isLeft()) {
+        if (inputOrException.isRight()) {
           try {
-            X value = command.getMapper().apply(inputOrException.left());
+            X value = command.getMapper().apply(inputOrException.right());
             result.complete(value);
           } catch (Throwable e) {
             LOG.log(Level.WARNING, String.format("Unable to map result for %s", command.getMethod()), e);
             result.completeExceptionally(e);
           }
         } else {
-          result.completeExceptionally(inputOrException.right());
+          result.completeExceptionally(inputOrException.left());
         }
       }));
     }
@@ -204,7 +204,7 @@ public class Connection implements Closeable {
     Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
     if (raw.get("id") instanceof Number
         && (raw.get("result") != null || raw.get("error") != null)) {
-      Consumer<Either<JsonInput, Throwable>> consumer = methodCallbacks.remove(((Number) raw.get("id")).longValue());
+      Consumer<Either<Throwable, JsonInput>> consumer = methodCallbacks.remove(((Number) raw.get("id")).longValue());
       if (consumer == null) {
         return;
       }
@@ -215,11 +215,11 @@ public class Connection implements Closeable {
         while (input.hasNext()) {
           switch (input.nextName()) {
             case "result":
-              consumer.accept(Either.left(input));
+              consumer.accept(Either.right(input));
               break;
 
             case "error":
-              consumer.accept(Either.right(new WebDriverException(asString)));
+              consumer.accept(Either.left(new WebDriverException(asString)));
               input.skipValue();
               break;
 

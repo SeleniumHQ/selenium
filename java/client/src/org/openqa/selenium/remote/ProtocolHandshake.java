@@ -70,10 +70,10 @@ public class ProtocolHandshake {
 
       try (InputStream rawIn = os.asByteSource().openBufferedStream();
            BufferedInputStream contentStream = new BufferedInputStream(rawIn)) {
-        Either<Result, String> result = createSession(client, contentStream, counter.getCount());
+        Either<String, Result> result = createSession(client, contentStream, counter.getCount());
 
-        if (result.isLeft()) {
-          Result toReturn = result.left();
+        if (result.isRight()) {
+          Result toReturn = result.right();
           LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
           return toReturn;
         } else {
@@ -89,7 +89,7 @@ public class ProtocolHandshake {
     }
   }
 
-  Either<Result, String> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
+  Either<String, Result> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
@@ -119,7 +119,7 @@ public class ProtocolHandshake {
       blob);
 
     if (initialResponse.getStatusCode() != 200) {
-      return Either.right(blob.get("message").toString());
+      return Either.left(blob.get("message").toString());
     }
 
     return Stream.of(
@@ -128,8 +128,8 @@ public class ProtocolHandshake {
       .map(func -> func.apply(initialResponse))
       .filter(Objects::nonNull)
       .findFirst()
-      .<Either<Result, String>>map(Either::left)
-      .orElseGet(() -> Either.right("Handshake response does not match any supported protocol"));
+      .<Either<String, Result>>map(Either::right)
+      .orElseGet(() -> Either.left("Handshake response does not match any supported protocol"));
   }
 
   public static class Result {

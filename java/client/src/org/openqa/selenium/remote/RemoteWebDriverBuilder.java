@@ -359,17 +359,17 @@ public class RemoteWebDriverBuilder {
         .andThen(new ErrorFilter()));
 
     byte[] payload = getPayloadUtf8Bytes();
-    Either<ProtocolHandshake.Result, String> result = new ProtocolHandshake().createSession(
+    Either<String, ProtocolHandshake.Result> result = new ProtocolHandshake().createSession(
       handler,
       new ByteArrayInputStream(payload),
       payload.length);
 
-    if (result.isLeft()) {
-      CommandExecutor executor = result.mapLeft(res -> createExecutor(handler, res));
+    if (result.isRight()) {
+      CommandExecutor executor = result.map(res -> createExecutor(handler, res));
       return new RemoteWebDriver(executor, new ImmutableCapabilities());
     } else {
       throw new SessionNotCreatedException(
-        String.format("Unable to create new remote session. Reason: %s", result.right()));
+        String.format("Unable to create new remote session. Reason: %s", result.left()));
     }
   }
 

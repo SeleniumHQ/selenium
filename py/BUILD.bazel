@@ -100,7 +100,7 @@ py_wheel(
     ],
     description_file = "README.rst",
     distribution = "selenium",
-    homepage = "www.selenium.dev",
+    homepage = "https://www.selenium.dev",
     license = "Apache 2.0",
     python_requires = "~=3.7",
     python_tag = "py3",

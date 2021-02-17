@@ -32,7 +32,6 @@ const Browser = {
   CHROME: 'chrome',
   EDGE: 'MicrosoftEdge',
   FIREFOX: 'firefox',
-  IE: 'internet explorer',
   INTERNET_EXPLORER: 'internet explorer',
   SAFARI: 'safari',
   OPERA: 'opera',

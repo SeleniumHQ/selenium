@@ -17,11 +17,11 @@
 
 'use strict'
 
-var assert = require('assert'),
+const assert = require('assert'),
   http = require('http'),
   url = require('url')
 
-var net = require('../../net'),
+const net = require('../../net'),
   portprober = require('../../net/portprober'),
   promise = require('../..').promise
 
@@ -32,8 +32,8 @@ var net = require('../../net'),
  *     The request handler for the server.
  * @constructor
  */
-var Server = function (requestHandler) {
-  var server = http.createServer(function (req, res) {
+let Server = function (requestHandler) {
+  let server = http.createServer(function (req, res) {
     requestHandler(req, res)
   })
 
@@ -42,7 +42,7 @@ var Server = function (requestHandler) {
   })
 
   /** @typedef {{port: number, address: string, family: string}} */
-  var Host // eslint-disable-line
+  let Host // eslint-disable-line
 
   /**
    * Starts the server on the given port. If no port, or 0, is provided,
@@ -56,7 +56,7 @@ var Server = function (requestHandler) {
       typeof opt_port !== 'function',
       'start invoked with function, not port (mocha callback)?'
     )
-    var port = opt_port || portprober.findFreePort('localhost')
+    const port = opt_port || portprober.findFreePort('localhost')
     return Promise.resolve(port)
       .then((port) => {
         return promise.checkedNodeCall(
@@ -82,7 +82,7 @@ var Server = function (requestHandler) {
    * @throws {Error} If the server is not running.
    */
   this.address = function () {
-    var addr = server.address()
+    const addr = server.address()
     if (!addr) {
       throw Error('There server is not running!')
     }
@@ -104,8 +104,8 @@ var Server = function (requestHandler) {
    * @throws {Error} If the server is not running.
    */
   this.url = function (opt_pathname) {
-    var addr = this.address()
-    var pathname = opt_pathname || ''
+    const addr = this.address()
+    const pathname = opt_pathname || ''
     return url.format({
       protocol: 'http',
       hostname: net.getLoopbackAddress(),

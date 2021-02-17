@@ -100,7 +100,7 @@ function getBrowsersToTestFromEnv() {
     const parts = spec.split(/:/, 3)
     let name = parts[0]
     if (name === 'ie') {
-      name = Browser.IE
+      name = Browser.INTERNET_EXPLORER
     } else if (name === 'edge') {
       name = Browser.EDGE
     }
@@ -126,7 +126,7 @@ function getAvailableBrowsers() {
       { 'ms:edgeChromium': true },
     ],
     [firefox.locateSynchronously, Browser.FIREFOX],
-    [ie.locateSynchronously, Browser.IE],
+    [ie.locateSynchronously, Browser.INTERNET_EXPLORER],
     [safari.locateSynchronously, Browser.SAFARI],
     [opera.locateSynchronously, Browser.OPERA],
   ]
