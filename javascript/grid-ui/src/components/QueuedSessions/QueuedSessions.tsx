@@ -45,7 +45,6 @@ type QueuedSessionsProps = {
 
 class QueuedSessions extends React.Component<QueuedSessionsProps, {}> {
 
-
   render () {
     const {sessionQueueRequests, classes} = this.props;
     const queue = sessionQueueRequests.map((queuedSession) => {
