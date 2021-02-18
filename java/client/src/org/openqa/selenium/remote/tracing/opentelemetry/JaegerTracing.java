@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.sdk.resources.Resource;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
