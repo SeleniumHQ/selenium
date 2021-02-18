@@ -22,35 +22,19 @@ import ReactModal from "react-modal";
 import {GridConfig} from "./config";
 import TopBar from "./components/TopBar/TopBar";
 import Overview from "./screens/Overview/Overview";
-import {Box, Link, makeStyles} from "@material-ui/core";
+import Footer from "./components/common/Footer";
 import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
 import Sessions from "./screens/Sessions/Sessions";
 import Help from "./screens/Help/Help";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import {createStyles, Theme, withStyles} from "@material-ui/core/styles";
+import {loader} from "graphql.macro";
+import NavBar from "./components/NavBar/NavBar";
 
 export const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri:GridConfig.serverUri,
 });
-
-function Copyright() {
-  // noinspection HtmlUnknownAnchorTarget
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      <Link href="#/help">
-        Help
-      </Link>
-      {' - All rights reserved - '}
-      <Link href="https://sfconservancy.org/" target={"_blank"}>
-        Software Freedom Conservancy
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = (theme: Theme) => createStyles(
   {
@@ -71,20 +55,73 @@ const useStyles = (theme: Theme) => createStyles(
 
 if (process.env.NODE_ENV !== 'test') ReactModal.setAppElement("#root");
 
+const GRID_QUERY = loader("./graphql/grid.gql");
+
 type AppProps = RouteComponentProps & {
   classes: any;
 };
 
-class App extends React.Component<AppProps> {
+type AppState = {
+  drawerOpen: boolean;
+  loading: boolean;
+  error: string;
+  data: any;
+};
+
+class App extends React.Component<AppProps, AppState> {
+  intervalID;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      drawerOpen: true,
+      loading: true,
+      error: '',
+      data: {}
+    }
+  }
+
+  fetchData = () => {
+    client.query({query: GRID_QUERY, fetchPolicy: "network-only"})
+      .then(({loading, error, data}) => {
+        this.setState({loading: loading, error: error?.networkError?.message || '', data: data});
+      })
+      .catch((error) => {
+        this.setState({loading: false, error: error.message})
+      })
+  };
+
+  componentDidMount() {
+    this.fetchData();
+    this.intervalID = setInterval(this.fetchData.bind(this), GridConfig.status.xhrPollingIntervalMillis);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
+  toggleDrawer = () => {
+    this.setState({drawerOpen: !this.state.drawerOpen})
+  }
 
   render () {
     const {classes} = this.props;
+    const {loading, error, data, drawerOpen} = this.state;
+
+    const maxSession = error ? 0 : data?.grid?.maxSession ?? 0;
+    const sessionCount = error ? 0 : data?.grid?.sessionCount ?? 0;
+    const nodeCount = error ? 0 : data?.grid?.nodeCount ?? 0;
+
+    const topBarSubheader = error ? error : data?.grid?.version;
 
     return (
       <ApolloProvider client={client}>
         <Router>
           <div className={classes.root}>
-            <TopBar/>
+            <TopBar subheader={topBarSubheader} error={!!error} drawerOpen={drawerOpen} toggleDrawer={this.toggleDrawer}/>
+            {!error && (
+              <NavBar open={drawerOpen} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
+            )}
             <main className={classes.content}>
               <Container maxWidth={false} className={classes.container}>
                 <Switch>
@@ -94,9 +131,7 @@ class App extends React.Component<AppProps> {
                   <Route component={Help} {...this.props} {...this.props}/>
                 </Switch>
               </Container>
-              <Box pt={4}>
-                <Copyright/>
-              </Box>
+              <Footer/>
             </main>
           </div>
         </Router>

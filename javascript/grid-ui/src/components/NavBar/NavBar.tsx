@@ -38,6 +38,7 @@ import {
   withStyles
 } from "@material-ui/core";
 import {withRouter} from "react-router"
+import {RouteComponentProps} from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -107,15 +108,12 @@ function CircularProgressWithLabel(props: CircularProgressProps & { value: numbe
   );
 }
 
-type NavBarProps = {
+type NavBarProps = RouteComponentProps & {
   open: boolean;
   maxSession: number;
   sessionCount: number;
   nodeCount: number;
   classes: any;
-  match: any;
-  location: any;
-  history: any;
 };
 
 class NavBar extends React.Component<NavBarProps, {}> {
@@ -185,7 +183,7 @@ class NavBar extends React.Component<NavBarProps, {}> {
               justifyContent="center"
               mt={2}
               mb={2}
-            data-testid={"concurrency-usage"}
+              data-testid={"concurrency-usage"}
             >
               <CircularProgressWithLabel value={currentLoad}/>
             </Box>
@@ -193,13 +191,13 @@ class NavBar extends React.Component<NavBarProps, {}> {
               align="center"
               variant="h4"
             >
-            <Box display='inline' data-testid={"session-count"}>
-              {sessionCount}
-            </Box>
-            {' / '}
-            <Box display='inline' data-testid={"max-session"}>
-              {maxSession}
-            </Box>
+              <Box display='inline' data-testid={"session-count"}>
+                {sessionCount}
+              </Box>
+              {' / '}
+              <Box display='inline' data-testid={"max-session"}>
+                {maxSession}
+              </Box>
             </Typography>
           </Box>
         )}

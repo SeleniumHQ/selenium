@@ -9,14 +9,10 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MenuIcon from '@material-ui/icons/Menu'
 import HelpIcon from '@material-ui/icons/Help';
 import clsx from 'clsx';
-import {loader} from "graphql.macro";
 import React from 'react';
 import seleniumGridLogo from '../../assets/selenium-grid-logo.svg';
-import NavBar from "../NavBar/NavBar";
-import Loading from "../Loading/Loading";
 import {withStyles} from "@material-ui/core";
-import {ApolloClient, ApolloConsumer} from '@apollo/client';
-import {GridConfig} from "../../config";
+import {ApolloClient} from '@apollo/client';
 
 const useStyles = (theme: Theme) => createStyles(
   {
@@ -56,17 +52,16 @@ const useStyles = (theme: Theme) => createStyles(
     },
   });
 
-const GRID_QUERY = loader("../../graphql/grid.gql");
-
 type TopBarProps = {
+  subheader: string;
+  error: boolean;
   classes: any;
+  drawerOpen: boolean;
+  toggleDrawer: () => void
 };
 
 type TopBarState = {
   open: boolean;
-  loading: boolean;
-  error: string;
-  data: any;
 };
 
 class TopBar extends React.Component<TopBarProps, TopBarState> {
@@ -78,111 +73,26 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
     this.client = null;
     this.state = {
       open: false,
-      loading: true,
-      error: '',
-      data: {}
     }
-  }
-
-  handleDrawerOpen = () => {
-    this.setState({open: true});
-  };
-
-  handleDrawerClose = () => {
-    this.setState({open: false});
-  };
-
-  fetchData = () => {
-    this.client?.query({query: GRID_QUERY, fetchPolicy: "network-only"})
-      .then(({loading, error, data}) => {
-        this.setState({loading: loading, error: error?.networkError?.message || '', data: data});
-      })
-      .catch((error) => {
-        this.setState({loading: false, error: error.message})
-      })
-  };
-
-  componentDidMount() {
-    this.fetchData();
-    this.intervalID = setInterval(this.fetchData.bind(this), GridConfig.status.xhrPollingIntervalMillis);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.intervalID);
   }
 
   render () {
-    const {classes} = this.props;
-
-    if (!this.client) {
-      return (
-        <ApolloConsumer>
-          {client => {
-            this.client = client;
-            return (
-              <div className={classes.root}>
-                <CssBaseline/>
-                <AppBar position="fixed" className={classes.appBar}>
-                  <Loading/>
-                </AppBar>
-              </div>
-            )
-          }}
-        </ApolloConsumer>
-      )
-    }
-
-    const {loading, error, data, open} = this.state;
-
-    if (loading) {
-      return (
-        <ApolloConsumer>
-          {client => {
-            this.client = client;
-            return (
-              <div className={classes.root}>
-                <CssBaseline/>
-                <AppBar position="fixed" className={classes.appBar}>
-                  <Loading/>
-                </AppBar>
-              </div>
-            )
-          }}
-        </ApolloConsumer>
-      );
-    }
-
-    const gridVersion = error ? "" : data.grid.version;
-    const maxSession = error ? 0 : data.grid.maxSession ?? 0;
-    const sessionCount = error ? 0 : data.grid.sessionCount ?? 0;
-    const nodeCount = error ? 0 : data.grid.nodeCount ?? 0;
-    const connectionError = !!error;
+    const {subheader, error, classes, drawerOpen, toggleDrawer} = this.props;
 
     return (
       <div className={classes.root}>
         <CssBaseline/>
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
-            {!connectionError && (
+            {!error && (
               <IconButton
                 edge="start"
                 color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerOpen}
-                className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                aria-label={drawerOpen ? 'close drawer' : 'open drawer'}
+                onClick={toggleDrawer}
+                className={classes.menuButton}
               >
-                <MenuIcon/>
-              </IconButton>
-            )}
-            {!connectionError && (
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="close drawer"
-                onClick={this.handleDrawerClose}
-                className={clsx(classes.menuButton, !open && classes.menuButtonHidden)}
-              >
-                <ChevronLeftIcon/>
+                {drawerOpen ? (<ChevronLeftIcon/>) : (<MenuIcon/>)}
               </IconButton>
             )}
             <IconButton
@@ -190,7 +100,7 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
               color="inherit"
               aria-label="help"
               href={"#help"}
-              className={clsx(classes.menuButton, !connectionError && classes.menuButtonHidden)}
+              className={clsx(classes.menuButton, !error && classes.menuButtonHidden)}
             >
               <HelpIcon/>
             </IconButton>
@@ -214,15 +124,12 @@ class TopBar extends React.Component<TopBarProps, TopBarState> {
                   Selenium Grid
                 </Typography>
                 <Typography variant="body2">
-                  {error || gridVersion}
+                  {subheader}
                 </Typography>
               </Box>
             </Box>
           </Toolbar>
         </AppBar>
-        {!error && (
-          <NavBar open={open} maxSession={maxSession} sessionCount={sessionCount} nodeCount={nodeCount}/>
-        )}
       </div>
     );
   }
