@@ -15,11 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react';
-import {Box, Container, Link, Typography} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
+import React from 'react';
+import {Box, Container, createStyles, Link, Theme, Typography, withStyles} from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = (theme: Theme) => createStyles({
   root: {
     backgroundColor: theme.palette.secondary.main,
     height: '100%',
@@ -28,42 +27,49 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     justifyContent: "center",
   },
-}));
+});
 
-export default function NoData(props) {
-  const classes = useStyles();
-  const {message} = props;
+type NoDataProps = {
+  message: string;
+  classes: any;
+};
 
-  // noinspection HtmlUnknownAnchorTarget
-  return (
-    <div className={classes.root}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        justifyContent="center"
-      >
-        <Container maxWidth="md">
-          <Typography
-            align="center"
-            color="textPrimary"
-            variant="h1"
-          >
-            {message}
-          </Typography>
-          <Typography
-            align="center"
-            color="textPrimary"
-            variant="h4"
-          >
-            More information about Selenium Grid can be found at the{' '}
-            <Link href="#help">
-              Help
-            </Link>
-            {' '}section.
-          </Typography>
-        </Container>
-      </Box>
-    </div>
-  );
+class NoData extends React.Component<NoDataProps, {}> {
+  render () {
+    const {message, classes} = this.props;
+    // noinspection HtmlUnknownAnchorTarget
+    return (
+      <div className={classes.root}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          height="100%"
+          justifyContent="center"
+        >
+          <Container maxWidth="md">
+            <Typography
+              align="center"
+              color="textPrimary"
+              variant="h1"
+            >
+              {message}
+            </Typography>
+            <Typography
+              align="center"
+              color="textPrimary"
+              variant="h4"
+            >
+              More information about Selenium Grid can be found at the{' '}
+              <Link href="#/help">
+                Help
+              </Link>
+              {' '}section.
+            </Typography>
+          </Container>
+        </Box>
+      </div>
+    );
+  }
 }
+
+export default withStyles(useStyles)(NoData)
