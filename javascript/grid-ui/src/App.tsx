@@ -15,7 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
+import {ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache} from "@apollo/client";
+import {onError} from "@apollo/client/link/error";
 import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import React from "react";
 import ReactModal from "react-modal";
@@ -28,16 +29,24 @@ import Typography from "@material-ui/core/Typography";
 import Sessions from "./screens/Sessions/Sessions";
 import Help from "./screens/Help/Help";
 
-export const client = new ApolloClient({
-  cache: new InMemoryCache(),
+const errorLink = onError(({graphQLErrors, networkError}) => {
+  console.log('GQL ERROR', graphQLErrors, networkError)
+});
+
+const httpLink = new HttpLink({
   uri: GridConfig.serverUri,
+});
+
+export const client = new ApolloClient({
+  link: ApolloLink.from([errorLink, httpLink]),
+  cache: new InMemoryCache(),
 });
 
 function Copyright() {
   // noinspection HtmlUnknownAnchorTarget
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      <Link href="#help">
+      <Link href="#/help">
         Help
       </Link>
       {' - All rights reserved - '}
@@ -49,7 +58,6 @@ function Copyright() {
     </Typography>
   );
 }
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
