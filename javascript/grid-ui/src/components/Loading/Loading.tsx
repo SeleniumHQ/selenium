@@ -15,38 +15,43 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import React from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import {Box, Typography} from "@material-ui/core";
+import {Box, createStyles, Theme, Typography, withStyles} from "@material-ui/core";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = (theme: Theme) => createStyles(
+  {
     root: {
       backgroundColor: theme.palette.secondary.main,
       height: '100%',
       paddingTop: theme.spacing(1),
       width: '100%',
       justifyContent: "center",
-    },
-  }),
-);
+    }
+  });
 
-export default function Loading() {
-  const classes = useStyles();
+type LoadingProps = {
+  classes: any;
+};
 
-  return (
-    <div className={classes.root}>
-      <Box mb={2}>
-        <Typography
-          align="center"
-          color="textPrimary"
-          variant="h3"
-        >
-          Loading...
-        </Typography>
-      </Box>
-      <LinearProgress/>
-    </div>
-  );
+class Loading extends React.Component<LoadingProps, {}>{
+  render() {
+    const {classes} = this.props;
+    return (
+      <div className={classes.root}>
+        <Box mb={2}>
+          <Typography
+            align="center"
+            color="textPrimary"
+            variant="h3"
+          >
+            Loading...
+          </Typography>
+        </Box>
+        <LinearProgress/>
+      </div>
+    );
+  }
 }
+
+export default withStyles(useStyles)(Loading)
