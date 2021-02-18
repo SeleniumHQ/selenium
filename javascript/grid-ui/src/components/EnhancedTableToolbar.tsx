@@ -15,14 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import React from 'react';
+import {Theme, withStyles} from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
 
-const useToolbarStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = (theme: Theme) => (
+  {
     root: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(1),
@@ -30,19 +30,26 @@ const useToolbarStyles = makeStyles((theme: Theme) =>
     title: {
       flex: '1 1 100%',
     },
-  }),
-);
+  });
 
-export default function EnhancedTableToolbar(props) {
-  const classes = useToolbarStyles();
-  const {title} = props;
-  return (
-    <Toolbar
-      className={classes.root}
-    >
-      <Typography className={classes.title} variant="h3" id="tableTitle" component="div">
-        {title}
-      </Typography>
-    </Toolbar>
-  );
+type EnhancedTableToolbarProps = {
+  title: string
+  classes: any;
+};
+
+class EnhancedTableToolbar extends React.Component<EnhancedTableToolbarProps, {}> {
+  render () {
+    const {title, classes} = this.props;
+    return (
+      <Toolbar
+        className={classes.root}
+      >
+        <Typography className={classes.title} variant="h3" id="tableTitle" component="div">
+          {title}
+        </Typography>
+      </Toolbar>
+    );
+  }
 }
+
+export default withStyles(useStyles)(EnhancedTableToolbar)
