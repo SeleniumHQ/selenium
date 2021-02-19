@@ -16,7 +16,6 @@
 // under the License.
 
 import React from 'react';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -29,7 +28,16 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@material-ui/core";
+import {
+  Button, createStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Theme,
+  withStyles
+} from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/Info";
 import browserLogo from "../../util/browser-logo";
 import osLogo from "../../util/os-logo";
@@ -39,7 +47,7 @@ import prettyMilliseconds from "pretty-ms";
 
 interface SessionData {
   id: string,
-  rawCapabilities: string,
+  capabilities: string,
   browserName: string,
   browserVersion: string,
   platformName: string,
@@ -53,7 +61,7 @@ interface SessionData {
 
 function createSessionData(
   id: string,
-  rawCapabilities: string,
+  capabilities: string,
   startTime: string,
   uri: string,
   nodeId: string,
@@ -61,13 +69,13 @@ function createSessionData(
   sessionDurationMillis: number,
   slot: any,
 ): SessionData {
-  const parsedCapabilities = JSON.parse(rawCapabilities);
+  const parsedCapabilities = JSON.parse(capabilities);
   const browserName = parsedCapabilities.browserName;
   const browserVersion = parsedCapabilities.browserVersion ?? parsedCapabilities.version;
   const platformName = parsedCapabilities.platformName ?? parsedCapabilities.platform;
   return {
     id,
-    rawCapabilities,
+    capabilities,
     browserName,
     browserVersion,
     platformName,
@@ -119,14 +127,14 @@ interface HeadCell {
 
 const headCells: HeadCell[] = [
   {id: 'id', numeric: false, label: 'ID'},
-  {id: 'rawCapabilities', numeric: false, label: 'Capabilities'},
+  {id: 'capabilities', numeric: false, label: 'Capabilities'},
   {id: 'startTime', numeric: false, label: 'Start time'},
   {id: 'sessionDurationMillis', numeric: true, label: 'Duration'},
   {id: 'nodeUri', numeric: false, label: 'Node URI'},
 ];
 
 interface EnhancedTableProps {
-  classes: ReturnType<typeof useStyles>;
+  classes: any;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof SessionData) => void;
   order: Order;
   orderBy: string;
@@ -167,8 +175,8 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = (theme: Theme) => createStyles(
+  {
     root: {
       width: '100%',
     },
@@ -209,46 +217,54 @@ const useStyles = makeStyles((theme: Theme) =>
       borderBottomStyle: 'solid',
       borderBottomColor: '#e0e0e0',
     },
-  }),
-);
-
-export default function RunningSessions(props) {
-  const {sessions} = props;
-  const classes = useStyles();
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof SessionData>('startTime');
-  const [selected, setSelected] = React.useState<string[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rowOpen, setRowOpen] = React.useState("");
-  const handleDialogOpen = (rowId: string) => {
-    setRowOpen(rowId);
-  };
-  const handleDialogClose = () => {
-    setRowOpen("");
-  };
-
-  const rows = sessions.map((session) => {
-    return createSessionData(
-      session.id,
-      session.capabilities,
-      session.startTime,
-      session.uri,
-      session.nodeId,
-      session.nodeUri,
-      session.sessionDurationMillis,
-      session.slot,
-    );
   });
 
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof SessionData) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+type RunningSessionsProps = {
+  sessions: SessionData[];
+  classes: any;
+};
+
+type RunningSessionsState = {
+  order: Order;
+  orderBy: keyof SessionData;
+  selected: string[];
+  page: number;
+  dense: boolean;
+  rowsPerPage: number;
+  rowOpen: string;
+}
+
+class RunningSessions extends React.Component<RunningSessionsProps, RunningSessionsState> {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      order: 'asc',
+      orderBy: 'startTime',
+      selected: [],
+      page: 0,
+      dense: false,
+      rowsPerPage: 5,
+      rowOpen: ''
+    }
+  }
+
+  handleDialogOpen = (rowId: string) => {
+    this.setState({rowOpen: rowId});
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+  handleDialogClose = () => {
+    this.setState({rowOpen: ''});
+  };
+
+  handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof SessionData) => {
+    const {orderBy, order} = this.state;
+    const isAsc = orderBy === property && order === 'asc';
+    this.setState({order: (isAsc ? 'desc' : 'asc'), orderBy: property});
+  }
+
+  handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+    const {selected} = this.state;
     const selectedIndex = selected.indexOf(name);
     let newSelected: string[] = [];
 
@@ -264,30 +280,28 @@ export default function RunningSessions(props) {
         selected.slice(selectedIndex + 1),
       );
     }
-    setSelected(newSelected);
+    this.setState({selected: newSelected});
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  handleChangePage = (event: unknown, newPage: number) => {
+    this.setState({page: newPage});
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({rowsPerPage: parseInt(event.target.value, 10), page: 0});
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
+  handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({dense: event.target.checked});
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  isSelected = (name: string) => this.state.selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
-  const displaySessionInfo = (id: string) => {
+  displaySessionInfo = (id: string) => {
     const handleInfoIconClick = () => {
-      handleDialogOpen(id);
+      this.handleDialogOpen(id);
     }
+    const {classes} = this.props;
     return (
       <IconButton className={classes.buttonMargin}
                   onClick={handleInfoIconClick}>
@@ -296,119 +310,140 @@ export default function RunningSessions(props) {
     );
   }
 
-  return (
-    <div className={classes.root}>
-      {rows.length > 0 && (
-        <div>
-          <Paper className={classes.paper}>
-            <EnhancedTableToolbar title={"Running"}/>
-            <TableContainer>
-              <Table
-                className={classes.table}
-                aria-labelledby="tableTitle"
-                size={dense ? 'small' : 'medium'}
-                aria-label="enhanced table"
-              >
-                <EnhancedTableHead
-                  classes={classes}
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                />
-                <TableBody>
-                  {stableSort(rows, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      const isItemSelected = isSelected(row.id as string);
-                      const labelId = `enhanced-table-checkbox-${index}`;
-                      return (
-                        <TableRow
-                          hover
-                          onClick={(event) => handleClick(event, row.id as string)}
-                          role="checkbox"
-                          aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={row.id}
-                          selected={isItemSelected}
-                        >
-                          <TableCell component="th" id={labelId} scope="row">
-                            {row.id}
-                          </TableCell>
-                          <TableCell align="right">
-                            <img
-                              src={osLogo(row.platformName as string)}
-                              className={classes.logo}
-                              alt="OS Logo"
-                            />
-                            <img
-                              src={browserLogo(row.browserName as string)}
-                              className={classes.logo}
-                              alt="Browser Logo"
-                            />
-                            {browserVersion(row.browserVersion as string)}
-                            {displaySessionInfo(row.id as string)}
-                            <Dialog onClose={handleDialogClose} aria-labelledby="session-info-dialog"
-                                    open={rowOpen === row.id}>
-                              <DialogTitle id="session-info-dialog">
-                                <img
-                                  src={osLogo(row.platformName as string)}
-                                  className={classes.logo}
-                                  alt="OS Logo"
-                                />
-                                <img
-                                  src={browserLogo(row.browserName as string)}
-                                  className={classes.logo}
-                                  alt="Browser Logo"
-                                />
-                                {browserVersion(row.browserVersion as string)}
-                              </DialogTitle>
-                              <DialogContent dividers>
-                                <Typography gutterBottom>
-                                  Capabilities:
-                                </Typography>
-                                <Typography gutterBottom component={'span'}>
-                              <pre>
-                                {JSON.stringify(JSON.parse(row.rawCapabilities as string), null, 2)}
-                              </pre>
-                                </Typography>
-                              </DialogContent>
-                              <DialogActions>
-                                <Button onClick={handleDialogClose} color="primary" variant="outlined">
-                                  Close
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
-                          </TableCell>
-                          <TableCell align="right">{row.startTime}</TableCell>
-                          <TableCell align="right">{prettyMilliseconds(Number(row.sessionDurationMillis))}</TableCell>
-                          <TableCell align="right">{row.nodeUri}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{height: (dense ? 33 : 53) * emptyRows}}>
-                      <TableCell colSpan={6}/>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 15]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
+  render () {
+    const {sessions, classes} = this.props;
+    const {dense, order, orderBy, page, rowOpen, rowsPerPage} = this.state;
+
+    const rows = sessions.map((session) => {
+      return createSessionData(
+        session.id,
+        session.capabilities,
+        session.startTime,
+        session.uri,
+        session.nodeId,
+        session.nodeUri,
+        session.sessionDurationMillis,
+        session.slot,
+      );
+    });
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+    return (
+      <div className={classes.root}>
+        {rows.length > 0 && (
+          <div>
+            <Paper className={classes.paper}>
+              <EnhancedTableToolbar title={"Running"}/>
+              <TableContainer>
+                <Table
+                  className={classes.table}
+                  aria-labelledby="tableTitle"
+                  size={dense ? 'small' : 'medium'}
+                  aria-label="enhanced table"
+                >
+                  <EnhancedTableHead
+                    classes={classes}
+                    order={order}
+                    orderBy={orderBy}
+                    onRequestSort={this.handleRequestSort}
+                  />
+                  <TableBody>
+                    {stableSort(rows, getComparator(order, orderBy))
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => {
+                        const isItemSelected = this.isSelected(row.id as string);
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        return (
+                          <TableRow
+                            hover
+                            onClick={(event) => this.handleClick(event, row.id as string)}
+                            role="checkbox"
+                            aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={row.id}
+                            selected={isItemSelected}
+                          >
+                            <TableCell component="th" id={labelId} scope="row">
+                              {row.id}
+                            </TableCell>
+                            <TableCell align="right">
+                              <img
+                                src={osLogo(row.platformName as string)}
+                                className={classes.logo}
+                                alt="OS Logo"
+                              />
+                              <img
+                                src={browserLogo(row.browserName as string)}
+                                className={classes.logo}
+                                alt="Browser Logo"
+                              />
+                              {browserVersion(row.browserVersion as string)}
+                              {this.displaySessionInfo(row.id as string)}
+                              <Dialog onClose={this.handleDialogClose} aria-labelledby="session-info-dialog"
+                                      open={rowOpen === row.id}>
+                                <DialogTitle id="session-info-dialog">
+                                  <img
+                                    src={osLogo(row.platformName as string)}
+                                    className={classes.logo}
+                                    alt="OS Logo"
+                                  />
+                                  <img
+                                    src={browserLogo(row.browserName as string)}
+                                    className={classes.logo}
+                                    alt="Browser Logo"
+                                  />
+                                  {browserVersion(row.browserVersion as string)}
+                                </DialogTitle>
+                                <DialogContent dividers>
+                                  <Typography gutterBottom>
+                                    Capabilities:
+                                  </Typography>
+                                  <Typography gutterBottom component={'span'}>
+                                    <pre>
+                                      {JSON.stringify(JSON.parse(row.capabilities as string), null, 2)}
+                                    </pre>
+                                  </Typography>
+                                </DialogContent>
+                                <DialogActions>
+                                  <Button onClick={this.handleDialogClose} color="primary" variant="outlined">
+                                    Close
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
+                            </TableCell>
+                            <TableCell align="right">{row.startTime}</TableCell>
+                            <TableCell align="right">{prettyMilliseconds(Number(row.sessionDurationMillis))}</TableCell>
+                            <TableCell align="right">{row.nodeUri}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {emptyRows > 0 && (
+                      <TableRow style={{height: (dense ? 33 : 53) * emptyRows}}>
+                        <TableCell colSpan={6}/>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 15]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+            </Paper>
+            <FormControlLabel
+              control={<Switch checked={dense} onChange={this.handleChangeDense}/>}
+              label="Dense padding"
             />
-          </Paper>
-          <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense}/>}
-            label="Dense padding"
-          />
-        </div>
-      )}
-    </div>
-  );
+          </div>
+        )}
+      </div>
+    );
+  }
 }
+
+export default withStyles(useStyles)(RunningSessions)
