@@ -405,7 +405,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                   </Typography>
                                 </DialogContent>
                                 <DialogActions>
-                                  <Button onClick={this.handleDialogClose} color="primary" variant="outlined">
+                                  <Button onClick={this.handleDialogClose} color="primary" variant="contained">
                                     Close
                                   </Button>
                                 </DialogActions>
