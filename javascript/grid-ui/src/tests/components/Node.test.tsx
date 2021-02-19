@@ -51,7 +51,6 @@ const node: NodeInfo = {
 it('renders basic node information', () => {
   render(<Node node={node}/>);
   expect(screen.getByText(node.uri)).toBeInTheDocument();
-  expect(screen.getByText(node.version)).toBeInTheDocument();
   expect(screen.getByText(`Sessions: ${node.sessionCount}`)).toBeInTheDocument();
   expect(screen.getByText(`Max. Concurrency: ${node.maxSession}`)).toBeInTheDocument();
 });

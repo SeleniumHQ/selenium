@@ -45,10 +45,7 @@ const useStyles = (theme: Theme) => createStyles(
       display: 'flex',
       overflow: 'auto',
       flexDirection: 'column',
-    },
-    fixedHeight: {
-      height: 310,
-    },
+    }
   });
 
 const NODES_QUERY = loader("../../graphql/nodes.gql");

@@ -25,7 +25,6 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  GridSize,
   IconButton,
   Theme,
   Typography,
@@ -35,9 +34,9 @@ import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 import NodeInfo from "../../models/node-info";
 import LinearProgress, {LinearProgressProps} from '@material-ui/core/LinearProgress';
-import browserLogo from "../../util/browser-logo";
 import osLogo from "../../util/os-logo";
-import StereotypeInfo from "../../models/stereotype-info";
+import Stereotypes from "./Stereotypes";
+import clsx from 'clsx';
 
 const useStyles = (theme: Theme) => createStyles(
   {
@@ -54,18 +53,14 @@ const useStyles = (theme: Theme) => createStyles(
       height: 32,
       marginRight: 5,
     },
-    browserLogo: {
-      width: 24,
-      height: 24,
-      marginBottom: 5,
-      marginRight: 5,
-    },
     buttonMargin: {
       padding: 1,
     },
-    slotInfo: {
-      marginBottom: 10,
-      marginRight: 0,
+    up: {
+
+    },
+    down: {
+      backgroundColor: theme.palette.grey.A100,
     }
   });
 
@@ -113,38 +108,12 @@ class Node extends React.Component<NodeProps, NodeState> {
     const currentLoad = sessionCount === 0
                         ? 0 :
                         Math.min(((sessionCount / nodeInfo.maxSession) * 100), 100).toFixed(2);
-    // Assuming we will put 3 stereotypes per column.
-    const stereotypeColumns = Math.ceil(nodeInfo.slotStereotypes.length / 3);
-    // Then we need to know how many columns we will display.
-    const columnWidth: GridSize = 12 / stereotypeColumns as any;
 
-    function CreateStereotypeGridItem(slotStereotype: StereotypeInfo, index: any) {
-      return (
-        <Grid container item alignItems='center' spacing={1} key={index}>
-          <Grid item>
-            <img
-              src={browserLogo(slotStereotype.browserName)}
-              className={classes.browserLogo}
-              alt="Browser Logo"
-            />
-          </Grid>
-          <Grid item>
-            <Typography className={classes.slotInfo}>
-              {slotStereotype.slotCount}
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography className={classes.slotInfo}>
-              {slotStereotype.browserVersion}
-            </Typography>
-          </Grid>
-        </Grid>
-      );
-    }
+    const nodeStatusClass = node.status === 'UP' ? classes.up : classes.down;
 
     return (
       <Card
-        className={classes.root}
+        className={clsx(classes.root, nodeStatusClass)}
       >
         <CardContent className={classes.paddingContent}>
           <Grid
@@ -222,39 +191,9 @@ class Node extends React.Component<NodeProps, NodeState> {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography
-                color="textPrimary"
-                gutterBottom
-                variant="h6"
-              >
-                <Box fontWeight="fontWeightBold" mr={1} display='inline'>
-                  Stereotypes
-                </Box>
-              </Typography>
-              <Grid
-                container
-                justify="space-between"
-                spacing={2}
-              >
-                {
-                  Array.from(Array(stereotypeColumns).keys()).map((index) => {
-                    return (
-                      <Grid item xs={columnWidth} key={index}>
-                        {
-                          nodeInfo.slotStereotypes
-                            .sort((a, b) => a.browserName.localeCompare(b.browserName)
-                                            || a.browserVersion.localeCompare(b.browserVersion))
-                            .slice(index * 3, Math.min((index * 3) + 3, nodeInfo.slotStereotypes.length))
-                            .map((slotStereotype: any, idx) => {
-                              return (
-                                CreateStereotypeGridItem(slotStereotype, idx)
-                              )
-                            })}
-                      </Grid>
-                    )
-                  })
-                }
-              </Grid>
+              <Stereotypes stereotypes={nodeInfo.slotStereotypes}/>
+            </Grid>
+            <Grid item xs={12}>
               <Grid
                 container
                 justify="space-between"
@@ -271,24 +210,13 @@ class Node extends React.Component<NodeProps, NodeState> {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={9}>
                   <Box pt={1} mt={2}>
                     <Typography
                       variant="body2"
                       gutterBottom
                     >
                       Max. Concurrency: {nodeInfo.maxSession}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={5}>
-                  <Box pt={1} mt={2}>
-                    <Typography
-                      color="textPrimary"
-                      gutterBottom
-                      variant="caption"
-                    >
-                      {nodeInfo.version}
                     </Typography>
                   </Box>
                 </Grid>
