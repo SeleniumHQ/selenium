@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.RetrySessionRequestException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -32,7 +34,9 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -63,6 +67,10 @@ public class LocalNodeTest {
   private Session session;
   private Secret registrationSecret;
 
+  private static <A, B> EitherAssert<A, B> assertThatEither(Either<A, B> either) {
+    return new EitherAssert<>(either);
+  }
+
   @Before
   public void setUp() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
@@ -74,13 +82,19 @@ public class LocalNodeTest {
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, stereotype, caps, Instant.now())))
         .build();
 
-    CreateSessionResponse sessionResponse = node.newSession(
-        new CreateSessionRequest(
-            ImmutableSet.of(W3C),
-            stereotype,
-            ImmutableMap.of()))
-        .orElseThrow(() -> new AssertionError("Unable to create session"));
-    session = sessionResponse.getSession();
+    Either<WebDriverException, CreateSessionResponse> response = node.newSession(
+      new CreateSessionRequest(
+        ImmutableSet.of(W3C),
+        stereotype,
+        ImmutableMap.of()));
+
+    if (response.isRight()) {
+      CreateSessionResponse sessionResponse = response.right();
+      session = sessionResponse.getSession();
+    } else {
+      throw new AssertionError("Unable to create session" + response.left().getMessage());
+    }
+
   }
 
   @Test
@@ -119,12 +133,26 @@ public class LocalNodeTest {
     node.stop(session.getId()); //stop the default session
 
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
-    Optional<CreateSessionResponse> sessionResponse = node.newSession(
-        new CreateSessionRequest(
-            ImmutableSet.of(W3C),
-            stereotype,
-            ImmutableMap.of()));
-    assertThat(sessionResponse).isEmpty();
+    Either<WebDriverException, CreateSessionResponse> sessionResponse = node.newSession(
+      new CreateSessionRequest(
+        ImmutableSet.of(W3C),
+        stereotype,
+        ImmutableMap.of()));
+    assertThatEither(sessionResponse).isLeft();
+    assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
+  }
+
+  @Test
+  public void cannotCreateNewSessionsOnMaxSessionCount() {
+    Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
+    Either<WebDriverException, CreateSessionResponse> sessionResponse = node.newSession(
+      new CreateSessionRequest(
+        ImmutableSet.of(W3C),
+        stereotype,
+        ImmutableMap.of()));
+
+    assertThatEither(sessionResponse).isLeft();
+    assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
   }
 
   @Test
@@ -188,14 +216,18 @@ public class LocalNodeTest {
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       callables.add(() -> {
-        CreateSessionResponse res = node.newSession(
+        Either<WebDriverException, CreateSessionResponse> response = node.newSession(
           new CreateSessionRequest(
             ImmutableSet.of(W3C),
             caps,
-            ImmutableMap.of()))
-          .orElseThrow(() -> new AssertionError("Unable to create session"));
-        assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
-        return res.getSession().getId();
+            ImmutableMap.of()));
+        if (response.isRight()) {
+          CreateSessionResponse res = response.right();
+          assertThat(res.getSession().getCapabilities().getBrowserName()).isEqualTo("cheese");
+          return res.getSession().getId();
+        } else {
+          throw new AssertionError("Unable to create session" + response.left().getMessage());
+        }
       });
     }
 
