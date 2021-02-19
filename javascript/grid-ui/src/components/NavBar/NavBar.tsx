@@ -30,15 +30,13 @@ import clsx from 'clsx';
 import React from 'react';
 import {
   Box,
-  CircularProgress,
-  CircularProgressProps,
   createStyles,
   Theme,
-  Typography,
   withStyles
 } from "@material-ui/core";
 import {withRouter} from "react-router"
 import {RouteComponentProps} from "react-router-dom";
+import OverallConcurrency from "./OverallConcurrency";
 
 const drawerWidth = 240;
 
@@ -77,35 +75,10 @@ const useStyles = (theme: Theme) => createStyles(
         width: theme.spacing(9),
       },
     },
-    concurrencyBackground: {
-      backgroundColor: theme.palette.secondary.main,
-    },
   });
 
 function ListItemLink(props) {
   return <ListItem button component="a" {...props} />;
-}
-
-function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
-  return (
-    <Box position="relative" display="inline-flex">
-      <CircularProgress variant="determinate" size={80} {...props} />
-      <Box
-        top={0}
-        left={0}
-        bottom={0}
-        right={0}
-        position="absolute"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Typography variant="h4" component="div" color="textSecondary">{`${Math.round(
-          props.value,
-        )}%`}</Typography>
-      </Box>
-    </Box>
-  );
 }
 
 type NavBarProps = RouteComponentProps & {
@@ -120,7 +93,6 @@ class NavBar extends React.Component<NavBarProps, {}> {
 
   render () {
     const {open, maxSession, sessionCount, nodeCount, classes, location} = this.props;
-    const currentLoad = Math.min(((sessionCount / (maxSession === 0 ? 1 : maxSession)) * 100), 100);
 
     // Not showing the overall status when the user is on the Overview page and there is only one node, because polling
     // is not happening at the same time and it could be confusing for the user. So, displaying it when there is more
@@ -165,42 +137,11 @@ class NavBar extends React.Component<NavBarProps, {}> {
         </List>
         <Box flexGrow={1}/>
         {showOverallConcurrency && open && (
-          <Box
-            p={2}
-            m={2}
-            className={classes.concurrencyBackground}
-            data-testid={"overall-concurrency"}
-          >
-            <Typography
-              align="center"
-              gutterBottom
-              variant="h4"
-            >
-              Concurrency
-            </Typography>
-            <Box
-              display="flex"
-              justifyContent="center"
-              mt={2}
-              mb={2}
-              data-testid={"concurrency-usage"}
-            >
-              <CircularProgressWithLabel value={currentLoad}/>
-            </Box>
-            <Typography
-              align="center"
-              variant="h4"
-            >
-              <Box display='inline' data-testid={"session-count"}>
-                {sessionCount}
-              </Box>
-              {' / '}
-              <Box display='inline' data-testid={"max-session"}>
-                {maxSession}
-              </Box>
-            </Typography>
-          </Box>
-        )}
+          <OverallConcurrency
+            sessionCount={sessionCount}
+            maxSession={maxSession}
+          />)
+        }
       </Drawer>
     );
   }
