@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -42,6 +43,9 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.RetrySessionRequestException;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -112,16 +116,41 @@ public class RemoteNode extends Node {
   }
 
   @Override
-  public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, CreateSessionResponse> newSession(
+    CreateSessionRequest sessionRequest) {
     Require.nonNull("Capabilities for session", sessionRequest);
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), req);
     req.setContent(asJson(sessionRequest));
 
-    HttpResponse res = client.with(addSecret).execute(req);
+    HttpResponse httpResponse = client.with(addSecret).execute(req);
 
-    return Optional.ofNullable(Values.get(res, CreateSessionResponse.class));
+    Optional<Map<String, Object>> maybeResponse =
+      Optional.ofNullable(Values.get(httpResponse, Map.class));
+
+    if (maybeResponse.isPresent()) {
+      Map<String, Object> response = maybeResponse.get();
+
+      if (response.containsKey("sessionResponse")) {
+        String rawResponse = JSON.toJson(response.get("sessionResponse"));
+        CreateSessionResponse sessionResponse = JSON.toType(rawResponse, CreateSessionResponse.class);
+        return Either.right(sessionResponse);
+      } else {
+        String rawException = JSON.toJson(response.get("exception"));
+        Map<String, Object> exception = JSON.toType(rawException, Map.class);
+        String errorType = (String) exception.get("error");
+        String errorMessage = (String) exception.get("message");
+
+        if ("org.openqa.selenium.RetrySessionRequestException".contentEquals(errorType)) {
+          return Either.left(new RetrySessionRequestException(errorMessage));
+        } else {
+          return Either.left(new SessionNotCreatedException(errorMessage));
+        }
+      }
+    }
+
+    return Either.left(new SessionNotCreatedException("Error while mapping response from Node"));
   }
 
   @Override

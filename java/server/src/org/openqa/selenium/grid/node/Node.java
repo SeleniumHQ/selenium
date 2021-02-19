@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.security.RequiresSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
@@ -40,6 +41,7 @@ import org.openqa.selenium.remote.locators.CustomLocator;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -203,7 +205,7 @@ public abstract class Node implements HasReadyState, Routable {
     return OS_INFO;
   }
 
-  public abstract Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
+  public abstract Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
 
   public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
