@@ -42,9 +42,7 @@ goog.require('goog.userAgent.product.isVersion');
  *     than the given version.
  */
 bot.userAgent.isEngineVersion = function (version) {
-  if (bot.userAgent.FIREFOX_EXTENSION) {
-    return bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_(version);
-  } else if (goog.userAgent.IE) {
+  if (goog.userAgent.IE) {
     return goog.string.compareVersions(
         /** @type {number} */(goog.userAgent.DOCUMENT_MODE), version) >= 0;
   } else {
@@ -68,9 +66,7 @@ bot.userAgent.isEngineVersion = function (version) {
  *     than the given version.
  */
 bot.userAgent.isProductVersion = function (version) {
-  if (bot.userAgent.FIREFOX_EXTENSION) {
-    return bot.userAgent.FIREFOX_EXTENSION_IS_PRODUCT_VERSION_(version);
-  } else if (goog.userAgent.product.ANDROID) {
+  if (goog.userAgent.product.ANDROID) {
     return goog.string.compareVersions(
       bot.userAgent.ANDROID_VERSION_, version) >= 0;
   } else {
@@ -78,69 +74,6 @@ bot.userAgent.isProductVersion = function (version) {
   }
 };
 
-
-/**
- * When we are in a Firefox extension, this is a function that accepts a version
- * and returns whether the version of Gecko we are on is the same or higher
- * than the given version. When we are not in a Firefox extension, this is null.
- * @private {(undefined|function((string|number)): boolean)}
- */
-bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_;
-
-
-/**
- * When we are in a Firefox extension, this is a function that accepts a version
- * and returns whether the version of Firefox we are on is the same or higher
- * than the given version. When we are not in a Firefox extension, this is null.
- * @private {(undefined|function((string|number)): boolean)}
- */
-bot.userAgent.FIREFOX_EXTENSION_IS_PRODUCT_VERSION_;
-
-
-/**
- * Whether we are in a Firefox extension.
- *
- * @const
- * @type {boolean}
- */
-bot.userAgent.FIREFOX_EXTENSION = (function () {
-  // False if this browser is not a Gecko browser.
-  if (!goog.userAgent.GECKO) {
-    return false;
-  }
-
-  // False if this code isn't running in an extension.
-  var Components = goog.global.Components;
-  if (!Components) {
-    return false;
-  }
-  try {
-    if (!Components['classes']) {
-      return false;
-    }
-  } catch (e) {
-    return false;
-  }
-
-  // Populate the version checker functions.
-  var cc = Components['classes'];
-  var ci = Components['interfaces'];
-  var versionComparator = cc['@mozilla.org/xpcom/version-comparator;1'][
-    'getService'](ci['nsIVersionComparator']);
-  var appInfo = cc['@mozilla.org/xre/app-info;1']['getService'](
-    ci['nsIXULAppInfo']);
-  var geckoVersion = appInfo['platformVersion'];
-  var firefoxVersion = appInfo['version'];
-
-  bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_ = function (version) {
-    return versionComparator.compare(geckoVersion, '' + version) >= 0;
-  };
-  bot.userAgent.FIREFOX_EXTENSION_IS_PRODUCT_VERSION_ = function (version) {
-    return versionComparator.compare(firefoxVersion, '' + version) >= 0;
-  };
-
-  return true;
-})();
 
 /**
  * Whether we are a WebExtension.
