@@ -19,24 +19,18 @@ import {
   Box,
   createStyles,
   Grid,
-  GridSize,
   Theme,
   Typography,
   withStyles
 } from '@material-ui/core';
 import React from 'react';
-import browserLogo from "../../util/browser-logo";
 import StereotypeInfo from "../../models/stereotype-info";
+import BrowserLogo from "../common/BrowserLogo";
 
 const useStyles = (theme: Theme) => createStyles(
   {
-    browserLogo: {
-      width: 24,
-      height: 24,
-      marginBottom: 5,
-    },
     slotInfo: {
-      marginBottom: 10,
+      marginBottom: 5,
       marginRight: 10,
     },
   });
@@ -50,21 +44,13 @@ class Stereotypes extends React.Component<StereotypesProps, {}> {
 
   render () {
     const {stereotypes, classes} = this.props;
-    // Assuming we will put 3 stereotypes per column.
-    const stereotypeColumns = Math.ceil(stereotypes.length / 3);
-    // Then we need to know how many columns we will display.
-    const columnWidth: GridSize = 12 / stereotypeColumns as any;
 
     function CreateStereotypeGridItem(slotStereotype: StereotypeInfo, index: any) {
       return (
         <Grid item key={index}>
           <Grid container alignItems='center' spacing={1}>
             <Grid item>
-              <img
-                src={browserLogo(slotStereotype.browserName)}
-                className={classes.browserLogo}
-                alt="Browser Logo"
-              />
+              <BrowserLogo browserName={slotStereotype.browserName}/>
             </Grid>
             <Grid item>
               <Typography className={classes.slotInfo}>

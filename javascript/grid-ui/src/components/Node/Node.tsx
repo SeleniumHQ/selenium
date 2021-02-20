@@ -18,7 +18,8 @@
 import {
   Box,
   Card,
-  CardContent, createStyles,
+  CardContent,
+  createStyles,
   Grid,
   Theme,
   Typography,
@@ -26,11 +27,12 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import NodeInfo from "../../models/node-info";
-import osLogo from "../../util/os-logo";
 import NodeDetailsDialog from "./NodeDetailsDialog";
 import NodeLoad from "./NodeLoad";
 import Stereotypes from "./Stereotypes";
 import clsx from 'clsx';
+import OsLogo from "../common/OsLogo";
+import {Size} from "../../models/size";
 
 const useStyles = (theme: Theme) => createStyles(
   {
@@ -93,11 +95,7 @@ class Node extends React.Component<NodeProps, {}> {
                 gutterBottom
                 variant="h6"
               >
-                <img
-                  src={osLogo(node.osInfo.name)}
-                  className={classes.osLogo}
-                  alt="OS Logo"
-                />
+                <OsLogo osName={node.osInfo.name}/>
                 <NodeDetailsDialog node={node}/>
               </Typography>
             </Grid>

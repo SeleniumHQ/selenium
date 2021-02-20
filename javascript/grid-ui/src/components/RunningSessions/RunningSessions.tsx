@@ -29,7 +29,8 @@ import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import {
-  Button, createStyles,
+  Button,
+  createStyles,
   Dialog,
   DialogActions,
   DialogContent,
@@ -39,11 +40,12 @@ import {
   withStyles
 } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/Info";
-import browserLogo from "../../util/browser-logo";
-import osLogo from "../../util/os-logo";
 import browserVersion from "../../util/browser-version";
 import EnhancedTableToolbar from "../EnhancedTableToolbar";
 import prettyMilliseconds from "pretty-ms";
+import BrowserLogo from "../common/BrowserLogo";
+import OsLogo from "../common/OsLogo";
+import {Size} from "../../models/size";
 
 interface SessionData {
   id: string,
@@ -197,12 +199,6 @@ const useStyles = (theme: Theme) => createStyles(
       position: 'absolute',
       top: 20,
       width: 1,
-    },
-    logo: {
-      width: 24,
-      height: 24,
-      marginBottom: 5,
-      marginRight: 5,
     },
     buttonMargin: {
       padding: 1,
@@ -367,31 +363,15 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                               {row.id}
                             </TableCell>
                             <TableCell align="right">
-                              <img
-                                src={osLogo(row.platformName as string)}
-                                className={classes.logo}
-                                alt="OS Logo"
-                              />
-                              <img
-                                src={browserLogo(row.browserName as string)}
-                                className={classes.logo}
-                                alt="Browser Logo"
-                              />
+                              <OsLogo osName={row.platformName as string} size={Size.S}/>
+                              <BrowserLogo browserName={row.browserName as string}/>
                               {browserVersion(row.browserVersion as string)}
                               {this.displaySessionInfo(row.id as string)}
                               <Dialog onClose={this.handleDialogClose} aria-labelledby="session-info-dialog"
                                       open={rowOpen === row.id}>
                                 <DialogTitle id="session-info-dialog">
-                                  <img
-                                    src={osLogo(row.platformName as string)}
-                                    className={classes.logo}
-                                    alt="OS Logo"
-                                  />
-                                  <img
-                                    src={browserLogo(row.browserName as string)}
-                                    className={classes.logo}
-                                    alt="Browser Logo"
-                                  />
+                                  <OsLogo osName={row.platformName as string}/>
+                                  <BrowserLogo browserName={row.browserName as string}/>
                                   {browserVersion(row.browserVersion as string)}
                                 </DialogTitle>
                                 <DialogContent dividers>

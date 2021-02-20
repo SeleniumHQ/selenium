@@ -22,7 +22,7 @@ import ReactModal from "react-modal";
 import {GridConfig} from "./config";
 import TopBar from "./components/TopBar/TopBar";
 import Overview from "./screens/Overview/Overview";
-import Footer from "./components/common/Footer";
+import Footer from "./components/Footer/Footer";
 import Container from "@material-ui/core/Container";
 import Sessions from "./screens/Sessions/Sessions";
 import Help from "./screens/Help/Help";

@@ -22,23 +22,20 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle, IconButton,
+  DialogTitle,
+  IconButton,
   Theme,
   Typography,
   withStyles
 } from '@material-ui/core';
 import React from 'react';
 import NodeInfo from "../../models/node-info";
-import osLogo from "../../util/os-logo";
 import InfoIcon from "@material-ui/icons/Info";
+import OsLogo from "../common/OsLogo";
+import {Size} from "../../models/size";
 
 const useStyles = (theme: Theme) => createStyles(
   {
-    osLogo: {
-      width: 32,
-      height: 32,
-      marginRight: 5,
-    },
     buttonMargin: {
       padding: 1,
     },
@@ -81,11 +78,7 @@ class NodeDetailsDialog extends React.Component<NodeDetailsDialogProps, {}> {
         </IconButton>
         <Dialog onClose={this.handleDialogClose} aria-labelledby="node-info-dialog" open={open}>
           <DialogTitle id="node-info-dialog">
-            <img
-              src={osLogo(nodeInfo.osInfo.name)}
-              className={classes.osLogo}
-              alt="OS Logo"
-            />
+            <OsLogo osName={nodeInfo.osInfo.name}/>
             <Box fontWeight="fontWeightBold" mr={1} display='inline'>
               URI:
             </Box>
