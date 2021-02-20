@@ -15,25 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react';
-import Node from "../../components/Node/Node";
-import NodeInfo from "../../models/node-info";
-import OsInfo from "../../models/os-info";
-import StereotypeInfo from "../../models/stereotype-info";
-import {render, screen} from '@testing-library/react';
-import userEvent from "@testing-library/user-event";
+import * as React from 'react'
+import Node from '../../components/Node/Node'
+import NodeInfo from '../../models/node-info'
+import OsInfo from '../../models/os-info'
+import StereotypeInfo from '../../models/stereotype-info'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 const osInfo: OsInfo = {
   name: 'Mac OS X',
   version: '10.16',
-  arch: 'x86_64',
+  arch: 'x86_64'
 }
 
 const slotStereotype: StereotypeInfo = {
   browserName: 'chrome',
   browserVersion: 'v. 88',
   slotCount: 12,
-  rawData: [],
+  rawData: []
 }
 
 const node: NodeInfo = {
@@ -45,23 +45,27 @@ const node: NodeInfo = {
   version: '4.0.0-beta-1',
   osInfo: osInfo,
   sessionCount: 2,
-  slotStereotypes: [slotStereotype],
-};
+  slotStereotypes: [slotStereotype]
+}
 
 it('renders basic node information', () => {
-  render(<Node node={node}/>);
-  expect(screen.getByText(node.uri)).toBeInTheDocument();
-  expect(screen.getByText(`Sessions: ${node.sessionCount}`)).toBeInTheDocument();
-  expect(screen.getByText(`Max. Concurrency: ${node.maxSession}`)).toBeInTheDocument();
-});
+  render(<Node node={node} />)
+  expect(screen.getByText(node.uri)).toBeInTheDocument()
+  expect(
+    screen.getByText(`Sessions: ${node.sessionCount}`)).toBeInTheDocument()
+  expect(screen.getByText(
+    `Max. Concurrency: ${node.maxSession}`)).toBeInTheDocument()
+})
 
 it('renders detailed node information', () => {
-  render(<Node node={node}/>);
-  const leftClick = {button: 0};
+  render(<Node node={node} />)
+  const leftClick = { button: 0 }
   userEvent.click(screen.getByRole('button'), leftClick)
-  expect(screen.getByText(`Node Id: ${node.id}`)).toBeInTheDocument();
-  expect(screen.getByText(`Total slots: ${node.slotCount}`)).toBeInTheDocument();
-  expect(screen.getByText(`OS Arch: ${node.osInfo.arch}`)).toBeInTheDocument();
-  expect(screen.getByText(`OS Name: ${node.osInfo.name}`)).toBeInTheDocument();
-  expect(screen.getByText(`OS Version: ${node.osInfo.version}`)).toBeInTheDocument();
-});
+  expect(screen.getByText(`Node Id: ${node.id}`)).toBeInTheDocument()
+  expect(
+    screen.getByText(`Total slots: ${node.slotCount}`)).toBeInTheDocument()
+  expect(screen.getByText(`OS Arch: ${node.osInfo.arch}`)).toBeInTheDocument()
+  expect(screen.getByText(`OS Name: ${node.osInfo.name}`)).toBeInTheDocument()
+  expect(
+    screen.getByText(`OS Version: ${node.osInfo.version}`)).toBeInTheDocument()
+})

@@ -16,9 +16,9 @@
 // under the License.
 
 interface SlotInfo {
-  id: string;
-  stereotype: string;
-  lastStarted: string;
+  id: string
+  stereotype: string
+  lastStarted: string
 }
 
-export default SlotInfo;
+export default SlotInfo

@@ -18,47 +18,46 @@
 import {
   Box,
   Grid,
-  Typography,
-} from '@material-ui/core';
-import React from 'react';
-import NodeInfo from "../../models/node-info";
-import LinearProgress, {LinearProgressProps} from '@material-ui/core/LinearProgress';
+  Typography
+} from '@material-ui/core'
+import React, { ReactNode } from 'react'
+import NodeInfo from '../../models/node-info'
+import LinearProgress, { LinearProgressProps } from '@material-ui/core/LinearProgress'
 
-function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
+function LinearProgressWithLabel (props: LinearProgressProps & { value: number }): JSX.Element {
   return (
-    <Box display="flex" alignItems="center">
-      <Box width="100%" mr={1}>
-        <LinearProgress variant="determinate" {...props} />
+    <Box display='flex' alignItems='center'>
+      <Box width='100%' mr={1}>
+        <LinearProgress variant='determinate' {...props} />
       </Box>
       <Box minWidth={35}>
-        <Typography variant="body2" color="textSecondary">{`${Math.round(
-          props.value,
-        )}%`}</Typography>
+        <Typography variant='body2' color='textSecondary'>
+          {`${Math.round(props.value)}%`}
+        </Typography>
       </Box>
     </Box>
-  );
+  )
 }
 
-class NodeLoad extends React.Component<{node: NodeInfo}, {}> {
-
-  render () {
-    const {node} = this.props;
-    const sessionCount = node.sessionCount ?? 0;
+class NodeLoad extends React.Component<{ node: NodeInfo }, {}> {
+  render (): ReactNode {
+    const { node } = this.props
+    const sessionCount = node.sessionCount ?? 0
     const currentLoad = sessionCount === 0
-                        ? 0 :
-                        Math.min(((sessionCount / node.maxSession) * 100), 100).toFixed(2);
+      ? 0
+      : Math.min(((sessionCount / node.maxSession) * 100), 100).toFixed(2)
 
     return (
       <Grid item xs={12}>
         <Grid
           container
-          justify="space-between"
+          justify='space-between'
           spacing={2}
         >
           <Grid item xs={3}>
             <Box pt={1} mt={2}>
               <Typography
-                variant="body2"
+                variant='body2'
                 gutterBottom
               >
                 Sessions: {sessionCount}
@@ -68,7 +67,7 @@ class NodeLoad extends React.Component<{node: NodeInfo}, {}> {
           <Grid item xs={9}>
             <Box pt={1} mt={2}>
               <Typography
-                variant="body2"
+                variant='body2'
                 gutterBottom
               >
                 Max. Concurrency: {node.maxSession}
@@ -76,11 +75,11 @@ class NodeLoad extends React.Component<{node: NodeInfo}, {}> {
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <LinearProgressWithLabel value={Number(currentLoad)}/>
+            <LinearProgressWithLabel value={Number(currentLoad)} />
           </Grid>
         </Grid>
       </Grid>
-    );
+    )
   }
 }
 

@@ -16,10 +16,10 @@
 // under the License.
 
 interface StereotypeInfo {
-  browserName: string;
-  browserVersion: string;
-  slotCount: number;
-  rawData: any;
+  browserName: string
+  browserVersion: string
+  slotCount: number
+  rawData: any
 }
 
-export default StereotypeInfo;
+export default StereotypeInfo

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from 'react';
+import React, { ReactNode } from 'react'
 import {
   Box,
   CircularProgress,
@@ -24,87 +24,87 @@ import {
   Theme,
   Typography,
   withStyles
-} from "@material-ui/core";
-import {RouteComponentProps} from "react-router-dom";
+} from '@material-ui/core'
+import { StyleRules } from '@material-ui/core/styles'
 
-const useStyles = (theme: Theme) => createStyles(
+const useStyles = (theme: Theme): StyleRules => createStyles(
   {
     concurrencyBackground: {
-      backgroundColor: theme.palette.secondary.main,
-    },
-  });
+      backgroundColor: theme.palette.secondary.main
+    }
+  })
 
-function CircularProgressWithLabel(props: CircularProgressProps & { value: number }) {
+function CircularProgressWithLabel (props: CircularProgressProps & { value: number }): JSX.Element {
   return (
-    <Box position="relative" display="inline-flex">
-      <CircularProgress variant="determinate" size={80} {...props} />
+    <Box position='relative' display='inline-flex'>
+      <CircularProgress variant='determinate' size={80} {...props} />
       <Box
         top={0}
         left={0}
         bottom={0}
         right={0}
-        position="absolute"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
+        position='absolute'
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
       >
-        <Typography variant="h4" component="div" color="textSecondary">{`${Math.round(
-          props.value,
-        )}%`}</Typography>
+        <Typography variant='h4' component='div' color='textSecondary'>
+          {`${Math.round(props.value)}%`}
+        </Typography>
       </Box>
     </Box>
-  );
+  )
 }
 
-type OverallConcurrencyProps = {
-  sessionCount: number;
-  maxSession: number;
-  classes: any;
-};
+interface OverallConcurrencyProps {
+  sessionCount: number
+  maxSession: number
+  classes: any
+}
 
 class OverallConcurrency extends React.Component<OverallConcurrencyProps, {}> {
-
-  render () {
-    const {maxSession, sessionCount, classes} = this.props;
-    const currentLoad = Math.min(((sessionCount / (maxSession === 0 ? 1 : maxSession)) * 100), 100);
+  render (): ReactNode {
+    const { maxSession, sessionCount, classes } = this.props
+    const currentLoad = Math.min(
+      ((sessionCount / (maxSession === 0 ? 1 : maxSession)) * 100), 100)
 
     return (
       <Box
         p={2}
         m={2}
         className={classes.concurrencyBackground}
-        data-testid={"overall-concurrency"}
+        data-testid='overall-concurrency'
       >
         <Typography
-          align="center"
+          align='center'
           gutterBottom
-          variant="h4"
+          variant='h4'
         >
           Concurrency
         </Typography>
         <Box
-          display="flex"
-          justifyContent="center"
+          display='flex'
+          justifyContent='center'
           mt={2}
           mb={2}
-          data-testid={"concurrency-usage"}
+          data-testid='concurrency-usage'
         >
-          <CircularProgressWithLabel value={currentLoad}/>
+          <CircularProgressWithLabel value={currentLoad} />
         </Box>
         <Typography
-          align="center"
-          variant="h4"
+          align='center'
+          variant='h4'
         >
-          <Box display='inline' data-testid={"session-count"}>
+          <Box display='inline' data-testid='session-count'>
             {sessionCount}
           </Box>
           {' / '}
-          <Box display='inline' data-testid={"max-session"}>
+          <Box display='inline' data-testid='max-session'>
             {maxSession}
           </Box>
         </Typography>
       </Box>
-    );
+    )
   }
 }
 

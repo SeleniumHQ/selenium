@@ -15,47 +15,47 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react';
-import {createStyles, Theme} from '@material-ui/core/styles';
-import {List, ListItem, withStyles} from "@material-ui/core";
-import EnhancedTableToolbar from "../EnhancedTableToolbar";
+import * as React from 'react'
+import { createStyles, StyleRules, Theme } from '@material-ui/core/styles'
+import { List, ListItem, withStyles } from '@material-ui/core'
+import EnhancedTableToolbar from '../EnhancedTableToolbar'
+import { ReactNode } from 'react'
 
-const useStyles = (theme: Theme) => createStyles(
+const useStyles = (theme: Theme): StyleRules => createStyles(
   {
     root: {
       width: '100%',
-      paddingTop: 30,
+      paddingTop: 30
     },
     queueList: {
       minWidth: 750,
       backgroundColor: theme.palette.background.paper,
-      marginBottom: 20,
+      marginBottom: 20
     },
     queueListItem: {
       borderBottomWidth: 1,
       borderBottomStyle: 'solid',
-      borderBottomColor: '#e0e0e0',
-    },
-  });
+      borderBottomColor: '#e0e0e0'
+    }
+  })
 
-type QueuedSessionsProps = {
-  sessionQueueRequests: string[];
-  classes: any;
-};
+interface QueuedSessionsProps {
+  sessionQueueRequests: string[]
+  classes: any
+}
 
 class QueuedSessions extends React.Component<QueuedSessionsProps, {}> {
-
-  render () {
-    const {sessionQueueRequests, classes} = this.props;
+  render (): ReactNode {
+    const { sessionQueueRequests, classes } = this.props
     const queue = sessionQueueRequests.map((queuedSession) => {
-      return JSON.stringify(JSON.parse(queuedSession));
-    });
+      return JSON.stringify(JSON.parse(queuedSession))
+    })
     return (
       <div className={classes.root}>
         {queue.length > 0 && (
           <div className={classes.queueList}>
-            <EnhancedTableToolbar title={`Queue (${queue.length})`}/>
-            <List component="nav" aria-label="main mailbox folders">
+            <EnhancedTableToolbar title={`Queue (${queue.length})`} />
+            <List>
               {queue.map((queueItem, index) => {
                 return (
                   <ListItem className={classes.queueListItem} key={index}>
@@ -69,7 +69,7 @@ class QueuedSessions extends React.Component<QueuedSessionsProps, {}> {
           </div>
         )}
       </div>
-    );
+    )
   }
 }
 

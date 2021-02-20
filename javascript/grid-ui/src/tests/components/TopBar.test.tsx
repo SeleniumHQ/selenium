@@ -15,45 +15,47 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react';
-import TopBar from "../../components/TopBar/TopBar";
-import {render, screen} from '@testing-library/react';
-import userEvent from "@testing-library/user-event";
+import * as React from 'react'
+import TopBar from '../../components/TopBar/TopBar'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
-const leftClick = {button: 0};
+const leftClick = { button: 0 }
 
 it('renders basic information', () => {
-  const subheaderText = "Hello, world!";
-  render(<TopBar subheader={subheaderText} error={false} drawerOpen={true} toggleDrawer={() => {}}/>);
-  expect(screen.getByText('Selenium Grid')).toBeInTheDocument();
-  expect(screen.getByRole('img')).toHaveAttribute('alt', 'Selenium Grid Logo');
-  expect(screen.getByText(subheaderText)).toBeInTheDocument();
-});
+  const subheaderText = 'Hello, world!'
+  const handleClick = jest.fn()
+  render(<TopBar subheader={subheaderText} drawerOpen toggleDrawer={handleClick} />)
+  expect(screen.getByText('Selenium Grid')).toBeInTheDocument()
+  expect(screen.getByRole('img')).toHaveAttribute('alt', 'Selenium Grid Logo')
+  expect(screen.getByText(subheaderText)).toBeInTheDocument()
+})
 
 it('can toggle drawer if error flag is not set and the drawer is open', () => {
   const handleClick = jest.fn()
-  render(<TopBar subheader={'4.0.0'} error={false} drawerOpen={true} toggleDrawer={handleClick}/>);
+  render(<TopBar subheader='4.0.0' drawerOpen toggleDrawer={handleClick} />)
   const button = screen.getByRole('button')
   expect(button.getAttribute('aria-label')).toBe('close drawer')
-  userEvent.click(button, leftClick);
+  userEvent.click(button, leftClick)
   expect(handleClick).toHaveBeenCalledTimes(1)
-});
+})
 
-it('can toggle drawer if error flag is not set and the drawer is closed', () => {
-  const handleClick = jest.fn()
-  render(<TopBar subheader={'4.0.0'} error={false} drawerOpen={false} toggleDrawer={handleClick}/>);
-  const button = screen.getByRole('button')
-  expect(button.getAttribute('aria-label')).toBe('open drawer')
-  userEvent.click(button, leftClick);
-  expect(handleClick).toHaveBeenCalledTimes(1)
-});
+it('can toggle drawer if error flag is not set and the drawer is closed',
+  () => {
+    const handleClick = jest.fn()
+    render(<TopBar subheader='4.0.0' toggleDrawer={handleClick} />)
+    const button = screen.getByRole('button')
+    expect(button.getAttribute('aria-label')).toBe('open drawer')
+    userEvent.click(button, leftClick)
+    expect(handleClick).toHaveBeenCalledTimes(1)
+  })
 
 it('should not toggle drawer if error flag is set', () => {
   const handleClick = jest.fn()
-  render(<TopBar subheader={'4.0.0'} error={true} drawerOpen={false} toggleDrawer={handleClick}/>);
+  render(<TopBar subheader='4.0.0' error toggleDrawer={handleClick} />)
   expect(screen.queryByRole('button')).not.toBeInTheDocument()
   const link = screen.getByRole('link')
   expect(link.getAttribute('href')).toBe('#help')
-  userEvent.click(link, leftClick);
+  userEvent.click(link, leftClick)
   expect(handleClick).toHaveBeenCalledTimes(0)
-});
+})

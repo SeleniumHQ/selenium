@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-export default {
+const typogpaphy = {
   h1: {
     fontWeight: 500,
     fontSize: 35,
@@ -51,6 +51,8 @@ export default {
   },
   fontFamily: [
     'Encode Sans',
-    'sans-serif',
-  ].join(','),
-};
+    'sans-serif'
+  ].join(',')
+}
+
+export default typogpaphy

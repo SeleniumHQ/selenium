@@ -15,12 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from 'react';
-import {Box, Container, Link, Typography} from "@material-ui/core";
-import {createStyles, Theme, withStyles} from "@material-ui/core/styles";
-import {RouteComponentProps, withRouter} from "react-router-dom";
+import React, { ReactNode } from 'react'
+import { Box, Container, Link, Typography } from '@material-ui/core'
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles
+} from '@material-ui/core/styles'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 
-const useStyles = (theme: Theme) => createStyles(
+const useStyles = (theme: Theme): StyleRules => createStyles(
   {
     root: {
       backgroundColor: theme.palette.secondary.main,
@@ -28,40 +33,40 @@ const useStyles = (theme: Theme) => createStyles(
       paddingBottom: theme.spacing(3),
       paddingTop: theme.spacing(3),
       width: '100%',
-      justifyContent: "center",
+      justifyContent: 'center'
     },
     image: {
       marginTop: 50,
       display: 'inline-block',
       maxWidth: '100%',
       width: 560
-    },
-  });
+    }
+  })
 
-type HelpProps = RouteComponentProps & {
-  classes: any;
-};
+interface HelpProps extends RouteComponentProps {
+  classes: any
+}
 
 class Help extends React.Component<HelpProps, {}> {
   // noinspection HtmlUnknownAnchorTarget
-  render() {
-    const {classes, location} = this.props;
+  render (): ReactNode {
+    const { classes, location } = this.props
 
     return (
       <div className={classes.root}>
         <Box
-          display="flex"
-          flexDirection="column"
-          height="100%"
-          justifyContent="center"
+          display='flex'
+          flexDirection='column'
+          height='100%'
+          justifyContent='center'
         >
-          <Container maxWidth="md">
-            {location.pathname !== "/help" && (
+          <Container maxWidth='md'>
+            {location.pathname !== '/help' && (
               <Box mt={2}>
                 <Typography
-                  align="center"
-                  color="textPrimary"
-                  variant="h2"
+                  align='center'
+                  color='textPrimary'
+                  variant='h2'
                 >
                   Whoops! The URL specified routes to this help page.
                 </Typography>
@@ -69,54 +74,66 @@ class Help extends React.Component<HelpProps, {}> {
             )}
             <Box mt={6}>
               <Typography
-                align="center"
-                color="textPrimary"
-                variant="h3"
+                align='center'
+                color='textPrimary'
+                variant='h3'
               >
                 More information about Selenium Grid can be found at the{' '}
-                <Link href="https://www.selenium.dev/documentation/en/grid/" target={"_blank"}>
+                <Link
+                  href='https://www.selenium.dev/documentation/en/grid/'
+                  target='_blank' rel='noreferrer'
+                >
                   documentation
                 </Link>.
               </Typography>
             </Box>
             <Box mt={6}>
               <Typography
-                align="center"
-                color="textPrimary"
-                variant="h3"
+                align='center'
+                color='textPrimary'
+                variant='h3'
               >
                 Please report bugs and issues to the Selenium{' '}
-                <Link href="https://github.com/SeleniumHQ/selenium/issues/new/choose" target={"_blank"}>
+                <Link
+                  href='https://github.com/SeleniumHQ/selenium/issues/new/choose'
+                  target='_blank' rel='noreferrer'
+                >
                   issue tracker
                 </Link>.
               </Typography>
             </Box>
             <Box mt={6}>
               <Typography
-                align="center"
-                color="textPrimary"
-                variant="h3"
+                align='center'
+                color='textPrimary'
+                variant='h3'
               >
-                For questions and help, check the different support channels on our{' '}
-                <Link href="https://www.selenium.dev/support/" target={"_blank"}>
+                For questions and help, check the different support channels on
+                our{' '}
+                <Link
+                  href='https://www.selenium.dev/support/'
+                  target='_blank' rel='noreferrer'
+                >
                   website
                 </Link>.
               </Typography>
             </Box>
             <Box m={10}>
               <Typography
-                align="center"
-                color="textPrimary"
-                variant="h4"
+                align='center'
+                color='textPrimary'
+                variant='h4'
               >
                 Selenium is made possible through the efforts of our open source
                 community, contributions from these{' '}
-                <Link href="https://www.selenium.dev/documentation/en/front_matter/copyright_and_attributions/"
-                      target={"_blank"}>
+                <Link
+                  href='https://www.selenium.dev/documentation/en/front_matter/copyright_and_attributions/'
+                  target='_blank' rel='noreferrer'
+                >
                   people
                 </Link>
                 , and our{' '}
-                <Link href="https://www.selenium.dev/sponsors/" target={"_blank"}>
+                <Link href='https://www.selenium.dev/sponsors/' target='_blank' rel='noreferrer'>
                   sponsors
                 </Link>.
               </Typography>
@@ -124,7 +141,7 @@ class Help extends React.Component<HelpProps, {}> {
           </Container>
         </Box>
       </div>
-    );
+    )
   }
 }
 

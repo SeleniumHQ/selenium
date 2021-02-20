@@ -17,17 +17,17 @@
  * under the License.
  */
 
-import SlotInfo from "./slot-info";
+import SlotInfo from './slot-info'
 
 interface SessionInfo {
-  id: string;
-  capabilities: string;
-  startTime: string;
-  uri: string;
-  nodeId: string;
-  nodeUri: string;
-  sessionDurationMillis: string;
-  slot: SlotInfo;
+  id: string
+  capabilities: string
+  startTime: string
+  uri: string
+  nodeId: string
+  nodeUri: string
+  sessionDurationMillis: string
+  slot: SlotInfo
 }
 
-export default SessionInfo;
+export default SessionInfo

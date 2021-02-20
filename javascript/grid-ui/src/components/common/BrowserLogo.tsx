@@ -15,65 +15,65 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from "react";
-import {Theme, withStyles} from "@material-ui/core/styles";
-import browserLogo from "../../util/browser-logo";
-import {Size} from "../../models/size";
-import clsx from "clsx";
+import React, { ReactNode } from 'react'
+import { StyleRules, Theme, withStyles } from '@material-ui/core/styles'
+import browserLogo from '../../util/browser-logo'
+import { Size } from '../../models/size'
+import clsx from 'clsx'
 
-const useStyles = (theme: Theme) => (
+const useStyles = (theme: Theme): StyleRules => (
   {
     logo: {
-      marginRight: 0,
+      marginRight: 0
     },
     small: {
       width: 24,
-      height: 24,
+      height: 24
     },
     medium: {
       width: 32,
-      height: 32,
+      height: 32
     },
     large: {
       width: 48,
-      height: 48,
-    },
-  });
+      height: 48
+    }
+  })
 
-type BrowserLogoProps = {
-  browserName: string;
-  size: Size;
-  classes: any;
-};
+interface BrowserLogoProps {
+  browserName: string
+  size: Size
+  classes: any
+}
 
 class BrowserLogo extends React.Component<BrowserLogoProps, {}> {
-
   static defaultProps = {
     size: Size.S
-  };
+  }
 
-  render() {
-    const {browserName, size, classes} = this.props;
+  render (): ReactNode {
+    const { browserName, size, classes } = this.props
 
-    function sizeMap(size) {
+    function sizeMap (size): string {
       if (size === Size.S) {
-        return classes.small;
+        return classes.small
       }
       if (size === Size.M) {
-        return classes.medium;
+        return classes.medium
       }
       if (size === Size.L) {
-        return classes.large;
+        return classes.large
       }
+      return classes.small
     }
 
     return (
       <img
         src={browserLogo(browserName)}
         className={clsx(classes.logo, sizeMap(size))}
-        alt="Browser Logo"
+        alt='Browser Logo'
       />
-    );
+    )
   }
 }
 

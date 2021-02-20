@@ -15,27 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from 'react';
-import {Box, Link, Typography} from "@material-ui/core";
+import React, { ReactNode } from 'react'
+import { Box, Link, Typography } from '@material-ui/core'
 
 class Footer extends React.Component<{}, {}> {
-  render () {
+  render (): ReactNode {
     // noinspection HtmlUnknownAnchorTarget
     return (
       <Box pt={4}>
-        <Typography variant="body2" color="textSecondary" align="center">
-          <Link href="#/help">
+        <Typography variant='body2' color='textSecondary' align='center'>
+          <Link href='#/help'>
             Help
           </Link>
           {' - All rights reserved - '}
-          <Link href="https://sfconservancy.org/" target={"_blank"}>
+          <Link href='https://sfconservancy.org/' target='_blank' rel='noreferrer'>
             Software Freedom Conservancy
           </Link>{' '}
-          {new Date().getFullYear()}
-          {'.'}
+          {new Date().getFullYear()}.
         </Typography>
       </Box>
-    );
+    )
   }
 }
 

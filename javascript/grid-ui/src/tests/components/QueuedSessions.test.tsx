@@ -15,17 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react';
-import QueuedSessions from "../../components/QueuedSessions/QueuedSessions";
-import SessionInfo from "../../models/session-info";
-import {render, screen} from '@testing-library/react';
+import * as React from 'react'
+import QueuedSessions from '../../components/QueuedSessions/QueuedSessions'
+import { render, screen } from '@testing-library/react'
 
 const sessionQueueRequests: string[] = [
   '{"acceptInsecureCerts":true,"browserName":"chrome","goog:chromeOptions":{"args":["--start-maximized"],"extensions":[]}}'
 ]
 
 it('renders basic session information', () => {
-  render(<QueuedSessions sessionQueueRequests={sessionQueueRequests}/>);
-  const request = sessionQueueRequests[0];
-  expect(screen.getByText(request)).toBeInTheDocument();
-});
+  render(<QueuedSessions sessionQueueRequests={sessionQueueRequests} />)
+  const request = sessionQueueRequests[0]
+  expect(screen.getByText(request)).toBeInTheDocument()
+})

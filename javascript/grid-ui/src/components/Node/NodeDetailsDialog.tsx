@@ -27,59 +27,63 @@ import {
   Theme,
   Typography,
   withStyles
-} from '@material-ui/core';
-import React from 'react';
-import NodeInfo from "../../models/node-info";
-import InfoIcon from "@material-ui/icons/Info";
-import OsLogo from "../common/OsLogo";
-import {Size} from "../../models/size";
+} from '@material-ui/core'
+import React, { ReactNode } from 'react'
+import NodeInfo from '../../models/node-info'
+import InfoIcon from '@material-ui/icons/Info'
+import OsLogo from '../common/OsLogo'
+import { StyleRules } from '@material-ui/core/styles'
 
-const useStyles = (theme: Theme) => createStyles(
+const useStyles = (theme: Theme): StyleRules => createStyles(
   {
     buttonMargin: {
-      padding: 1,
-    },
-  });
+      padding: 1
+    }
+  })
 
-type NodeDetailsDialogProps = {
-  node: NodeInfo;
-  classes: any;
-};
+interface NodeDetailsDialogProps {
+  node: NodeInfo
+  classes: any
+}
 
-type NodeDetailsDialogState = {
+interface NodeDetailsDialogState {
   open: boolean
 }
 
-class NodeDetailsDialog extends React.Component<NodeDetailsDialogProps, {}> {
-  state: NodeDetailsDialogState = {
-    open: false,
+class NodeDetailsDialog extends React.Component<NodeDetailsDialogProps, NodeDetailsDialogState> {
+  constructor (props) {
+    super(props)
+    this.state = {
+      open: false
+    }
   }
 
-  handleDialogOpen = () => {
-    this.setState({open: true});
+  handleDialogOpen = (): void => {
+    this.setState({ open: true })
   }
 
-  handleDialogClose = () => {
-    this.setState({open: false});
+  handleDialogClose = (): void => {
+    this.setState({ open: false })
   }
 
-  render () {
-    const {node, classes} = this.props;
-    const {open} = this.state;
-    const nodeInfo = node;
+  render (): ReactNode {
+    const { node, classes } = this.props
+    const { open } = this.state
+    const nodeInfo = node
 
     return (
-      <Box component="span">
+      <Box component='span'>
         <IconButton
           className={classes.buttonMargin}
           onClick={this.handleDialogOpen}
-          data-testid={`node-info-${nodeInfo.id}`}>
-          <InfoIcon/>
+          data-testid={`node-info-${nodeInfo.id}`}
+        >
+          <InfoIcon />
         </IconButton>
-        <Dialog onClose={this.handleDialogClose} aria-labelledby="node-info-dialog" open={open}>
-          <DialogTitle id="node-info-dialog">
-            <OsLogo osName={nodeInfo.osInfo.name}/>
-            <Box fontWeight="fontWeightBold" mr={1} display='inline'>
+        <Dialog onClose={this.handleDialogClose} aria-labelledby='node-info-dialog' open={open}>
+          <DialogTitle id='node-info-dialog'>
+            <OsLogo osName={nodeInfo.osInfo.name} />
+            <Box fontWeight='fontWeightBold' mr={1} display='inline'>
               URI:
             </Box>
             {nodeInfo.uri}
@@ -105,13 +109,13 @@ class NodeDetailsDialog extends React.Component<NodeDetailsDialogProps, {}> {
             </Typography>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleDialogClose} color="primary" variant="contained">
+            <Button onClick={this.handleDialogClose} color='primary' variant='contained'>
               Close
             </Button>
           </DialogActions>
         </Dialog>
       </Box>
-    );
+    )
   }
 }
 

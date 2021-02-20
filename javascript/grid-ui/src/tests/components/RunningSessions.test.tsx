@@ -15,11 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react';
-import RunningSessions from "../../components/RunningSessions/RunningSessions";
-import SessionInfo from "../../models/session-info";
-import {render, screen, within} from '@testing-library/react';
-import userEvent from "@testing-library/user-event";
+import * as React from 'react'
+import RunningSessions from '../../components/RunningSessions/RunningSessions'
+import SessionInfo from '../../models/session-info'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 const sessions: SessionInfo[] = [
   {
@@ -39,20 +39,20 @@ const sessions: SessionInfo[] = [
 ]
 
 it('renders basic session information', () => {
-  render(<RunningSessions sessions={sessions}/>);
-  const session = sessions[0];
-  expect(screen.getByText(session.id)).toBeInTheDocument();
-  expect(screen.getByText(session.startTime)).toBeInTheDocument();
-  expect(screen.getByText(session.nodeUri)).toBeInTheDocument();
-});
+  render(<RunningSessions sessions={sessions} />)
+  const session = sessions[0]
+  expect(screen.getByText(session.id)).toBeInTheDocument()
+  expect(screen.getByText(session.startTime)).toBeInTheDocument()
+  expect(screen.getByText(session.nodeUri)).toBeInTheDocument()
+})
 
 it('renders detailed session information', () => {
-  render(<RunningSessions sessions={sessions}/>);
-  const session = sessions[0];
-  const sessionRow = screen.getByText(session.id).closest('tr');
-  const leftClick = {button: 0};
-  // @ts-ignore
-  userEvent.click(within(sessionRow).getByRole('button'), leftClick);
-  const dialogPane = screen.getByText('Capabilities:').closest('div');
-  expect(dialogPane).toHaveTextContent('Capabilities:' + session.capabilities);
-});
+  render(<RunningSessions sessions={sessions} />)
+  const session = sessions[0]
+  const sessionRow = screen.getByText(session.id).closest('tr')
+  const leftClick = { button: 0 }
+  /** @ts-expect-error: sessionRow can be null */
+  userEvent.click(within(sessionRow).getByRole('button'), leftClick)
+  const dialogPane = screen.getByText('Capabilities:').closest('div')
+  expect(dialogPane).toHaveTextContent('Capabilities:' + session.capabilities)
+})

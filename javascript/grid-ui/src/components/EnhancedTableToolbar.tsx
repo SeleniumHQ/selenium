@@ -15,40 +15,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from 'react';
-import {Theme, withStyles} from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import React, { ReactNode } from 'react'
+import { StyleRules, Theme, withStyles } from '@material-ui/core/styles'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
 
-
-const useStyles = (theme: Theme) => (
+const useStyles = (theme: Theme): StyleRules => (
   {
     root: {
       paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
+      paddingRight: theme.spacing(1)
     },
     title: {
-      flex: '1 1 100%',
-    },
-  });
+      flex: '1 1 100%'
+    }
+  })
 
-type EnhancedTableToolbarProps = {
+interface EnhancedTableToolbarProps {
   title: string
-  classes: any;
-};
+  classes: any
+}
 
 class EnhancedTableToolbar extends React.Component<EnhancedTableToolbarProps, {}> {
-  render () {
-    const {title, classes} = this.props;
+  render (): ReactNode {
+    const { title, classes } = this.props
     return (
-      <Toolbar
-        className={classes.root}
-      >
-        <Typography className={classes.title} variant="h3" id="tableTitle" component="div">
+      <Toolbar className={classes.root}>
+        <Typography className={classes.title} variant='h3' id='tableTitle' component='div'>
           {title}
         </Typography>
       </Toolbar>
-    );
+    )
   }
 }
 

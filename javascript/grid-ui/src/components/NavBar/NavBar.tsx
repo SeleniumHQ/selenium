@@ -15,35 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import HelpIcon from '@material-ui/icons/Help';
-import clsx from 'clsx';
-import React from 'react';
+import Divider from '@material-ui/core/Divider'
+import Drawer from '@material-ui/core/Drawer'
+import IconButton from '@material-ui/core/IconButton'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import DashboardIcon from '@material-ui/icons/Dashboard'
+import AssessmentIcon from '@material-ui/icons/Assessment'
+import HelpIcon from '@material-ui/icons/Help'
+import clsx from 'clsx'
+import React, { ReactNode } from 'react'
 import {
   Box,
   createStyles,
   Theme,
   withStyles
-} from "@material-ui/core";
-import {withRouter} from "react-router"
-import {RouteComponentProps} from "react-router-dom";
-import OverallConcurrency from "./OverallConcurrency";
+} from '@material-ui/core'
+import { withRouter } from 'react-router'
+import { RouteComponentProps } from 'react-router-dom'
+import OverallConcurrency from './OverallConcurrency'
+import { StyleRules } from '@material-ui/core/styles'
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
-const useStyles = (theme: Theme) => createStyles(
+const useStyles = (theme: Theme): StyleRules => createStyles(
   {
     root: {
-      display: 'flex',
+      display: 'flex'
     },
     toolbarIcon: {
       display: 'flex',
@@ -51,7 +52,7 @@ const useStyles = (theme: Theme) => createStyles(
       justifyContent: 'flex-end',
       padding: '0 8px',
       ...theme.mixins.toolbar,
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.primary.main
     },
     drawerPaper: {
       position: 'relative',
@@ -60,90 +61,99 @@ const useStyles = (theme: Theme) => createStyles(
       minHeight: '100vh',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
+        duration: theme.transitions.duration.enteringScreen
+      })
     },
     drawerPaperClose: {
       overflowX: 'hidden',
       minHeight: '100vh',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
+        duration: theme.transitions.duration.leavingScreen
       }),
       width: theme.spacing(7),
       [theme.breakpoints.up('sm')]: {
-        width: theme.spacing(9),
-      },
-    },
-  });
+        width: theme.spacing(9)
+      }
+    }
+  })
 
-function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
+function ListItemLink (props): JSX.Element {
+  return <ListItem button component='a' {...props} />
 }
 
-type NavBarProps = RouteComponentProps & {
-  open: boolean;
-  maxSession: number;
-  sessionCount: number;
-  nodeCount: number;
-  classes: any;
-};
+interface NavBarProps extends RouteComponentProps {
+  open: boolean
+  maxSession: number
+  sessionCount: number
+  nodeCount: number
+  classes: any
+}
 
 class NavBar extends React.Component<NavBarProps, {}> {
+  static defaultProps = {
+    open: false
+  }
 
-  render () {
-    const {open, maxSession, sessionCount, nodeCount, classes, location} = this.props;
+  render (): ReactNode {
+    const {
+      open,
+      maxSession,
+      sessionCount,
+      nodeCount,
+      classes,
+      location
+    } = this.props
 
     // Not showing the overall status when the user is on the Overview page and there is only one node, because polling
     // is not happening at the same time and it could be confusing for the user. So, displaying it when there is more
     // than one node, or when the user is on a different page and there is at least one node registered.
-    const showOverallConcurrency = nodeCount > 1 || (location.pathname !== "/" && nodeCount > 0);
+    const showOverallConcurrency = nodeCount > 1 || (location.pathname !== '/' && nodeCount > 0)
 
     return (
       <Drawer
-        variant="permanent"
+        variant='permanent'
         classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
         }}
         open={open}
       >
         <div className={classes.toolbarIcon}>
-          <IconButton color={"secondary"}>
-            <ChevronLeftIcon/>
+          <IconButton color='secondary'>
+            <ChevronLeftIcon />
           </IconButton>
         </div>
-        <Divider/>
+        <Divider />
         <List>
           <div>
-            <ListItemLink href={"#"}>
+            <ListItemLink href='#'>
               <ListItemIcon>
-                <DashboardIcon/>
+                <DashboardIcon />
               </ListItemIcon>
-              <ListItemText primary="Overview"/>
+              <ListItemText primary='Overview' />
             </ListItemLink>
-            <ListItemLink href={"#sessions"}>
+            <ListItemLink href='#sessions'>
               <ListItemIcon>
-                <AssessmentIcon/>
+                <AssessmentIcon />
               </ListItemIcon>
-              <ListItemText primary="Sessions"/>
+              <ListItemText primary='Sessions' />
             </ListItemLink>
-            <ListItemLink href={"#help"}>
+            <ListItemLink href='#help'>
               <ListItemIcon>
-                <HelpIcon/>
+                <HelpIcon />
               </ListItemIcon>
-              <ListItemText primary="Help"/>
+              <ListItemText primary='Help' />
             </ListItemLink>
           </div>
         </List>
-        <Box flexGrow={1}/>
+        <Box flexGrow={1} />
         {showOverallConcurrency && open && (
           <OverallConcurrency
             sessionCount={sessionCount}
             maxSession={maxSession}
-          />)
-        }
+          />)}
       </Drawer>
-    );
+    )
   }
 }
 

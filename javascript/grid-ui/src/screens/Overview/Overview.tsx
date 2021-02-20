@@ -15,109 +15,120 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import {createStyles, Theme, withStyles} from '@material-ui/core/styles';
-import clsx from 'clsx';
-import {loader} from "graphql.macro";
-import React from 'react';
-import Node from "../../components/Node/Node";
-import {ApolloClient, ApolloConsumer} from "@apollo/client";
-import NodeInfo from "../../models/node-info";
-import OsInfo from "../../models/os-info";
-import {GridConfig} from "../../config";
-import NoData from "../../components/NoData/NoData";
-import Loading from "../../components/Loading/Loading";
-import Error from "../../components/Error/Error";
-import StereotypeInfo from "../../models/stereotype-info";
-import browserVersion from "../../util/browser-version";
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles
+} from '@material-ui/core/styles'
+import clsx from 'clsx'
+import { loader } from 'graphql.macro'
+import React, { ReactNode } from 'react'
+import Node from '../../components/Node/Node'
+import { ApolloClient, ApolloConsumer } from '@apollo/client'
+import NodeInfo from '../../models/node-info'
+import OsInfo from '../../models/os-info'
+import { GridConfig } from '../../config'
+import NoData from '../../components/NoData/NoData'
+import Loading from '../../components/Loading/Loading'
+import Error from '../../components/Error/Error'
+import StereotypeInfo from '../../models/stereotype-info'
+import browserVersion from '../../util/browser-version'
 
-const useStyles = (theme: Theme) => createStyles(
+const useStyles = (theme: Theme): StyleRules => createStyles(
   {
     toolbar: {
-      paddingRight: 24, // keep right padding when drawer closed
+      paddingRight: 24 // keep right padding when drawer closed
     },
     title: {
       flexGrow: 1,
-      color: theme.palette.secondary.main,
+      color: theme.palette.secondary.main
     },
     paper: {
       display: 'flex',
       overflow: 'auto',
-      flexDirection: 'column',
+      flexDirection: 'column'
     }
-  });
+  })
 
-const NODES_QUERY = loader("../../graphql/nodes.gql");
+const NODES_QUERY = loader('../../graphql/nodes.gql')
 
-type OverviewProps = {
-  classes: any;
-};
+interface OverviewProps {
+  classes: any
+}
 
-type OverviewState = {
-  loading: boolean;
-  error: string;
-  data: any;
-};
+interface OverviewState {
+  loading: boolean
+  error: string | undefined
+  data: any
+}
 
 class Overview extends React.Component<OverviewProps, OverviewState> {
-  client: ApolloClient<any> | null;
-  intervalID;
+  client: ApolloClient<any> | null
+  intervalID
 
-  constructor(props) {
-    super(props);
-    this.client = null;
+  constructor (props) {
+    super(props)
+    this.client = null
   }
 
-  fetchData = () => {
-    this.client?.query({query: NODES_QUERY, fetchPolicy: "network-only"})
-      .then(({loading, error, data}) => {
-        this.setState({loading: loading, error: error?.networkError?.message || '', data: data});
+  fetchData = (): void => {
+    this.client?.query({ query: NODES_QUERY, fetchPolicy: 'network-only' })
+      .then(({ loading, error, data }) => {
+        this.setState({
+          loading: loading,
+          error: error?.networkError?.message,
+          data: data
+        })
       })
       .catch((error) => {
-        this.setState({loading: false, error: error.message})
+        this.setState({ loading: false, error: error.message })
       })
-  };
-
-  componentDidMount() {
-    this.fetchData();
-    this.intervalID = setInterval(this.fetchData.bind(this), GridConfig.status.xhrPollingIntervalMillis);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.intervalID);
+  componentDidMount (): void {
+    this.fetchData()
+    this.intervalID =
+      setInterval(this.fetchData.bind(this),
+        GridConfig.status.xhrPollingIntervalMillis)
   }
 
-  render() {
-    if (!this.client) {
+  componentWillUnmount (): void {
+    clearInterval(this.intervalID)
+  }
+
+  render (): ReactNode {
+    if (this.client === null) {
       return (
         <ApolloConsumer>
           {client => {
-            this.client = client;
+            this.client = client
             return (
               <Grid container spacing={3}>
-                <Loading/>
+                <Loading />
               </Grid>
             )
           }}
         </ApolloConsumer>
       )
     }
-    const {loading, error, data} = this.state ?? {loading: false, error: "No connection to the Grid", data: []};
+    const { loading, error, data } = this.state ?? { loading: false, error: 'No connection to the Grid', data: [] }
 
     if (loading) {
       return (
         <Grid container spacing={3}>
-          <Loading/>
+          <Loading />
         </Grid>
-      );
+      )
     }
 
-    if (error) {
-      const message = "There has been an error while loading the Nodes from the Grid."
+    if (error !== undefined) {
+      const message = 'There has been an error while loading the Nodes from the Grid.'
       return (
         <Grid container spacing={3}>
-          <Error message={message} errorMessage={error}/>
+          <Error message={message} errorMessage={error} />
         </Grid>
       )
     }
@@ -126,17 +137,18 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
       const osInfo: OsInfo = {
         name: node.osInfo.name,
         version: node.osInfo.version,
-        arch: node.osInfo.arch,
+        arch: node.osInfo.arch
       }
       const slotStereotypes = JSON.parse(node.stereotypes).map((item) => {
         const slotStereotype: StereotypeInfo = {
           browserName: item.stereotype.browserName,
-          browserVersion: browserVersion(item.stereotype.browserVersion ?? item.stereotype.version),
+          browserVersion: browserVersion(
+            item.stereotype.browserVersion ?? item.stereotype.version),
           slotCount: item.slots,
-          rawData: item,
+          rawData: item
         }
-        return slotStereotype;
-      });
+        return slotStereotype
+      })
       const newNode: NodeInfo = {
         uri: node.uri,
         id: node.id,
@@ -146,22 +158,22 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
         version: node.version,
         osInfo: osInfo,
         sessionCount: node.sessionCount ?? 0,
-        slotStereotypes: slotStereotypes,
-      };
-      return newNode;
-    });
+        slotStereotypes: slotStereotypes
+      }
+      return newNode
+    })
 
     if (nodes.length === 0) {
-      const shortMessage = "The Grid has no registered Nodes yet.";
+      const shortMessage = 'The Grid has no registered Nodes yet.'
       return (
         <Grid container spacing={3}>
-          <NoData message={shortMessage}/>
+          <NoData message={shortMessage} />
         </Grid>
       )
     }
 
-    const {classes} = this.props;
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    const { classes } = this.props
+    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
 
     return (
       <Grid container spacing={3}>
@@ -170,13 +182,13 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
           return (
             <Grid item lg={6} sm={12} xl={4} xs={12} key={index}>
               <Paper className={fixedHeightPaper}>
-                <Node node={node}/>
+                <Node node={node} />
               </Paper>
             </Grid>
           )
         })}
       </Grid>
-    );
+    )
   }
 }
 

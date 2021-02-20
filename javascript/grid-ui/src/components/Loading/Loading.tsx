@@ -15,42 +15,49 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React from 'react';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import {Box, createStyles, Theme, Typography, withStyles} from "@material-ui/core";
+import React, { ReactNode } from 'react'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import {
+  Box,
+  createStyles,
+  Theme,
+  Typography,
+  withStyles
+} from '@material-ui/core'
+import { StyleRules } from '@material-ui/core/styles'
 
-const useStyles = (theme: Theme) => createStyles(
+const useStyles = (theme: Theme): StyleRules => createStyles(
   {
     root: {
       backgroundColor: theme.palette.secondary.main,
       height: '100%',
       paddingTop: theme.spacing(1),
       width: '100%',
-      justifyContent: "center",
+      justifyContent: 'center'
     }
-  });
+  })
 
-type LoadingProps = {
-  classes: any;
-};
+interface LoadingProps {
+  classes: any
+}
 
-class Loading extends React.Component<LoadingProps, {}>{
-  render() {
-    const {classes} = this.props;
+class Loading extends React.Component<LoadingProps, {}> {
+  render (): ReactNode {
+    const { classes } = this.props
     return (
       <div className={classes.root}>
         <Box mb={2}>
           <Typography
-            align="center"
-            color="textPrimary"
-            variant="h3"
+            align='center'
+            color='textPrimary'
+            variant='h3'
           >
             Loading...
           </Typography>
         </Box>
-        <LinearProgress/>
+        <LinearProgress />
       </div>
-    );
+    )
   }
 }
 
