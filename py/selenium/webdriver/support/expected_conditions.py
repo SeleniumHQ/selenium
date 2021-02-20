@@ -267,6 +267,22 @@ class alert_is_present(object):
         except NoAlertPresentException:
             return False
 
+
+class attribute_to_be_include(object):
+    """ Expect the attribute to be include"""
+
+    def __init__(self, locator, attr_):
+        self.locator = locator
+        self.attribute = attr_
+
+    def __call__(self, driver):
+        try:
+            element_attribute_value = _find_element(driver, self.locator).get_attribute(self.attribute)
+            return element_attribute_value
+        except StaleElementReferenceException:
+            return False
+
+
 def _find_element(driver, by):
     """Looks up an element. Logs and re-raises ``WebDriverException``
     if thrown."""

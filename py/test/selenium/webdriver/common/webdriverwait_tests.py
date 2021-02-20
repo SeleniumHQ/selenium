@@ -328,6 +328,19 @@ class WebDriverWaitTest(unittest.TestCase):
         self.assertEqual('alerty', alert.text)
         alert.dismiss()
 
+    def testExpectedConditionAttributeToBeInclude(self):
+        self._loadPage('booleanAttributes')
+        try:
+            WebDriverWait(self.driver, 0.7).until(EC.attribute_to_be_include((By.ID, 'unwrappable'), 'text'))
+            self.fail("Expected TimeoutException to have been thrown")
+        except TimeoutException as e:
+            pass
+        self.driver.execute_script(
+            "setTimeout(function(){var el = document.getElementById('unwrappable'); el.textContent = el.innerText = 'Unwrappable Expected text'}, 200)")
+        WebDriverWait(self.driver, 1).until(EC.attribute_to_be_include((By.ID, 'unwrappable'), 'text'))
+        self.assertEqual('Unwrappable Expected text',
+                         self.driver.find_element_by_id('unwrappable').get_attribute('text'))
+
     def _pageURL(self, name):
         return self.webserver.where_is(name + '.html')
 
