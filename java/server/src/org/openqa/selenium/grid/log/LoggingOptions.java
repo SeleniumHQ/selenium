@@ -23,8 +23,13 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -34,10 +39,8 @@ public class LoggingOptions {
 
   private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
   private static final String LOGGING_SECTION = "logging";
-
-  private Level level = Level.INFO;
-
   private final Config config;
+  private Level level = Level.INFO;
 
   public LoggingOptions(Config config) {
     this.config = Require.nonNull("Config", config);
@@ -137,7 +140,7 @@ public class LoggingOptions {
       }
     } catch (UnsupportedEncodingException e) {
       message =
-          String.format("Using the system default encoding. Unsupported encoding %s", encoding);
+        String.format("Using the system default encoding. Unsupported encoding %s", encoding);
     }
     logger.addHandler(handler);
     logger.log(Level.INFO, message);
@@ -145,13 +148,13 @@ public class LoggingOptions {
 
   private OutputStream getOutputStream() {
     return config.get(LOGGING_SECTION, "log-file")
-        .map(fileName -> {
-          try {
-            return (OutputStream) new FileOutputStream(fileName);
-          } catch (FileNotFoundException e) {
-            throw new UncheckedIOException(e);
-          }
-        })
-        .orElse(System.out);
+      .map(fileName -> {
+        try {
+          return (OutputStream) new FileOutputStream(fileName);
+        } catch (FileNotFoundException e) {
+          throw new UncheckedIOException(e);
+        }
+      })
+      .orElse(System.out);
   }
 }
