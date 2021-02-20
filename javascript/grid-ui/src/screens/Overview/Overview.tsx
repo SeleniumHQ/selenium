@@ -103,7 +103,7 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
         </ApolloConsumer>
       )
     }
-    const {loading, error, data} = this.state;
+    const {loading, error, data} = this.state ?? {loading: false, error: "No connection to the Grid", data: []};
 
     if (loading) {
       return (

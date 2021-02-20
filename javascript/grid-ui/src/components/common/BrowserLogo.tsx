@@ -24,7 +24,7 @@ import clsx from "clsx";
 const useStyles = (theme: Theme) => (
   {
     logo: {
-      marginRight: 5,
+      marginRight: 0,
     },
     small: {
       width: 24,
@@ -55,7 +55,7 @@ class BrowserLogo extends React.Component<BrowserLogoProps, {}> {
   render() {
     const {browserName, size, classes} = this.props;
 
-    function sizeMap (size) {
+    function sizeMap(size) {
       if (size === Size.S) {
         return classes.small;
       }

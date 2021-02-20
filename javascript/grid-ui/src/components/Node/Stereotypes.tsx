@@ -15,23 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import {
-  Box,
-  createStyles,
-  Grid,
-  Theme,
-  Typography,
-  withStyles
-} from '@material-ui/core';
+import {Box, createStyles, Grid, Theme, Typography, withStyles} from '@material-ui/core';
 import React from 'react';
 import StereotypeInfo from "../../models/stereotype-info";
 import BrowserLogo from "../common/BrowserLogo";
 
 const useStyles = (theme: Theme) => createStyles(
   {
-    slotInfo: {
+    slotCount: {
       marginBottom: 5,
-      marginRight: 10,
+    },
+    browserVersion: {
+      marginBottom: 5,
+      marginRight: 20,
     },
   });
 
@@ -42,7 +38,7 @@ type StereotypesProps = {
 
 class Stereotypes extends React.Component<StereotypesProps, {}> {
 
-  render () {
+  render() {
     const {stereotypes, classes} = this.props;
 
     function CreateStereotypeGridItem(slotStereotype: StereotypeInfo, index: any) {
@@ -53,12 +49,12 @@ class Stereotypes extends React.Component<StereotypesProps, {}> {
               <BrowserLogo browserName={slotStereotype.browserName}/>
             </Grid>
             <Grid item>
-              <Typography className={classes.slotInfo}>
+              <Typography className={classes.slotCount}>
                 {slotStereotype.slotCount}
               </Typography>
             </Grid>
             <Grid item>
-              <Typography className={classes.slotInfo}>
+              <Typography className={classes.browserVersion} variant={"caption"}>
                 {slotStereotype.browserVersion}
               </Typography>
             </Grid>
@@ -82,7 +78,7 @@ class Stereotypes extends React.Component<StereotypesProps, {}> {
           {
             stereotypes
               .sort((a, b) => a.browserName.localeCompare(b.browserName)
-                              || a.browserVersion.localeCompare(b.browserVersion))
+                || a.browserVersion.localeCompare(b.browserVersion))
               .map((slotStereotype: any, idx) => {
                 return (
                   CreateStereotypeGridItem(slotStereotype, idx)
