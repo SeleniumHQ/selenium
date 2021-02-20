@@ -164,12 +164,11 @@ public class GridModel {
 
   public void purgeDeadNodes() {
     long now = System.currentTimeMillis();
-    long timeout = 30000;
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
       Set<NodeStatus> lost = nodes(UP).stream()
-        .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis())
+        .filter(status -> now - status.touched() > status.heartbeatPeriod().toMillis() * 2)
         .collect(toSet());
       Set<NodeStatus> resurrected = nodes(DOWN).stream()
         .filter(status -> now - status.touched() <= status.heartbeatPeriod().toMillis())
@@ -192,6 +191,7 @@ public class GridModel {
           resurrected.stream()
             .map(node -> String.format("%s (uri: %s)", node.getId(), node.getUri()))
             .collect(joining(", "))));
+        nodes(DOWN).removeAll(resurrected);
         nodes(UP).addAll(resurrected);
       }
       if (dead.size() > 0) {
