@@ -32,6 +32,8 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -69,6 +71,16 @@ import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 @Category(UnitTests.class)
 public class TracerTest {
+
+  @Before
+  public void before() {
+    GlobalOpenTelemetry.resetForTest();
+  }
+
+  @After
+  public void after() {
+    GlobalOpenTelemetry.resetForTest();
+  }
 
   @Test
   public void shouldBeAbleToCreateATracer() {
@@ -603,10 +615,10 @@ public class TracerTest {
       .buildAndRegisterGlobal();
 
     Runtime.getRuntime()
-      .addShutdownHook(new Thread(() -> openTelemetrySdk.getTracerManagement().shutdown()));
+      .addShutdownHook(new Thread(sdkTracerProvider::close));
 
     return new OpenTelemetryTracer(
-      GlobalOpenTelemetry.getTracer("test"),
+      openTelemetrySdk.getTracer("test"),
       propagators.getTextMapPropagator());
   }
 }

@@ -21,6 +21,7 @@ import io.opentelemetry.sdk.trace.export.SpanExporter;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -100,15 +101,12 @@ class JaegerTracing {
 
     Class<?> builderClazz = builderObj.getClass();
 
-    Method setServiceName = builderClazz.getMethod("setServiceName", String.class);
-    builderObj = setServiceName.invoke(builderObj, System.getProperty("JAEGER_SERVICE_NAME", "selenium"));
-
     Class<?> managedChannelClazz = Class.forName("io.grpc.ManagedChannel", true, cl);
     Method setChannel = builderClazz.getMethod("setChannel", managedChannelClazz);
     builderObj = setChannel.invoke(builderObj, jaegerChannel);
 
-    Method setDeadline = builderClazz.getMethod("setDeadlineMs", long.class);
-    builderObj = setDeadline.invoke(builderObj, 3000);
+    Method setTimeout = builderClazz.getMethod("setTimeout", long.class, TimeUnit.class);
+    builderObj = setTimeout.invoke(builderObj, 3000, TimeUnit.MILLISECONDS);
 
     Method build = builderClazz.getMethod("build");
     return build.invoke(builderObj);
