@@ -121,9 +121,9 @@ class App extends React.Component<AppProps, AppState> {
     const { classes } = this.props
     const { error, data, drawerOpen } = this.state
 
-    const maxSession = error !== null ? 0 : data?.grid?.maxSession ?? 0
-    const sessionCount = error !== null ? 0 : data?.grid?.sessionCount ?? 0
-    const nodeCount = error !== null ? 0 : data?.grid?.nodeCount ?? 0
+    const maxSession = error !== undefined ? 0 : data?.grid?.maxSession ?? 0
+    const sessionCount = error !== undefined ? 0 : data?.grid?.sessionCount ?? 0
+    const nodeCount = error !== undefined ? 0 : data?.grid?.nodeCount ?? 0
 
     const topBarSubheader = error ?? data?.grid?.version
 
