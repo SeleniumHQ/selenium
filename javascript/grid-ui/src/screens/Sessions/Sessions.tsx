@@ -82,7 +82,7 @@ class Sessions extends React.Component<SessionsProps, SessionsState> {
         </ApolloConsumer>
       )
     }
-    const {loading, error, data} = this.state;
+    const {loading, error, data} = this.state ?? {loading: false, error: "No connection to the Grid", data: []};
 
     if (loading) {
       return (
