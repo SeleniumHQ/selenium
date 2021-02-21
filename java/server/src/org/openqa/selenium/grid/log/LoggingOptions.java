@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.log;
 
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
@@ -30,6 +31,7 @@ import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -61,22 +63,10 @@ public class LoggingOptions {
   public void setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(Level.INFO.getName());
 
-    if (Level.ALL.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.ALL;
-    } else if (Level.CONFIG.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.CONFIG;
-    } else if (Level.FINE.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINE;
-    } else if (Level.FINER.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINER;
-    } else if (Level.FINEST.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINEST;
-    } else if (Level.OFF.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.OFF;
-    } else if (Level.SEVERE.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.SEVERE;
-    } else if (Level.WARNING.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.WARNING;
+    try {
+      level = Level.parse(configLevel.toUpperCase(Locale.ROOT));
+    } catch (IllegalArgumentException e) {
+      throw new ConfigException("Unable to determine log level from " + configLevel);
     }
   }
 
