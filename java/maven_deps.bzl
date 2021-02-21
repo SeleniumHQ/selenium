@@ -44,6 +44,7 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-semconv:%s" % opentelemetry_version+"-alpha",
             "io.opentelemetry:opentelemetry-sdk:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk-common:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:0.16.0-alpha",
             "io.opentelemetry:opentelemetry-sdk-testing:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk-trace:%s" % opentelemetry_version,
             "io.ous:jtoml:2.0.0",
