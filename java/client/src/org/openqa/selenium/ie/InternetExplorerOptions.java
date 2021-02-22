@@ -34,7 +34,6 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.BrowserType;
 
@@ -55,7 +54,6 @@ import java.util.stream.Stream;
  *
  *new InternetExplorerDriver(options);</pre>
  */
-@Beta
 public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplorerOptions> {
 
   final static String IE_OPTIONS = "se:ieOptions";
@@ -83,7 +81,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
       VALIDATE_COOKIE_DOCUMENT_TYPE,
       NATIVE_EVENTS);
 
-  private Map<String, Object> ieOptions = new HashMap<>();
+  private final Map<String, Object> ieOptions = new HashMap<>();
 
   public InternetExplorerOptions() {
     setCapability(BROWSER_NAME, BrowserType.IE);
@@ -156,7 +154,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
     return amend(
         IE_SWITCHES,
-        Stream.concat((Stream<?>) ((List) raw).stream(), Stream.of(switches))
+        Stream.concat(((List<?>) raw).stream(), Stream.of(switches))
             .filter(i -> i instanceof String)
             .map(String.class::cast)
             .collect(toList()));
@@ -230,9 +228,9 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
     if (IE_OPTIONS.equals(key)) {
       ieOptions.clear();
-      Map<?, ?> streamFrom;
+      Map<String, Object> streamFrom;
       if (value instanceof Map) {
-        streamFrom = (Map<?, ?>) value;
+        streamFrom = (Map<String, Object>) value;
       } else if (value instanceof Capabilities) {
         streamFrom = ((Capabilities) value).asMap();
       } else {
@@ -244,9 +242,9 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
           .filter(e -> e.getValue() != null)
           .forEach(e -> {
             if (IE_SWITCHES.equals(e.getKey())) {
-              setCapability((String) e.getKey(), Arrays.asList(((String) e.getValue()).split(" ")));
+              setCapability(e.getKey(), Arrays.asList((e.getValue().toString()).split(" ")));
             } else {
-              setCapability((String) e.getKey(), e.getValue());
+              setCapability(e.getKey(), e.getValue());
             }
           });
     }
