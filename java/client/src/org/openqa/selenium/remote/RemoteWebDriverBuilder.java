@@ -24,6 +24,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -35,7 +36,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
 
-import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -56,7 +56,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.logging.Level.WARNING;
 import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
@@ -358,18 +357,18 @@ public class RemoteWebDriverBuilder {
         .andThen(new AddWebDriverSpecHeaders())
         .andThen(new ErrorFilter()));
 
-    byte[] payload = getPayloadUtf8Bytes();
-    Either<String, ProtocolHandshake.Result> result = new ProtocolHandshake().createSession(
-      handler,
-      new ByteArrayInputStream(payload),
-      payload.length);
+    Either<WebDriverException, ProtocolHandshake.Result> result = null;
+    try {
+      result = new ProtocolHandshake().createSession(handler, getPayload());
+    } catch (IOException e) {
+      throw new SessionNotCreatedException("Unable to create new remote session.", e);
+    }
 
     if (result.isRight()) {
       CommandExecutor executor = result.map(res -> createExecutor(handler, res));
       return new RemoteWebDriver(executor, new ImmutableCapabilities());
     } else {
-      throw new SessionNotCreatedException(
-        String.format("Unable to create new remote session. Reason: %s", result.left()));
+      throw new SessionNotCreatedException("Unable to create new remote session", result.left());
     }
   }
 
@@ -454,7 +453,7 @@ public class RemoteWebDriverBuilder {
       .collect(Collectors.toSet());
   }
 
-  private byte[] getPayloadUtf8Bytes() {
+  private NewSessionPayload getPayload() {
     Map<String, Object> roughPayload = new TreeMap<>(metadata);
 
     Map<String, Object> w3cCaps = new TreeMap<>();
@@ -463,14 +462,7 @@ public class RemoteWebDriverBuilder {
       w3cCaps.put("firstMatch", requestedCapabilities);
     }
     roughPayload.put("capabilities", w3cCaps);
-
-    try (NewSessionPayload payload = NewSessionPayload.create(roughPayload)) {
-      StringBuilder json = new StringBuilder();
-      payload.writeTo(json);
-      return json.toString().getBytes(UTF_8);
-    } catch (IOException e) {
-      throw new SessionNotCreatedException("Unable to create session roughPayload", e);
-    }
+    return NewSessionPayload.create(roughPayload);
   }
 
   private static class CloseHttpClientFilter implements Filter {
