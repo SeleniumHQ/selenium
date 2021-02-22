@@ -218,14 +218,9 @@ bot.events.EventFactory_ = function (type, bubbles, cancelable) {
  */
 bot.events.EventFactory_.prototype.create = function (target, opt_args) {
   var doc = goog.dom.getOwnerDocument(target);
-  var event;
 
-  if (bot.userAgent.IE_DOC_PRE9 && doc.createEventObject) {
-    event = doc.createEventObject();
-  } else {
-    event = doc.createEvent('HTMLEvents');
-    event.initEvent(this.type_, this.bubbles_, this.cancelable_);
-  }
+  var event = doc.createEvent('HTMLEvents');
+  event.initEvent(this.type_, this.bubbles_, this.cancelable_);
 
   return event;
 };
@@ -274,114 +269,57 @@ bot.events.MouseEventFactory_.prototype.create = function (target, opt_args) {
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
-  if (bot.userAgent.IE_DOC_PRE9) {
-    event = doc.createEventObject();
-    event.altKey = args.altKey;
-    event.ctrlKey = args.ctrlKey;
-    event.metaKey = args.metaKey;
-    event.shiftKey = args.shiftKey;
-    event.button = args.button;
+  var view = goog.dom.getWindow(doc);
+  event = doc.createEvent('MouseEvents');
+  var detail = 1;
 
-    // NOTE: ie8 does a strange thing with the coordinates passed in the event:
-    // - if offset{X,Y} coordinates are specified, they are also used for
-    //   client{X,Y}, event if client{X,Y} are also specified.
-    // - if only client{X,Y} are specified, they are also used for offset{x,y}
-    // Thus, for ie8, it is impossible to set both offset and client
-    // and have them be correct when they come out on the other side.
-    event.clientX = args.clientX;
-    event.clientY = args.clientY;
+  // All browser but Firefox provide the wheelDelta value in the event.
+  // Firefox provides the scroll amount in the detail field, where it has the
+  // opposite polarity of the wheelDelta (upward scroll is negative) and is a
+  // factor of 40 less than the wheelDelta value.
+  // The wheelDelta value is normally some multiple of 40.
+  if (this == bot.events.EventType.MOUSEWHEEL) {
+    if (!goog.userAgent.GECKO) {
+      event.wheelDelta = args.wheelDelta;
+    }
+    if (goog.userAgent.GECKO) {
+      detail = args.wheelDelta / -40;
+    }
+  }
 
-    // Sets a property of the event object using Object.defineProperty.
-    // Some readonly properties of the IE event object can only be set this way.
-    var setEventProperty = function (prop, value) {
-      Object.defineProperty(event, prop, {
-        get: function () {
-          return value;
-        }
-      });
-    };
+  // Only Gecko supports a mouse pixel scroll event, so we use it as the
+  // "standard" and pass it along as is as the "detail" of the event.
+  if (goog.userAgent.GECKO && this == bot.events.EventType.MOUSEPIXELSCROLL) {
+    detail = args.wheelDelta;
+  }
 
-    // IE has fromElement and toElement properties, no relatedTarget property.
-    // IE does not allow fromElement and toElement to be set directly, but
-    // Object.defineProperty can redefine them, when it is available. Do not
-    // use Object.defineProperties (plural) because it is even less supported.
-    // If defineProperty is unavailable, fall back to setting the relatedTarget,
-    // which many event frameworks, including jQuery and Closure, forgivingly
-    // pass on as the relatedTarget on their event object abstraction.
-    if (this == bot.events.EventType.MOUSEOUT ||
-      this == bot.events.EventType.MOUSEOVER) {
-      if (Object.defineProperty) {
-        var out = (this == bot.events.EventType.MOUSEOUT);
-        setEventProperty('fromElement', out ? target : args.relatedTarget);
-        setEventProperty('toElement', out ? args.relatedTarget : target);
-      } else {
-        event.relatedTarget = args.relatedTarget;
+  // For screenX and screenY, we set those to clientX and clientY values.
+  // While not strictly correct, applications under test depend on
+  // accurate relative positioning which is satisfied.
+  event.initMouseEvent(this.type_, this.bubbles_, this.cancelable_, view,
+    detail, /*screenX*/ args.clientX, /*screenY*/ args.clientY,
+    args.clientX, args.clientY, args.ctrlKey, args.altKey,
+    args.shiftKey, args.metaKey, args.button, args.relatedTarget);
+
+  // Trying to modify the properties throws an error,
+  // so we define getters to return the correct values.
+  if (goog.userAgent.IE &&
+    event.pageX === 0 && event.pageY === 0 && Object.defineProperty) {
+    var scrollElem = goog.dom.getDomHelper(target).getDocumentScrollElement();
+    var clientElem = goog.style.getClientViewportElement(doc);
+    var pageX = args.clientX + scrollElem.scrollLeft - clientElem.clientLeft;
+    var pageY = args.clientY + scrollElem.scrollTop - clientElem.clientTop;
+
+    Object.defineProperty(event, 'pageX', {
+      get: function () {
+        return pageX;
       }
-    }
-
-    // IE does not allow the wheelDelta property to be set directly, so we can
-    // only do it where defineProperty is supported; otherwise store the wheel
-    // delta in the event "detail" as a last resort in case the app looks there.
-    if (this == bot.events.EventType.MOUSEWHEEL) {
-      if (Object.defineProperty) {
-        setEventProperty('wheelDelta', args.wheelDelta);
-      } else {
-        event.detail = args.wheelDelta;
+    });
+    Object.defineProperty(event, 'pageY', {
+      get: function () {
+        return pageY;
       }
-    }
-  } else {
-    var view = goog.dom.getWindow(doc);
-    event = doc.createEvent('MouseEvents');
-    var detail = 1;
-
-    // All browser but Firefox provide the wheelDelta value in the event.
-    // Firefox provides the scroll amount in the detail field, where it has the
-    // opposite polarity of the wheelDelta (upward scroll is negative) and is a
-    // factor of 40 less than the wheelDelta value.
-    // The wheelDelta value is normally some multiple of 40.
-    if (this == bot.events.EventType.MOUSEWHEEL) {
-      if (!goog.userAgent.GECKO) {
-        event.wheelDelta = args.wheelDelta;
-      }
-      if (goog.userAgent.GECKO) {
-        detail = args.wheelDelta / -40;
-      }
-    }
-
-    // Only Gecko supports a mouse pixel scroll event, so we use it as the
-    // "standard" and pass it along as is as the "detail" of the event.
-    if (goog.userAgent.GECKO && this == bot.events.EventType.MOUSEPIXELSCROLL) {
-      detail = args.wheelDelta;
-    }
-
-    // For screenX and screenY, we set those to clientX and clientY values.
-    // While not strictly correct, applications under test depend on
-    // accurate relative positioning which is satisfied.
-    event.initMouseEvent(this.type_, this.bubbles_, this.cancelable_, view,
-      detail, /*screenX*/ args.clientX, /*screenY*/ args.clientY,
-      args.clientX, args.clientY, args.ctrlKey, args.altKey,
-      args.shiftKey, args.metaKey, args.button, args.relatedTarget);
-
-    // Trying to modify the properties throws an error,
-    // so we define getters to return the correct values.
-    if (goog.userAgent.IE &&
-      event.pageX === 0 && event.pageY === 0 && Object.defineProperty) {
-      var scrollElem = goog.dom.getDomHelper(target).getDocumentScrollElement();
-      var clientElem = goog.style.getClientViewportElement(doc);
-      var pageX = args.clientX + scrollElem.scrollLeft - clientElem.clientLeft;
-      var pageY = args.clientY + scrollElem.scrollTop - clientElem.clientTop;
-
-      Object.defineProperty(event, 'pageX', {
-        get: function () {
-          return pageX;
-        }
-      });
-      Object.defineProperty(event, 'pageY', {
-        get: function () {
-          return pageY;
-        }
-      });
-    }
+    });
   }
 
   return event;
@@ -425,12 +363,8 @@ bot.events.KeyboardEventFactory_.prototype.create = function (target, opt_args) 
       event.preventDefault();
     }
   } else {
-    if (bot.userAgent.IE_DOC_PRE9) {
-      event = doc.createEventObject();
-    } else {  // WebKit and IE 9+ in Standards mode.
-      event = doc.createEvent('Events');
-      event.initEvent(this.type_, this.bubbles_, this.cancelable_);
-    }
+    event = doc.createEvent('Events');
+    event.initEvent(this.type_, this.bubbles_, this.cancelable_);
     event.altKey = args.altKey;
     event.ctrlKey = args.ctrlKey;
     event.metaKey = args.metaKey;
@@ -816,12 +750,7 @@ bot.events.fire = function (target, type, opt_args) {
   if (!('isTrusted' in event)) {
     event['isTrusted'] = false;
   }
-
-  if (bot.userAgent.IE_DOC_PRE9 && target.fireEvent) {
-    return target.fireEvent('on' + factory.type_, event);
-  } else {
-    return target.dispatchEvent(event);
-  }
+  return target.dispatchEvent(event);
 };
 
 
