@@ -93,5 +93,8 @@ react_scripts_test(
         "@npm//@testing-library/react",
         "@npm//@testing-library/user-event",
     ],
-    tags = ["no-bazelci-windows", "no-sandbox"],
+    tags = [
+        "no-bazelci-windows",
+        "no-sandbox",
+    ],
 )

@@ -26,7 +26,6 @@ config_setting(
     },
 )
 
-
 config_setting(
     name = "linux",
     constraint_values = ["@platforms//os:linux"],

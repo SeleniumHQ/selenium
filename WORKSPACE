@@ -29,11 +29,11 @@ lint_setup({
 
 http_archive(
     name = "platforms",
+    sha256 = "460caee0fa583b908c622913334ec3c1b842572b9c23cf0d3da0c2543a1a157d",
     urls = [
         "https://github.com/bazelbuild/platforms/releases/download/0.0.3/platforms-0.0.3.tar.gz",
         "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.3/platforms-0.0.3.tar.gz",
     ],
-    sha256 = "460caee0fa583b908c622913334ec3c1b842572b9c23cf0d3da0c2543a1a157d",
 )
 
 http_archive(
@@ -54,7 +54,7 @@ http_archive(
     sha256 = "1adf5db506a7e3c465a26988514cfc3971af6d5b3c2218925cd6e71ee443fc3f",
     strip_prefix = "bazel-toolchains-4.0.0",
     urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/releases/download/4.0.0/bazel-toolchains-4.0.0.tar.gz"
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/4.0.0/bazel-toolchains-4.0.0.tar.gz",
     ],
 )
 
@@ -95,15 +95,15 @@ rules_proto_toolchains()
 
 http_archive(
     name = "rules_jvm_external",
-    sha256 = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169",
-    strip_prefix = "rules_jvm_external-4.0",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/4.0.zip",
     patch_args = [
         "-p1",
     ],
     patches = [
         "//java:rules_jvm_external_visibility.patch",
     ],
+    sha256 = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169",
+    strip_prefix = "rules_jvm_external-4.0",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/4.0.zip",
 )
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
@@ -136,9 +136,9 @@ load("//dotnet:workspace.bzl", "selenium_register_dotnet")
 selenium_register_dotnet()
 
 http_archive(
-    name="build_bazel_rules_nodejs",
-    sha256="fcc6dccb39ca88d481224536eb8f9fa754619676c6163f87aa6af94059b02b12",
-    urls=["https://github.com/bazelbuild/rules_nodejs/releases/download/3.2.0/rules_nodejs-3.2.0.tar.gz"],
+    name = "build_bazel_rules_nodejs",
+    sha256 = "fcc6dccb39ca88d481224536eb8f9fa754619676c6163f87aa6af94059b02b12",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.2.0/rules_nodejs-3.2.0.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
