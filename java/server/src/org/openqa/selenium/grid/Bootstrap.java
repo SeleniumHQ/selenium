@@ -75,7 +75,7 @@ public class Bootstrap {
       main.invoke(null, new Object[] {args});
     } catch (ReflectiveOperationException e) {
       e.printStackTrace();
-      System.err.println("Unable to load main class");
+      System.exit(1);
     }
   }
 
