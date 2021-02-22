@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
@@ -110,8 +111,12 @@ public class NettyClient implements HttpClient {
   }
 
   @Override
-  public void close() throws IOException {
-    client.close();
+  public void close() {
+    try {
+      client.close();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @AutoService(HttpClient.Factory.class)

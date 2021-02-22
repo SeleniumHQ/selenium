@@ -136,28 +136,28 @@ public class NewSessionCreationTest {
       .build();
     distributor.add(node);
 
-    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
+      // Attempt to create a session with an origin header but content type set
+      HttpResponse res = client.execute(
+        new HttpRequest(POST, "/session")
+          .addHeader("Content-Type", JSON_UTF_8)
+          .addHeader("Origin", "localhost")
+          .setContent(Contents.asJson(ImmutableMap.of(
+            "capabilities", ImmutableMap.of(
+              "alwaysMatch", Browser.detect().getCapabilities())))));
 
-    // Attempt to create a session with an origin header but content type set
-    HttpResponse res = client.execute(
-      new HttpRequest(POST, "/session")
-        .addHeader("Content-Type", JSON_UTF_8)
-        .addHeader("Origin", "localhost")
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "capabilities", ImmutableMap.of(
-            "alwaysMatch", Browser.detect().getCapabilities())))));
+      assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
 
-    assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+      // And now make sure the session is just fine
+      res = client.execute(
+        new HttpRequest(POST, "/session")
+          .addHeader("Content-Type", JSON_UTF_8)
+          .setContent(Contents.asJson(ImmutableMap.of(
+            "capabilities", ImmutableMap.of(
+              "alwaysMatch", Browser.detect().getCapabilities())))));
 
-    // And now make sure the session is just fine
-    res = client.execute(
-      new HttpRequest(POST, "/session")
-        .addHeader("Content-Type", JSON_UTF_8)
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "capabilities", ImmutableMap.of(
-            "alwaysMatch", Browser.detect().getCapabilities())))));
-
-    assertThat(res.isSuccessful()).isTrue();
+      assertThat(res.isSuccessful()).isTrue();
+    }
   }
 
   @Test
@@ -228,9 +228,10 @@ public class NewSessionCreationTest {
         "capabilities", ImmutableMap.of(
           "alwaysMatch", capabilities))));
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
-    HttpResponse httpResponse = client.execute(request);
-    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
+    try (HttpClient client = clientFactory.createClient(server.getUrl())) {
+      HttpResponse httpResponse = client.execute(request);
+      assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
+    }
   }
 
 }

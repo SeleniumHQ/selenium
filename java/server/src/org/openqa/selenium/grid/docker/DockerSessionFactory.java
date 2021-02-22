@@ -126,9 +126,9 @@ public class DockerSessionFactory implements SessionFactory {
     LOG.info("Starting session for " + sessionRequest.getCapabilities());
     int port = PortProber.findFreePort();
     URL remoteAddress = getUrl(port);
-    HttpClient client = clientFactory.createClient(remoteAddress);
 
-    try (Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
+    try (HttpClient client = clientFactory.createClient(remoteAddress);
+        Span span = tracer.getCurrentContext().createSpan("docker_session_factory.apply")) {
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
                        EventAttribute.setValue(this.getClass().getName()));

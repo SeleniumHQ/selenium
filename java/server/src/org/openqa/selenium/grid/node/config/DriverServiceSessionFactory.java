@@ -154,11 +154,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
             @Override
             public void stop() {
               service.stop();
-              try {
-                client.close();
-              } catch (IOException e) {
-                throw new UncheckedIOException(e);
-              }
+              client.close();
             }
           });
       } catch (Exception e) {

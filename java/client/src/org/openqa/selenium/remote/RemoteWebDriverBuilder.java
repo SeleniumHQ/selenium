@@ -111,7 +111,7 @@ public class RemoteWebDriverBuilder {
                   if (("/session/" + id).equals(req.getUri())) {
                     try {
                       client.close();
-                    } catch (IOException e) {
+                    } catch (UncheckedIOException e) {
                       LOG.log(WARNING, "Swallowing exception while closing http client", e);
                     }
                     factory.cleanupIdleClients();
