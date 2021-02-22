@@ -46,11 +46,13 @@ public class Bootstrap {
 
     if (args.length == 0) {
       runMain(classLoader, args);
+      return;
     }
 
     if ("--ext".equals(args[0])) {
       if (args.length < 2) {
         runMain(classLoader, args);
+        return;
       }
 
       ClassLoader parent = createExtendedClassLoader(args[1]);
