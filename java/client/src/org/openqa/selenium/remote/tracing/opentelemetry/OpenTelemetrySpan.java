@@ -187,9 +187,9 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     SpanContext context = span.getSpanContext();
 
     return "OpenTelemetrySpan{traceId=" +
-      context.getTraceIdAsHexString() +
+      context.getTraceId() +
       ",spanId=" +
-      context.getSpanIdAsHexString() +
+      context.getSpanId() +
       "}";
   }
 
@@ -207,8 +207,8 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     SpanContext thisContext = this.span.getSpanContext();
     SpanContext thatContext = that.span.getSpanContext();
 
-    return Objects.equals(thisContext.getSpanIdAsHexString(), thatContext.getSpanIdAsHexString()) &&
-      Objects.equals(thisContext.getTraceIdAsHexString(), thatContext.getTraceIdAsHexString());
+    return Objects.equals(thisContext.getSpanId(), thatContext.getSpanId()) &&
+      Objects.equals(thisContext.getTraceId(), thatContext.getTraceId());
   }
 
   @Override

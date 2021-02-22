@@ -15,28 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import OsInfo from "./os-info";
-import StereotypeInfo from "./stereotype-info";
+import OsInfo from './os-info'
+import StereotypeInfo from './stereotype-info'
 
 interface NodeInfo {
   /** Node id */
-  id: string;
+  id: string
   /** Node URI */
-  uri: string;
+  uri: string
   /** Node status (UP, DRAINING, UNAVAILABLE)  */
-  status: string;
+  status: string
   /** Max. number of concurrent sessions */
-  maxSession: number;
+  maxSession: number
   /** Number of slots */
-  slotCount: number;
+  slotCount: number
   /** Number of current sessions */
-  sessionCount: number;
+  sessionCount: number
   /** Grid Node version */
-  version: string;
+  version: string
   /** Grid Node OS information */
-  osInfo: OsInfo;
+  osInfo: OsInfo
   /** Node stereotypes. */
-  slotStereotypes: StereotypeInfo[];
+  slotStereotypes: StereotypeInfo[]
 }
 
-export default NodeInfo;
+export default NodeInfo

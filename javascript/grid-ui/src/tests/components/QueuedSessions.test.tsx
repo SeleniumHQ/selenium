@@ -16,11 +16,15 @@
 // under the License.
 
 import * as React from 'react'
+import QueuedSessions from '../../components/QueuedSessions/QueuedSessions'
 import { render, screen } from '@testing-library/react'
-import NoData from '../../components/NoData/NoData'
 
-it('renders sample message', function () {
-  const message = 'Sample heading error message showing no data was found'
-  render(<NoData message={message} />)
-  expect(screen.getByText(message)).toBeInTheDocument()
+const sessionQueueRequests: string[] = [
+  '{"acceptInsecureCerts":true,"browserName":"chrome","goog:chromeOptions":{"args":["--start-maximized"],"extensions":[]}}'
+]
+
+it('renders basic session information', () => {
+  render(<QueuedSessions sessionQueueRequests={sessionQueueRequests} />)
+  const request = sessionQueueRequests[0]
+  expect(screen.getByText(request)).toBeInTheDocument()
 })

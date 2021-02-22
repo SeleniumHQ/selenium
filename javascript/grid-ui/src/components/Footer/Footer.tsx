@@ -15,12 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react'
-import { render, screen } from '@testing-library/react'
-import NoData from '../../components/NoData/NoData'
+import React, { ReactNode } from 'react'
+import { Box, Link, Typography } from '@material-ui/core'
 
-it('renders sample message', function () {
-  const message = 'Sample heading error message showing no data was found'
-  render(<NoData message={message} />)
-  expect(screen.getByText(message)).toBeInTheDocument()
-})
+class Footer extends React.Component<{}, {}> {
+  render (): ReactNode {
+    // noinspection HtmlUnknownAnchorTarget
+    return (
+      <Box pt={4}>
+        <Typography variant='body2' color='textSecondary' align='center'>
+          <Link href='#/help'>
+            Help
+          </Link>
+          {' - All rights reserved - '}
+          <Link href='https://sfconservancy.org/' target='_blank' rel='noreferrer'>
+            Software Freedom Conservancy
+          </Link>{' '}
+          {new Date().getFullYear()}.
+        </Typography>
+      </Box>
+    )
+  }
+}
+
+export default Footer

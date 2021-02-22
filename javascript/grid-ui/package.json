@@ -26,7 +26,8 @@
     "build": "react-scripts build && python scripts/rmSourcemaps.py",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test --watchAll=false",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -49,11 +50,17 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.0",
+    "ts-standard": "^10.0.0",
     "typescript": "^3.9.7"
   },
   "jest": {
     "testMatch": [
       "<rootDir>/src/tests/**/*.test.tsx"
+    ]
+  },
+  "ts-standard": {
+    "ignore": [
+      "src/react-app-env.d.ts"
     ]
   }
 }

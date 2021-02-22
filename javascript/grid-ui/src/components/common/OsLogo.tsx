@@ -17,36 +17,64 @@
 
 import React, { ReactNode } from 'react'
 import { StyleRules, Theme, withStyles } from '@material-ui/core/styles'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import { Size } from '../../models/size'
+import osLogo from '../../util/os-logo'
+import clsx from 'clsx'
 
 const useStyles = (theme: Theme): StyleRules => (
   {
-    root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1)
+    logo: {
+      marginRight: 5
     },
-    title: {
-      flex: '1 1 100%'
+    small: {
+      width: 24,
+      height: 24
+    },
+    medium: {
+      width: 32,
+      height: 32
+    },
+    large: {
+      width: 48,
+      height: 48
     }
   })
 
-interface EnhancedTableToolbarProps {
-  title: string
+interface OsLogoProps {
+  osName: string
+  size: Size
   classes: any
 }
 
-class EnhancedTableToolbar extends React.Component<EnhancedTableToolbarProps, {}> {
+class OsLogo extends React.Component<OsLogoProps, {}> {
+  static defaultProps = {
+    size: Size.S
+  }
+
   render (): ReactNode {
-    const { title, classes } = this.props
+    const { osName, size, classes } = this.props
+
+    function sizeMap (size): string {
+      if (size === Size.S) {
+        return classes.small
+      }
+      if (size === Size.M) {
+        return classes.medium
+      }
+      if (size === Size.L) {
+        return classes.large
+      }
+      return classes.small
+    }
+
     return (
-      <Toolbar className={classes.root}>
-        <Typography className={classes.title} variant='h3' id='tableTitle' component='div'>
-          {title}
-        </Typography>
-      </Toolbar>
+      <img
+        src={osLogo(osName)}
+        className={clsx(classes.logo, sizeMap(size))}
+        alt='OS Logo'
+      />
     )
   }
 }
 
-export default withStyles(useStyles)(EnhancedTableToolbar)
+export default withStyles(useStyles)(OsLogo)

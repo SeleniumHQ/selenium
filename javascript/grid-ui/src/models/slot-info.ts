@@ -15,12 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import * as React from 'react'
-import { render, screen } from '@testing-library/react'
-import NoData from '../../components/NoData/NoData'
+interface SlotInfo {
+  id: string
+  stereotype: string
+  lastStarted: string
+}
 
-it('renders sample message', function () {
-  const message = 'Sample heading error message showing no data was found'
-  render(<NoData message={message} />)
-  expect(screen.getByText(message)).toBeInTheDocument()
-})
+export default SlotInfo

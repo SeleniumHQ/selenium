@@ -76,8 +76,8 @@ class OpenTelemetryPropagator implements Propagator {
 
     // If the extracted context is the root context, then we continue to be a
     // child span of the existing context.
-    String id = Span.fromContext(extracted).getSpanContext().getSpanIdAsHexString();
-    if (Span.getInvalid().getSpanContext().getSpanIdAsHexString().equals(id)) {
+    String id = Span.fromContext(extracted).getSpanContext().getSpanId();
+    if (Span.getInvalid().getSpanContext().getSpanId().equals(id)) {
       return (OpenTelemetryContext) existing;
     }
 

@@ -15,27 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import red from '@material-ui/core/colors/red';
-import {createMuiTheme} from '@material-ui/core/styles';
-import typography from './typography';
+import red from '@material-ui/core/colors/red'
+import { createMuiTheme } from '@material-ui/core/styles'
+import typography from './typography'
 
 // A custom theme for this app
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#615E9B',
+      main: '#615E9B'
     },
     secondary: {
-      main: '#F7F8F8',
+      main: '#F7F8F8'
     },
     error: {
-      main: red.A400,
+      main: red.A400
     },
     background: {
-      default: '#F7F8F8',
-    },
+      default: '#F7F8F8'
+    }
   },
   typography
-});
+})
 
-export default theme;
+export default theme
