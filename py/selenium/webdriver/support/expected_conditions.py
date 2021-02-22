@@ -371,10 +371,10 @@ def attribute_to_be_include_in_element(locator, attribute_):
     """
     def _predicate(driver):
         try:
-            element_attribute = driver.find_element(*locator).get_attribute(attribute_)
-            return element_attribute is not None
+            driver.find_element(*locator).get_attribute(attribute_)
         except StaleElementReferenceException:
             return False
+        return True
 
     return _predicate
 
