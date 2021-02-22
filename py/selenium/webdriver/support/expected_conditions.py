@@ -364,6 +364,21 @@ def alert_is_present():
     return _predicate
 
 
+def attribute_to_be_include_in_element(locator, attribute_):
+    """ An expectation for checking if the given attribute is include in the
+    specified element.
+    locator, text
+    """
+    def _predicate(driver):
+        try:
+            element_attribute = driver.find_element(*locator).get_attribute(attribute_)
+            return element_attribute
+        except StaleElementReferenceException:
+            return False
+
+    return _predicate
+
+
 def any_of(*expected_conditions):
     """ An expectation that any of multiple expected conditions is true.
     Equivalent to a logical 'OR'.
