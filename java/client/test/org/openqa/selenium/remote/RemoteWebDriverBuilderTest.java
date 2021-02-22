@@ -76,19 +76,19 @@ public class RemoteWebDriverBuilderTest {
 
   @Test
   public void mustSpecifyAtLeastOneSetOfOptions() {
-    List<HttpRequest> requests = new ArrayList<>();
+    List<List<Capabilities>> caps = new ArrayList<>();
 
     RemoteWebDriver.builder().oneOf(new FirefoxOptions())
       .address("http://localhost:34576")
       .connectingWith(config -> req -> {
-        requests.add(req);
+        caps.add(listCapabilities(req));
         return CANNED_SESSION_RESPONSE;
       })
       .build();
 
-    assertThat(requests).isNotEmpty();
-    List<Capabilities> caps = listCapabilities(requests.get(0));
-    assertThat(caps.get(0).getBrowserName()).isEqualTo(FIREFOX);
+    assertThat(caps).hasSize(1);
+    List<Capabilities> caps0 = caps.get(0);
+    assertThat(caps0.get(0).getBrowserName()).isEqualTo(FIREFOX);
   }
 
   @Test
