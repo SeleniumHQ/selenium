@@ -320,7 +320,7 @@ def testExpectedConditionAlertIsPresent(driver, pages):
 def testExpectedConditionAttributeToBeIncludeInElement(driver, pages):
     pages.load('booleanAttributes.html')
     with pytest.raises(TimeoutException):
-        WebDriverWait(driver, 0.7).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'text'))
+        WebDriverWait(driver, 0.7).until(EC.attribute_to_be_include_in_element((By.ID, 'unwrappable'), 'value'))
     driver.execute_script("setTimeout(function(){var el = document.getElementById('unwrappable'); el.textContent = el.innerText = 'Unwrappable Expected text'}, 200)")
-    WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'text'))
-    assert 'Unwrappable Expected text' == driver.find_element(By.ID, 'unwrappable').get_attribute('text')
+    WebDriverWait(driver, 1).until(EC.attribute_to_be_include_in_element((By.ID, 'unwrappable'), 'value'))
+    assert 'Unwrappable Expected text' == driver.find_element(By.ID, 'unwrappable').get_attribute('value')
