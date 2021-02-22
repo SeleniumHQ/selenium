@@ -64,22 +64,22 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private static final String VALIDATE_COOKIE_DOCUMENT_TYPE = "ie.validateCookieDocumentType";
 
   private static final List<String> CAPABILITY_NAMES = Arrays.asList(
-      BROWSER_ATTACH_TIMEOUT,
-      ELEMENT_SCROLL_BEHAVIOR,
-      ENABLE_PERSISTENT_HOVERING,
-      FULL_PAGE_SCREENSHOT,
-      FORCE_CREATE_PROCESS,
-      FORCE_WINDOW_SHELL_API,
-      IE_ENSURE_CLEAN_SESSION,
-      IE_SWITCHES,
-      IE_USE_PER_PROCESS_PROXY,
-      IGNORE_ZOOM_SETTING,
-      INITIAL_BROWSER_URL,
-      INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
-      REQUIRE_WINDOW_FOCUS,
-      UPLOAD_DIALOG_TIMEOUT,
-      VALIDATE_COOKIE_DOCUMENT_TYPE,
-      NATIVE_EVENTS);
+    BROWSER_ATTACH_TIMEOUT,
+    ELEMENT_SCROLL_BEHAVIOR,
+    ENABLE_PERSISTENT_HOVERING,
+    FULL_PAGE_SCREENSHOT,
+    FORCE_CREATE_PROCESS,
+    FORCE_WINDOW_SHELL_API,
+    IE_ENSURE_CLEAN_SESSION,
+    IE_SWITCHES,
+    IE_USE_PER_PROCESS_PROXY,
+    IGNORE_ZOOM_SETTING,
+    INITIAL_BROWSER_URL,
+    INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
+    REQUIRE_WINDOW_FOCUS,
+    UPLOAD_DIALOG_TIMEOUT,
+    VALIDATE_COOKIE_DOCUMENT_TYPE,
+    NATIVE_EVENTS);
 
   private final Map<String, Object> ieOptions = new HashMap<>();
 
@@ -153,11 +153,11 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     }
 
     return amend(
-        IE_SWITCHES,
-        Stream.concat(((List<?>) raw).stream(), Stream.of(switches))
-            .filter(i -> i instanceof String)
-            .map(String.class::cast)
-            .collect(toList()));
+      IE_SWITCHES,
+      Stream.concat(((List<?>) raw).stream(), Stream.of(switches))
+        .filter(i -> i instanceof String)
+        .map(String.class::cast)
+        .collect(toList()));
   }
 
   /**
@@ -238,15 +238,15 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
       }
 
       streamFrom.entrySet().stream()
-          .filter(e -> CAPABILITY_NAMES.contains(e.getKey()))
-          .filter(e -> e.getValue() != null)
-          .forEach(e -> {
-            if (IE_SWITCHES.equals(e.getKey())) {
-              setCapability(e.getKey(), Arrays.asList((e.getValue().toString()).split(" ")));
-            } else {
-              setCapability(e.getKey(), e.getValue());
-            }
-          });
+        .filter(e -> CAPABILITY_NAMES.contains(e.getKey()))
+        .filter(e -> e.getValue() != null)
+        .forEach(e -> {
+          if (IE_SWITCHES.equals(e.getKey())) {
+            setCapability(e.getKey(), Arrays.asList((e.getValue().toString()).split(" ")));
+          } else {
+            setCapability(e.getKey(), e.getValue());
+          }
+        });
     }
   }
 }
