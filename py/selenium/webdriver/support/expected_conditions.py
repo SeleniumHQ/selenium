@@ -367,12 +367,12 @@ def alert_is_present():
 def attribute_to_be_include_in_element(locator, attribute_):
     """ An expectation for checking if the given attribute is include in the
     specified element.
-    locator, text
+    locator, attribute
     """
     def _predicate(driver):
         try:
             element_attribute = driver.find_element(*locator).get_attribute(attribute_)
-            return element_attribute
+            return element_attribute is not None
         except StaleElementReferenceException:
             return False
 
