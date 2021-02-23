@@ -107,10 +107,10 @@ public class NewSessionPayload implements Closeable {
     // Dedicate up to 10% of all RAM or 20% of available RAM (whichever is smaller) to storing this
     // payload.
     int threshold = (int) Math.min(
-        Integer.MAX_VALUE,
-        Math.min(
-            Runtime.getRuntime().freeMemory() / 5,
-            Runtime.getRuntime().maxMemory() / 10));
+      Integer.MAX_VALUE,
+      Math.min(
+        Runtime.getRuntime().freeMemory() / 5,
+        Runtime.getRuntime().maxMemory() / 10));
 
     backingStore = new FileBackedOutputStream(threshold);
     try (Writer writer = new OutputStreamWriter(backingStore, UTF_8)) {
@@ -122,20 +122,20 @@ public class NewSessionPayload implements Closeable {
     ImmutableSet.Builder<CapabilitiesFilter> adapters = ImmutableSet.builder();
     ServiceLoader.load(CapabilitiesFilter.class).forEach(adapters::add);
     adapters
-        .add(new ChromeFilter())
-        .add(new EdgeFilter())
-        .add(new FirefoxFilter())
-        .add(new InternetExplorerFilter())
-        .add(new OperaFilter())
-        .add(new SafariFilter());
+      .add(new ChromeFilter())
+      .add(new EdgeFilter())
+      .add(new FirefoxFilter())
+      .add(new InternetExplorerFilter())
+      .add(new OperaFilter())
+      .add(new SafariFilter());
     this.adapters = adapters.build();
 
     ImmutableSet.Builder<CapabilityTransform> transforms = ImmutableSet.builder();
     ServiceLoader.load(CapabilityTransform.class).forEach(transforms::add);
     transforms
-        .add(new ProxyTransform())
-        .add(new StripAnyPlatform())
-        .add(new W3CPlatformNameNormaliser());
+      .add(new ProxyTransform())
+      .add(new StripAnyPlatform())
+      .add(new W3CPlatformNameNormaliser());
     this.transforms = transforms.build();
 
     ImmutableSet.Builder<Dialect> dialects = ImmutableSet.builder();
@@ -171,40 +171,40 @@ public class NewSessionPayload implements Closeable {
     }
 
     firsts.stream()
-        .peek(map -> {
-          Set<String> overlap = Sets.intersection(always.keySet(), map.keySet());
-          if (!overlap.isEmpty()) {
-            throw new IllegalArgumentException(
-                "Overlapping keys between w3c always and first match capabilities: " + overlap);
-          }
-        })
-        .map(first -> {
-          Map<String, Object> toReturn = new HashMap<>();
-          toReturn.putAll(always);
-          toReturn.putAll(first);
-          return toReturn;
-        })
-        .peek(map -> {
-          ImmutableSortedSet<String> nullKeys = map.entrySet().stream()
-              .filter(entry -> entry.getValue() == null)
-              .map(Map.Entry::getKey)
-              .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
-          if (!nullKeys.isEmpty()) {
-            throw new IllegalArgumentException(
-                "Null values found in w3c capabilities. Keys are: " + nullKeys);
-          }
-        })
-        .peek(map -> {
-          ImmutableSortedSet<String> illegalKeys = map.entrySet().stream()
-              .filter(entry -> !ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
-              .map(Map.Entry::getKey)
-              .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
-          if (!illegalKeys.isEmpty()) {
-            throw new IllegalArgumentException(
-                "Illegal key values seen in w3c capabilities: " + illegalKeys);
-          }
-        })
-        .forEach(map -> {});
+      .peek(map -> {
+        Set<String> overlap = Sets.intersection(always.keySet(), map.keySet());
+        if (!overlap.isEmpty()) {
+          throw new IllegalArgumentException(
+            "Overlapping keys between w3c always and first match capabilities: " + overlap);
+        }
+      })
+      .map(first -> {
+        Map<String, Object> toReturn = new HashMap<>();
+        toReturn.putAll(always);
+        toReturn.putAll(first);
+        return toReturn;
+      })
+      .peek(map -> {
+        ImmutableSortedSet<String> nullKeys = map.entrySet().stream()
+          .filter(entry -> entry.getValue() == null)
+          .map(Map.Entry::getKey)
+          .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
+        if (!nullKeys.isEmpty()) {
+          throw new IllegalArgumentException(
+            "Null values found in w3c capabilities. Keys are: " + nullKeys);
+        }
+      })
+      .peek(map -> {
+        ImmutableSortedSet<String> illegalKeys = map.entrySet().stream()
+          .filter(entry -> !ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
+          .map(Map.Entry::getKey)
+          .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
+        if (!illegalKeys.isEmpty()) {
+          throw new IllegalArgumentException(
+            "Illegal key values seen in w3c capabilities: " + illegalKeys);
+        }
+      })
+      .forEach(map -> {});
   }
 
   public void writeTo(Appendable appendable) throws IOException {
@@ -308,11 +308,11 @@ public class NewSessionPayload implements Closeable {
       Stream<Map<String, Object>> w3c = getW3C();
 
       return Stream.concat(oss, w3c)
-          .filter(Objects::nonNull)
-          .map(this::applyTransforms)
-          .filter(Objects::nonNull)
-          .distinct()
-          .map(ImmutableCapabilities::new);
+        .filter(Objects::nonNull)
+        .map(this::applyTransforms)
+        .filter(Objects::nonNull)
+        .distinct()
+        .map(ImmutableCapabilities::new);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -360,35 +360,35 @@ public class NewSessionPayload implements Closeable {
 
       // Are there any values we care want to pull out into a mapping of their own?
       List<Map<String, Object>> firsts = adapters.stream()
-          .map(adapter -> adapter.apply(oss))
-          .filter(Objects::nonNull)
-          .filter(map -> !map.isEmpty())
-          .map(map ->
-            map.entrySet().stream()
-                .filter(entry -> entry.getKey() != null)
-                .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
-                .filter(entry -> entry.getValue() != null)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-          .peek(map -> usedKeys.addAll(map.keySet()))
-          .collect(ImmutableList.toImmutableList());
+        .map(adapter -> adapter.apply(oss))
+        .filter(Objects::nonNull)
+        .filter(map -> !map.isEmpty())
+        .map(
+          map -> map.entrySet().stream()
+            .filter(entry -> entry.getKey() != null)
+            .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
+            .filter(entry -> entry.getValue() != null)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+        .peek(map -> usedKeys.addAll(map.keySet()))
+        .collect(ImmutableList.toImmutableList());
       if (firsts.isEmpty()) {
         firsts = ImmutableList.of(ImmutableMap.of());
       }
 
       // Are there any remaining unused keys?
       Map<String, Object> always = oss.entrySet().stream()
-          .filter(entry -> !usedKeys.contains(entry.getKey()))
-          .filter(entry -> entry.getValue() != null)
-          .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        .filter(entry -> !usedKeys.contains(entry.getKey()))
+        .filter(entry -> entry.getValue() != null)
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
       // Firsts contains at least one entry, always contains everything else. Let's combine them
       // into the stream to form a unified set of capabilities. Woohoo!
       fromOss = firsts.stream()
-          .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build())
-          .map(this::applyTransforms)
-          .map(map -> map.entrySet().stream()
-              .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
-             .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue)));
+        .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build())
+        .map(this::applyTransforms)
+        .map(map -> map.entrySet().stream()
+          .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
+          .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue)));
     } else {
       fromOss = Stream.of();
     }
@@ -409,7 +409,7 @@ public class NewSessionPayload implements Closeable {
       }
 
       fromW3c = firsts.stream()
-          .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build());
+        .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build());
     }
 
     return Stream.concat(fromOss, fromW3c).distinct();

@@ -34,7 +34,7 @@ public class W3CPlatformNameNormaliser implements CapabilityTransform {
     }
 
     return singleton(new AbstractMap.SimpleImmutableEntry<>(
-        entry.getKey(),
-        String.valueOf(entry.getValue()).toLowerCase(ENGLISH)));
+      entry.getKey(),
+      String.valueOf(entry.getValue()).toLowerCase(ENGLISH)));
   }
 }
