@@ -19,6 +19,9 @@ package org.openqa.selenium.remote.session;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,7 +30,7 @@ public class InternetExplorerFilter implements CapabilitiesFilter {
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     ImmutableMap<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
       .filter(entry ->
-                ("browserName".equals(entry.getKey()) && "internet explorer".equals(entry.getValue())) ||
+                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.IE.equals(entry.getValue())) ||
                 "browserAttachTimeout".equals(entry.getKey()) ||
                 "enableElementCacheCleanup".equals(entry.getKey()) ||
                 "enablePersistentHover".equals(entry.getKey()) ||

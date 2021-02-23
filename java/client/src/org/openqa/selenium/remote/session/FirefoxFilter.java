@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.remote.session;
 
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -29,7 +32,7 @@ public class FirefoxFilter implements CapabilitiesFilter {
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     Map<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
       .filter(entry ->
-                ("browserName".equals(entry.getKey()) && "firefox".equals(entry.getValue())) ||
+                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.FIREFOX.equals(entry.getValue())) ||
                 entry.getKey().startsWith("firefox_") ||
                 entry.getKey().startsWith("moz:"))
       .filter(entry -> Objects.nonNull(entry.getValue()))

@@ -17,26 +17,31 @@
 
 package org.openqa.selenium.remote.session;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
-import java.util.Objects;
 
-public class EdgeFilter implements CapabilitiesFilter {
+@Category(UnitTests.class)
+public class ChromeFilterTest {
 
-  @Override
-  public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
-    ImmutableMap<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
-      .filter(
-        entry -> (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.EDGE.equals(entry.getValue())) ||
-                 entry.getKey().startsWith("ms:"))
-      .distinct()
-      .filter(entry -> Objects.nonNull(entry.getValue()))
-      .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
-
-    return caps.isEmpty() ? null : caps;
+  @Test
+  public void shouldNotFilterOutChromeCapabilities() {
+    Map<String, Object> original = new ChromeOptions().asMap();
+    Map<String, Object> filtered = new ChromeFilter().apply(original);
+    assertThat(filtered).isEqualTo(original);
   }
+
+  @Test
+  public void shouldFilterOutNonChromeCapabilities() {
+    Map<String, Object> original = new EdgeOptions().asMap();
+    Map<String, Object> filtered = new ChromeFilter().apply(original);
+    assertThat(filtered).isNull();
+  }
+
 }
