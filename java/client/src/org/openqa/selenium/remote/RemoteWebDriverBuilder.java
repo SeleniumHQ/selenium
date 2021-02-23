@@ -357,7 +357,7 @@ public class RemoteWebDriverBuilder {
         .andThen(new AddWebDriverSpecHeaders())
         .andThen(new ErrorFilter()));
 
-    Either<WebDriverException, ProtocolHandshake.Result> result = null;
+    Either<SessionNotCreatedException, ProtocolHandshake.Result> result = null;
     try {
       result = new ProtocolHandshake().createSession(handler, getPayload());
     } catch (IOException e) {
@@ -368,7 +368,7 @@ public class RemoteWebDriverBuilder {
       CommandExecutor executor = result.map(res -> createExecutor(handler, res));
       return new RemoteWebDriver(executor, new ImmutableCapabilities());
     } else {
-      throw new SessionNotCreatedException("Unable to create new remote session", result.left());
+      throw result.left();
     }
   }
 
