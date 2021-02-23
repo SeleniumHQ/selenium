@@ -183,11 +183,11 @@ public class RemoteWebDriverBuilderTest {
 
     RemoteWebDriver.builder()
       .oneOf(new FirefoxOptions())
-      .setCapability("se:options", "cheese")
+      .setCapability("se:option", "cheese")
       .address("http://localhost:34576")
       .connectingWith(config -> req -> {
         listCapabilities(req).stream()
-          .map(caps -> "cheese".equals(caps.getCapability("se:options")))
+          .map(caps -> "cheese".equals(caps.getCapability("se:option")))
           .reduce(Boolean::logicalAnd)
           .ifPresent(seen::set);
         return CANNED_SESSION_RESPONSE;

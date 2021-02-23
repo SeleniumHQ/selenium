@@ -63,11 +63,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
@@ -243,16 +241,8 @@ public class OneShotNode extends Node {
   private Capabilities rewriteCapabilities(RemoteWebDriver driver) {
     // Rewrite the se:options if necessary to add cdp url
     if (driverInfo.isSupportingCdp()) {
-      Object rawSeleniumOptions = driver.getCapabilities().getCapability("se:options");
-      if (rawSeleniumOptions == null || rawSeleniumOptions instanceof Map) {
-        @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
-        Map<String, Object> updated = new TreeMap<>(original == null ? new HashMap<>() : original);
-
-        String cdpPath = String.format("/session/%s/se/cdp", driver.getSessionId());
-        updated.put("cdp", rewrite(cdpPath));
-
-        return new PersistentCapabilities(driver.getCapabilities()).setCapability("se:options", updated);
-      }
+      String cdpPath = String.format("/session/%s/se/cdp", driver.getSessionId());
+      return new PersistentCapabilities(driver.getCapabilities()).setCapability("se:cdp", rewrite(cdpPath));
     }
 
     return ImmutableCapabilities.copyOf(driver.getCapabilities());

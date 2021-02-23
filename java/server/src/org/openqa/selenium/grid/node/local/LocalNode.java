@@ -81,7 +81,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -447,16 +446,8 @@ public class LocalNode extends Node {
 
     // Rewrite the se:options if necessary to send the cdp url back
     if (isSupportingCdp) {
-      Object rawSeleniumOptions = other.getCapabilities().getCapability("se:options");
-      if (rawSeleniumOptions instanceof Map) {
-        @SuppressWarnings("unchecked") Map<String, Object> original = (Map<String, Object>) rawSeleniumOptions;
-        Map<String, Object> updated = new TreeMap<>(original);
-
-        String cdpPath = String.format("/session/%s/se/cdp", other.getId());
-        updated.put("cdp", rewrite(cdpPath));
-
-        toUse = new PersistentCapabilities(toUse).setCapability("se:options", updated);
-      }
+      String cdpPath = String.format("/session/%s/se/cdp", other.getId());
+      toUse = new PersistentCapabilities(toUse).setCapability("se:cdp", rewrite(cdpPath));
     }
 
     return new Session(other.getId(), externalUri, other.getStereotype(), toUse, Instant.now());

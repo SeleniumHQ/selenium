@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
@@ -42,8 +41,6 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Instant;
@@ -173,14 +170,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
   }
 
   private Capabilities addCdpCapability(Capabilities caps, URI uri) {
-    Object raw = caps.getCapability("se:options");
-    if (!(raw instanceof Map)) {
-      return new PersistentCapabilities(caps).setCapability("se:options", ImmutableMap.of("cdp", uri));
-    }
-
-    //noinspection unchecked
-    Map<String, Object> current = new HashMap<>((Map<String, Object>) raw);
-    current.put("cdp", uri);
-    return new PersistentCapabilities(caps).setCapability("se:options", ImmutableMap.copyOf(current));
+    return new PersistentCapabilities(caps).setCapability("se:cdp", uri);
   }
 }

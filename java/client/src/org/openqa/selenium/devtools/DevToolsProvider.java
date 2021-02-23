@@ -23,7 +23,6 @@ import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -49,12 +48,11 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
   }
 
   private String getCdpUrl(Capabilities caps) {
-    Object options = caps.getCapability("se:options");
-    if (!(options instanceof Map)) {
+    Object cdp = caps.getCapability("se:cdp");
+    if (!(cdp instanceof String)) {
       return null;
     }
 
-    Object cdp = ((Map<?, ?>) options).get("cdp");
-    return cdp == null ? null : String.valueOf(cdp);
+    return (String) cdp;
   }
 }

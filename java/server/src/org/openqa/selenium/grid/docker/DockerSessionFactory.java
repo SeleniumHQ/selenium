@@ -289,7 +289,7 @@ public class DockerSessionFactory implements SessionFactory {
 
   private TimeZone getTimeZone(Capabilities sessionRequestCapabilities) {
     Optional<Object> timeZone =
-      ofNullable(getCapability(sessionRequestCapabilities, "timeZone"));
+      ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
       String tz =  timeZone.get().toString();
       if (Arrays.asList(TimeZone.getAvailableIDs()).contains(tz)) {
@@ -301,7 +301,7 @@ public class DockerSessionFactory implements SessionFactory {
 
   private Dimension getScreenResolution(Capabilities sessionRequestCapabilities) {
     Optional<Object> screenResolution =
-      ofNullable(getCapability(sessionRequestCapabilities, "screenResolution"));
+      ofNullable(sessionRequestCapabilities.getCapability("se:screenResolution"));
     if (!screenResolution.isPresent()) {
       return null;
     }
@@ -325,18 +325,8 @@ public class DockerSessionFactory implements SessionFactory {
 
   private boolean recordVideoForSession(Capabilities sessionRequestCapabilities) {
     Optional<Object> recordVideo =
-      ofNullable(getCapability(sessionRequestCapabilities, "recordVideo"));
+      ofNullable(sessionRequestCapabilities.getCapability("se:recordVideo"));
     return recordVideo.isPresent() && Boolean.parseBoolean(recordVideo.get().toString());
-  }
-
-  private Object getCapability(Capabilities sessionRequestCapabilities, String capabilityName) {
-    Object rawSeleniumOptions = sessionRequestCapabilities.getCapability("se:options");
-    if (rawSeleniumOptions instanceof Map) {
-      @SuppressWarnings("unchecked")
-      Map<String, Object> seleniumOptions = (Map<String, Object>) rawSeleniumOptions;
-      return seleniumOptions.get(capabilityName);
-    }
-    return null;
   }
 
   private void saveSessionCapabilities(Capabilities sessionRequestCapabilities, String path) {
