@@ -27,7 +27,6 @@
 from trio_websocket import (
     ConnectionClosed as WsConnectionClosed,
     connect_websocket_url,
-    open_websocket_url
 )
 import trio
 from collections import defaultdict
@@ -38,7 +37,6 @@ import importlib
 import itertools
 import json
 import logging
-import sys
 import typing
 
 
