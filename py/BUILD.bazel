@@ -155,7 +155,10 @@ py_binary(
     name = "generate",
     srcs = ["generate.py"],
     srcs_version = "PY3",
-    deps = [requirement("inflection")],
+    deps=[
+        requirement("inflection"),
+        requirement("dataclasses")
+    ],
 )
 
 [genrule(
