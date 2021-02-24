@@ -31,7 +31,7 @@ public class ChromeFilter implements CapabilitiesFilter {
     Map<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
       .filter(
         entry ->
-          (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.EDGE.equals(entry.getValue())) ||
+          (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.CHROME.equals(entry.getValue())) ||
           entry.getKey().startsWith("goog:") ||
           "chromeOptions".equals(entry.getKey()) ||
           "loggingPrefs".equals(entry.getKey()))
