@@ -20,8 +20,8 @@ python publish_release.py \\
     --acl "public-read"
 
 This will publish
-    http://releases.storage.googleapis.com/1.50/one.txt
-    http://releases.storage.googleapis.com/1.50/two.txt
+    http://releases.storage.googleapis.com/3.14.15/one.txt
+    http://releases.storage.googleapis.com/3.14.15/two.txt
 """
 
 import argparse
