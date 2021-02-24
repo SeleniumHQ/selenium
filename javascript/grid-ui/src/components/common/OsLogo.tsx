@@ -52,7 +52,7 @@ class OsLogo extends React.Component<OsLogoProps, {}> {
   }
 
   render (): ReactNode {
-    const { osName, size, classes } = this.props
+    const { osName, size, classes } = this.props ?? { osName: '' }
 
     function sizeMap (size): string {
       if (size === Size.S) {
