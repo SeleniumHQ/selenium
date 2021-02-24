@@ -1035,6 +1035,6 @@ def main(browser_protocol_path, js_protocol_path, output_path):
 
 if __name__ == '__main__':
     import sys
-    assert sys.version_info >= (3, 7), "To generate the CDP code requires python 3.7 or later"
+    assert sys.version_info >= (3, 7), f"To generate the CDP code requires python 3.7 or later. Executing python is {sys.version_info}"
     args = sys.argv[1:]
     main(*args)
