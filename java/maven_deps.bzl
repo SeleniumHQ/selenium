@@ -92,7 +92,6 @@ def selenium_java_deps():
         strict_visibility = True,
         repositories = [
             "https://repo1.maven.org/maven2",
-            "https://jcenter.bintray.com/",
             "https://maven.google.com",
         ],
         maven_install_json = "@selenium//java:maven_install.json",
