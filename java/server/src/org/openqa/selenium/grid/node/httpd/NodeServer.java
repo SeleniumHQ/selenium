@@ -197,7 +197,7 @@ public class NodeServer extends TemplateGridServerCommand {
         Executors.newSingleThreadExecutor().submit(() -> {
           Failsafe.with(registrationPolicy).run(
             () -> {
-              LOG.fine("Sending registration event");
+              LOG.info("Sending registration event");
               HealthCheck.Result check = node.getHealthCheck().check();
               if (DOWN.equals(check.getAvailability())) {
                 LOG.severe("Node is not alive: " + check.getMessage());

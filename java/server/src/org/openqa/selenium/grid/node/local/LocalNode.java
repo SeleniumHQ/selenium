@@ -36,6 +36,7 @@ import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
 import org.openqa.selenium.grid.data.NodeDrainStarted;
 import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
@@ -171,7 +172,13 @@ public class LocalNode extends Node {
     this.regularly = new Regularly("Local Node: " + externalUri);
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
     regularly.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
-    regularly.submit(() -> bus.fire(new NodeHeartBeatEvent(getId())), heartbeatPeriod, heartbeatPeriod);
+
+    bus.addListener(NodeAddedEvent.listener(nodeId -> {
+      if (getId().equals(nodeId)) {
+        regularly.submit(() ->
+          bus.fire(new NodeHeartBeatEvent(getId())), heartbeatPeriod, heartbeatPeriod);
+      }
+    }));
 
     bus.addListener(SessionClosedEvent.listener(id -> {
       try {

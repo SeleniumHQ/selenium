@@ -35,6 +35,7 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -81,6 +82,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -146,6 +148,45 @@ public class DistributorTest {
         local.newSession(createRequest(payload));
       assertThatEither(result).isLeft();
     }
+  }
+
+  @Test
+  public void shouldStartHeartBeatOnNodeRegistration() {
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      bus,
+      localNewSessionQueue,
+      registrationSecret);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .build();
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queuer,
+      registrationSecret);
+    distributor.add(node);
+
+    AtomicBoolean heartbeatStarted = new AtomicBoolean();
+    bus.addListener(NodeHeartBeatEvent.listener(nodeId -> {
+      if (node.getId().equals(nodeId)) {
+        heartbeatStarted.set(true);
+      }
+    }));
+
+    waitToHaveCapacity(distributor);
+    assertThat(heartbeatStarted).isTrue();
   }
 
   @Test
