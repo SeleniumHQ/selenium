@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.assertj.core.api.AbstractAssert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -152,6 +153,7 @@ public class DistributorTest {
 
   @Test
   public void shouldStartHeartBeatOnNodeRegistration() {
+    EventBus bus = new GuavaEventBus();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -179,13 +181,23 @@ public class DistributorTest {
     distributor.add(node);
 
     AtomicBoolean heartbeatStarted = new AtomicBoolean();
+    CountDownLatch latch = new CountDownLatch(1);
+
     bus.addListener(NodeHeartBeatEvent.listener(nodeId -> {
+      latch.countDown();
       if (node.getId().equals(nodeId)) {
         heartbeatStarted.set(true);
       }
     }));
-
     waitToHaveCapacity(distributor);
+    boolean eventFired = false;
+    try {
+      eventFired = latch.await(30, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      Assert.fail("Thread Interrupted");
+    }
+
+    assertThat(eventFired).isTrue();
     assertThat(heartbeatStarted).isTrue();
   }
 
