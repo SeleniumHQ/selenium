@@ -15,7 +15,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0.jar",
-                    "https://jcenter.bintray.com/aopalliance/aopalliance/1.0/aopalliance-1.0.jar",
                     "https://maven.google.com/aopalliance/aopalliance/1.0/aopalliance-1.0.jar"
                 ],
                 "sha256": "0addec670fedcd3f113c5c8091d783280d23f75e3acb841b61a9cdb079376a08",
@@ -33,7 +32,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
-                    "https://jcenter.bintray.com/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
                     "https://maven.google.com/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar"
                 ],
                 "sha256": "e6ef91d439ada9045f419c77543ebe0416c3cdfc5b063448343417a3e4a72123",
@@ -51,7 +49,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/2.3.0/barchart-udt-bundle-2.3.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/2.3.0/barchart-udt-bundle-2.3.0.jar",
-                    "https://jcenter.bintray.com/com/barchart/udt/barchart-udt-bundle/2.3.0/barchart-udt-bundle-2.3.0.jar",
                     "https://maven.google.com/com/barchart/udt/barchart-udt-bundle/2.3.0/barchart-udt-bundle-2.3.0.jar"
                 ],
                 "sha256": "e7fc65e66d3d5103a4acc810d4715c5075351b32c6c2f5defd43c549896113ad",
@@ -69,7 +66,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/2.3.0/barchart-udt-bundle-2.3.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/2.3.0/barchart-udt-bundle-2.3.0-sources.jar",
-                    "https://jcenter.bintray.com/com/barchart/udt/barchart-udt-bundle/2.3.0/barchart-udt-bundle-2.3.0-sources.jar",
                     "https://maven.google.com/com/barchart/udt/barchart-udt-bundle/2.3.0/barchart-udt-bundle-2.3.0-sources.jar"
                 ],
                 "sha256": "6966caa1eb285cbbe6a869645eb55c708ff4e2867131aeffa619f46021c3d1de",
@@ -87,7 +83,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/beust/jcommander/1.78/jcommander-1.78.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/beust/jcommander/1.78/jcommander-1.78.jar",
-                    "https://jcenter.bintray.com/com/beust/jcommander/1.78/jcommander-1.78.jar",
                     "https://maven.google.com/com/beust/jcommander/1.78/jcommander-1.78.jar"
                 ],
                 "sha256": "7891debb84b5f83e9bd57593ebece3399abbe0fd938cf306b3534c57913b9615",
@@ -105,7 +100,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/beust/jcommander/1.78/jcommander-1.78-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/beust/jcommander/1.78/jcommander-1.78-sources.jar",
-                    "https://jcenter.bintray.com/com/beust/jcommander/1.78/jcommander-1.78-sources.jar",
                     "https://maven.google.com/com/beust/jcommander/1.78/jcommander-1.78-sources.jar"
                 ],
                 "sha256": "9e2aee95666a586918d0931bd1bee02628167da907e6adab86489708bbf2b39a",
@@ -123,7 +117,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/github/javaparser/javaparser-core/3.18.0/javaparser-core-3.18.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/github/javaparser/javaparser-core/3.18.0/javaparser-core-3.18.0.jar",
-                    "https://jcenter.bintray.com/com/github/javaparser/javaparser-core/3.18.0/javaparser-core-3.18.0.jar",
                     "https://maven.google.com/com/github/javaparser/javaparser-core/3.18.0/javaparser-core-3.18.0.jar"
                 ],
                 "sha256": "df7e2d5b8319efd51d015ab5071a271f8463158bc2f0979d05393fe028d856a0",
@@ -141,7 +134,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/github/javaparser/javaparser-core/3.18.0/javaparser-core-3.18.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/github/javaparser/javaparser-core/3.18.0/javaparser-core-3.18.0-sources.jar",
-                    "https://jcenter.bintray.com/com/github/javaparser/javaparser-core/3.18.0/javaparser-core-3.18.0-sources.jar",
                     "https://maven.google.com/com/github/javaparser/javaparser-core/3.18.0/javaparser-core-3.18.0-sources.jar"
                 ],
                 "sha256": "7dee01f6a86359ea660b04faa3cf875bc726a2bdc361d9c79e5ba341342791a6",
@@ -164,7 +156,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.2.0/spotbugs-annotations-4.2.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.2.0/spotbugs-annotations-4.2.0.jar",
-                    "https://jcenter.bintray.com/com/github/spotbugs/spotbugs-annotations/4.2.0/spotbugs-annotations-4.2.0.jar",
                     "https://maven.google.com/com/github/spotbugs/spotbugs-annotations/4.2.0/spotbugs-annotations-4.2.0.jar"
                 ],
                 "sha256": "871aee8bb3f7400a0d09e9675dcd7388da584169f4aab3565efc5a3f5bc90eab",
@@ -187,7 +178,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.2.0/spotbugs-annotations-4.2.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.2.0/spotbugs-annotations-4.2.0-sources.jar",
-                    "https://jcenter.bintray.com/com/github/spotbugs/spotbugs-annotations/4.2.0/spotbugs-annotations-4.2.0-sources.jar",
                     "https://maven.google.com/com/github/spotbugs/spotbugs-annotations/4.2.0/spotbugs-annotations-4.2.0-sources.jar"
                 ],
                 "sha256": "b338136e3e82d585348cde58a8fe3a678e16f51a35c31c1463e05fefef557aad",
@@ -237,7 +227,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/github/spotbugs/spotbugs/4.2.0/spotbugs-4.2.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs/4.2.0/spotbugs-4.2.0.jar",
-                    "https://jcenter.bintray.com/com/github/spotbugs/spotbugs/4.2.0/spotbugs-4.2.0.jar",
                     "https://maven.google.com/com/github/spotbugs/spotbugs/4.2.0/spotbugs-4.2.0.jar"
                 ],
                 "sha256": "4d48063a6f7b623936b68e150ea73499f6bfeb5d1bc4769214e04a9c8804132e",
@@ -287,7 +276,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/github/spotbugs/spotbugs/4.2.0/spotbugs-4.2.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs/4.2.0/spotbugs-4.2.0-sources.jar",
-                    "https://jcenter.bintray.com/com/github/spotbugs/spotbugs/4.2.0/spotbugs-4.2.0-sources.jar",
                     "https://maven.google.com/com/github/spotbugs/spotbugs/4.2.0/spotbugs-4.2.0-sources.jar"
                 ],
                 "sha256": "95b25a75d6e36f2d3f4d501795db6a7468bfe23ddcc9e7496065d2bee6f36d9d",
@@ -305,7 +293,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7.jar",
-                    "https://jcenter.bintray.com/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7.jar",
                     "https://maven.google.com/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7.jar"
                 ],
                 "sha256": "986dc826fa0a43bf9f04194c1a8667774f4f44190ec816b08554b47891ba5459",
@@ -323,7 +310,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7-sources.jar",
-                    "https://jcenter.bintray.com/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7-sources.jar",
                     "https://maven.google.com/com/google/auto/service/auto-service-annotations/1.0-rc7/auto-service-annotations-1.0-rc7-sources.jar"
                 ],
                 "sha256": "0cb604b1ddea687434e7b3908079ad9e261adaeff398e4374f81b6f06cceee58",
@@ -349,7 +335,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/auto/service/auto-service/1.0-rc7/auto-service-1.0-rc7.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/auto/service/auto-service/1.0-rc7/auto-service-1.0-rc7.jar",
-                    "https://jcenter.bintray.com/com/google/auto/service/auto-service/1.0-rc7/auto-service-1.0-rc7.jar",
                     "https://maven.google.com/com/google/auto/service/auto-service/1.0-rc7/auto-service-1.0-rc7.jar"
                 ],
                 "sha256": "24f13c98baf5fb87e7502fd87130457941cda405ec6ff28d8ff964a8f58a82ed",
@@ -375,7 +360,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/auto/service/auto-service/1.0-rc7/auto-service-1.0-rc7-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/auto/service/auto-service/1.0-rc7/auto-service-1.0-rc7-sources.jar",
-                    "https://jcenter.bintray.com/com/google/auto/service/auto-service/1.0-rc7/auto-service-1.0-rc7-sources.jar",
                     "https://maven.google.com/com/google/auto/service/auto-service/1.0-rc7/auto-service-1.0-rc7-sources.jar"
                 ],
                 "sha256": "d2913d4efac3c5206141a121085a22e2944495ada3fd2525680b55f10a0549d3",
@@ -397,7 +381,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/auto/auto-common/0.11/auto-common-0.11.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/auto/auto-common/0.11/auto-common-0.11.jar",
-                    "https://jcenter.bintray.com/com/google/auto/auto-common/0.11/auto-common-0.11.jar",
                     "https://maven.google.com/com/google/auto/auto-common/0.11/auto-common-0.11.jar"
                 ],
                 "sha256": "ec668cd50a3a66a5def17e6ae67423542e514181c0e9ab5b11959c0ac9c4222a",
@@ -419,7 +402,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/auto/auto-common/0.11/auto-common-0.11-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/auto/auto-common/0.11/auto-common-0.11-sources.jar",
-                    "https://jcenter.bintray.com/com/google/auto/auto-common/0.11/auto-common-0.11-sources.jar",
                     "https://maven.google.com/com/google/auto/auto-common/0.11/auto-common-0.11-sources.jar"
                 ],
                 "sha256": "e440a254ac99f10b3015539187d5b6a840cfddcfccbf6f42328ca13314da0f9c",
@@ -437,7 +419,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
-                    "https://jcenter.bintray.com/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
                     "https://maven.google.com/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"
                 ],
                 "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7",
@@ -455,7 +436,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-sources.jar",
-                    "https://jcenter.bintray.com/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-sources.jar",
                     "https://maven.google.com/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-sources.jar"
                 ],
                 "sha256": "1c9e85e272d0708c6a591dc74828c71603053b48cc75ae83cce56912a2aa063b",
@@ -473,7 +453,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar",
-                    "https://jcenter.bintray.com/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar",
                     "https://maven.google.com/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar"
                 ],
                 "sha256": "c8fb4839054d280b3033f800d1f5a97de2f028eb8ba2eb458ad287e536f3f25f",
@@ -491,7 +470,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6-sources.jar",
-                    "https://jcenter.bintray.com/com/google/code/gson/gson/2.8.6/gson-2.8.6-sources.jar",
                     "https://maven.google.com/com/google/code/gson/gson/2.8.6/gson-2.8.6-sources.jar"
                 ],
                 "sha256": "da4d787939dc8de214724a20d88614b70ef8c3a4931d9c694300b5d9098ed9bc",
@@ -509,7 +487,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4.jar",
-                    "https://jcenter.bintray.com/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4.jar",
                     "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4.jar"
                 ],
                 "sha256": "baf7d6ea97ce606c53e11b6854ba5f2ce7ef5c24dddf0afa18d1260bd25b002c",
@@ -527,7 +504,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4-sources.jar",
-                    "https://jcenter.bintray.com/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4-sources.jar",
                     "https://maven.google.com/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4-sources.jar"
                 ],
                 "sha256": "0b1011d1e2ea2eab35a545cffd1cff3877f131134c8020885e8eaf60a7d72f91",
@@ -545,7 +521,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar",
-                    "https://jcenter.bintray.com/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar",
                     "https://maven.google.com/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar"
                 ],
                 "sha256": "a171ee4c734dd2da837e4b16be9df4661afab72a41adaf31eb84dfdaf936ca26",
@@ -563,7 +538,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
-                    "https://jcenter.bintray.com/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
                     "https://maven.google.com/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar"
                 ],
                 "sha256": "092346eebbb1657b51aa7485a246bf602bb464cc0b0e2e1c7e7201fadce1e98f",
@@ -595,7 +569,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/guava/guava/30.1-jre/guava-30.1-jre.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/guava/guava/30.1-jre/guava-30.1-jre.jar",
-                    "https://jcenter.bintray.com/com/google/guava/guava/30.1-jre/guava-30.1-jre.jar",
                     "https://maven.google.com/com/google/guava/guava/30.1-jre/guava-30.1-jre.jar"
                 ],
                 "sha256": "e6dd072f9d3fe02a4600688380bd422bdac184caf6fe2418cfdd0934f09432aa",
@@ -627,7 +600,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/guava/guava/30.1-jre/guava-30.1-jre-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/guava/guava/30.1-jre/guava-30.1-jre-sources.jar",
-                    "https://jcenter.bintray.com/com/google/guava/guava/30.1-jre/guava-30.1-jre-sources.jar",
                     "https://maven.google.com/com/google/guava/guava/30.1-jre/guava-30.1-jre-sources.jar"
                 ],
                 "sha256": "b17d4974b591e7e45d982d04ce400c424fa95288cbddce17394b65f65bfdec0f",
@@ -645,7 +617,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
-                    "https://jcenter.bintray.com/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
                     "https://maven.google.com/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"
                 ],
                 "sha256": "b372a037d4230aa57fbeffdef30fd6123f9c0c2db85d0aced00c91b974f33f99",
@@ -671,7 +642,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2-no_aop.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2-no_aop.jar",
-                    "https://jcenter.bintray.com/com/google/inject/guice/4.2.2/guice-4.2.2-no_aop.jar",
                     "https://maven.google.com/com/google/inject/guice/4.2.2/guice-4.2.2-no_aop.jar"
                 ],
                 "sha256": "0f4f5fb28609a4d2b38b7f7128be7cf9b541f25283d71b4e56066d99683aafff",
@@ -697,7 +667,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/inject/guice/4.2.2/guice-4.2.2-sources.jar",
-                    "https://jcenter.bintray.com/com/google/inject/guice/4.2.2/guice-4.2.2-sources.jar",
                     "https://maven.google.com/com/google/inject/guice/4.2.2/guice-4.2.2-sources.jar"
                 ],
                 "sha256": "33ecda71a3876dcc2b9d16b4a5a67d08078db5fedd61ce51c74db734889cd049",
@@ -715,7 +684,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar",
-                    "https://jcenter.bintray.com/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar",
                     "https://maven.google.com/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar"
                 ],
                 "sha256": "21af30c92267bd6122c0e0b4d20cccb6641a37eaf956c6540ec471d584e64a7b",
@@ -733,7 +701,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
-                    "https://jcenter.bintray.com/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
                     "https://maven.google.com/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar"
                 ],
                 "sha256": "ba4df669fec153fa4cd0ef8d02c6d3ef0702b7ac4cabe080facf3b6e490bb972",
@@ -761,7 +728,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/graphql-java/graphql-java/16.1/graphql-java-16.1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/16.1/graphql-java-16.1.jar",
-                    "https://jcenter.bintray.com/com/graphql-java/graphql-java/16.1/graphql-java-16.1.jar",
                     "https://maven.google.com/com/graphql-java/graphql-java/16.1/graphql-java-16.1.jar"
                 ],
                 "sha256": "4a30140422c0229d3fb329c85b609488ea9e9297f5d9d6316651668e80fd2c16",
@@ -789,7 +755,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/graphql-java/graphql-java/16.1/graphql-java-16.1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/16.1/graphql-java-16.1-sources.jar",
-                    "https://jcenter.bintray.com/com/graphql-java/graphql-java/16.1/graphql-java-16.1-sources.jar",
                     "https://maven.google.com/com/graphql-java/graphql-java/16.1/graphql-java-16.1-sources.jar"
                 ],
                 "sha256": "8ca9f24b9e0dcd4524fe9cda01b343462587d5bc416c534b7be5e00b256abaaf",
@@ -807,7 +772,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3.jar",
-                    "https://jcenter.bintray.com/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3.jar",
                     "https://maven.google.com/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3.jar"
                 ],
                 "sha256": "838bc7887298d6e35f6da8784cf08f9bc9418699cd61d9aa03be1b60da28af8a",
@@ -825,7 +789,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3-sources.jar",
-                    "https://jcenter.bintray.com/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3-sources.jar",
                     "https://maven.google.com/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3-sources.jar"
                 ],
                 "sha256": "c6447cbb2852ce864fce37a305c8bfac5b162eeb7d9f7343c8c381093eb93524",
@@ -843,7 +806,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/shapesecurity/salvation2/3.0.0/salvation2-3.0.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/shapesecurity/salvation2/3.0.0/salvation2-3.0.0.jar",
-                    "https://jcenter.bintray.com/com/shapesecurity/salvation2/3.0.0/salvation2-3.0.0.jar",
                     "https://maven.google.com/com/shapesecurity/salvation2/3.0.0/salvation2-3.0.0.jar"
                 ],
                 "sha256": "1375d45e36ff94643779bdd2f158f49cb137d2de8a4aa8080c7a602d95db7cee",
@@ -861,7 +823,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/shapesecurity/salvation2/3.0.0/salvation2-3.0.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/shapesecurity/salvation2/3.0.0/salvation2-3.0.0-sources.jar",
-                    "https://jcenter.bintray.com/com/shapesecurity/salvation2/3.0.0/salvation2-3.0.0-sources.jar",
                     "https://maven.google.com/com/shapesecurity/salvation2/3.0.0/salvation2-3.0.0-sources.jar"
                 ],
                 "sha256": "0da775ebc170a25e3a7d003928c3dea46ef2be8517d9f2383ea5a3bfc22379f2",
@@ -883,7 +844,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0.jar",
-                    "https://jcenter.bintray.com/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0.jar",
                     "https://maven.google.com/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0.jar"
                 ],
                 "sha256": "e27c7742448f816da1cac72b4ca283b0d7920749e09f5dd0ac017e40714a2efe",
@@ -905,7 +865,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0-sources.jar",
-                    "https://jcenter.bintray.com/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0-sources.jar",
                     "https://maven.google.com/com/squareup/okhttp3/okhttp/3.11.0/okhttp-3.11.0-sources.jar"
                 ],
                 "sha256": "2dade1d534496d68302adba898eafd7b019cd60c91afb763a50f5bde02ca3f68",
@@ -923,7 +882,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar",
-                    "https://jcenter.bintray.com/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar",
                     "https://maven.google.com/com/squareup/okio/okio/1.14.0/okio-1.14.0.jar"
                 ],
                 "sha256": "4633c331f50642ebe795dc089d6a5928aff43071c9d17e7840a009eea2fe95a3",
@@ -941,7 +899,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.14.0/okio-1.14.0-sources.jar",
-                    "https://jcenter.bintray.com/com/squareup/okio/okio/1.14.0/okio-1.14.0-sources.jar",
                     "https://maven.google.com/com/squareup/okio/okio/1.14.0/okio-1.14.0-sources.jar"
                 ],
                 "sha256": "ccc34a4ef40021db61ce5c3ee796cca1a3fcc869ea292bb1ce4b5e7708034158",
@@ -959,7 +916,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar",
-                    "https://jcenter.bintray.com/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar",
                     "https://maven.google.com/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar"
                 ],
                 "sha256": "02156773e4ae9d048d14a56ad35d644bee9f1052a791d072df3ded3c656e6e1a",
@@ -977,7 +933,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2-sources.jar",
-                    "https://jcenter.bintray.com/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2-sources.jar",
                     "https://maven.google.com/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2-sources.jar"
                 ],
                 "sha256": "f8f52ce9df5d5d29c1778183d48214624caa36be202a7eff2cef5a0519f2aa53",
@@ -1001,7 +956,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar",
-                    "https://jcenter.bintray.com/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar",
                     "https://maven.google.com/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4.jar"
                 ],
                 "sha256": "eafc52d500b49e891db095ee7baac0420aea8a97015ab7671ba1f1ccabf799d2",
@@ -1025,7 +979,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-sources.jar",
-                    "https://jcenter.bintray.com/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-sources.jar",
                     "https://maven.google.com/com/typesafe/netty/netty-reactive-streams/2.0.4/netty-reactive-streams-2.0.4-sources.jar"
                 ],
                 "sha256": "76df17cc7c4fac9c470e557b5cca224df51ba878ec9fd3fd8f0f89878cbf98ab",
@@ -1043,7 +996,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.jar",
-                    "https://jcenter.bintray.com/commons-codec/commons-codec/1.11/commons-codec-1.11.jar",
                     "https://maven.google.com/commons-codec/commons-codec/1.11/commons-codec-1.11.jar"
                 ],
                 "sha256": "e599d5318e97aa48f42136a2927e6dfa4e8881dff0e6c8e3109ddbbff51d7b7d",
@@ -1061,7 +1013,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11-sources.jar",
-                    "https://jcenter.bintray.com/commons-codec/commons-codec/1.11/commons-codec-1.11-sources.jar",
                     "https://maven.google.com/commons-codec/commons-codec/1.11/commons-codec-1.11-sources.jar"
                 ],
                 "sha256": "901cb5d1f7c2877017c95d3c5efd5a497738d0162ef72cdf58e9cb13f50b2e9c",
@@ -1079,7 +1030,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar",
-                    "https://jcenter.bintray.com/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar",
                     "https://maven.google.com/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar"
                 ],
                 "sha256": "02f291e5d1243dc143496e3cbbb40a1ced47aa58f2d633d3e38780cd068d5074",
@@ -1097,7 +1047,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/commons-io/commons-io/2.8.0/commons-io-2.8.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/commons-io/commons-io/2.8.0/commons-io-2.8.0-sources.jar",
-                    "https://jcenter.bintray.com/commons-io/commons-io/2.8.0/commons-io-2.8.0-sources.jar",
                     "https://maven.google.com/commons-io/commons-io/2.8.0/commons-io-2.8.0-sources.jar"
                 ],
                 "sha256": "433eb71f9a62d52e5aa28d5adafe28163fce32ac86490bb3927a3bcb42766277",
@@ -1115,7 +1064,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar",
-                    "https://jcenter.bintray.com/commons-logging/commons-logging/1.2/commons-logging-1.2.jar",
                     "https://maven.google.com/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"
                 ],
                 "sha256": "daddea1ea0be0f56978ab3006b8ac92834afeefbd9b7e4e6316fca57df0fa636",
@@ -1133,7 +1081,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar",
-                    "https://jcenter.bintray.com/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar",
                     "https://maven.google.com/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar"
                 ],
                 "sha256": "44347acfe5860461728e9cb33251e97345be36f8a0dfd5c5130c172559455f41",
@@ -1151,7 +1098,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/commons-net/commons-net/3.7.2/commons-net-3.7.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/commons-net/commons-net/3.7.2/commons-net-3.7.2.jar",
-                    "https://jcenter.bintray.com/commons-net/commons-net/3.7.2/commons-net-3.7.2.jar",
                     "https://maven.google.com/commons-net/commons-net/3.7.2/commons-net-3.7.2.jar"
                 ],
                 "sha256": "a84e3429f8aeedefdfc11df060e50e1e0e90e9fc7f960f14dba49be38c4572d1",
@@ -1169,7 +1115,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/commons-net/commons-net/3.7.2/commons-net-3.7.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/commons-net/commons-net/3.7.2/commons-net-3.7.2-sources.jar",
-                    "https://jcenter.bintray.com/commons-net/commons-net/3.7.2/commons-net-3.7.2-sources.jar",
                     "https://maven.google.com/commons-net/commons-net/3.7.2/commons-net-3.7.2-sources.jar"
                 ],
                 "sha256": "2c6df9e6d0d366976b19d35b3e26adeeda8216d017cf27af4c2bd8f415fa86d1",
@@ -1187,7 +1132,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0.jar",
-                    "https://jcenter.bintray.com/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0.jar",
                     "https://maven.google.com/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0.jar"
                 ],
                 "sha256": "4accc9d2a56a6dd5198ec5e1c5c05a091da563bccd346fd6578edc083152beaa",
@@ -1205,7 +1149,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0-sources.jar",
-                    "https://jcenter.bintray.com/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0-sources.jar",
                     "https://maven.google.com/eu/neilalexander/jnacl/1.0.0/jnacl-1.0.0-sources.jar"
                 ],
                 "sha256": "5d78a0f6cb46b8196b8d57269a68ce29f1721c0b8f44c93a6a1c13ad544a13db",
@@ -1223,7 +1166,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/grpc/grpc-context/1.35.0/grpc-context-1.35.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.35.0/grpc-context-1.35.0.jar",
-                    "https://jcenter.bintray.com/io/grpc/grpc-context/1.35.0/grpc-context-1.35.0.jar",
                     "https://maven.google.com/io/grpc/grpc-context/1.35.0/grpc-context-1.35.0.jar"
                 ],
                 "sha256": "f60be77a035a9cd00ae2356a1637f831e85cccaba888806ed167857854f14e38",
@@ -1241,7 +1183,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/grpc/grpc-context/1.35.0/grpc-context-1.35.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.35.0/grpc-context-1.35.0-sources.jar",
-                    "https://jcenter.bintray.com/io/grpc/grpc-context/1.35.0/grpc-context-1.35.0-sources.jar",
                     "https://maven.google.com/io/grpc/grpc-context/1.35.0/grpc-context-1.35.0-sources.jar"
                 ],
                 "sha256": "f8371caad6b3f3e8321a75b5eb9602c5cf670779d870cea693d7a88553d92ab5",
@@ -1270,7 +1211,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/lettuce/lettuce-core/6.0.2.RELEASE/lettuce-core-6.0.2.RELEASE.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/lettuce/lettuce-core/6.0.2.RELEASE/lettuce-core-6.0.2.RELEASE.jar",
-                    "https://jcenter.bintray.com/io/lettuce/lettuce-core/6.0.2.RELEASE/lettuce-core-6.0.2.RELEASE.jar",
                     "https://maven.google.com/io/lettuce/lettuce-core/6.0.2.RELEASE/lettuce-core-6.0.2.RELEASE.jar"
                 ],
                 "sha256": "dab8524a55c7a14915aab15d87bc08f89c27655f091a0be3f1a9f8a0ea8d94c5",
@@ -1299,7 +1239,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/lettuce/lettuce-core/6.0.2.RELEASE/lettuce-core-6.0.2.RELEASE-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/lettuce/lettuce-core/6.0.2.RELEASE/lettuce-core-6.0.2.RELEASE-sources.jar",
-                    "https://jcenter.bintray.com/io/lettuce/lettuce-core/6.0.2.RELEASE/lettuce-core-6.0.2.RELEASE-sources.jar",
                     "https://maven.google.com/io/lettuce/lettuce-core/6.0.2.RELEASE/lettuce-core-6.0.2.RELEASE-sources.jar"
                 ],
                 "sha256": "ec47720936fe568f9d981c28edf5abadd7020ae2d38e2c35c261105b7b2e3e6e",
@@ -1321,7 +1260,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.58.Final/netty-buffer-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.58.Final/netty-buffer-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-buffer/4.1.58.Final/netty-buffer-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-buffer/4.1.58.Final/netty-buffer-4.1.58.Final.jar"
                 ],
                 "sha256": "b6ff0be3a296e48e4e1d3203f7b72abee79c888c573abbe21be45dae5da817d6",
@@ -1343,7 +1281,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.58.Final/netty-buffer-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.58.Final/netty-buffer-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-buffer/4.1.58.Final/netty-buffer-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-buffer/4.1.58.Final/netty-buffer-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "18c882e0940ad9e8a876394a1ef50ced4ba86edf7c864e186609140499b449d0",
@@ -1371,7 +1308,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec-haproxy/4.1.58.Final/netty-codec-haproxy-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec-haproxy/4.1.58.Final/netty-codec-haproxy-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec-haproxy/4.1.58.Final/netty-codec-haproxy-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-codec-haproxy/4.1.58.Final/netty-codec-haproxy-4.1.58.Final.jar"
                 ],
                 "sha256": "b1b77e220be7c8e3e40c72696223fa0ca439c69cce0c03a65a646d2aad9b0064",
@@ -1399,7 +1335,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec-haproxy/4.1.58.Final/netty-codec-haproxy-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec-haproxy/4.1.58.Final/netty-codec-haproxy-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec-haproxy/4.1.58.Final/netty-codec-haproxy-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-codec-haproxy/4.1.58.Final/netty-codec-haproxy-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "ddeecfcfd24f516b697c8dadb26ad1b87ae78b1ba76a73b65edb51ed82a2a157",
@@ -1432,7 +1367,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.58.Final/netty-codec-http2-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.58.Final/netty-codec-http2-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec-http2/4.1.58.Final/netty-codec-http2-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-codec-http2/4.1.58.Final/netty-codec-http2-4.1.58.Final.jar"
                 ],
                 "sha256": "ebea8d80232c30e7e84710339ff96e33d5add53007602dc3c776c9f18e8d2667",
@@ -1465,7 +1399,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.58.Final/netty-codec-http2-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.58.Final/netty-codec-http2-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec-http2/4.1.58.Final/netty-codec-http2-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-codec-http2/4.1.58.Final/netty-codec-http2-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "05c8a010d1c9e4693c5a29e97f73d752a44a22798d4f22adb8d4a8d7b53b2a09",
@@ -1496,7 +1429,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.58.Final/netty-codec-http-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.58.Final/netty-codec-http-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec-http/4.1.58.Final/netty-codec-http-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-codec-http/4.1.58.Final/netty-codec-http-4.1.58.Final.jar"
                 ],
                 "sha256": "89a4dcff4e5980b2137810ea802c8ac0ec35a137ffea43a5b321af5399ae22a0",
@@ -1527,7 +1459,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.58.Final/netty-codec-http-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.58.Final/netty-codec-http-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec-http/4.1.58.Final/netty-codec-http-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-codec-http/4.1.58.Final/netty-codec-http-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "904cd41848937cb4ddfbad51d459029306b1e77c59341c6e5f4cd450469231ea",
@@ -1556,7 +1487,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.58.Final/netty-codec-socks-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.58.Final/netty-codec-socks-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec-socks/4.1.58.Final/netty-codec-socks-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-codec-socks/4.1.58.Final/netty-codec-socks-4.1.58.Final.jar"
                 ],
                 "sha256": "8924eead9ecbcc65b60095e5e8f1885c9bfcae692e6e5041139a21ee62140ff5",
@@ -1585,7 +1515,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.58.Final/netty-codec-socks-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.58.Final/netty-codec-socks-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec-socks/4.1.58.Final/netty-codec-socks-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-codec-socks/4.1.58.Final/netty-codec-socks-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "5bb573b3cc2c1bc95fdde1779f25489e6b060ffd79ab0aa1e3b01de8cbe13595",
@@ -1612,7 +1541,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.58.Final/netty-codec-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec/4.1.58.Final/netty-codec-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec/4.1.58.Final/netty-codec-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-codec/4.1.58.Final/netty-codec-4.1.58.Final.jar"
                 ],
                 "sha256": "3701b1bfaf99335b2f99b110be16da43f7ad87a69f50df96b8069cde0ab0de59",
@@ -1639,7 +1567,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.58.Final/netty-codec-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-codec/4.1.58.Final/netty-codec-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-codec/4.1.58.Final/netty-codec-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-codec/4.1.58.Final/netty-codec-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "f42f92a47c83aed96db08a4e082649a4d007391d8ada66f266c6bad87274211d",
@@ -1657,7 +1584,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.58.Final/netty-common-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.58.Final/netty-common-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-common/4.1.58.Final/netty-common-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-common/4.1.58.Final/netty-common-4.1.58.Final.jar"
                 ],
                 "sha256": "ff5ee66edaa57fc3c4a1900130e154c666bf0d8f674af6d0e3d5efbecacc386b",
@@ -1675,7 +1601,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.58.Final/netty-common-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.58.Final/netty-common-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-common/4.1.58.Final/netty-common-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-common/4.1.58.Final/netty-common-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "592b23aeaacadcfef3e8f1c48b3e37b8eeef18a598f74e1b90723e29eb1275c3",
@@ -1709,7 +1634,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.58.Final/netty-handler-proxy-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.58.Final/netty-handler-proxy-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-handler-proxy/4.1.58.Final/netty-handler-proxy-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-handler-proxy/4.1.58.Final/netty-handler-proxy-4.1.58.Final.jar"
                 ],
                 "sha256": "2e34bd9e12dc582173d6c9ee6c2ad36a6e365db079fbc5174e4d44d877e2f127",
@@ -1743,7 +1667,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.58.Final/netty-handler-proxy-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.58.Final/netty-handler-proxy-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-handler-proxy/4.1.58.Final/netty-handler-proxy-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-handler-proxy/4.1.58.Final/netty-handler-proxy-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "1cae7320099e491290eb283736b07a517c9c62bc96ec32a76183498e18848197",
@@ -1773,7 +1696,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.58.Final/netty-handler-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-handler/4.1.58.Final/netty-handler-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-handler/4.1.58.Final/netty-handler-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-handler/4.1.58.Final/netty-handler-4.1.58.Final.jar"
                 ],
                 "sha256": "0c191a62dcb7cefdfd299f5f52a4372b006dee74ecd837a48337bc97f313c7dc",
@@ -1803,7 +1725,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.58.Final/netty-handler-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-handler/4.1.58.Final/netty-handler-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-handler/4.1.58.Final/netty-handler-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-handler/4.1.58.Final/netty-handler-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "2a44bca0e3f33cf5db789b53037e97420a281ad923aa286f905f729897f9a1df",
@@ -1825,7 +1746,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.58.Final/netty-resolver-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-resolver/4.1.58.Final/netty-resolver-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-resolver/4.1.58.Final/netty-resolver-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-resolver/4.1.58.Final/netty-resolver-4.1.58.Final.jar"
                 ],
                 "sha256": "c0dc6783c3961ad357063070451ad739b709b12add315c50195b0507f93b4a33",
@@ -1847,7 +1767,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.58.Final/netty-resolver-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-resolver/4.1.58.Final/netty-resolver-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-resolver/4.1.58.Final/netty-resolver-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-resolver/4.1.58.Final/netty-resolver-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "6ceb7aee81bd35ef28baa44778027a6b099e5988951dc86b2c3aecc05d8a2564",
@@ -1876,7 +1795,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final.jar"
                 ],
                 "sha256": "fca1fd1ba8dc0d671792822a2fb682366f5eee97e93c68b065f0a6e8e095938d",
@@ -1905,7 +1823,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final-linux-x86_64.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final-linux-x86_64.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final-linux-x86_64.jar",
                     "https://maven.google.com/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final-linux-x86_64.jar"
                 ],
                 "sha256": "f83d7dd771268ae36280bf11aba3f0e7f34fac58cb9ad95897b229166212669b",
@@ -1934,7 +1851,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-transport-native-epoll/4.1.58.Final/netty-transport-native-epoll-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "a55e33cb6b0e3dfe46f791f54bc122e41cbd5ee084d322a9b98f4d083d293168",
@@ -1963,7 +1879,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final.jar"
                 ],
                 "sha256": "c3f204eae53c75e232a9dc4ee83f0133a88a423716987e7b19cb924d94650e54",
@@ -1992,7 +1907,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final-osx-x86_64.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final-osx-x86_64.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final-osx-x86_64.jar",
                     "https://maven.google.com/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final-osx-x86_64.jar"
                 ],
                 "sha256": "550b233373ddfec7da09a73153e8de9eba9e7f8a2b156f6155a11cd73993b48b",
@@ -2021,7 +1935,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-transport-native-kqueue/4.1.58.Final/netty-transport-native-kqueue-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "da46469b5ba506d158eb440def18b52a6dea35839341e5f069cc302c21872e88",
@@ -2048,7 +1961,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.58.Final/netty-transport-native-unix-common-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.58.Final/netty-transport-native-unix-common-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport-native-unix-common/4.1.58.Final/netty-transport-native-unix-common-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-transport-native-unix-common/4.1.58.Final/netty-transport-native-unix-common-4.1.58.Final.jar"
                 ],
                 "sha256": "970555236f8e9c0bf99d74cde41501cb3469db61105b0050323e46702b04e93a",
@@ -2075,7 +1987,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.58.Final/netty-transport-native-unix-common-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.58.Final/netty-transport-native-unix-common-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport-native-unix-common/4.1.58.Final/netty-transport-native-unix-common-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-transport-native-unix-common/4.1.58.Final/netty-transport-native-unix-common-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "5a3485f27c06969f4d5d1ad8b076197081203d22cbf22c4370d4f1cd3704173c",
@@ -2101,7 +2012,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.58.Final/netty-transport-4.1.58.Final.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport/4.1.58.Final/netty-transport-4.1.58.Final.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport/4.1.58.Final/netty-transport-4.1.58.Final.jar",
                     "https://maven.google.com/io/netty/netty-transport/4.1.58.Final/netty-transport-4.1.58.Final.jar"
                 ],
                 "sha256": "6ce2b7693bcab61551c17ceef26e7637f6a9bad8c00a6f82eb0c6d37dc53b59e",
@@ -2127,7 +2037,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.58.Final/netty-transport-4.1.58.Final-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/netty/netty-transport/4.1.58.Final/netty-transport-4.1.58.Final-sources.jar",
-                    "https://jcenter.bintray.com/io/netty/netty-transport/4.1.58.Final/netty-transport-4.1.58.Final-sources.jar",
                     "https://maven.google.com/io/netty/netty-transport/4.1.58.Final/netty-transport-4.1.58.Final-sources.jar"
                 ],
                 "sha256": "1eda5e0ac3bdfafc79793112b40be581c5b4ecb5a622bf25c8805c8b46533240",
@@ -2150,7 +2059,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-metrics/0.16.0-alpha/opentelemetry-api-metrics-0.16.0-alpha.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-metrics/0.16.0-alpha/opentelemetry-api-metrics-0.16.0-alpha.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-api-metrics/0.16.0-alpha/opentelemetry-api-metrics-0.16.0-alpha.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-api-metrics/0.16.0-alpha/opentelemetry-api-metrics-0.16.0-alpha.jar"
                 ],
                 "sha256": "ce0500cd4b4ac13eabdcae03809b4b10030146b88c2ed9c154a634d81e3fe31c",
@@ -2173,7 +2081,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-metrics/0.16.0-alpha/opentelemetry-api-metrics-0.16.0-alpha-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api-metrics/0.16.0-alpha/opentelemetry-api-metrics-0.16.0-alpha-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-api-metrics/0.16.0-alpha/opentelemetry-api-metrics-0.16.0-alpha-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-api-metrics/0.16.0-alpha/opentelemetry-api-metrics-0.16.0-alpha-sources.jar"
                 ],
                 "sha256": "6ff7e8737d862f91a29837777af2d6c580146fade4fdcbf75fb1becf20c7139e",
@@ -2195,7 +2102,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api/0.16.0/opentelemetry-api-0.16.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api/0.16.0/opentelemetry-api-0.16.0.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-api/0.16.0/opentelemetry-api-0.16.0.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-api/0.16.0/opentelemetry-api-0.16.0.jar"
                 ],
                 "sha256": "dab3deec8c104dfe649240f62db4c3346d5468c301401b93bafef96254449a3e",
@@ -2217,7 +2123,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api/0.16.0/opentelemetry-api-0.16.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-api/0.16.0/opentelemetry-api-0.16.0-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-api/0.16.0/opentelemetry-api-0.16.0-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-api/0.16.0/opentelemetry-api-0.16.0-sources.jar"
                 ],
                 "sha256": "a50ac676ba0c6c2bf1c28c8ea7ef64a4c7d1cf8129fb08c63cdc49da2a388d15",
@@ -2235,7 +2140,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-context/0.16.0/opentelemetry-context-0.16.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-context/0.16.0/opentelemetry-context-0.16.0.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-context/0.16.0/opentelemetry-context-0.16.0.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-context/0.16.0/opentelemetry-context-0.16.0.jar"
                 ],
                 "sha256": "ba86eeee7461c8c7de24ad51c56f1bad59131a896930c803f84b7a11f3326572",
@@ -2253,7 +2157,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-context/0.16.0/opentelemetry-context-0.16.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-context/0.16.0/opentelemetry-context-0.16.0-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-context/0.16.0/opentelemetry-context-0.16.0-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-context/0.16.0/opentelemetry-context-0.16.0-sources.jar"
                 ],
                 "sha256": "eea5191720b01b1ff1b47a6809a814c70a93aeda6fc321757cb49e0785f45525",
@@ -2283,7 +2186,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/0.16.0/opentelemetry-exporter-logging-0.16.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/0.16.0/opentelemetry-exporter-logging-0.16.0.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-exporter-logging/0.16.0/opentelemetry-exporter-logging-0.16.0.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-exporter-logging/0.16.0/opentelemetry-exporter-logging-0.16.0.jar"
                 ],
                 "sha256": "b563f557bdb64ef447740e79973c258f92f2bce626734aaa0fce94fb6c39498e",
@@ -2313,7 +2215,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/0.16.0/opentelemetry-exporter-logging-0.16.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/0.16.0/opentelemetry-exporter-logging-0.16.0-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-exporter-logging/0.16.0/opentelemetry-exporter-logging-0.16.0-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-exporter-logging/0.16.0/opentelemetry-exporter-logging-0.16.0-sources.jar"
                 ],
                 "sha256": "4dec48da03eae08ec84e4f3fd0a0e0ae2b337928628fc8b89861411a32a17073",
@@ -2338,7 +2239,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/0.16.0/opentelemetry-sdk-common-0.16.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/0.16.0/opentelemetry-sdk-common-0.16.0.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-common/0.16.0/opentelemetry-sdk-common-0.16.0.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-common/0.16.0/opentelemetry-sdk-common-0.16.0.jar"
                 ],
                 "sha256": "2993eb20218688f9528c239339e2b5965b272c423969a5ed89fdb403bbe1ef34",
@@ -2363,7 +2263,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/0.16.0/opentelemetry-sdk-common-0.16.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-common/0.16.0/opentelemetry-sdk-common-0.16.0-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-common/0.16.0/opentelemetry-sdk-common-0.16.0-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-common/0.16.0/opentelemetry-sdk-common-0.16.0-sources.jar"
                 ],
                 "sha256": "cda43b715f2574abdf58395668d1ce8550e9c27257819c383878c14268fb1fd0",
@@ -2393,7 +2292,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/0.16.0-alpha/opentelemetry-sdk-extension-autoconfigure-0.16.0-alpha.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/0.16.0-alpha/opentelemetry-sdk-extension-autoconfigure-0.16.0-alpha.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/0.16.0-alpha/opentelemetry-sdk-extension-autoconfigure-0.16.0-alpha.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/0.16.0-alpha/opentelemetry-sdk-extension-autoconfigure-0.16.0-alpha.jar"
                 ],
                 "sha256": "c1fb0e8dd000f8bdce79c687734bc24cfdd6a81b967fc595eb498de98c714058",
@@ -2423,7 +2321,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/0.16.0-alpha/opentelemetry-sdk-extension-autoconfigure-0.16.0-alpha-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/0.16.0-alpha/opentelemetry-sdk-extension-autoconfigure-0.16.0-alpha-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/0.16.0-alpha/opentelemetry-sdk-extension-autoconfigure-0.16.0-alpha-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-extension-autoconfigure/0.16.0-alpha/opentelemetry-sdk-extension-autoconfigure-0.16.0-alpha-sources.jar"
                 ],
                 "sha256": "c0701e61d75be381e237ea94ab52436ab39a47f886daee5f3e657964d2d16acd",
@@ -2450,7 +2347,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/0.16.0-alpha/opentelemetry-sdk-metrics-0.16.0-alpha.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/0.16.0-alpha/opentelemetry-sdk-metrics-0.16.0-alpha.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-metrics/0.16.0-alpha/opentelemetry-sdk-metrics-0.16.0-alpha.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-metrics/0.16.0-alpha/opentelemetry-sdk-metrics-0.16.0-alpha.jar"
                 ],
                 "sha256": "e9aaa775b7855d523b9cb39e05b8e07519dd6a7557699a4a6d0df5f4a020dd62",
@@ -2477,7 +2373,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/0.16.0-alpha/opentelemetry-sdk-metrics-0.16.0-alpha-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/0.16.0-alpha/opentelemetry-sdk-metrics-0.16.0-alpha-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-metrics/0.16.0-alpha/opentelemetry-sdk-metrics-0.16.0-alpha-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-metrics/0.16.0-alpha/opentelemetry-sdk-metrics-0.16.0-alpha-sources.jar"
                 ],
                 "sha256": "3165ec6eae4601cb4f22ab847b0cc9f47bde148d321e21e1629d517d1e11c9bc",
@@ -2508,7 +2403,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-testing/0.16.0/opentelemetry-sdk-testing-0.16.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-testing/0.16.0/opentelemetry-sdk-testing-0.16.0.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-testing/0.16.0/opentelemetry-sdk-testing-0.16.0.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-testing/0.16.0/opentelemetry-sdk-testing-0.16.0.jar"
                 ],
                 "sha256": "d3720e98dafec9e17e5447049dd48f98ce96e0902216ae957ab1570789e9b3ae",
@@ -2539,7 +2433,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-testing/0.16.0/opentelemetry-sdk-testing-0.16.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-testing/0.16.0/opentelemetry-sdk-testing-0.16.0-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-testing/0.16.0/opentelemetry-sdk-testing-0.16.0-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-testing/0.16.0/opentelemetry-sdk-testing-0.16.0-sources.jar"
                 ],
                 "sha256": "71b4087accd1aa89d56eb16388562d513d726fe8bb6b103455fa1459f8070ce6",
@@ -2568,7 +2461,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/0.16.0/opentelemetry-sdk-trace-0.16.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/0.16.0/opentelemetry-sdk-trace-0.16.0.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-trace/0.16.0/opentelemetry-sdk-trace-0.16.0.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-trace/0.16.0/opentelemetry-sdk-trace-0.16.0.jar"
                 ],
                 "sha256": "aa3aa95fd4d8b1ec26ece1241033244be81c2118e4f3df5cac67b08f1560c670",
@@ -2597,7 +2489,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/0.16.0/opentelemetry-sdk-trace-0.16.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/0.16.0/opentelemetry-sdk-trace-0.16.0-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk-trace/0.16.0/opentelemetry-sdk-trace-0.16.0-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk-trace/0.16.0/opentelemetry-sdk-trace-0.16.0-sources.jar"
                 ],
                 "sha256": "dbee088df506562c377c25d0da3ad061bb7daa47e16b836b284c9ccb4bf0e213",
@@ -2626,7 +2517,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk/0.16.0/opentelemetry-sdk-0.16.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk/0.16.0/opentelemetry-sdk-0.16.0.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk/0.16.0/opentelemetry-sdk-0.16.0.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk/0.16.0/opentelemetry-sdk-0.16.0.jar"
                 ],
                 "sha256": "f31b01a5549fd6454bdd6d2b01ebf2a3f432a07b3a1d6991e7c5b086bde576b7",
@@ -2655,7 +2545,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk/0.16.0/opentelemetry-sdk-0.16.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk/0.16.0/opentelemetry-sdk-0.16.0-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-sdk/0.16.0/opentelemetry-sdk-0.16.0-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-sdk/0.16.0/opentelemetry-sdk-0.16.0-sources.jar"
                 ],
                 "sha256": "48f228ff2d877bbc306868e1861b5dc9aafa67a87b3e1ee1ae0314d4b0b6b939",
@@ -2678,7 +2567,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-semconv/0.16.0-alpha/opentelemetry-semconv-0.16.0-alpha.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-semconv/0.16.0-alpha/opentelemetry-semconv-0.16.0-alpha.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-semconv/0.16.0-alpha/opentelemetry-semconv-0.16.0-alpha.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-semconv/0.16.0-alpha/opentelemetry-semconv-0.16.0-alpha.jar"
                 ],
                 "sha256": "f4602b03296021be16872d28aa0c2a34fefa8b22f4dc0b09d0a147f89112abfe",
@@ -2701,7 +2589,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/opentelemetry/opentelemetry-semconv/0.16.0-alpha/opentelemetry-semconv-0.16.0-alpha-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-semconv/0.16.0-alpha/opentelemetry-semconv-0.16.0-alpha-sources.jar",
-                    "https://jcenter.bintray.com/io/opentelemetry/opentelemetry-semconv/0.16.0-alpha/opentelemetry-semconv-0.16.0-alpha-sources.jar",
                     "https://maven.google.com/io/opentelemetry/opentelemetry-semconv/0.16.0-alpha/opentelemetry-semconv-0.16.0-alpha-sources.jar"
                 ],
                 "sha256": "a973de80af51a06e7e717ef01e30bfb664bc8b6d39c109ee34b539d6d4d6dc3f",
@@ -2719,7 +2606,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar",
-                    "https://jcenter.bintray.com/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar",
                     "https://maven.google.com/io/ous/jtoml/2.0.0/jtoml-2.0.0.jar"
                 ],
                 "sha256": "3cabdae2244c999addebb8c31ae452fbdc874b4f26a163539954b8eeb5d6acc6",
@@ -2737,7 +2623,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
-                    "https://jcenter.bintray.com/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar",
                     "https://maven.google.com/io/ous/jtoml/2.0.0/jtoml-2.0.0-sources.jar"
                 ],
                 "sha256": "f479f2acdf7a362dc86a5c9310ddaec7b34a87f0a8a6f46dde41c1069b2a2138",
@@ -2759,7 +2644,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/projectreactor/reactor-core/3.3.13.RELEASE/reactor-core-3.3.13.RELEASE.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.3.13.RELEASE/reactor-core-3.3.13.RELEASE.jar",
-                    "https://jcenter.bintray.com/io/projectreactor/reactor-core/3.3.13.RELEASE/reactor-core-3.3.13.RELEASE.jar",
                     "https://maven.google.com/io/projectreactor/reactor-core/3.3.13.RELEASE/reactor-core-3.3.13.RELEASE.jar"
                 ],
                 "sha256": "f25a10e4a1c3254d38c199ce7efcfaa9c4d5952e1eecb2be4db528fb955d4535",
@@ -2781,7 +2665,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/io/projectreactor/reactor-core/3.3.13.RELEASE/reactor-core-3.3.13.RELEASE-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.3.13.RELEASE/reactor-core-3.3.13.RELEASE-sources.jar",
-                    "https://jcenter.bintray.com/io/projectreactor/reactor-core/3.3.13.RELEASE/reactor-core-3.3.13.RELEASE-sources.jar",
                     "https://maven.google.com/io/projectreactor/reactor-core/3.3.13.RELEASE/reactor-core-3.3.13.RELEASE-sources.jar"
                 ],
                 "sha256": "6d45d689f484b4016f03f12779fbc56ed7e878a6557bdb0b7db0e7aa16f78ce6",
@@ -2810,7 +2693,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3.jar",
-                    "https://jcenter.bintray.com/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3.jar",
                     "https://maven.google.com/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3.jar"
                 ],
                 "sha256": "f655f2ece0bb01b4d28b937877d4287d12bd7199e7cee83b00b1653dba00c1df",
@@ -2839,7 +2721,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3-sources.jar",
-                    "https://jcenter.bintray.com/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3-sources.jar",
                     "https://maven.google.com/it/ozimov/embedded-redis/0.7.3/embedded-redis-0.7.3-sources.jar"
                 ],
                 "sha256": "ed1140941696f0f1364dab3000a0805e86937cee8ec83b0974266ccc018c39e0",
@@ -2857,7 +2738,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1.jar",
-                    "https://jcenter.bintray.com/javax/inject/javax.inject/1/javax.inject-1.jar",
                     "https://maven.google.com/javax/inject/javax.inject/1/javax.inject-1.jar"
                 ],
                 "sha256": "91c77044a50c481636c32d916fd89c9118a72195390452c81065080f957de7ff",
@@ -2875,7 +2755,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/javax/inject/javax.inject/1/javax.inject-1-sources.jar",
-                    "https://jcenter.bintray.com/javax/inject/javax.inject/1/javax.inject-1-sources.jar",
                     "https://maven.google.com/javax/inject/javax.inject/1/javax.inject-1-sources.jar"
                 ],
                 "sha256": "c4b87ee2911c139c3daf498a781967f1eb2e75bc1a8529a2e7b328a15d0e433e",
@@ -2893,7 +2772,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar",
-                    "https://jcenter.bintray.com/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar",
                     "https://maven.google.com/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar"
                 ],
                 "sha256": "83a03dd877d3674576f0da7b90755c8524af099ccf0607fc61aa971535ad7c60",
@@ -2911,7 +2789,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1-sources.jar",
-                    "https://jcenter.bintray.com/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1-sources.jar",
                     "https://maven.google.com/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1-sources.jar"
                 ],
                 "sha256": "a2826761ae88535afb0a3a049eacc846494e22627a1dcf14de37b956ca8748d6",
@@ -2930,7 +2807,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/jaxen/jaxen/1.2.0/jaxen-1.2.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/jaxen/jaxen/1.2.0/jaxen-1.2.0.jar",
-                    "https://jcenter.bintray.com/jaxen/jaxen/1.2.0/jaxen-1.2.0.jar",
                     "https://maven.google.com/jaxen/jaxen/1.2.0/jaxen-1.2.0.jar"
                 ],
                 "sha256": "70feef9dd75ad064def05a3ce8975aeba515ee7d1be146d12199c8828a64174c",
@@ -2949,7 +2825,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/jaxen/jaxen/1.2.0/jaxen-1.2.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/jaxen/jaxen/1.2.0/jaxen-1.2.0-sources.jar",
-                    "https://jcenter.bintray.com/jaxen/jaxen/1.2.0/jaxen-1.2.0-sources.jar",
                     "https://maven.google.com/jaxen/jaxen/1.2.0/jaxen-1.2.0-sources.jar"
                 ],
                 "sha256": "b028d7872b7cb61b2b3a9227c2f8bd83a180a3550a3e8d6cc6d5e3afd39ca94b",
@@ -2968,7 +2843,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/junit/junit/4.13.1/junit-4.13.1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/junit/junit/4.13.1/junit-4.13.1.jar",
-                    "https://jcenter.bintray.com/junit/junit/4.13.1/junit-4.13.1.jar",
                     "https://maven.google.com/junit/junit/4.13.1/junit-4.13.1.jar"
                 ],
                 "sha256": "c30719db974d6452793fe191b3638a5777005485bae145924044530ffa5f6122",
@@ -2986,7 +2860,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/junit/junit/4.13.1/junit-4.13.1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/junit/junit/4.13.1/junit-4.13.1-sources.jar",
-                    "https://jcenter.bintray.com/junit/junit/4.13.1/junit-4.13.1-sources.jar",
                     "https://maven.google.com/junit/junit/4.13.1/junit-4.13.1-sources.jar"
                 ],
                 "sha256": "624c08005c95c47287c9d921479cff0b71dd50a101b0810cd5e207242eb8fe0e",
@@ -3004,7 +2877,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.10.19/byte-buddy-agent-1.10.19.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.10.19/byte-buddy-agent-1.10.19.jar",
-                    "https://jcenter.bintray.com/net/bytebuddy/byte-buddy-agent/1.10.19/byte-buddy-agent-1.10.19.jar",
                     "https://maven.google.com/net/bytebuddy/byte-buddy-agent/1.10.19/byte-buddy-agent-1.10.19.jar"
                 ],
                 "sha256": "ee4bdaeb3cddd784ad5703d2d2dcc1df313f7d8ce5a25608b57d934c1bd163a4",
@@ -3022,7 +2894,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.10.19/byte-buddy-agent-1.10.19-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.10.19/byte-buddy-agent-1.10.19-sources.jar",
-                    "https://jcenter.bintray.com/net/bytebuddy/byte-buddy-agent/1.10.19/byte-buddy-agent-1.10.19-sources.jar",
                     "https://maven.google.com/net/bytebuddy/byte-buddy-agent/1.10.19/byte-buddy-agent-1.10.19-sources.jar"
                 ],
                 "sha256": "5ee1fbbef95b4d5407bfa039eedec05e74556d4c571d4a07387692370d8c8fa2",
@@ -3040,7 +2911,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.10.19/byte-buddy-1.10.19.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.10.19/byte-buddy-1.10.19.jar",
-                    "https://jcenter.bintray.com/net/bytebuddy/byte-buddy/1.10.19/byte-buddy-1.10.19.jar",
                     "https://maven.google.com/net/bytebuddy/byte-buddy/1.10.19/byte-buddy-1.10.19.jar"
                 ],
                 "sha256": "5f08c9b751f0ce7e9fe5e02f7c2a68832e4e9733b4068ba32737a9ad622c6af2",
@@ -3058,7 +2928,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.10.19/byte-buddy-1.10.19-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.10.19/byte-buddy-1.10.19-sources.jar",
-                    "https://jcenter.bintray.com/net/bytebuddy/byte-buddy/1.10.19/byte-buddy-1.10.19-sources.jar",
                     "https://maven.google.com/net/bytebuddy/byte-buddy/1.10.19/byte-buddy-1.10.19-sources.jar"
                 ],
                 "sha256": "15895ad5de6a7f1d72c9781801dad7d71cda54afe2a23495a278619e2a7b869f",
@@ -3077,7 +2946,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar",
-                    "https://jcenter.bintray.com/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar",
                     "https://maven.google.com/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar"
                 ],
                 "sha256": "be5805392060c71474bf6c9a67a099471274d30b83eef84bfc4e0889a4f1dcc0",
@@ -3096,7 +2964,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0-sources.jar",
-                    "https://jcenter.bintray.com/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0-sources.jar",
                     "https://maven.google.com/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0-sources.jar"
                 ],
                 "sha256": "e3ad6ae439e3cf8a25372de838efaa1a95f8ef9b5053d5d94fafe89c8c09814e",
@@ -3114,7 +2981,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/jodah/failsafe/2.4.0/failsafe-2.4.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/jodah/failsafe/2.4.0/failsafe-2.4.0.jar",
-                    "https://jcenter.bintray.com/net/jodah/failsafe/2.4.0/failsafe-2.4.0.jar",
                     "https://maven.google.com/net/jodah/failsafe/2.4.0/failsafe-2.4.0.jar"
                 ],
                 "sha256": "db86b93fb3317f1c9b49b316bf8b975117c2bb9516a22e7a528fc588792a54a0",
@@ -3132,7 +2998,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/jodah/failsafe/2.4.0/failsafe-2.4.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/jodah/failsafe/2.4.0/failsafe-2.4.0-sources.jar",
-                    "https://jcenter.bintray.com/net/jodah/failsafe/2.4.0/failsafe-2.4.0-sources.jar",
                     "https://maven.google.com/net/jodah/failsafe/2.4.0/failsafe-2.4.0-sources.jar"
                 ],
                 "sha256": "c5ce40fd12bb5ca07cc68d1d84c1f25d8bd64a1d72133b59df8f194c4f3c6e9d",
@@ -3151,7 +3016,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/10.3/Saxon-HE-10.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/10.3/Saxon-HE-10.3.jar",
-                    "https://jcenter.bintray.com/net/sf/saxon/Saxon-HE/10.3/Saxon-HE-10.3.jar",
                     "https://maven.google.com/net/sf/saxon/Saxon-HE/10.3/Saxon-HE-10.3.jar"
                 ],
                 "sha256": "660a89162a577cfd73bc3db3c53cbec7e82d4ab2051247f31927f135aff7c908",
@@ -3170,7 +3034,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/10.3/Saxon-HE-10.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/10.3/Saxon-HE-10.3-sources.jar",
-                    "https://jcenter.bintray.com/net/sf/saxon/Saxon-HE/10.3/Saxon-HE-10.3-sources.jar",
                     "https://maven.google.com/net/sf/saxon/Saxon-HE/10.3/Saxon-HE-10.3-sources.jar"
                 ],
                 "sha256": "bd0d519f5cdf252d787312be9320f9ef5bdf33d9902899851ae6f22c9c425c63",
@@ -3188,7 +3051,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.46.0/htmlunit-core-js-2.46.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.46.0/htmlunit-core-js-2.46.0.jar",
-                    "https://jcenter.bintray.com/net/sourceforge/htmlunit/htmlunit-core-js/2.46.0/htmlunit-core-js-2.46.0.jar",
                     "https://maven.google.com/net/sourceforge/htmlunit/htmlunit-core-js/2.46.0/htmlunit-core-js-2.46.0.jar"
                 ],
                 "sha256": "5c1c46509dc203c82aaecaa665ebf361f64777e64c0f849ef951dd8da80df6ff",
@@ -3206,7 +3068,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.46.0/htmlunit-core-js-2.46.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.46.0/htmlunit-core-js-2.46.0-sources.jar",
-                    "https://jcenter.bintray.com/net/sourceforge/htmlunit/htmlunit-core-js/2.46.0/htmlunit-core-js-2.46.0-sources.jar",
                     "https://maven.google.com/net/sourceforge/htmlunit/htmlunit-core-js/2.46.0/htmlunit-core-js-2.46.0-sources.jar"
                 ],
                 "sha256": "ac1c889db5e9fba5e556853eefc05d2410fda36b1b1ac162e8fdbdce49bec0ce",
@@ -3224,7 +3085,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0.jar",
-                    "https://jcenter.bintray.com/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0.jar",
                     "https://maven.google.com/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0.jar"
                 ],
                 "sha256": "4aa39938848545278daad980837b22d9fe378adf44916ac0b76fc39dd03dacee",
@@ -3242,7 +3102,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0-sources.jar",
-                    "https://jcenter.bintray.com/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0-sources.jar",
                     "https://maven.google.com/net/sourceforge/htmlunit/htmlunit-cssparser/1.7.0/htmlunit-cssparser-1.7.0-sources.jar"
                 ],
                 "sha256": "619228b9bbab7be7b3ceb5b22b7b71f91e4436c13a44e39f77743433f3d5c08a",
@@ -3300,7 +3159,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.46.0/htmlunit-2.46.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.46.0/htmlunit-2.46.0.jar",
-                    "https://jcenter.bintray.com/net/sourceforge/htmlunit/htmlunit/2.46.0/htmlunit-2.46.0.jar",
                     "https://maven.google.com/net/sourceforge/htmlunit/htmlunit/2.46.0/htmlunit-2.46.0.jar"
                 ],
                 "sha256": "93f0abdec8c1487409d26a6d63f510fd0df0c36f095ae2966142a0fa55d92983",
@@ -3358,7 +3216,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.46.0/htmlunit-2.46.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sourceforge/htmlunit/htmlunit/2.46.0/htmlunit-2.46.0-sources.jar",
-                    "https://jcenter.bintray.com/net/sourceforge/htmlunit/htmlunit/2.46.0/htmlunit-2.46.0-sources.jar",
                     "https://maven.google.com/net/sourceforge/htmlunit/htmlunit/2.46.0/htmlunit-2.46.0-sources.jar"
                 ],
                 "sha256": "8060018b7556965bbf26ebaa69be54f7dd8101c28d9e610a01c15639b76a2e44",
@@ -3381,7 +3238,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.46.0/neko-htmlunit-2.46.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.46.0/neko-htmlunit-2.46.0.jar",
-                    "https://jcenter.bintray.com/net/sourceforge/htmlunit/neko-htmlunit/2.46.0/neko-htmlunit-2.46.0.jar",
                     "https://maven.google.com/net/sourceforge/htmlunit/neko-htmlunit/2.46.0/neko-htmlunit-2.46.0.jar"
                 ],
                 "sha256": "67fc8cedf0c22eed030eaf33733be79ba0d2972232ab08fb744b7be3912934a5",
@@ -3404,7 +3260,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.46.0/neko-htmlunit-2.46.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/2.46.0/neko-htmlunit-2.46.0-sources.jar",
-                    "https://jcenter.bintray.com/net/sourceforge/htmlunit/neko-htmlunit/2.46.0/neko-htmlunit-2.46.0-sources.jar",
                     "https://maven.google.com/net/sourceforge/htmlunit/neko-htmlunit/2.46.0/neko-htmlunit-2.46.0-sources.jar"
                 ],
                 "sha256": "69cae2857dd2532103454c5ae07c537f77fc2ff47219abad6eb3da8b2b8b7b5c",
@@ -3422,7 +3277,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.8/antlr4-runtime-4.8.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.8/antlr4-runtime-4.8.jar",
-                    "https://jcenter.bintray.com/org/antlr/antlr4-runtime/4.8/antlr4-runtime-4.8.jar",
                     "https://maven.google.com/org/antlr/antlr4-runtime/4.8/antlr4-runtime-4.8.jar"
                 ],
                 "sha256": "2337df5d81e715b39aeea07aac46ad47e4f1f9e9cd7c899f124f425913efdcf8",
@@ -3440,7 +3294,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.8/antlr4-runtime-4.8-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.8/antlr4-runtime-4.8-sources.jar",
-                    "https://jcenter.bintray.com/org/antlr/antlr4-runtime/4.8/antlr4-runtime-4.8-sources.jar",
                     "https://maven.google.com/org/antlr/antlr4-runtime/4.8/antlr4-runtime-4.8-sources.jar"
                 ],
                 "sha256": "78f1904ff15aa21b5b4b37516c838fa8a57d67fce4d9efbfc2cabb0d5e6df010",
@@ -3458,7 +3311,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.10.3/ant-launcher-1.10.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.10.3/ant-launcher-1.10.3.jar",
-                    "https://jcenter.bintray.com/org/apache/ant/ant-launcher/1.10.3/ant-launcher-1.10.3.jar",
                     "https://maven.google.com/org/apache/ant/ant-launcher/1.10.3/ant-launcher-1.10.3.jar"
                 ],
                 "sha256": "e8345f2b7333def242cc2bdc927fc825ca7dcdb28119b43bf1f14adff06bb11d",
@@ -3476,7 +3328,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.10.3/ant-launcher-1.10.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.10.3/ant-launcher-1.10.3-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/ant/ant-launcher/1.10.3/ant-launcher-1.10.3-sources.jar",
                     "https://maven.google.com/org/apache/ant/ant-launcher/1.10.3/ant-launcher-1.10.3-sources.jar"
                 ],
                 "sha256": "ae0bfc8866f08f358c5ddcba45316a849a3ec04783e8abc8ebbee448384226cf",
@@ -3498,7 +3349,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/ant/ant/1.10.3/ant-1.10.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/ant/ant/1.10.3/ant-1.10.3.jar",
-                    "https://jcenter.bintray.com/org/apache/ant/ant/1.10.3/ant-1.10.3.jar",
                     "https://maven.google.com/org/apache/ant/ant/1.10.3/ant-1.10.3.jar"
                 ],
                 "sha256": "2dfa006ae90696e3ef8c8191b2f846053a33310b9418955760a23ba3160f96b7",
@@ -3520,7 +3370,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/ant/ant/1.10.3/ant-1.10.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/ant/ant/1.10.3/ant-1.10.3-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/ant/ant/1.10.3/ant-1.10.3-sources.jar",
                     "https://maven.google.com/org/apache/ant/ant/1.10.3/ant-1.10.3-sources.jar"
                 ],
                 "sha256": "9ad0bca60af587e63eca148dc32398bedebaa0d752fac752448334b32bd0d278",
@@ -3539,7 +3388,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/bcel/bcel/6.5.0/bcel-6.5.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/bcel/bcel/6.5.0/bcel-6.5.0.jar",
-                    "https://jcenter.bintray.com/org/apache/bcel/bcel/6.5.0/bcel-6.5.0.jar",
                     "https://maven.google.com/org/apache/bcel/bcel/6.5.0/bcel-6.5.0.jar"
                 ],
                 "sha256": "bdeb381d0d19999e221e6a0f8d8bf44f5b19c2e57eabf68b70dc098652aefaf5",
@@ -3558,7 +3406,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/bcel/bcel/6.5.0/bcel-6.5.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/bcel/bcel/6.5.0/bcel-6.5.0-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/bcel/bcel/6.5.0/bcel-6.5.0-sources.jar",
                     "https://maven.google.com/org/apache/bcel/bcel/6.5.0/bcel-6.5.0-sources.jar"
                 ],
                 "sha256": "301c4b1a6464ec683cee6caabbdd3257c3ffa5420153ca69b78f43e1ed77f84c",
@@ -3576,7 +3423,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar",
-                    "https://jcenter.bintray.com/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar",
                     "https://maven.google.com/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar"
                 ],
                 "sha256": "cb49812dc1bfb0ea4f20f398bcae1a88c6406e213e67f7524fb10d4f8ad9347b",
@@ -3594,7 +3440,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/1.3/commons-exec-1.3-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/commons/commons-exec/1.3/commons-exec-1.3-sources.jar",
                     "https://maven.google.com/org/apache/commons/commons-exec/1.3/commons-exec-1.3-sources.jar"
                 ],
                 "sha256": "c121d8e70010092bafc56f358e7259ac484653db595aafea1e67a040f51aea66",
@@ -3613,7 +3458,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11.jar",
-                    "https://jcenter.bintray.com/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11.jar",
                     "https://maven.google.com/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11.jar"
                 ],
                 "sha256": "4ee380259c068d1dbe9e84ab52186f2acd65de067ec09beff731fca1697fdb16",
@@ -3631,7 +3475,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
                     "https://maven.google.com/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar"
                 ],
                 "sha256": "8d64ba48fd8a3f70b20cab32f1617ed01ee71af933a768e4955372d28964798a",
@@ -3654,7 +3497,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9.jar",
-                    "https://jcenter.bintray.com/org/apache/commons/commons-text/1.9/commons-text-1.9.jar",
                     "https://maven.google.com/org/apache/commons/commons-text/1.9/commons-text-1.9.jar"
                 ],
                 "sha256": "0812f284ac5dd0d617461d9a2ab6ac6811137f25122dfffd4788a4871e732d00",
@@ -3677,7 +3519,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
                     "https://maven.google.com/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar"
                 ],
                 "sha256": "86e6fae70b9bf61d6dccd8bfecdfa8c893b44cac78afac9ca9c584e9169de44d",
@@ -3703,7 +3544,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar",
-                    "https://jcenter.bintray.com/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar",
                     "https://maven.google.com/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar"
                 ],
                 "sha256": "6fe9026a566c6a5001608cf3fc32196641f6c1e5e1986d1037ccdbd5f31ef743",
@@ -3729,7 +3569,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13-sources.jar",
                     "https://maven.google.com/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13-sources.jar"
                 ],
                 "sha256": "b1e9194fd83ce135831e28346731d9644cb2a08dea37ada2aa56ceb8f1b0c566",
@@ -3747,7 +3586,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar",
-                    "https://jcenter.bintray.com/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar",
                     "https://maven.google.com/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar"
                 ],
                 "sha256": "e06e89d40943245fcfa39ec537cdbfce3762aecde8f9c597780d2b00c2b43424",
@@ -3765,7 +3603,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13-sources.jar",
                     "https://maven.google.com/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13-sources.jar"
                 ],
                 "sha256": "c0418a6ee8c32e9de37e4ba515e9562a2acc6a36b684b618fee56d41b81ef2a9",
@@ -3790,7 +3627,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13.jar",
-                    "https://jcenter.bintray.com/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13.jar",
                     "https://maven.google.com/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13.jar"
                 ],
                 "sha256": "06e754d99245b98dcc2860dcb43d20e737d650da2bf2077a105f68accbd5c5cc",
@@ -3815,7 +3651,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13-sources.jar",
-                    "https://jcenter.bintray.com/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13-sources.jar",
                     "https://maven.google.com/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13-sources.jar"
                 ],
                 "sha256": "e001f45eedd851e2e3657366df4c8dcd3f1dff42c4a66ffa3a0d2ce7e393d2e6",
@@ -3833,7 +3668,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1.jar",
-                    "https://jcenter.bintray.com/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1.jar",
                     "https://maven.google.com/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1.jar"
                 ],
                 "sha256": "721aba451a5b1019986d38c728327173b116d961c637cae15aedcf524baddfd5",
@@ -3851,7 +3685,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1-sources.jar",
-                    "https://jcenter.bintray.com/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1-sources.jar",
                     "https://maven.google.com/org/assertj/assertj-core/3.18.1/assertj-core-3.18.1-sources.jar"
                 ],
                 "sha256": "b578bfd57eb7fbe7d0c9ba31c3163c747d652f91d3f8736601352e9c48e4cc14",
@@ -3877,7 +3710,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/asynchttpclient/async-http-client-netty-utils/2.12.2/async-http-client-netty-utils-2.12.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/asynchttpclient/async-http-client-netty-utils/2.12.2/async-http-client-netty-utils-2.12.2.jar",
-                    "https://jcenter.bintray.com/org/asynchttpclient/async-http-client-netty-utils/2.12.2/async-http-client-netty-utils-2.12.2.jar",
                     "https://maven.google.com/org/asynchttpclient/async-http-client-netty-utils/2.12.2/async-http-client-netty-utils-2.12.2.jar"
                 ],
                 "sha256": "a16d85b84c412f1ef0f6098e286abc6adba28cc600d508b0320d07de6be1a03f",
@@ -3903,7 +3735,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/asynchttpclient/async-http-client-netty-utils/2.12.2/async-http-client-netty-utils-2.12.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/asynchttpclient/async-http-client-netty-utils/2.12.2/async-http-client-netty-utils-2.12.2-sources.jar",
-                    "https://jcenter.bintray.com/org/asynchttpclient/async-http-client-netty-utils/2.12.2/async-http-client-netty-utils-2.12.2-sources.jar",
                     "https://maven.google.com/org/asynchttpclient/async-http-client-netty-utils/2.12.2/async-http-client-netty-utils-2.12.2-sources.jar"
                 ],
                 "sha256": "42843a6fd4d535ececec09bea18b5f9ecdbd30f49c424d949f1b17e53b2cb523",
@@ -3942,7 +3773,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/asynchttpclient/async-http-client/2.12.2/async-http-client-2.12.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/asynchttpclient/async-http-client/2.12.2/async-http-client-2.12.2.jar",
-                    "https://jcenter.bintray.com/org/asynchttpclient/async-http-client/2.12.2/async-http-client-2.12.2.jar",
                     "https://maven.google.com/org/asynchttpclient/async-http-client/2.12.2/async-http-client-2.12.2.jar"
                 ],
                 "sha256": "e5451c2c7eb1e5d2fa3f387e942df65ddd085bb01576e9b85ed63e5f3b00d14a",
@@ -3981,7 +3811,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/asynchttpclient/async-http-client/2.12.2/async-http-client-2.12.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/asynchttpclient/async-http-client/2.12.2/async-http-client-2.12.2-sources.jar",
-                    "https://jcenter.bintray.com/org/asynchttpclient/async-http-client/2.12.2/async-http-client-2.12.2-sources.jar",
                     "https://maven.google.com/org/asynchttpclient/async-http-client/2.12.2/async-http-client-2.12.2-sources.jar"
                 ],
                 "sha256": "530ebeea0b96030b26a9b24454151df91c366ec7c3ce9b7e1c2fdaf8b927b52b",
@@ -3999,7 +3828,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/brotli/dec/0.1.2/dec-0.1.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/brotli/dec/0.1.2/dec-0.1.2.jar",
-                    "https://jcenter.bintray.com/org/brotli/dec/0.1.2/dec-0.1.2.jar",
                     "https://maven.google.com/org/brotli/dec/0.1.2/dec-0.1.2.jar"
                 ],
                 "sha256": "615c0c3efef990d77831104475fba6a1f7971388691d4bad1471ad84101f6d52",
@@ -4017,7 +3845,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/brotli/dec/0.1.2/dec-0.1.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/brotli/dec/0.1.2/dec-0.1.2-sources.jar",
-                    "https://jcenter.bintray.com/org/brotli/dec/0.1.2/dec-0.1.2-sources.jar",
                     "https://maven.google.com/org/brotli/dec/0.1.2/dec-0.1.2-sources.jar"
                 ],
                 "sha256": "064ac1e41f475c1fd0479b6505f44b6e3bb044b948bddc75d56a496ebb85fbc3",
@@ -4035,7 +3862,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar",
-                    "https://jcenter.bintray.com/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar",
                     "https://maven.google.com/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar"
                 ],
                 "sha256": "729990b3f18a95606fc2573836b6958bcdb44cb52bfbd1b7aa9c339cff35a5a4",
@@ -4053,7 +3879,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-sources.jar",
-                    "https://jcenter.bintray.com/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-sources.jar",
                     "https://maven.google.com/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-sources.jar"
                 ],
                 "sha256": "0724b40995c1b05516caa2dd9a3b2f5378f948cf20f3404f4db316af25239368",
@@ -4078,7 +3903,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/dom4j/dom4j/2.1.3/dom4j-2.1.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/dom4j/dom4j/2.1.3/dom4j-2.1.3.jar",
-                    "https://jcenter.bintray.com/org/dom4j/dom4j/2.1.3/dom4j-2.1.3.jar",
                     "https://maven.google.com/org/dom4j/dom4j/2.1.3/dom4j-2.1.3.jar"
                 ],
                 "sha256": "549f3007c6290f6a901e57d1d331b4ed0e6bf7384f78bf10316ffceeca834de6",
@@ -4103,7 +3927,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/dom4j/dom4j/2.1.3/dom4j-2.1.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/dom4j/dom4j/2.1.3/dom4j-2.1.3-sources.jar",
-                    "https://jcenter.bintray.com/org/dom4j/dom4j/2.1.3/dom4j-2.1.3-sources.jar",
                     "https://maven.google.com/org/dom4j/dom4j/2.1.3/dom4j-2.1.3-sources.jar"
                 ],
                 "sha256": "ef7d0edcaddc940b2845eba2d9aef9e4ac6749ff8f86ee7ceb62e17f90aceac7",
@@ -4121,7 +3944,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.35.v20201120/websocket-api-9.4.35.v20201120.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.35.v20201120/websocket-api-9.4.35.v20201120.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/websocket/websocket-api/9.4.35.v20201120/websocket-api-9.4.35.v20201120.jar",
                     "https://maven.google.com/org/eclipse/jetty/websocket/websocket-api/9.4.35.v20201120/websocket-api-9.4.35.v20201120.jar"
                 ],
                 "sha256": "e7b8a8ef30eed951536b991fc2a2b539e890b6be4ea98e918461051cfb738809",
@@ -4139,7 +3961,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.35.v20201120/websocket-api-9.4.35.v20201120-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.35.v20201120/websocket-api-9.4.35.v20201120-sources.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/websocket/websocket-api/9.4.35.v20201120/websocket-api-9.4.35.v20201120-sources.jar",
                     "https://maven.google.com/org/eclipse/jetty/websocket/websocket-api/9.4.35.v20201120/websocket-api-9.4.35.v20201120-sources.jar"
                 ],
                 "sha256": "e45df094ecc7c93cbfac65adbe2b81c8d9b58be5d8cb93f79f619d51e4376441",
@@ -4169,7 +3990,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.35.v20201120/websocket-client-9.4.35.v20201120.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.35.v20201120/websocket-client-9.4.35.v20201120.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/websocket/websocket-client/9.4.35.v20201120/websocket-client-9.4.35.v20201120.jar",
                     "https://maven.google.com/org/eclipse/jetty/websocket/websocket-client/9.4.35.v20201120/websocket-client-9.4.35.v20201120.jar"
                 ],
                 "sha256": "5aa09ad4b17952bef8fa307dd663bb0d131b1a1248daa6cd130be8dcb07f148a",
@@ -4199,7 +4019,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.35.v20201120/websocket-client-9.4.35.v20201120-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/9.4.35.v20201120/websocket-client-9.4.35.v20201120-sources.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/websocket/websocket-client/9.4.35.v20201120/websocket-client-9.4.35.v20201120-sources.jar",
                     "https://maven.google.com/org/eclipse/jetty/websocket/websocket-client/9.4.35.v20201120/websocket-client-9.4.35.v20201120-sources.jar"
                 ],
                 "sha256": "25e6fb8412c4518dd81e6c4c45e217e918434dc1dc2edeb5438544de4c2cdaea",
@@ -4225,7 +4044,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.35.v20201120/websocket-common-9.4.35.v20201120.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.35.v20201120/websocket-common-9.4.35.v20201120.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/websocket/websocket-common/9.4.35.v20201120/websocket-common-9.4.35.v20201120.jar",
                     "https://maven.google.com/org/eclipse/jetty/websocket/websocket-common/9.4.35.v20201120/websocket-common-9.4.35.v20201120.jar"
                 ],
                 "sha256": "fb1b0d6f472f614053a600367c1f35d806b38ce73a985e26bf3ccae9cd89786e",
@@ -4251,7 +4069,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.35.v20201120/websocket-common-9.4.35.v20201120-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/9.4.35.v20201120/websocket-common-9.4.35.v20201120-sources.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/websocket/websocket-common/9.4.35.v20201120/websocket-common-9.4.35.v20201120-sources.jar",
                     "https://maven.google.com/org/eclipse/jetty/websocket/websocket-common/9.4.35.v20201120/websocket-common-9.4.35.v20201120-sources.jar"
                 ],
                 "sha256": "3c65282744330231792cc828145dd0b2d958a5b0d2f2166e4c1fe08fe22c1285",
@@ -4276,7 +4093,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.35.v20201120/jetty-client-9.4.35.v20201120.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.35.v20201120/jetty-client-9.4.35.v20201120.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/jetty-client/9.4.35.v20201120/jetty-client-9.4.35.v20201120.jar",
                     "https://maven.google.com/org/eclipse/jetty/jetty-client/9.4.35.v20201120/jetty-client-9.4.35.v20201120.jar"
                 ],
                 "sha256": "58a81574b9f5a6fd8d27c988a0119f7457a5d23b5b27ea645b07713650c3c4f6",
@@ -4301,7 +4117,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.35.v20201120/jetty-client-9.4.35.v20201120-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/9.4.35.v20201120/jetty-client-9.4.35.v20201120-sources.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/jetty-client/9.4.35.v20201120/jetty-client-9.4.35.v20201120-sources.jar",
                     "https://maven.google.com/org/eclipse/jetty/jetty-client/9.4.35.v20201120/jetty-client-9.4.35.v20201120-sources.jar"
                 ],
                 "sha256": "10e1fac88b719c4d134a1dc96b9ef78a120aae69d9e0f20c6d6135d3e7c91cb1",
@@ -4325,7 +4140,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.35.v20201120/jetty-http-9.4.35.v20201120.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.35.v20201120/jetty-http-9.4.35.v20201120.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/jetty-http/9.4.35.v20201120/jetty-http-9.4.35.v20201120.jar",
                     "https://maven.google.com/org/eclipse/jetty/jetty-http/9.4.35.v20201120/jetty-http-9.4.35.v20201120.jar"
                 ],
                 "sha256": "bb6f473cf019399fe529b687982eb999018c6650841562197881e12ad6209253",
@@ -4349,7 +4163,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.35.v20201120/jetty-http-9.4.35.v20201120-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/9.4.35.v20201120/jetty-http-9.4.35.v20201120-sources.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/jetty-http/9.4.35.v20201120/jetty-http-9.4.35.v20201120-sources.jar",
                     "https://maven.google.com/org/eclipse/jetty/jetty-http/9.4.35.v20201120/jetty-http-9.4.35.v20201120-sources.jar"
                 ],
                 "sha256": "f6a98b68473bbe75828d62d6dd6f1f6338902ba22a0dd0c71bb6b01210e1a26a",
@@ -4371,7 +4184,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.35.v20201120/jetty-io-9.4.35.v20201120.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.35.v20201120/jetty-io-9.4.35.v20201120.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/jetty-io/9.4.35.v20201120/jetty-io-9.4.35.v20201120.jar",
                     "https://maven.google.com/org/eclipse/jetty/jetty-io/9.4.35.v20201120/jetty-io-9.4.35.v20201120.jar"
                 ],
                 "sha256": "dae20d7206f66e0023d294d70a6dc38944935bc89953fe4ded36d4b4ca542d6d",
@@ -4393,7 +4205,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.35.v20201120/jetty-io-9.4.35.v20201120-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.35.v20201120/jetty-io-9.4.35.v20201120-sources.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/jetty-io/9.4.35.v20201120/jetty-io-9.4.35.v20201120-sources.jar",
                     "https://maven.google.com/org/eclipse/jetty/jetty-io/9.4.35.v20201120/jetty-io-9.4.35.v20201120-sources.jar"
                 ],
                 "sha256": "d005ab598f10c14a9168f59b08a34b830afeeb62f1c058c111c6407a06679c5a",
@@ -4411,7 +4222,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.35.v20201120/jetty-util-9.4.35.v20201120.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.35.v20201120/jetty-util-9.4.35.v20201120.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/jetty-util/9.4.35.v20201120/jetty-util-9.4.35.v20201120.jar",
                     "https://maven.google.com/org/eclipse/jetty/jetty-util/9.4.35.v20201120/jetty-util-9.4.35.v20201120.jar"
                 ],
                 "sha256": "7db4077559abc8939b414a352d6a8a5c1942aab898a5b0678a63422640ae5dbd",
@@ -4429,7 +4239,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.35.v20201120/jetty-util-9.4.35.v20201120-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.35.v20201120/jetty-util-9.4.35.v20201120-sources.jar",
-                    "https://jcenter.bintray.com/org/eclipse/jetty/jetty-util/9.4.35.v20201120/jetty-util-9.4.35.v20201120-sources.jar",
                     "https://maven.google.com/org/eclipse/jetty/jetty-util/9.4.35.v20201120/jetty-util-9.4.35.v20201120-sources.jar"
                 ],
                 "sha256": "74fad0f1daf16ca6247afe9a1f876b5c3ce5ecf1d44aa9f35101d515e709c408",
@@ -4451,7 +4260,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5.jar",
-                    "https://jcenter.bintray.com/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5.jar",
                     "https://maven.google.com/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5.jar"
                 ],
                 "sha256": "5ae0ce75c0d4938e1fe32d5efbb0204e38585e76454bd16d91b5a59852a1e64e",
@@ -4473,7 +4281,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5-sources.jar",
-                    "https://jcenter.bintray.com/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5-sources.jar",
                     "https://maven.google.com/org/eclipse/mylyn/github/org.eclipse.egit.github.core/2.1.5/org.eclipse.egit.github.core-2.1.5-sources.jar"
                 ],
                 "sha256": "1f0f6588b9b6f6b232bf4917bee0a672d85e9ffb3a5265d3b8967bd9897ae644",
@@ -4491,7 +4298,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar",
-                    "https://jcenter.bintray.com/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar",
                     "https://maven.google.com/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar"
                 ],
                 "sha256": "5e62846a89f05cd78cd9c1a553f340d002458380c320455dd1f8fc5497a8a1c1",
@@ -4509,7 +4315,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2-sources.jar",
-                    "https://jcenter.bintray.com/org/hamcrest/hamcrest/2.2/hamcrest-2.2-sources.jar",
                     "https://maven.google.com/org/hamcrest/hamcrest/2.2/hamcrest-2.2-sources.jar"
                 ],
                 "sha256": "f49e697dbc70591f91a90dd7f741f5780f53f63f34a416d6a9879499d4d666af",
@@ -4527,7 +4332,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/hsqldb/hsqldb/2.5.1/hsqldb-2.5.1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.5.1/hsqldb-2.5.1.jar",
-                    "https://jcenter.bintray.com/org/hsqldb/hsqldb/2.5.1/hsqldb-2.5.1.jar",
                     "https://maven.google.com/org/hsqldb/hsqldb/2.5.1/hsqldb-2.5.1.jar"
                 ],
                 "sha256": "a08bbe1187cf725b721a536ecc3cb825317a883616d6c4ef25d564a70ad83202",
@@ -4545,7 +4349,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/hsqldb/hsqldb/2.5.1/hsqldb-2.5.1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/hsqldb/hsqldb/2.5.1/hsqldb-2.5.1-sources.jar",
-                    "https://jcenter.bintray.com/org/hsqldb/hsqldb/2.5.1/hsqldb-2.5.1-sources.jar",
                     "https://maven.google.com/org/hsqldb/hsqldb/2.5.1/hsqldb-2.5.1-sources.jar"
                 ],
                 "sha256": "faea94314d1080f12786141aadab43933853ee37d22ea271a645ac376b1023bd",
@@ -4564,7 +4367,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/json/json/20200518/json-20200518.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/json/json/20200518/json-20200518.jar",
-                    "https://jcenter.bintray.com/org/json/json/20200518/json-20200518.jar",
                     "https://maven.google.com/org/json/json/20200518/json-20200518.jar"
                 ],
                 "sha256": "0ff30e6da82f15afaf0e76bd6e996a7ab5566851166a83f973c64a9a0f946d2d",
@@ -4583,7 +4385,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/json/json/20200518/json-20200518-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/json/json/20200518/json-20200518-sources.jar",
-                    "https://jcenter.bintray.com/org/json/json/20200518/json-20200518-sources.jar",
                     "https://maven.google.com/org/json/json/20200518/json-20200518-sources.jar"
                 ],
                 "sha256": "db300ece1bb5cc65da45cae302c6111d998049ab2b521e4d40ca1c3f0827eba2",
@@ -4609,7 +4410,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/mockito/mockito-core/3.7.7/mockito-core-3.7.7.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/mockito/mockito-core/3.7.7/mockito-core-3.7.7.jar",
-                    "https://jcenter.bintray.com/org/mockito/mockito-core/3.7.7/mockito-core-3.7.7.jar",
                     "https://maven.google.com/org/mockito/mockito-core/3.7.7/mockito-core-3.7.7.jar"
                 ],
                 "sha256": "e9d1bd23171d8d9317b013a6a6563daea6d53139c2dc21816f6faf252bc46641",
@@ -4635,7 +4435,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/mockito/mockito-core/3.7.7/mockito-core-3.7.7-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/mockito/mockito-core/3.7.7/mockito-core-3.7.7-sources.jar",
-                    "https://jcenter.bintray.com/org/mockito/mockito-core/3.7.7/mockito-core-3.7.7-sources.jar",
                     "https://maven.google.com/org/mockito/mockito-core/3.7.7/mockito-core-3.7.7-sources.jar"
                 ],
                 "sha256": "5994c9663cbaae78c6ba27e9a9bd4b93f24c4fdfb88e76fc20e52703a5987104",
@@ -4653,7 +4452,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/objenesis/objenesis/3.1/objenesis-3.1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/objenesis/objenesis/3.1/objenesis-3.1.jar",
-                    "https://jcenter.bintray.com/org/objenesis/objenesis/3.1/objenesis-3.1.jar",
                     "https://maven.google.com/org/objenesis/objenesis/3.1/objenesis-3.1.jar"
                 ],
                 "sha256": "cdb3d038c188de6f46ffd5cd930be2d5e5dba59c53b26437995d534e3db2fb80",
@@ -4671,7 +4469,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/objenesis/objenesis/3.1/objenesis-3.1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/objenesis/objenesis/3.1/objenesis-3.1-sources.jar",
-                    "https://jcenter.bintray.com/org/objenesis/objenesis/3.1/objenesis-3.1-sources.jar",
                     "https://maven.google.com/org/objenesis/objenesis/3.1/objenesis-3.1-sources.jar"
                 ],
                 "sha256": "a7a2e9fb069d4d713e0f1628352467c509478f6176b2dc580a1887cde05b44ef",
@@ -4695,7 +4492,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.0/asm-analysis-9.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.0/asm-analysis-9.0.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm-analysis/9.0/asm-analysis-9.0.jar",
                     "https://maven.google.com/org/ow2/asm/asm-analysis/9.0/asm-analysis-9.0.jar"
                 ],
                 "sha256": "2d46de6df856a4daac9aa534459ab7287eb80584e9109850405e5b302dc9c2a6",
@@ -4719,7 +4515,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.0/asm-analysis-9.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.0/asm-analysis-9.0-sources.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm-analysis/9.0/asm-analysis-9.0-sources.jar",
                     "https://maven.google.com/org/ow2/asm/asm-analysis/9.0/asm-analysis-9.0-sources.jar"
                 ],
                 "sha256": "a34153ef6bac79a2a0535f62590671fe7c632ade294aa74938ee79da14707521",
@@ -4746,7 +4541,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.0/asm-commons-9.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.0/asm-commons-9.0.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm-commons/9.0/asm-commons-9.0.jar",
                     "https://maven.google.com/org/ow2/asm/asm-commons/9.0/asm-commons-9.0.jar"
                 ],
                 "sha256": "1b9090acb7e67bd4ed2f2cfb002063316d79cecace237bd07cc4f7f1b302092f",
@@ -4773,7 +4567,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.0/asm-commons-9.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.0/asm-commons-9.0-sources.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm-commons/9.0/asm-commons-9.0-sources.jar",
                     "https://maven.google.com/org/ow2/asm/asm-commons/9.0/asm-commons-9.0-sources.jar"
                 ],
                 "sha256": "7ced1227cc5e9d9762a930e19f8708591c5ef458bcdebdebd7e934fbb1b1adf3",
@@ -4796,7 +4589,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.0/asm-tree-9.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.0/asm-tree-9.0.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm-tree/9.0/asm-tree-9.0.jar",
                     "https://maven.google.com/org/ow2/asm/asm-tree/9.0/asm-tree-9.0.jar"
                 ],
                 "sha256": "e2c25f332eb95861883a8568e45aac5e77d140d0fe961ae8eb9a474ec876e00d",
@@ -4819,7 +4611,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.0/asm-tree-9.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.0/asm-tree-9.0-sources.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm-tree/9.0/asm-tree-9.0-sources.jar",
                     "https://maven.google.com/org/ow2/asm/asm-tree/9.0/asm-tree-9.0-sources.jar"
                 ],
                 "sha256": "e75b132b75a861dcbb8aa75b98783b863310fb2e3e3d28394c22063db5ec7432",
@@ -4846,7 +4637,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-util/9.0/asm-util-9.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.0/asm-util-9.0.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm-util/9.0/asm-util-9.0.jar",
                     "https://maven.google.com/org/ow2/asm/asm-util/9.0/asm-util-9.0.jar"
                 ],
                 "sha256": "2af6e7d01e0862e75193f3c01a06a689b0a245947e29f38eb683633391519bb6",
@@ -4873,7 +4663,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-util/9.0/asm-util-9.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.0/asm-util-9.0-sources.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm-util/9.0/asm-util-9.0-sources.jar",
                     "https://maven.google.com/org/ow2/asm/asm-util/9.0/asm-util-9.0-sources.jar"
                 ],
                 "sha256": "cdc52c849b9af5d157df3919621d484697ed35c755292c682704227c0e012710",
@@ -4892,7 +4681,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm/9.0/asm-9.0.jar",
                     "https://maven.google.com/org/ow2/asm/asm/9.0/asm-9.0.jar"
                 ],
                 "sha256": "0df97574914aee92fd349d0cb4e00f3345d45b2c239e0bb50f0a90ead47888e0",
@@ -4911,7 +4699,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/ow2/asm/asm/9.0/asm-9.0-sources.jar",
-                    "https://jcenter.bintray.com/org/ow2/asm/asm/9.0/asm-9.0-sources.jar",
                     "https://maven.google.com/org/ow2/asm/asm/9.0/asm-9.0-sources.jar"
                 ],
                 "sha256": "829bc5eb0ccd705a7c8afbf7cdc4b7e9a9f733d3a1a954b9afffd99c8e063366",
@@ -4929,7 +4716,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar",
-                    "https://jcenter.bintray.com/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar",
                     "https://maven.google.com/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar"
                 ],
                 "sha256": "1dee0481072d19c929b623e155e14d2f6085dc011529a0a0dbefc84cf571d865",
@@ -4947,7 +4733,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
-                    "https://jcenter.bintray.com/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
                     "https://maven.google.com/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar"
                 ],
                 "sha256": "d5b4070a22c9b1ca5b9b5aa668466bcca391dbe5d5fe8311c300765c1621feba",
@@ -5004,7 +4789,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.46.0/htmlunit-driver-2.46.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.46.0/htmlunit-driver-2.46.0.jar",
-                    "https://jcenter.bintray.com/org/seleniumhq/selenium/htmlunit-driver/2.46.0/htmlunit-driver-2.46.0.jar",
                     "https://maven.google.com/org/seleniumhq/selenium/htmlunit-driver/2.46.0/htmlunit-driver-2.46.0.jar"
                 ],
                 "sha256": "aa62a08c8c99eb1c62b4168782b0e054fb6f5e03e000c300b5a3b11a6045f159",
@@ -5061,7 +4845,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.46.0/htmlunit-driver-2.46.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/seleniumhq/selenium/htmlunit-driver/2.46.0/htmlunit-driver-2.46.0-sources.jar",
-                    "https://jcenter.bintray.com/org/seleniumhq/selenium/htmlunit-driver/2.46.0/htmlunit-driver-2.46.0-sources.jar",
                     "https://maven.google.com/org/seleniumhq/selenium/htmlunit-driver/2.46.0/htmlunit-driver-2.46.0-sources.jar"
                 ],
                 "sha256": "90e39030433aa092fc3f786803e2364838d02965d605acb83d8359ed6e06a3ad",
@@ -5079,7 +4862,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59.jar",
-                    "https://jcenter.bintray.com/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59.jar",
                     "https://maven.google.com/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59.jar"
                 ],
                 "sha256": "8bfd5a736eccfc08866301ffc9b7f529e55976355c5799bed8392486df64dee5",
@@ -5097,7 +4879,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59-sources.jar",
-                    "https://jcenter.bintray.com/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59-sources.jar",
                     "https://maven.google.com/org/seleniumhq/selenium/selenium-api/3.141.59/selenium-api-3.141.59-sources.jar"
                 ],
                 "sha256": "91e6c542fbb9b78082a149c8fb012dd439a18b36e69ff25d12279a0392d4c541",
@@ -5129,7 +4910,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59.jar",
-                    "https://jcenter.bintray.com/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59.jar",
                     "https://maven.google.com/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59.jar"
                 ],
                 "sha256": "9829fe57adf36743d785d0c2e7db504ba3ba0a3aacac652b8867cc854d2dfc45",
@@ -5161,7 +4941,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59-sources.jar",
-                    "https://jcenter.bintray.com/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59-sources.jar",
                     "https://maven.google.com/org/seleniumhq/selenium/selenium-remote-driver/3.141.59/selenium-remote-driver-3.141.59-sources.jar"
                 ],
                 "sha256": "aad98064715728567784c00915692b3075c0c1aad80ca14518340868c8296597",
@@ -5195,7 +4974,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59.jar",
-                    "https://jcenter.bintray.com/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59.jar",
                     "https://maven.google.com/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59.jar"
                 ],
                 "sha256": "2c74196d15277ce6003454d72fc3434091dbf3ba65060942719ba551509404d8",
@@ -5229,7 +5007,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59-sources.jar",
-                    "https://jcenter.bintray.com/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59-sources.jar",
                     "https://maven.google.com/org/seleniumhq/selenium/selenium-support/3.141.59/selenium-support-3.141.59-sources.jar"
                 ],
                 "sha256": "70112a60fd5750918a4ee45e7487f6bea9a6b500eeabf93e141b36541f51d096",
@@ -5247,7 +5024,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar",
-                    "https://jcenter.bintray.com/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar",
                     "https://maven.google.com/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar"
                 ],
                 "sha256": "cdba07964d1bb40a0761485c6b1e8c2f8fd9eb1d19c53928ac0d7f9510105c57",
@@ -5265,7 +5041,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30-sources.jar",
-                    "https://jcenter.bintray.com/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30-sources.jar",
                     "https://maven.google.com/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30-sources.jar"
                 ],
                 "sha256": "9ee459644577590fed7ea94afae781fa3cc9311d4553faee8a3219ffbd7cc386",
@@ -5287,7 +5062,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.7.30/slf4j-jdk14-1.7.30.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.7.30/slf4j-jdk14-1.7.30.jar",
-                    "https://jcenter.bintray.com/org/slf4j/slf4j-jdk14/1.7.30/slf4j-jdk14-1.7.30.jar",
                     "https://maven.google.com/org/slf4j/slf4j-jdk14/1.7.30/slf4j-jdk14-1.7.30.jar"
                 ],
                 "sha256": "e0f9db049378f6467941771454995233285fb7adf72c467e65daf25e673acba8",
@@ -5309,7 +5083,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.7.30/slf4j-jdk14-1.7.30-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.7.30/slf4j-jdk14-1.7.30-sources.jar",
-                    "https://jcenter.bintray.com/org/slf4j/slf4j-jdk14/1.7.30/slf4j-jdk14-1.7.30-sources.jar",
                     "https://maven.google.com/org/slf4j/slf4j-jdk14/1.7.30/slf4j-jdk14-1.7.30-sources.jar"
                 ],
                 "sha256": "e8eb38410b7317a2cda12beae8b48362ab34abc4f3af1732d7b381eb26e9ff78",
@@ -5331,7 +5104,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21.jar",
-                    "https://jcenter.bintray.com/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21.jar",
                     "https://maven.google.com/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21.jar"
                 ],
                 "sha256": "a20179cc3ded2d7e2f5def4ccb34b2d0836e2f8c9e79352a6babd6a6559cc8e0",
@@ -5353,7 +5125,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21-sources.jar",
-                    "https://jcenter.bintray.com/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21-sources.jar",
                     "https://maven.google.com/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21-sources.jar"
                 ],
                 "sha256": "a1b77bfe96ee85e8a80c447feb173ff23e7f2f16195d34cc18b9cebb81069d30",
@@ -5387,7 +5158,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/testng/testng/7.3.0/testng-7.3.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/testng/testng/7.3.0/testng-7.3.0.jar",
-                    "https://jcenter.bintray.com/org/testng/testng/7.3.0/testng-7.3.0.jar",
                     "https://maven.google.com/org/testng/testng/7.3.0/testng-7.3.0.jar"
                 ],
                 "sha256": "63727488f9717d57f0d0a0fee5a1fc10a2be9cfcff2ec3a7187656d663c0774e",
@@ -5421,7 +5191,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/testng/testng/7.3.0/testng-7.3.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/testng/testng/7.3.0/testng-7.3.0-sources.jar",
-                    "https://jcenter.bintray.com/org/testng/testng/7.3.0/testng-7.3.0-sources.jar",
                     "https://maven.google.com/org/testng/testng/7.3.0/testng-7.3.0-sources.jar"
                 ],
                 "sha256": "02d070e8751096ec62a231a8765613ac217dc2bef792009d6c8365b0c018ab80",
@@ -5439,7 +5208,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.21/snakeyaml-1.21.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.21/snakeyaml-1.21.jar",
-                    "https://jcenter.bintray.com/org/yaml/snakeyaml/1.21/snakeyaml-1.21.jar",
                     "https://maven.google.com/org/yaml/snakeyaml/1.21/snakeyaml-1.21.jar"
                 ],
                 "sha256": "e43cb0683f70804b833dfaa5ac032ff14ba0c758d4a1e9eaeb6640515df83faf",
@@ -5457,7 +5225,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.21/snakeyaml-1.21-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.21/snakeyaml-1.21-sources.jar",
-                    "https://jcenter.bintray.com/org/yaml/snakeyaml/1.21/snakeyaml-1.21-sources.jar",
                     "https://maven.google.com/org/yaml/snakeyaml/1.21/snakeyaml-1.21-sources.jar"
                 ],
                 "sha256": "c3e778d791f7af1a5c10e0624471c1eb70201c2441390bf62099ff390a319e7d",
@@ -5479,7 +5246,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/zeromq/jeromq/0.5.2/jeromq-0.5.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/zeromq/jeromq/0.5.2/jeromq-0.5.2.jar",
-                    "https://jcenter.bintray.com/org/zeromq/jeromq/0.5.2/jeromq-0.5.2.jar",
                     "https://maven.google.com/org/zeromq/jeromq/0.5.2/jeromq-0.5.2.jar"
                 ],
                 "sha256": "8c19e7148bee907597129b2fd706839c45db849c72a25285ec1674f0ffdabf8e",
@@ -5501,7 +5267,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/org/zeromq/jeromq/0.5.2/jeromq-0.5.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/org/zeromq/jeromq/0.5.2/jeromq-0.5.2-sources.jar",
-                    "https://jcenter.bintray.com/org/zeromq/jeromq/0.5.2/jeromq-0.5.2-sources.jar",
                     "https://maven.google.com/org/zeromq/jeromq/0.5.2/jeromq-0.5.2-sources.jar"
                 ],
                 "sha256": "848789da29f548902dab9a7fdbcc4582a312a09f6fcfbaf8132d705c063b81b6",
@@ -5521,7 +5286,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2.jar",
-                    "https://jcenter.bintray.com/xalan/serializer/2.7.2/serializer-2.7.2.jar",
                     "https://maven.google.com/xalan/serializer/2.7.2/serializer-2.7.2.jar"
                 ],
                 "sha256": "e8f5b4340d3b12a0cfa44ac2db4be4e0639e479ae847df04c4ed8b521734bb4a",
@@ -5541,7 +5305,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xalan/serializer/2.7.2/serializer-2.7.2-sources.jar",
-                    "https://jcenter.bintray.com/xalan/serializer/2.7.2/serializer-2.7.2-sources.jar",
                     "https://maven.google.com/xalan/serializer/2.7.2/serializer-2.7.2-sources.jar"
                 ],
                 "sha256": "15f88b71e32817c6b4d5977d54ad2fe1b18e82a8ab9a1d68ca568fb0aabb2ae6",
@@ -5565,7 +5328,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2.jar",
-                    "https://jcenter.bintray.com/xalan/xalan/2.7.2/xalan-2.7.2.jar",
                     "https://maven.google.com/xalan/xalan/2.7.2/xalan-2.7.2.jar"
                 ],
                 "sha256": "a44bd80e82cb0f4cfac0dac8575746223802514e3cec9dc75235bc0de646af14",
@@ -5589,7 +5351,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xalan/xalan/2.7.2/xalan-2.7.2-sources.jar",
-                    "https://jcenter.bintray.com/xalan/xalan/2.7.2/xalan-2.7.2-sources.jar",
                     "https://maven.google.com/xalan/xalan/2.7.2/xalan-2.7.2-sources.jar"
                 ],
                 "sha256": "15f88b71e32817c6b4d5977d54ad2fe1b18e82a8ab9a1d68ca568fb0aabb2ae6",
@@ -5611,7 +5372,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0.jar",
-                    "https://jcenter.bintray.com/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0.jar",
                     "https://maven.google.com/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0.jar"
                 ],
                 "sha256": "b50d3a4ca502faa4d1c838acb8aa9480446953421f7327e338c5dda3da5e76d0",
@@ -5633,7 +5393,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0-sources.jar",
-                    "https://jcenter.bintray.com/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0-sources.jar",
                     "https://maven.google.com/xerces/xercesImpl/2.12.0/xercesImpl-2.12.0-sources.jar"
                 ],
                 "sha256": "bbb819a8496f85526cec3c29b930df97ceb6c23060d057030f2c89efe17d7c74",
@@ -5651,7 +5410,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar",
-                    "https://jcenter.bintray.com/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar",
                     "https://maven.google.com/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar"
                 ],
                 "sha256": "a840968176645684bb01aed376e067ab39614885f9eee44abe35a5f20ebe7fad",
@@ -5669,7 +5427,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-sources.jar",
-                    "https://jcenter.bintray.com/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-sources.jar",
                     "https://maven.google.com/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-sources.jar"
                 ],
                 "sha256": "5db8b94589e334283e01075458cfae920995e37ab997cb3b475fd0667b3158b2",
@@ -5697,7 +5454,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xyz/rogfam/littleproxy/2.0.1/littleproxy-2.0.1.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xyz/rogfam/littleproxy/2.0.1/littleproxy-2.0.1.jar",
-                    "https://jcenter.bintray.com/xyz/rogfam/littleproxy/2.0.1/littleproxy-2.0.1.jar",
                     "https://maven.google.com/xyz/rogfam/littleproxy/2.0.1/littleproxy-2.0.1.jar"
                 ],
                 "sha256": "06c26967538602b6bb503918fe3de5741d2deeb613d6ee30f6f7241ff2faa10c",
@@ -5725,7 +5481,6 @@
                 "file": "v1/https/repo1.maven.org/maven2/xyz/rogfam/littleproxy/2.0.1/littleproxy-2.0.1-sources.jar",
                 "mirror_urls": [
                     "https://repo1.maven.org/maven2/xyz/rogfam/littleproxy/2.0.1/littleproxy-2.0.1-sources.jar",
-                    "https://jcenter.bintray.com/xyz/rogfam/littleproxy/2.0.1/littleproxy-2.0.1-sources.jar",
                     "https://maven.google.com/xyz/rogfam/littleproxy/2.0.1/littleproxy-2.0.1-sources.jar"
                 ],
                 "sha256": "0427280d6f62af683c28bb2ce00ceb614cb567978a32ff591cf2f51d9c3ab8ab",
