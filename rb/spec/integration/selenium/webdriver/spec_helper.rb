@@ -49,7 +49,7 @@ RSpec.configure do |c|
   c.filter_run focus: true if ENV['focus']
 
   c.before do |example|
-    guards = WebDriver::SpecSupport::Guards.new(example)
+    guards = WebDriver::Support::Guards.new(example)
 
     skip_guard = guards.exclusive.unsatisfied.first || guards.exclude.satisfied.first
     skip skip_guard.message if skip_guard
