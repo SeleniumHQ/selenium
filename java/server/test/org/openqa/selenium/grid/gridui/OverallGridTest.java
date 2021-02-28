@@ -122,15 +122,16 @@ public class OverallGridTest {
   }
 
   private void waitUntilReady(Server<?> server) {
-    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
-
-    new FluentWait<>(client)
-      .withTimeout(Duration.ofSeconds(5))
-      .until(c -> {
-        HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-        Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return status != null && Boolean.TRUE.equals(status.get("ready"));
-      });
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
+      new FluentWait<>(client)
+          .withTimeout(Duration.ofSeconds(5))
+          .until(
+              c -> {
+                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+                Map<String, Object> status = Values.get(response, MAP_TYPE);
+                return status != null && Boolean.TRUE.equals(status.get("ready"));
+              });
+    }
   }
 
 }

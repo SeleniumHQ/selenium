@@ -244,7 +244,8 @@ public class SessionQueueGridTest {
         "capabilities", ImmutableMap.of(
           "alwaysMatch", caps))));
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
-    return client.execute(request);
+    try (HttpClient client = clientFactory.createClient(server.getUrl())) {
+      return client.execute(request);
+    }
   }
 }

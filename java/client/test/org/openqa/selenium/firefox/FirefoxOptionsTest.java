@@ -172,7 +172,7 @@ public class FirefoxOptionsTest {
         Files.setPosixFilePermissions(binary, singleton(PosixFilePermission.OWNER_EXECUTE));
       }
       property.set(binary.toString());
-      FirefoxOptions options = new FirefoxOptions();
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
 
       FirefoxBinary firefoxBinary =
         options.getBinaryOrNull().orElseThrow(() -> new AssertionError("No binary"));
@@ -190,15 +190,15 @@ public class FirefoxOptionsTest {
     try {
       // No value should default to using Marionette
       property.set(null);
-      FirefoxOptions options = new FirefoxOptions();
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
       assertThat(options.isLegacy()).isFalse();
 
       property.set("false");
-      options = new FirefoxOptions();
+      options = new FirefoxOptions().configureFromEnv();
       assertThat(options.isLegacy()).isTrue();
 
       property.set("true");
-      options = new FirefoxOptions();
+      options = new FirefoxOptions().configureFromEnv();
       assertThat(options.isLegacy()).isFalse();
     } finally {
       property.reset();
@@ -213,7 +213,7 @@ public class FirefoxOptionsTest {
       Capabilities caps = new ImmutableCapabilities(MARIONETTE, true);
 
       property.set("false");
-      FirefoxOptions options = new FirefoxOptions().merge(caps);
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv().merge(caps);
       assertThat(options.isLegacy()).isTrue();
     } finally {
       property.reset();
@@ -228,7 +228,7 @@ public class FirefoxOptionsTest {
     JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
     try {
       property.set("default");
-      FirefoxOptions options = new FirefoxOptions();
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
       FirefoxProfile profile = options.getProfile();
 
       assertThat(profile).isNotNull();
@@ -245,9 +245,10 @@ public class FirefoxOptionsTest {
 
     JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
     try {
+      FirefoxOptions options = new FirefoxOptions();
       property.set(unlikelyProfileName);
       assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(FirefoxOptions::new);
+        .isThrownBy(options::configureFromEnv);
     } finally {
       property.reset();
     }

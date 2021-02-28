@@ -23,7 +23,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -59,37 +58,37 @@ public class ProtocolHandshake {
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
     desired = desired == null ? new ImmutableCapabilities() : desired;
 
+    try (NewSessionPayload payload = NewSessionPayload.create(desired)) {
+      Either<SessionNotCreatedException, Result> result = createSession(client, payload);
+
+      if (result.isRight()) {
+        Result toReturn = result.right();
+        LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
+        return toReturn;
+      } else {
+        throw result.left();
+      }
+    }
+  }
+
+  public Either<SessionNotCreatedException, Result> createSession(HttpHandler client, NewSessionPayload payload) throws IOException {
     int threshold = (int) Math.min(Runtime.getRuntime().freeMemory() / 10, Integer.MAX_VALUE);
     FileBackedOutputStream os = new FileBackedOutputStream(threshold);
-    try (
-      CountingOutputStream counter = new CountingOutputStream(os);
-      Writer writer = new OutputStreamWriter(counter, UTF_8);
-      NewSessionPayload payload = NewSessionPayload.create(desired)) {
 
+    try (CountingOutputStream counter = new CountingOutputStream(os);
+         Writer writer = new OutputStreamWriter(counter, UTF_8)) {
       payload.writeTo(writer);
 
       try (InputStream rawIn = os.asByteSource().openBufferedStream();
            BufferedInputStream contentStream = new BufferedInputStream(rawIn)) {
-        Either<String, Result> result = createSession(client, contentStream, counter.getCount());
-
-        if (result.isRight()) {
-          Result toReturn = result.right();
-          LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
-          return toReturn;
-        } else {
-          throw new SessionNotCreatedException(
-            String.format(
-              "Unable to create new remote session. Reason: %s, " +
-              "desired capabilities = %s",
-              result.right(), desired));
-        }
+        return createSession(client, contentStream, counter.getCount());
       }
     } finally {
       os.reset();
     }
   }
 
-  Either<String, Result> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
+  private Either<SessionNotCreatedException, Result> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
@@ -109,8 +108,8 @@ public class ProtocolHandshake {
     try {
       blob = new Json().toType(string(response), Map.class);
     } catch (JsonException e) {
-      throw new WebDriverException(
-        "Unable to parse remote response: " + string(response), e);
+      return Either.left(new SessionNotCreatedException(
+        "Unable to parse remote response: " + string(response), e));
     }
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
@@ -119,7 +118,13 @@ public class ProtocolHandshake {
       blob);
 
     if (initialResponse.getStatusCode() != 200) {
-      return Either.left(blob.get("message").toString());
+      Object rawResponseValue = initialResponse.getData().get("value");
+      String responseMessage = rawResponseValue instanceof Map
+                               ? ((Map<?, ?>) rawResponseValue).get("message").toString()
+                               : new Json().toJson(rawResponseValue);
+      return Either.left(new SessionNotCreatedException(
+        String.format("Response code %s. Message: %s",
+                      initialResponse.getStatusCode(), responseMessage)));
     }
 
     return Stream.of(
@@ -128,8 +133,9 @@ public class ProtocolHandshake {
       .map(func -> func.apply(initialResponse))
       .filter(Objects::nonNull)
       .findFirst()
-      .<Either<String, Result>>map(Either::right)
-      .orElseGet(() -> Either.left("Handshake response does not match any supported protocol"));
+      .<Either<SessionNotCreatedException, Result>>map(Either::right)
+      .orElseGet(() -> Either.left(
+        new SessionNotCreatedException("Handshake response does not match any supported protocol")));
   }
 
   public static class Result {

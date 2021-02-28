@@ -632,8 +632,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       log(sessionId, command.getName(), command, When.EXCEPTION);
       WebDriverException toThrow;
       if (command.getName().equals(DriverCommand.NEW_SESSION)) {
-        toThrow = new SessionNotCreatedException(
-          "Possible causes are invalid address of the remote server or browser start-up failure.", e);
+        if (e instanceof SessionNotCreatedException) {
+          toThrow = (WebDriverException) e;
+        } else {
+          toThrow = new SessionNotCreatedException(
+            "Possible causes are invalid address of the remote server or browser start-up failure.", e);
+        }
       } else if (e instanceof WebDriverException) {
         toThrow = (WebDriverException) e;
       } else {

@@ -18,13 +18,20 @@
 package org.openqa.selenium.grid.log;
 
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
 import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Locale;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -34,10 +41,8 @@ public class LoggingOptions {
 
   private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
   private static final String LOGGING_SECTION = "logging";
-
-  private Level level = Level.INFO;
-
   private final Config config;
+  private Level level = Level.INFO;
 
   public LoggingOptions(Config config) {
     this.config = Require.nonNull("Config", config);
@@ -58,22 +63,10 @@ public class LoggingOptions {
   public void setLoggingLevel() {
     String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(Level.INFO.getName());
 
-    if (Level.ALL.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.ALL;
-    } else if (Level.CONFIG.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.CONFIG;
-    } else if (Level.FINE.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINE;
-    } else if (Level.FINER.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINER;
-    } else if (Level.FINEST.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINEST;
-    } else if (Level.OFF.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.OFF;
-    } else if (Level.SEVERE.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.SEVERE;
-    } else if (Level.WARNING.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.WARNING;
+    try {
+      level = Level.parse(configLevel.toUpperCase(Locale.ROOT));
+    } catch (IllegalArgumentException e) {
+      throw new ConfigException("Unable to determine log level from " + configLevel);
     }
   }
 
@@ -137,7 +130,7 @@ public class LoggingOptions {
       }
     } catch (UnsupportedEncodingException e) {
       message =
-          String.format("Using the system default encoding. Unsupported encoding %s", encoding);
+        String.format("Using the system default encoding. Unsupported encoding %s", encoding);
     }
     logger.addHandler(handler);
     logger.log(Level.INFO, message);
@@ -145,13 +138,13 @@ public class LoggingOptions {
 
   private OutputStream getOutputStream() {
     return config.get(LOGGING_SECTION, "log-file")
-        .map(fileName -> {
-          try {
-            return (OutputStream) new FileOutputStream(fileName);
-          } catch (FileNotFoundException e) {
-            throw new UncheckedIOException(e);
-          }
-        })
-        .orElse(System.out);
+      .map(fileName -> {
+        try {
+          return (OutputStream) new FileOutputStream(fileName);
+        } catch (FileNotFoundException e) {
+          throw new UncheckedIOException(e);
+        }
+      })
+      .orElse(System.out);
   }
 }

@@ -121,9 +121,14 @@ public class InternetExplorerOptionsTest {
     InternetExplorerOptions two = new InternetExplorerOptions();
     InternetExplorerOptions merged = one.merge(two);
 
-    assertThat(merged.asMap()).asInstanceOf(MAP)
+    Map<String, Object> asMap = merged.asMap();
+    assertThat(asMap)
       .containsEntry(FORCE_CREATE_PROCESS, true)
       .extractingByKey(IE_SWITCHES).asInstanceOf(LIST)
       .containsExactly("-private");
+    assertThat(asMap)
+      .extractingByKey(IE_OPTIONS).asInstanceOf(MAP)
+      .containsEntry(FORCE_CREATE_PROCESS, true)
+      .extractingByKey(IE_SWITCHES).isEqualTo("-private");
   }
 }

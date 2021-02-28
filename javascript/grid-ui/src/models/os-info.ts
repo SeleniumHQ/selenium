@@ -16,9 +16,9 @@
 // under the License.
 
 interface OsInfo {
-  name: string;
-  version: string;
-  arch: string;
+  name: string
+  version: string
+  arch: string
 }
 
-export default OsInfo;
+export default OsInfo

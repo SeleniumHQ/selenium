@@ -126,20 +126,19 @@ public class EndToEndTest {
   }
 
   private static void waitUntilReady(Server<?> server, Duration duration) {
-    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
-
-    new FluentWait<>(client)
-      .withTimeout(duration)
-      .pollingEvery(Duration.ofSeconds(1))
-      .until(c -> {
-        HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-        System.out.println(Contents.string(response));
-        Map<String, Object> status = Values.get(response, MAP_TYPE);
-        return Boolean.TRUE.equals(status != null &&
-                                   Boolean.parseBoolean(status.get("ready").toString()));
-      });
-
-    Safely.safelyCall(client::close);
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
+      new FluentWait<>(client)
+          .withTimeout(duration)
+          .pollingEvery(Duration.ofSeconds(1))
+          .until(
+              c -> {
+                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+                System.out.println(Contents.string(response));
+                Map<String, Object> status = Values.get(response, MAP_TYPE);
+                return Boolean.TRUE.equals(
+                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
+              });
+      }
   }
 
   // Hahahaha. Java naming.
@@ -285,13 +284,12 @@ public class EndToEndTest {
 
   @Test
   public void responseShouldHaveContentTypeAndCacheControlHeaders() {
-    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
 
-    HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
+      HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
 
-    assertThat(response.getHeader("Content-Type"))
-      .isEqualTo("application/json; charset=utf-8");
-    assertThat(response.getHeader("Cache-Control"))
-      .isEqualTo("no-cache");
+      assertThat(response.getHeader("Content-Type")).isEqualTo("application/json; charset=utf-8");
+      assertThat(response.getHeader("Cache-Control")).isEqualTo("no-cache");
+    }
   }
 }

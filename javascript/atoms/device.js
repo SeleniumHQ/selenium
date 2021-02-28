@@ -512,9 +512,7 @@ bot.Device.prototype.focusOnElement = function () {
  * @private {boolean}
  * @const
  */
-bot.Device.ALWAYS_FOLLOWS_LINKS_ON_CLICK_ =
-  goog.userAgent.WEBKIT ||
-  (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6));
+bot.Device.ALWAYS_FOLLOWS_LINKS_ON_CLICK_ = goog.userAgent.WEBKIT;
 
 
 /**
@@ -558,7 +556,7 @@ bot.Device.shouldFollowHref_ = function (element) {
     return false;
   }
 
-  if (!(bot.userAgent.FIREFOX_EXTENSION || bot.userAgent.WEBEXTENSION)) {
+  if (!(bot.userAgent.WEBEXTENSION)) {
     return true;
   }
 

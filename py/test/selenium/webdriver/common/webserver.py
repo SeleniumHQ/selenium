@@ -20,6 +20,7 @@ It serves the testing html pages that are needed by the webdriver unit tests."""
 
 import logging
 import os
+import re
 import socket
 import threading
 from io import open
@@ -75,6 +76,47 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
             self.wfile.write(html)
         except IOError:
             self.send_error(404, 'File Not Found: %s' % path)
+
+    def do_POST(self):
+        """POST method handler."""
+        try:
+            remaining_bytes = int(self.headers['content-length'])
+            contents = ""
+            line = self.rfile.readline()
+            contents += line.decode("utf-8")
+            remaining_bytes -= len(line)
+            line = self.rfile.readline()
+            contents += line.decode("utf-8")
+            remaining_bytes -= len(line)
+            fn = re.findall(r'Content-Disposition.*name="upload"; filename="(.*)"', line.decode("utf-8"))
+            if not fn:
+                self.send_error(500, f"File not found. {contents}")
+                return
+            line = self.rfile.readline()
+            remaining_bytes -= len(line)
+            contents += line.decode("utf-8")
+            line = self.rfile.readline()
+            remaining_bytes -= len(line)
+            contents += line.decode("utf-8")
+            preline = self.rfile.readline()
+            remaining_bytes -= len(preline)
+            while remaining_bytes > 0:
+                line = self.rfile.readline()
+                remaining_bytes -= len(line)
+                contents += line.decode("utf-8")
+
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+
+            self.wfile.write(
+                f"""<!doctype html>
+                {contents}
+                <script>window.top.window.onUploadDone();</script>
+                """.encode('utf-8')
+            )
+        except Exception as e:
+            self.send_error(500, f"Error found: {e}")
 
     def log_message(self, format, *args):
         """Override default to avoid trashing stderr"""

@@ -63,30 +63,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   private boolean legacy;
 
   public FirefoxOptions() {
-    // Read system properties and use those if they are set, allowing users to override them later
-    // should they want to.
-
-    String binary = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
-    if (binary != null) {
-      setBinary(binary);
-    }
-
-    String profileName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_PROFILE);
-    if (profileName != null) {
-      FirefoxProfile profile = new ProfilesIni().getProfile(profileName);
-      if (profile == null) {
-        throw new WebDriverException(String.format(
-            "Firefox profile '%s' named in system property '%s' not found",
-            profileName, FirefoxDriver.SystemProperty.BROWSER_PROFILE));
-      }
-      setProfile(profile);
-    }
-
-    String forceMarionette = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
-    if (forceMarionette != null && !Boolean.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE)) {
-      setLegacy(true);
-    }
-
     setCapability(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     setAcceptInsecureCerts(true);
     setCapability("moz:debuggerAddress", true);
@@ -141,6 +117,34 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
     this.firefoxOptions = Collections.unmodifiableMap(newOptions);
     this.legacy = that.legacy;
+  }
+
+  public FirefoxOptions configureFromEnv() {
+    // Read system properties and use those if they are set, allowing users to override them later
+    // should they want to.
+
+    String binary = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
+    if (binary != null) {
+      setBinary(binary);
+    }
+
+    String profileName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_PROFILE);
+    if (profileName != null) {
+      FirefoxProfile profile = new ProfilesIni().getProfile(profileName);
+      if (profile == null) {
+        throw new WebDriverException(String.format(
+          "Firefox profile '%s' named in system property '%s' not found",
+          profileName, FirefoxDriver.SystemProperty.BROWSER_PROFILE));
+      }
+      setProfile(profile);
+    }
+
+    String forceMarionette = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
+    if (forceMarionette != null && !Boolean.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE)) {
+      setLegacy(true);
+    }
+
+    return this;
   }
 
   /**

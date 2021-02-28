@@ -32,6 +32,7 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -179,18 +180,25 @@ public class DockerOptions {
     // Selenium Server is running inside a Docker container, we will inspect that container
     // to get the mounted volume and use that. If no volume was mounted, no assets will be saved.
     // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
-    String hostname = System.getenv("HOSTNAME");
-    ContainerInfo info = docker.inspect(new ContainerId(hostname));
-    Optional<Map<String, Object>> mountedVolume = info.getMountedVolumes()
+    String hostname = HostIdentifier.getHostName();
+
+    Optional<ContainerInfo> info = docker.inspect(new ContainerId(hostname));
+    if (!info.isPresent()) {
+      return null;
+    }
+
+    Optional<Map<String, Object>> mountedVolume = info.get().getMountedVolumes()
       .stream()
       .filter(
         mounted ->
           CONTAINER_ASSETS_PATH.equalsIgnoreCase(String.valueOf(mounted.get("Destination"))))
       .findFirst();
+
     if (mountedVolume.isPresent()) {
       String hostPath = String.valueOf(mountedVolume.get().get("Source"));
       return new DockerAssetsPath(hostPath, CONTAINER_ASSETS_PATH);
     }
+
     return null;
   }
 

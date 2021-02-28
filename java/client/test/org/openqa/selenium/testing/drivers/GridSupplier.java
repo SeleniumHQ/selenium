@@ -84,18 +84,19 @@ public class GridSupplier implements Supplier<WebDriver> {
     }
 
     // Keep polling the status page of the hub until it claims to be ready
-    HttpClient client = HttpClient.Factory.createDefault().createClient(hub.getWebDriverUrl());
-    Json json = new Json();
-    Wait<HttpClient> wait = new FluentWait<>(client)
-        .ignoring(RuntimeException.class)
-        .withTimeout(Duration.ofSeconds(30));
-    wait.until(c -> {
-      HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
-      HttpResponse response = c.execute(req);
-      Map<?, ?> value = json.toType(string(response), Map.class);
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(hub.getWebDriverUrl())) {
+      Json json = new Json();
+      Wait<HttpClient> wait = new FluentWait<>(client)
+          .ignoring(RuntimeException.class)
+          .withTimeout(Duration.ofSeconds(30));
+      wait.until(c -> {
+        HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
+        HttpResponse response = c.execute(req);
+        Map<?, ?> value = json.toType(string(response), Map.class);
 
-      return Boolean.TRUE.equals(((Map<?, ?>) value.get("value")).get("ready"));
-    });
+        return Boolean.TRUE.equals(((Map<?, ?>) value.get("value")).get("ready"));
+      });
+    }
 
     started = true;
   }

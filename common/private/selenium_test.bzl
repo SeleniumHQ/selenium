@@ -39,8 +39,8 @@ BROWSERS = {
         "deps": ["//java/client/src/org/openqa/selenium/ie"],
         "jvm_flags": ["-Dselenium.browser=ie"] +
                      select({
-                         "//common:windows": ["-Dselenium.skiptest=false"],
-                         "//conditions:default": ["-Dselenium.skiptest=true"],
+                         "@selenium//common:windows": ["-Dselenium.skiptest=false"],
+                         "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
         "tags": _COMMON_TAGS + ["exclusive", "ie"],
@@ -49,8 +49,8 @@ BROWSERS = {
         "deps": ["//java/client/src/org/openqa/selenium/safari"],
         "jvm_flags": ["-Dselenium.browser=safari"] +
                      select({
-                         "//common:macos": ["-Dselenium.skiptest=false"],
-                         "//conditions:default": ["-Dselenium.skiptest=true"],
+                         "@selenium//common:macos": ["-Dselenium.skiptest=false"],
+                         "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
         "tags": _COMMON_TAGS + ["exclusive", "safari"],
@@ -100,11 +100,11 @@ def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
                 size = size,
                 jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags + [
                     "-Dselenium.browser.remote=true",
-                    "-Dselenium.browser.remote.path=$(location //java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
+                    "-Dselenium.browser.remote.path=$(location @selenium//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
                 ],
                 tags = BROWSERS[browser]["tags"] + tags + ["remote"],
                 data = BROWSERS[browser]["data"] + data + [
-                    "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+                    "@selenium//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                 ],
                 **stripped_args
             )

@@ -1159,12 +1159,12 @@ class WebDriver {
    */
   async createCDPConnection(target) {
     const caps = await this.getCapabilities()
-    const seOptions = caps['map_'].get('se:options') || new Map()
+    const seCdp = caps['map_'].get('se:cdp')
     const vendorInfo =
       caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
       caps['map_'].get('moz:debuggerAddress') ||
       new Map()
-    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress'] || vendorInfo
+    const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
     this._wsUrl = await this.getWsUrl(debuggerUrl, target)
 
     return new Promise((resolve, reject) => {

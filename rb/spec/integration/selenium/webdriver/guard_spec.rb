@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    module SpecSupport
+    module Support
       describe Guards, exclusive: {driver: :chrome} do
         describe '#exclude' do
           it 'ignores an unrecognized guard parameter', invalid: {browser: :chrome} do
@@ -130,6 +130,6 @@ module Selenium
           expect(guard.message).to eq 'Test not guarded because it breaks test run; Foo is bad'
         end
       end
-    end # SpecSupport
+    end # Support
   end # WebDriver
 end # Selenium
