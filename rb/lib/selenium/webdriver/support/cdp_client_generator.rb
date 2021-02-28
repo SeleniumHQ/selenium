@@ -40,11 +40,12 @@ module Selenium
           js_protocol = JSON.parse(File.read(JS_PROTOCOL_PATH), symbolize_names: true)
           browser_protocol[:domains].each(&method(:process_domain))
           js_protocol[:domains].each(&method(:process_domain))
+          require_file
         end
 
         def process_domain(domain)
           result = @template.result_with_hash(domain: domain, version: @version.upcase, h: self)
-          filename = File.join(@output_dir, "#{snake_case(domain[:domain])}.rb")
+          filename = File.join("#{@output_dir}/#{@version}", "#{snake_case(domain[:domain])}.rb")
           File.write(filename, remove_empty_lines(result))
         end
 
@@ -73,6 +74,11 @@ module Selenium
 
         def remove_empty_lines(string)
           string.split("\n").reject { |l| l =~ /^\s+$/ }.join("\n")
+        end
+
+        def require_file
+          require_all = "Dir.glob('#{@version}/devtools/*', &method(:require))"
+          File.open("#{@output_dir}/#{@version}.rb", 'w') { |file| file.write(require_all) }
         end
       end
     end
