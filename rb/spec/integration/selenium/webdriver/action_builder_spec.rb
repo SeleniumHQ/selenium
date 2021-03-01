@@ -50,7 +50,8 @@ module Selenium
           wait.until { event_input.attribute(:value).length == 2 }
 
           expect(event_input.attribute(:value)).to eq('AB')
-          expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+          expected = keylogger.text.strip
+          expect(expected).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
         end
 
         it 'can press and release modifier keys' do

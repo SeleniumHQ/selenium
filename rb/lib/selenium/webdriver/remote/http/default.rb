@@ -127,7 +127,10 @@ module Selenium
           def new_http_client
             if use_proxy?
               url = @proxy.http
-              raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}" unless proxy.respond_to?(:http) && url
+              unless proxy.respond_to?(:http) && url
+                raise Error::WebDriverError,
+                      "expected HTTP proxy, got #{@proxy.inspect}"
+              end
 
               proxy = URI.parse(url)
 

@@ -227,11 +227,9 @@ module Selenium
             when :platform
               hash['platform'] = value.to_s.upcase
             when :proxy
-              if value
-                hash['proxy'] = value.as_json
-                hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
-                hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
-              end
+              next unless value
+
+              process_proxy(hash, value)
             when :unhandled_prompt_behavior
               hash['unhandledPromptBehavior'] = value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
             when String
@@ -261,6 +259,17 @@ module Selenium
         protected
 
         attr_reader :capabilities
+
+        private
+
+        def process_proxy(hash, value)
+          hash['proxy'] = value.as_json
+          hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
+
+          return unless hash['proxy']['noProxy'].is_a?(String)
+
+          hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ')
+        end
       end # Capabilities
     end # Remote
   end # WebDriver

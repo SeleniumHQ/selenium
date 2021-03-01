@@ -253,7 +253,8 @@ module Selenium
 
         it 'should create a move with the viewport as the origin' do
           allow(builder).to receive(:get_pointer).and_return(mouse)
-          allow(mouse).to receive(:create_pointer_move).with(hash_including(origin: Interactions::PointerMove::VIEWPORT))
+          allow(mouse).to receive(:create_pointer_move)
+            .with(hash_including(origin: Interactions::PointerMove::VIEWPORT))
           allow(builder).to receive(:tick)
 
           builder.move_to_location(5, 5)

@@ -17,7 +17,6 @@ Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 
 Layout/LineLength:
-  Max: 130
   IgnoredPatterns:
       - '\s+# rubocop'
       - '^\s*#'
