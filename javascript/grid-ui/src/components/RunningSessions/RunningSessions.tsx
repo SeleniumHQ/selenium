@@ -47,6 +47,7 @@ import BrowserLogo from '../common/BrowserLogo'
 import OsLogo from '../common/OsLogo'
 import { Size } from '../../models/size'
 import { StyleRules } from '@material-ui/core/styles'
+import Capabilities from "../../models/capabilities";
 
 interface SessionData {
   id: string
@@ -72,7 +73,7 @@ function createSessionData (
   sessionDurationMillis: number,
   slot: any
 ): SessionData {
-  const parsedCapabilities = JSON.parse(capabilities)
+  const parsedCapabilities = JSON.parse(capabilities) as Capabilities
   const browserName = parsedCapabilities.browserName
   const browserVersion = parsedCapabilities.browserVersion ?? parsedCapabilities.version
   const platformName = parsedCapabilities.platformName ?? parsedCapabilities.platform
@@ -389,7 +390,7 @@ class RunningSessions extends React.Component<RunningSessionsProps, RunningSessi
                                   <Typography gutterBottom component='span'>
                                     <pre>
                                       {JSON.stringify(
-                                        JSON.parse(row.capabilities as string),
+                                        JSON.parse(row.capabilities as string) as object,
                                         null, 2)}
                                     </pre>
                                   </Typography>

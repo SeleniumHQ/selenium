@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { ApolloClient, ApolloProvider, InMemoryCache, NormalizedCacheObject } from '@apollo/client'
 import { Route, Switch, RouteComponentProps, withRouter } from 'react-router-dom'
 import React, { ReactNode } from 'react'
 import ReactModal from 'react-modal'
@@ -35,7 +35,7 @@ import {
 import { loader } from 'graphql.macro'
 import NavBar from './components/NavBar/NavBar'
 
-export const client = new ApolloClient(
+export const client: ApolloClient<NormalizedCacheObject> = new ApolloClient(
   {
     cache: new InMemoryCache(),
     uri: GridConfig.serverUri

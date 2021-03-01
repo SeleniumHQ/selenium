@@ -15,15 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import React, { ReactNode } from 'react'
-import { Box, Container, Link, Typography } from '@material-ui/core'
-import {
-  createStyles,
-  StyleRules,
-  Theme,
-  withStyles
-} from '@material-ui/core/styles'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import React, {ReactNode} from 'react'
+import {Box, Container, Link, Typography} from '@material-ui/core'
+import {createStyles, StyleRules, Theme, withStyles} from '@material-ui/core/styles'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
   {
