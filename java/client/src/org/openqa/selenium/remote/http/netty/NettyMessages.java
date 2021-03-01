@@ -44,16 +44,7 @@ class NettyMessages {
                                           HttpRequest request) {
     String rawUrl;
 
-    String uri = request.getUri();
-    if (uri.startsWith("ws://")) {
-      rawUrl = "http://" + uri.substring("ws://".length());
-    } else if (uri.startsWith("wss://")) {
-      rawUrl = "https://" + uri.substring("wss://".length());
-    } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
-      rawUrl = uri;
-    } else {
-      rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
-    }
+    rawUrl = getRawUrl(baseUrl, request.getUri());
 
     RequestBuilder builder = request(request.getMethod().toString(), rawUrl)
       .setReadTimeout(readTimeout)
@@ -103,5 +94,19 @@ class NettyMessages {
       name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));
 
     return toReturn;
+  }
+
+  private static String getRawUrl(URI baseUrl, String uri) {
+    String rawUrl;
+    if (uri.startsWith("ws://")) {
+      rawUrl = "http://" + uri.substring("ws://".length());
+    } else if (uri.startsWith("wss://")) {
+      rawUrl = "https://" + uri.substring("wss://".length());
+    } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
+      rawUrl = uri;
+    } else {
+      rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
+    }
+    return rawUrl;
   }
 }

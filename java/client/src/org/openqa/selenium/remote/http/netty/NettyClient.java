@@ -48,7 +48,7 @@ public class NettyClient implements HttpClient {
 
   private static final Timer TIMER;
   private static final AtomicBoolean addedHook = new AtomicBoolean();
-  private volatile static AsyncHttpClient client;
+  private static final AsyncHttpClient client = createHttpClient(ClientConfig.defaultConfig());
 
   static {
     ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
@@ -67,7 +67,6 @@ public class NettyClient implements HttpClient {
 
   private NettyClient(ClientConfig config) {
     this.config = Require.nonNull("HTTP client config", config);
-    client = getHttpClient(config);
     this.handler = new NettyHttpHandler(config, client).with(config.filter());
     this.toWebSocket = NettyWebSocket.create(config, client);
     if (!addedHook.get()) {
@@ -84,21 +83,7 @@ public class NettyClient implements HttpClient {
     return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value));
   }
 
-  private AsyncHttpClient getHttpClient(ClientConfig config) {
-    AsyncHttpClient localClient = client;
-    if (localClient == null) {
-      synchronized (this) {
-        localClient = client;
-        if (localClient == null) {
-          localClient = createHttpClient(config);
-          client = localClient;
-        }
-      }
-    }
-    return localClient;
-  }
-
-  private AsyncHttpClient createHttpClient(ClientConfig config) {
+  private static AsyncHttpClient createHttpClient(ClientConfig config) {
     DefaultAsyncHttpClientConfig.Builder builder =
       new DefaultAsyncHttpClientConfig.Builder()
         .setThreadFactory(new DefaultThreadFactory("AsyncHttpClient", true))
