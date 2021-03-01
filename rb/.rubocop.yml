@@ -57,6 +57,7 @@ Metrics/ClassLength:
   CountComments: false
   Max: 160
   Exclude:
+    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
 

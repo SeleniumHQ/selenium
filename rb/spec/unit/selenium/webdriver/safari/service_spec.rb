@@ -112,6 +112,7 @@ module Selenium
         before do
           allow(Remote::Bridge).to receive(:new).and_return(bridge)
           allow(ServiceManager).to receive(:new).and_return(service_manager)
+          allow(bridge).to receive(:browser).and_return(:safari)
         end
 
         it 'is not created when :url is provided' do

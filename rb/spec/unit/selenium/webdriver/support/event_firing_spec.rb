@@ -29,6 +29,8 @@ module Selenium
         let(:driver) { Driver.new(bridge: event_firing_bridge) }
         let(:element) { Element.new(event_firing_bridge, 'ref') }
 
+        before { allow(bridge).to receive(:browser) }
+
         context 'navigation' do
           it 'fires events for navigate.to' do
             url = 'http://example.com'

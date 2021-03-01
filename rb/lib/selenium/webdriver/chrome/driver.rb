@@ -27,16 +27,16 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasNetworkConditions
-        include DriverExtensions::HasNetworkInterception
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasLocation
-        include DriverExtensions::DownloadsFiles
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasAuthentication
-        include DriverExtensions::HasLogs
-        include DriverExtensions::HasLogEvents
-        include DriverExtensions::PrintsPage
+        EXTENSIONS = [DriverExtensions::HasNetworkConditions,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::HasLocation,
+                      DriverExtensions::DownloadsFiles,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasAuthentication,
+                      DriverExtensions::HasLogs,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :chrome

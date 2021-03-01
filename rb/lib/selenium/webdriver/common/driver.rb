@@ -71,6 +71,7 @@ module Selenium
       def initialize(bridge: nil, listener: nil, **opts)
         @service = nil
         bridge ||= create_bridge(**opts)
+        add_extensions(bridge.browser)
         @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
       end
 
@@ -372,6 +373,20 @@ module Selenium
 
       def screenshot
         bridge.screenshot
+      end
+
+      def add_extensions(browser)
+        extensions = case browser
+                     when :chrome, :msedge
+                       Chrome::Driver::EXTENSIONS
+                     when :firefox
+                       Firefox::Driver::EXTENSIONS
+                     when :safari
+                       Safari::Driver::EXTENSIONS
+                     else
+                       []
+                     end
+        extensions.each { |extension| extend extension }
       end
     end # Driver
   end # WebDriver
