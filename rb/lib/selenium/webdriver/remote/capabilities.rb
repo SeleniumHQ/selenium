@@ -227,6 +227,8 @@ module Selenium
                 hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
                 hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
               end
+            when :unhandled_prompt_behavior
+              hash['unhandledPromptBehavior'] = value.is_a?(Symbol) ? value.to_s.tr('_', ' ') : value
             when String
               hash[key.to_s] = value
             when Symbol
