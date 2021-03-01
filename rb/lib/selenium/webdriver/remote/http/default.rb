@@ -55,8 +55,7 @@ module Selenium
                 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
               end
 
-              # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
-              http.open_timeout = open_timeout
+              http.open_timeout = open_timeout if open_timeout
               http.read_timeout = read_timeout if read_timeout
 
               start(http)
