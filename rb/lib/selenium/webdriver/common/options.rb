@@ -23,9 +23,33 @@ module Selenium
       W3C_OPTIONS = %i[browser_name browser_version platform_name accept_insecure_certs page_load_strategy proxy
                        set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability].freeze
 
-      def self.set_capabilities
-        (W3C_OPTIONS + self::CAPABILITIES.keys).each do |key|
-          next if method_defined? key
+      class << self
+        attr_reader :driver_path
+
+        def chrome(**opts)
+          Chrome::Options.new(**opts)
+        end
+
+        def firefox(**opts)
+          Firefox::Options.new(**opts)
+        end
+
+        def ie(**opts)
+          IE::Options.new(**opts)
+        end
+        alias_method :internet_explorer, :ie
+
+        def edge(**opts)
+          Edge::Options.new(**opts)
+        end
+
+        def safari(**opts)
+          Safari::Options.new(**opts)
+        end
+
+        def set_capabilities
+          (W3C_OPTIONS + self::CAPABILITIES.keys).each do |key|
+            next if method_defined? key
 
             define_method key do
               @options[key]
