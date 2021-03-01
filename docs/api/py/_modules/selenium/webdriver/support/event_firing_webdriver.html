@@ -58,11 +58,11 @@
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">WebDriverException</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="k">import</span> <span class="n">By</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="k">import</span> <span class="n">WebDriver</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webelement</span> <span class="k">import</span> <span class="n">WebElement</span>
-<span class="kn">from</span> <span class="nn">.abstract_event_listener</span> <span class="k">import</span> <span class="n">AbstractEventListener</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webelement</span> <span class="kn">import</span> <span class="n">WebElement</span>
+<span class="kn">from</span> <span class="nn">.abstract_event_listener</span> <span class="kn">import</span> <span class="n">AbstractEventListener</span>
 
 
 <span class="k">def</span> <span class="nf">_wrap_elements</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">ef_driver</span><span class="p">):</span>
@@ -83,7 +83,7 @@
 <span class="sd">    A wrapper around an arbitrary WebDriver instance which supports firing events</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">event_listener</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">event_listener</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new instance of the EventFiringWebDriver</span>
 
@@ -239,7 +239,7 @@
             <span class="k">return</span> <span class="n">WebDriver</span><span class="o">.</span><span class="n">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">wrapped_element</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">WebDriver</span><span class="o">.</span><span class="n">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -249,7 +249,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">e</span>
 
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">attrib</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -271,7 +271,7 @@
 <span class="sd">    A wrapper around WebElement instance which supports firing events</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webelement</span><span class="p">,</span> <span class="n">ef_driver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webelement</span><span class="p">,</span> <span class="n">ef_driver</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new instance of the EventFiringWebElement</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -372,7 +372,7 @@
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="p">,</span> <span class="s2">&quot;after_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">l_call</span><span class="p">)(</span><span class="o">*</span><span class="n">l_args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_wrap_elements</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ef_driver</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -382,7 +382,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">e</span>
 
-    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">attrib</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

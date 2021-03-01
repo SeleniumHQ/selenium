@@ -57,8 +57,8 @@
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.remote_connection</span> <span class="k">import</span> <span class="n">ChromiumRemoteConnection</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="k">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.remote_connection</span> <span class="kn">import</span> <span class="n">ChromiumRemoteConnection</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
 
 <span class="n">DEFAULT_PORT</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">DEFAULT_SERVICE_LOG_PATH</span> <span class="o">=</span> <span class="kc">None</span>
@@ -69,7 +69,7 @@
 <span class="sd">    Controls the WebDriver instance of ChromiumDriver and allows you to drive the browser.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">browser_name</span><span class="p">,</span> <span class="n">vendor_prefix</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">browser_name</span><span class="p">,</span> <span class="n">vendor_prefix</span><span class="p">,</span>
                  <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">desired_capabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service_log_path</span><span class="o">=</span><span class="n">DEFAULT_SERVICE_LOG_PATH</span><span class="p">,</span>
                  <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -88,7 +88,7 @@
 <span class="sd">         - service_log_path - Deprecated: Where to log information from the driver.</span>
 <span class="sd">         - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">desired_capabilities</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;desired_capabilities has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">port</span> <span class="o">!=</span> <span class="n">DEFAULT_PORT</span><span class="p">:</span>
@@ -100,12 +100,12 @@
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
         <span class="n">_ignore_proxy</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
             <span class="c1"># desired_capabilities stays as passed in</span>
-            <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">desired_capabilities</span><span class="p">:</span>
                 <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_options</span><span class="p">()</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">desired_capabilities</span><span class="p">:</span>
                 <span class="n">desired_capabilities</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">desired_capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
@@ -114,7 +114,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">vendor_prefix</span> <span class="o">=</span> <span class="n">vendor_prefix</span>
 
-        <span class="k">if</span> <span class="n">service</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">service</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;service cannot be None&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>

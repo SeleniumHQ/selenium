@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -190,30 +190,40 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor.local">GridModel</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#refresh(org.openqa.selenium.grid.data.NodeStatus)">refresh</a></span>&#8203;(<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</code></th>
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#purgeDeadNodes()">purgeDeadNodes</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor.local">GridModel</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.NodeId)">remove</a></span>&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#refresh(org.openqa.selenium.grid.data.NodeStatus)">refresh</a></span>&#8203;(<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor.local">GridModel</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.NodeId)">remove</a></span>&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reserve(org.openqa.selenium.grid.data.SlotId)">reserve</a></span>&#8203;(<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../data/Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">setAvailability</a></span>&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
                <a href="../../data/Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSession(org.openqa.selenium.grid.data.SlotId,org.openqa.selenium.grid.data.Session)">setSession</a></span>&#8203;(<a href="../../data/SlotId.html" title="class in org.openqa.selenium.grid.data">SlotId</a>&nbsp;slotId,
           <a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;session)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor.local">GridModel</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#touch(org.openqa.selenium.grid.data.NodeId)">touch</a></span>&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -277,6 +287,15 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor.local">GridModel</a>&nbsp;refresh&#8203;(<a href="../../data/NodeStatus.html" title="class in org.openqa.selenium.grid.data">NodeStatus</a>&nbsp;status)</pre>
 </li>
 </ul>
+<a id="touch(org.openqa.selenium.grid.data.NodeId)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>touch</h4>
+<pre class="methodSignature">public&nbsp;<a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor.local">GridModel</a>&nbsp;touch&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</pre>
+</li>
+</ul>
 <a id="remove(org.openqa.selenium.grid.data.NodeId)">
 <!--   -->
 </a>
@@ -284,6 +303,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>remove</h4>
 <pre class="methodSignature">public&nbsp;<a href="GridModel.html" title="class in org.openqa.selenium.grid.distributor.local">GridModel</a>&nbsp;remove&#8203;(<a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id)</pre>
+</li>
+</ul>
+<a id="purgeDeadNodes()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>purgeDeadNodes</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;purgeDeadNodes()</pre>
 </li>
 </ul>
 <a id="setAvailability(org.openqa.selenium.grid.data.NodeId,org.openqa.selenium.grid.data.Availability)">

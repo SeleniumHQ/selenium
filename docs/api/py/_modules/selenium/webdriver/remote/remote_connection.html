@@ -55,24 +55,25 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">string</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">certifi</span>
 <span class="kn">import</span> <span class="nn">urllib3</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+
+<span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64encode</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib</span> <span class="k">import</span> <span class="n">parse</span>
+    <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">parse</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># above is available in py3+, below is py2.7</span>
     <span class="kn">import</span> <span class="nn">urlparse</span> <span class="k">as</span> <span class="nn">parse</span>
-<span class="kn">from</span> <span class="nn">selenium</span> <span class="k">import</span> <span class="n">__version__</span>
-<span class="kn">from</span> <span class="nn">.command</span> <span class="k">import</span> <span class="n">Command</span>
-<span class="kn">from</span> <span class="nn">.errorhandler</span> <span class="k">import</span> <span class="n">ErrorCode</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">.errorhandler</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -152,7 +153,7 @@
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
-            <span class="n">base64string</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0.username}</span><span class="s1">:</span><span class="si">{0.password}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parsed_url</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="n">base64string</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0.username}</span><span class="s1">:</span><span class="si">{0.password}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parsed_url</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
             <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
                 <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Basic </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base64string</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
             <span class="p">})</span>
@@ -178,11 +179,11 @@
             <span class="n">pool_manager_init_args</span><span class="p">[</span><span class="s1">&#39;cert_reqs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;CERT_REQUIRED&#39;</span>
             <span class="n">pool_manager_init_args</span><span class="p">[</span><span class="s1">&#39;ca_certs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ca_certs</span>
 
-        <span class="k">return</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">PoolManager</span><span class="p">(</span><span class="o">**</span><span class="n">pool_manager_init_args</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy_url</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> \
+        <span class="k">return</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">PoolManager</span><span class="p">(</span><span class="o">**</span><span class="n">pool_manager_init_args</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proxy_url</span> <span class="k">else</span> \
             <span class="n">urllib3</span><span class="o">.</span><span class="n">ProxyManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_proxy_url</span><span class="p">,</span> <span class="o">**</span><span class="n">pool_manager_init_args</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_server_addr</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">resolve_ip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_proxy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">resolve_ip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_server_addr</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">resolve_ip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_proxy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">resolve_ip</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">warnings</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;&#39;resolve_ip&#39; option removed; ip addresses are now always resolved by urllib3.&quot;</span><span class="p">,</span>
@@ -406,7 +407,9 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">FULLSCREEN_WINDOW</span><span class="p">:</span>
                 <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/window/fullscreen&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">MINIMIZE_WINDOW</span><span class="p">:</span>
-                <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/window/minimize&#39;</span><span class="p">)</span>
+                <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/window/minimize&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">PRINT_PAGE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;/session/$sessionId/print&#39;</span><span class="p">)</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="RemoteConnection.execute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
@@ -427,7 +430,7 @@
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;w3c&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;sessionId&#39;</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;sessionId&#39;</span><span class="p">]</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dump_json</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -442,8 +445,7 @@
 <span class="sd">        :Returns:</span>
 <span class="sd">          A dictionary with the server&#39;s parsed JSON response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="p">))</span>
-
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_remote_connection_headers</span><span class="p">(</span><span class="n">parsed_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span><span class="p">)</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="kc">None</span>
@@ -452,7 +454,6 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span><span class="p">:</span>
             <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-
             <span class="n">statuscode</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">status</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_connection_manager</span><span class="p">()</span>
@@ -473,7 +474,7 @@
             <span class="k">if</span> <span class="mi">399</span> <span class="o">&lt;</span> <span class="n">statuscode</span> <span class="o">&lt;=</span> <span class="mi">500</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">statuscode</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
             <span class="n">content_type</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">):</span>
                 <span class="n">content_type</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;image/png&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">content_type</span><span class="p">]):</span>
 

@@ -137,7 +137,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code>java.util.function.Function&lt;<a href="../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>,&#8203;java.util.Optional&lt;<a href="../node/ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a>&gt;&gt;</code>, <code>java.util.function.Predicate&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;</code>, <code><a href="../node/SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a></code></dd>
+<dd><code>java.util.function.Function&lt;<a href="../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>,&#8203;java.util.Optional&lt;<a href="../node/ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a>&gt;&gt;</code>, <code>java.util.function.Predicate&lt;org.openqa.selenium.Capabilities&gt;</code>, <code><a href="../node/SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">DockerSessionFactory</span>
@@ -163,23 +163,14 @@ implements <a href="../node/SessionFactory.html" title="interface in org.openqa.
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities)">DockerSessionFactory</a></span>&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                    <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.docker.DockerAssetsPath)">DockerSessionFactory</a></span>&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+                    org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
                     <a href="../../docker/Docker.html" title="class in org.openqa.selenium.docker">Docker</a>&nbsp;docker,
                     java.net.URI&nbsp;dockerUri,
                     <a href="../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
-                    <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.docker.DockerSessionAssetsPath)">DockerSessionFactory</a></span>&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                    <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
-                    <a href="../../docker/Docker.html" title="class in org.openqa.selenium.docker">Docker</a>&nbsp;docker,
-                    java.net.URI&nbsp;dockerUri,
-                    <a href="../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
-                    <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
+                    org.openqa.selenium.Capabilities&nbsp;stereotype,
                     <a href="../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
-                    <a href="DockerSessionAssetsPath.html" title="class in org.openqa.selenium.grid.docker">DockerSessionAssetsPath</a>&nbsp;assetsPath)</code></th>
+                    <a href="DockerAssetsPath.html" title="class in org.openqa.selenium.grid.docker">DockerAssetsPath</a>&nbsp;assetsPath)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -207,7 +198,7 @@ implements <a href="../node/SessionFactory.html" title="interface in org.openqa.
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#test(org.openqa.selenium.Capabilities)">test</a></span>&#8203;(<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#test(org.openqa.selenium.Capabilities)">test</a></span>&#8203;(org.openqa.selenium.Capabilities&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -248,34 +239,20 @@ implements <a href="../node/SessionFactory.html" title="interface in org.openqa.
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DockerSessionFactory</h4>
-<pre>public&nbsp;DockerSessionFactory&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                            <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
-                            <a href="../../docker/Docker.html" title="class in org.openqa.selenium.docker">Docker</a>&nbsp;docker,
-                            java.net.URI&nbsp;dockerUri,
-                            <a href="../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
-                            <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype)</pre>
-</li>
-</ul>
-<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.docker.DockerSessionAssetsPath)">
+<a id="&lt;init&gt;(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.docker.DockerAssetsPath)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>DockerSessionFactory</h4>
 <pre>public&nbsp;DockerSessionFactory&#8203;(<a href="../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                            <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                            org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
                             <a href="../../docker/Docker.html" title="class in org.openqa.selenium.docker">Docker</a>&nbsp;docker,
                             java.net.URI&nbsp;dockerUri,
                             <a href="../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
-                            <a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
+                            org.openqa.selenium.Capabilities&nbsp;stereotype,
                             <a href="../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
-                            <a href="DockerSessionAssetsPath.html" title="class in org.openqa.selenium.grid.docker">DockerSessionAssetsPath</a>&nbsp;assetsPath)</pre>
+                            <a href="DockerAssetsPath.html" title="class in org.openqa.selenium.grid.docker">DockerAssetsPath</a>&nbsp;assetsPath)</pre>
 </li>
 </ul>
 </li>
@@ -294,10 +271,10 @@ implements <a href="../node/SessionFactory.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>test</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;test&#8203;(<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;test&#8203;(org.openqa.selenium.Capabilities&nbsp;capabilities)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>test</code>&nbsp;in interface&nbsp;<code>java.util.function.Predicate&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;</code></dd>
+<dd><code>test</code>&nbsp;in interface&nbsp;<code>java.util.function.Predicate&lt;org.openqa.selenium.Capabilities&gt;</code></dd>
 </dl>
 </li>
 </ul>

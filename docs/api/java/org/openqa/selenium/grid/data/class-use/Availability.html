@@ -126,6 +126,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.node">org.openqa.selenium.grid.node</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.grid.node.local">org.openqa.selenium.grid.node.local</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </tbody>
 </table>
 </li>
@@ -174,11 +178,14 @@ the order they are declared.</div>
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../NodeStatus.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.net.URI,int,java.util.Set,org.openqa.selenium.grid.data.Availability)">NodeStatus</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../NodeStatus.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.net.URI,int,java.util.Set,org.openqa.selenium.grid.data.Availability,java.time.Duration,java.lang.String,java.util.Map)">NodeStatus</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;nodeId,
           java.net.URI&nbsp;externalUri,
           int&nbsp;maxSessionCount,
           java.util.Set&lt;<a href="../Slot.html" title="class in org.openqa.selenium.grid.data">Slot</a>&gt;&nbsp;slots,
-          <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability)</code></th>
+          <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability,
+          java.time.Duration&nbsp;heartbeatPeriod,
+          java.lang.String&nbsp;version,
+          java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;osInfo)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -252,12 +259,15 @@ the order they are declared.</div>
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../graphql/Node.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.data.Availability,int,java.util.Map,java.util.Map)">Node</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../graphql/Node.html#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.data.Availability,int,int,java.util.Map,java.util.Map,java.lang.String,org.openqa.selenium.grid.graphql.OsInfo)">Node</a></span>&#8203;(<a href="../NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
     java.net.URI&nbsp;uri,
     <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;status,
     int&nbsp;maxSession,
-    java.util.Map&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.lang.Integer&gt;&nbsp;capabilities,
-    java.util.Map&lt;<a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>,&#8203;<a href="../Slot.html" title="class in org.openqa.selenium.grid.data">Slot</a>&gt;&nbsp;activeSessions)</code></th>
+    int&nbsp;slotCount,
+    java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.lang.Integer&gt;&nbsp;stereotypes,
+    java.util.Map&lt;<a href="../Session.html" title="class in org.openqa.selenium.grid.data">Session</a>,&#8203;<a href="../Slot.html" title="class in org.openqa.selenium.grid.data">Slot</a>&gt;&nbsp;activeSessions,
+    java.lang.String&nbsp;version,
+    <a href="../../graphql/OsInfo.html" title="class in org.openqa.selenium.grid.graphql">OsInfo</a>&nbsp;osInfo)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -294,6 +304,28 @@ the order they are declared.</div>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../node/HealthCheck.Result.html#%3Cinit%3E(org.openqa.selenium.grid.data.Availability,java.lang.String)">Result</a></span>&#8203;(<a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;availability,
       java.lang.String&nbsp;message)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</li>
+<li class="blockList">
+<section role="region"><a id="org.openqa.selenium.grid.node.local">
+<!--   -->
+</a>
+<h3>Uses of <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a> in <a href="../../node/local/package-summary.html">org.openqa.selenium.grid.node.local</a></h3>
+<table class="useSummary">
+<caption><span>Methods in <a href="../../node/local/package-summary.html">org.openqa.selenium.grid.node.local</a> that return <a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNode.</span><code><span class="memberNameLink"><a href="../../node/local/LocalNode.html#getAvailability()">getAvailability</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>

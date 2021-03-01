@@ -87,7 +87,7 @@
 
     <span class="n">zf</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_file_name</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">zf</span><span class="o">.</span><span class="n">testzip</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">zf</span><span class="o">.</span><span class="n">testzip</span><span class="p">():</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># Unzip the files into a temporary directory</span>

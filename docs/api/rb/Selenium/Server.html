@@ -195,7 +195,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Whether to launch the server in the background.</p>
+<p>The Mode of the Server :standalone, #hub, #node.</p>
 </div></span>
   
 </li>
@@ -222,7 +222,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Path to log file, or &#39;true&#39; for stdout.</p>
+<p>The Mode of the Server :standalone, #hub, #node.</p>
 </div></span>
   
 </li>
@@ -249,7 +249,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>The server port.</p>
+<p>The Mode of the Server :standalone, #hub, #node.</p>
 </div></span>
   
 </li>
@@ -303,7 +303,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>The server timeout.</p>
+<p>The Mode of the Server :standalone, #hub, #node.</p>
 </div></span>
   
 </li>
@@ -686,22 +686,22 @@
       <pre class="lines">
 
 
-180
-181
-182
-183
-184
-185
-186
-187
-188
-189
-190
-191
-192</pre>
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 180</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 156</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOENT</span><span class='comma'>,</span> <span class='id identifier rubyid_jar'>jar</span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_exist?'>exist?</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='rparen'>)</span>
@@ -740,7 +740,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Whether to launch the server in the background</p>
+<p>The Mode of the Server :standalone, #hub, #node</p>
 
 
   </div>
@@ -754,12 +754,12 @@
       <pre class="lines">
 
 
-160
-161
-162</pre>
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 160</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_background'>background</span>
   <span class='ivar'>@background</span>
@@ -783,7 +783,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Path to log file, or &#39;true&#39; for stdout.</p>
+<p>The Mode of the Server :standalone, #hub, #node</p>
 
 
   </div>
@@ -797,12 +797,12 @@
       <pre class="lines">
 
 
-166
-167
-168</pre>
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span>
   <span class='ivar'>@log</span>
@@ -826,7 +826,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>The server port</p>
+<p>The Mode of the Server :standalone, #hub, #node</p>
 
 
   </div>
@@ -840,12 +840,12 @@
       <pre class="lines">
 
 
-148
-149
-150</pre>
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_port'>port</span>
   <span class='ivar'>@port</span>
@@ -912,7 +912,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>The server timeout</p>
+<p>The Mode of the Server :standalone, #hub, #node</p>
 
 
   </div>
@@ -926,12 +926,12 @@
       <pre class="lines">
 
 
-154
-155
-156</pre>
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 154</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout'>timeout</span>
   <span class='ivar'>@timeout</span>
@@ -1202,16 +1202,16 @@
       <pre class="lines">
 
 
-217
-218
-219
-220
-221
-222
-223</pre>
+193
+194
+195
+196
+197
+198
+199</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 217</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_arg'>arg</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
@@ -1240,15 +1240,15 @@
       <pre class="lines">
 
 
-194
-195
-196
-197
-198
-199</pre>
+170
+171
+172
+173
+174
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='id identifier rubyid_process'>process</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
@@ -1276,20 +1276,20 @@
       <pre class="lines">
 
 
-201
-202
-203
-204
-205
-206
-207
-208
-209
-210
-211</pre>
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 201</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 177</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='kw'>begin</span>
@@ -1322,12 +1322,12 @@
       <pre class="lines">
 
 
-213
-214
-215</pre>
+189
+190
+191</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 213</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/server.rb', line 189</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_webdriver_url'>webdriver_url</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/wd/hub</span><span class='tstring_end'>&quot;</span></span>
@@ -1342,7 +1342,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Nov 24 10:20:52 2020 by
+  Generated on Mon Mar  1 16:44:00 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.25 (ruby-2.6.3).
 </div>

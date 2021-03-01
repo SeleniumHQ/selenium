@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -180,18 +180,38 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>java.time.Duration</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHeartbeatPeriod()">getHeartbeatPeriod</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxSessions()">getMaxSessions</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNode()">getNode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.Optional&lt;java.net.URI&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPublicGridUri()">getPublicGridUri</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>java.util.Map&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionFactories(java.util.function.Function)">getSessionFactories</a></span>&#8203;(java.util.function.Function&lt;<a href="../../../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;factoryFactory)</code></th>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>java.time.Duration</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRegisterCycle()">getRegisterCycle</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>java.time.Duration</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRegisterPeriod()">getRegisterPeriod</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionFactories(java.util.function.Function)">getSessionFactories</a></span>&#8203;(java.util.function.Function&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;factoryFactory)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -255,13 +275,49 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a>&nbsp;getNode()</pre>
 </li>
 </ul>
+<a id="getRegisterCycle()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getRegisterCycle</h4>
+<pre class="methodSignature">public&nbsp;java.time.Duration&nbsp;getRegisterCycle()</pre>
+</li>
+</ul>
+<a id="getRegisterPeriod()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getRegisterPeriod</h4>
+<pre class="methodSignature">public&nbsp;java.time.Duration&nbsp;getRegisterPeriod()</pre>
+</li>
+</ul>
+<a id="getHeartbeatPeriod()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHeartbeatPeriod</h4>
+<pre class="methodSignature">public&nbsp;java.time.Duration&nbsp;getHeartbeatPeriod()</pre>
+</li>
+</ul>
 <a id="getSessionFactories(java.util.function.Function)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSessionFactories</h4>
+<pre class="methodSignature">public&nbsp;java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;getSessionFactories&#8203;(java.util.function.Function&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;factoryFactory)</pre>
+</li>
+</ul>
+<a id="getMaxSessions()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getSessionFactories</h4>
-<pre class="methodSignature">public&nbsp;java.util.Map&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;getSessionFactories&#8203;(java.util.function.Function&lt;<a href="../../../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;factoryFactory)</pre>
+<h4>getMaxSessions</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getMaxSessions()</pre>
 </li>
 </ul>
 </li>

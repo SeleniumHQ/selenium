@@ -55,14 +55,14 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">from</span> <span class="nn">.command</span> <span class="k">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
 
 
 <div class="viewcode-block" id="Mobile"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.mobile.html#selenium.webdriver.remote.mobile.Mobile">[docs]</a><span class="k">class</span> <span class="nc">Mobile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
 <div class="viewcode-block" id="Mobile.ConnectionType"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.mobile.html#selenium.webdriver.remote.mobile.Mobile.ConnectionType">[docs]</a>    <span class="k">class</span> <span class="nc">ConnectionType</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
 
         <span class="nd">@property</span>
@@ -82,7 +82,7 @@
     <span class="n">DATA_NETWORK</span> <span class="o">=</span> <span class="n">ConnectionType</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
     <span class="n">AIRPLANE_MODE</span> <span class="o">=</span> <span class="n">ConnectionType</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">driver</span>
 
     <span class="nd">@property</span>

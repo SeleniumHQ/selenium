@@ -65,10 +65,10 @@
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span>
-<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="k">import</span> <span class="n">minidom</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">WebDriverException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 
 
 <span class="n">WEBDRIVER_EXT</span> <span class="o">=</span> <span class="s2">&quot;webdriver.xpi&quot;</span>
@@ -84,7 +84,7 @@
     <span class="n">ANONYMOUS_PROFILE_NAME</span> <span class="o">=</span> <span class="s2">&quot;WEBDRIVER_ANONYMOUS_PROFILE&quot;</span>
     <span class="n">DEFAULT_PREFERENCES</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialises a new instance of a Firefox Profile</span>
 
@@ -106,7 +106,7 @@
             <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">[</span><span class="s1">&#39;mutable&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="n">profile_directory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_tempfolder</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
@@ -380,14 +380,14 @@
             <span class="n">rdf</span> <span class="o">=</span> <span class="n">get_namespace_id</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;http://www.w3.org/1999/02/22-rdf-syntax-ns#&#39;</span><span class="p">)</span>
 
             <span class="n">description</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="n">rdf</span> <span class="o">+</span> <span class="s1">&#39;Description&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">description</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">description</span><span class="p">:</span>
                 <span class="n">description</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;Description&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">description</span><span class="o">.</span><span class="n">childNodes</span><span class="p">:</span>
                 <span class="c1"># Remove the namespace prefix from the tag for comparison</span>
                 <span class="n">entry</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">nodeName</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">em</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">details</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">details</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">entry</span><span class="p">:</span> <span class="n">get_text</span><span class="p">(</span><span class="n">node</span><span class="p">)})</span>
-            <span class="k">if</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">description</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">length</span><span class="p">):</span>
                     <span class="n">attribute</span> <span class="o">=</span> <span class="n">description</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">em</span> <span class="o">+</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span>
@@ -400,7 +400,7 @@
             <span class="n">details</span><span class="p">[</span><span class="s1">&#39;unpack&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">details</span><span class="p">[</span><span class="s1">&#39;unpack&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span>
 
         <span class="c1"># If no ID is set, the add-on is invalid</span>
-        <span class="k">if</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">AddonFormatError</span><span class="p">(</span><span class="s1">&#39;Add-on id could not be found.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">details</span></div>

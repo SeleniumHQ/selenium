@@ -137,12 +137,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code>java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;,&#8203;java.util.Optional&lt;java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;&gt;&gt;</code></dd>
+<dd><code>java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;,&#8203;java.util.Optional&lt;java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;&gt;&gt;</code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">ProxyCdpIntoGrid</span>
 extends java.lang.Object
-implements java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;,&#8203;java.util.Optional&lt;java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;&gt;&gt;</pre>
+implements java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;,&#8203;java.util.Optional&lt;java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;&gt;&gt;</pre>
 </li>
 </ul>
 </div>
@@ -163,7 +163,7 @@ implements java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.fu
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap)">ProxyCdpIntoGrid</a></span>&#8203;(<a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap)">ProxyCdpIntoGrid</a></span>&#8203;(org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
                 <a href="../sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -186,9 +186,9 @@ implements java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.fu
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>java.util.Optional&lt;java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;&gt;</code></td>
+<td class="colFirst"><code>java.util.Optional&lt;java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#apply(java.lang.String,java.util.function.Consumer)">apply</a></span>&#8203;(java.lang.String&nbsp;uri,
-     java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;&nbsp;downstream)</code></th>
+     java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;&nbsp;downstream)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -228,7 +228,7 @@ implements java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.fu
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ProxyCdpIntoGrid</h4>
-<pre>public&nbsp;ProxyCdpIntoGrid&#8203;(<a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+<pre>public&nbsp;ProxyCdpIntoGrid&#8203;(org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
                         <a href="../sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions)</pre>
 </li>
 </ul>
@@ -248,11 +248,11 @@ implements java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.fu
 <ul class="blockListLast">
 <li class="blockList">
 <h4>apply</h4>
-<pre class="methodSignature">public&nbsp;java.util.Optional&lt;java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;&gt;&nbsp;apply&#8203;(java.lang.String&nbsp;uri,
-                                                                      java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;&nbsp;downstream)</pre>
+<pre class="methodSignature">public&nbsp;java.util.Optional&lt;java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;&gt;&nbsp;apply&#8203;(java.lang.String&nbsp;uri,
+                                                                                                      java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;&nbsp;downstream)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>apply</code>&nbsp;in interface&nbsp;<code>java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;,&#8203;java.util.Optional&lt;java.util.function.Consumer&lt;<a href="../../remote/http/Message.html" title="interface in org.openqa.selenium.remote.http">Message</a>&gt;&gt;&gt;</code></dd>
+<dd><code>apply</code>&nbsp;in interface&nbsp;<code>java.util.function.BiFunction&lt;java.lang.String,&#8203;java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;,&#8203;java.util.Optional&lt;java.util.function.Consumer&lt;org.openqa.selenium.remote.http.Message&gt;&gt;&gt;</code></dd>
 </dl>
 </li>
 </ul>

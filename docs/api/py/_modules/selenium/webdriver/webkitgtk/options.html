@@ -55,14 +55,14 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="k">import</span> <span class="n">DesiredCapabilities</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.options</span> <span class="k">import</span> <span class="n">ArgOptions</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.options</span> <span class="kn">import</span> <span class="n">ArgOptions</span>
 
 
 <div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.options.html#selenium.webdriver.webkitgtk.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">ArgOptions</span><span class="p">):</span>
     <span class="n">KEY</span> <span class="o">=</span> <span class="s1">&#39;webkitgtk:browserOptions&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Options</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_overlay_scrollbars_enabled</span> <span class="o">=</span> <span class="kc">True</span>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -224,24 +224,34 @@ extends <a href="../NewSessionQueue.html" title="class in org.openqa.selenium.gr
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isReady()">isReady</a></span>()</code></th>
+<td class="colFirst"><code>java.util.List&lt;java.lang.Object&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQueuedRequests()">getQueuedRequests</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#offerFirst(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerFirst</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-          <a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQueueSize()">getQueueSize</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#offerLast(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerLast</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-         <a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isReady()">isReady</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>java.util.Optional&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></td>
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#offerFirst(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerFirst</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
+          <a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#offerLast(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerLast</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
+         <a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>java.util.Optional&lt;org.openqa.selenium.remote.http.HttpRequest&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -316,13 +326,39 @@ extends <a href="../NewSessionQueue.html" title="class in org.openqa.selenium.gr
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isReady()</pre>
 </li>
 </ul>
+<a id="getQueueSize()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQueueSize</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getQueueSize()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../NewSessionQueue.html#getQueueSize()">getQueueSize</a></code>&nbsp;in class&nbsp;<code><a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getQueuedRequests()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQueuedRequests</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;java.lang.Object&gt;&nbsp;getQueuedRequests()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../NewSessionQueue.html#getQueuedRequests()">getQueuedRequests</a></code>&nbsp;in class&nbsp;<code><a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a></code></dd>
+</dl>
+</li>
+</ul>
 <a id="offerLast(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>offerLast</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;offerLast&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+<pre class="methodSignature">public&nbsp;boolean&nbsp;offerLast&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
                          <a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -336,7 +372,7 @@ extends <a href="../NewSessionQueue.html" title="class in org.openqa.selenium.gr
 <ul class="blockList">
 <li class="blockList">
 <h4>offerFirst</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;offerFirst&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+<pre class="methodSignature">public&nbsp;boolean&nbsp;offerFirst&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
                           <a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -350,7 +386,7 @@ extends <a href="../NewSessionQueue.html" title="class in org.openqa.selenium.gr
 <ul class="blockList">
 <li class="blockList">
 <h4>remove</h4>
-<pre class="methodSignature">public&nbsp;java.util.Optional&lt;<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;&nbsp;remove&#8203;(<a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;id)</pre>
+<pre class="methodSignature">public&nbsp;java.util.Optional&lt;org.openqa.selenium.remote.http.HttpRequest&gt;&nbsp;remove&#8203;(<a href="../../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;id)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../NewSessionQueue.html#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></code>&nbsp;in class&nbsp;<code><a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a></code></dd>

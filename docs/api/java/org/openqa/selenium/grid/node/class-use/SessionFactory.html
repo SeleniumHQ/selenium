@@ -156,9 +156,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Map&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
+<td class="colFirst"><code>java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">DockerOptions.</span><code><span class="memberNameLink"><a href="../../docker/DockerOptions.html#getDockerSessionFactories(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory)">getDockerSessionFactories</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                         <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory)</code></th>
+                         org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -194,8 +194,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Map&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">NodeOptions.</span><code><span class="memberNameLink"><a href="../config/NodeOptions.html#getSessionFactories(java.util.function.Function)">getSessionFactories</a></span>&#8203;(java.util.function.Function&lt;<a href="../../../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;factoryFactory)</code></th>
+<td class="colFirst"><code>java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">NodeOptions.</span><code><span class="memberNameLink"><a href="../config/NodeOptions.html#getSessionFactories(java.util.function.Function)">getSessionFactories</a></span>&#8203;(java.util.function.Function&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;factoryFactory)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -209,8 +209,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Map&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">NodeOptions.</span><code><span class="memberNameLink"><a href="../config/NodeOptions.html#getSessionFactories(java.util.function.Function)">getSessionFactories</a></span>&#8203;(java.util.function.Function&lt;<a href="../../../WebDriverInfo.html" title="interface in org.openqa.selenium">WebDriverInfo</a>,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;factoryFactory)</code></th>
+<td class="colFirst"><code>java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">NodeOptions.</span><code><span class="memberNameLink"><a href="../config/NodeOptions.html#getSessionFactories(java.util.function.Function)">getSessionFactories</a></span>&#8203;(java.util.function.Function&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;&nbsp;factoryFactory)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -232,7 +232,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../local/LocalNode.Builder.html" title="class in org.openqa.selenium.grid.node.local">LocalNode.Builder</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNode.Builder.</span><code><span class="memberNameLink"><a href="../local/LocalNode.Builder.html#add(org.openqa.selenium.Capabilities,org.openqa.selenium.grid.node.SessionFactory)">add</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
+<th class="colSecond" scope="row"><span class="typeNameLabel">LocalNode.Builder.</span><code><span class="memberNameLink"><a href="../local/LocalNode.Builder.html#add(org.openqa.selenium.Capabilities,org.openqa.selenium.grid.node.SessionFactory)">add</a></span>&#8203;(org.openqa.selenium.Capabilities&nbsp;stereotype,
    <a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&nbsp;factory)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -247,7 +247,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../local/SessionSlot.html#%3Cinit%3E(org.openqa.selenium.events.EventBus,org.openqa.selenium.Capabilities,org.openqa.selenium.grid.node.SessionFactory)">SessionSlot</a></span>&#8203;(<a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
-           <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
+           org.openqa.selenium.Capabilities&nbsp;stereotype,
            <a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&nbsp;factory)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>

@@ -58,11 +58,11 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="k">import</span> <span class="n">DesiredCapabilities</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="k">import</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.command</span> <span class="k">import</span> <span class="n">Command</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.remote_connection</span> <span class="k">import</span> <span class="n">RemoteConnection</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_binary</span> <span class="k">import</span> <span class="n">FirefoxBinary</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.command</span> <span class="kn">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.remote_connection</span> <span class="kn">import</span> <span class="n">RemoteConnection</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_binary</span> <span class="kn">import</span> <span class="n">FirefoxBinary</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">PORT</span> <span class="o">=</span> <span class="mi">0</span>
@@ -71,16 +71,16 @@
 
 
 <div class="viewcode-block" id="ExtensionConnection"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnection">[docs]</a><span class="k">class</span> <span class="nc">ExtensionConnection</span><span class="p">(</span><span class="n">RemoteConnection</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
         <span class="n">HOST</span> <span class="o">=</span> <span class="n">host</span>
         <span class="n">timeout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">HOST</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HOST</span><span class="p">:</span>
             <span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1&quot;</span>
 
         <span class="n">PORT</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">free_port</span><span class="p">()</span>

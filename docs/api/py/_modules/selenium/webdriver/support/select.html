@@ -55,13 +55,13 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="k">import</span> <span class="n">By</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">UnexpectedTagNameException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">UnexpectedTagNameException</span>
 
 
 <div class="viewcode-block" id="Select"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select">[docs]</a><span class="k">class</span> <span class="nc">Select</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webelement</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webelement</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,</span>
 <span class="sd">        then an UnexpectedTagNameException is thrown.</span>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -158,12 +158,15 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.data.Availability,int,java.util.Map,java.util.Map)">Node</a></span>&#8203;(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.data.Availability,int,int,java.util.Map,java.util.Map,java.lang.String,org.openqa.selenium.grid.graphql.OsInfo)">Node</a></span>&#8203;(<a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
     java.net.URI&nbsp;uri,
     <a href="../data/Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;status,
     int&nbsp;maxSession,
-    java.util.Map&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.lang.Integer&gt;&nbsp;capabilities,
-    java.util.Map&lt;<a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>,&#8203;<a href="../data/Slot.html" title="class in org.openqa.selenium.grid.data">Slot</a>&gt;&nbsp;activeSessions)</code></th>
+    int&nbsp;slotCount,
+    java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.lang.Integer&gt;&nbsp;stereotypes,
+    java.util.Map&lt;<a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>,&#8203;<a href="../data/Slot.html" title="class in org.openqa.selenium.grid.data">Slot</a>&gt;&nbsp;activeSessions,
+    java.lang.String&nbsp;version,
+    <a href="OsInfo.html" title="class in org.openqa.selenium.grid.graphql">OsInfo</a>&nbsp;osInfo)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -190,33 +193,53 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCapabilities()">getCapabilities</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getId()">getId</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxSession()">getMaxSession</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="OsInfo.html" title="class in org.openqa.selenium.grid.graphql">OsInfo</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOsInfo()">getOsInfo</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionCount()">getSessionCount</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="Session.html" title="class in org.openqa.selenium.grid.graphql">Session</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessions()">getSessions</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSlotCount()">getSlotCount</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../data/Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatus()">getStatus</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStereotypes()">getStereotypes</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.net.URI</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUri()">getUri</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVersion()">getVersion</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -243,7 +266,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.data.Availability,int,java.util.Map,java.util.Map)">
+<a id="&lt;init&gt;(org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.data.Availability,int,int,java.util.Map,java.util.Map,java.lang.String,org.openqa.selenium.grid.graphql.OsInfo)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -253,8 +276,11 @@ extends java.lang.Object</pre>
             java.net.URI&nbsp;uri,
             <a href="../data/Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;status,
             int&nbsp;maxSession,
-            java.util.Map&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.lang.Integer&gt;&nbsp;capabilities,
-            java.util.Map&lt;<a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>,&#8203;<a href="../data/Slot.html" title="class in org.openqa.selenium.grid.data">Slot</a>&gt;&nbsp;activeSessions)</pre>
+            int&nbsp;slotCount,
+            java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.lang.Integer&gt;&nbsp;stereotypes,
+            java.util.Map&lt;<a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>,&#8203;<a href="../data/Slot.html" title="class in org.openqa.selenium.grid.data">Slot</a>&gt;&nbsp;activeSessions,
+            java.lang.String&nbsp;version,
+            <a href="OsInfo.html" title="class in org.openqa.selenium.grid.graphql">OsInfo</a>&nbsp;osInfo)</pre>
 </li>
 </ul>
 </li>
@@ -274,6 +300,24 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getSessions</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="Session.html" title="class in org.openqa.selenium.grid.graphql">Session</a>&gt;&nbsp;getSessions()</pre>
+</li>
+</ul>
+<a id="getSlotCount()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSlotCount</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getSlotCount()</pre>
+</li>
+</ul>
+<a id="getSessionCount()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSessionCount</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getSessionCount()</pre>
 </li>
 </ul>
 <a id="getId()">
@@ -312,22 +356,40 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;java.lang.String&gt;&nbsp;getActiveSessionIds()</pre>
 </li>
 </ul>
-<a id="getCapabilities()">
+<a id="getStereotypes()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getCapabilities</h4>
-<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getCapabilities()</pre>
+<h4>getStereotypes</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getStereotypes()</pre>
 </li>
 </ul>
 <a id="getStatus()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getStatus</h4>
 <pre class="methodSignature">public&nbsp;<a href="../data/Availability.html" title="enum in org.openqa.selenium.grid.data">Availability</a>&nbsp;getStatus()</pre>
+</li>
+</ul>
+<a id="getVersion()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVersion</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getVersion()</pre>
+</li>
+</ul>
+<a id="getOsInfo()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getOsInfo</h4>
+<pre class="methodSignature">public&nbsp;<a href="OsInfo.html" title="class in org.openqa.selenium.grid.graphql">OsInfo</a>&nbsp;getOsInfo()</pre>
 </li>
 </ul>
 </li>

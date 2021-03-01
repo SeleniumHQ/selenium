@@ -55,43 +55,29 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">import</span> <span class="nn">base64</span>
-<span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64decode</span><span class="p">,</span> <span class="n">encodebytes</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span> <span class="k">as</span> <span class="n">md5_hash</span>
 <span class="kn">import</span> <span class="nn">pkgutil</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">WebDriverException</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="k">import</span> <span class="n">By</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.utils</span> <span class="k">import</span> <span class="n">keys_to_typing</span>
-<span class="kn">from</span> <span class="nn">.command</span> <span class="k">import</span> <span class="n">Command</span>
-
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">add_metaclass</span>
-
-<span class="c1"># Python 3 imports</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="nb">str</span> <span class="o">=</span> <span class="n">basestring</span>
-<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-    <span class="k">pass</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">base64</span> <span class="k">import</span> <span class="n">encodebytes</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># Python 2</span>
-    <span class="kn">from</span> <span class="nn">base64</span> <span class="k">import</span> <span class="n">encodestring</span> <span class="k">as</span> <span class="n">encodebytes</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.utils</span> <span class="kn">import</span> <span class="n">keys_to_typing</span>
+<span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
 
 
-<span class="c1"># TODO: when dropping Python 2.7, use built in importlib_resources.files</span>
-<span class="c1"># not relying on __package__ here as it can be `None` in some situations (see #4558)</span>
+<span class="c1"># TODO: When moving to supporting python 3.9 as the minimum version we can</span>
+<span class="c1"># use built in importlib_resources.files.</span>
 <span class="n">_pkg</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">getAttribute_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s1">&#39;getAttribute.js&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
 <span class="n">isDisplayed_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s1">&#39;isDisplayed.js&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="BaseWebElement"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.BaseWebElement">[docs]</a><span class="nd">@add_metaclass</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">BaseWebElement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseWebElement"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.BaseWebElement">[docs]</a><span class="k">class</span> <span class="nc">BaseWebElement</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract Base Class for WebElement.</span>
 <span class="sd">    ABC&#39;s will allow custom types to be registered as a WebElement to pass type checks.</span>
@@ -111,12 +97,12 @@
 <span class="sd">    ``StaleElementReferenceException`` is thrown, and all future calls to this</span>
 <span class="sd">    instance will fail.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">w3c</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">w3c</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">id_</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_w3c</span> <span class="o">=</span> <span class="n">w3c</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{0.__module__}</span><span class="s1">.</span><span class="si">{0.__name__}</span><span class="s1"> (session=&quot;</span><span class="si">{1}</span><span class="s1">&quot;, element=&quot;</span><span class="si">{2}</span><span class="s1">&quot;)&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
 
@@ -198,7 +184,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ATTRIBUTE</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span>
             <span class="n">attribute_value</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">attribute_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attribute_value</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;value&#39;</span> <span class="ow">and</span> <span class="n">attribute_value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">):</span>
                     <span class="n">attribute_value</span> <span class="o">=</span> <span class="n">attribute_value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">attribute_value</span></div>
@@ -575,8 +561,8 @@
         <span class="c1"># the same behaviour as for java binding</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">_is_remote</span><span class="p">:</span>
             <span class="n">local_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">keys_to_send</span><span class="p">:</span>
-                                   <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">file_detector</span><span class="o">.</span><span class="n">is_local_file</span><span class="p">(</span><span class="n">keys_to_send</span><span class="p">),</span>
-                                   <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)))</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">file_detector</span><span class="o">.</span><span class="n">is_local_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">keys_to_send</span><span class="p">)),</span>
+                                   <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)))</span>
             <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">local_files</span><span class="p">:</span>
                 <span class="n">remote_files</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">local_files</span><span class="p">:</span>
@@ -677,7 +663,7 @@
 
 <span class="sd">                element_png = element.screenshot_as_png</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screenshot_as_base64</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">screenshot_as_base64</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span>
 
 <div class="viewcode-block" id="WebElement.screenshot"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -725,10 +711,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span>
 
-    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
 
     <span class="c1"># Private Methods</span>
@@ -801,8 +787,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENTS</span><span class="p">,</span>
                              <span class="p">{</span><span class="s2">&quot;using&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
 
-    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">md5_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="mi">16</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>

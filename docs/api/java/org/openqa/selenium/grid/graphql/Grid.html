@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -158,8 +158,10 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.grid.distributor.Distributor,java.net.URI)">Grid</a></span>&#8203;(<a href="../distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a>&nbsp;distributor,
-    java.net.URI&nbsp;uri)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.grid.distributor.Distributor,org.openqa.selenium.grid.sessionqueue.NewSessionQueuer,java.net.URI,java.lang.String)">Grid</a></span>&#8203;(<a href="../distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a>&nbsp;distributor,
+    <a href="../sessionqueue/NewSessionQueuer.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueuer</a>&nbsp;newSessionQueuer,
+    java.net.URI&nbsp;uri,
+    java.lang.String&nbsp;version)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -181,28 +183,53 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="Node.html" title="class in org.openqa.selenium.grid.graphql">Node</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNodes()">getNodes</a></span>()</code></th>
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxSession()">getMaxSession</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionCount()">getSessionCount</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNodeCount()">getNodeCount</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>java.util.List&lt;<a href="Node.html" title="class in org.openqa.selenium.grid.graphql">Node</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNodes()">getNodes</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionCount()">getSessionCount</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>java.util.List&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionQueueRequests()">getSessionQueueRequests</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionQueueSize()">getSessionQueueSize</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>java.util.List&lt;<a href="Session.html" title="class in org.openqa.selenium.grid.graphql">Session</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessions()">getSessions</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTotalSlots()">getTotalSlots</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.net.URI</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUri()">getUri</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUsedSlots()">getUsedSlots</a></span>()</code></th>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVersion()">getVersion</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -229,14 +256,16 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.grid.distributor.Distributor,java.net.URI)">
+<a id="&lt;init&gt;(org.openqa.selenium.grid.distributor.Distributor,org.openqa.selenium.grid.sessionqueue.NewSessionQueuer,java.net.URI,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Grid</h4>
 <pre>public&nbsp;Grid&#8203;(<a href="../distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a>&nbsp;distributor,
-            java.net.URI&nbsp;uri)</pre>
+            <a href="../sessionqueue/NewSessionQueuer.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueuer</a>&nbsp;newSessionQueuer,
+            java.net.URI&nbsp;uri,
+            java.lang.String&nbsp;version)</pre>
 </li>
 </ul>
 </li>
@@ -258,6 +287,15 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;java.net.URI&nbsp;getUri()</pre>
 </li>
 </ul>
+<a id="getVersion()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVersion</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getVersion()</pre>
+</li>
+</ul>
 <a id="getNodes()">
 <!--   -->
 </a>
@@ -265,6 +303,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getNodes</h4>
 <pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="Node.html" title="class in org.openqa.selenium.grid.graphql">Node</a>&gt;&nbsp;getNodes()</pre>
+</li>
+</ul>
+<a id="getNodeCount()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNodeCount</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getNodeCount()</pre>
 </li>
 </ul>
 <a id="getSessionCount()">
@@ -285,13 +332,40 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;int&nbsp;getTotalSlots()</pre>
 </li>
 </ul>
-<a id="getUsedSlots()">
+<a id="getMaxSession()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxSession</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getMaxSession()</pre>
+</li>
+</ul>
+<a id="getSessionQueueSize()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSessionQueueSize</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getSessionQueueSize()</pre>
+</li>
+</ul>
+<a id="getSessionQueueRequests()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSessionQueueRequests</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;java.lang.String&gt;&nbsp;getSessionQueueRequests()</pre>
+</li>
+</ul>
+<a id="getSessions()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getUsedSlots</h4>
-<pre class="methodSignature">public&nbsp;int&nbsp;getUsedSlots()</pre>
+<h4>getSessions</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="Session.html" title="class in org.openqa.selenium.grid.graphql">Session</a>&gt;&nbsp;getSessions()</pre>
 </li>
 </ul>
 </li>

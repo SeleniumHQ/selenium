@@ -146,6 +146,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><span class="typeNameLabel">ContainerInfo.</span><code><span class="memberNameLink"><a href="../ContainerInfo.html#getId()">getId</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">ContainerLogs.</span><code><span class="memberNameLink"><a href="../ContainerLogs.html#getId()">getId</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </tbody>
 </table>
 <table class="useSummary">
@@ -157,16 +162,31 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../ContainerLogs.html" title="class in org.openqa.selenium.docker">ContainerLogs</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">DockerProtocol.</span><code><span class="memberNameLink"><a href="../DockerProtocol.html#getContainerLogs(org.openqa.selenium.docker.ContainerId)">getContainerLogs</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.util.Optional&lt;<a href="../ContainerInfo.html" title="class in org.openqa.selenium.docker">ContainerInfo</a>&gt;</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">Docker.</span><code><span class="memberNameLink"><a href="../Docker.html#inspect(org.openqa.selenium.docker.ContainerId)">inspect</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code><a href="../ContainerInfo.html" title="class in org.openqa.selenium.docker">ContainerInfo</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">DockerProtocol.</span><code><span class="memberNameLink"><a href="../DockerProtocol.html#inspectContainer(org.openqa.selenium.docker.ContainerId)">inspectContainer</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">DockerProtocol.</span><code><span class="memberNameLink"><a href="../DockerProtocol.html#isContainerPresent(org.openqa.selenium.docker.ContainerId)">isContainerPresent</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">DockerProtocol.</span><code><span class="memberNameLink"><a href="../DockerProtocol.html#startContainer(org.openqa.selenium.docker.ContainerId)">startContainer</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">DockerProtocol.</span><code><span class="memberNameLink"><a href="../DockerProtocol.html#stopContainer(org.openqa.selenium.docker.ContainerId,java.time.Duration)">stopContainer</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id,
              java.time.Duration&nbsp;timeout)</code></th>
@@ -187,8 +207,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../ContainerInfo.html#%3Cinit%3E(org.openqa.selenium.docker.ContainerId,java.lang.String)">ContainerInfo</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id,
-             java.lang.String&nbsp;ip)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../ContainerInfo.html#%3Cinit%3E(org.openqa.selenium.docker.ContainerId,java.lang.String,java.util.List)">ContainerInfo</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id,
+             java.lang.String&nbsp;ip,
+             java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;mountedVolumes)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../ContainerLogs.html#%3Cinit%3E(org.openqa.selenium.docker.ContainerId,java.util.List)">ContainerLogs</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id,
+             java.util.List&lt;java.lang.String&gt;&nbsp;logLines)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -209,8 +235,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../ContainerLogs.html" title="class in org.openqa.selenium.docker">ContainerLogs</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">V140Docker.</span><code><span class="memberNameLink"><a href="../v1_40/V140Docker.html#getContainerLogs(org.openqa.selenium.docker.ContainerId)">getContainerLogs</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../ContainerInfo.html" title="class in org.openqa.selenium.docker">ContainerInfo</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">V140Docker.</span><code><span class="memberNameLink"><a href="../v1_40/V140Docker.html#inspectContainer(org.openqa.selenium.docker.ContainerId)">inspectContainer</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">V140Docker.</span><code><span class="memberNameLink"><a href="../v1_40/V140Docker.html#isContainerPresent(org.openqa.selenium.docker.ContainerId)">isContainerPresent</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">

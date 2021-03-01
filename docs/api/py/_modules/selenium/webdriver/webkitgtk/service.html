@@ -55,7 +55,7 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="k">import</span> <span class="n">service</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">service</span>
 
 
 <div class="viewcode-block" id="Service"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.webkitgtk.service.Service">[docs]</a><span class="k">class</span> <span class="nc">Service</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">Service</span><span class="p">):</span>
@@ -63,7 +63,7 @@
 <span class="sd">    Object that manages the starting and stopping of the WebKitGTKDriver</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new instance of the Service</span>
 
@@ -72,7 +72,7 @@
 <span class="sd">         - port : Port the service is running on</span>
 <span class="sd">         - log_path : Path for the WebKitGTKDriver service to log to</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">log_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">log_path</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">log_path</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">service</span><span class="o">.</span><span class="n">Service</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">log_file</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Service.command_line_args"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.webkitgtk.service.Service.command_line_args">[docs]</a>    <span class="k">def</span> <span class="nf">command_line_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

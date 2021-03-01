@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":6,"i2":10,"i3":6,"i4":6,"i5":6};
+var data = {"i0":10,"i1":6,"i2":6,"i3":6,"i4":10,"i5":6,"i6":6,"i7":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -237,7 +237,7 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addRequestHeaders(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">addRequestHeaders</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addRequestHeaders(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">addRequestHeaders</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
                  <a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -247,24 +247,34 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasRequestTimedOut(org.openqa.selenium.remote.http.HttpRequest)">hasRequestTimedOut</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code></th>
+<td class="colFirst"><code>abstract java.util.List&lt;java.lang.Object&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQueuedRequests()">getQueuedRequests</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>abstract boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#offerFirst(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerFirst</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-          <a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<td class="colFirst"><code>abstract int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQueueSize()">getQueueSize</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>abstract boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#offerLast(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerLast</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
-         <a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasRequestTimedOut(org.openqa.selenium.remote.http.HttpRequest)">hasRequestTimedOut</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>abstract java.util.Optional&lt;<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></td>
+<td class="colFirst"><code>abstract boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#offerFirst(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerFirst</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
+          <a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>abstract boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#offerLast(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">offerLast</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
+         <a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>abstract java.util.Optional&lt;org.openqa.selenium.remote.http.HttpRequest&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.grid.data.RequestId)">remove</a></span>&#8203;(<a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -299,6 +309,32 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a id="SESSIONREQUEST_TIMESTAMP_HEADER">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SESSIONREQUEST_TIMESTAMP_HEADER</h4>
+<pre>public static final&nbsp;java.lang.String SESSIONREQUEST_TIMESTAMP_HEADER</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="SESSIONREQUEST_ID_HEADER">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SESSIONREQUEST_ID_HEADER</h4>
+<pre>public static final&nbsp;java.lang.String SESSIONREQUEST_ID_HEADER</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../../constant-values.html#org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_ID_HEADER">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a id="tracer">
 <!--   -->
 </a>
@@ -320,36 +356,10 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <a id="requestTimeout">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>requestTimeout</h4>
 <pre>protected final&nbsp;java.time.Duration requestTimeout</pre>
-</li>
-</ul>
-<a id="SESSIONREQUEST_TIMESTAMP_HEADER">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SESSIONREQUEST_TIMESTAMP_HEADER</h4>
-<pre>public static final&nbsp;java.lang.String SESSIONREQUEST_TIMESTAMP_HEADER</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a id="SESSIONREQUEST_ID_HEADER">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>SESSIONREQUEST_ID_HEADER</h4>
-<pre>public static final&nbsp;java.lang.String SESSIONREQUEST_ID_HEADER</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../../constant-values.html#org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_ID_HEADER">Constant Field Values</a></dd>
-</dl>
 </li>
 </ul>
 </li>
@@ -389,7 +399,7 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockList">
 <li class="blockList">
 <h4>offerLast</h4>
-<pre class="methodSignature">public abstract&nbsp;boolean&nbsp;offerLast&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+<pre class="methodSignature">public abstract&nbsp;boolean&nbsp;offerLast&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
                                   <a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</pre>
 </li>
 </ul>
@@ -399,7 +409,7 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockList">
 <li class="blockList">
 <h4>offerFirst</h4>
-<pre class="methodSignature">public abstract&nbsp;boolean&nbsp;offerFirst&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+<pre class="methodSignature">public abstract&nbsp;boolean&nbsp;offerFirst&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
                                    <a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</pre>
 </li>
 </ul>
@@ -409,7 +419,7 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockList">
 <li class="blockList">
 <h4>remove</h4>
-<pre class="methodSignature">public abstract&nbsp;java.util.Optional&lt;<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;&nbsp;remove&#8203;(<a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</pre>
+<pre class="methodSignature">public abstract&nbsp;java.util.Optional&lt;org.openqa.selenium.remote.http.HttpRequest&gt;&nbsp;remove&#8203;(<a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;requestId)</pre>
 </li>
 </ul>
 <a id="clear()">
@@ -421,13 +431,31 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <pre class="methodSignature">public abstract&nbsp;int&nbsp;clear()</pre>
 </li>
 </ul>
+<a id="getQueueSize()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQueueSize</h4>
+<pre class="methodSignature">public abstract&nbsp;int&nbsp;getQueueSize()</pre>
+</li>
+</ul>
+<a id="getQueuedRequests()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQueuedRequests</h4>
+<pre class="methodSignature">public abstract&nbsp;java.util.List&lt;java.lang.Object&gt;&nbsp;getQueuedRequests()</pre>
+</li>
+</ul>
 <a id="addRequestHeaders(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.grid.data.RequestId)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>addRequestHeaders</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;addRequestHeaders&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+<pre class="methodSignature">public&nbsp;void&nbsp;addRequestHeaders&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
                               <a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</pre>
 </li>
 </ul>
@@ -437,7 +465,7 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockListLast">
 <li class="blockList">
 <h4>hasRequestTimedOut</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;hasRequestTimedOut&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</pre>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;hasRequestTimedOut&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;request)</pre>
 </li>
 </ul>
 </li>

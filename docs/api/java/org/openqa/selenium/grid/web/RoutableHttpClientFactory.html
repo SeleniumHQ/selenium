@@ -137,12 +137,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></dd>
+<dd><code>org.openqa.selenium.remote.http.HttpClient.Factory</code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">RoutableHttpClientFactory</span>
 extends java.lang.Object
-implements <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></pre>
+implements org.openqa.selenium.remote.http.HttpClient.Factory</pre>
 </li>
 </ul>
 </div>
@@ -165,7 +165,7 @@ implements <a href="../../remote/http/HttpClient.Factory.html" title="interface 
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.net.URL,org.openqa.selenium.grid.web.CombinedHandler,org.openqa.selenium.remote.http.HttpClient.Factory)">RoutableHttpClientFactory</a></span>&#8203;(java.net.URL&nbsp;self,
                          <a href="CombinedHandler.html" title="class in org.openqa.selenium.grid.web">CombinedHandler</a>&nbsp;handler,
-                         <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;delegate)</code></th>
+                         org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;delegate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -189,13 +189,11 @@ implements <a href="../../remote/http/HttpClient.Factory.html" title="interface 
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#cleanupIdleClients()">cleanupIdleClients</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Closes idle clients.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createClient(org.openqa.selenium.remote.http.ClientConfig)">createClient</a></span>&#8203;(<a href="../../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;config)</code></th>
+<td class="colFirst"><code>org.openqa.selenium.remote.http.HttpClient</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createClient(org.openqa.selenium.remote.http.ClientConfig)">createClient</a></span>&#8203;(org.openqa.selenium.remote.http.ClientConfig&nbsp;config)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -210,8 +208,8 @@ implements <a href="../../remote/http/HttpClient.Factory.html" title="interface 
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.http.HttpClient.Factory">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.<a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></h3>
-<code><a href="../../remote/http/HttpClient.Factory.html#createClient(java.net.URL)">createClient</a></code></li>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.HttpClient.Factory</h3>
+<code>createClient</code></li>
 </ul>
 </li>
 </ul>
@@ -237,7 +235,7 @@ implements <a href="../../remote/http/HttpClient.Factory.html" title="interface 
 <h4>RoutableHttpClientFactory</h4>
 <pre>public&nbsp;RoutableHttpClientFactory&#8203;(java.net.URL&nbsp;self,
                                  <a href="CombinedHandler.html" title="class in org.openqa.selenium.grid.web">CombinedHandler</a>&nbsp;handler,
-                                 <a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;delegate)</pre>
+                                 org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;delegate)</pre>
 </li>
 </ul>
 </li>
@@ -256,10 +254,10 @@ implements <a href="../../remote/http/HttpClient.Factory.html" title="interface 
 <ul class="blockList">
 <li class="blockList">
 <h4>createClient</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;createClient&#8203;(<a href="../../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;config)</pre>
+<pre class="methodSignature">public&nbsp;org.openqa.selenium.remote.http.HttpClient&nbsp;createClient&#8203;(org.openqa.selenium.remote.http.ClientConfig&nbsp;config)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../remote/http/HttpClient.Factory.html#createClient(org.openqa.selenium.remote.http.ClientConfig)">createClient</a></code>&nbsp;in interface&nbsp;<code><a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></dd>
+<dd><code>createClient</code>&nbsp;in interface&nbsp;<code>org.openqa.selenium.remote.http.HttpClient.Factory</code></dd>
 </dl>
 </li>
 </ul>
@@ -270,11 +268,9 @@ implements <a href="../../remote/http/HttpClient.Factory.html" title="interface 
 <li class="blockList">
 <h4>cleanupIdleClients</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;cleanupIdleClients()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../remote/http/HttpClient.Factory.html#cleanupIdleClients()">HttpClient.Factory</a></code></span></div>
-<div class="block">Closes idle clients.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../remote/http/HttpClient.Factory.html#cleanupIdleClients()">cleanupIdleClients</a></code>&nbsp;in interface&nbsp;<code><a href="../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></dd>
+<dd><code>cleanupIdleClients</code>&nbsp;in interface&nbsp;<code>org.openqa.selenium.remote.http.HttpClient.Factory</code></dd>
 </dl>
 </li>
 </ul>

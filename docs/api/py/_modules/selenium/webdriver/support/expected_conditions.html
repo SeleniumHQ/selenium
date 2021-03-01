@@ -57,12 +57,12 @@
 
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">NoSuchElementException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">NoSuchFrameException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">StaleElementReferenceException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">WebDriverException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">NoAlertPresentException</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="k">import</span> <span class="n">WebElement</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchFrameException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">StaleElementReferenceException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoAlertPresentException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebElement</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd"> * Canned &quot;Expected Conditions&quot; which are generally useful within webdriver</span>
@@ -120,7 +120,7 @@
 <span class="sd">    pattern is the expected pattern, which must be an exact match</span>
 <span class="sd">    returns True if the url matches, false otherwise.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_predicate</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">driver</span><span class="o">.</span><span class="n">current_url</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">driver</span><span class="o">.</span><span class="n">current_url</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">_predicate</span></div>
 

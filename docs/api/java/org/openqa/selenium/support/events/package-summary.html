@@ -112,7 +112,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">Deprecated.
+<div class="deprecationComment">Use <a href="EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a> and <a href="WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a> instead</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><a href="WebDriverListener.html" title="interface in org.openqa.selenium.support.events">WebDriverListener</a></th>
+<td class="colLast">
+<div class="block">Classes that implement this interface are intended to be used with <a href="EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a>,
+ read documentation for this class to find detailed usage description.</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -127,16 +136,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">AbstractWebDriverEventListener</a></th>
-<td class="colLast">
-<div class="block">Use this class as base class, if you want to implement a <a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverEventListener</code></a> and are
- only interested in some events.</div>
-</td>
+<td class="colLast">Deprecated.</td>
 </tr>
 <tr class="rowColor">
-<th class="colFirst" scope="row"><a href="EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a></th>
+<th class="colFirst" scope="row"><a href="EventFiringDecorator.html" title="class in org.openqa.selenium.support.events">EventFiringDecorator</a></th>
 <td class="colLast">
-<div class="block">A wrapper around an arbitrary <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance which supports registering of a
- <a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverEventListener</code></a>, e&#46;g&#46; for logging purposes.</div>
+<div class="block">This decorator creates a wrapper around an arbitrary <code>WebDriver</code> instance that notifies
+ registered listeners about events happening in this WebDriver and derived objects, such as
+ <code>WebElement</code>s and <code>Alert</code>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><a href="EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a></th>
+<td class="colLast">Deprecated.
+<div class="deprecationComment">Use <a href="EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a> and <a href="WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a> instead</div>
 </td>
 </tr>
 </tbody>

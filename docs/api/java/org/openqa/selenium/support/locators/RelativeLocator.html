@@ -138,6 +138,35 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">RelativeLocator</span>
 extends java.lang.Object</pre>
+<div class="block">Used for finding elements by their location on a page, rather than their
+ position on the DOM. Elements are returned ordered by their proximity to
+ the last anchor element used for finding them. As an example:
+ <pre>
+   List<WebElement> elements = driver.findElements(withTagName("p").above(lowest));
+ </pre>
+ Would return all <code>p</code> elements above the <code>WebElement</code>
+ <code>lowest</code> sorted by the proximity to <code>lowest</code>.
+ <p>
+ Proximity is determined by simply comparing the distance to the center
+ point of each of the elements in turn. For some non-rectangular shapes
+ (such as paragraphs of text that take more than one line), this may lead
+ to some surprising results.
+ <p>
+ In addition, be aware that the relative locators all use the "client
+ bounding rect" of elements to determine whether something is "left",
+ "right", "above" or "below" of another. Given the example:
+ <pre>
+   +-----+
+   |  a  |---+
+   +-----+ b |
+       +-----+
+ </pre>
+ Where <code>a</code> partially overlaps <code>b</code>, <code>b</code> is none of
+ "above", "below", "left" or "right" of <code>a</code>. This is because of
+ how these are calculated using the box model. <code>b</code>'s bounding
+ rect has it's left-most edge to the right of <code>a</code>'s bounding
+ rect's right-most edge, so it is not considered to be "right" of
+ <code>a</code>. Similar logic applies for the other directions.</div>
 </li>
 </ul>
 </div>
@@ -205,7 +234,9 @@ extends java.lang.Object</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withTagName(java.lang.String)">withTagName</a></span>&#8203;(java.lang.String&nbsp;tagName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Start of a relative locator, finding elements by tag name.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -257,6 +288,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>withTagName</h4>
 <pre class="methodSignature">public static&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;withTagName&#8203;(java.lang.String&nbsp;tagName)</pre>
+<div class="block">Start of a relative locator, finding elements by tag name.</div>
 </li>
 </ul>
 </li>

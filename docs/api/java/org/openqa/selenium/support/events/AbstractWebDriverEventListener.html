@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":42,"i1":42,"i2":42,"i3":42,"i4":42,"i5":42,"i6":42,"i7":42,"i8":42,"i9":42,"i10":42,"i11":42,"i12":42,"i13":42,"i14":42,"i15":42,"i16":42,"i17":42,"i18":42,"i19":42,"i20":42,"i21":42,"i22":42,"i23":42,"i24":42,"i25":42,"i26":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -140,9 +140,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
 </dl>
 <hr>
-<pre>public abstract class <span class="typeNameLabel">AbstractWebDriverEventListener</span>
+<pre>@Deprecated
+public abstract class <span class="typeNameLabel">AbstractWebDriverEventListener</span>
 extends java.lang.Object
 implements <a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Use this class as base class, if you want to implement a <a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverEventListener</code></a> and are
  only interested in some events. All methods provided by this class have an empty method body.</div>
 </li>
@@ -166,7 +168,9 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">AbstractWebDriverEventListener</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -180,7 +184,7 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -188,218 +192,245 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterAlertAccept(org.openqa.selenium.WebDriver)">afterAlertAccept</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterAlertAccept(org.openqa.selenium.WebDriver)">afterAlertAccept</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">This action will be performed each time after <a href="../../Alert.html#accept()"><code>Alert.accept()</code></a></div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">This action will be performed each time after <code>Alert.accept()</code></div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterAlertDismiss(org.openqa.selenium.WebDriver)">afterAlertDismiss</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterAlertDismiss(org.openqa.selenium.WebDriver)">afterAlertDismiss</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">This action will be performed each time before <a href="../../Alert.html#dismiss()"><code>Alert.dismiss()</code></a></div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">This action will be performed each time before <code>Alert.dismiss()</code></div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)">afterChangeValueOf</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                  <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)">afterChangeValueOf</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+                  org.openqa.selenium.WebDriver&nbsp;driver,
                   java.lang.CharSequence[]&nbsp;keysToSend)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../WebElement.html#clear()"><code>WebElement.clear()</code></a>, <a href="../../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(...)</code></a>}.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>WebElement.clear()</code>, <code>WebElement.sendKeys(...)</code>}.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">afterClickOn</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-            <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">afterClickOn</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+            org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../WebElement.html#click()"><code>WebElement.click()</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>WebElement.click()</code>.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">afterFindBy</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;by,
-           <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-           <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">afterFindBy</a></span>&#8203;(org.openqa.selenium.By&nbsp;by,
+           org.openqa.selenium.WebElement&nbsp;element,
+           org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(...)</code></a>, or
- <a href="../../WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(...)</code></a>, or <a href="../../WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(...)</code></a>, or <a href="../../WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElements(...)</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>WebDriver.findElement(...)</code>, or
+ <code>WebDriver.findElements(...)</code>, or <code>WebElement.findElement(...)</code>, or <code>WebElement.findElements(...)</code>.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterGetScreenshotAs(org.openqa.selenium.OutputType,X)">afterGetScreenshotAs</a></span>&#8203;(<a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterGetScreenshotAs(org.openqa.selenium.OutputType,X)">afterGetScreenshotAs</a></span>&#8203;(org.openqa.selenium.OutputType&lt;X&gt;&nbsp;target,
                     X&nbsp;screenshot)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>TakesScreenshot.getScreenshotAs(OutputType)</code>
  allows the implementation to determine which type of output was generated
  and to access the output itself</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.String)">afterGetText</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-            <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.String)">afterGetText</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+            org.openqa.selenium.WebDriver&nbsp;driver,
             java.lang.String&nbsp;text)</code></th>
 <td class="colLast">
-<div class="block">Called right after <a href="../../WebElement.html#getText()"><code>WebElement.getText()</code></a> method is being called</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called right after <code>WebElement.getText()</code> method is being called</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterNavigateBack(org.openqa.selenium.WebDriver)">afterNavigateBack</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterNavigateBack(org.openqa.selenium.WebDriver)">afterNavigateBack</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium"><code>navigate().back()</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>navigate().back()</code>.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterNavigateForward(org.openqa.selenium.WebDriver)">afterNavigateForward</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterNavigateForward(org.openqa.selenium.WebDriver)">afterNavigateForward</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../WebDriver.Navigation.html#forward()"><code>navigate().forward()</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>navigate().forward()</code>.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterNavigateRefresh(org.openqa.selenium.WebDriver)">afterNavigateRefresh</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterNavigateRefresh(org.openqa.selenium.WebDriver)">afterNavigateRefresh</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../WebDriver.Navigation.html#refresh()"><code>navigate().refresh()</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>navigate().refresh()</code>.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterNavigateTo(java.lang.String,org.openqa.selenium.WebDriver)">afterNavigateTo</a></span>&#8203;(java.lang.String&nbsp;url,
-               <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+               org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../WebDriver.html#get(java.lang.String)"><code>get(String url)</code></a> respectively
- <a href="../../WebDriver.Navigation.html#to(java.lang.String)"><code>navigate().to(String url)</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>get(String url)</code> respectively
+ <code>navigate().to(String url)</code>.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterScript(java.lang.String,org.openqa.selenium.WebDriver)">afterScript</a></span>&#8203;(java.lang.String&nbsp;script,
-           <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+           org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called after <a href="../../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)"><code>RemoteWebDriver.executeScript(String, Object...)</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called after <code>RemoteWebDriver.executeScript(String, Object...)</code>.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#afterSwitchToWindow(java.lang.String,org.openqa.selenium.WebDriver)">afterSwitchToWindow</a></span>&#8203;(java.lang.String&nbsp;windowName,
-                   <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+                   org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a></div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">This action will be performed each time after <code>WebDriver.TargetLocator.window(String)</code></div>
 </td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeAlertAccept(org.openqa.selenium.WebDriver)">beforeAlertAccept</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeAlertAccept(org.openqa.selenium.WebDriver)">beforeAlertAccept</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">This action will be performed each time before <a href="../../Alert.html#accept()"><code>Alert.accept()</code></a></div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">This action will be performed each time before <code>Alert.accept()</code></div>
 </td>
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeAlertDismiss(org.openqa.selenium.WebDriver)">beforeAlertDismiss</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeAlertDismiss(org.openqa.selenium.WebDriver)">beforeAlertDismiss</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">This action will be performed each time after <a href="../../Alert.html#dismiss()"><code>Alert.dismiss()</code></a></div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">This action will be performed each time after <code>Alert.dismiss()</code></div>
 </td>
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)">beforeChangeValueOf</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                   <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)">beforeChangeValueOf</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+                   org.openqa.selenium.WebDriver&nbsp;driver,
                    java.lang.CharSequence[]&nbsp;keysToSend)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../WebElement.html#clear()"><code>WebElement.clear()</code></a>, <a href="../../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(...)</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>WebElement.clear()</code>, <code>WebElement.sendKeys(...)</code>.</div>
 </td>
 </tr>
 <tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeClickOn</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-             <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeClickOn</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+             org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../WebElement.html#click()"><code>WebElement.click()</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>WebElement.click()</code>.</div>
 </td>
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeFindBy</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;by,
-            <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-            <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeFindBy</a></span>&#8203;(org.openqa.selenium.By&nbsp;by,
+            org.openqa.selenium.WebElement&nbsp;element,
+            org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(...)</code></a>, or
- <a href="../../WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(...)</code></a>, or <a href="../../WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(...)</code></a>, or <a href="../../WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElements(...)</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>WebDriver.findElement(...)</code>, or
+ <code>WebDriver.findElements(...)</code>, or <code>WebElement.findElement(...)</code>, or <code>WebElement.findElements(...)</code>.</div>
 </td>
 </tr>
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeGetScreenshotAs(org.openqa.selenium.OutputType)">beforeGetScreenshotAs</a></span>&#8203;(<a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeGetScreenshotAs(org.openqa.selenium.OutputType)">beforeGetScreenshotAs</a></span>&#8203;(org.openqa.selenium.OutputType&lt;X&gt;&nbsp;target)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>TakesScreenshot.getScreenshotAs(OutputType)</code>
  allows the implementation to determine which type of output will be generated</div>
 </td>
 </tr>
 <tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeGetText</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-             <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeGetText</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+             org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../WebElement.html#getText()"><code>WebElement.getText()</code></a> method is being called</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>WebElement.getText()</code> method is being called</div>
 </td>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeNavigateBack(org.openqa.selenium.WebDriver)">beforeNavigateBack</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeNavigateBack(org.openqa.selenium.WebDriver)">beforeNavigateBack</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../WebDriver.Navigation.html#back()"><code>navigate().back()</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>navigate().back()</code>.</div>
 </td>
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeNavigateForward(org.openqa.selenium.WebDriver)">beforeNavigateForward</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeNavigateForward(org.openqa.selenium.WebDriver)">beforeNavigateForward</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../WebDriver.Navigation.html#forward()"><code>navigate().forward()</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>navigate().forward()</code>.</div>
 </td>
 </tr>
 <tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeNavigateRefresh(org.openqa.selenium.WebDriver)">beforeNavigateRefresh</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeNavigateRefresh(org.openqa.selenium.WebDriver)">beforeNavigateRefresh</a></span>&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../WebDriver.Navigation.html#refresh()"><code>navigate().refresh()</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>navigate().refresh()</code>.</div>
 </td>
 </tr>
 <tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeNavigateTo(java.lang.String,org.openqa.selenium.WebDriver)">beforeNavigateTo</a></span>&#8203;(java.lang.String&nbsp;url,
-                <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+                org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../WebDriver.html#get(java.lang.String)"><code>get(String url)</code></a> respectively
- <a href="../../WebDriver.Navigation.html#to(java.lang.String)"><code>navigate().to(String url)</code></a>.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>get(String url)</code> respectively
+ <code>navigate().to(String url)</code>.</div>
 </td>
 </tr>
 <tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeScript(java.lang.String,org.openqa.selenium.WebDriver)">beforeScript</a></span>&#8203;(java.lang.String&nbsp;script,
-            <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+            org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">Called before <a href="../../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)"><code>RemoteWebDriver.executeScript(String, Object...)</code></a></div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">Called before <code>RemoteWebDriver.executeScript(String, Object...)</code></div>
 </td>
 </tr>
 <tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#beforeSwitchToWindow(java.lang.String,org.openqa.selenium.WebDriver)">beforeSwitchToWindow</a></span>&#8203;(java.lang.String&nbsp;windowName,
-                    <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+                    org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
-<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a></div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block">This action will be performed each time before <code>WebDriver.TargetLocator.window(String)</code></div>
 </td>
 </tr>
 <tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onException(java.lang.Throwable,org.openqa.selenium.WebDriver)">onException</a></span>&#8203;(java.lang.Throwable&nbsp;throwable,
-           <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
+           org.openqa.selenium.WebDriver&nbsp;driver)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Called whenever an exception would be thrown.</div>
 </td>
 </tr>
@@ -434,6 +465,7 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <li class="blockList">
 <h4>AbstractWebDriverEventListener</h4>
 <pre>public&nbsp;AbstractWebDriverEventListener()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </li>
 </ul>
 </li>
@@ -452,9 +484,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeAlertAccept</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeAlertAccept&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeAlertAccept&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeAlertAccept(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">This action will be performed each time before <a href="../../Alert.html#accept()"><code>Alert.accept()</code></a></div>
+<div class="block">This action will be performed each time before <code>Alert.accept()</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeAlertAccept(org.openqa.selenium.WebDriver)">beforeAlertAccept</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -469,9 +502,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterAlertAccept</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterAlertAccept&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;afterAlertAccept&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterAlertAccept(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">This action will be performed each time after <a href="../../Alert.html#accept()"><code>Alert.accept()</code></a></div>
+<div class="block">This action will be performed each time after <code>Alert.accept()</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#afterAlertAccept(org.openqa.selenium.WebDriver)">afterAlertAccept</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -486,9 +520,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterAlertDismiss</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterAlertDismiss&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;afterAlertDismiss&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterAlertDismiss(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">This action will be performed each time before <a href="../../Alert.html#dismiss()"><code>Alert.dismiss()</code></a></div>
+<div class="block">This action will be performed each time before <code>Alert.dismiss()</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#afterAlertDismiss(org.openqa.selenium.WebDriver)">afterAlertDismiss</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -503,9 +538,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeAlertDismiss</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeAlertDismiss&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeAlertDismiss&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeAlertDismiss(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">This action will be performed each time after <a href="../../Alert.html#dismiss()"><code>Alert.dismiss()</code></a></div>
+<div class="block">This action will be performed each time after <code>Alert.dismiss()</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeAlertDismiss(org.openqa.selenium.WebDriver)">beforeAlertDismiss</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -521,10 +557,11 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <li class="blockList">
 <h4>beforeNavigateTo</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;beforeNavigateTo&#8203;(java.lang.String&nbsp;url,
-                             <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                             org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeNavigateTo(java.lang.String,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../WebDriver.html#get(java.lang.String)"><code>get(String url)</code></a> respectively
- <a href="../../WebDriver.Navigation.html#to(java.lang.String)"><code>navigate().to(String url)</code></a>.</div>
+<div class="block">Called before <code>get(String url)</code> respectively
+ <code>navigate().to(String url)</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeNavigateTo(java.lang.String,org.openqa.selenium.WebDriver)">beforeNavigateTo</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -541,10 +578,11 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <li class="blockList">
 <h4>afterNavigateTo</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;afterNavigateTo&#8203;(java.lang.String&nbsp;url,
-                            <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                            org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterNavigateTo(java.lang.String,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../WebDriver.html#get(java.lang.String)"><code>get(String url)</code></a> respectively
- <a href="../../WebDriver.Navigation.html#to(java.lang.String)"><code>navigate().to(String url)</code></a>. Not called, if an
+<div class="block">Called after <code>get(String url)</code> respectively
+ <code>navigate().to(String url)</code>. Not called, if an
  exception is thrown.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -561,9 +599,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeNavigateBack</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeNavigateBack&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeNavigateBack&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeNavigateBack(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../WebDriver.Navigation.html#back()"><code>navigate().back()</code></a>.</div>
+<div class="block">Called before <code>navigate().back()</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeNavigateBack(org.openqa.selenium.WebDriver)">beforeNavigateBack</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -578,9 +617,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterNavigateBack</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterNavigateBack&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;afterNavigateBack&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterNavigateBack(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium"><code>navigate().back()</code></a>. Not called, if an
+<div class="block">Called after <code>navigate().back()</code>. Not called, if an
  exception is thrown.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -596,9 +636,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeNavigateForward</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeNavigateForward&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeNavigateForward&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeNavigateForward(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../WebDriver.Navigation.html#forward()"><code>navigate().forward()</code></a>.</div>
+<div class="block">Called before <code>navigate().forward()</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeNavigateForward(org.openqa.selenium.WebDriver)">beforeNavigateForward</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -613,9 +654,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterNavigateForward</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterNavigateForward&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;afterNavigateForward&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterNavigateForward(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../WebDriver.Navigation.html#forward()"><code>navigate().forward()</code></a>. Not called,
+<div class="block">Called after <code>navigate().forward()</code>. Not called,
  if an exception is thrown.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -631,9 +673,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeNavigateRefresh</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeNavigateRefresh&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeNavigateRefresh&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeNavigateRefresh(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../WebDriver.Navigation.html#refresh()"><code>navigate().refresh()</code></a>.</div>
+<div class="block">Called before <code>navigate().refresh()</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeNavigateRefresh(org.openqa.selenium.WebDriver)">beforeNavigateRefresh</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -648,9 +691,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterNavigateRefresh</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterNavigateRefresh&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;afterNavigateRefresh&#8203;(org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterNavigateRefresh(org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../WebDriver.Navigation.html#refresh()"><code>navigate().refresh()</code></a>. Not called,
+<div class="block">Called after <code>navigate().refresh()</code>. Not called,
  if an exception is thrown.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -666,12 +710,13 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeFindBy</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeFindBy&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;by,
-                         <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                         <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeFindBy&#8203;(org.openqa.selenium.By&nbsp;by,
+                         org.openqa.selenium.WebElement&nbsp;element,
+                         org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(...)</code></a>, or
- <a href="../../WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(...)</code></a>, or <a href="../../WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(...)</code></a>, or <a href="../../WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElements(...)</code></a>.</div>
+<div class="block">Called before <code>WebDriver.findElement(...)</code>, or
+ <code>WebDriver.findElements(...)</code>, or <code>WebElement.findElement(...)</code>, or <code>WebElement.findElements(...)</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeFindBy</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -688,12 +733,13 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterFindBy</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterFindBy&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;by,
-                        <a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                        <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;afterFindBy&#8203;(org.openqa.selenium.By&nbsp;by,
+                        org.openqa.selenium.WebElement&nbsp;element,
+                        org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../WebDriver.html#findElement(org.openqa.selenium.By)"><code>WebDriver.findElement(...)</code></a>, or
- <a href="../../WebDriver.html#findElements(org.openqa.selenium.By)"><code>WebDriver.findElements(...)</code></a>, or <a href="../../WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(...)</code></a>, or <a href="../../WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElements(...)</code></a>.</div>
+<div class="block">Called after <code>WebDriver.findElement(...)</code>, or
+ <code>WebDriver.findElements(...)</code>, or <code>WebElement.findElement(...)</code>, or <code>WebElement.findElements(...)</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#afterFindBy(org.openqa.selenium.By,org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">afterFindBy</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -710,10 +756,11 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeClickOn</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeClickOn&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                          <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeClickOn&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+                          org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../WebElement.html#click()"><code>WebElement.click()</code></a>.</div>
+<div class="block">Called before <code>WebElement.click()</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeClickOn</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -729,10 +776,11 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterClickOn</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterClickOn&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                         <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;afterClickOn&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+                         org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterClickOn(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../WebElement.html#click()"><code>WebElement.click()</code></a>. Not called, if an exception is
+<div class="block">Called after <code>WebElement.click()</code>. Not called, if an exception is
  thrown.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -749,11 +797,12 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeChangeValueOf</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeChangeValueOf&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                                <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeChangeValueOf&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+                                org.openqa.selenium.WebDriver&nbsp;driver,
                                 java.lang.CharSequence[]&nbsp;keysToSend)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../WebElement.html#clear()"><code>WebElement.clear()</code></a>, <a href="../../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(...)</code></a>.</div>
+<div class="block">Called before <code>WebElement.clear()</code>, <code>WebElement.sendKeys(...)</code>.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)">beforeChangeValueOf</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -769,11 +818,12 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterChangeValueOf</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterChangeValueOf&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                               <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<pre class="methodSignature">public&nbsp;void&nbsp;afterChangeValueOf&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+                               org.openqa.selenium.WebDriver&nbsp;driver,
                                java.lang.CharSequence[]&nbsp;keysToSend)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../WebElement.html#clear()"><code>WebElement.clear()</code></a>, <a href="../../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>WebElement.sendKeys(...)</code></a>}. Not called, if an exception is thrown.</div>
+<div class="block">Called after <code>WebElement.clear()</code>, <code>WebElement.sendKeys(...)</code>}. Not called, if an exception is thrown.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#afterChangeValueOf(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.CharSequence%5B%5D)">afterChangeValueOf</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -790,9 +840,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <li class="blockList">
 <h4>beforeScript</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;beforeScript&#8203;(java.lang.String&nbsp;script,
-                         <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                         org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeScript(java.lang.String,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)"><code>RemoteWebDriver.executeScript(String, Object...)</code></a></div>
+<div class="block">Called before <code>RemoteWebDriver.executeScript(String, Object...)</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeScript(java.lang.String,org.openqa.selenium.WebDriver)">beforeScript</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
@@ -809,9 +860,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <li class="blockList">
 <h4>afterScript</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;afterScript&#8203;(java.lang.String&nbsp;script,
-                        <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                        org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterScript(java.lang.String,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../remote/RemoteWebDriver.html#executeScript(java.lang.String,java.lang.Object...)"><code>RemoteWebDriver.executeScript(String, Object...)</code></a>.
+<div class="block">Called after <code>RemoteWebDriver.executeScript(String, Object...)</code>.
  Not called if an exception is thrown</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -829,17 +881,18 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <li class="blockList">
 <h4>afterSwitchToWindow</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;afterSwitchToWindow&#8203;(java.lang.String&nbsp;windowName,
-                                <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                                org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterSwitchToWindow(java.lang.String,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">This action will be performed each time after <a href="../../WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a></div>
+<div class="block">This action will be performed each time after <code>WebDriver.TargetLocator.window(String)</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#afterSwitchToWindow(java.lang.String,org.openqa.selenium.WebDriver)">afterSwitchToWindow</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>windowName</code> - The name of the window or the handle as returned by
-                   <a href="../../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a>
+                   <code>WebDriver.getWindowHandle()</code>
                    or <code>null</code> if switching to a new window created by
-                   <a href="../../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a></dd>
+                   <code>WebDriver.TargetLocator.newWindow(WindowType)</code></dd>
 <dd><code>driver</code> - WebDriver</dd>
 </dl>
 </li>
@@ -851,17 +904,18 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <li class="blockList">
 <h4>beforeSwitchToWindow</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;beforeSwitchToWindow&#8203;(java.lang.String&nbsp;windowName,
-                                 <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                                 org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeSwitchToWindow(java.lang.String,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">This action will be performed each time before <a href="../../WebDriver.TargetLocator.html#window(java.lang.String)"><code>WebDriver.TargetLocator.window(String)</code></a></div>
+<div class="block">This action will be performed each time before <code>WebDriver.TargetLocator.window(String)</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeSwitchToWindow(java.lang.String,org.openqa.selenium.WebDriver)">beforeSwitchToWindow</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>windowName</code> - The name of the window or the handle as returned by
-                   <a href="../../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a>
+                   <code>WebDriver.getWindowHandle()</code>
                    or <code>null</code> if switching to a new window created by
-                   <a href="../../WebDriver.TargetLocator.html#newWindow(org.openqa.selenium.WindowType)"><code>WebDriver.TargetLocator.newWindow(WindowType)</code></a></dd>
+                   <code>WebDriver.TargetLocator.newWindow(WindowType)</code></dd>
 <dd><code>driver</code> - WebDriver</dd>
 </dl>
 </li>
@@ -873,7 +927,8 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <li class="blockList">
 <h4>onException</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onException&#8203;(java.lang.Throwable&nbsp;throwable,
-                        <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+                        org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#onException(java.lang.Throwable,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
 <div class="block">Called whenever an exception would be thrown.</div>
 <dl>
@@ -891,9 +946,10 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeGetScreenshotAs</h4>
-<pre class="methodSignature">public&nbsp;&lt;X&gt;&nbsp;void&nbsp;beforeGetScreenshotAs&#8203;(<a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</pre>
+<pre class="methodSignature">public&nbsp;&lt;X&gt;&nbsp;void&nbsp;beforeGetScreenshotAs&#8203;(org.openqa.selenium.OutputType&lt;X&gt;&nbsp;target)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeGetScreenshotAs(org.openqa.selenium.OutputType)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a>
+<div class="block">Called before <code>TakesScreenshot.getScreenshotAs(OutputType)</code>
  allows the implementation to determine which type of output will be generated</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -913,10 +969,11 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>afterGetScreenshotAs</h4>
-<pre class="methodSignature">public&nbsp;&lt;X&gt;&nbsp;void&nbsp;afterGetScreenshotAs&#8203;(<a href="../../OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target,
+<pre class="methodSignature">public&nbsp;&lt;X&gt;&nbsp;void&nbsp;afterGetScreenshotAs&#8203;(org.openqa.selenium.OutputType&lt;X&gt;&nbsp;target,
                                      X&nbsp;screenshot)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterGetScreenshotAs(org.openqa.selenium.OutputType,X)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called after <a href="../../TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)"><code>TakesScreenshot.getScreenshotAs(OutputType)</code></a>
+<div class="block">Called after <code>TakesScreenshot.getScreenshotAs(OutputType)</code>
  allows the implementation to determine which type of output was generated
  and to access the output itself</div>
 <dl>
@@ -936,16 +993,17 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockList">
 <li class="blockList">
 <h4>beforeGetText</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;beforeGetText&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                          <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;beforeGetText&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+                          org.openqa.selenium.WebDriver&nbsp;driver)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#beforeGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called before <a href="../../WebElement.html#getText()"><code>WebElement.getText()</code></a> method is being called</div>
+<div class="block">Called before <code>WebElement.getText()</code> method is being called</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#beforeGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver)">beforeGetText</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>element</code> - - <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> against which call is being made</dd>
-<dd><code>driver</code> - - instance of <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a></dd>
+<dd><code>element</code> - - <code>WebElement</code> against which call is being made</dd>
+<dd><code>driver</code> - - instance of <code>WebDriver</code></dd>
 </dl>
 </li>
 </ul>
@@ -955,18 +1013,19 @@ implements <a href="WebDriverEventListener.html" title="interface in org.openqa.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>afterGetText</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;afterGetText&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                         <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<pre class="methodSignature">public&nbsp;void&nbsp;afterGetText&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+                         org.openqa.selenium.WebDriver&nbsp;driver,
                          java.lang.String&nbsp;text)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="WebDriverEventListener.html#afterGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.String)">WebDriverEventListener</a></code></span></div>
-<div class="block">Called right after <a href="../../WebElement.html#getText()"><code>WebElement.getText()</code></a> method is being called</div>
+<div class="block">Called right after <code>WebElement.getText()</code> method is being called</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="WebDriverEventListener.html#afterGetText(org.openqa.selenium.WebElement,org.openqa.selenium.WebDriver,java.lang.String)">afterGetText</a></code>&nbsp;in interface&nbsp;<code><a href="WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>element</code> - - <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> against which call is being made</dd>
-<dd><code>driver</code> - - instance of <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a></dd>
-<dd><code>text</code> - - <code>String</code> object extracted from respective <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a></dd>
+<dd><code>element</code> - - <code>WebElement</code> against which call is being made</dd>
+<dd><code>driver</code> - - instance of <code>WebDriver</code></dd>
+<dd><code>text</code> - - <code>String</code> object extracted from respective <code>WebElement</code></dd>
 </dl>
 </li>
 </ul>

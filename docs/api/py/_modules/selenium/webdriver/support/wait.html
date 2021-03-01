@@ -56,15 +56,15 @@
 <span class="c1"># under the License.</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">NoSuchElementException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="n">TimeoutException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
 
 <span class="n">POLL_FREQUENCY</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># How long to sleep inbetween calls to the method</span>
 <span class="n">IGNORED_EXCEPTIONS</span> <span class="o">=</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,)</span>  <span class="c1"># exceptions ignored during calls to the method</span>
 
 
 <div class="viewcode-block" id="WebDriverWait"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait">[docs]</a><span class="k">class</span> <span class="nc">WebDriverWait</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="o">=</span><span class="n">POLL_FREQUENCY</span><span class="p">,</span> <span class="n">ignored_exceptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="o">=</span><span class="n">POLL_FREQUENCY</span><span class="p">,</span> <span class="n">ignored_exceptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor, takes a WebDriver instance and timeout in seconds.</span>
 
 <span class="sd">           :Args:</span>
@@ -89,14 +89,14 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_poll</span> <span class="o">=</span> <span class="n">POLL_FREQUENCY</span>
         <span class="n">exceptions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">IGNORED_EXCEPTIONS</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ignored_exceptions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ignored_exceptions</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">exceptions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">ignored_exceptions</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># ignored_exceptions is not iterable</span>
                 <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ignored_exceptions</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ignored_exceptions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">exceptions</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{0.__module__}</span><span class="s1">.</span><span class="si">{0.__name__}</span><span class="s1"> (session=&quot;</span><span class="si">{1}</span><span class="s1">&quot;)&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
 

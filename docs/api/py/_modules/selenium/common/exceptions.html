@@ -65,16 +65,16 @@
 <span class="sd">    Base webdriver exception.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">screen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stacktrace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">screen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stacktrace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="o">=</span> <span class="n">screen</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span> <span class="o">=</span> <span class="n">stacktrace</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">exception_msg</span> <span class="o">=</span> <span class="s2">&quot;Message: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">screen</span><span class="p">:</span>
             <span class="n">exception_msg</span> <span class="o">+=</span> <span class="s2">&quot;Screenshot: available via screen</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span><span class="p">:</span>
             <span class="n">stacktrace</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span><span class="p">)</span>
             <span class="n">exception_msg</span> <span class="o">+=</span> <span class="s2">&quot;Stacktrace:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">stacktrace</span>
         <span class="k">return</span> <span class="n">exception_msg</span></div>
@@ -166,11 +166,11 @@
 <span class="sd">    Usually raised when  an unexpected modal is blocking the webdriver from executing</span>
 <span class="sd">    commands.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">screen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stacktrace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alert_text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">screen</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stacktrace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alert_text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">UnexpectedAlertPresentException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alert_text</span> <span class="o">=</span> <span class="n">alert_text</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;Alert Text: </span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alert_text</span><span class="p">,</span> <span class="nb">super</span><span class="p">(</span><span class="n">UnexpectedAlertPresentException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span></div>
 
 

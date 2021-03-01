@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -163,7 +163,7 @@ implements <a href="../DockerProtocol.html" title="interface in org.openqa.selen
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.http.HttpHandler)">V140Docker</a></span>&#8203;(<a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;client)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.http.HttpHandler)">V140Docker</a></span>&#8203;(org.openqa.selenium.remote.http.HttpHandler&nbsp;client)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -190,27 +190,37 @@ implements <a href="../DockerProtocol.html" title="interface in org.openqa.selen
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="../ContainerLogs.html" title="class in org.openqa.selenium.docker">ContainerLogs</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getContainerLogs(org.openqa.selenium.docker.ContainerId)">getContainerLogs</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../Image.html" title="class in org.openqa.selenium.docker">Image</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getImage(java.lang.String)">getImage</a></span>&#8203;(java.lang.String&nbsp;imageName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../ContainerInfo.html" title="class in org.openqa.selenium.docker">ContainerInfo</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#inspectContainer(org.openqa.selenium.docker.ContainerId)">inspectContainer</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isContainerPresent(org.openqa.selenium.docker.ContainerId)">isContainerPresent</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#startContainer(org.openqa.selenium.docker.ContainerId)">startContainer</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stopContainer(org.openqa.selenium.docker.ContainerId,java.time.Duration)">stopContainer</a></span>&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id,
              java.time.Duration&nbsp;timeout)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#version()">version</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -245,7 +255,7 @@ implements <a href="../DockerProtocol.html" title="interface in org.openqa.selen
 <ul class="blockListLast">
 <li class="blockList">
 <h4>V140Docker</h4>
-<pre>public&nbsp;V140Docker&#8203;(<a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;client)</pre>
+<pre>public&nbsp;V140Docker&#8203;(org.openqa.selenium.remote.http.HttpHandler&nbsp;client)</pre>
 </li>
 </ul>
 </li>
@@ -300,6 +310,22 @@ implements <a href="../DockerProtocol.html" title="interface in org.openqa.selen
 </dl>
 </li>
 </ul>
+<a id="isContainerPresent(org.openqa.selenium.docker.ContainerId)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isContainerPresent</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isContainerPresent&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)
+                           throws <a href="../DockerException.html" title="class in org.openqa.selenium.docker">DockerException</a></pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../DockerProtocol.html#isContainerPresent(org.openqa.selenium.docker.ContainerId)">isContainerPresent</a></code>&nbsp;in interface&nbsp;<code><a href="../DockerProtocol.html" title="interface in org.openqa.selenium.docker">DockerProtocol</a></code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="../DockerException.html" title="class in org.openqa.selenium.docker">DockerException</a></code></dd>
+</dl>
+</li>
+</ul>
 <a id="startContainer(org.openqa.selenium.docker.ContainerId)">
 <!--   -->
 </a>
@@ -336,7 +362,7 @@ implements <a href="../DockerProtocol.html" title="interface in org.openqa.selen
 <a id="inspectContainer(org.openqa.selenium.docker.ContainerId)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>inspectContainer</h4>
 <pre class="methodSignature">public&nbsp;<a href="../ContainerInfo.html" title="class in org.openqa.selenium.docker">ContainerInfo</a>&nbsp;inspectContainer&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)
@@ -344,6 +370,22 @@ implements <a href="../DockerProtocol.html" title="interface in org.openqa.selen
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../DockerProtocol.html#inspectContainer(org.openqa.selenium.docker.ContainerId)">inspectContainer</a></code>&nbsp;in interface&nbsp;<code><a href="../DockerProtocol.html" title="interface in org.openqa.selenium.docker">DockerProtocol</a></code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="../DockerException.html" title="class in org.openqa.selenium.docker">DockerException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getContainerLogs(org.openqa.selenium.docker.ContainerId)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getContainerLogs</h4>
+<pre class="methodSignature">public&nbsp;<a href="../ContainerLogs.html" title="class in org.openqa.selenium.docker">ContainerLogs</a>&nbsp;getContainerLogs&#8203;(<a href="../ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id)
+                               throws <a href="../DockerException.html" title="class in org.openqa.selenium.docker">DockerException</a></pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../DockerProtocol.html#getContainerLogs(org.openqa.selenium.docker.ContainerId)">getContainerLogs</a></code>&nbsp;in interface&nbsp;<code><a href="../DockerProtocol.html" title="interface in org.openqa.selenium.docker">DockerProtocol</a></code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../DockerException.html" title="class in org.openqa.selenium.docker">DockerException</a></code></dd>
 </dl>

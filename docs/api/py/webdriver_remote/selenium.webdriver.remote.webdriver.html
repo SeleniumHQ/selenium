@@ -142,56 +142,6 @@ driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="selenium.webdriver.remote.webdriver.WebDriver.add_js_error_listener">
-<code class="descname">add_js_error_listener</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_js_error_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.add_js_error_listener" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens for JS errors and when the contextmanager exits check if there were JS Errors</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">driver</span><span class="o">.</span><span class="n">add_js_error_listener</span><span class="p">()</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-    <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s2">&quot;throwing-mouseover&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="k">assert</span> <span class="n">error</span><span class="o">.</span><span class="n">exception_details</span><span class="o">.</span><span class="n">stack_trace</span><span class="o">.</span><span class="n">call_frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">function_name</span> <span class="o">==</span> <span class="s2">&quot;onmouseover&quot;</span>
-</pre></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.remote.webdriver.WebDriver.add_listener">
-<code class="descname">add_listener</code><span class="sig-paren">(</span><em>event_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.add_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.add_listener" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens for certain events that are passed in.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
-<li>event_type: The type of event that we want to look at.</li>
-</ul>
-<table class="last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">driver</span><span class="o">.</span><span class="n">add_listener</span><span class="p">(</span><span class="n">Console</span><span class="o">.</span><span class="n">log</span><span class="p">)</span> <span class="k">as</span> <span class="n">messages</span><span class="p">:</span>
-    <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;console.log(&#39;I like cheese&#39;)&quot;</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">messages</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;I love cheese&quot;</span>
-</pre></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.application_cache">
 <code class="descname">application_cache</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.application_cache" title="Permalink to this definition">¶</a></dt>
@@ -1183,6 +1133,11 @@ execute_async_script, see set_script_timeout.</dd>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.log">
+<code class="descname">log</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.log_types">
 <code class="descname">log_types</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.log_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a list of the available log types. This only works with w3c compliant browsers.</p>
@@ -1269,8 +1224,15 @@ execute_async_script, see set_script_timeout.</dd>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.pin_script">
-<code class="descname">pin_script</code><span class="sig-paren">(</span><em>script</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.pin_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.pin_script" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pin_script</code><span class="sig-paren">(</span><em>script</em>, <em>script_key=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.pin_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.pin_script" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.print_page">
+<code class="descname">print_page</code><span class="sig-paren">(</span><em>print_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.print_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.print_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes PDF of the current page.
+The driver makes a best effort to return a PDF based on the provided parameters.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.quit">
@@ -1467,10 +1429,7 @@ to define custom startup behavior.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
-<li>browser_name - The name of the browser to request.</li>
-<li>version - Which browser version to request.</li>
-<li>platform - Which platform to request the browser on.</li>
-<li>javascript_enabled - Whether the new session should support JavaScript.</li>
+<li>capabilities - a capabilities dict to start the session with.</li>
 <li>browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.</li>
 </ul>
 </td>
@@ -1580,11 +1539,6 @@ to define custom shutdown behavior.</p>
 <dl class="function">
 <dt id="selenium.webdriver.remote.webdriver.get_remote_connection">
 <code class="descclassname">selenium.webdriver.remote.webdriver.</code><code class="descname">get_remote_connection</code><span class="sig-paren">(</span><em>capabilities</em>, <em>command_executor</em>, <em>keep_alive</em>, <em>ignore_local_proxy=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#get_remote_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.get_remote_connection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="selenium.webdriver.remote.webdriver.import_cdp">
-<code class="descclassname">selenium.webdriver.remote.webdriver.</code><code class="descname">import_cdp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#import_cdp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.import_cdp" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

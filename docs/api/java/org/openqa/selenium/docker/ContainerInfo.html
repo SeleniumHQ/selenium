@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -158,8 +158,9 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.docker.ContainerId,java.lang.String)">ContainerInfo</a></span>&#8203;(<a href="ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id,
-             java.lang.String&nbsp;ip)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.docker.ContainerId,java.lang.String,java.util.List)">ContainerInfo</a></span>&#8203;(<a href="ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id,
+             java.lang.String&nbsp;ip,
+             java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;mountedVolumes)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -196,11 +197,16 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMountedVolumes()">getMountedVolumes</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -229,14 +235,15 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(org.openqa.selenium.docker.ContainerId,java.lang.String)">
+<a id="&lt;init&gt;(org.openqa.selenium.docker.ContainerId,java.lang.String,java.util.List)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ContainerInfo</h4>
 <pre>public&nbsp;ContainerInfo&#8203;(<a href="ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;id,
-                     java.lang.String&nbsp;ip)</pre>
+                     java.lang.String&nbsp;ip,
+                     java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;mountedVolumes)</pre>
 </li>
 </ul>
 </li>
@@ -265,6 +272,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getId</h4>
 <pre class="methodSignature">public&nbsp;<a href="ContainerId.html" title="class in org.openqa.selenium.docker">ContainerId</a>&nbsp;getId()</pre>
+</li>
+</ul>
+<a id="getMountedVolumes()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMountedVolumes</h4>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&gt;&nbsp;getMountedVolumes()</pre>
 </li>
 </ul>
 <a id="toString()">

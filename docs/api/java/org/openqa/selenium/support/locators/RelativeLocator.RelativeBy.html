@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -128,7 +128,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../By.html" title="class in org.openqa.selenium">org.openqa.selenium.By</a></li>
+<li>org.openqa.selenium.By</li>
 <li>
 <ul class="inheritance">
 <li>org.openqa.selenium.support.locators.RelativeLocator.RelativeBy</li>
@@ -141,12 +141,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><code>org.openqa.selenium.By.Remotable</code></dd>
+</dl>
+<dl>
 <dt>Enclosing class:</dt>
 <dd><a href="RelativeLocator.html" title="class in org.openqa.selenium.support.locators">RelativeLocator</a></dd>
 </dl>
 <hr>
 <pre>public static class <span class="typeNameLabel">RelativeLocator.RelativeBy</span>
-extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre>
+extends org.openqa.selenium.By
+implements org.openqa.selenium.By.Remotable</pre>
 </li>
 </ul>
 </div>
@@ -164,8 +169,15 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <li class="blockList"><a id="nested.classes.inherited.from.class.org.openqa.selenium.By">
 <!--   -->
 </a>
-<h3>Nested classes/interfaces inherited from class&nbsp;org.openqa.selenium.<a href="../../By.html" title="class in org.openqa.selenium">By</a></h3>
-<code><a href="../../By.ByClassName.html" title="class in org.openqa.selenium">By.ByClassName</a>, <a href="../../By.ByCssSelector.html" title="class in org.openqa.selenium">By.ByCssSelector</a>, <a href="../../By.ById.html" title="class in org.openqa.selenium">By.ById</a>, <a href="../../By.ByLinkText.html" title="class in org.openqa.selenium">By.ByLinkText</a>, <a href="../../By.ByName.html" title="class in org.openqa.selenium">By.ByName</a>, <a href="../../By.ByPartialLinkText.html" title="class in org.openqa.selenium">By.ByPartialLinkText</a>, <a href="../../By.ByTagName.html" title="class in org.openqa.selenium">By.ByTagName</a>, <a href="../../By.ByXPath.html" title="class in org.openqa.selenium">By.ByXPath</a>, <a href="../../By.StandardLocator.html" title="class in org.openqa.selenium">By.StandardLocator</a></code></li>
+<h3>Nested classes/interfaces inherited from class&nbsp;org.openqa.selenium.By</h3>
+<code>org.openqa.selenium.By.ByClassName, org.openqa.selenium.By.ByCssSelector, org.openqa.selenium.By.ById, org.openqa.selenium.By.ByLinkText, org.openqa.selenium.By.ByName, org.openqa.selenium.By.ByPartialLinkText, org.openqa.selenium.By.ByTagName, org.openqa.selenium.By.ByXPath, org.openqa.selenium.By.Remotable</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="nested.classes.inherited.from.class.org.openqa.selenium.By.Remotable">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from interface&nbsp;org.openqa.selenium.By.Remotable</h3>
+<code>org.openqa.selenium.By.Remotable.Parameters</code></li>
 </ul>
 </li>
 </ul>
@@ -186,71 +198,74 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#above(org.openqa.selenium.By)">above</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#above(org.openqa.selenium.By)">above</a></span>&#8203;(org.openqa.selenium.By&nbsp;locator)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#above(org.openqa.selenium.WebElement)">above</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#above(org.openqa.selenium.WebElement)">above</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#below(org.openqa.selenium.By)">below</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#below(org.openqa.selenium.By)">below</a></span>&#8203;(org.openqa.selenium.By&nbsp;locator)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#below(org.openqa.selenium.WebElement)">below</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#below(org.openqa.selenium.WebElement)">below</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findElements(org.openqa.selenium.SearchContext)">findElements</a></span>&#8203;(<a href="../../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code></th>
-<td class="colLast">
-<div class="block">Find many elements.</div>
-</td>
+<td class="colFirst"><code>java.util.List&lt;org.openqa.selenium.WebElement&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findElements(org.openqa.selenium.SearchContext)">findElements</a></span>&#8203;(org.openqa.selenium.SearchContext&nbsp;context)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#near(org.openqa.selenium.By)">near</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
+<td class="colFirst"><code>org.openqa.selenium.By.Remotable.Parameters</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRemoteParameters()">getRemoteParameters</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#near(org.openqa.selenium.By,int)">near</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
-    int&nbsp;atMostDistanceInPixels)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#near(org.openqa.selenium.By)">near</a></span>&#8203;(org.openqa.selenium.By&nbsp;locator)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#near(org.openqa.selenium.WebElement)">near</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#near(org.openqa.selenium.By,int)">near</a></span>&#8203;(org.openqa.selenium.By&nbsp;locator,
+    int&nbsp;atMostDistanceInPixels)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#near(org.openqa.selenium.WebElement,int)">near</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-    int&nbsp;atMostDistanceInPixels)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#near(org.openqa.selenium.WebElement)">near</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toLeftOf(org.openqa.selenium.By)">toLeftOf</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#near(org.openqa.selenium.WebElement,int)">near</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element,
+    int&nbsp;atMostDistanceInPixels)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toLeftOf(org.openqa.selenium.WebElement)">toLeftOf</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toLeftOf(org.openqa.selenium.By)">toLeftOf</a></span>&#8203;(org.openqa.selenium.By&nbsp;locator)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toRightOf(org.openqa.selenium.By)">toRightOf</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toLeftOf(org.openqa.selenium.WebElement)">toLeftOf</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toRightOf(org.openqa.selenium.WebElement)">toRightOf</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toRightOf(org.openqa.selenium.By)">toRightOf</a></span>&#8203;(org.openqa.selenium.By&nbsp;locator)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code><a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toRightOf(org.openqa.selenium.WebElement)">toRightOf</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -258,8 +273,8 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.By">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../By.html" title="class in org.openqa.selenium">By</a></h3>
-<code><a href="../../By.html#className(java.lang.String)">className</a>, <a href="../../By.html#cssSelector(java.lang.String)">cssSelector</a>, <a href="../../By.html#equals(java.lang.Object)">equals</a>, <a href="../../By.html#findElement(org.openqa.selenium.SearchContext)">findElement</a>, <a href="../../By.html#hashCode()">hashCode</a>, <a href="../../By.html#id(java.lang.String)">id</a>, <a href="../../By.html#linkText(java.lang.String)">linkText</a>, <a href="../../By.html#name(java.lang.String)">name</a>, <a href="../../By.html#partialLinkText(java.lang.String)">partialLinkText</a>, <a href="../../By.html#tagName(java.lang.String)">tagName</a>, <a href="../../By.html#toString()">toString</a>, <a href="../../By.html#xpath(java.lang.String)">xpath</a></code></li>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.By</h3>
+<code>className, cssSelector, equals, findElement, getJavascriptExecutor, getWebDriver, hashCode, id, linkText, name, partialLinkText, tagName, toString, xpath</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -290,7 +305,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>above</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;above&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;above&#8203;(org.openqa.selenium.WebElement&nbsp;element)</pre>
 </li>
 </ul>
 <a id="above(org.openqa.selenium.By)">
@@ -299,7 +314,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>above</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;above&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;above&#8203;(org.openqa.selenium.By&nbsp;locator)</pre>
 </li>
 </ul>
 <a id="below(org.openqa.selenium.WebElement)">
@@ -308,7 +323,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>below</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;below&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;below&#8203;(org.openqa.selenium.WebElement&nbsp;element)</pre>
 </li>
 </ul>
 <a id="below(org.openqa.selenium.By)">
@@ -317,7 +332,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>below</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;below&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;below&#8203;(org.openqa.selenium.By&nbsp;locator)</pre>
 </li>
 </ul>
 <a id="toLeftOf(org.openqa.selenium.WebElement)">
@@ -326,7 +341,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>toLeftOf</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;toLeftOf&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;toLeftOf&#8203;(org.openqa.selenium.WebElement&nbsp;element)</pre>
 </li>
 </ul>
 <a id="toLeftOf(org.openqa.selenium.By)">
@@ -335,7 +350,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>toLeftOf</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;toLeftOf&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;toLeftOf&#8203;(org.openqa.selenium.By&nbsp;locator)</pre>
 </li>
 </ul>
 <a id="toRightOf(org.openqa.selenium.WebElement)">
@@ -344,7 +359,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>toRightOf</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;toRightOf&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;toRightOf&#8203;(org.openqa.selenium.WebElement&nbsp;element)</pre>
 </li>
 </ul>
 <a id="toRightOf(org.openqa.selenium.By)">
@@ -353,7 +368,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>toRightOf</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;toRightOf&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;toRightOf&#8203;(org.openqa.selenium.By&nbsp;locator)</pre>
 </li>
 </ul>
 <a id="near(org.openqa.selenium.WebElement)">
@@ -362,7 +377,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>near</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;near&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;near&#8203;(org.openqa.selenium.WebElement&nbsp;element)</pre>
 </li>
 </ul>
 <a id="near(org.openqa.selenium.WebElement,int)">
@@ -371,7 +386,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>near</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;near&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;near&#8203;(org.openqa.selenium.WebElement&nbsp;element,
                                        int&nbsp;atMostDistanceInPixels)</pre>
 </li>
 </ul>
@@ -381,7 +396,7 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>near</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;near&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;near&#8203;(org.openqa.selenium.By&nbsp;locator)</pre>
 </li>
 </ul>
 <a id="near(org.openqa.selenium.By,int)">
@@ -390,26 +405,33 @@ extends <a href="../../By.html" title="class in org.openqa.selenium">By</a></pre
 <ul class="blockList">
 <li class="blockList">
 <h4>near</h4>
-<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;near&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator,
+<pre class="methodSignature">public&nbsp;<a href="RelativeLocator.RelativeBy.html" title="class in org.openqa.selenium.support.locators">RelativeLocator.RelativeBy</a>&nbsp;near&#8203;(org.openqa.selenium.By&nbsp;locator,
                                        int&nbsp;atMostDistanceInPixels)</pre>
 </li>
 </ul>
 <a id="findElements(org.openqa.selenium.SearchContext)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>findElements</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;findElements&#8203;(<a href="../../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../By.html#findElements(org.openqa.selenium.SearchContext)">By</a></code></span></div>
-<div class="block">Find many elements.</div>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;org.openqa.selenium.WebElement&gt;&nbsp;findElements&#8203;(org.openqa.selenium.SearchContext&nbsp;context)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../By.html#findElements(org.openqa.selenium.SearchContext)">findElements</a></code>&nbsp;in class&nbsp;<code><a href="../../By.html" title="class in org.openqa.selenium">By</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>context</code> - A context to use to find the elements.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A list of WebElements matching the selector.</dd>
+<dd><code>findElements</code>&nbsp;in class&nbsp;<code>org.openqa.selenium.By</code></dd>
+</dl>
+</li>
+</ul>
+<a id="getRemoteParameters()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getRemoteParameters</h4>
+<pre class="methodSignature">public&nbsp;org.openqa.selenium.By.Remotable.Parameters&nbsp;getRemoteParameters()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>getRemoteParameters</code>&nbsp;in interface&nbsp;<code>org.openqa.selenium.By.Remotable</code></dd>
 </dl>
 </li>
 </ul>

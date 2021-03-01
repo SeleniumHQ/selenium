@@ -137,13 +137,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></code></dd>
+<dd><code>org.openqa.selenium.remote.http.HttpHandler</code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">StatusBasedReadinessCheck</span>
 extends java.lang.Object
-implements <a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></pre>
-<div class="block">An <a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http"><code>HttpHandler</code></a> that obeys the contracted required by a Kubernetes
+implements org.openqa.selenium.remote.http.HttpHandler</pre>
+<div class="block">An <code>HttpHandler</code> that obeys the contracted required by a Kubernetes
  health check, but which reads a selenium `/status` endpoint.</div>
 </li>
 </ul>
@@ -165,8 +165,8 @@ implements <a href="../../remote/http/HttpHandler.html" title="interface in org.
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.http.HttpMethod,java.lang.String)">StatusBasedReadinessCheck</a></span>&#8203;(<a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;handler,
-                         <a href="../../remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a>&nbsp;method,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.http.HttpHandler,org.openqa.selenium.remote.http.HttpMethod,java.lang.String)">StatusBasedReadinessCheck</a></span>&#8203;(org.openqa.selenium.remote.http.HttpHandler&nbsp;handler,
+                         org.openqa.selenium.remote.http.HttpMethod&nbsp;method,
                          java.lang.String&nbsp;url)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -189,8 +189,8 @@ implements <a href="../../remote/http/HttpHandler.html" title="interface in org.
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</code></th>
+<td class="colFirst"><code>org.openqa.selenium.remote.http.HttpResponse</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -205,8 +205,8 @@ implements <a href="../../remote/http/HttpHandler.html" title="interface in org.
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.http.HttpHandler">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.<a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></h3>
-<code><a href="../../remote/http/HttpHandler.html#with(org.openqa.selenium.remote.http.Filter)">with</a></code></li>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.HttpHandler</h3>
+<code>with</code></li>
 </ul>
 </li>
 </ul>
@@ -230,8 +230,8 @@ implements <a href="../../remote/http/HttpHandler.html" title="interface in org.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>StatusBasedReadinessCheck</h4>
-<pre>public&nbsp;StatusBasedReadinessCheck&#8203;(<a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;handler,
-                                 <a href="../../remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a>&nbsp;method,
+<pre>public&nbsp;StatusBasedReadinessCheck&#8203;(org.openqa.selenium.remote.http.HttpHandler&nbsp;handler,
+                                 org.openqa.selenium.remote.http.HttpMethod&nbsp;method,
                                  java.lang.String&nbsp;url)</pre>
 </li>
 </ul>
@@ -251,11 +251,11 @@ implements <a href="../../remote/http/HttpHandler.html" title="interface in org.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>execute</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;execute&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)
-                     throws java.io.UncheckedIOException</pre>
+<pre class="methodSignature">public&nbsp;org.openqa.selenium.remote.http.HttpResponse&nbsp;execute&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req)
+                                                     throws java.io.UncheckedIOException</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../remote/http/HttpHandler.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></code>&nbsp;in interface&nbsp;<code><a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></code></dd>
+<dd><code>execute</code>&nbsp;in interface&nbsp;<code>org.openqa.selenium.remote.http.HttpHandler</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.UncheckedIOException</code></dd>
 </dl>

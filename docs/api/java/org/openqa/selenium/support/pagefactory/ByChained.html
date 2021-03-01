@@ -128,7 +128,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../By.html" title="class in org.openqa.selenium">org.openqa.selenium.By</a></li>
+<li>org.openqa.selenium.By</li>
 <li>
 <ul class="inheritance">
 <li>org.openqa.selenium.support.pagefactory.ByChained</li>
@@ -146,7 +146,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">ByChained</span>
-extends <a href="../../By.html" title="class in org.openqa.selenium">By</a>
+extends org.openqa.selenium.By
 implements java.io.Serializable</pre>
 <div class="block">Mechanism used to locate elements within a document using a series of other lookups.  This class
  will find all DOM elements that matches each of the locators in sequence, e.g.
@@ -178,8 +178,8 @@ implements java.io.Serializable</pre>
 <li class="blockList"><a id="nested.classes.inherited.from.class.org.openqa.selenium.By">
 <!--   -->
 </a>
-<h3>Nested classes/interfaces inherited from class&nbsp;org.openqa.selenium.<a href="../../By.html" title="class in org.openqa.selenium">By</a></h3>
-<code><a href="../../By.ByClassName.html" title="class in org.openqa.selenium">By.ByClassName</a>, <a href="../../By.ByCssSelector.html" title="class in org.openqa.selenium">By.ByCssSelector</a>, <a href="../../By.ById.html" title="class in org.openqa.selenium">By.ById</a>, <a href="../../By.ByLinkText.html" title="class in org.openqa.selenium">By.ByLinkText</a>, <a href="../../By.ByName.html" title="class in org.openqa.selenium">By.ByName</a>, <a href="../../By.ByPartialLinkText.html" title="class in org.openqa.selenium">By.ByPartialLinkText</a>, <a href="../../By.ByTagName.html" title="class in org.openqa.selenium">By.ByTagName</a>, <a href="../../By.ByXPath.html" title="class in org.openqa.selenium">By.ByXPath</a>, <a href="../../By.StandardLocator.html" title="class in org.openqa.selenium">By.StandardLocator</a></code></li>
+<h3>Nested classes/interfaces inherited from class&nbsp;org.openqa.selenium.By</h3>
+<code>org.openqa.selenium.By.ByClassName, org.openqa.selenium.By.ByCssSelector, org.openqa.selenium.By.ById, org.openqa.selenium.By.ByLinkText, org.openqa.selenium.By.ByName, org.openqa.selenium.By.ByPartialLinkText, org.openqa.selenium.By.ByTagName, org.openqa.selenium.By.ByXPath, org.openqa.selenium.By.Remotable</code></li>
 </ul>
 </li>
 </ul>
@@ -198,7 +198,7 @@ implements java.io.Serializable</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.By...)">ByChained</a></span>&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>...&nbsp;bys)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.By...)">ByChained</a></span>&#8203;(org.openqa.selenium.By...&nbsp;bys)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -220,18 +220,14 @@ implements java.io.Serializable</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findElement(org.openqa.selenium.SearchContext)">findElement</a></span>&#8203;(<a href="../../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code></th>
-<td class="colLast">
-<div class="block">Find a single element.</div>
-</td>
+<td class="colFirst"><code>org.openqa.selenium.WebElement</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findElement(org.openqa.selenium.SearchContext)">findElement</a></span>&#8203;(org.openqa.selenium.SearchContext&nbsp;context)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findElements(org.openqa.selenium.SearchContext)">findElements</a></span>&#8203;(<a href="../../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code></th>
-<td class="colLast">
-<div class="block">Find many elements.</div>
-</td>
+<td class="colFirst"><code>java.util.List&lt;org.openqa.selenium.WebElement&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findElements(org.openqa.selenium.SearchContext)">findElements</a></span>&#8203;(org.openqa.selenium.SearchContext&nbsp;context)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
@@ -243,8 +239,8 @@ implements java.io.Serializable</pre>
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.By">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../By.html" title="class in org.openqa.selenium">By</a></h3>
-<code><a href="../../By.html#className(java.lang.String)">className</a>, <a href="../../By.html#cssSelector(java.lang.String)">cssSelector</a>, <a href="../../By.html#equals(java.lang.Object)">equals</a>, <a href="../../By.html#hashCode()">hashCode</a>, <a href="../../By.html#id(java.lang.String)">id</a>, <a href="../../By.html#linkText(java.lang.String)">linkText</a>, <a href="../../By.html#name(java.lang.String)">name</a>, <a href="../../By.html#partialLinkText(java.lang.String)">partialLinkText</a>, <a href="../../By.html#tagName(java.lang.String)">tagName</a>, <a href="../../By.html#xpath(java.lang.String)">xpath</a></code></li>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.By</h3>
+<code>className, cssSelector, equals, getJavascriptExecutor, getWebDriver, hashCode, id, linkText, name, partialLinkText, tagName, xpath</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -275,7 +271,7 @@ implements java.io.Serializable</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ByChained</h4>
-<pre>public&nbsp;ByChained&#8203;(<a href="../../By.html" title="class in org.openqa.selenium">By</a>...&nbsp;bys)</pre>
+<pre>public&nbsp;ByChained&#8203;(org.openqa.selenium.By...&nbsp;bys)</pre>
 </li>
 </ul>
 </li>
@@ -294,16 +290,10 @@ implements java.io.Serializable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>findElement</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;findElement&#8203;(<a href="../../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../By.html#findElement(org.openqa.selenium.SearchContext)">By</a></code></span></div>
-<div class="block">Find a single element. Override this method if necessary.</div>
+<pre class="methodSignature">public&nbsp;org.openqa.selenium.WebElement&nbsp;findElement&#8203;(org.openqa.selenium.SearchContext&nbsp;context)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../By.html#findElement(org.openqa.selenium.SearchContext)">findElement</a></code>&nbsp;in class&nbsp;<code><a href="../../By.html" title="class in org.openqa.selenium">By</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>context</code> - A context to use to find the element.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The WebElement that matches the selector.</dd>
+<dd><code>findElement</code>&nbsp;in class&nbsp;<code>org.openqa.selenium.By</code></dd>
 </dl>
 </li>
 </ul>
@@ -313,16 +303,10 @@ implements java.io.Serializable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>findElements</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;findElements&#8203;(<a href="../../SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../By.html#findElements(org.openqa.selenium.SearchContext)">By</a></code></span></div>
-<div class="block">Find many elements.</div>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;org.openqa.selenium.WebElement&gt;&nbsp;findElements&#8203;(org.openqa.selenium.SearchContext&nbsp;context)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../By.html#findElements(org.openqa.selenium.SearchContext)">findElements</a></code>&nbsp;in class&nbsp;<code><a href="../../By.html" title="class in org.openqa.selenium">By</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>context</code> - A context to use to find the elements.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>A list of WebElements matching the selector.</dd>
+<dd><code>findElements</code>&nbsp;in class&nbsp;<code>org.openqa.selenium.By</code></dd>
 </dl>
 </li>
 </ul>
@@ -335,7 +319,7 @@ implements java.io.Serializable</pre>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;toString()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../By.html#toString()">toString</a></code>&nbsp;in class&nbsp;<code><a href="../../By.html" title="class in org.openqa.selenium">By</a></code></dd>
+<dd><code>toString</code>&nbsp;in class&nbsp;<code>org.openqa.selenium.By</code></dd>
 </dl>
 </li>
 </ul>

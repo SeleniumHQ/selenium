@@ -137,7 +137,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code>java.util.function.Function&lt;<a href="../../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>,&#8203;java.util.Optional&lt;<a href="../ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a>&gt;&gt;</code>, <code>java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;</code>, <code><a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a></code></dd>
+<dd><code>java.util.function.Function&lt;<a href="../../data/CreateSessionRequest.html" title="class in org.openqa.selenium.grid.data">CreateSessionRequest</a>,&#8203;java.util.Optional&lt;<a href="../ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a>&gt;&gt;</code>, <code>java.util.function.Predicate&lt;org.openqa.selenium.Capabilities&gt;</code>, <code><a href="../SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">DriverServiceSessionFactory</span>
@@ -164,10 +164,10 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.Capabilities,java.util.function.Predicate,org.openqa.selenium.remote.service.DriverService.Builder)">DriverServiceSessionFactory</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                           <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
-                           <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
-                           java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate,
-                           <a href="../../../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&nbsp;builder)</code></th>
+                           org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
+                           org.openqa.selenium.Capabilities&nbsp;stereotype,
+                           java.util.function.Predicate&lt;org.openqa.selenium.Capabilities&gt;&nbsp;predicate,
+                           org.openqa.selenium.remote.service.DriverService.Builder&nbsp;builder)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -195,7 +195,7 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#test(org.openqa.selenium.Capabilities)">test</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#test(org.openqa.selenium.Capabilities)">test</a></span>&#8203;(org.openqa.selenium.Capabilities&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -243,10 +243,10 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <li class="blockList">
 <h4>DriverServiceSessionFactory</h4>
 <pre>public&nbsp;DriverServiceSessionFactory&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                                   <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
-                                   <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
-                                   java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate,
-                                   <a href="../../../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&nbsp;builder)</pre>
+                                   org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
+                                   org.openqa.selenium.Capabilities&nbsp;stereotype,
+                                   java.util.function.Predicate&lt;org.openqa.selenium.Capabilities&gt;&nbsp;predicate,
+                                   org.openqa.selenium.remote.service.DriverService.Builder&nbsp;builder)</pre>
 </li>
 </ul>
 </li>
@@ -265,10 +265,10 @@ implements <a href="../SessionFactory.html" title="interface in org.openqa.selen
 <ul class="blockList">
 <li class="blockList">
 <h4>test</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;test&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;test&#8203;(org.openqa.selenium.Capabilities&nbsp;capabilities)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>test</code>&nbsp;in interface&nbsp;<code>java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;</code></dd>
+<dd><code>test</code>&nbsp;in interface&nbsp;<code>java.util.function.Predicate&lt;org.openqa.selenium.Capabilities&gt;</code></dd>
 </dl>
 </li>
 </ul>

@@ -137,7 +137,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></code>, <code><a href="../../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></code>, <code><a href="../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></code></dd>
+<dd><code>org.openqa.selenium.remote.http.HttpHandler</code>, <code>org.openqa.selenium.remote.http.Routable</code>, <code><a href="../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></code></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
@@ -146,7 +146,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public abstract class <span class="typeNameLabel">SessionMap</span>
 extends java.lang.Object
-implements <a href="../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a>, <a href="../../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></pre>
+implements <a href="../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a>, org.openqa.selenium.remote.http.Routable</pre>
 <div class="block">Provides a stable API for looking up where on the Grid a particular webdriver instance is
  running.
  <p>
@@ -161,13 +161,13 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
    <td>DELETE</td>
    <td>/se/grid/session/{sessionId}</td>
    <td>Removes a <code>URI</code> from the session map. Calling this method more than once for the same
-     <a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote"><code>SessionId</code></a> will not throw an error.</td>
+     <code>SessionId</code> will not throw an error.</td>
  </tr>
  <tr>
    <td>GET</td>
    <td>/se/grid/session/{sessionId}</td>
-   <td>Retrieves the <code>URI</code> associated the <a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote"><code>SessionId</code></a>, or throws a
-     <a href="../../NoSuchSessionException.html" title="class in org.openqa.selenium"><code>NoSuchSessionException</code></a> should the session not be present.</td>
+   <td>Retrieves the <code>URI</code> associated the <code>SessionId</code>, or throws a
+     <code>NoSuchSessionException</code> should the session not be present.</td>
  </tr>
  <tr>
    <td>POST</td>
@@ -247,28 +247,28 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</code></th>
+<td class="colFirst"><code>org.openqa.selenium.remote.http.HttpResponse</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>abstract <a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(org.openqa.selenium.remote.SessionId)">get</a></span>&#8203;(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(org.openqa.selenium.remote.SessionId)">get</a></span>&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.net.URI</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUri(org.openqa.selenium.remote.SessionId)">getUri</a></span>&#8203;(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUri(org.openqa.selenium.remote.SessionId)">getUri</a></span>&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a></span>&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>abstract void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.remote.SessionId)">remove</a></span>&#8203;(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(org.openqa.selenium.remote.SessionId)">remove</a></span>&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -290,8 +290,8 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.http.Routable">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.<a href="../../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></h3>
-<code><a href="../../remote/http/Routable.html#with(org.openqa.selenium.remote.http.Filter)">with</a></code></li>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.Routable</h3>
+<code>with</code></li>
 </ul>
 </li>
 </ul>
@@ -362,11 +362,11 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockList">
 <li class="blockList">
 <h4>get</h4>
-<pre class="methodSignature">public abstract&nbsp;<a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;get&#8203;(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)
-                     throws <a href="../../NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></pre>
+<pre class="methodSignature">public abstract&nbsp;<a href="../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;get&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)
+                     throws org.openqa.selenium.NoSuchSessionException</pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></code></dd>
+<dd><code>org.openqa.selenium.NoSuchSessionException</code></dd>
 </dl>
 </li>
 </ul>
@@ -376,7 +376,7 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockList">
 <li class="blockList">
 <h4>remove</h4>
-<pre class="methodSignature">public abstract&nbsp;void&nbsp;remove&#8203;(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</pre>
+<pre class="methodSignature">public abstract&nbsp;void&nbsp;remove&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)</pre>
 </li>
 </ul>
 <a id="getUri(org.openqa.selenium.remote.SessionId)">
@@ -385,11 +385,11 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockList">
 <li class="blockList">
 <h4>getUri</h4>
-<pre class="methodSignature">public&nbsp;java.net.URI&nbsp;getUri&#8203;(<a href="../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)
-                    throws <a href="../../NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></pre>
+<pre class="methodSignature">public&nbsp;java.net.URI&nbsp;getUri&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)
+                    throws org.openqa.selenium.NoSuchSessionException</pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></code></dd>
+<dd><code>org.openqa.selenium.NoSuchSessionException</code></dd>
 </dl>
 </li>
 </ul>
@@ -399,10 +399,10 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockList">
 <li class="blockList">
 <h4>matches</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;matches&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</pre>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;matches&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../remote/http/Routable.html#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a></code>&nbsp;in interface&nbsp;<code><a href="../../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></code></dd>
+<dd><code>matches</code>&nbsp;in interface&nbsp;<code>org.openqa.selenium.remote.http.Routable</code></dd>
 </dl>
 </li>
 </ul>
@@ -412,10 +412,10 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <ul class="blockListLast">
 <li class="blockList">
 <h4>execute</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;execute&#8203;(<a href="../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</pre>
+<pre class="methodSignature">public&nbsp;org.openqa.selenium.remote.http.HttpResponse&nbsp;execute&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../remote/http/HttpHandler.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></code>&nbsp;in interface&nbsp;<code><a href="../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></code></dd>
+<dd><code>execute</code>&nbsp;in interface&nbsp;<code>org.openqa.selenium.remote.http.HttpHandler</code></dd>
 </dl>
 </li>
 </ul>

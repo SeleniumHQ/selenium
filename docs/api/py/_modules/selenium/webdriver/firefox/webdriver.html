@@ -54,24 +54,20 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">basestring</span>
-<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>  <span class="c1"># Python 3.x</span>
-    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
 
-<span class="kn">import</span> <span class="nn">base64</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64decode</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">rmtree</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="k">import</span> <span class="n">DesiredCapabilities</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="k">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
 
-<span class="kn">from</span> <span class="nn">.firefox_binary</span> <span class="k">import</span> <span class="n">FirefoxBinary</span>
-<span class="kn">from</span> <span class="nn">.firefox_profile</span> <span class="k">import</span> <span class="n">FirefoxProfile</span>
-<span class="kn">from</span> <span class="nn">.options</span> <span class="k">import</span> <span class="n">Options</span>
-<span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="k">import</span> <span class="n">FirefoxRemoteConnection</span>
-<span class="kn">from</span> <span class="nn">.service</span> <span class="k">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">.firefox_binary</span> <span class="kn">import</span> <span class="n">FirefoxBinary</span>
+<span class="kn">from</span> <span class="nn">.firefox_profile</span> <span class="kn">import</span> <span class="n">FirefoxProfile</span>
+<span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">FirefoxRemoteConnection</span>
+<span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
 
 
 <span class="c1"># Default for log_path variable. To be deleted when deprecations for arguments are removed.</span>
@@ -85,7 +81,7 @@
     <span class="n">CONTEXT_CHROME</span> <span class="o">=</span> <span class="s2">&quot;chrome&quot;</span>
     <span class="n">CONTEXT_CONTENT</span> <span class="o">=</span> <span class="s2">&quot;content&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">firefox_binary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">capabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">executable_path</span><span class="o">=</span><span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">service_log_path</span><span class="o">=</span><span class="n">DEFAULT_SERVICE_LOG_PATH</span><span class="p">,</span>
@@ -143,14 +139,14 @@
         <span class="k">if</span> <span class="n">executable_path</span> <span class="o">!=</span> <span class="n">DEFAULT_EXECUTABLE_PATH</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;executable_path has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">or</span> <span class="n">desired_capabilities</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;capabilities and desired_capabilities have been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">firefox_binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">firefox_binary</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;firefox_binary has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">firefox_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">firefox_profile</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;firefox_profile has been deprecated, please pass in an Options object&#39;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="kc">None</span>
@@ -163,7 +159,7 @@
         <span class="k">if</span> <span class="n">service_log_path</span> <span class="o">!=</span> <span class="n">DEFAULT_SERVICE_LOG_PATH</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;service_log_path has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">service_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">service_args</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;service_args has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
@@ -171,12 +167,12 @@
 
         <span class="c1"># If desired capabilities is set, alias it to capabilities.</span>
         <span class="c1"># If both are set ignore desired capabilities.</span>
-        <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">desired_capabilities</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">capabilities</span> <span class="ow">and</span> <span class="n">desired_capabilities</span><span class="p">:</span>
             <span class="n">capabilities</span> <span class="o">=</span> <span class="n">desired_capabilities</span>
 
-        <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">capabilities</span><span class="p">:</span>
             <span class="n">capabilities</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
             <span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
 
         <span class="n">capabilities</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
@@ -185,21 +181,21 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">capabilities</span><span class="p">[</span><span class="s2">&quot;binary&quot;</span><span class="p">]</span>
 
         <span class="c1"># options overrides capabilities</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">binary</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">binary</span>
-            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">profile</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">profile</span>
 
         <span class="c1"># firefox_binary and firefox_profile</span>
         <span class="c1"># override options</span>
-        <span class="k">if</span> <span class="n">firefox_binary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_binary</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">firefox_binary</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_binary</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">firefox_binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">(</span><span class="n">firefox_binary</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
             <span class="n">options</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">firefox_binary</span>
-        <span class="k">if</span> <span class="n">firefox_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_profile</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">firefox_profile</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">firefox_profile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">firefox_profile</span> <span class="o">=</span> <span class="n">FirefoxProfile</span><span class="p">(</span><span class="n">firefox_profile</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
             <span class="n">options</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">firefox_profile</span>
@@ -210,7 +206,7 @@
         <span class="k">if</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">):</span>
             <span class="n">options</span><span class="o">.</span><span class="n">accept_insecure_certs</span> <span class="o">=</span> <span class="n">capabilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;acceptInsecureCerts&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span>
                 <span class="n">executable_path</span><span class="p">,</span>
                 <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
@@ -243,11 +239,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">tempfolder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">tempfolder</span><span class="p">)</span>
+                <span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">tempfolder</span><span class="p">:</span>
+                    <span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">tempfolder</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
 
@@ -297,7 +293,7 @@
 <span class="sd">                driver.install_addon(&#39;/path/to/firebug.xpi&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">temporary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">temporary</span><span class="p">:</span>
             <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;temporary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temporary</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSTALL_ADDON&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
@@ -366,7 +362,7 @@
 
 <span class="sd">                driver.get_full_page_screenshot_as_png()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_base64</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_base64</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_base64"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_base64">[docs]</a>    <span class="k">def</span> <span class="nf">get_full_page_screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

@@ -142,7 +142,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../../../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a></code>, <code><a href="../../../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></code>, <code><a href="../../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></code></dd>
+<dd><code>org.openqa.selenium.remote.http.HttpHandler</code>, <code>org.openqa.selenium.remote.http.Routable</code>, <code><a href="../../../status/HasReadyState.html" title="interface in org.openqa.selenium.status">HasReadyState</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">RemoteNode</span>
@@ -168,7 +168,7 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static <a href="../../../json/Json.html" title="class in org.openqa.selenium.json">Json</a></code></td>
+<td class="colFirst"><code>static org.openqa.selenium.json.Json</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#JSON">JSON</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -198,11 +198,11 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.security.Secret,java.util.Collection)">RemoteNode</a></span>&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-          <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+          org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
           <a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
           java.net.URI&nbsp;externalUri,
           <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
-          java.util.Collection&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;capabilities)</code></th>
+          java.util.Collection&lt;org.openqa.selenium.Capabilities&gt;&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -229,8 +229,8 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#executeWebDriverCommand(org.openqa.selenium.remote.http.HttpRequest)">executeWebDriverCommand</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</code></th>
+<td class="colFirst"><code>org.openqa.selenium.remote.http.HttpResponse</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#executeWebDriverCommand(org.openqa.selenium.remote.http.HttpRequest)">executeWebDriverCommand</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
@@ -240,7 +240,7 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSession(org.openqa.selenium.remote.SessionId)">getSession</a></span>&#8203;(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSession(org.openqa.selenium.remote.SessionId)">getSession</a></span>&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
@@ -255,12 +255,12 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSessionOwner(org.openqa.selenium.remote.SessionId)">isSessionOwner</a></span>&#8203;(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSessionOwner(org.openqa.selenium.remote.SessionId)">isSessionOwner</a></span>&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a></span>&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a></span>&#8203;(org.openqa.selenium.Capabilities&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
@@ -270,13 +270,13 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stop(org.openqa.selenium.remote.SessionId)">stop</a></span>&#8203;(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stop(org.openqa.selenium.remote.SessionId)">stop</a></span>&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i10" class="altColor">
-<td class="colFirst"><code><a href="../../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#uploadFile(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.remote.SessionId)">uploadFile</a></span>&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req,
-          <a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</code></th>
+<td class="colFirst"><code>org.openqa.selenium.remote.http.HttpResponse</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#uploadFile(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.remote.SessionId)">uploadFile</a></span>&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req,
+          org.openqa.selenium.remote.SessionId&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -285,7 +285,7 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.grid.node.<a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></h3>
-<code><a href="../Node.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a>, <a href="../Node.html#getId()">getId</a>, <a href="../Node.html#getTemporaryFilesystem(org.openqa.selenium.remote.SessionId)">getTemporaryFilesystem</a>, <a href="../Node.html#getUri()">getUri</a>, <a href="../Node.html#isDraining()">isDraining</a>, <a href="../Node.html#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a></code></li>
+<code><a href="../Node.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a>, <a href="../Node.html#getId()">getId</a>, <a href="../Node.html#getNodeVersion()">getNodeVersion</a>, <a href="../Node.html#getOsInfo()">getOsInfo</a>, <a href="../Node.html#getTemporaryFilesystem(org.openqa.selenium.remote.SessionId)">getTemporaryFilesystem</a>, <a href="../Node.html#getUri()">getUri</a>, <a href="../Node.html#isDraining()">isDraining</a>, <a href="../Node.html#matches(org.openqa.selenium.remote.http.HttpRequest)">matches</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -298,8 +298,8 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.http.Routable">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.<a href="../../../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></h3>
-<code><a href="../../../remote/http/Routable.html#with(org.openqa.selenium.remote.http.Filter)">with</a></code></li>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.remote.http.Routable</h3>
+<code>with</code></li>
 </ul>
 </li>
 </ul>
@@ -323,7 +323,7 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <ul class="blockListLast">
 <li class="blockList">
 <h4>JSON</h4>
-<pre>public static final&nbsp;<a href="../../../json/Json.html" title="class in org.openqa.selenium.json">Json</a> JSON</pre>
+<pre>public static final&nbsp;org.openqa.selenium.json.Json JSON</pre>
 </li>
 </ul>
 </li>
@@ -343,11 +343,11 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <li class="blockList">
 <h4>RemoteNode</h4>
 <pre>public&nbsp;RemoteNode&#8203;(<a href="../../../remote/tracing/Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                  <a href="../../../remote/http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                  org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
                   <a href="../../data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
                   java.net.URI&nbsp;externalUri,
                   <a href="../../security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
-                  java.util.Collection&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;capabilities)</pre>
+                  java.util.Collection&lt;org.openqa.selenium.Capabilities&gt;&nbsp;capabilities)</pre>
 </li>
 </ul>
 </li>
@@ -375,7 +375,7 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <ul class="blockList">
 <li class="blockList">
 <h4>isSupporting</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isSupporting&#8203;(<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isSupporting&#8203;(org.openqa.selenium.Capabilities&nbsp;capabilities)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Node.html#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a></code>&nbsp;in class&nbsp;<code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></dd>
@@ -401,7 +401,7 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <ul class="blockList">
 <li class="blockList">
 <h4>isSessionOwner</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;isSessionOwner&#8203;(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</pre>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isSessionOwner&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Node.html#isSessionOwner(org.openqa.selenium.remote.SessionId)">isSessionOwner</a></code>&nbsp;in class&nbsp;<code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></dd>
@@ -414,13 +414,13 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <ul class="blockList">
 <li class="blockList">
 <h4>getSession</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;getSession&#8203;(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)
-                   throws <a href="../../../NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></pre>
+<pre class="methodSignature">public&nbsp;<a href="../../data/Session.html" title="class in org.openqa.selenium.grid.data">Session</a>&nbsp;getSession&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)
+                   throws org.openqa.selenium.NoSuchSessionException</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Node.html#getSession(org.openqa.selenium.remote.SessionId)">getSession</a></code>&nbsp;in class&nbsp;<code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></code></dd>
+<dd><code>org.openqa.selenium.NoSuchSessionException</code></dd>
 </dl>
 </li>
 </ul>
@@ -430,7 +430,7 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <ul class="blockList">
 <li class="blockList">
 <h4>executeWebDriverCommand</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;executeWebDriverCommand&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req)</pre>
+<pre class="methodSignature">public&nbsp;org.openqa.selenium.remote.http.HttpResponse&nbsp;executeWebDriverCommand&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Node.html#executeWebDriverCommand(org.openqa.selenium.remote.http.HttpRequest)">executeWebDriverCommand</a></code>&nbsp;in class&nbsp;<code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></dd>
@@ -443,8 +443,8 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadFile</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../../remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;uploadFile&#8203;(<a href="../../../remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;req,
-                               <a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)</pre>
+<pre class="methodSignature">public&nbsp;org.openqa.selenium.remote.http.HttpResponse&nbsp;uploadFile&#8203;(org.openqa.selenium.remote.http.HttpRequest&nbsp;req,
+                                                               org.openqa.selenium.remote.SessionId&nbsp;id)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Node.html#uploadFile(org.openqa.selenium.remote.http.HttpRequest,org.openqa.selenium.remote.SessionId)">uploadFile</a></code>&nbsp;in class&nbsp;<code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></dd>
@@ -457,13 +457,13 @@ extends <a href="../Node.html" title="class in org.openqa.selenium.grid.node">No
 <ul class="blockList">
 <li class="blockList">
 <h4>stop</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;stop&#8203;(<a href="../../../remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id)
-          throws <a href="../../../NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;stop&#8203;(org.openqa.selenium.remote.SessionId&nbsp;id)
+          throws org.openqa.selenium.NoSuchSessionException</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../Node.html#stop(org.openqa.selenium.remote.SessionId)">stop</a></code>&nbsp;in class&nbsp;<code><a href="../Node.html" title="class in org.openqa.selenium.grid.node">Node</a></code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../NoSuchSessionException.html" title="class in org.openqa.selenium">NoSuchSessionException</a></code></dd>
+<dd><code>org.openqa.selenium.NoSuchSessionException</code></dd>
 </dl>
 </li>
 </ul>

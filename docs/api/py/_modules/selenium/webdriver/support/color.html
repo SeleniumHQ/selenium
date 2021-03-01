@@ -85,7 +85,7 @@
         <span class="kn">import</span> <span class="nn">re</span>
 
         <span class="k">class</span> <span class="nc">Matcher</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span> <span class="o">=</span> <span class="kc">None</span>
 
             <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">str_</span><span class="p">):</span>
@@ -94,7 +94,7 @@
 
             <span class="nd">@property</span>
             <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                <span class="k">return</span> <span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_obj</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
 
         <span class="n">m</span> <span class="o">=</span> <span class="n">Matcher</span><span class="p">()</span>
 
@@ -122,10 +122,10 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not convert </span><span class="si">%s</span><span class="s2"> into color&quot;</span> <span class="o">%</span> <span class="n">str_</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_from_hsl</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_from_hsl</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">light</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">h</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="mi">360</span>
         <span class="n">s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
-        <span class="n">_l</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
+        <span class="n">_l</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">light</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
 
         <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">_l</span>
@@ -156,7 +156,7 @@
 
         <span class="k">return</span> <span class="n">Color</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="n">a</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">red</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">red</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">green</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">green</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">blue</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">blue</span><span class="p">)</span>
@@ -174,24 +174,24 @@
     <span class="k">def</span> <span class="nf">hex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;#</span><span class="si">%02x%02x%02x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Color</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgba</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">rgba</span>
         <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;Color(red=</span><span class="si">%d</span><span class="s2">, green=</span><span class="si">%d</span><span class="s2">, blue=</span><span class="si">%d</span><span class="s2">, alpha=</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;Color: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">rgba</span></div>
 
 

@@ -123,27 +123,7 @@
     
 
     
-  </span>
-  
-  
-  
-  
-  
-  
-  <span class="private note title">private</span>
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#location=-instance_method" title="#location= (instance method)">#<strong>location=</strong>(loc)  &#x21d2; Object </a>
-    
-
+      (also: #set_location)
     
   </span>
   
@@ -163,7 +143,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#set_location-instance_method" title="#set_location (instance method)">#<strong>set_location</strong>(lat, lon, alt)  &#x21d2; Object </a>
+      <a href="#location=-instance_method" title="#location= (instance method)">#<strong>location=</strong>  &#x21d2; Object </a>
     
 
     
@@ -198,6 +178,10 @@
   
 
   
+    <span class="aliases">Also known as:
+    <span class="names"><span id='set_location-instance_method'>set_location</span></span>
+    </span>
+  
 
   
 </h3><div class="docstring">
@@ -212,6 +196,19 @@
 </div>
 <div class="tags">
   
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">Error::UnsupportedOperationError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -219,15 +216,15 @@
       <pre class="lines">
 
 
-24
 25
-26</pre>
+26
+27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_location'>location</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support getting location</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -237,7 +234,7 @@
       <div class="method_details ">
   <h3 class="signature " id="location=-instance_method">
   
-    #<strong>location=</strong>(loc)  &#x21d2; <tt>Object</tt> 
+    #<strong>location=</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -261,7 +258,7 @@
     <li>
       
       
-        <span class='type'>(<tt>TypeError</tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">Error::UnsupportedOperationError</a></span></tt>)</span>
       
       
       
@@ -275,62 +272,15 @@
       <pre class="lines">
 
 
-28
 29
 30
-31
-32</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 29</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_location='>location=</span><span class='lparen'>(</span><span class='id identifier rubyid_loc'>loc</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../Location.html" title="Selenium::WebDriver::Location (class)">Location</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loc'>loc</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loc'>loc</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_loc'>loc</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../Location.html" title="Selenium::WebDriver::Location (class)">Location</a></span></span><span class='rparen'>)</span>
-
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_set_location'>set_location</span> <span class='id identifier rubyid_loc'>loc</span><span class='period'>.</span><span class='id identifier rubyid_latitude'>latitude</span><span class='comma'>,</span> <span class='id identifier rubyid_loc'>loc</span><span class='period'>.</span><span class='id identifier rubyid_longitude'>longitude</span><span class='comma'>,</span> <span class='id identifier rubyid_loc'>loc</span><span class='period'>.</span><span class='id identifier rubyid_altitude'>altitude</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="set_location-instance_method">
-  
-    #<strong>set_location</strong>(lat, lon, alt)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-34
-35
-36</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/has_location.rb', line 34</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_set_location'>set_location</span><span class='lparen'>(</span><span class='id identifier rubyid_lat'>lat</span><span class='comma'>,</span> <span class='id identifier rubyid_lon'>lon</span><span class='comma'>,</span> <span class='id identifier rubyid_alt'>alt</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_location'>location</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Location.html" title="Selenium::WebDriver::Location (class)">Location</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_lat'>lat</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_lon'>lon</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_alt'>alt</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_location='>location=</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">UnsupportedOperationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The W3C standard does not currently support setting location</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -342,7 +292,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Nov 24 10:20:51 2020 by
+  Generated on Mon Mar  1 16:43:59 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.25 (ruby-2.6.3).
 </div>

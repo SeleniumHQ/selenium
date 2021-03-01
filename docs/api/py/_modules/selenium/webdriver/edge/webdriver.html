@@ -55,10 +55,10 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.webdriver</span> <span class="k">import</span> <span class="n">ChromiumDriver</span>
-<span class="kn">from</span> <span class="nn">.options</span> <span class="k">import</span> <span class="n">Options</span>
-<span class="kn">from</span> <span class="nn">.service</span> <span class="k">import</span> <span class="n">Service</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="k">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.webdriver</span> <span class="kn">import</span> <span class="n">ChromiumDriver</span>
+<span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
 
 
 <span class="n">DEFAULT_PORT</span> <span class="o">=</span> <span class="mi">0</span>
@@ -73,7 +73,7 @@
 <span class="sd">    https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s1">&#39;MicrosoftWebDriver.exe&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s1">&#39;MicrosoftWebDriver.exe&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span>
                  <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">capabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service_log_path</span><span class="o">=</span><span class="n">DEFAULT_SERVICE_LOG_PATH</span><span class="p">,</span>
                  <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -96,10 +96,10 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;executable_path has been deprecated, please pass in a Service object&#39;</span><span class="p">,</span>
                           <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">use_chromium</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">options</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">use_chromium</span><span class="p">:</span>
             <span class="n">executable_path</span> <span class="o">=</span> <span class="s2">&quot;msedgedriver&quot;</span>
 
-        <span class="k">if</span> <span class="n">service</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">service</span><span class="p">:</span>
             <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">service_args</span><span class="p">,</span> <span class="n">service_log_path</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">WebDriver</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">EDGE</span><span class="p">[</span><span class="s1">&#39;browserName&#39;</span><span class="p">],</span> <span class="s2">&quot;ms&quot;</span><span class="p">,</span>

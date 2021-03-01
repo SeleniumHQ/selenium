@@ -57,48 +57,35 @@
 
 <span class="sd">&quot;&quot;&quot;The WebDriver implementation.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
-<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64decode</span>
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="p">(</span><span class="n">contextmanager</span><span class="p">,</span> <span class="n">asynccontextmanager</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">import</span> <span class="nn">pkgutil</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">pkgutil</span>
 
-<span class="kn">from</span> <span class="nn">.command</span> <span class="k">import</span> <span class="n">Command</span>
-<span class="kn">from</span> <span class="nn">.errorhandler</span> <span class="k">import</span> <span class="n">ErrorHandler</span>
-<span class="kn">from</span> <span class="nn">.file_detector</span> <span class="k">import</span> <span class="n">FileDetector</span><span class="p">,</span> <span class="n">LocalFileDetector</span>
-<span class="kn">from</span> <span class="nn">.mobile</span> <span class="k">import</span> <span class="n">Mobile</span>
-<span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="k">import</span> <span class="n">RemoteConnection</span>
-<span class="kn">from</span> <span class="nn">.script_key</span> <span class="k">import</span> <span class="n">ScriptKey</span>
-<span class="kn">from</span> <span class="nn">.switch_to</span> <span class="k">import</span> <span class="n">SwitchTo</span>
-<span class="kn">from</span> <span class="nn">.webelement</span> <span class="k">import</span> <span class="n">WebElement</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="k">import</span> <span class="p">(</span><span class="n">InvalidArgumentException</span><span class="p">,</span>
+
+<span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
+<span class="kn">from</span> <span class="nn">.errorhandler</span> <span class="kn">import</span> <span class="n">ErrorHandler</span>
+<span class="kn">from</span> <span class="nn">.file_detector</span> <span class="kn">import</span> <span class="n">FileDetector</span><span class="p">,</span> <span class="n">LocalFileDetector</span>
+<span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">Log</span>
+<span class="kn">from</span> <span class="nn">.mobile</span> <span class="kn">import</span> <span class="n">Mobile</span>
+<span class="kn">from</span> <span class="nn">.remote_connection</span> <span class="kn">import</span> <span class="n">RemoteConnection</span>
+<span class="kn">from</span> <span class="nn">.script_key</span> <span class="kn">import</span> <span class="n">ScriptKey</span>
+<span class="kn">from</span> <span class="nn">.switch_to</span> <span class="kn">import</span> <span class="n">SwitchTo</span>
+<span class="kn">from</span> <span class="nn">.webelement</span> <span class="kn">import</span> <span class="n">WebElement</span>
+
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">InvalidArgumentException</span><span class="p">,</span>
                                         <span class="n">JavascriptException</span><span class="p">,</span>
                                         <span class="n">WebDriverException</span><span class="p">,</span>
                                         <span class="n">NoSuchCookieException</span><span class="p">,</span>
                                         <span class="n">UnknownMethodException</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="k">import</span> <span class="n">By</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.timeouts</span> <span class="k">import</span> <span class="n">Timeouts</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.html5.application_cache</span> <span class="k">import</span> <span class="n">ApplicationCache</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.support.relative_locator</span> <span class="k">import</span> <span class="n">RelativeBy</span>
-
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">add_metaclass</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="nb">str</span> <span class="o">=</span> <span class="n">basestring</span>
-<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-    <span class="k">pass</span>
-
-<span class="n">cdp</span> <span class="o">=</span> <span class="kc">None</span>
-
-
-<div class="viewcode-block" id="import_cdp"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.import_cdp">[docs]</a><span class="k">def</span> <span class="nf">import_cdp</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">cdp</span>
-    <span class="k">if</span> <span class="n">cdp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cdp</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;selenium.webdriver.common.bidi.cdp&quot;</span><span class="p">)</span></div>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.timeouts</span> <span class="kn">import</span> <span class="n">Timeouts</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.html5.application_cache</span> <span class="kn">import</span> <span class="n">ApplicationCache</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.relative_locator</span> <span class="kn">import</span> <span class="n">RelativeBy</span>
 
 
 <span class="n">_W3C_CAPABILITY_NAMES</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span>
@@ -157,9 +144,9 @@
 
 
 <div class="viewcode-block" id="get_remote_connection"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.get_remote_connection">[docs]</a><span class="k">def</span> <span class="nf">get_remote_connection</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="n">command_executor</span><span class="p">,</span> <span class="n">keep_alive</span><span class="p">,</span> <span class="n">ignore_local_proxy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.remote_connection</span> <span class="k">import</span> <span class="n">ChromiumRemoteConnection</span>
-    <span class="kn">from</span> <span class="nn">selenium.webdriver.safari.remote_connection</span> <span class="k">import</span> <span class="n">SafariRemoteConnection</span>
-    <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.remote_connection</span> <span class="k">import</span> <span class="n">FirefoxRemoteConnection</span>
+    <span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.remote_connection</span> <span class="kn">import</span> <span class="n">ChromiumRemoteConnection</span>
+    <span class="kn">from</span> <span class="nn">selenium.webdriver.safari.remote_connection</span> <span class="kn">import</span> <span class="n">SafariRemoteConnection</span>
+    <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.remote_connection</span> <span class="kn">import</span> <span class="n">FirefoxRemoteConnection</span>
 
     <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">RemoteConnection</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">ChromiumRemoteConnection</span><span class="p">,</span> <span class="n">SafariRemoteConnection</span><span class="p">,</span> <span class="n">FirefoxRemoteConnection</span><span class="p">]</span>
     <span class="n">handler</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
@@ -170,8 +157,7 @@
     <span class="k">return</span> <span class="n">handler</span><span class="p">(</span><span class="n">command_executor</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="n">keep_alive</span><span class="p">,</span> <span class="n">ignore_proxy</span><span class="o">=</span><span class="n">ignore_local_proxy</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="BaseWebDriver"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.BaseWebDriver">[docs]</a><span class="nd">@add_metaclass</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">BaseWebDriver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseWebDriver"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.BaseWebDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseWebDriver</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract Base Class for all Webdriver subtypes.</span>
 <span class="sd">    ABC&#39;s allow custom implementations of Webdriver to be registered so that isinstance type checks</span>
@@ -197,7 +183,7 @@
 
     <span class="n">_web_element_cls</span> <span class="o">=</span> <span class="n">WebElement</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_executor</span><span class="o">=</span><span class="s1">&#39;http://127.0.0.1:4444&#39;</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_executor</span><span class="o">=</span><span class="s1">&#39;http://127.0.0.1:4444&#39;</span><span class="p">,</span>
                  <span class="n">desired_capabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">browser_profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">file_detector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -220,10 +206,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">capabilities</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">_ignore_local_proxy</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
             <span class="n">capabilities</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
             <span class="n">_ignore_local_proxy</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">_ignore_local_proxy</span>
-        <span class="k">if</span> <span class="n">desired_capabilities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">desired_capabilities</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Desired Capabilities must be a dictionary&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -244,14 +230,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_mobile</span> <span class="o">=</span> <span class="n">Mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_detector</span> <span class="o">=</span> <span class="n">file_detector</span> <span class="ow">or</span> <span class="n">LocalFileDetector</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{0.__module__}</span><span class="s1">.</span><span class="si">{0.__name__}</span><span class="s1"> (session=&quot;</span><span class="si">{1}</span><span class="s1">&quot;)&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
 
 <div class="viewcode-block" id="WebDriver.file_detector_context"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.file_detector_context">[docs]</a>    <span class="nd">@contextmanager</span>
@@ -280,7 +266,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">yield</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">last_detector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">last_detector</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">file_detector</span> <span class="o">=</span> <span class="n">last_detector</span></div>
 
     <span class="nd">@property</span>
@@ -320,10 +306,7 @@
 <span class="sd">        Creates a new session with the desired capabilities.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - browser_name - The name of the browser to request.</span>
-<span class="sd">         - version - Which browser version to request.</span>
-<span class="sd">         - platform - Which platform to request the browser on.</span>
-<span class="sd">         - javascript_enabled - Whether the new session should support JavaScript.</span>
+<span class="sd">         - capabilities - a capabilities dict to start the session with.</span>
 <span class="sd">         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -344,11 +327,11 @@
 
         <span class="c1"># if capabilities is none we are probably speaking to</span>
         <span class="c1"># a W3C endpoint</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">caps</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;capabilities&#39;</span><span class="p">)</span>
 
         <span class="c1"># Double check to see if we have a W3C Compliant browser</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>  <span class="c1"># using not automatically results in boolean</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="o">.</span><span class="n">w3c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span></div>
 
     <span class="k">def</span> <span class="nf">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -396,7 +379,7 @@
 <span class="sd">        :Returns:</span>
 <span class="sd">          The command&#39;s JSON response loaded into a dictionary object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
                 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sessionId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">}</span>
             <span class="k">elif</span> <span class="s1">&#39;sessionId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
@@ -429,7 +412,7 @@
 <span class="sd">                title = driver.title</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_TITLE</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
 <div class="viewcode-block" id="WebDriver.find_element_by_id"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.find_element_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">find_element_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finds an element by id.</span>
@@ -750,13 +733,16 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;find_elements_by_* commands are deprecated. Please use find_elements() instead&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">css_selector</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WebDriver.pin_script"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.pin_script">[docs]</a>    <span class="k">def</span> <span class="nf">pin_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">):</span>
+<div class="viewcode-block" id="WebDriver.pin_script"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.pin_script">[docs]</a>    <span class="k">def</span> <span class="nf">pin_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">,</span> <span class="n">script_key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">script_key</span> <span class="o">=</span> <span class="n">ScriptKey</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pinned_scripts</span><span class="p">[</span><span class="n">script_key</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">script</span>
-        <span class="k">return</span> <span class="n">script_key</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">script_key</span><span class="p">:</span>
+            <span class="n">_script_key</span> <span class="o">=</span> <span class="n">ScriptKey</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_script_key</span> <span class="o">=</span> <span class="n">ScriptKey</span><span class="p">(</span><span class="n">script_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pinned_scripts</span><span class="p">[</span><span class="n">_script_key</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">script</span>
+        <span class="k">return</span> <span class="n">_script_key</span></div>
 
 <div class="viewcode-block" id="WebDriver.unpin"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.unpin">[docs]</a>    <span class="k">def</span> <span class="nf">unpin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script_key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -927,6 +913,17 @@
 <span class="sd">        Invokes the window manager-specific &#39;minimize&#39; operation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MINIMIZE_WINDOW</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WebDriver.print_page"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.print_page">[docs]</a>    <span class="k">def</span> <span class="nf">print_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes PDF of the current page.</span>
+<span class="sd">        The driver makes a best effort to return a PDF based on the provided parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">print_options</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="n">print_options</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">PRINT_PAGE</span><span class="p">,</span> <span class="n">options</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">switch_to</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1285,7 +1282,7 @@
 
 <span class="sd">                driver.get_screenshot_as_png()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_screenshot_as_base64</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_screenshot_as_base64</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="WebDriver.get_screenshot_as_base64"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_base64">[docs]</a>    <span class="k">def</span> <span class="nf">get_screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1339,7 +1336,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;windowHandle&#39;</span><span class="p">:</span> <span class="n">windowHandle</span><span class="p">})</span>
 
-        <span class="k">if</span> <span class="n">size</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">size</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">size</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">)}</span></div>
@@ -1417,7 +1414,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnknownMethodException</span><span class="p">(</span><span class="s2">&quot;set_window_rect is only supported for W3C compatible browsers&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">x</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">y</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">height</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">width</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s2">&quot;x and y or height and width need values&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_RECT</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
@@ -1441,7 +1438,7 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - detector: The detector to use. Must not be None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">detector</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">detector</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;You may not set a file detector that is null&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="n">FileDetector</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Detector has to be instance of FileDetector&quot;</span><span class="p">)</span>
@@ -1512,112 +1509,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_LOG</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">log_type</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="WebDriver.add_js_error_listener"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.add_js_error_listener">[docs]</a>    <span class="nd">@asynccontextmanager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_js_error_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Listens for JS errors and when the contextmanager exits check if there were JS Errors</span>
-
-<span class="sd">        :Usage:</span>
-<span class="sd">             ::</span>
-
-<span class="sd">                async with driver.add_js_error_listener() as error:</span>
-<span class="sd">                    driver.find_element(By.ID, &quot;throwing-mouseover&quot;).click()</span>
-<span class="sd">                assert error is not None</span>
-<span class="sd">                assert error.exception_details.stack_trace.call_frames[0].function_name == &quot;onmouseover&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
-        <span class="k">global</span> <span class="n">cdp</span>
-        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bidi_connection</span><span class="p">():</span>
-            <span class="k">global</span> <span class="n">devtools</span>
-            <span class="n">session</span> <span class="o">=</span> <span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s1">&#39;page.enable&#39;</span><span class="p">)</span>
-            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-            <span class="n">session</span> <span class="o">=</span> <span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s1">&#39;runtime.enable&#39;</span><span class="p">)</span>
-            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-            <span class="n">js_exception</span> <span class="o">=</span> <span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ExceptionThrown</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ExceptionThrown</span><span class="p">)</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">js_exception</span>
-            <span class="n">js_exception</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">exception</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">timestamp</span>
-            <span class="n">js_exception</span><span class="o">.</span><span class="n">exception_details</span> <span class="o">=</span> <span class="n">exception</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">exception_details</span></div>
-
-<div class="viewcode-block" id="WebDriver.add_listener"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.add_listener">[docs]</a>    <span class="nd">@asynccontextmanager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Listens for certain events that are passed in.</span>
-
-<span class="sd">        :Args:</span>
-<span class="sd">         - event_type: The type of event that we want to look at.</span>
-
-<span class="sd">         :Usage:</span>
-<span class="sd">             ::</span>
-
-<span class="sd">                async with driver.add_listener(Console.log) as messages:</span>
-<span class="sd">                    driver.execute_script(&quot;console.log(&#39;I like cheese&#39;)&quot;)</span>
-<span class="sd">                assert messages[&quot;message&quot;] == &quot;I love cheese&quot;</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">assert</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
-        <span class="k">global</span> <span class="n">cdp</span>
-        <span class="kn">from</span> <span class="nn">selenium.webdriver.common.bidi.console</span> <span class="k">import</span> <span class="n">Console</span>
-
-        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bidi_connection</span><span class="p">():</span>
-            <span class="k">global</span> <span class="n">devtools</span>
-            <span class="n">session</span> <span class="o">=</span> <span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s1">&#39;page.enable&#39;</span><span class="p">)</span>
-            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-            <span class="n">session</span> <span class="o">=</span> <span class="n">cdp</span><span class="o">.</span><span class="n">get_session_context</span><span class="p">(</span><span class="s1">&#39;console.enable&#39;</span><span class="p">)</span>
-            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">enable</span><span class="p">())</span>
-            <span class="n">console</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="kc">None</span>
-            <span class="p">}</span>
-            <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">MessageAdded</span><span class="p">)</span> <span class="k">as</span> <span class="n">messages</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">console</span>
-            <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">Console</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
-                    <span class="n">console</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span>
-                    <span class="n">console</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">level</span>
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">Console</span><span class="o">.</span><span class="n">ALL</span><span class="p">:</span>
-                <span class="n">console</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">text</span>
-                <span class="n">console</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">level</span></div>
-
-    <span class="nd">@asynccontextmanager</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_get_bidi_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">global</span> <span class="n">cdp</span>
-        <span class="n">import_cdp</span><span class="p">()</span>
-        <span class="n">ws_url</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;se:options&quot;</span><span class="p">):</span>
-            <span class="n">ws_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;se:options&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cdp&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">version</span><span class="p">,</span> <span class="n">ws_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cdp_details</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">ws_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Unable to find url to connect to from capabilities&quot;</span><span class="p">)</span>
-
-        <span class="n">cdp</span><span class="o">.</span><span class="n">import_devtools</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
-
-        <span class="k">global</span> <span class="n">devtools</span>
-        <span class="n">devtools</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;selenium.webdriver.common.devtools.v</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
-        <span class="k">async</span> <span class="k">with</span> <span class="n">cdp</span><span class="o">.</span><span class="n">open_cdp</span><span class="p">(</span><span class="n">ws_url</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-            <span class="n">targets</span> <span class="o">=</span> <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">devtools</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">get_targets</span><span class="p">())</span>
-            <span class="n">target_id</span> <span class="o">=</span> <span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">target_id</span>
-            <span class="k">async</span> <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">open_session</span><span class="p">(</span><span class="n">target_id</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">session</span>
-
-    <span class="k">def</span> <span class="nf">_get_cdp_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">json</span>
-        <span class="kn">import</span> <span class="nn">urllib3</span>
-
-        <span class="n">http</span> <span class="o">=</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">PoolManager</span><span class="p">()</span>
-        <span class="n">debugger_address</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">:chromeOptions&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vendor_prefix</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;debuggerAddress&quot;</span><span class="p">)</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s2">&quot;http://</span><span class="si">{0}</span><span class="s2">/json/version&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">debugger_address</span><span class="p">))</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-
-        <span class="n">browser_version</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Browser&quot;</span><span class="p">)</span>
-        <span class="n">websocket_url</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;webSocketDebuggerUrl&quot;</span><span class="p">)</span>
-
-        <span class="kn">import</span> <span class="nn">re</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;.*/(\d+)\.&quot;</span><span class="p">,</span> <span class="n">browser_version</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">version</span><span class="p">,</span> <span class="n">websocket_url</span></div>
+        <span class="k">return</span> <span class="n">Log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
