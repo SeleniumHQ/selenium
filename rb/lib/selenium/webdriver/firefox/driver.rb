@@ -38,10 +38,6 @@ module Selenium
           :firefox
         end
 
-        def bridge_class
-          Bridge
-        end
-
         private
 
         def devtools_version

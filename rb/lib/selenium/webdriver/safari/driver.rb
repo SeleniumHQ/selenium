@@ -34,10 +34,6 @@ module Selenium
         def browser
           :safari
         end
-
-        def bridge_class
-          Bridge
-        end
       end # Driver
     end # Safari
   end # WebDriver

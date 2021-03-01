@@ -330,7 +330,7 @@ module Selenium
         bridge_opts = {http_client: opts.delete(:http_client), url: opts.delete(:url)}
         raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
 
-        bridge = (respond_to?(:bridge_class) ? bridge_class : Remote::Bridge).new(**bridge_opts)
+        bridge = Remote::Bridge.new(**bridge_opts)
 
         bridge.create_session(capabilities)
         bridge

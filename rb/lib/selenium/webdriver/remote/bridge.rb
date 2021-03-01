@@ -57,6 +57,17 @@ module Selenium
           raise Error::WebDriverError, 'no sessionId in returned payload' unless @session_id
 
           @capabilities = Capabilities.json_create(capabilities)
+
+          case @capabilities[:browser_name]
+          when 'chrome'
+            extend(WebDriver::Chrome::Features)
+          when 'firefox'
+            extend(WebDriver::Firefox::Features)
+          when 'msedge'
+            extend(WebDriver::Edge::Features)
+          when 'safari'
+            extend(WebDriver::Safari::Features)
+          end
         end
 
         #

@@ -19,29 +19,33 @@
 
 module Selenium
   module WebDriver
-    module Firefox
-      class Bridge < WebDriver::Remote::Bridge
+    module Safari
+      module Features
 
-        COMMANDS = {
-          install_addon: [:post, 'session/:session_id/moz/addon/install'],
-          uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall']
+        # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
+        SAFARI_COMMANDS = {
+          get_permissions: [:get, 'session/:session_id/apple/permissions'],
+          set_permissions: [:post, 'session/:session_id/apple/permissions'],
+          attach_debugger: [:post, 'session/:session_id/apple/attach_debugger']
         }.freeze
 
         def commands(command)
-          COMMANDS[command] || super
+          SAFARI_COMMANDS[command] || self.class::COMMANDS[command]
         end
 
-        def install_addon(path, temporary)
-          payload = {path: path}
-          payload[:temporary] = temporary unless temporary.nil?
-          execute :install_addon, {}, payload
+        def permissions
+          execute(:get_permissions)['permissions']
         end
 
-        def uninstall_addon(id)
-          execute :uninstall_addon, {}, {id: id}
+        def permissions=(permissions)
+          execute :set_permissions, {}, {permissions: permissions}
+        end
+
+        def attach_debugger
+          execute :attach_debugger, {}, {}
         end
 
       end # Bridge
-    end # Firefox
+    end # Safari
   end # WebDriver
 end # Selenium

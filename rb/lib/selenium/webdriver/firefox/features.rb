@@ -17,21 +17,31 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/bridge'
-
 module Selenium
   module WebDriver
-    module Edge
-      class Bridge < WebDriver::Chrome::Bridge
+    module Firefox
+      module Features
 
-        COMMANDS = WebDriver::Chrome::Bridge::COMMANDS.merge(
-          send_command: [:post, 'session/:session_id/ms/cdp/execute']
-        ).freeze
+        FIREFOX_COMMANDS = {
+          install_addon: [:post, 'session/:session_id/moz/addon/install'],
+          uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall']
+        }.freeze
 
         def commands(command)
-          COMMANDS[command] || super
+          FIREFOX_COMMANDS[command] || self.class::COMMANDS[command]
         end
+
+        def install_addon(path, temporary)
+          payload = {path: path}
+          payload[:temporary] = temporary unless temporary.nil?
+          execute :install_addon, {}, payload
+        end
+
+        def uninstall_addon(id)
+          execute :uninstall_addon, {}, {id: id}
+        end
+
       end # Bridge
-    end # Edge
+    end # Firefox
   end # WebDriver
 end # Selenium
