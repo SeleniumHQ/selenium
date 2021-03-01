@@ -27,12 +27,13 @@ module Selenium
         (W3C_OPTIONS + self::CAPABILITIES.keys).each do |key|
           next if method_defined? key
 
-          define_method key do
-            @options[key]
-          end
+            define_method key do
+              @options[key]
+            end
 
-          define_method "#{key}=" do |value|
-            @options[key] = value
+            define_method "#{key}=" do |value|
+              @options[key] = value
+            end
           end
         end
       end
@@ -67,6 +68,14 @@ module Selenium
       def add_option(name, value)
         @options[name] = value
       end
+
+      def ==(other)
+        return false unless other.is_a? self.class
+
+        as_json == other.as_json
+      end
+
+      alias_method :eql?, :==
 
       #
       # @api private
