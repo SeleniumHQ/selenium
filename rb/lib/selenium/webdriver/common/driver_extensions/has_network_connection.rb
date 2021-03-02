@@ -23,11 +23,13 @@ module Selenium
     module DriverExtensions
       module HasNetworkConnection
         def network_connection_type
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting network connection'
+          raise Error::UnsupportedOperationError,
+                'The W3C standard does not currently support getting network connection'
         end
 
         def network_connection_type=(*)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting network connection'
+          raise Error::UnsupportedOperationError,
+                'The W3C standard does not currently support setting network connection'
         end
       end # HasNetworkConnection
     end # DriverExtensions

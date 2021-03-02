@@ -39,7 +39,9 @@ module Selenium
           driver_args << "--log-path=#{driver_opts.delete(:log_path)}" if driver_opts.key?(:log_path)
           driver_args << "--url-base=#{driver_opts.delete(:url_base)}" if driver_opts.key?(:url_base)
           driver_args << "--port-server=#{driver_opts.delete(:port_server)}" if driver_opts.key?(:port_server)
-          driver_args << "--whitelisted-ips=#{driver_opts.delete(:whitelisted_ips)}" if driver_opts.key?(:whitelisted_ips)
+          if driver_opts.key?(:whitelisted_ips)
+            driver_args << "--whitelisted-ips=#{driver_opts.delete(:whitelisted_ips)}"
+          end
           driver_args << "--verbose" if driver_opts.key?(:verbose)
           driver_args << "--silent" if driver_opts.key?(:silent)
           driver_args
