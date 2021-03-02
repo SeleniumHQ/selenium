@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import com.beust.jcommander.Parameter;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+
 import com.google.auto.service.AutoService;
+
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.NonSplittingSplitter;
@@ -30,8 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-
+@SuppressWarnings("unused")
 @AutoService(HasRoles.class)
 public class NodeFlags implements HasRoles {
 
@@ -42,9 +45,9 @@ public class NodeFlags implements HasRoles {
   public int maxSessions;
 
   @Parameter(
-      names = {"--detect-drivers"}, arity = 1,
-      description = "Autodetect which drivers are available on the current system, " +
-                    "and add them to the Node. Defaults to true.")
+    names = {"--detect-drivers"}, arity = 1,
+    description = "Autodetect which drivers are available on the current system, " +
+                  "and add them to the Node. Defaults to true.")
   @ConfigValue(section = "node", name = "detect-drivers", example = "true")
   public Boolean autoconfigure;
 
@@ -94,11 +97,11 @@ public class NodeFlags implements HasRoles {
     name = "driver-configuration",
     prefixed = true,
     example = "\n" +
-      "name = \"Firefox Nightly\"\n" +
-      "max-sessions = 2\n" +
-      "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
-      "\"moz:firefoxOptions\": " +
-      "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
+              "name = \"Firefox Nightly\"\n" +
+              "max-sessions = 2\n" +
+              "stereotype = \"{\"browserName\": \"firefox\", \"browserVersion\": \"86\", " +
+              "\"moz:firefoxOptions\": " +
+              "{\"binary\":\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\"}}\"")
   public List<String> driverConfiguration;
 
   @Parameter(
@@ -109,9 +112,10 @@ public class NodeFlags implements HasRoles {
 
   @Parameter(
     names = "--register-period",
-    description = "How long, in seconds, will the Node try to register to the Distributor for the first time. " +
-      "After this period is completed, the Node will not attempt to register again.")
-  @ConfigValue(section = "node", name = "register-cycle", example = "120")
+    description = "How long, in seconds, will the Node try to register to the Distributor for " +
+                  "the first time. After this period is completed, the Node will not attempt " +
+                  "to register again.")
+  @ConfigValue(section = "node", name = "register-period", example = "120")
   public int registerPeriod;
 
   @Parameter(

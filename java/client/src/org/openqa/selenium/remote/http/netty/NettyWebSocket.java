@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import static org.openqa.selenium.remote.http.netty.NettyClient.toClampedInt;
+
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Request;
 import org.asynchttpclient.ws.WebSocketListener;
 import org.asynchttpclient.ws.WebSocketUpgradeHandler;
 import org.openqa.selenium.internal.Require;
@@ -50,7 +53,7 @@ class NettyWebSocket implements WebSocket {
 
   private final org.asynchttpclient.ws.WebSocket socket;
 
-  private NettyWebSocket(AsyncHttpClient client, org.asynchttpclient.Request request, Listener listener) {
+  private NettyWebSocket(AsyncHttpClient client, Request request, Listener listener) {
     Require.nonNull("HTTP client", client);
     Require.nonNull("WebSocket listener", listener);
 
@@ -124,7 +127,11 @@ class NettyWebSocket implements WebSocket {
     return (req, listener) -> {
       HttpRequest filtered = filterRequest.apply(req);
 
-      org.asynchttpclient.Request nettyReq = NettyMessages.toNettyRequest(config.baseUri(), filtered);
+      Request nettyReq = NettyMessages.toNettyRequest(
+        config.baseUri(),
+        toClampedInt(config.readTimeout().toMillis()),
+        toClampedInt(config.readTimeout().toMillis()),
+        filtered);
 
       return new NettyWebSocket(client, nettyReq, listener);
     };

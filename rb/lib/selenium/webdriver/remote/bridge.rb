@@ -207,7 +207,10 @@ module Selenium
         end
 
         def window_size(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before getting its size'
+          end
 
           data = execute :get_window_rect
           Dimension.new data['width'], data['height']
@@ -218,7 +221,10 @@ module Selenium
         end
 
         def maximize_window(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before changing its size'
+          end
 
           execute :maximize_window
         end

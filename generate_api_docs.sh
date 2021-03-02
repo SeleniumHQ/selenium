@@ -5,6 +5,9 @@
 ./go //py:setup //py:init //py:docs || exit
 
 # Ruby
+cd rb
+bundle install || exit
+cd ..
 ./go //rb:docs || exit
 
 git checkout rb/Gemfile.lock

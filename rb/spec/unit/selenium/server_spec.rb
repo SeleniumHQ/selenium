@@ -133,7 +133,8 @@ module Selenium
       fake_server = Object.new
 
       allow(Selenium::Server).to receive(:download).with(required_version).and_return(expected_download_file_name)
-      allow(Selenium::Server).to receive(:new).with(expected_download_file_name, expected_options).and_return(fake_server)
+      allow(Selenium::Server).to receive(:new).with(expected_download_file_name,
+                                                    expected_options).and_return(fake_server)
 
       server = Selenium::Server.get required_version, expected_options
       expect(server).to eq(fake_server)
@@ -180,7 +181,8 @@ module Selenium
       expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
 
       allow(Selenium::Server).to receive(:latest).and_return required_version
-      stub_request(:get, "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}")
+      stub_request(:get,
+                   "http://selenium-release.storage.googleapis.com/#{minor_version}/#{expected_download_file_name}")
         .to_return(body: 'this is pretending to be a jar file for testing purposes')
 
       begin
