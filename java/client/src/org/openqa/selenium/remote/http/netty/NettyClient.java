@@ -18,9 +18,7 @@
 package org.openqa.selenium.remote.http.netty;
 
 import com.google.auto.service.AutoService;
-import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timer;
-import io.netty.util.concurrent.DefaultThreadFactory;
+
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
 import org.asynchttpclient.Dsl;
@@ -35,14 +33,23 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timer;
+import io.netty.util.concurrent.DefaultThreadFactory;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
+
   private static final Timer TIMER;
+  private static final AtomicBoolean addedHook = new AtomicBoolean();
+  private static final AsyncHttpClient client = createHttpClient(ClientConfig.defaultConfig());
+
   static {
     ThreadFactory threadFactory = new DefaultThreadFactory("netty-client-timer", true);
     HashedWheelTimer timer = new HashedWheelTimer(
@@ -53,19 +60,30 @@ public class NettyClient implements HttpClient {
     timer.start();
     TIMER = timer;
   }
+
   private final ClientConfig config;
-  private final AsyncHttpClient client;
   private final HttpHandler handler;
   private final BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
 
   private NettyClient(ClientConfig config) {
     this.config = Require.nonNull("HTTP client config", config);
-    this.client = createHttpClient(config);
-    this.handler = new NettyHttpHandler(config, this.client).with(config.filter());
-    this.toWebSocket = NettyWebSocket.create(config, this.client);
+    this.handler = new NettyHttpHandler(config, client).with(config.filter());
+    this.toWebSocket = NettyWebSocket.create(config, client);
+    if (!addedHook.get()) {
+      Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownClient));
+      addedHook.set(true);
+    }
   }
 
-  private AsyncHttpClient createHttpClient(ClientConfig config) {
+  /**
+   * Converts a long to an int, clamping the maximum and minimum values to
+   * fit in an integer without overflowing.
+   */
+  static int toClampedInt(long value) {
+    return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value));
+  }
+
+  private static AsyncHttpClient createHttpClient(ClientConfig config) {
     DefaultAsyncHttpClientConfig.Builder builder =
       new DefaultAsyncHttpClientConfig.Builder()
         .setThreadFactory(new DefaultThreadFactory("AsyncHttpClient", true))
@@ -77,16 +95,7 @@ public class NettyClient implements HttpClient {
         .setRequestTimeout(toClampedInt(config.readTimeout().toMillis()))
         .setConnectTimeout(toClampedInt(config.connectionTimeout().toMillis()))
         .setReadTimeout(toClampedInt(config.readTimeout().toMillis()));
-
     return Dsl.asyncHttpClient(builder);
-  }
-
-  /**
-   * Converts a long to an int, clamping the maximum and minimum values to
-   * fit in an integer without overflowing.
-   */
-  private int toClampedInt(long value) {
-    return (int) Math.max(Integer.MIN_VALUE, Math.min(Integer.MAX_VALUE, value));
   }
 
   @Override
@@ -112,6 +121,10 @@ public class NettyClient implements HttpClient {
 
   @Override
   public void close() {
+    // no-op -- done by the shutdown hook
+  }
+
+  private void shutdownClient() {
     try {
       client.close();
     } catch (IOException e) {

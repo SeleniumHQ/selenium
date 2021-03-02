@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import static org.openqa.selenium.remote.http.netty.NettyClient.toClampedInt;
+
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
 import org.openqa.selenium.internal.Require;
@@ -53,7 +55,11 @@ public class NettyHttpHandler extends RemoteCall {
     Require.nonNull("Request", request);
 
     Future<Response> whenResponse = client.executeRequest(
-      NettyMessages.toNettyRequest(getConfig().baseUri(), request));
+      NettyMessages.toNettyRequest(
+        getConfig().baseUri(),
+        toClampedInt(getConfig().readTimeout().toMillis()),
+        toClampedInt(getConfig().readTimeout().toMillis()),
+        request));
 
     try {
       Response response = whenResponse.get(getConfig().readTimeout().toMillis(), TimeUnit.MILLISECONDS);
