@@ -28,9 +28,14 @@
  *
  * You may use {@link Options} to specify whether Edge Chromium should be used:
 
+ *     var edge = require('selenium-webdriver/edge');
  *     var options = new edge.Options();
- *     options.useEdgeChromium(true);
+ *     options.setEdgeChromium(true);
  *     // configure browser options ...
+ *     let driver = await new Builder()
+ *       .forBrowser('MicrosoftEdge')
+ *       .setEdgeOptions(options)
+ *       .build();
 
  * Note that Chromium-specific {@link Options} will be ignored when using Edge Legacy.
  *
