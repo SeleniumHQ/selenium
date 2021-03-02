@@ -42,9 +42,8 @@ class NettyMessages {
 
   protected static Request toNettyRequest(URI baseUrl, int readTimeout, int requestTimeout,
                                           HttpRequest request) {
-    String rawUrl;
 
-    rawUrl = getRawUrl(baseUrl, request.getUri());
+    String rawUrl = getRawUrl(baseUrl, request.getUri());
 
     RequestBuilder builder = request(request.getMethod().toString(), rawUrl)
       .setReadTimeout(readTimeout)
