@@ -320,6 +320,6 @@ def testExpectedConditionAlertIsPresent(driver, pages):
 def testExpectedConditionAttributeToBeIncludeInElement(driver, pages):
     pages.load('booleanAttributes.html')
     with pytest.raises(TimeoutException):
-        WebDriverWait(driver, 1).until(EC.attribute_to_be_include_in_element((By.ID, 'inputRequired'), 'test'))
-    value = WebDriverWait(driver, 1).until(EC.attribute_to_be_include_in_element((By.ID, 'inputRequired'), 'value'))
+        WebDriverWait(driver, 1).until(EC.element_attribute_to_include((By.ID, 'inputRequired'), 'test'))
+    value = WebDriverWait(driver, 1).until(EC.element_attribute_to_include((By.ID, 'inputRequired'), 'value'))
     assert value is not None

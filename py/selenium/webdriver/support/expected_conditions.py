@@ -364,7 +364,7 @@ def alert_is_present():
     return _predicate
 
 
-def attribute_to_be_include_in_element(locator, attribute_):
+def element_attribute_to_include(locator, attribute_):
     """ An expectation for checking if the given attribute is include in the
     specified element.
     locator, attribute
