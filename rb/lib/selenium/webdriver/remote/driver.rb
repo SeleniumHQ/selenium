@@ -30,11 +30,6 @@ module Selenium
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
         include DriverExtensions::HasRemoteStatus
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasAuthentication
-        include DriverExtensions::HasLogEvents
-        include DriverExtensions::HasNetworkInterception
 
         def initialize(bridge: nil, listener: nil, **opts)
           desired_capabilities = opts[:desired_capabilities]
