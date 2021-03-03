@@ -146,6 +146,53 @@ module Selenium
         expect(mutation.current_value).to eq('')
         expect(mutation.old_value).to eq('display:none;')
       end
+
+      context 'intercepts' do
+        it 'allows to continue requests' do
+          requests = []
+          driver.intercept do |request|
+            requests << request
+            request.continue
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.title).to eq('HTML5')
+          expect(requests).not_to be_empty
+        end
+
+        it 'allows to stub responses' do
+          requests = []
+          driver.intercept do |request|
+            requests << request
+            request.respond(body: '<title>Intercepted!</title>')
+          end
+          driver.navigate.to url_for('html5Page.html')
+          expect(driver.title).to eq('Intercepted!')
+          expect(requests).not_to be_empty
+        end
+
+        it 'intercepts specific requests' do
+          stubbed = []
+          continued = []
+          driver.intercept do |request|
+            if request.method == 'GET' && request.url.include?('resultPage.html')
+              stubbed << request
+              request.respond(body: '<title>Intercepted!</title>')
+            else
+              continued << request
+              request.continue
+            end
+          end
+
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.title).to eq('We Leave From Here')
+          expect(stubbed).to be_empty
+          expect(continued).not_to be_empty
+
+          driver.find_element(id: 'submitButton').click
+          expect(driver.title).to eq('Intercepted!')
+          expect(stubbed).not_to be_empty
+        end
+      end
     end
   end
 end

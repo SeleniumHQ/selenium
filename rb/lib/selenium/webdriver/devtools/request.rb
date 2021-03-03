@@ -17,21 +17,41 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# TODO: Deprecated; Delete after 4.0 release
 module Selenium
   module WebDriver
-    module DriverExtensions
-      module HasNetworkConnection
-        def network_connection_type
-          raise Error::UnsupportedOperationError,
-                'The W3C standard does not currently support getting network connection'
+    class DevTools
+      class Request
+
+        attr_reader :url, :method, :headers
+
+        def initialize(devtools:, id:, url:, method:, headers:)
+          @devtools = devtools
+          @id = id
+          @url = url
+          @method = method
+          @headers = headers
         end
 
-        def network_connection_type=(*)
-          raise Error::UnsupportedOperationError,
-                'The W3C standard does not currently support setting network connection'
+        def continue
+          @devtools.fetch.continue_request(request_id: @id)
         end
-      end # HasNetworkConnection
-    end # DriverExtensions
+
+        def respond(code: 200, headers: {}, body: '')
+          @devtools.fetch.fulfill_request(
+            request_id: @id,
+            body: Base64.strict_encode64(body),
+            response_code: code,
+            response_headers: headers.map do |k, v|
+              {name: k, value: v}
+            end
+          )
+        end
+
+        def inspect
+          %(#<#{self.class.name} @method="#{method}" @url="#{url}")
+        end
+
+      end # Request
+    end # DevTools
   end # WebDriver
 end # Selenium

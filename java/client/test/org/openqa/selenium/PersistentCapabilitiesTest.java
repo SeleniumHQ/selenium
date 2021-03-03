@@ -34,7 +34,7 @@ public class PersistentCapabilitiesTest {
   }
 
   @Test
-  public void modifyingTheCapabilitiesThisPersistentCapabilitesIsBasedOnDoesNotChangeOurView() {
+  public void modifyingTheCapabilitiesThisPersistentCapabilitiesIsBasedOnDoesNotChangeOurView() {
     MutableCapabilities mutableCaps = new MutableCapabilities();
     Capabilities caps = new PersistentCapabilities(mutableCaps);
 
@@ -58,5 +58,15 @@ public class PersistentCapabilitiesTest {
 
     assertThat(original).isEqualTo(new ImmutableCapabilities("cheese", "cheddar"));
     assertThat(seen).isEqualTo(new ImmutableCapabilities("cheese", "orgu peynir"));
+  }
+
+  @Test
+  public void shouldAllowChainedCallsToSetCapabilities() {
+    PersistentCapabilities caps = new PersistentCapabilities(new ImmutableCapabilities())
+      .setCapability("one", 1)
+      .setCapability("two", 2);
+
+    assertThat(caps).isEqualTo(new ImmutableCapabilities("one", 1, "two", 2));
+
   }
 }

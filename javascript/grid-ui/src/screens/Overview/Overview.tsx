@@ -36,6 +36,7 @@ import Loading from '../../components/Loading/Loading'
 import Error from '../../components/Error/Error'
 import StereotypeInfo from '../../models/stereotype-info'
 import browserVersion from '../../util/browser-version'
+import Capabilities from "../../models/capabilities";
 
 const useStyles = (theme: Theme): StyleRules => createStyles(
   {
@@ -139,7 +140,13 @@ class Overview extends React.Component<OverviewProps, OverviewState> {
         version: node.osInfo.version,
         arch: node.osInfo.arch
       }
-      const slotStereotypes = JSON.parse(node.stereotypes).map((item) => {
+
+      interface StereoTypeData {
+        stereotype: Capabilities;
+        slots: number
+      }
+
+      const slotStereotypes = (JSON.parse(node.stereotypes) as Array<StereoTypeData>).map((item) => {
         const slotStereotype: StereotypeInfo = {
           browserName: item.stereotype.browserName,
           browserVersion: browserVersion(

@@ -48,7 +48,7 @@ class QueuedSessions extends React.Component<QueuedSessionsProps, {}> {
   render (): ReactNode {
     const { sessionQueueRequests, classes } = this.props
     const queue = sessionQueueRequests.map((queuedSession) => {
-      return JSON.stringify(JSON.parse(queuedSession))
+      return JSON.stringify(JSON.parse(queuedSession) as object)
     })
     return (
       <div className={classes.root}>

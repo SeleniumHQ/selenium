@@ -34,7 +34,7 @@ module Selenium
           it 'assigns default timeout to nil' do
             http = client.send :http
 
-            expect(http.open_timeout).to eq nil
+            expect(http.open_timeout).to eq 60
             expect(http.read_timeout).to eq 60
           end
 

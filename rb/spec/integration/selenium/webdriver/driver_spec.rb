@@ -267,7 +267,9 @@ module Selenium
 
         it 'should raise if the script is bad' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
+          expect {
+            driver.execute_script('return squiggle();')
+          }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
         end
 
         it 'should return arrays' do

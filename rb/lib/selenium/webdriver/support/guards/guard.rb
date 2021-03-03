@@ -19,7 +19,7 @@
 
 module Selenium
   module WebDriver
-    module SpecSupport
+    module Support
       class Guards
         class Guard
 
@@ -128,6 +128,6 @@ module Selenium
           end
         end # Guard
       end # Guards
-    end # SpecSupport
+    end # Support
   end # WebDriver
 end # Selenium

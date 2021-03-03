@@ -134,7 +134,8 @@ module Selenium
         it 'can install web extension with id' do
           ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
           profile.add_extension(ext)
-          extension_directory = File.expand_path('extensions/favourite-colour-examples@mozilla.org', profile.layout_on_disk)
+          extension_directory = File.expand_path('extensions/favourite-colour-examples@mozilla.org',
+                                                 profile.layout_on_disk)
           expect(Dir.exist?(extension_directory)).to eq(true)
         end
       end
