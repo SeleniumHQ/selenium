@@ -34,8 +34,16 @@ module Selenium
 
         private
 
+        def devtools_version
+          return Firefox::DEVTOOLS_VERSION if browser == :firefox
+
+          Integer(capabilities.browser_version.split('.').first)
+        end
+
         def devtools_url
-          uri = URI("http://#{devtools_debugger_address}")
+          return devtools_address if devtools_address.include?('/session/')
+
+          uri = URI(devtools_address)
           response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
 
           JSON.parse(response)['webSocketDebuggerUrl']

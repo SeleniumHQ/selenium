@@ -35,8 +35,8 @@ module Selenium
 
         private
 
-        def devtools_debugger_address
-          capabilities['ms:edgeOptions']['debuggerAddress']
+        def devtools_address
+          "http://#{capabilities['ms:edgeOptions']['debuggerAddress']}"
         end
       end # Driver
     end # Edge

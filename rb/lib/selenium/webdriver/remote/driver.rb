@@ -52,13 +52,7 @@ module Selenium
 
         private
 
-        def devtools_version
-          return Firefox::DEVTOOLS_VERSION if browser == :firefox
-
-          Integer(capabilities.browser_version.split('.').first)
-        end
-
-        def devtools_url
+        def devtools_address
           capabilities['se:cdp']
         end
       end # Driver

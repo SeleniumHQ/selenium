@@ -40,12 +40,8 @@ module Selenium
 
         private
 
-        def devtools_version
-          DEVTOOLS_VERSION
-        end
-
-        def devtools_debugger_address
-          capabilities['moz:debuggerAddress']
+        def devtools_address
+          "http://#{capabilities['moz:debuggerAddress']}"
         end
       end # Driver
     end # Firefox

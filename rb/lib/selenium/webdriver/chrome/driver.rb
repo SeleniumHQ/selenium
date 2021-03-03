@@ -48,12 +48,8 @@ module Selenium
 
         private
 
-        def devtools_version
-          Integer(capabilities.browser_version.split('.').first)
-        end
-
-        def devtools_debugger_address
-          capabilities['goog:chromeOptions']['debuggerAddress']
+        def devtools_address
+          "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"
         end
 
       end # Driver
