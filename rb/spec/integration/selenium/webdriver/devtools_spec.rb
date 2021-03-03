@@ -147,7 +147,8 @@ module Selenium
         expect(mutation.old_value).to eq('display:none;')
       end
 
-      context 'intercepts' do
+      context 'network interception', except: {browser: :firefox_nightly,
+                                               reason: 'Fetch.enable is not yet supported'} do
         it 'allows to continue requests' do
           requests = []
           driver.intercept do |request|

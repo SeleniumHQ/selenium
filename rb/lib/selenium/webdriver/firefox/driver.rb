@@ -30,6 +30,7 @@ module Selenium
         include DriverExtensions::HasAddons
         include DriverExtensions::HasDevTools
         include DriverExtensions::HasLogEvents
+        include DriverExtensions::HasNetworkInterception
         include DriverExtensions::HasWebStorage
         include DriverExtensions::PrintsPage
 
