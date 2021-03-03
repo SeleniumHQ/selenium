@@ -35,6 +35,7 @@ const WebSocket = require('ws')
 const http = require('../http/index')
 const fs = require('fs')
 const { Capabilities } = require('./capabilities')
+const path = require('path')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1362,7 +1363,7 @@ class WebDriver {
         .toString()
     } catch {
       mutationListener = fs
-        .readFileSync('./atoms/mutation-listener.js', 'utf-8')
+        .readFileSync(path.resolve(__dirname,'./atoms/mutation-listener.js'), 'utf-8')
         .toString()
     }
 
