@@ -96,6 +96,7 @@ ruby_test(name = "remote-chrome",
   ],
   deps = [
     ":chrome",
+    ":devtools",
     ":remote"
   ]
 )
@@ -117,7 +118,10 @@ ruby_test(name = "edge",
     "rb/spec/integration",
     "build/rb/lib"
   ],
-  deps = [":edge"]
+  deps = [
+    ":edge",
+    ":devtools"
+  ]
 )
 
 ruby_test(name = "remote-edge",
@@ -132,6 +136,7 @@ ruby_test(name = "remote-edge",
   ],
   deps = [
     ":edge",
+    ":devtools",
     ":remote"
   ]
 )
