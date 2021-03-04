@@ -17,10 +17,14 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.beust.jcommander.Parameter;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
+
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.json.Json;
 
 import java.io.PrintStream;
@@ -30,8 +34,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 
 public class ConfigFlags implements HasRoles {
 
@@ -100,11 +102,15 @@ public class ConfigFlags implements HasRoles {
     StringBuilder demoToml = new StringBuilder();
     allOptions.forEach((section, options) -> {
       demoToml.append("[").append(section).append("]\n");
-      options.forEach(option -> {
+      options.stream().filter(option -> !option.hidden).forEach(option -> {
         if (!option.optionName.isEmpty()) {
           demoToml.append("# ").append(option.description).append("\n");
         }
         demoToml.append("# Type: ").append(option.type).append("\n");
+        if (!option.defaultValue.isEmpty()) {
+          demoToml.append("# Default: ").append(option.defaultValue).append("\n");
+        }
+        demoToml.append("# Example: ").append("\n");
         if (option.prefixed) {
           demoToml.append("[[")
             .append(section)

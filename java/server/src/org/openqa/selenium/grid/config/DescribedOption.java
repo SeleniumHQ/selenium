@@ -17,11 +17,14 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.beust.jcommander.Parameter;
+import static java.util.Comparator.naturalOrder;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
+
+import com.beust.jcommander.Parameter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -37,26 +40,28 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static java.util.Comparator.naturalOrder;
-
 /**
  * Represents a configurable attribute of the Selenium Grid.
  */
 public class DescribedOption implements Comparable<DescribedOption> {
+
   public final String section;
   public final String optionName;
   public final String description;
   public final String type;
   public final String example;
+  public final String defaultValue;
   public final boolean prefixed;
   public final boolean repeats;
   public final boolean quotable;
+  public final boolean hidden;
   public final Set<String> flags;
 
-  DescribedOption(Type type, Parameter parameter, ConfigValue configValue) {
+  DescribedOption(Type type, Parameter parameter, ConfigValue configValue, String defaultValue) {
     Objects.requireNonNull(type);
     Objects.requireNonNull(parameter);
     Objects.requireNonNull(configValue);
+    Objects.requireNonNull(defaultValue);
 
     this.section = configValue.section();
     this.optionName = configValue.name();
@@ -67,6 +72,8 @@ public class DescribedOption implements Comparable<DescribedOption> {
     this.quotable = isTomlStringType(type);
     this.example = configValue.example();
     this.flags = ImmutableSortedSet.<String>naturalOrder().add(parameter.names()).build();
+    this.defaultValue = defaultValue;
+    this.hidden = parameter.hidden();
   }
 
   public static Set<DescribedOption> findAllMatchingOptions(Collection<Role> roles) {
@@ -88,9 +95,15 @@ public class DescribedOption implements Comparable<DescribedOption> {
         field.setAccessible(true);
         Parameter param = field.getAnnotation(Parameter.class);
         ConfigValue configValue = field.getAnnotation(ConfigValue.class);
-
+        String fieldValue = "";
+        try {
+          Object fieldInstance = field.get(clazz.newInstance());
+          fieldValue = fieldInstance == null ? "" : fieldInstance.toString();
+        } catch (IllegalAccessException | InstantiationException ignore) {
+          // We'll swallow this exception since we are just trying to get field's default value
+        }
         if (param != null && configValue != null) {
-          fields.add(new DescribedOption(field.getGenericType(), param, configValue));
+          fields.add(new DescribedOption(field.getGenericType(), param, configValue, fieldValue));
         }
       }
       clazz = clazz.getSuperclass();
@@ -149,22 +162,35 @@ public class DescribedOption implements Comparable<DescribedOption> {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     DescribedOption that = (DescribedOption) o;
     return repeats == that.repeats &&
-      quotable == that.quotable &&
-      Objects.equals(section, that.section) &&
-      Objects.equals(optionName, that.optionName) &&
-      Objects.equals(description, that.description) &&
-      Objects.equals(type, that.type) &&
-      Objects.equals(example, that.example) &&
-      Objects.equals(flags, that.flags);
+           quotable == that.quotable &&
+           Objects.equals(section, that.section) &&
+           Objects.equals(optionName, that.optionName) &&
+           Objects.equals(description, that.description) &&
+           Objects.equals(defaultValue, that.defaultValue) &&
+           Objects.equals(type, that.type) &&
+           Objects.equals(example, that.example) &&
+           Objects.equals(flags, that.flags);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(section, optionName, description, type, example, repeats, quotable, flags);
+    return Objects.hash(section,
+                        optionName,
+                        description,
+                        type,
+                        example,
+                        repeats,
+                        quotable,
+                        flags,
+                        defaultValue);
   }
 
   public String getType(Type type) {
@@ -182,8 +208,8 @@ public class DescribedOption implements Comparable<DescribedOption> {
 
   private Class<?> deriveClass(Type type) {
     if (type instanceof ParameterizedType &&
-      ((ParameterizedType) type).getRawType() instanceof Class &&
-      Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType())) {
+        ((ParameterizedType) type).getRawType() instanceof Class &&
+        Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType())) {
       Type[] typeArgs = ((ParameterizedType) type).getActualTypeArguments();
       if (typeArgs.length == 1 && typeArgs[0] instanceof Class) {
         // TODO: This is not how to pluralise something
@@ -199,8 +225,8 @@ public class DescribedOption implements Comparable<DescribedOption> {
   }
 
   private boolean isCollection(Type type) {
-     return type instanceof ParameterizedType &&
-      ((ParameterizedType) type).getRawType() instanceof Class &&
-      Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType());
+    return type instanceof ParameterizedType &&
+           ((ParameterizedType) type).getRawType() instanceof Class &&
+           Collection.class.isAssignableFrom((Class<?>) ((ParameterizedType) type).getRawType());
   }
 }
