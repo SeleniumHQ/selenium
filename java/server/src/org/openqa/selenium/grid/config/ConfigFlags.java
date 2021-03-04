@@ -37,15 +37,23 @@ import java.util.stream.Collectors;
 
 public class ConfigFlags implements HasRoles {
 
-  private static final ImmutableSet<String> IGNORED_SECTIONS = ImmutableSet.of("java", "lc", "term");
+  private static final ImmutableSet<String> IGNORED_SECTIONS =
+    ImmutableSet.of("java", "lc", "term");
 
-  @Parameter(names = "--config", description = "Config file to read from (may be specified more than once)")
+  @Parameter(
+    names = "--config",
+    description = "Config file to read from (may be specified more than once)")
   private List<Path> configFiles;
 
-  @Parameter(names = "--dump-config", description = "Dump the config of the server as JSON.", hidden = true)
+  @Parameter(
+    names = "--dump-config",
+    description = "Dump the config of the server as JSON.",
+    hidden = true)
   private boolean dumpConfig;
 
-  @Parameter(names = "--config-help", description = "Output detailed information about config options")
+  @Parameter(
+    names = "--config-help",
+    description = "Output detailed information about config options")
   private boolean dumpConfigHelp;
 
   @Override
@@ -100,6 +108,7 @@ public class ConfigFlags implements HasRoles {
         (l, r) -> ImmutableSortedSet.<DescribedOption>naturalOrder().addAll(l).addAll(r).build()));
 
     StringBuilder demoToml = new StringBuilder();
+    demoToml.append("Configuration help for Toml config file").append("\n\n");
     allOptions.forEach((section, options) -> {
       demoToml.append("[").append(section).append("]\n");
       options.stream().filter(option -> !option.hidden).forEach(option -> {

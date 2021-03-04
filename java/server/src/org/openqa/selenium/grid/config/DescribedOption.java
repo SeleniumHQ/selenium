@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
+import static java.util.Comparator.comparing;
 import static java.util.Comparator.naturalOrder;
 
 import com.google.common.collect.ImmutableSet;
@@ -157,7 +158,9 @@ public class DescribedOption implements Comparable<DescribedOption> {
 
   @Override
   public int compareTo(DescribedOption o) {
-    return optionName.compareTo(o.optionName);
+    return comparing((DescribedOption describedOption) -> describedOption.section)
+      .thenComparing(describedOption -> describedOption.optionName)
+      .compare(this, o);
   }
 
   @Override
