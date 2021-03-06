@@ -46,7 +46,7 @@ public class DistributorFlags implements HasRoles {
     names = "--distributor-port",
     description = "Port on which the distributor is listening.")
   @ConfigValue(section = DISTRIBUTOR_SECTION, name = "port", example = "5553")
-  private int distributorServerPort;
+  private Integer distributorServerPort;
 
   @Parameter(
     names = "--distributor-host",

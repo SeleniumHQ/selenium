@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.grid.router.httpd;
 
-import com.beust.jcommander.Parameter;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+
 import com.google.auto.service.AutoService;
+
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
@@ -26,18 +30,17 @@ import org.openqa.selenium.grid.config.Role;
 import java.util.Collections;
 import java.util.Set;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
-
 @AutoService(HasRoles.class)
 public class RouterFlags implements HasRoles {
 
+  @SuppressWarnings("FieldMayBeFinal")
   @Parameter(
     names = {"--relax-checks"},
     description = "Relax checks on origin header and content type of incoming requests," +
-      " in contravention of strict W3C spec compliance.",
+                  " in contravention of strict W3C spec compliance.",
     arity = 1)
   @ConfigValue(section = "network", name = "relax-checks", example = "true")
-  private Boolean relaxChecks;
+  private Boolean relaxChecks = false;
 
   @Override
   public Set<Role> getRoles() {

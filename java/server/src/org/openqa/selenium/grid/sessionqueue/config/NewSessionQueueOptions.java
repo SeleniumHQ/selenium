@@ -29,13 +29,11 @@ import java.time.Duration;
   description = "New session queue config")
 public class NewSessionQueueOptions {
 
-  private static final String SESSIONS_QUEUE_SECTION = "sessionqueue";
+  static final String SESSIONS_QUEUE_SECTION = "sessionqueue";
+  static final int DEFAULT_REQUEST_TIMEOUT = 300;
+  static final int DEFAULT_RETRY_INTERVAL = 5;
   private static final String DEFAULT_NEWSESSION_QUEUE =
     "org.openqa.selenium.grid.sessionmap.remote.LocalNewSessionQueue";
-  private static final int DEFAULT_REQUEST_TIMEOUT = 300;
-  private static final int DEFAULT_RETRY_INTERVAL = 5;
-
-
   private final Config config;
 
   public NewSessionQueueOptions(Config config) {
@@ -44,22 +42,21 @@ public class NewSessionQueueOptions {
   }
 
   public Duration getSessionRequestTimeout() {
-    long timeout = config.getInt(SESSIONS_QUEUE_SECTION, "session-request-timeout")
-      .orElse(DEFAULT_REQUEST_TIMEOUT);
+    // If the user sets 0 or less, we default to 1s.
+    int timeout = Math.max(
+      config.getInt(SESSIONS_QUEUE_SECTION, "session-request-timeout")
+        .orElse(DEFAULT_REQUEST_TIMEOUT),
+      1);
 
-    if (timeout <= 0) {
-      return Duration.ofSeconds(DEFAULT_REQUEST_TIMEOUT);
-    }
     return Duration.ofSeconds(timeout);
   }
 
   public Duration getSessionRequestRetryInterval() {
-    long interval = config.getInt(SESSIONS_QUEUE_SECTION, "session-retry-interval")
-      .orElse(DEFAULT_RETRY_INTERVAL);
-
-    if (interval <= 0) {
-      return Duration.ofSeconds(DEFAULT_RETRY_INTERVAL);
-    }
+    // If the user sets 0 or less, we default to 1s.
+    int interval = Math.max(
+      config.getInt(SESSIONS_QUEUE_SECTION, "session-retry-interval")
+        .orElse(DEFAULT_REQUEST_TIMEOUT),
+      1);
     return Duration.ofSeconds(interval);
   }
 
