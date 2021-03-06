@@ -17,7 +17,16 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
+
 import com.google.common.collect.ImmutableMap;
+
 import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -42,14 +51,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -137,7 +138,7 @@ public class NodeOptionsTest {
       singletonMap("node",
                    ImmutableMap.of(
                      "detect-drivers", "false",
-                     "drivers", "[chrome]"
+                     "driver-implementation", "[chrome]"
                    )));
     List<Capabilities> reported = new ArrayList<>();
     try {
