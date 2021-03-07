@@ -109,6 +109,21 @@ class WebElement(BaseWebElement):
             # if we hit an end point that doesnt understand getElementProperty lets fake it
             return self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
 
+    def get_dom_attribute(self, name) -> str:
+        """
+        Gets the given attribute of the element. Unlike :func:`~selenium.webdriver.remote.BaseWebElement.get_attribute`,
+        this method only returns attributes declared in the element's HTML markup.
+
+        :Args:
+            - name - Name of the attribute to retrieve.
+
+        :Usage:
+            ::
+
+                text_length = target_element.get_dom_attribute("class")
+        """
+        return self._execute(Command.GET_ELEMENT_ATTRIBUTE, {"name": name})["value"]
+
     def get_attribute(self, name) -> str:
         """Gets the given attribute or property of the element.
 
@@ -121,6 +136,10 @@ class WebElement(BaseWebElement):
         are returned as booleans.  All other non-``None`` values are returned
         as strings.  For attributes or properties which do not exist, ``None``
         is returned.
+
+        To obtain the exact value of the attribute or property,
+        use :func:`~selenium.webdriver.remote.BaseWebElement.get_dom_attribute` or
+        :func:`~selenium.webdriver.remote.BaseWebElement.get_property` methods respectively.
 
         :Args:
             - name - Name of the attribute/property to retrieve.

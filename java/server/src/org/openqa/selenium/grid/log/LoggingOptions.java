@@ -39,8 +39,13 @@ import java.util.logging.Logger;
 
 public class LoggingOptions {
 
+  static final String LOGGING_SECTION = "logging";
+  static final boolean DEFAULT_CONFIGURE_LOGGING = true;
+  static final String DEFAULT_LOG_LEVEL = Level.INFO.getName();
+  static final boolean DEFAULT_PLAIN_LOGS = false;
+  static final boolean DEFAULT_STRUCTURED_LOGS = false;
+  static final boolean DEFAULT_TRACING_ENABLED = true;
   private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
-  private static final String LOGGING_SECTION = "logging";
   private final Config config;
   private Level level = Level.INFO;
 
@@ -49,11 +54,11 @@ public class LoggingOptions {
   }
 
   public boolean isUsingStructuredLogging() {
-    return config.getBool(LOGGING_SECTION, "structured-logs").orElse(false);
+    return config.getBool(LOGGING_SECTION, "structured-logs").orElse(DEFAULT_STRUCTURED_LOGS);
   }
 
   public boolean isUsingPlainLogs() {
-    return config.getBool(LOGGING_SECTION, "plain-logs").orElse(true);
+    return config.getBool(LOGGING_SECTION, "plain-logs").orElse(DEFAULT_PLAIN_LOGS);
   }
 
   public String getLogEncoding() {
@@ -61,7 +66,7 @@ public class LoggingOptions {
   }
 
   public void setLoggingLevel() {
-    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(Level.INFO.getName());
+    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
 
     try {
       level = Level.parse(configLevel.toUpperCase(Locale.ROOT));
@@ -71,7 +76,8 @@ public class LoggingOptions {
   }
 
   public Tracer getTracer() {
-    boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing").orElse(true);
+    boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing")
+      .orElse(DEFAULT_TRACING_ENABLED);
     if (!tracingEnabled) {
       LOG.info("Using null tracer");
       return new NullTracer();
@@ -81,7 +87,7 @@ public class LoggingOptions {
   }
 
   public void configureLogging() {
-    if (!config.getBool(LOGGING_SECTION, "enable").orElse(true)) {
+    if (!config.getBool(LOGGING_SECTION, "enable").orElse(DEFAULT_CONFIGURE_LOGGING)) {
       return;
     }
 

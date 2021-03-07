@@ -39,7 +39,7 @@ module Selenium
 
         private
 
-        def debugger_address
+        def devtools_debugger_address
           capabilities['ms:edgeOptions']['debuggerAddress']
         end
       end # Driver

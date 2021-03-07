@@ -439,6 +439,10 @@ module Selenium
           execute_atom :getAttribute, element, name
         end
 
+        def element_dom_attribute(element, name)
+          execute :get_element_attribute, id: element.ref, name: name
+        end
+
         def element_property(element, name)
           execute :get_element_property, id: element.ref, name: name
         end

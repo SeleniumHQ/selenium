@@ -56,9 +56,10 @@ module Selenium
           Integer(capabilities.browser_version.split('.').first)
         end
 
-        def debugger_address
+        def devtools_debugger_address
           capabilities['goog:chromeOptions']['debuggerAddress']
         end
+
       end # Driver
     end # Chrome
   end # WebDriver

@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe DevTools, exclusive: {driver: %i[chrome edge firefox_nightly]} do
+    describe DevTools, exclusive: {browser: %i[chrome edge firefox_nightly]} do
       let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
       let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
@@ -147,7 +147,8 @@ module Selenium
         expect(mutation.old_value).to eq('display:none;')
       end
 
-      context 'intercepts' do
+      context 'network interception', except: {browser: :firefox_nightly,
+                                               reason: 'Fetch.enable is not yet supported'} do
         it 'allows to continue requests' do
           requests = []
           driver.intercept do |request|

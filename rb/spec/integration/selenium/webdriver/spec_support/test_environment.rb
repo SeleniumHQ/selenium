@@ -28,6 +28,7 @@ module Selenium
           @create_driver_error_count = 0
 
           @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
+          @driver_instance = nil
         end
 
         def print_env

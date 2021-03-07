@@ -23,8 +23,8 @@ import org.openqa.selenium.internal.Require;
 
 public class EventBusOptions {
 
+  static final String EVENTS_SECTION = "events";
   private static final String DEFAULT_CLASS = "org.openqa.selenium.events.zeromq.ZeroMqEventBus";
-
   private final Config config;
   private volatile EventBus bus;
 
@@ -48,6 +48,6 @@ public class EventBusOptions {
   }
 
   private EventBus createBus() {
-    return config.getClass("events", "implementation", EventBus.class, DEFAULT_CLASS);
+    return config.getClass(EVENTS_SECTION, "implementation", EventBus.class, DEFAULT_CLASS);
   }
 }

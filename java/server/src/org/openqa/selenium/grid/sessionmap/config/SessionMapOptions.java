@@ -24,14 +24,13 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 public class SessionMapOptions {
 
   private static final String SESSIONS_SECTION = "sessions";
 
-  private static final Logger LOG = Logger.getLogger(SessionMapOptions.class.getName());
-  private static final String DEFAULT_SESSION_MAP = "org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap";
+  private static final String DEFAULT_SESSION_MAP =
+    "org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap";
   private static final String DEFAULT_SESSION_MAP_SCHEME = "http";
   private final Config config;
 
@@ -41,7 +40,8 @@ public class SessionMapOptions {
 
   public URI getSessionMapUri() {
 
-    String scheme = config.get(SESSIONS_SECTION, "scheme").orElse(DEFAULT_SESSION_MAP_SCHEME);
+    String scheme = config.get(SESSIONS_SECTION, "scheme")
+      .orElse(DEFAULT_SESSION_MAP_SCHEME);
 
     Optional<URI> host = config.get(SESSIONS_SECTION, "host").map(str -> {
       try {
@@ -80,6 +80,10 @@ public class SessionMapOptions {
   }
 
   public SessionMap getSessionMap() {
-    return config.getClass(SESSIONS_SECTION, "implementation", SessionMap.class, DEFAULT_SESSION_MAP);
+    return config.getClass(
+      SESSIONS_SECTION,
+      "implementation",
+      SessionMap.class,
+      DEFAULT_SESSION_MAP);
   }
 }

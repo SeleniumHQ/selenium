@@ -127,8 +127,10 @@ module Selenium
         end
 
         it 'should not add secure cookie when http',
-           except: {browser: %i[firefox firefox_nightly],
-                    reason: 'https://github.com/mozilla/geckodriver/issues/1840'} do
+           except: [{browser: %i[firefox firefox_nightly],
+                     reason: 'https://github.com/mozilla/geckodriver/issues/1840'},
+                    {browser: :chrome,
+                     reason: 'https://bugs.chromium.org/p/chromium/issues/detail?id=1177877#c7'}] do
           driver.manage.add_cookie name: 'secure',
                                    value: 'http',
                                    secure: true

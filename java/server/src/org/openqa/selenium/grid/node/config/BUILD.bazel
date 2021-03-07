@@ -9,12 +9,14 @@ java_library(
         "//java/server/test/org/openqa/selenium/grid/node/config:__subpackages__",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium/chromium",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/node",
+        artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],
 )

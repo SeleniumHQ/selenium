@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.grid;
 
+import com.google.common.collect.Sets;
+
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterDescription;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
-import com.google.common.collect.Sets;
+
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -37,6 +40,7 @@ import java.io.PrintStream;
 import java.util.LinkedHashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public abstract class TemplateGridCommand implements CliCommand {
@@ -54,8 +58,6 @@ public abstract class TemplateGridCommand implements CliCommand {
     StreamSupport.stream(ServiceLoader.load(HasRoles.class).spliterator(), true)
       .filter(flags -> !Sets.intersection(getConfigurableRoles(), flags.getRoles()).isEmpty())
       .forEach(allFlags::add);
-
-    allFlags.addAll(getFlagObjects());
 
     JCommander.Builder builder = JCommander.newBuilder().programName(getName());
     allFlags.forEach(builder::addObject);
@@ -75,15 +77,41 @@ public abstract class TemplateGridCommand implements CliCommand {
         return;
       }
 
-      // Order matters here. The configs precedence is: 1. Env vars, 2. System properties,
-      // 3. Cli flags and default values, 4. Configuration files (config.toml)
-      // 5. Default role config
+      // Order matters here.
       Set<Config> allConfigs = new LinkedHashSet<>();
+
+      // 1. Env vars
       allConfigs.add(new EnvConfig());
-      allConfigs.add(new ConcatenatingConfig(getSystemPropertiesConfigPrefix(), '.', System.getProperties()));
-      allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags)));
+
+      // 2. System properties
+      allConfigs.add(new ConcatenatingConfig(
+        getSystemPropertiesConfigPrefix(),
+        '.',
+        System.getProperties()));
+
+      // 3. Cli arguments
+      Set<String> cliArgs = commander
+        .getFields()
+        .values()
+        .stream()
+        .filter(ParameterDescription::isAssigned)
+        .map(parameterDescription -> parameterDescription.getLongestName().replaceFirst("--", ""))
+        .collect(Collectors.toSet());
+      if (cliArgs.size() > 0) {
+        allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags, cliArgs)));
+      }
+
+      // 4. Configuration files (config.toml)
       allConfigs.add(configFlags.readConfigFiles());
+
+      // 5. Default role config
       allConfigs.add(getDefaultConfig());
+
+      // 6. Object flags
+      getFlagObjects().forEach(flagObject -> allConfigs.add(new AnnotatedConfig(flagObject)));
+
+      // 7. Default values
+      allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags)));
 
       Config config = new MemoizedConfig(new CompoundConfig(allConfigs.toArray(new Config[0])));
 

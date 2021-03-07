@@ -29,14 +29,13 @@ module Selenium
 
       def initialize(url:, version:)
         @messages = []
-        @uri = URI("http://#{url}")
+        @session_id = nil
+        @url = url
 
         load_devtools_version(version)
         process_handshake
         attach_socket_listener
-
-        target.attach_to_target(target_id: page_target['id'])
-        target.set_auto_attach(auto_attach: true, wait_for_debugger_on_start: false)
+        start_session
       end
 
       def callbacks
@@ -45,7 +44,9 @@ module Selenium
 
       def send_cmd(method, **params)
         id = next_id
-        data = JSON.generate(id: id, method: method, params: params.reject { |_, v| v.nil? })
+        data = {id: id, method: method, params: params.reject { |_, v| v.nil? }}
+        data[:sessionId] = @session_id if @session_id
+        data = JSON.generate(data)
         WebDriver.logger.debug "DevTools -> #{data}"
 
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
@@ -99,6 +100,13 @@ module Selenium
         socket_listener.abort_on_exception = true
       end
 
+      def start_session
+        targets = target.get_targets.dig('result', 'targetInfos')
+        page_target = targets.find { |target| target['type'] == 'page' }
+        session = target.attach_to_target(target_id: page_target['targetId'], flatten: true)
+        @session_id = session.dig('result', 'sessionId')
+      end
+
       def incoming_frame
         @incoming_frame ||= WebSocket::Frame::Incoming::Client.new(version: ws.version)
       end
@@ -112,15 +120,7 @@ module Selenium
       end
 
       def ws
-        @ws ||= WebSocket::Handshake::Client.new(url: page_target['webSocketDebuggerUrl'])
-      end
-
-      def page_target
-        @page_target ||= begin
-          response = Net::HTTP.get(@uri.hostname, '/json/list', @uri.port)
-          targets = JSON.parse(response)
-          targets.find { |target| target['type'] == 'page' }
-        end
+        @ws ||= WebSocket::Handshake::Client.new(url: @url)
       end
 
       def next_id
