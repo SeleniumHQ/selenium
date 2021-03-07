@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.assertj.core.api.AbstractAssert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,6 +36,7 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -81,6 +83,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -146,6 +149,56 @@ public class DistributorTest {
         local.newSession(createRequest(payload));
       assertThatEither(result).isLeft();
     }
+  }
+
+  @Test
+  public void shouldStartHeartBeatOnNodeRegistration() {
+    EventBus bus = new GuavaEventBus();
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      bus,
+      localNewSessionQueue,
+      registrationSecret);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .build();
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queuer,
+      registrationSecret);
+    distributor.add(node);
+
+    AtomicBoolean heartbeatStarted = new AtomicBoolean();
+    CountDownLatch latch = new CountDownLatch(1);
+
+    bus.addListener(NodeHeartBeatEvent.listener(nodeId -> {
+      latch.countDown();
+      if (node.getId().equals(nodeId)) {
+        heartbeatStarted.set(true);
+      }
+    }));
+    waitToHaveCapacity(distributor);
+    boolean eventFired = false;
+    try {
+      eventFired = latch.await(30, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      Assert.fail("Thread Interrupted");
+    }
+
+    assertThat(eventFired).isTrue();
+    assertThat(heartbeatStarted).isTrue();
   }
 
   @Test
