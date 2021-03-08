@@ -86,6 +86,7 @@ module Selenium
               browser_name: 'MicrosoftEdge'
             }.merge(opts))
           end
+          alias_method :microsoftedge, :edge
 
           def firefox(opts = {})
             opts[:browser_version] = opts.delete(:version) if opts.key?(:version)

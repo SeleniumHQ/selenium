@@ -44,6 +44,7 @@ module Selenium
         def edge(**opts)
           Edge::Service.new(**opts)
         end
+        alias_method :microsoftedge, :edge
 
         def safari(**opts)
           Safari::Service.new(**opts)
