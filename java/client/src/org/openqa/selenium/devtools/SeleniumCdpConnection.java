@@ -26,7 +26,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Optional;
 
 public class SeleniumCdpConnection extends Connection {
@@ -58,13 +57,8 @@ public class SeleniumCdpConnection extends Connection {
   }
 
   public static Optional<URI> getCdpUri(Capabilities capabilities) {
-    Object options = capabilities.getCapability("se:options");
+    Object cdp = capabilities.getCapability("se:cdp");
 
-    if (!(options instanceof Map)) {
-      return Optional.empty();
-    }
-
-    Object cdp = ((Map<?, ?>) options).get("cdp");
     if (!(cdp instanceof String)) {
       return Optional.empty();
     }

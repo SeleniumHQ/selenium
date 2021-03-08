@@ -9,6 +9,7 @@ java_library(
         "//java/client/test/org/openqa/selenium/remote/tracing:__subpackages__",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote/tracing",
@@ -18,6 +19,7 @@ java_library(
         artifact("io.opentelemetry:opentelemetry-exporter-logging"),
         artifact("io.opentelemetry:opentelemetry-sdk"),
         artifact("io.opentelemetry:opentelemetry-sdk-common"),
+        artifact("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure"),
         artifact("io.opentelemetry:opentelemetry-sdk-trace"),
         artifact("io.opentelemetry:opentelemetry-semconv"),
     ],

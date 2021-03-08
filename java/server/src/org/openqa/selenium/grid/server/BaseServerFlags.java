@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.grid.server;
 
-import com.beust.jcommander.Parameter;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+
 import com.google.auto.service.AutoService;
+
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
@@ -27,45 +31,68 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-
 @AutoService(HasRoles.class)
 public class BaseServerFlags implements HasRoles {
 
+  private static final String SERVER_SECTION = "server";
+
   @Parameter(
-      names = {"--host"},
-      description =  "IP or hostname : usually determined automatically.")
-  @ConfigValue(section = "server", name = "hostname", example = "\"localhost\"")
+    names = {"--host"},
+    description = "Server IP or hostname: usually determined automatically.")
+  @ConfigValue(section = SERVER_SECTION, name = "host", example = "\"localhost\"")
   private String host;
 
-  @Parameter(description = "Port to listen on.", names = {"-p", "--port"})
-  @ConfigValue(section = "server", name = "port", example = "4444")
-  private int port;
+  @Parameter(
+    description = "Port to listen on. There is no default as this parameter is used by "
+                  + "different components, for example Router/Hub/Standalone will use 4444 and "
+                  + "Node will use 5555.",
+    names = {"-p", "--port"})
+  @ConfigValue(section = SERVER_SECTION, name = "port", example = "4444")
+  private Integer port;
 
-  @Parameter(description = "Maximum number of listener threads.", names = "--max-threads")
-  @ConfigValue(section = "server", name = "max-threads", example = "12")
+  @Parameter(
+    description = "Maximum number of listener threads. "
+                  + "Default value is: (available processors) * 3.",
+    names = "--max-threads")
+  @ConfigValue(section = SERVER_SECTION, name = "max-threads", example = "12")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
-  @Parameter(names = "--allow-cors",
+  @Parameter(
+    names = "--allow-cors",
     description = "Whether the Selenium server should allow web browser connections from any host",
     arity = 1)
-  @ConfigValue(section = "server", name = "allow-cors", example = "true")
-  private Boolean allowCORS;
+  @ConfigValue(section = SERVER_SECTION, name = "allow-cors", example = "true")
+  private Boolean allowCORS = false;
 
-  @Parameter(description = "Private key for https", names = "--https-private-key")
-  @ConfigValue(section = "server", name = "https-private-key", example = "\"/path/to/key.pkcs8\"")
+  @Parameter(
+    description = "Private key for https. Get more detailed information by running"
+                  + " \"java -jar selenium-server.jar info security\"",
+    names = "--https-private-key")
+  @ConfigValue(
+    section = SERVER_SECTION,
+    name = "https-private-key",
+    example = "\"/path/to/key.pkcs8\"")
   private Path httpsPrivateKey;
 
-  @Parameter(description = "Server certificate for https", names = "--https-certificate")
-  @ConfigValue(section = "server", name = "https-certificate", example = "\"/path/to/cert.pem\"")
+  @Parameter(
+    description = "Server certificate for https. Get more detailed information by running"
+                  + " \"java -jar selenium-server.jar info security\"",
+    names = "--https-certificate")
+  @ConfigValue(
+    section = SERVER_SECTION,
+    name = "https-certificate",
+    example = "\"/path/to/cert.pem\"")
   private Path httpsCertificate;
 
   @Parameter(description = "Node registration secret", names = "--registration-secret")
-  @ConfigValue(section = "server", name = "registration-secret", example = "\"Hunter2\"")
+  @ConfigValue(section = SERVER_SECTION, name = "registration-secret", example = "\"Hunter2\"")
   private String registrationSecret;
 
-  @Parameter(description = "Use a self-signed certificate for HTTPS communication", names = "--self-signed-https", hidden = true)
-  @ConfigValue(section = "server", name = "https-self-signed", example = "false")
+  @Parameter(
+    description = "Use a self-signed certificate for HTTPS communication",
+    names = "--self-signed-https",
+    hidden = true)
+  @ConfigValue(section = SERVER_SECTION, name = "https-self-signed", example = "false")
   private Boolean isSelfSigned = false;
 
   @Override

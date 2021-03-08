@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.log;
 
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.remote.tracing.empty.NullTracer;
@@ -30,6 +31,7 @@ import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -37,8 +39,13 @@ import java.util.logging.Logger;
 
 public class LoggingOptions {
 
+  static final String LOGGING_SECTION = "logging";
+  static final boolean DEFAULT_CONFIGURE_LOGGING = true;
+  static final String DEFAULT_LOG_LEVEL = Level.INFO.getName();
+  static final boolean DEFAULT_PLAIN_LOGS = false;
+  static final boolean DEFAULT_STRUCTURED_LOGS = false;
+  static final boolean DEFAULT_TRACING_ENABLED = true;
   private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
-  private static final String LOGGING_SECTION = "logging";
   private final Config config;
   private Level level = Level.INFO;
 
@@ -47,11 +54,11 @@ public class LoggingOptions {
   }
 
   public boolean isUsingStructuredLogging() {
-    return config.getBool(LOGGING_SECTION, "structured-logs").orElse(false);
+    return config.getBool(LOGGING_SECTION, "structured-logs").orElse(DEFAULT_STRUCTURED_LOGS);
   }
 
   public boolean isUsingPlainLogs() {
-    return config.getBool(LOGGING_SECTION, "plain-logs").orElse(true);
+    return config.getBool(LOGGING_SECTION, "plain-logs").orElse(DEFAULT_PLAIN_LOGS);
   }
 
   public String getLogEncoding() {
@@ -59,29 +66,18 @@ public class LoggingOptions {
   }
 
   public void setLoggingLevel() {
-    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(Level.INFO.getName());
+    String configLevel = config.get(LOGGING_SECTION, "log-level").orElse(DEFAULT_LOG_LEVEL);
 
-    if (Level.ALL.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.ALL;
-    } else if (Level.CONFIG.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.CONFIG;
-    } else if (Level.FINE.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINE;
-    } else if (Level.FINER.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINER;
-    } else if (Level.FINEST.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.FINEST;
-    } else if (Level.OFF.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.OFF;
-    } else if (Level.SEVERE.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.SEVERE;
-    } else if (Level.WARNING.getName().equalsIgnoreCase(configLevel)) {
-      level = Level.WARNING;
+    try {
+      level = Level.parse(configLevel.toUpperCase(Locale.ROOT));
+    } catch (IllegalArgumentException e) {
+      throw new ConfigException("Unable to determine log level from " + configLevel);
     }
   }
 
   public Tracer getTracer() {
-    boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing").orElse(true);
+    boolean tracingEnabled = config.getBool(LOGGING_SECTION, "tracing")
+      .orElse(DEFAULT_TRACING_ENABLED);
     if (!tracingEnabled) {
       LOG.info("Using null tracer");
       return new NullTracer();
@@ -91,7 +87,7 @@ public class LoggingOptions {
   }
 
   public void configureLogging() {
-    if (!config.getBool(LOGGING_SECTION, "enable").orElse(true)) {
+    if (!config.getBool(LOGGING_SECTION, "enable").orElse(DEFAULT_CONFIGURE_LOGGING)) {
       return;
     }
 

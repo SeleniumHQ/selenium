@@ -74,15 +74,7 @@ class HandleSession implements HttpHandler {
 
     this.httpClients = CacheBuilder.newBuilder()
       .expireAfterAccess(Duration.ofMinutes(1))
-      .removalListener(
-        (RemovalListener<URL, HttpClient>) removal -> {
-          try {
-            removal.getValue().close();
-          } catch (IOException e) {
-            throw new UncheckedIOException(e);
-          }
-        }
-      )
+      .removalListener((RemovalListener<URL, HttpClient>) removal -> removal.getValue().close())
       .build();
 
     new Regularly("Clean up http clients cache").submit(

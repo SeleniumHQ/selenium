@@ -38,6 +38,10 @@ module Selenium
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
       DEFAULT_LOAD_NO_FOCUS_LIB = false
 
+      # Mozilla Automation Team asked to only support 85
+      # until WebDriver Bidi is available.
+      DEVTOOLS_VERSION = 85
+
       def self.driver_path=(path)
         WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path=',
                                    'Selenium::WebDriver::Firefox::Service#driver_path=',

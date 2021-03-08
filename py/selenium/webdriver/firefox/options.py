@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 from typing import Union
+import warnings
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.proxy import Proxy
@@ -106,6 +107,11 @@ class Options(ArgOptions):
         """
         :Returns: The Firefox profile to use.
         """
+        warnings.warn(
+            "Getting a profile has been deprecated.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         return self._profile
 
     @profile.setter
@@ -114,6 +120,11 @@ class Options(ArgOptions):
         or ``FirefoxProfile``.
 
         """
+        warnings.warn(
+            "Setting a profile has been deprecated. Please use the set_preference and install_addons methods",
+            DeprecationWarning,
+            stacklevel=2
+        )
         if not isinstance(new_profile, FirefoxProfile):
             new_profile = FirefoxProfile(new_profile)
         self._profile = new_profile

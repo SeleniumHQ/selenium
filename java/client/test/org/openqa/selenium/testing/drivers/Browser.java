@@ -80,7 +80,7 @@ public enum Browser {
   FIREFOX(new FirefoxOptions(), new GeckoDriverInfo().getDisplayName(), false) {
     @Override
     public Capabilities getCapabilities() {
-      FirefoxOptions options = new FirefoxOptions();
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
 
       String binary = System.getProperty("webdriver.firefox.bin");
       if (binary != null) {

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.security;
 
+import static java.util.Base64.getEncoder;
+
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 
@@ -24,8 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-
-import static java.util.Base64.getEncoder;
 
 public class SecretOptions {
 
@@ -39,19 +39,24 @@ public class SecretOptions {
 
   public Secret getRegistrationSecret() {
     String secret = "";
-    if ((isSecure() || isSelfSigned()) && !config.get(SERVER_SECTION, "registration-secret").isPresent()) {
+    if ((isSecure() || isSelfSigned())
+        && !config.get(SERVER_SECTION, "registration-secret").isPresent()) {
       try {
-        secret = getEncoder().encodeToString(Arrays.copyOfRange(Files.readAllBytes(getCertificate().toPath()), 0, 32));
+        secret = getEncoder()
+          .encodeToString(
+            Arrays.copyOfRange(Files.readAllBytes(getCertificate().toPath()), 0, 32));
         return new Secret(secret);
       } catch (IOException e) {
         throw new ConfigException("Cannot read the certificate file: " + e.getMessage());
       }
     }
-    return config.get(SERVER_SECTION, "registration-secret").map(Secret::new).orElse(new Secret(secret));
+    return config.get(SERVER_SECTION, "registration-secret")
+      .map(Secret::new).orElse(new Secret(secret));
   }
 
   private boolean isSecure() {
-    return config.get(SERVER_SECTION, "https-private-key").isPresent() && config.get(SERVER_SECTION, "https-certificate").isPresent();
+    return config.get(SERVER_SECTION, "https-private-key").isPresent()
+           && config.get(SERVER_SECTION, "https-certificate").isPresent();
   }
 
   private boolean isSelfSigned() {
@@ -59,11 +64,13 @@ public class SecretOptions {
   }
 
   private File getCertificate() {
-    String certificatePath = config.get(SERVER_SECTION, "https-certificate").orElse(null);
+    String certificatePath = config.get(SERVER_SECTION, "https-certificate")
+      .orElse(null);
     if (certificatePath != null) {
       return new File(certificatePath);
     }
-    throw new ConfigException("you must provide a certificate via --https-certificate when using --https");
+    throw new ConfigException(
+      "You must provide a certificate via --https-certificate when using --https");
   }
 
 }

@@ -27,8 +27,8 @@ import java.util.Optional;
 
 public class DistributorOptions {
 
-  private static final String DISTRIBUTOR_SECTION = "distributor";
-  private static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
+  static final String DISTRIBUTOR_SECTION = "distributor";
+  static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.local.LocalDistributor";
 
   private final Config config;

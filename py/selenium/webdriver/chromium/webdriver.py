@@ -75,6 +75,8 @@ class ChromiumDriver(RemoteWebDriver):
         if desired_capabilities:
             for key, value in desired_capabilities.items():
                 options.set_capability(key, value)
+        else:
+            desired_capabilities = options.to_capabilities()
 
         if options._ignore_local_proxy:
             _ignore_proxy = options._ignore_local_proxy

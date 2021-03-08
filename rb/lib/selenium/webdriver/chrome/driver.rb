@@ -28,6 +28,7 @@ module Selenium
 
       class Driver < WebDriver::Driver
         include DriverExtensions::HasNetworkConditions
+        include DriverExtensions::HasNetworkInterception
         include DriverExtensions::HasWebStorage
         include DriverExtensions::HasLocation
         include DriverExtensions::DownloadsFiles
@@ -55,9 +56,10 @@ module Selenium
           Integer(capabilities.browser_version.split('.').first)
         end
 
-        def debugger_address
+        def devtools_debugger_address
           capabilities['goog:chromeOptions']['debuggerAddress']
         end
+
       end # Driver
     end # Chrome
   end # WebDriver

@@ -35,6 +35,7 @@ const WebSocket = require('ws')
 const http = require('../http/index')
 const fs = require('fs')
 const { Capabilities } = require('./capabilities')
+const path = require('path')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1159,12 +1160,12 @@ class WebDriver {
    */
   async createCDPConnection(target) {
     const caps = await this.getCapabilities()
-    const seOptions = caps['map_'].get('se:options') || new Map()
+    const seCdp = caps['map_'].get('se:cdp')
     const vendorInfo =
       caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
       caps['map_'].get('moz:debuggerAddress') ||
       new Map()
-    const debuggerUrl = seOptions['cdp'] || vendorInfo['debuggerAddress'] || vendorInfo
+    const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
     this._wsUrl = await this.getWsUrl(debuggerUrl, target)
 
     return new Promise((resolve, reject) => {
@@ -1362,7 +1363,7 @@ class WebDriver {
         .toString()
     } catch {
       mutationListener = fs
-        .readFileSync('./atoms/mutation-listener.js', 'utf-8')
+        .readFileSync(path.resolve(__dirname,'./atoms/mutation-listener.js'), 'utf-8')
         .toString()
     }
 

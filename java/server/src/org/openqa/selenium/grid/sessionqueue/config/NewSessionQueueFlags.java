@@ -18,6 +18,9 @@
 package org.openqa.selenium.grid.sessionqueue.config;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_REQUEST_TIMEOUT;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_RETRY_INTERVAL;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.SESSIONS_QUEUE_SECTION;
 
 import com.google.auto.service.AutoService;
 
@@ -30,22 +33,23 @@ import org.openqa.selenium.grid.config.Role;
 import java.util.Collections;
 import java.util.Set;
 
+@SuppressWarnings("FieldMayBeFinal")
 @AutoService(HasRoles.class)
 public class NewSessionQueueFlags implements HasRoles {
 
   @Parameter(
-    names = { "--session-request-timeout" },
+    names = {"--session-request-timeout"},
     description = "Timeout in seconds. New incoming session request is added to the queue. "
-      + "Requests sitting in the queue for longer than the configured time will timeout.")
-  @ConfigValue(section = "sessionqueue", name = "session-request-timeout", example = "5")
-  private int sessionRequestTimeout = 300;
+                  + "Requests sitting in the queue for longer than the configured time will timeout.")
+  @ConfigValue(section = SESSIONS_QUEUE_SECTION, name = "session-request-timeout", example = "5")
+  private int sessionRequestTimeout = DEFAULT_REQUEST_TIMEOUT;
 
   @Parameter(
-    names = { "--session-retry-interval" },
+    names = {"--session-retry-interval"},
     description = "Retry interval in seconds. If all slots are busy, new session request " +
-      "will be retried after the given interval.")
-  @ConfigValue(section = "sessionqueue", name = "session-retry-interval", example = "5")
-  private int sessionRetryInterval = 5;
+                  "will be retried after the given interval.")
+  @ConfigValue(section = SESSIONS_QUEUE_SECTION, name = "session-retry-interval", example = "5")
+  private int sessionRetryInterval = DEFAULT_RETRY_INTERVAL;
 
   @Override
   public Set<Role> getRoles() {

@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.internal.Require;
+
 import java.io.Closeable;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -27,8 +28,6 @@ import java.util.stream.StreamSupport;
 
 import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
 
-import org.openqa.selenium.internal.Require;
-
 /**
  * Defines a simple client for making HTTP requests.
  */
@@ -36,7 +35,7 @@ public interface HttpClient extends Closeable, HttpHandler {
 
   WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
 
-  default void close() throws IOException {}
+  default void close() {}
 
   interface Factory {
 

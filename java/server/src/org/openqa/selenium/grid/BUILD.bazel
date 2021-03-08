@@ -92,7 +92,7 @@ java_export(
 
 java_binary(
     name = "selenium_server",
-    main_class = "org.openqa.selenium.grid.Main",
+    main_class = "org.openqa.selenium.grid.Bootstrap",
     visibility = [
         "//:__pkg__",
         "//deploys/docker:__pkg__",

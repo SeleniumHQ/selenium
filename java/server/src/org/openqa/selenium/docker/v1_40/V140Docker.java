@@ -41,6 +41,7 @@ public class V140Docker implements DockerProtocol {
   private final CreateContainer createContainer;
   private final StartContainer startContainer;
   private final StopContainer stopContainer;
+  private final IsContainerPresent isContainerPresent;
   private final InspectContainer inspectContainer;
   private final GetContainerLogs containerLogs;
 
@@ -52,6 +53,7 @@ public class V140Docker implements DockerProtocol {
     createContainer = new CreateContainer(this, client);
     startContainer = new StartContainer(client);
     stopContainer = new StopContainer(client);
+    isContainerPresent = new IsContainerPresent(client);
     inspectContainer = new InspectContainer(client);
     containerLogs = new GetContainerLogs(client);
   }
@@ -92,6 +94,15 @@ public class V140Docker implements DockerProtocol {
     LOG.info("Creating container: " + config);
 
     return createContainer.apply(config);
+  }
+
+  @Override
+  public boolean isContainerPresent(ContainerId id) throws DockerException {
+    Require.nonNull("Container id", id);
+
+    LOG.info("Checking if container is present: " + id);
+
+    return isContainerPresent.apply(id);
   }
 
   @Override

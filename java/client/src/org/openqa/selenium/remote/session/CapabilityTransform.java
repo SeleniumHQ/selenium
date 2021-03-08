@@ -27,7 +27,8 @@ import java.util.function.Function;
  */
 @FunctionalInterface
 public interface CapabilityTransform
-    extends Function<Map.Entry<String, Object>, Collection<Map.Entry<String, Object>>> {
+  extends Function<Map.Entry<String, Object>, Collection<Map.Entry<String, Object>>>
+{
 
   /**
    * @return {@code null} to remove the capability, or a collection of {@link Map.Entry} instances.

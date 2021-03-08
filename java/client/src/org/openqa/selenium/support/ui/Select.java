@@ -51,7 +51,7 @@ public class Select implements ISelect, WrapsElement {
 
     this.element = element;
 
-    String value = element.getAttribute("multiple");
+    String value = element.getDomAttribute("multiple");
 
     // The atoms normalize the returned value, but check for "false"
     isMulti = (value != null && !"false".equals(value));

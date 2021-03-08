@@ -67,7 +67,9 @@ import java.util.stream.Collectors;
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
  * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
+ * @deprecated Use {@link EventFiringDecorator} and {@link WebDriverListener} instead
  */
+@Deprecated
 public class EventFiringWebDriver implements
   WebDriver,
   JavascriptExecutor,

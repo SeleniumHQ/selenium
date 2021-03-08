@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>type_test</title>
   <script src="test_bootstrap.js"></script>
@@ -100,20 +101,20 @@
      *   the empty string.
      */
     function runTypingTest(input, opt_finalValue, opt_inputCount,
-                           opt_textInputCount, opt_inputIds, opt_initValue) {
+      opt_textInputCount, opt_inputIds, opt_initValue) {
       var inputIds = opt_inputIds ? opt_inputIds : INPUT_IDS;
       var inputCountBox = document.getElementById('inputCount');
       var textInputCountBox = document.getElementById('textInputCount');
       var finalValue = goog.isDef(opt_finalValue) ? opt_finalValue : input;
       var inputCount =
-          goog.isDef(opt_inputCount) ? opt_inputCount : finalValue.length;
+        goog.isDef(opt_inputCount) ? opt_inputCount : finalValue.length;
       var textInputCount =
-          goog.isDef(opt_textInputCount) ? opt_textInputCount : inputCount;
+        goog.isDef(opt_textInputCount) ? opt_textInputCount : inputCount;
       var initValue = opt_initValue || '';
 
       // Determine if our test requires updating the cursor position, which is
       // not supported in all scenarios.
-      var needsSelection = function(input) {
+      var needsSelection = function (input) {
         if (goog.isArray(input)) {
           return goog.array.some(input, needsSelection);
         }
@@ -175,30 +176,30 @@
 
     function testLeftRightBounds() {
       runTypingTest([LEFT, LEFT, 'b',
-                     LEFT, LEFT, 'a',
-                     RIGHT, 'c',
-                     RIGHT, RIGHT, RIGHT, 'e',
-                     LEFT, 'd'],
-                    'abcde');
+        LEFT, LEFT, 'a',
+        RIGHT, 'c',
+        RIGHT, RIGHT, RIGHT, 'e',
+        LEFT, 'd'],
+        'abcde');
     }
 
     function testNumPad() {
       runTypingTest([bot.Keyboard.Keys.NUM_ZERO,
-                     bot.Keyboard.Keys.NUM_ONE,
-                     bot.Keyboard.Keys.NUM_TWO,
-                     bot.Keyboard.Keys.NUM_THREE,
-                     bot.Keyboard.Keys.NUM_FOUR,
-                     bot.Keyboard.Keys.NUM_FIVE,
-                     bot.Keyboard.Keys.NUM_SIX,
-                     bot.Keyboard.Keys.NUM_SEVEN,
-                     bot.Keyboard.Keys.NUM_EIGHT,
-                     bot.Keyboard.Keys.NUM_NINE,
-                     bot.Keyboard.Keys.NUM_MULTIPLY,
-                     bot.Keyboard.Keys.NUM_PLUS,
-                     bot.Keyboard.Keys.NUM_MINUS,
-                     bot.Keyboard.Keys.NUM_PERIOD,
-                     bot.Keyboard.Keys.NUM_DIVISION],
-                    '0123456789*+-./');
+      bot.Keyboard.Keys.NUM_ONE,
+      bot.Keyboard.Keys.NUM_TWO,
+      bot.Keyboard.Keys.NUM_THREE,
+      bot.Keyboard.Keys.NUM_FOUR,
+      bot.Keyboard.Keys.NUM_FIVE,
+      bot.Keyboard.Keys.NUM_SIX,
+      bot.Keyboard.Keys.NUM_SEVEN,
+      bot.Keyboard.Keys.NUM_EIGHT,
+      bot.Keyboard.Keys.NUM_NINE,
+      bot.Keyboard.Keys.NUM_MULTIPLY,
+      bot.Keyboard.Keys.NUM_PLUS,
+      bot.Keyboard.Keys.NUM_MINUS,
+      bot.Keyboard.Keys.NUM_PERIOD,
+      bot.Keyboard.Keys.NUM_DIVISION],
+        '0123456789*+-./');
     }
 
     function testUnknownChar() {
@@ -254,12 +255,12 @@
       runTypingTest(['abcd', HOME, END, LEFT, SHIFT, HOME, DELETE], 'd', 5, 4);
       runTypingTest(['abcd', SHIFT, LEFT, LEFT, LEFT, DELETE], 'a', 5, 4);
       runTypingTest(
-          ['abcd', HOME, SHIFT, RIGHT, RIGHT, RIGHT, DELETE], 'd', 5, 4);
+        ['abcd', HOME, SHIFT, RIGHT, RIGHT, RIGHT, DELETE], 'd', 5, 4);
     }
 
     function testEventCancel() {
       function cancelEvent(element, eventType, keyCode) {
-        var listener = function(event) {
+        var listener = function (event) {
           // FF doesn't include keyCode on keypress events.
           var code = event.keyCode || event.charCode;
           if (code == keyCode) {
@@ -272,9 +273,9 @@
       for (var i = 0; i < INPUT_IDS.length; i++) {
         var element = document.getElementById(INPUT_IDS[i]);
         listenerKeys.push(cancelEvent(element, goog.events.EventType.KEYDOWN,
-            goog.events.KeyCodes.E));
+          goog.events.KeyCodes.E));
         listenerKeys.push(cancelEvent(element, goog.events.EventType.KEYPRESS,
-            'f'.charCodeAt(0)));
+          'f'.charCodeAt(0)));
       }
 
       runTypingTest('abcdef', 'abcd');
@@ -299,11 +300,11 @@
        */
       function setupSingleToggleListener(history, key) {
         var listenerKey = (goog.events.listen(
-            document.getElementById('textbox'),
-            goog.events.EventType.KEYPRESS,
-            function(event) {
-              history[key].push(event[key + 'Key']);
-            }));
+          document.getElementById('textbox'),
+          goog.events.EventType.KEYPRESS,
+          function (event) {
+            history[key].push(event[key + 'Key']);
+          }));
         return listenerKey;
       }
 
@@ -316,7 +317,7 @@
        *   the listeners later.
        */
       function setupAllToggleListeners(listenerKeys) {
-        var history = {alt: [], ctrl: [], meta: [], shift: []};
+        var history = { alt: [], ctrl: [], meta: [], shift: [] };
         for (var key in history) {
           listenerKeys.push(setupSingleToggleListener(history, key));
         }
@@ -339,29 +340,29 @@
     function testToggleKeys() {
       var history = runToggleTest(['ab', CONTROL, 'cd', SHIFT, 'ef']);
       assertTrue(goog.array.equals(
-          [false, false, true, true, true, true], history['ctrl']));
+        [false, false, true, true, true, true], history['ctrl']));
       assertTrue(goog.array.equals(
-          [false, false, false, false, true, true], history['shift']));
+        [false, false, false, false, true, true], history['shift']));
 
       history = runToggleTest(['ab', CONTROL, 'cd', CONTROL, 'ef']);
       assertTrue(goog.array.equals(
-          [false, false, true, true, false, false], history['ctrl']));
+        [false, false, true, true, false, false], history['ctrl']));
 
       history = runToggleTest([ALT, 'a', SHIFT, 'b', ALT, 'c', SHIFT, 'd']);
       assertTrue(goog.array.equals(
-          [true, true, false, false], history['alt']));
+        [true, true, false, false], history['alt']));
       assertTrue(goog.array.equals(
-          [false, true, true, false], history['shift']));
+        [false, true, true, false], history['shift']));
 
       history = runToggleTest(['a', META, 'b']);
 
       // The meta key fires a keypress event in GECKO.
       if (goog.userAgent.GECKO) {
         assertTrue(goog.array.equals(
-            [false, false, true], history['meta']));
+          [false, false, true], history['meta']));
       } else {
         assertTrue(goog.array.equals(
-            [false, true], history['meta']));
+          [false, true], history['meta']));
       }
     }
 
@@ -373,7 +374,7 @@
     }
 
     function testEnterTextArea() {
-      var newline = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
+      var newline = '\n';
       var finalText = 'asdf' + newline + 'qwer';
       runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);
     }
@@ -404,7 +405,7 @@
         var input = document.getElementById(INPUT_IDS[i]);
         input.disabled = true;
       }
-      return yieldInIE7().then(function() {
+      return yieldInIE7().then(function () {
         for (var i = 0; i < INPUT_IDS.length; i++) {
           var input = document.getElementById(INPUT_IDS[i]);
           assertThrows(goog.partial(bot.action.type, input, 'a'));
@@ -419,7 +420,7 @@
         var input = document.getElementById(INPUT_IDS[i]);
         input.readOnly = true;
       }
-      return yieldInIE7().then(function() {
+      return yieldInIE7().then(function () {
         runTypingTest('text not added', '', 0, 0, ['textbox']);
         for (var i = 0; i < INPUT_IDS.length; i++) {
           var input = document.getElementById(INPUT_IDS[i]);
@@ -444,7 +445,7 @@
      * other browsers, it just executes the function straightaway.
      */
     function yieldInIE7() {
-      return new goog.Promise(function(done) {
+      return new goog.Promise(function (done) {
         goog.testing.TestCase.getActiveTestCase().promiseTimeout = 5000;
         if (goog.userAgent.IE && !bot.userAgent.isEngineVersion(8)) {
           setTimeout(done, 500);
@@ -461,7 +462,7 @@
       var textBox = document.getElementById('textbox');
       textBox.value = '';
       bot.action.type(textBox, ['abcd', SHIFT, 'ef'], keyboard,
-                      persitModifierKeys);
+        persitModifierKeys);
 
       assertEquals('abcdEF', textBox.value);
       assertFalse(keyboard.isPressed(ALT));
@@ -470,7 +471,7 @@
       assertTrue(keyboard.isPressed(SHIFT));
 
       bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
-                      persitModifierKeys);
+        persitModifierKeys);
 
       // On Gecko < 17, selection is not updated on LEFT while shift is pressed.
       if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(17)) {
@@ -486,22 +487,24 @@
     }
   </script>
 </head>
+
 <body>
   The last textbox displays how often some of the events of the first textbox
   fire. <br>
   <form action="" onsubmit="return false;">
-    <input type="text" id="textbox"/>
-    <input type="password" id="password"/>
-    <input type="email" id="email"/>
-    <input type="search" id="search"/>
+    <input type="text" id="textbox" />
+    <input type="password" id="password" />
+    <input type="email" id="email" />
+    <input type="search" id="search" />
     <textarea id="textarea"></textarea>
-    <input type="text" id="inputCount"/>
-    <input type="text" id="textInputCount"/>
+    <input type="text" id="inputCount" />
+    <input type="text" id="textInputCount" />
     <div style="width:0px;height:0px;overflow:hidden;">
-      <input type="text" id="hiddenInput"/>
+      <input type="text" id="hiddenInput" />
     </div>
 
     <div contenteditable="true">Hello</div>
   </form>
 </body>
+
 </html>

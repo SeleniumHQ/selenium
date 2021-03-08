@@ -29,6 +29,7 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.netty.server.NettyServer;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -163,15 +164,10 @@ public class NettyAppServer implements AppServer {
 
   @Override
   public String create(Page page) {
-    try {
-      byte[] data = new Json()
-        .toJson(ImmutableMap.of("content", page.toString()))
-        .getBytes(UTF_8);
-
-      HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")))) {
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8);
-      request.setContent(bytes(data));
+      request.setContent(Contents.asJson(ImmutableMap.of("content", page.toString())));
       HttpResponse response = client.execute(request);
       return string(response);
     } catch (IOException ex) {

@@ -17,9 +17,16 @@
 
 package org.openqa.selenium.netty.server;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
@@ -33,13 +40,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class NettyServerTest {
 
@@ -81,17 +81,13 @@ public class NettyServerTest {
 
   @Test
   public void shouldDisableAllowOrigin() {
-    // TODO: Server setup
     Server<?> server = new NettyServer(
-        new BaseServerOptions(
-            new MapConfig(
-                ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
-        req -> {
-          return new HttpResponse().setContent(utf8String("Count is "));
-        }
+      new BaseServerOptions(
+        new MapConfig(
+          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+      req -> new HttpResponse().setContent(utf8String("Count is "))
     ).start();
 
-    // TODO: Client setup
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
     HttpRequest request = new HttpRequest(DELETE, "/session");
@@ -100,50 +96,40 @@ public class NettyServerTest {
     request.setHeader("Accept", "*/*");
     HttpResponse response = client.execute(request);
 
-    // TODO: Assertion
-    assertEquals("Access-Control-Allow-Credentials should be null", null,
-                 response.getHeader("Access-Control-Allow-Credentials"));
-
-    assertEquals("Access-Control-Allow-Origin should be null",
-                 null,
-                 response.getHeader("Access-Control-Allow-Origin"));
+    assertNull("Access-Control-Allow-Origin should be null",
+               response.getHeader("Access-Control-Allow-Origin"));
   }
 
   @Test
-  @Ignore
   public void shouldAllowCORS() {
-    // TODO: Server setup
     Config cfg = new CompoundConfig(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("allow-cors", "true"))));
+      new MapConfig(ImmutableMap.of("server", ImmutableMap.of("allow-cors", "true"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
     assertTrue("Allow CORS should be enabled", options.getAllowCORS());
 
     // TODO: Server setup
     Server<?> server = new NettyServer(
-        options,
-        req -> new HttpResponse()
+      options,
+      req -> new HttpResponse()
     ).start();
 
-    // TODO: Client setup
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
     HttpRequest request = new HttpRequest(DELETE, "/session");
-    String exampleUrl = "http://www.example.com";
-    request.setHeader("Origin", exampleUrl);
+    request.setHeader("Origin", "http://www.example.com");
     request.setHeader("Accept", "*/*");
     HttpResponse response = client.execute(request);
 
-    // TODO: Assertion
-    assertEquals("Access-Control-Allow-Credentials should be true", "true",
-                 response.getHeader("Access-Control-Allow-Credentials"));
-
-    assertEquals("Access-Control-Allow-Origin should be equal to origin in request header",
-                 exampleUrl,
-                 response.getHeader("Access-Control-Allow-Origin"));
+    assertEquals(
+      "Access-Control-Allow-Origin should be equal to origin in request header",
+      "*",
+      response.getHeader("Access-Control-Allow-Origin"));
   }
 
   private void outputHeaders(HttpResponse res) {
-    res.getHeaderNames().forEach(name ->
-      res.getHeaders(name).forEach(value -> System.out.printf("%s -> %s\n", name, value)));
+    res.getHeaderNames()
+      .forEach(name ->
+                 res.getHeaders(name)
+                   .forEach(value -> System.out.printf("%s -> %s\n", name, value)));
   }
 }

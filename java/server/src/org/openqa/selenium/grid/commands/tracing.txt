@@ -30,9 +30,9 @@ also configure it to send diagnostics back. In the case of Jaeger,
 this can be done via system properties. Modifying our example:
 
 ```
-  java -DJAEGER_SERVICE_NAME="selenium-standalone" \
-       -DJAEGER_AGENT_HOST=localhost \
-       -DJAEGER_AGENT_PORT=14250 \
+  java -Dotel.traces.exporter=jaeger \
+       -Dotel.exporter.jaeger.endpoint=localhost:14250 \
+       -Dotel.resource.attributes=service.name=selenium-standalone \
        -jar selenium.jar \
        --ext $(coursier fetch -p \
           io.opentelemetry:opentelemetry-exporter-jaeger:0.16.0 \
@@ -61,5 +61,7 @@ information on how to configure them.
 More information can be found at:
 
 * OpenTelemetry: https://opentelemetry.io
+* Configuring OpenTelemetry:
+    https://github.com/open-telemetry/opentelemetry-java/tree/main/sdk-extensions/autoconfigure
 * Jaeger: https://www.jaegertracing.io
 * Coursier: https://get-coursier.io

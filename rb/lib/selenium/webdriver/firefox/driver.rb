@@ -30,6 +30,7 @@ module Selenium
         include DriverExtensions::HasAddons
         include DriverExtensions::HasDevTools
         include DriverExtensions::HasLogEvents
+        include DriverExtensions::HasNetworkInterception
         include DriverExtensions::HasWebStorage
         include DriverExtensions::PrintsPage
 
@@ -44,10 +45,10 @@ module Selenium
         private
 
         def devtools_version
-          85
+          DEVTOOLS_VERSION
         end
 
-        def debugger_address
+        def devtools_debugger_address
           capabilities['moz:debuggerAddress']
         end
       end # Driver
