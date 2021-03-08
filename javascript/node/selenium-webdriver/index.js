@@ -39,6 +39,7 @@ const session = require('./lib/session')
 const until = require('./lib/until')
 const webdriver = require('./lib/webdriver')
 const opera = require('./opera')
+const support = require('./support')
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -823,3 +824,4 @@ exports.error = error
 exports.logging = logging
 exports.promise = promise
 exports.until = until
+exports.Select = support.ui.Select
