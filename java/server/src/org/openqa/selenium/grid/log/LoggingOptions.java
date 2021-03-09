@@ -42,7 +42,7 @@ public class LoggingOptions {
   static final String LOGGING_SECTION = "logging";
   static final boolean DEFAULT_CONFIGURE_LOGGING = true;
   static final String DEFAULT_LOG_LEVEL = Level.INFO.getName();
-  static final boolean DEFAULT_PLAIN_LOGS = false;
+  static final boolean DEFAULT_PLAIN_LOGS = true;
   static final boolean DEFAULT_STRUCTURED_LOGS = false;
   static final boolean DEFAULT_TRACING_ENABLED = true;
   private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
