@@ -17,10 +17,25 @@
 
 package org.openqa.selenium.grid.node.remote;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.RetrySessionRequestException;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
@@ -43,9 +58,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Tracer;
-import org.openqa.selenium.RetrySessionRequestException;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -56,17 +68,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteNode extends Node {
 
@@ -142,7 +143,7 @@ public class RemoteNode extends Node {
         String errorType = (String) exception.get("error");
         String errorMessage = (String) exception.get("message");
 
-        if ("org.openqa.selenium.RetrySessionRequestException".contentEquals(errorType)) {
+        if (RetrySessionRequestException.class.getName().contentEquals(errorType)) {
           return Either.left(new RetrySessionRequestException(errorMessage));
         } else {
           return Either.left(new SessionNotCreatedException(errorMessage));
