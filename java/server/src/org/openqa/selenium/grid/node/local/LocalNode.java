@@ -271,17 +271,7 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Either<WebDriverException, CreateSessionResponse> result = createNewSession(sessionRequest);
-
-    if (result.isRight()) {
-      return Optional.of(result.right());
-    } else {
-      return Optional.empty();
-    }
-  }
-
-  public Either<WebDriverException, CreateSessionResponse> createNewSession(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
     Require.nonNull("Session request", sessionRequest);
 
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
