@@ -21,7 +21,6 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
-import io.opentelemetry.sdk.autoconfigure.ConfigProperties;
 import io.opentelemetry.sdk.autoconfigure.OpenTelemetrySdkAutoConfiguration;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
