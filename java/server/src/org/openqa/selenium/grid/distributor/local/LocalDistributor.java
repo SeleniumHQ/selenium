@@ -74,6 +74,7 @@ import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
+import org.openqa.selenium.WebDriverException;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -339,23 +340,23 @@ public class LocalDistributor extends Distributor {
       Node node = nodes.get(slotId.getOwningNodeId());
       if (node == null) {
         return () -> {
-          throw new SessionNotCreatedException("Unable to find node");
+          throw new RetrySessionRequestException("Unable to find node. Try a different node");
         };
       }
 
       model.reserve(slotId);
 
       return () -> {
-        Optional<CreateSessionResponse> response = node.newSession(request);
+        Either<WebDriverException, CreateSessionResponse> response = node.newSession(request);
 
-        if (!response.isPresent()) {
+        if (response.isLeft()) {
           model.setSession(slotId, null);
-          throw new SessionNotCreatedException("Unable to create session for " + request);
+          throw response.left();
         }
 
-        model.setSession(slotId, response.get().getSession());
+        model.setSession(slotId, response.right().getSession());
 
-        return response.get();
+        return response.right();
       };
 
     } finally {

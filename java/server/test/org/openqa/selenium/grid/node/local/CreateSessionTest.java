@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -29,6 +30,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -73,25 +75,29 @@ public class CreateSessionTest {
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
-    CreateSessionResponse sessionResponse = node.newSession(
-        new CreateSessionRequest(
-            ImmutableSet.of(W3C),
-            stereotype,
-            ImmutableMap.of()))
-        .orElseThrow(() -> new AssertionError("Unable to create session"));
+    Either<WebDriverException, CreateSessionResponse> response = node.newSession(
+      new CreateSessionRequest(
+        ImmutableSet.of(W3C),
+        stereotype,
+        ImmutableMap.of()));
 
-    Map<String, Object> all = json.toType(
+    if (response.isRight()) {
+      CreateSessionResponse sessionResponse = response.right();
+      Map<String, Object> all = json.toType(
         new String(sessionResponse.getDownstreamEncodedResponse(), UTF_8),
         MAP_TYPE);
 
-    // Ensure that there's no status field (as this is used by the protocol handshake to determine
-    // whether the session is using the JWP or the W3C dialect.
-    assertThat(all.containsKey("status")).isFalse();
+      // Ensure that there's no status field (as this is used by the protocol handshake to determine
+      // whether the session is using the JWP or the W3C dialect.
+      assertThat(all.containsKey("status")).isFalse();
 
-    // Now check the fields required by the spec
-    Map<?, ?> value = (Map<?, ?>) all.get("value");
-    assertThat(value.get("sessionId")).isInstanceOf(String.class);
-    assertThat(value.get("capabilities")).isInstanceOf(Map.class);
+      // Now check the fields required by the spec
+      Map<?, ?> value = (Map<?, ?>) all.get("value");
+      assertThat(value.get("sessionId")).isInstanceOf(String.class);
+      assertThat(value.get("capabilities")).isInstanceOf(Map.class);
+    } else {
+      throw new AssertionError("Unable to create session" + response.left().getMessage());
+    }
   }
 
   @Test
@@ -124,34 +130,38 @@ public class CreateSessionTest {
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
         .build();
 
-    CreateSessionResponse sessionResponse = node.newSession(
-        new CreateSessionRequest(
-            ImmutableSet.of(OSS),
-            stereotype,
-            ImmutableMap.of()))
-        .orElseThrow(() -> new AssertionError("Unable to create session"));
+    Either<WebDriverException, CreateSessionResponse> response = node.newSession(
+      new CreateSessionRequest(
+        ImmutableSet.of(OSS),
+        stereotype,
+        ImmutableMap.of()));
 
-    Map<String, Object> all = json.toType(
+    if (response.isRight()) {
+      CreateSessionResponse sessionResponse = response.right();
+      Map<String, Object> all = json.toType(
         new String(sessionResponse.getDownstreamEncodedResponse(), UTF_8),
         MAP_TYPE);
 
-    // The status field is used by local ends to determine whether or not the session is a JWP one.
-    assertThat(all.get("status")).matches(obj -> ((Number) obj).intValue() == ErrorCodes.SUCCESS);
+      // The status field is used by local ends to determine whether or not the session is a JWP one.
+      assertThat(all.get("status")).matches(obj -> ((Number) obj).intValue() == ErrorCodes.SUCCESS);
 
-    // The session id is a top level field
-    assertThat(all.get("sessionId")).isInstanceOf(String.class);
+      // The session id is a top level field
+      assertThat(all.get("sessionId")).isInstanceOf(String.class);
 
-    // And the value should contain the capabilities.
-    assertThat(all.get("value")).isInstanceOf(Map.class);
+      // And the value should contain the capabilities.
+      assertThat(all.get("value")).isInstanceOf(Map.class);
+    } else {
+      throw new AssertionError("Unable to create session" + response.left().getMessage());
+    }
   }
 
   @Test
   public void shouldPreferUsingTheW3CProtocol() throws URISyntaxException {
     String payload = json.toJson(ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of(
-            "cheese", "brie"),
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("cheese", "brie"))));
+      "desiredCapabilities", ImmutableMap.of(
+        "cheese", "brie"),
+      "capabilities", ImmutableMap.of(
+        "alwaysMatch", ImmutableMap.of("cheese", "brie"))));
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(utf8String(payload));
@@ -160,32 +170,36 @@ public class CreateSessionTest {
 
     Node node = LocalNode.builder(
       DefaultTestTracer.createTracer(),
-        new GuavaEventBus(),
-        uri,
-        uri,
-        registrationSecret)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
-        .build();
+      new GuavaEventBus(),
+      uri,
+      uri,
+      registrationSecret)
+      .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .build();
 
-    CreateSessionResponse sessionResponse = node.newSession(
-        new CreateSessionRequest(
-            ImmutableSet.of(W3C),
-            stereotype,
-            ImmutableMap.of()))
-        .orElseThrow(() -> new AssertionError("Unable to create session"));
+    Either<WebDriverException, CreateSessionResponse> response = node.newSession(
+      new CreateSessionRequest(
+        ImmutableSet.of(W3C),
+        stereotype,
+        ImmutableMap.of()));
 
-    Map<String, Object> all = json.toType(
+    if (response.isRight()) {
+      CreateSessionResponse sessionResponse = response.right();
+      Map<String, Object> all = json.toType(
         new String(sessionResponse.getDownstreamEncodedResponse(), UTF_8),
         MAP_TYPE);
 
-    // Ensure that there's no status field (as this is used by the protocol handshake to determine
-    // whether the session is using the JWP or the W3C dialect.
-    assertThat(all.containsKey("status")).isFalse();
+      // Ensure that there's no status field (as this is used by the protocol handshake to determine
+      // whether the session is using the JWP or the W3C dialect.
+      assertThat(all.containsKey("status")).isFalse();
 
-    // Now check the fields required by the spec
-    Map<?, ?> value = (Map<?, ?>) all.get("value");
-    assertThat(value.get("sessionId")).isInstanceOf(String.class);
-    assertThat(value.get("capabilities")).isInstanceOf(Map.class);
+      // Now check the fields required by the spec
+      Map<?, ?> value = (Map<?, ?>) all.get("value");
+      assertThat(value.get("sessionId")).isInstanceOf(String.class);
+      assertThat(value.get("capabilities")).isInstanceOf(Map.class);
+    } else {
+      throw new AssertionError("Unable to create session" + response.left().getMessage());
+    }
   }
 
   @Test

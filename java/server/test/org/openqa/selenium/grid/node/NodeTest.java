@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
@@ -37,8 +38,10 @@ import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -54,6 +57,7 @@ import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -95,6 +99,10 @@ public class NodeTest {
   private ImmutableCapabilities caps;
   private URI uri;
   private Secret registrationSecret;
+
+  private static <A, B> EitherAssert<A, B> assertThatEither(Either<A, B> either) {
+    return new EitherAssert<>(either);
+  }
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -147,18 +155,51 @@ public class NodeTest {
       registrationSecret,
       ImmutableSet.of());
 
-    Optional<Session> session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
+    Either<WebDriverException, CreateSessionResponse> response = node.newSession(
+      createSessionRequest(caps));
 
-    assertThat(session).isNotPresent();
+    assertThatEither(response).isLeft();
   }
 
   @Test
   public void shouldCreateASessionIfTheCorrectCapabilitiesArePassedToIt() {
-    Optional<Session> session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
+    Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
 
-    assertThat(session).isPresent();
+    CreateSessionResponse sessionResponse = response.right();
+    assertThat(sessionResponse.getSession()).isNotNull();
+  }
+
+  @Test
+  public void shouldRetryIfNoMatchingSlotIsAvailable() {
+    Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(caps, new SessionFactory() {
+        @Override
+        public Optional<ActiveSession> apply(CreateSessionRequest createSessionRequest) {
+          return Optional.empty();
+        }
+
+        @Override
+        public boolean test(Capabilities capabilities) {
+          return false;
+        }
+      })
+      .build();
+
+    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
+    Node node = new RemoteNode(
+      tracer,
+      clientFactory,
+      new NodeId(UUID.randomUUID()),
+      uri,
+      registrationSecret,
+      ImmutableSet.of(caps));
+
+    ImmutableCapabilities wrongCaps = new ImmutableCapabilities("browserName", "burger");
+    Either<WebDriverException, CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(wrongCaps));
+
+    assertThatEither(sessionResponse).isLeft();
+    assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
   }
 
   @Test
@@ -167,37 +208,37 @@ public class NodeTest {
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .build();
 
-    Optional<Session> session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
-    assertThat(session).isPresent();
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    assertThat(session).isNotNull();
 
-    session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
-    assertThat(session).isNotPresent();
+    Either<WebDriverException, CreateSessionResponse> secondSession =
+      node.newSession(createSessionRequest(caps));
+
+    assertThatEither(secondSession).isLeft();
   }
 
   @Test
   public void willRefuseToCreateMoreSessionsThanTheMaxSessionCount() {
-    Optional<Session> session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
-    assertThat(session).isPresent();
+    Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
 
-    session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
-    assertThat(session).isPresent();
+    response = node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
 
-    session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
-    assertThat(session).isNotPresent();
+    response = node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isLeft();
   }
 
   @Test
   public void stoppingASessionReducesTheNumberOfCurrentlyActiveSessions() {
     assertThat(local.getCurrentSessionCount()).isEqualTo(0);
 
-    Session session = local.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new RuntimeException("Session not created"));
+    Either<WebDriverException, CreateSessionResponse> response = local.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
 
     assertThat(local.getCurrentSessionCount()).isEqualTo(1);
 
@@ -208,9 +249,9 @@ public class NodeTest {
 
   @Test
   public void sessionsThatAreStoppedWillNotBeReturned() {
-    Session expected = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new RuntimeException("Session not created"));
+    Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session expected = response.right().getSession();
 
     node.stop(expected.getId());
 
@@ -267,9 +308,11 @@ public class NodeTest {
         registrationSecret,
         ImmutableSet.of(caps));
 
-    Session session = remote.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new RuntimeException("Session not created"));
+    Either<WebDriverException, CreateSessionResponse> response =
+      remote.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+
+    Session session = response.right().getSession();
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", session.getId()));
     remote.execute(req);
@@ -279,9 +322,10 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyRespondToWebDriverCommandsForSessionsTheNodeOwns() {
-    Session session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new RuntimeException("Session not created"));
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", session.getId()));
     assertThat(local.matches(req)).isTrue();
@@ -303,9 +347,10 @@ public class NodeTest {
         .advanced()
         .clock(clock)
         .build();
-    Session session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new RuntimeException("Session not created"));
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
 
     now.set(now.get().plus(Duration.ofMinutes(5)));
 
@@ -321,10 +366,10 @@ public class NodeTest {
         }))
         .build();
 
-    Optional<Session> session = local.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
+    Either<WebDriverException, CreateSessionResponse> response =
+      local.newSession(createSessionRequest(caps));
 
-    assertThat(session).isNotPresent();
+    assertThatEither(response).isLeft();
   }
 
   @Test
@@ -333,10 +378,14 @@ public class NodeTest {
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, stereotype, c, Instant.now())))
         .build();
-    Optional<Session> session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession);
-    assertThat(session).isPresent();
-    assertThat(session.get().getUri()).isEqualTo(uri);
+
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+
+    assertThat(session).isNotNull();
+    assertThat(session.getUri()).isEqualTo(uri);
   }
 
   @Test
@@ -344,9 +393,10 @@ public class NodeTest {
     AtomicReference<Object> obj = new AtomicReference<>();
     bus.addListener(SessionClosedEvent.listener(obj::set));
 
-    Session session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new AssertionError("Cannot create session"));
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
     node.stop(session.getId());
 
     // Because we're using the event bus, we can't expect the event to fire instantly. We're using
@@ -358,9 +408,9 @@ public class NodeTest {
 
   @Test
   public void canReturnStatus() {
-    node.newSession(createSessionRequest(caps))
-      .map(CreateSessionResponse::getSession)
-      .orElseThrow(() -> new AssertionError("Cannot create session"));
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
 
     HttpRequest req = new HttpRequest(GET, "/status");
     HttpResponse res = node.execute(req);
@@ -411,9 +461,10 @@ public class NodeTest {
 
   @Test
   public void canUploadAFile() throws IOException {
-    Session session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new AssertionError("Cannot create session"));
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/file", session.getId()));
     String hello = "Hello, world!";
@@ -438,17 +489,21 @@ public class NodeTest {
     assertThat(local.isDraining()).isTrue();
     assertThat(node.isDraining()).isTrue();
 
-    Optional<CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(caps));
-
-    assertThat(sessionResponse.isPresent()).isFalse();
+    Either<WebDriverException, CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(caps));
+    assertThatEither(sessionResponse).isLeft();
   }
 
   @Test
   public void shouldNotShutdownDuringOngoingSessionsIfDraining() throws InterruptedException {
-    Optional<Session> firstSession =
-        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
-    Optional<Session> secondSession =
-        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+    Either<WebDriverException, CreateSessionResponse> firstResponse =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(firstResponse).isRight();
+    Session firstSession = firstResponse.right().getSession();
+
+    Either<WebDriverException, CreateSessionResponse> secondResponse =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(secondResponse).isRight();
+    Session secondSession = secondResponse.right().getSession();
 
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
@@ -457,11 +512,11 @@ public class NodeTest {
     assertThat(local.isDraining()).isTrue();
     assertThat(node.isDraining()).isTrue();
 
-    Optional<CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(caps));
-    assertThat(sessionResponse.isPresent()).isFalse();
+    Either<WebDriverException, CreateSessionResponse> thirdResponse = node.newSession(createSessionRequest(caps));
+    assertThatEither(thirdResponse).isLeft();
 
-    assertThat(firstSession.isPresent()).isTrue();
-    assertThat(secondSession.isPresent()).isTrue();
+    assertThat(firstSession).isNotNull();
+    assertThat(secondSession).isNotNull();
 
     assertThat(local.getCurrentSessionCount()).isEqualTo(2);
 
@@ -475,18 +530,20 @@ public class NodeTest {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
-    Optional<Session> firstSession =
-        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
-    Optional<Session> secondSession =
-        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+    Either<WebDriverException, CreateSessionResponse> firstResponse =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(firstResponse).isRight();
+    Session firstSession = firstResponse.right().getSession();
+
+    Either<WebDriverException, CreateSessionResponse> secondResponse =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(secondResponse).isRight();
+    Session secondSession = secondResponse.right().getSession();
 
     node.drain();
 
-    assertThat(firstSession.isPresent()).isTrue();
-    assertThat(secondSession.isPresent()).isTrue();
-
-    node.stop(firstSession.get().getId());
-    node.stop(secondSession.get().getId());
+    node.stop(firstSession.getId());
+    node.stop(secondSession.getId());
 
     latch.await(5, SECONDS);
 
@@ -498,12 +555,14 @@ public class NodeTest {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
-    Optional<Session> session =
-        node.newSession(createSessionRequest(caps)).map(CreateSessionResponse::getSession);
+    Either<WebDriverException, CreateSessionResponse> sessionResponse =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(sessionResponse).isRight();
+    Session session = sessionResponse.right().getSession();
 
     node.drain();
 
-    SessionId sessionId = session.get().getId();
+    SessionId sessionId = session.getId();
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", sessionId));
 
     HttpResponse response = node.execute(req);

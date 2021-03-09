@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "java_library")
+load("//java:defs.bzl", "java_library", "artifact")
 
 java_library(
     name = "testing",
@@ -11,5 +11,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/data",
         "//java/server/src/org/openqa/selenium/grid/node",
+        artifact("org.assertj:assertj-core"),
     ],
 )
