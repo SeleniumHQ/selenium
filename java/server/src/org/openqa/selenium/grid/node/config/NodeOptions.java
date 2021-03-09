@@ -290,9 +290,11 @@ public class NodeOptions {
       throw new ConfigException(logMessage);
     }
 
-    if (allDrivers.isEmpty()) {
-      LOG.warning("Specific drivers cannot be added. There are no drivers detected on PATH.");
-      return;
+    if (config.getAll(NODE_SECTION, "driver-implementation").isPresent() &&
+      allDrivers.isEmpty()) {
+      String logMessage = "Specific drivers cannot be added. There are no drivers detected on PATH.";
+      LOG.warning(logMessage);
+      throw new ConfigException(logMessage);
     }
 
     List<String> allDriverNames =
