@@ -21,6 +21,7 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.autoconfigure.ConfigProperties;
 import io.opentelemetry.sdk.autoconfigure.OpenTelemetrySdkAutoConfiguration;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
@@ -58,6 +59,13 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
   private static OpenTelemetryTracer createTracer() {
     LOG.info("Using OpenTelemetry for tracing");
 
+    // Default exporter for traces and metrics is OTLP 0.17.0 onwards.
+    // If the metrics exporter property is not set to none, external dependency is required.
+    System.setProperty("otel.metrics.exporter", "none");
+    String exporter = System.getProperty("otel.traces.exporter");
+    if(exporter == null) {
+      System.setProperty("otel.traces.exporter", "none");
+    }
     OpenTelemetrySdk autoConfiguredSdk = OpenTelemetrySdkAutoConfiguration.initialize();
 
     return new OpenTelemetryTracer(
