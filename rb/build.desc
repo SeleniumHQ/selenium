@@ -4,8 +4,7 @@ rubygem(
     "//rb:chrome",
     "//rb:common",
     "//rb:devtools",
-    "//rb:edge-chrome",
-    "//rb:edge-html",
+    "//rb:edge",
     "//rb:firefox",
     "//rb:ie",
     "//rb:safari",
@@ -97,21 +96,14 @@ ruby_test(name = "remote-chrome",
   ],
   deps = [
     ":chrome",
+    ":devtools",
     ":remote"
   ]
 )
 
-ruby_library(name = "edge-html",
+ruby_library(name = "edge",
   srcs = [
-    "lib/selenium/webdriver/edge_html/**/*.rb",
-    "lib/selenium/webdriver/edge.rb"
-  ],
-  deps = [":common"]
-)
-
-ruby_library(name = "edge-chrome",
-  srcs = [
-    "lib/selenium/webdriver/edge_chrome/**/*.rb",
+    "lib/selenium/webdriver/edge/**/*.rb",
     "lib/selenium/webdriver/edge.rb"
   ],
   deps = [":chrome"]
@@ -126,7 +118,10 @@ ruby_test(name = "edge",
     "rb/spec/integration",
     "build/rb/lib"
   ],
-  deps = [":edge-chrome"]
+  deps = [
+    ":edge",
+    ":devtools"
+  ]
 )
 
 ruby_test(name = "remote-edge",
@@ -140,7 +135,8 @@ ruby_test(name = "remote-edge",
     "build/rb/lib"
   ],
   deps = [
-    ":edge-chrome",
+    ":edge",
+    ":devtools",
     ":remote"
   ]
 )
@@ -163,6 +159,21 @@ ruby_test(name = "firefox",
     "build/rb/lib"
   ],
   deps = [":firefox"]
+)
+
+ruby_test(name = "firefox-nightly",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
+  ],
+  include = [
+    "rb/spec/integration",
+    "build/rb/lib"
+  ],
+  deps = [
+    ":firefox",
+    ":devtools"
+  ]
 )
 
 ruby_test(name = "remote-firefox",
@@ -288,10 +299,10 @@ ruby_library(name = "devtools",
   ],
   deps = [
     ":common",
-    ":cdp-v84",
     ":cdp-v85",
     ":cdp-v86",
     ":cdp-v87",
+    ":cdp-v88",
   ],
   resources = [
     { "../javascript/cdp-support/mutation-listener.js": "rb/lib/selenium/webdriver/atoms/mutationListener.js" }
@@ -309,27 +320,10 @@ ruby_test(name = "unit",
   ],
   deps = [
     ":chrome",
-    ":edge-html",
-    ":edge-chrome",
+    ":edge",
     ":firefox",
     ":ie",
     ":safari",
-  ]
-)
-
-ruby_class_call(name = "cdp-v84",
-  klass = "Selenium::WebDriver::Support::CDPClientGenerator",
-  require = "rb/lib/selenium/webdriver/support/cdp_client_generator",
-  output_dir = "rb/lib/selenium/webdriver/devtools/v84",
-  version = "v84",
-  srcs = [
-    "lib/selenium/webdriver/support/cdp",
-    "lib/selenium/webdriver/support/cdp/**/*",
-    "lib/selenium/webdriver/support/cdp_client_generator.rb"
-  ],
-  resources = [
-    { "//common/devtools/chromium/v84:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
-    { "//common/devtools/chromium/v84:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
   ]
 )
 
@@ -378,6 +372,22 @@ ruby_class_call(name = "cdp-v87",
   resources = [
     { "//common/devtools/chromium/v87:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
     { "//common/devtools/chromium/v87:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
+  ]
+)
+
+ruby_class_call(name = "cdp-v88",
+  klass = "Selenium::WebDriver::Support::CDPClientGenerator",
+  require = "rb/lib/selenium/webdriver/support/cdp_client_generator",
+  output_dir = "rb/lib/selenium/webdriver/devtools/v88",
+  version = "v88",
+  srcs = [
+    "lib/selenium/webdriver/support/cdp",
+    "lib/selenium/webdriver/support/cdp/**/*",
+    "lib/selenium/webdriver/support/cdp_client_generator.rb"
+  ],
+  resources = [
+    { "//common/devtools/chromium/v88:browser_protocol": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
+    { "//common/devtools/chromium/v88:js_protocol": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
   ]
 )
 

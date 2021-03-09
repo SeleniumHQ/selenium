@@ -19,13 +19,19 @@ package org.openqa.selenium.testing.drivers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriverInfo;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.GeckoDriverInfo;
+import org.openqa.selenium.firefox.xpi.XpiDriverInfo;
+import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaDriverInfo;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.safari.SafariDriverInfo;
 import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.logging.Logger;
@@ -33,24 +39,73 @@ import java.util.logging.Logger;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 public enum Browser {
-  ALL(new ImmutableCapabilities(), false),
-  CHROME(new ChromeOptions(), true),
-  EDGE_HTML(new EdgeHtmlOptions(), false),
-  EDGIUM(new EdgeOptions(), true),
-  HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), false),
-  LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), false),
-  IE(new InternetExplorerOptions(), false),
-  FIREFOX(new FirefoxOptions(), false),
-  LEGACY_OPERA(new OperaOptions(), false),
-  OPERA(new OperaOptions(), false),
-  SAFARI(new SafariOptions(), false);
+  ALL(new ImmutableCapabilities(), "any", false),
+  CHROME(new ChromeOptions(), new ChromeDriverInfo().getDisplayName(), true) {
+    @Override
+    public Capabilities getCapabilities() {
+      ChromeOptions options = new ChromeOptions();
+
+      String binary = System.getProperty("webdriver.chrome.binary");
+      if (binary != null) {
+        options.setBinary(binary);
+      }
+
+      if (Boolean.getBoolean("webdriver.headless")) {
+        options.setHeadless(true);
+      }
+
+      return options;
+    }
+  },
+  EDGE(new EdgeOptions(), new EdgeDriverInfo().getDisplayName(), true) {
+    @Override
+    public Capabilities getCapabilities() {
+      EdgeOptions options = new EdgeOptions();
+
+      String binary = System.getProperty("webdriver.edge.binary");
+      if (binary != null) {
+        options.setBinary(binary);
+      }
+
+      if (Boolean.getBoolean("webdriver.headless")) {
+        options.setHeadless(true);
+      }
+
+      return options;
+    }
+  },
+  HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), "HtmlUnit", false),
+  LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), new XpiDriverInfo().getDisplayName(), false),
+  IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false),
+  FIREFOX(new FirefoxOptions(), new GeckoDriverInfo().getDisplayName(), false) {
+    @Override
+    public Capabilities getCapabilities() {
+      FirefoxOptions options = new FirefoxOptions().configureFromEnv();
+
+      String binary = System.getProperty("webdriver.firefox.bin");
+      if (binary != null) {
+        options.setBinary(binary);
+      }
+
+      if (Boolean.getBoolean("webdriver.headless")) {
+        options.setHeadless(true);
+      }
+
+      return options;
+    }
+  },
+  LEGACY_OPERA(new OperaOptions(), new OperaDriverInfo().getDisplayName(), false),
+  OPERA(new OperaOptions(), new OperaDriverInfo().getDisplayName(), false),
+  SAFARI(new SafariOptions(), new SafariDriverInfo().getDisplayName(), false);
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());
   private final Capabilities canonicalCapabilities;
+  private final String displayName;
   private final boolean supportsCdp;
 
-  Browser(Capabilities canonicalCapabilities, boolean supportsCdp) {
+  Browser(Capabilities canonicalCapabilities, String displayName, boolean supportsCdp) {
     this.canonicalCapabilities = ImmutableCapabilities.copyOf(canonicalCapabilities);
+    this.displayName = displayName;
     this.supportsCdp = supportsCdp;
   }
 
@@ -71,11 +126,7 @@ public enum Browser {
     }
 
     if ("edge".equalsIgnoreCase(browserName)) {
-      return EDGIUM;
-    }
-
-    if ("edgehtml".equalsIgnoreCase(browserName)) {
-      return EDGE_HTML;
+      return EDGE;
     }
 
     try {
@@ -87,6 +138,10 @@ public enum Browser {
 
   public boolean supportsCdp() {
     return supportsCdp;
+  }
+
+  public String displayName() {
+    return displayName;
   }
 
   public Capabilities getCapabilities() {

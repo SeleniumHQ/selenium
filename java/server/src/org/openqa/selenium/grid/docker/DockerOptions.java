@@ -17,9 +17,12 @@
 
 package org.openqa.selenium.grid.docker;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
@@ -32,6 +35,7 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -47,14 +51,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-
 public class DockerOptions {
 
-  private static final String DOCKER_SECTION = "docker";
-  private static final String CONTAINER_ASSETS_PATH = "/opt/selenium/assets";
-  private static final String DEFAULT_VIDEO_IMAGE = "selenium/video:latest";
-
+  static final String DOCKER_SECTION = "docker";
+  static final String DEFAULT_ASSETS_PATH = "/opt/selenium/assets";
+  static final String DEFAULT_DOCKER_URL = "unix:/var/run/docker.sock";
+  static final String DEFAULT_VIDEO_IMAGE = "selenium/video:latest";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
   private final Config config;
@@ -71,10 +73,14 @@ public class DockerOptions {
       }
 
       Optional<String> possibleHost = config.get(DOCKER_SECTION, "host");
-      if (possibleHost.isPresent()) {
+      Optional<Integer> possiblePort = config.getInt(DOCKER_SECTION, "port");
+      if (possibleHost.isPresent() && possiblePort.isPresent()) {
         String host = possibleHost.get();
+        int port = possiblePort.get();
         if (!(host.startsWith("tcp:") || host.startsWith("http:") || host.startsWith("https"))) {
-          host = "http://" + host;
+          host = String.format("http://%s:%s", host, port);
+        } else {
+          host = String.format("%s:%s", host, port);
         }
         URI uri = new URI(host);
         return new URI(
@@ -91,7 +97,7 @@ public class DockerOptions {
       if (Platform.getCurrent().is(WINDOWS)) {
         return new URI("http://localhost:2376");
       }
-      return new URI("unix:/var/run/docker.sock");
+      return new URI(DEFAULT_DOCKER_URL);
     } catch (URISyntaxException e) {
       throw new ConfigException("Unable to determine docker url", e);
     }
@@ -179,18 +185,25 @@ public class DockerOptions {
     // Selenium Server is running inside a Docker container, we will inspect that container
     // to get the mounted volume and use that. If no volume was mounted, no assets will be saved.
     // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
-    String hostname = System.getenv("HOSTNAME");
-    ContainerInfo info = docker.inspect(new ContainerId(hostname));
-    Optional<Map<String, Object>> mountedVolume = info.getMountedVolumes()
+    String hostname = HostIdentifier.getHostName();
+
+    Optional<ContainerInfo> info = docker.inspect(new ContainerId(hostname));
+    if (!info.isPresent()) {
+      return null;
+    }
+
+    Optional<Map<String, Object>> mountedVolume = info.get().getMountedVolumes()
       .stream()
       .filter(
         mounted ->
-          CONTAINER_ASSETS_PATH.equalsIgnoreCase(String.valueOf(mounted.get("Destination"))))
+          DEFAULT_ASSETS_PATH.equalsIgnoreCase(String.valueOf(mounted.get("Destination"))))
       .findFirst();
+
     if (mountedVolume.isPresent()) {
       String hostPath = String.valueOf(mountedVolume.get().get("Source"));
-      return new DockerAssetsPath(hostPath, CONTAINER_ASSETS_PATH);
+      return new DockerAssetsPath(hostPath, DEFAULT_ASSETS_PATH);
     }
+
     return null;
   }
 

@@ -53,10 +53,6 @@ module Selenium
             Firefox::Driver.new(**opts)
           when :edge
             Edge::Driver.new(**opts)
-          when :edge_chrome
-            EdgeChrome::Driver.new(**opts)
-          when :edge_html
-            EdgeHtml::Driver.new(**opts)
           when :remote
             Remote::Driver.new(**opts)
           else
@@ -79,7 +75,18 @@ module Selenium
       end
 
       def inspect
-        format '#<%<class>s:0x%<hash>x browser=%<browser>s>', class: self.class, hash: hash * 2, browser: bridge.browser.inspect
+        format '#<%<class>s:0x%<hash>x browser=%<browser>s>', class: self.class, hash: hash * 2,
+                                                              browser: bridge.browser.inspect
+      end
+
+      #
+      # information about whether a remote end is in a state in which it can create new sessions,
+      # and may include additional meta information.
+      #
+      # @return [Hash]
+      #
+      def status
+        @bridge.status
       end
 
       #
@@ -334,8 +341,9 @@ module Selenium
           if cap.is_a? Symbol
             cap = Remote::Capabilities.send(cap)
           elsif cap.is_a? Hash
+            new_message = 'Capabilities instance initialized with the Hash, or build values with Options class'
             WebDriver.logger.deprecate("passing a Hash value to :capabilities",
-                                       'Capabilities instance initialized with the Hash, or build values with Options class',
+                                       new_message,
                                        id: :capabilities_hash)
             cap = Remote::Capabilities.new(cap)
           elsif !cap.respond_to? :as_json

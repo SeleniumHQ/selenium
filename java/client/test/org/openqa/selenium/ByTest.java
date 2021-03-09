@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -45,19 +46,19 @@ public class ByTest {
 
   @Test
   public void shouldUseFindsByNameToLocateElementsByName() {
-    final AllDriver driver = mock(AllDriver.class);
+    final SearchContext driver = mock(SearchContext.class);
 
-    By.name("cheese").findElement(driver);
-    By.name("peas").findElements(driver);
+    By.cssSelector("cheese").findElement(driver);
+    By.cssSelector("peas").findElements(driver);
 
-    verify(driver).findElement(By.name("cheese"));
-    verify(driver).findElements(By.name("peas"));
+    verify(driver).findElement(By.cssSelector("cheese"));
+    verify(driver).findElements(By.cssSelector("peas"));
     verifyNoMoreInteractions(driver);
   }
 
   @Test
   public void shouldUseXpathLocateElementsByXpath() {
-    AllDriver driver = mock(AllDriver.class);
+    SearchContext driver = mock(SearchContext.class);
 
     By.xpath(".//*[@name = 'cheese']").findElement(driver);
     By.xpath(".//*[@name = 'peas']").findElements(driver);
@@ -68,20 +69,8 @@ public class ByTest {
   }
 
   @Test
-  public void doesNotUseXPathIfContextFindsById() {
-    AllDriver context = mock(AllDriver.class);
-
-    By.id("foo").findElement(context);
-    By.id("bar").findElements(context);
-
-    verify(context).findElement(By.id("foo"));
-    verify(context).findElements(By.id("bar"));
-    verifyNoMoreInteractions(context);
-  }
-
-  @Test
   public void searchesByTagNameIfSupported() {
-    AllDriver context = mock(AllDriver.class);
+    SearchContext context = mock(SearchContext.class);
 
     By.tagName("foo").findElement(context);
     By.tagName("bar").findElements(context);
@@ -92,27 +81,15 @@ public class ByTest {
   }
 
   @Test
-  public void searchesByClassNameIfSupported() {
-    AllDriver context = mock(AllDriver.class);
-
-    By.className("foo").findElement(context);
-    By.className("bar").findElements(context);
-
-    verify(context).findElement(By.className("foo"));
-    verify(context).findElements(By.className("bar"));
-    verifyNoMoreInteractions(context);
-  }
-
-  @Test
   public void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {
-    assertThat(new ByXPath("a").toString()).isEqualTo("By.xpath: a");
-    assertThat(new ById("a").toString()).isEqualTo("By.id: a");
-    assertThat(new ByClassName("a").toString()).isEqualTo("By.className: a");
-    assertThat(new ByLinkText("a").toString()).isEqualTo("By.linkText: a");
-    assertThat(new ByName("a").toString()).isEqualTo("By.name: a");
-    assertThat(new ByTagName("a").toString()).isEqualTo("By.tagName: a");
-    assertThat(new ByCssSelector("a").toString()).isEqualTo("By.cssSelector: a");
-    assertThat(new ByPartialLinkText("a").toString()).isEqualTo("By.partialLinkText: a");
+    assertThat(new ByXPath("a")).hasToString("By.xpath: a");
+    assertThat(new ById("a")).hasToString("By.id: a");
+    assertThat(new ByClassName("a")).hasToString("By.className: a");
+    assertThat(new ByLinkText("a")).hasToString("By.linkText: a");
+    assertThat(new ByName("a")).hasToString("By.name: a");
+    assertThat(new ByTagName("a")).hasToString("By.tagName: a");
+    assertThat(new ByCssSelector("a")).hasToString("By.cssSelector: a");
+    assertThat(new ByPartialLinkText("a")).hasToString("By.partialLinkText: a");
   }
 
   // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2917
@@ -124,18 +101,13 @@ public class ByTest {
         return null;
       }
     };
-    locator.hashCode();
+    assertThatNoException().isThrownBy(locator::hashCode);
   }
 
   @Test
   public void ensureMultipleClassNamesAreNotAccepted() {
-    try {
-      By by = By.className("one two");
-    } catch (InvalidSelectorException ignore) {
-      // Expected
-    } catch (Exception e) {
-      fail("Multiple class names locator failed with a different exception, " + e);
-    }
+    assertThatExceptionOfType(InvalidSelectorException.class)
+      .isThrownBy(() -> By.className("one two"));
   }
 
   @Test
@@ -146,13 +118,9 @@ public class ByTest {
     Json json = new Json();
     Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
 
-    assertThat(blob.get("using")).isEqualTo("css selector");
-    assertThat(blob.get("value")).isEqualTo("#one #two");
-
+    assertThat(blob)
+      .hasSize(2)
+      .containsEntry("using", "css selector")
+      .containsEntry("value", "#one\\ two");
   }
-
-  private interface AllDriver extends SearchContext {
-    // Place holder
-  }
-
 }

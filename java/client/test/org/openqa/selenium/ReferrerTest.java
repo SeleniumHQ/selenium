@@ -34,7 +34,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SeleniumTestRule;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 
@@ -60,7 +59,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
 import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -140,7 +138,6 @@ public class ReferrerTest {
    * does not have a proxy configured.
    */
   @Test
-  @NotYetImplemented(EDGE_HTML)
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
     String page1Url = server1.whereIs(PAGE_1 + "?next=" + encode(server1.whereIs(PAGE_2)));
@@ -158,7 +155,6 @@ public class ReferrerTest {
    * Tests navigation across multiple domains when the browser does not have a proxy configured.
    */
   @Test
-  @NotYetImplemented(EDGE_HTML)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithoutAProxy() {
     String page1Url = server1.whereIs(PAGE_1) + "?next=" + encode(server2.whereIs(PAGE_2));
@@ -179,7 +175,6 @@ public class ReferrerTest {
    * configured to use a proxy that permits direct access to that domain.
    */
   @Test
-  @Ignore(EDGE_HTML)
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
     proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
@@ -202,7 +197,6 @@ public class ReferrerTest {
    * permits direct access to those domains.
    */
   @Test
-  @Ignore(EDGE_HTML)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithADirectProxy() {
     proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
@@ -226,7 +220,6 @@ public class ReferrerTest {
    * redirects the second domain to another host.
    */
   @Test
-  @Ignore(EDGE_HTML)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
     proxyServer.setPacFileContents(Joiner.on('\n').join(
@@ -257,7 +250,6 @@ public class ReferrerTest {
    * to connect directly to the target server.
    */
   @Test
-  @Ignore(EDGE_HTML)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
     proxyServer.setPacFileContents(Joiner.on('\n').join(
@@ -292,7 +284,6 @@ public class ReferrerTest {
   @Ignore(FIREFOX)
   @Ignore(value = LEGACY_FIREFOX_XPI, travis = true)
   @NeedsLocalEnvironment
-  @Ignore(EDGE_HTML)
   @Ignore(value = CHROME, reason = "Flaky")
   public void navigationWhenProxyInterceptsASpecificUrl() {
     // Have our proxy intercept requests for page 2.

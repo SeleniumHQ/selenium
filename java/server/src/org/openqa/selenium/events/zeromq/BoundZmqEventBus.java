@@ -60,7 +60,7 @@ class BoundZmqEventBus implements EventBus {
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
 
-    executor = Executors.newCachedThreadPool(r -> {
+    executor = Executors.newSingleThreadExecutor(r -> {
       Thread thread = new Thread(r, "Message Bus Proxy");
       thread.setDaemon(true);
       return thread;
@@ -68,8 +68,6 @@ class BoundZmqEventBus implements EventBus {
     executor.submit(() -> ZMQ.proxy(xsub, xpub, null));
 
     delegate = new UnboundZmqEventBus(context, xpubAddr.advertise, xsubAddr.advertise, secret);
-
-    LOG.info("Event bus ready");
   }
 
   @Override
@@ -139,15 +137,14 @@ class BoundZmqEventBus implements EventBus {
   }
 
   private static class Addresses {
+    String bindTo;
+    String advertise;
+    boolean isIPv6;
     Addresses(String bindTo, String advertise, boolean isIPv6) {
       this.bindTo = bindTo;
       this.advertise = advertise;
       this.isIPv6 = isIPv6;
     }
-
-    String bindTo;
-    String advertise;
-    boolean isIPv6;
 
     @Override
     public String toString() {

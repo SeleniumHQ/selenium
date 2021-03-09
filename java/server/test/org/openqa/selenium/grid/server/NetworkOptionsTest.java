@@ -73,9 +73,9 @@ public class NetworkOptionsTest {
       HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 
       Server<?> server = new JreServer(new BaseServerOptions(config), req -> new HttpResponse()).start();
-      HttpClient client = clientFactory.createClient(server.getUrl());
-
-      client.execute(new HttpRequest(GET, "/version"));
+      try (HttpClient client = clientFactory.createClient(server.getUrl())) {
+        client.execute(new HttpRequest(GET, "/version"));
+      }
     } finally {
       rootLogger.removeHandler(handler);
     }

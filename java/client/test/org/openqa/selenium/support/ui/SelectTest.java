@@ -74,7 +74,7 @@ public class SelectTest {
   private WebElement mockSelectWebElement(String multiple) {
     final WebElement element = mock(WebElement.class);
     when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn(multiple);
+    when(element.getDomAttribute("multiple")).thenReturn(multiple);
     return element;
   }
 
@@ -249,7 +249,7 @@ public class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.getTagName()).thenReturn("select");
-    when(element.getAttribute("multiple")).thenReturn("false");
+    when(element.getDomAttribute("multiple")).thenReturn("false");
     when(element.findElements(xpath1)).thenReturn(emptyList());
     when(element.findElements(xpath2)).thenReturn(Collections.singletonList(firstOption));
     when(firstOption.getText()).thenReturn("foo bar");

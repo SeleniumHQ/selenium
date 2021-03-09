@@ -124,6 +124,7 @@ const io = require('./io')
 const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
+const cdp = require('./devtools/CDPConnection')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 
@@ -222,7 +223,7 @@ async function buildProfile(template, extensions) {
     dir = await io.tmpDir()
     if (template) {
       await io.copyDir(
-        /** @type {string} */ (template),
+        /** @type {string} */(template),
         dir,
         /(parent\.lock|lock|\.parentlock)/
       )
@@ -432,11 +433,11 @@ function findGeckoDriver() {
   if (!exe) {
     throw Error(
       'The ' +
-        GECKO_DRIVER_EXE +
-        ' executable could not be found on the current ' +
-        'PATH. Please download the latest version from ' +
-        'https://github.com/mozilla/geckodriver/releases/ ' +
-        'and ensure it can be found on your PATH.'
+      GECKO_DRIVER_EXE +
+      ' executable could not be found on the current ' +
+      'PATH. Please download the latest version from ' +
+      'https://github.com/mozilla/geckodriver/releases/ ' +
+      'and ensure it can be found on your PATH.'
     )
   }
   return exe
@@ -457,8 +458,8 @@ function findInProgramFiles(file) {
     return exists
       ? files[0]
       : io.exists(files[1]).then(function (exists) {
-          return exists ? files[1] : null
-        })
+        return exists ? files[1] : null
+      })
   })
 }
 
@@ -592,7 +593,7 @@ class Driver extends webdriver.WebDriver {
    * implementation.
    * @override
    */
-  setFileDetector() {}
+  setFileDetector() { }
 
   /**
    * Get the context that is currently in effect.

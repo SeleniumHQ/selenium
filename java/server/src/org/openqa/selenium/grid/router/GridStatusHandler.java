@@ -160,8 +160,7 @@ class GridStatusHandler implements HttpHandler {
 
           Future<?> future = EXECUTOR_SERVICE.submit(
             () -> {
-              try {
-                HttpClient client = clientFactory.createClient(node.getUri().toURL());
+              try (HttpClient client = clientFactory.createClient(node.getUri().toURL())) {
                 HttpRequest nodeStatusReq = new HttpRequest(GET, "/se/grid/node/status");
                 HttpTracing.inject(tracer, span, nodeStatusReq);
                 HttpResponse res = client.execute(nodeStatusReq);

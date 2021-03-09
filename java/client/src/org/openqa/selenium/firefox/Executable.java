@@ -37,7 +37,7 @@ class Executable {
   private FirefoxBinary.Channel channel;
 
   public Executable(File userSpecifiedBinaryPath) {
-    Require.argument("Path to the firefox binary", userSpecifiedBinaryPath).isFile();
+    Require.argument("Path to the firefox binary", (Object) userSpecifiedBinaryPath).nonNull();
     binary = userSpecifiedBinaryPath;
   }
 

@@ -24,35 +24,31 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
-import java.util.logging.Logger;
 
 public class JdbcSessionMapOptions {
 
   private static final String SESSIONS_SECTION = "sessions";
-  private static final Logger LOG = Logger.getLogger(JdbcSessionMapOptions.class.getName());
 
-  private String jdbcUrl;
-  private String jdbcUser;
-  private String jdbcPassword;
-
-  private final Config config;
+  private final String jdbcUrl;
+  private final String jdbcUser;
+  private final String jdbcPassword;
 
   public JdbcSessionMapOptions(Config config) {
     Require.nonNull("Config", config);
 
-    this.config = config;
     try {
-      this.jdbcUrl = config.get(SESSIONS_SECTION, "jdbc-url").get();
-      this.jdbcUser = config.get(SESSIONS_SECTION, "jdbc-user").get();
-      this.jdbcPassword = config.get(SESSIONS_SECTION, "jdbc-password").get();
+      this.jdbcUrl = config.get(SESSIONS_SECTION, "jdbc-url").orElse("");
+      this.jdbcUser = config.get(SESSIONS_SECTION, "jdbc-user").orElse("");
+      this.jdbcPassword = config.get(SESSIONS_SECTION, "jdbc-password").orElse("");
 
       if (jdbcUrl.isEmpty()) {
         throw new JdbcException(
-            "Missing JDBC Url value. Add sessions option value --jdbc-url <url-value>");
+          "Missing JDBC Url value. Add sessions option value --jdbc-url <url-value>");
       }
     } catch (NoSuchElementException e) {
       throw new JdbcException(
-          "Missing session options. Check and add all the following options \n --jdbc-url <url> \n --jdbc-user <user> \n --jdbc-password <password>");
+        "Missing session options. Check and add all the following options \n "
+        + "--jdbc-url <url> \n --jdbc-user <user> \n --jdbc-password <password>");
     }
   }
 

@@ -1,3 +1,16 @@
+## v4.0.0-beta.1
+
+* JS Binding support for WebDriver Bidi in Firefox
+    - This requires Firefox 87 and Geckodriver 0.29 to be able to work
+* Update the supported CDP versions
+* Update tmp package version (#9155)
+* Adding support for /computedlabel (getAccessibleName) (#9073)
+* Adding support for computedrole (#8990)
+* Use subfolder for NPM package homepage (#8938)
+* Fix typo: tracingCategories -> traceCategories (#8976)
+* Package up mutation-listener for node. Fixes #8955
+* Adding support for `print` endpoint (#8880)
+
 ## v4.0.0-alpha.8
 
 * Rolling back native support for Opera Browser
@@ -7,7 +20,7 @@
     - setEdgeChromium
     - setScrollBehavior
     - For consistent naming, deprecating `addArguments(...args)` in favor of `addBrowserCommandSwitches(...args)`
-    
+
 * Added relative locators
 * Added Chrome DevTools Protocol (CDP) support
 * Added support for BASIC authentication.

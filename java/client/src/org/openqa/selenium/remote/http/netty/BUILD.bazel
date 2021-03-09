@@ -13,7 +13,7 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
-        artifact("com.typesafe.netty:netty-reactive-streams"),
+        #        artifact("com.typesafe.netty:netty-reactive-streams"),
         artifact("org.asynchttpclient:async-http-client"),
         artifact("io.netty:netty-buffer"),
         artifact("io.netty:netty-codec-http"),

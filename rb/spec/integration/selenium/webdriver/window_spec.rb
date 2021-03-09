@@ -120,6 +120,7 @@ module Selenium
       # https://github.com/mozilla/geckodriver/issues/1281
       it 'can make window full screen', only: {window_manager: true},
                                         exclude: [{driver: :remote, browser: :firefox, platform: :linux},
+                                                  {driver: :remote, browser: :safari},
                                                   {browser: %i[chrome edge]}] do
         window.size = old_size = Dimension.new(700, 700)
 

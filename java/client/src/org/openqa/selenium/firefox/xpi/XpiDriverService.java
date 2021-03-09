@@ -62,6 +62,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+/**
+ * @deprecated This class will not be replaced.
+ */
+@Deprecated
 public class XpiDriverService extends FirefoxDriverService {
 
   private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";

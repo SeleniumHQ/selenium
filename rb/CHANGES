@@ -1,3 +1,28 @@
+4.0.0.beta1 (2021-02-15)
+=========================
+
+DevTools:
+  * Updated supported versions to 85-88
+
+Edge:
+  * Removed support for legacy Edge HTML
+
+Firefox:
+  * Fixed support for default profile settings
+  * Added support for Devtools for Firefox v87+
+
+Safari:
+  * Removed default platformName specification so it works with Grid
+
+Ruby:
+  * Added support for httpOnly attribute in Cookies
+  * Implemented `#print_page` method (thanks @raju249)
+  * Fixed support for missing libraries in Ruby 3.0 (thanks @znz)
+  * Deprecated `HTTP::Persistent` class
+  * Fixed support for accessors in options classes
+  * Added support for status endpoint for all browsers
+  * Fix support for Browser, Driver, and Performance Logging in Chrome and Edge
+
 4.0.0.alpha7 (2020-11-10)
 =========================
 

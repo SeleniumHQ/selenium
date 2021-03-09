@@ -18,12 +18,10 @@
 package org.openqa.selenium.testing.drivers;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -49,7 +47,6 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
           .put(OperaOptions.class, TestOperaBlinkDriver::new)
           .put(FirefoxOptions.class, FirefoxDriver::new)
           .put(InternetExplorerOptions.class, InternetExplorerDriver::new)
-          .put(EdgeHtmlOptions.class, TestEdgeHtmlDriver::new)
           .put(EdgeOptions.class, TestEdgeDriver::new)
           .put(SafariOptions.class, SafariDriver::new)
           .build();

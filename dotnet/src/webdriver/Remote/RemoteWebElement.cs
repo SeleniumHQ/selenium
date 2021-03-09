@@ -417,7 +417,7 @@ namespace OpenQA.Selenium.Remote
         /// </item>
         /// </list>
         /// The method looks both in declared attributes in the HTML markup of the page, and
-        /// in the properties of the elemnt as found when accessing the element's properties
+        /// in the properties of the element as found when accessing the element's properties
         /// via JavaScript.
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
@@ -452,13 +452,13 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the value of a declared HTML attribute of this element.
         /// </summary>
-        /// <param name="attributeName">The name of the HTML attribugte to get the value of.</param>
+        /// <param name="attributeName">The name of the HTML attribute to get the value of.</param>
         /// <returns>The HTML attribute's current value. Returns a <see langword="null"/> if the
         /// value is not set or the declared attribute does not exist.</returns>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         /// <remarks>
         /// As opposed to the <see cref="GetAttribute(string)"/> method, this method
-        /// only returns attriibutes decalred in the element's HTML markup. To access the value
+        /// only returns attributes declared in the element's HTML markup. To access the value
         /// of an IDL property of the element, either use the <see cref="GetAttribute(string)"/>
         /// method or the <see cref="GetDomProperty(string)"/> method.
         /// </remarks>

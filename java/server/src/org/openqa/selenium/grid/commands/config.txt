@@ -49,7 +49,7 @@ port = 4445
 host = "localhost"
 
 [node]
-max-concurrent-sessions = 12
+max-sessions = 12
 ```
 
 More Information

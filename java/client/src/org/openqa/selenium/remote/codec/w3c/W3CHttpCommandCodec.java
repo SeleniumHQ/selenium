@@ -215,24 +215,27 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       case FIND_ELEMENT:
       case FIND_ELEMENTS:
         String using = (String) parameters.get("using");
-        String value = (String) parameters.get("value");
+        Object value = parameters.get("value");
 
-        switch (using) {
-          case "class name":
-            if (value.matches(".*\\s.*")) {
-              throw new InvalidSelectorException("Compound class names not permitted");
-            }
-            return amendLocatorToCssSelector(parameters, "." + cssEscape(value));
+        if (value instanceof String) {
+          String stringValue = (String) value;
+          switch (using) {
+            case "class name":
+              if (stringValue.matches(".*\\s.*")) {
+                throw new InvalidSelectorException("Compound class names not permitted");
+              }
+              return amendLocatorToCssSelector(parameters, "." + cssEscape(stringValue));
 
-          case "id":
-            return amendLocatorToCssSelector(parameters, "#" + cssEscape(value));
+            case "id":
+              return amendLocatorToCssSelector(parameters, "#" + cssEscape(stringValue));
 
-          case "name":
-            return amendLocatorToCssSelector(parameters, "*[name='" + value + "']");
+            case "name":
+              return amendLocatorToCssSelector(parameters, "*[name='" + stringValue + "']");
 
-          default:
-            // Do nothing
-            break;
+            default:
+              // Do nothing
+              break;
+          }
         }
         return parameters;
 

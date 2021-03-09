@@ -1,7 +1,11 @@
 try-import .bazelrc.local
 
+build --flag_alias=pin_browsers=//common:pin_browsers
+build --flag_alias=headless=//common:headless
+
 # Set the default java toolchain
-build --java_toolchain=@bazel_tools//tools/jdk:toolchain_java11
+build --java_runtime_version=remotejdk_11
+build --tool_java_language_version=11
 
 # We target java 8 by default
 build --javacopt="--release 8"
@@ -14,7 +18,7 @@ build --explicit_java_test_deps
 build --incompatible_strict_action_env
 
 # Except for the PATH environment variable
-build --action_env=PATH
+#build --action_env=PATH
 
 # For build stamping
 build --workspace_status_command=scripts/build-info.py
@@ -38,3 +42,5 @@ build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
 
 test --test_timeout=1800
+
+test:node_debug --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results

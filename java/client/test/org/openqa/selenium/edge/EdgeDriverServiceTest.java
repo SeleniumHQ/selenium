@@ -27,7 +27,6 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
@@ -57,6 +56,5 @@ public class EdgeDriverServiceTest {
   public void testScoring() {
     EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
     assertThat(builder.score(new EdgeOptions())).isGreaterThan(0);
-    assertThat(builder.score(new EdgeHtmlOptions())).isEqualTo(0);
   }
 }

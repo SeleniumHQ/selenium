@@ -17,11 +17,21 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.remote.http.Route.get;
+
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -51,25 +61,17 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class NodeServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
+  private final AtomicBoolean nodeRegistered = new AtomicBoolean(false);
   private Node node;
   private EventBus bus;
 
@@ -135,6 +137,7 @@ public class NodeServer extends TemplateGridServerCommand {
 
     bus.addListener(NodeAddedEvent.listener(nodeId -> {
       if (node.getId().equals(nodeId)) {
+        nodeRegistered.set(true);
         LOG.info("Node has been added");
       }
     }));
@@ -172,6 +175,7 @@ public class NodeServer extends TemplateGridServerCommand {
     Require.nonNull("Config", initialConfig);
 
     Config config = new MemoizedConfig(new CompoundConfig(initialConfig, getDefaultConfig()));
+    NodeOptions nodeOptions = new NodeOptions(config);
 
     Handlers handler = createHandlers(config);
 
@@ -183,17 +187,19 @@ public class NodeServer extends TemplateGridServerCommand {
       public NettyServer start() {
         super.start();
 
-        // Unlimited attempts, initial 5 seconds interval, backoff rate of 1.0005, max interval of 5 minutes
-        RetryPolicy<Object> registrationPolicy =  new RetryPolicy<>()
+        // Unlimited attempts, every X seconds, we assume a Node should not need more than Y minutes to register
+        // X defaults to 10s and Y to 120 seconds, but the user can overwrite that.
+        RetryPolicy<Object> registrationPolicy = new RetryPolicy<>()
           .withMaxAttempts(-1)
-          .handleResultIf(result -> true)
-          .withBackoff(Duration.ofSeconds(5).getSeconds(), Duration.ofMinutes(5).getSeconds(), ChronoUnit.SECONDS, 1.0005);
+          .withMaxDuration(nodeOptions.getRegisterPeriod())
+          .withDelay(nodeOptions.getRegisterCycle())
+          .handleResultIf(result -> true);
 
         LOG.info("Starting registration process for node id " + node.getId());
         Executors.newSingleThreadExecutor().submit(() -> {
           Failsafe.with(registrationPolicy).run(
             () -> {
-              LOG.fine("Sending registration event");
+              LOG.info("Sending registration event...");
               HealthCheck.Result check = node.getHealthCheck().check();
               if (DOWN.equals(check.getAvailability())) {
                 LOG.severe("Node is not alive: " + check.getMessage());
@@ -201,6 +207,9 @@ public class NodeServer extends TemplateGridServerCommand {
                 throw new UnsupportedOperationException("Node cannot be registered");
               }
               bus.fire(new NodeStatusEvent(node.getStatus()));
+              if (nodeRegistered.get()) {
+                throw new InterruptedException("Stopping registration thread.");
+              }
             }
           );
         });

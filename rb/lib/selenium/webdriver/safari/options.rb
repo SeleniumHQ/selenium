@@ -28,15 +28,6 @@ module Selenium
                         automatic_profiling: 'safari:automaticProfiling'}.freeze
         BROWSER = 'safari'
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
       end # Options
     end # Safari
   end # WebDriver

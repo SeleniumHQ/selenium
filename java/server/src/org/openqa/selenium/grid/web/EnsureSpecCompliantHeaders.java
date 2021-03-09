@@ -32,7 +32,9 @@ public class EnsureSpecCompliantHeaders implements Filter {
     Require.nonNull("Allowed origins list", allowedOriginHosts);
     Require.nonNull("URLs to skip checks on", skipChecksOn);
 
-    filter = new CheckOriginHeader(allowedOriginHosts, skipChecksOn).andThen(new CheckContentTypeHeader(skipChecksOn));
+    filter = new CheckOriginHeader(allowedOriginHosts, skipChecksOn)
+      .andThen(new CheckContentTypeHeader(skipChecksOn))
+      .andThen(new EnsureSpecCompliantResponseHeaders());
   }
 
   @Override

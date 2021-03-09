@@ -87,7 +87,7 @@ skipped silently if you are not building on Windows.
 ### Bazel
 
 [Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
-downloads, generate the Selenium binaries, executes tests, and does it all rather quickly.
+downloads, generates the Selenium binaries, executes tests, and does it all rather quickly.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
 the java and javascript folders to build without errors, you should be confident that you have the
@@ -165,6 +165,18 @@ bazel test --test_size_filters=small,medium java/...
 Bazel's "test" command will run *all* tests in the package, including integration tests. Expect
 the ```test java/...``` to launch browsers and consume a considerable amount of time and resources.
 
+## Editing Code
+
+Most of the team use either Intellij IDEA or VS.Code for their day-to-day editing. If you're
+working in IntelliJ, then we highly recommend installing the [Bazel IJ
+plugin](https://plugins.jetbrains.com/plugin/8609-bazel) which is documented on
+[its own site](https://plugins.jetbrains.com/plugin/8609-bazel).
+
+If you do use IntelliJ and the Bazel plugin, there is a project view checked into the tree
+in [scripts/ij.bazelproject](scripts/ij.bazelproject) which will make it easier to get up
+running, and editing code :)
+
+
 ## Tour
 
 The codebase is generally segmented around the languages used to
@@ -230,8 +242,7 @@ The maven jars should now be in your local `~/.m2/repository`.
 
 ## Useful Resources
 
-Refer to the [Building Web
-Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver)
+Refer to the [Build Instructions](https://github.com/SeleniumHQ/selenium/wiki/Build-Instructions)
 wiki page for the last word on building the bits and pieces of Selenium.
 
 ## Running Browser Tests on Linux

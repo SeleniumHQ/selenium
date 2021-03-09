@@ -17,16 +17,25 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import com.google.common.collect.ImmutableMap;
+import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.security.Secret;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
+import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 
-import java.lang.management.ManagementFactory;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
@@ -37,24 +46,14 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import java.lang.management.ManagementFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
 
-import org.junit.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
-import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
-import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
-import org.openqa.selenium.remote.tracing.DefaultTestTracer;
-import org.openqa.selenium.remote.tracing.Tracer;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 public class JmxTest {
 

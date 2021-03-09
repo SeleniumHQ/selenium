@@ -60,7 +60,8 @@ public class LocalNodeFactory {
       serverOptions.getExternalUri(),
       nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
       secretOptions.getRegistrationSecret())
-      .maximumConcurrentSessions(nodeOptions.getMaxSessions());
+      .maximumConcurrentSessions(nodeOptions.getMaxSessions())
+      .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
 
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();

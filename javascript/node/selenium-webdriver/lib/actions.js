@@ -26,9 +26,9 @@ const input = require('./input')
  * @return {!Array} .
  */
 function flatten(args) {
-  let result = []
+  const result = []
   for (let i = 0; i < args.length; i++) {
-    let element = args[i]
+    const element = args[i]
     if (Array.isArray(element)) {
       result.push.apply(result, flatten(element))
     } else {
@@ -119,8 +119,8 @@ class LegacyActionSequence {
     // Make a protected copy of the scheduled actions. This will protect against
     // users defining additional commands before this sequence is actually
     // executed.
-    let actions = this.actions_.concat()
-    for (let action of actions) {
+    const actions = this.actions_.concat()
+    for (const action of actions) {
       await this.driver_.execute(action.command)
     }
   }
@@ -141,7 +141,7 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    */
   mouseMove(location, opt_offset) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_MOUSE_MOVE)
+    const cmd = new command.Command(command.Name.LEGACY_ACTION_MOUSE_MOVE)
 
     if (typeof location.x === 'number') {
       setOffset(/** @type {{x: number, y: number}} */ (location))
@@ -389,8 +389,9 @@ class LegacyActionSequence {
    * @return {!LegacyActionSequence} A self reference.
    * @throws {Error} If the key is not a valid modifier key.
    */
-  sendKeys(var_args) { // eslint-disable-line
-    let keys = flatten(arguments)
+  sendKeys(_var_args) {
+    // eslint-disable-line
+    const keys = flatten(arguments)
     return this.scheduleKeyboardAction_('sendKeys', keys)
   }
 }
@@ -481,7 +482,7 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   doubleTap(elem) {
-    let cmd = new command.Command(
+    const cmd = new command.Command(
       command.Name.LEGACY_ACTION_TOUCH_DOUBLE_TAP
     ).setParameter('element', elem.getId())
 
@@ -496,7 +497,7 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   longPress(elem) {
-    let cmd = new command.Command(
+    const cmd = new command.Command(
       command.Name.LEGACY_ACTION_TOUCH_LONG_PRESS
     ).setParameter('element', elem.getId())
 
@@ -511,7 +512,7 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   tapAndHold(location) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_DOWN)
+    const cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_DOWN)
       .setParameter('x', location.x)
       .setParameter('y', location.y)
 
@@ -526,7 +527,7 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   move(location) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_MOVE)
+    const cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_MOVE)
       .setParameter('x', location.x)
       .setParameter('y', location.y)
 
@@ -556,7 +557,7 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   scroll(offset) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SCROLL)
+    const cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SCROLL)
       .setParameter('xoffset', offset.x)
       .setParameter('yoffset', offset.y)
 
@@ -573,7 +574,7 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   scrollFromElement(elem, offset) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SCROLL)
+    const cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_SCROLL)
       .setParameter('element', elem.getId())
       .setParameter('xoffset', offset.x)
       .setParameter('yoffset', offset.y)
@@ -590,7 +591,7 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   flick(speed) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_FLICK)
+    const cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_FLICK)
       .setParameter('xspeed', speed.xspeed)
       .setParameter('yspeed', speed.yspeed)
 
@@ -607,7 +608,7 @@ class LegacyTouchSequence {
    * @return {!LegacyTouchSequence} A self reference.
    */
   flickElement(elem, offset, speed) {
-    let cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_FLICK)
+    const cmd = new command.Command(command.Name.LEGACY_ACTION_TOUCH_FLICK)
       .setParameter('element', elem.getId())
       .setParameter('xoffset', offset.x)
       .setParameter('yoffset', offset.y)

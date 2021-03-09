@@ -18,14 +18,12 @@
 package org.openqa.selenium.testing.drivers;
 
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.edgehtml.EdgeHtmlOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
@@ -79,8 +77,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         }
         return options;
       })
-      .put(Browser.EDGIUM, original -> new EdgeOptions().merge(original))
-      .put(Browser.EDGE_HTML, original -> new EdgeHtmlOptions().merge(original))
+      .put(Browser.EDGE, original -> new EdgeOptions().merge(original))
       .put(Browser.HTMLUNIT, original -> new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY).merge(original))
       .put(Browser.OPERA, original -> new OperaOptions().merge(original))
       .put(Browser.SAFARI, original -> {

@@ -174,10 +174,9 @@ bot.locators.relative.near_ = function (selector, opt_distance) {
     //              | 2 |
     //              +---+
     //
-    // As you can see, the right hand side of 1 is "near" the left hand side
-    // of 2. Of course, it might be that 2 is to the left of 1, in which case
-    // we would be comparing the right hand side of 2 to the left hand side
-    // of 1. Similar logic happens for top and bottom.
+    // As you can see, the right hand side of 1 is "left of" the left-most
+    // edge of 2. The top edge of 2 is at the same level as the bottom
+    // edge of 1. This means that 1 is "above" 2, and 2 is "below" one.
 
     // Distance from left edge to right edge
     var leftDistance = Math.abs(rect1.left - (rect2.left + rect2.width));

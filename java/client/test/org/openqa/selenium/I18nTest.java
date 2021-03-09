@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -88,7 +88,7 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
-  @Ignore(value = EDGIUM, reason = "EdgeDriver only supports characters in the BMP")
+  @Ignore(value = EDGE, reason = "EdgeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
@@ -123,7 +123,7 @@ public class I18nTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(LEGACY_FIREFOX_XPI)
   @Ignore(FIREFOX)
   @NotYetImplemented(HTMLUNIT)
@@ -175,7 +175,7 @@ public class I18nTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
-  @Ignore(EDGIUM)
+  @Ignore(EDGE)
   @Ignore(LEGACY_FIREFOX_XPI)
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",

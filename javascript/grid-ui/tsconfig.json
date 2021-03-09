@@ -22,7 +22,8 @@
       "@types/jest",
       "@types/node"
     ],
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src"

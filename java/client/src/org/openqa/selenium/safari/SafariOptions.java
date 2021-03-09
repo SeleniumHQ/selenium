@@ -21,11 +21,11 @@ import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -63,8 +63,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     String AUTOMATIC_PROFILING = "safari:automaticProfiling";
   }
 
-  private Map<String, Object> options = new TreeMap<>();
-
   public SafariOptions() {
     setUseTechnologyPreview(false);
     setCapability(BROWSER_NAME, "safari");
@@ -73,23 +71,19 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   public SafariOptions(Capabilities source) {
     this();
 
-    source.asMap().forEach((key, value)-> {
-      if (CAPABILITY.equals(key) && value instanceof Map) {
-
-        @SuppressWarnings("unchecked")
-        Map<? extends String, ?> map = (Map<? extends String, ?>) value;
-        options.putAll(map);
-      } else if (value != null) {
-        setCapability(key, value);
-      }
-    });
+    source.getCapabilityNames().forEach(name -> setCapability(name, source.getCapability(name)));
   }
 
   @Override
   public SafariOptions merge(Capabilities extraCapabilities) {
+    Require.nonNull("Capabilities to merge", extraCapabilities);
+
     SafariOptions newInstance = new SafariOptions();
-    this.asMap().forEach(newInstance::setCapability);
-    extraCapabilities.asMap().forEach(newInstance::setCapability);
+
+    getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
+    extraCapabilities.getCapabilityNames()
+      .forEach(name -> newInstance.setCapability(name, extraCapabilities.getCapability(name)));
+
     return newInstance;
   }
 
@@ -170,14 +164,8 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   @Override
-  protected int amendHashCode() {
-    return options.hashCode();
-  }
-
-  @Override
   public Map<String, Object> asMap() {
-    Map<String, Object> result = new HashMap<>(super.asMap());
-    result.put(CAPABILITY, unmodifiableMap(new HashMap<>(options)));
+    Map<String, Object> result = new TreeMap<>(super.asMap());
     return unmodifiableMap(result);
   }
 }

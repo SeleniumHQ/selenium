@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE_HTML;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -86,7 +85,6 @@ public class ContentEditableTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE_HTML)
   @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/667")
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);
@@ -115,7 +113,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   @NotYetImplemented(value = IE, reason = "Prepends text")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/667")
-  @NotYetImplemented(EDGE_HTML)
   public void testShouldAppendToTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");

@@ -23,9 +23,11 @@ import static org.openqa.selenium.grid.data.Availability.DRAINING;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -40,6 +42,7 @@ import org.openqa.selenium.grid.data.NewSessionResponse;
 import org.openqa.selenium.grid.data.NewSessionResponseEvent;
 import org.openqa.selenium.grid.data.NodeAddedEvent;
 import org.openqa.selenium.grid.data.NodeDrainComplete;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -48,7 +51,6 @@ import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.RetrySessionRequestException;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -84,6 +86,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -104,8 +107,7 @@ public class LocalDistributor extends Distributor {
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Queue<RequestId> requestIds = new ConcurrentLinkedQueue<>();
-  private final ScheduledExecutorService executorService =
-    Executors.newSingleThreadScheduledExecutor();
+  private final ScheduledExecutorService executorService;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
@@ -114,12 +116,12 @@ public class LocalDistributor extends Distributor {
   private final NewSessionQueuer sessionRequests;
 
   public LocalDistributor(
-      Tracer tracer,
-      EventBus bus,
-      HttpClient.Factory clientFactory,
-      SessionMap sessions,
-      NewSessionQueuer sessionRequests,
-      Secret registrationSecret) {
+    Tracer tracer,
+    EventBus bus,
+    HttpClient.Factory clientFactory,
+    SessionMap sessions,
+    NewSessionQueuer sessionRequests,
+    Secret registrationSecret) {
     super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -132,93 +134,24 @@ public class LocalDistributor extends Distributor {
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
+    bus.addListener(NodeHeartBeatEvent.listener(model::touch));
     bus.addListener(NodeDrainComplete.listener(this::remove));
     bus.addListener(NewSessionRequestEvent.listener(requestIds::offer));
+
+    Regularly regularly = new Regularly("Local Distributor");
+    regularly.submit(model::purgeDeadNodes, Duration.ofSeconds(30), Duration.ofSeconds(30));
 
     Thread shutdownHook = new Thread(this::callExecutorShutdown);
     Runtime.getRuntime().addShutdownHook(shutdownHook);
     NewSessionRunnable runnable = new NewSessionRunnable();
+    ThreadFactory threadFactory = r -> {
+      Thread thread = new Thread(r);
+      thread.setName("New Session Creation");
+      thread.setDaemon(true);
+      return thread;
+    };
+    executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
     executorService.scheduleAtFixedRate(runnable, 0, 1000, TimeUnit.MILLISECONDS);
-  }
-
-  public class NewSessionRunnable implements Runnable {
-    @Override
-    public void run() {
-      Lock writeLock = lock.writeLock();
-      writeLock.lock();
-      try {
-        if (!requestIds.isEmpty()) {
-          boolean hasCapacity = nodes
-            .keySet()
-            .stream()
-            .anyMatch(key -> nodes.get(key).getStatus().hasCapacity());
-          if (hasCapacity) {
-            RequestId reqId = requestIds.poll();
-            if (reqId != null) {
-              Optional<HttpRequest> optionalHttpRequest = sessionRequests.remove(reqId);
-              // Check if polling the queue did not return null
-              if (optionalHttpRequest.isPresent()) {
-                handleNewSessionRequest(optionalHttpRequest.get(), reqId);
-              } else {
-                fireSessionRejectedEvent(
-                  "Unable to poll request from the new session request queue.",
-                  reqId);
-              }
-            }
-          }
-        }
-      } finally {
-        writeLock.unlock();
-      }
-    }
-
-    private void handleNewSessionRequest(HttpRequest sessionRequest, RequestId reqId) {
-      try (Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue")) {
-        Map<String, EventAttributeValue> attributeMap = new HashMap<>();
-        attributeMap.put(
-          AttributeKey.LOGGER_CLASS.getKey(),
-          EventAttribute.setValue(getClass().getName()));
-        span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
-        attributeMap.put(
-          AttributeKey.REQUEST_ID.getKey(),
-          EventAttribute.setValue(reqId.toString()));
-
-        attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
-        Either<SessionNotCreatedException, CreateSessionResponse> response =
-          newSession(sessionRequest);
-        if (response.isRight()) {
-          CreateSessionResponse sessionResponse = response.right();
-          NewSessionResponse newSessionResponse =
-            new NewSessionResponse(
-              reqId,
-              sessionResponse.getSession(),
-              sessionResponse.getDownstreamEncodedResponse());
-
-          bus.fire(new NewSessionResponseEvent(newSessionResponse));
-        } else {
-          SessionNotCreatedException exception = response.left();
-
-          if (exception instanceof RetrySessionRequestException) {
-            boolean retried = sessionRequests.retryAddToQueue(sessionRequest, reqId);
-
-            attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
-            span.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
-
-            if (!retried) {
-              span.addEvent("Retry adding to front of queue failed.", attributeMap);
-              fireSessionRejectedEvent(exception.getMessage(), reqId);
-            }
-          } else {
-            fireSessionRejectedEvent(exception.getMessage(), reqId);
-          }
-        }
-      }
-    }
-
-    private void fireSessionRejectedEvent(String message, RequestId reqId) {
-      bus.fire(
-        new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, message)));
-    }
   }
 
   public static Distributor create(Config config) {
@@ -228,8 +161,8 @@ public class LocalDistributor extends Distributor {
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
     SecretOptions secretOptions = new SecretOptions(config);
     NewSessionQueuer sessionRequests =
-        new NewSessionQueuerOptions(config).getSessionQueuer(
-            "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer");
+      new NewSessionQueuerOptions(config).getSessionQueuer(
+        "org.openqa.selenium.grid.sessionqueue.remote.RemoteNewSessionQueuer");
     return new LocalDistributor(
       tracer,
       bus,
@@ -433,5 +366,85 @@ public class LocalDistributor extends Distributor {
   public void callExecutorShutdown() {
     LOG.info("Shutting down Distributor executor service");
     executorService.shutdownNow();
+  }
+
+  public class NewSessionRunnable implements Runnable {
+
+    @Override
+    public void run() {
+      Lock writeLock = lock.writeLock();
+      writeLock.lock();
+      try {
+        if (!requestIds.isEmpty()) {
+          Set<NodeStatus> availableNodes = ImmutableSet.copyOf(getAvailableNodes());
+          boolean hasCapacity = availableNodes.stream()
+            .anyMatch(NodeStatus::hasCapacity);
+          if (hasCapacity) {
+            RequestId reqId = requestIds.poll();
+            if (reqId != null) {
+              Optional<HttpRequest> optionalHttpRequest = sessionRequests.remove(reqId);
+              // Check if polling the queue did not return null
+              if (optionalHttpRequest.isPresent()) {
+                handleNewSessionRequest(optionalHttpRequest.get(), reqId);
+              } else {
+                fireSessionRejectedEvent(
+                  "Unable to poll request from the new session request queue.",
+                  reqId);
+              }
+            }
+          }
+        }
+      } finally {
+        writeLock.unlock();
+      }
+    }
+
+    private void handleNewSessionRequest(HttpRequest sessionRequest, RequestId reqId) {
+      try (Span span = newSpanAsChildOf(tracer, sessionRequest, "distributor.poll_queue")) {
+        Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+        attributeMap.put(
+          AttributeKey.LOGGER_CLASS.getKey(),
+          EventAttribute.setValue(getClass().getName()));
+        span.setAttribute(AttributeKey.REQUEST_ID.getKey(), reqId.toString());
+        attributeMap.put(
+          AttributeKey.REQUEST_ID.getKey(),
+          EventAttribute.setValue(reqId.toString()));
+
+        attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
+        Either<SessionNotCreatedException, CreateSessionResponse> response =
+          newSession(sessionRequest);
+        if (response.isRight()) {
+          CreateSessionResponse sessionResponse = response.right();
+          NewSessionResponse newSessionResponse =
+            new NewSessionResponse(
+              reqId,
+              sessionResponse.getSession(),
+              sessionResponse.getDownstreamEncodedResponse());
+
+          bus.fire(new NewSessionResponseEvent(newSessionResponse));
+        } else {
+          SessionNotCreatedException exception = response.left();
+
+          if (exception instanceof RetrySessionRequestException) {
+            boolean retried = sessionRequests.retryAddToQueue(sessionRequest, reqId);
+
+            attributeMap.put("request.retry_add", EventAttribute.setValue(retried));
+            span.addEvent("Retry adding to front of queue. No slot available.", attributeMap);
+
+            if (!retried) {
+              span.addEvent("Retry adding to front of queue failed.", attributeMap);
+              fireSessionRejectedEvent(exception.getMessage(), reqId);
+            }
+          } else {
+            fireSessionRejectedEvent(exception.getMessage(), reqId);
+          }
+        }
+      }
+    }
+
+    private void fireSessionRejectedEvent(String message, RequestId reqId) {
+      bus.fire(
+        new NewSessionRejectedEvent(new NewSessionErrorResponse(reqId, message)));
+    }
   }
 }

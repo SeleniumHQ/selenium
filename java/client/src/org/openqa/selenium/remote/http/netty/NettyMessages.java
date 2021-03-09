@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import static org.asynchttpclient.Dsl.request;
 import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
+
+import com.google.common.base.Strings;
 
 import org.asynchttpclient.Dsl;
 import org.asynchttpclient.Request;
@@ -30,32 +34,20 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URI;
 
-import static org.asynchttpclient.Dsl.request;
-import static org.openqa.selenium.remote.http.Contents.memoize;
-
-import com.google.common.base.Strings;
-
 class NettyMessages {
 
   private NettyMessages() {
     // Utility classes.
   }
 
-  protected static Request toNettyRequest(URI baseUrl, HttpRequest request) {
-    String rawUrl;
+  protected static Request toNettyRequest(URI baseUrl, int readTimeout, int requestTimeout,
+                                          HttpRequest request) {
 
-    String uri = request.getUri();
-    if (uri.startsWith("ws://")) {
-      rawUrl = "http://" + uri.substring("ws://".length());
-    } else if (uri.startsWith("wss://")) {
-      rawUrl = "https://" + uri.substring("wss://".length());
-    } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
-      rawUrl = uri;
-    } else {
-      rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
-    }
+    String rawUrl = getRawUrl(baseUrl, request.getUri());
 
-    RequestBuilder builder = request(request.getMethod().toString(), rawUrl);
+    RequestBuilder builder = request(request.getMethod().toString(), rawUrl)
+      .setReadTimeout(readTimeout)
+      .setRequestTimeout(requestTimeout);
 
     for (String name : request.getQueryParameterNames()) {
       for (String value : request.getQueryParameters(name)) {
@@ -93,13 +85,27 @@ class NettyMessages {
 
     toReturn.setStatus(response.getStatusCode());
 
-    toReturn.setContent(! response.hasResponseBody()
+    toReturn.setContent(!response.hasResponseBody()
                         ? empty()
                         : memoize(response::getResponseBodyAsStream));
 
     response.getHeaders().names().forEach(
-        name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));
+      name -> response.getHeaders(name).forEach(value -> toReturn.addHeader(name, value)));
 
     return toReturn;
+  }
+
+  private static String getRawUrl(URI baseUrl, String uri) {
+    String rawUrl;
+    if (uri.startsWith("ws://")) {
+      rawUrl = "http://" + uri.substring("ws://".length());
+    } else if (uri.startsWith("wss://")) {
+      rawUrl = "https://" + uri.substring("wss://".length());
+    } else if (uri.startsWith("http://") || uri.startsWith("https://")) {
+      rawUrl = uri;
+    } else {
+      rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
+    }
+    return rawUrl;
   }
 }

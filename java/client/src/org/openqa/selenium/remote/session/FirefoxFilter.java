@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.remote.session;
 
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -28,16 +31,16 @@ public class FirefoxFilter implements CapabilitiesFilter {
   @Override
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     Map<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
-        .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && "firefox".equals(entry.getValue())) ||
-                    entry.getKey().startsWith("firefox_") ||
-                    entry.getKey().startsWith("moz:"))
-        .filter(entry -> Objects.nonNull(entry.getValue()))
-        .collect(Collectors.toMap(
-            Map.Entry::getKey,
-            Map.Entry::getValue,
-            (l, r) -> l,
-            TreeMap::new));
+      .filter(entry ->
+                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.FIREFOX.equals(entry.getValue())) ||
+                entry.getKey().startsWith("firefox_") ||
+                entry.getKey().startsWith("moz:"))
+      .filter(entry -> Objects.nonNull(entry.getValue()))
+      .collect(Collectors.toMap(
+        Map.Entry::getKey,
+        Map.Entry::getValue,
+        (l, r) -> l,
+        TreeMap::new));
 
     // If we only have marionette in the caps, the user is asking for firefox. Make sure we inject
     // the browser name to be sure.
@@ -49,8 +52,8 @@ public class FirefoxFilter implements CapabilitiesFilter {
     // options.
     @SuppressWarnings("unchecked")
     Map<String, Object> options = (Map<String, Object>) unmodifiedCaps.getOrDefault(
-        "moz:firefoxOptions",
-        new TreeMap<>());
+      "moz:firefoxOptions",
+      new TreeMap<>());
     if (unmodifiedCaps.containsKey("firefox_binary") && !options.containsKey("binary")) {
       // Here's hoping that the binary is just a string. It should be as FirefoxBinary.toJson just
       // encodes the path.

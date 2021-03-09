@@ -14,5 +14,8 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/tracing/opentelemetry",
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("io.opentelemetry:opentelemetry-context"),
+        artifact("io.opentelemetry:opentelemetry-sdk"),
+        artifact("io.opentelemetry:opentelemetry-sdk-common"),
+        artifact("io.opentelemetry:opentelemetry-sdk-trace"),
     ],
 )

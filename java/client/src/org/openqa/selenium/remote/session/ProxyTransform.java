@@ -44,8 +44,8 @@ public class ProxyTransform implements CapabilityTransform {
     }
     if (proxy.containsKey("proxyType")) {
       proxy.put(
-          "proxyType",
-          String.valueOf(proxy.get("proxyType")).toLowerCase());
+        "proxyType",
+        String.valueOf(proxy.get("proxyType")).toLowerCase());
     }
     return singleton(new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), proxy));
   }

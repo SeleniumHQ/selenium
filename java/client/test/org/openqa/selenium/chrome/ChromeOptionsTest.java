@@ -17,21 +17,27 @@
 
 package org.openqa.selenium.chrome;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.remote.AcceptedW3CCapabilityKeys;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.UnitTests;
+
+import java.io.File;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
-
-import java.io.File;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.UnitTests;
 
 @Category(UnitTests.class)
 public class ChromeOptionsTest {
@@ -136,5 +142,21 @@ public class ChromeOptionsTest {
       .containsEntry("opt1", "val1")
       .containsEntry("opt2", "val4")
       .containsEntry("opt3", "val3");
+  }
+
+  @Test
+  public void isW3CSafe() {
+    Map<String, Object> converted = new ChromeOptions()
+      .setBinary("some/path")
+      .addArguments("--headless")
+      .setLogLevel(ChromeDriverLogLevel.INFO)
+      .asMap();
+
+    Predicate<String> badKeys = new AcceptedW3CCapabilityKeys().negate();
+    Set<String> seen = converted.keySet().stream()
+      .filter(badKeys)
+      .collect(toSet());
+
+    assertThat(seen).isEmpty();
   }
 }

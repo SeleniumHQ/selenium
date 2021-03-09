@@ -1,3 +1,5 @@
+load("@rules_python//python:defs.bzl", "py_binary")
+
 exports_files(
     srcs = [
         "browser_protocol.json",

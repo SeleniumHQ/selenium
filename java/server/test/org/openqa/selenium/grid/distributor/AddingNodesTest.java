@@ -254,6 +254,7 @@ public class AddingNodesTest {
           Optional.of(new Session(
             new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now())))),
       UP,
+      Duration.ofSeconds(10),
       status.getVersion(),
       status.getOsInfo());
 
@@ -376,6 +377,7 @@ public class AddingNodesTest {
             Instant.now(),
             Optional.ofNullable(sess))),
         UP,
+        Duration.ofSeconds(10),
         getNodeVersion(),
         getOsInfo());
     }

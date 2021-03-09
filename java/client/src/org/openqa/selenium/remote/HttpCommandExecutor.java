@@ -33,7 +33,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
@@ -58,11 +57,13 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   private LocalLogs logs = LocalLogs.getNullLogger();
 
   public HttpCommandExecutor(URL addressOfRemoteServer) {
-    this(emptyMap(), addressOfRemoteServer);
+    this(emptyMap(), Require.nonNull("Server URL", addressOfRemoteServer));
   }
 
   public HttpCommandExecutor(ClientConfig config) {
-    this(emptyMap(), config, defaultClientFactory);
+    this(emptyMap(),
+         Require.nonNull("HTTP client configuration", config),
+         defaultClientFactory);
   }
 
   /**
@@ -76,7 +77,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     Map<String, CommandInfo> additionalCommands,
     URL addressOfRemoteServer)
   {
-    this(additionalCommands, addressOfRemoteServer, defaultClientFactory);
+    this(Require.nonNull("Additional commands", additionalCommands),
+         Require.nonNull("Server URL", addressOfRemoteServer),
+         defaultClientFactory);
   }
 
   public HttpCommandExecutor(
@@ -85,7 +88,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     HttpClient.Factory httpClientFactory)
   {
     this(additionalCommands,
-         ClientConfig.defaultConfig().baseUrl(addressOfRemoteServer),
+         ClientConfig.defaultConfig()
+           .baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
          httpClientFactory);
   }
 
@@ -94,21 +98,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     ClientConfig config,
     HttpClient.Factory httpClientFactory)
   {
-    try {
-      if (config.baseUri() != null) {
-        remoteServer = config.baseUrl();
-      } else {
-        remoteServer = new URL(
-          System.getProperty("webdriver.remote.server", "http://localhost:4444/"));
-        config = config.baseUrl(remoteServer);
-      }
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    }
-
-    this.additionalCommands = additionalCommands;
-    this.httpClientFactory = httpClientFactory;
-    this.client = httpClientFactory.createClient(config);
+    remoteServer = Require.nonNull("HTTP client configuration", config).baseUrl();
+    this.additionalCommands = Require.nonNull("Additional commands", additionalCommands);
+    this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
+    this.client = this.httpClientFactory.createClient(config);
   }
 
   /**

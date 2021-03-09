@@ -73,11 +73,11 @@ public interface DriverCommand {
   String DELETE_ALL_COOKIES = "deleteAllCookies";
 
   String FIND_ELEMENT = "findElement";
-  static CommandPayload FIND_ELEMENT(String strategy, String value) {
+  static CommandPayload FIND_ELEMENT(String strategy, Object value) {
     return new CommandPayload(FIND_ELEMENT, ImmutableMap.of("using", strategy, "value", value));
   }
   String FIND_ELEMENTS = "findElements";
-  static CommandPayload FIND_ELEMENTS(String strategy, String value) {
+  static CommandPayload FIND_ELEMENTS(String strategy, Object value) {
     return new CommandPayload(FIND_ELEMENTS, ImmutableMap.of("using", strategy, "value", value));
   }
   String FIND_CHILD_ELEMENT = "findChildElement";
@@ -226,6 +226,7 @@ public interface DriverCommand {
   }
   String SET_ALERT_CREDENTIALS = "setAlertCredentials";
 
+  String GET_TIMEOUTS = "getTimeouts";
   String SET_TIMEOUT = "setTimeout";
 
   String PRINT_PAGE = "printPage";

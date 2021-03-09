@@ -245,7 +245,7 @@ public class RemoteWebDriverUnitTest {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-      .isThrownBy(() -> fixture.driver.findElement(By.id("id")));
+      .isThrownBy(() -> fixture.driver.findElement(By.cssSelector("id")));
   }
 
   @Test
@@ -628,6 +628,18 @@ public class RemoteWebDriverUnitTest {
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.SET_TIMEOUT, ImmutableMap.of("implicit", 10000L)));
+  }
+
+  @Test
+  public void canHandleGetTimeoutsCommand() {
+    WebDriverFixture fixture = new WebDriverFixture(
+      echoCapabilities,
+      valueResponder(ImmutableMap.of("implicit", 100, "script", 200, "pageLoad", 300)));
+
+    fixture.driver.manage().timeouts().getImplicitWaitTimeout();
+
+    fixture.verifyCommands(
+      new CommandPayload(DriverCommand.GET_TIMEOUTS, emptyMap()));
   }
 
   @Test

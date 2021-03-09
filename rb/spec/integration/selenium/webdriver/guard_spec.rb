@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    module SpecSupport
+    module Support
       describe Guards, exclusive: {driver: :chrome} do
         describe '#exclude' do
           it 'ignores an unrecognized guard parameter', invalid: {browser: :chrome} do
@@ -122,7 +122,7 @@ module Selenium
 
         it 'Uses correct message for exclusive' do
           guard = Guards::Guard.new({reason: "Foo is bad"}, :exclusive)
-          expect(guard.message).to eq 'Test does not apply to this configuration'
+          expect(guard.message).to eq 'Test does not apply to this configuration; Foo is bad'
         end
 
         it 'Uses correct message for exclude' do
@@ -130,6 +130,6 @@ module Selenium
           expect(guard.message).to eq 'Test not guarded because it breaks test run; Foo is bad'
         end
       end
-    end # SpecSupport
+    end # Support
   end # WebDriver
 end # Selenium

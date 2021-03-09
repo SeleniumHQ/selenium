@@ -68,7 +68,7 @@ const webdriver = require('./webdriver'),
  * @return {!Condition<boolean>} A new condition.
  */
 exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
-  var condition
+  let condition
   if (typeof frame === 'number' || frame instanceof webdriver.WebElement) {
     condition = (driver) => attemptToSwitchFrames(driver, frame)
   } else {

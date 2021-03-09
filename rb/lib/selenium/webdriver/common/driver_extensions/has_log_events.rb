@@ -89,8 +89,14 @@ module Selenium
 
         def log_exception_events
           devtools.runtime.on(:exception_thrown) do |params|
+            description = if params.dig('exceptionDetails', 'exception')
+                            params.dig('exceptionDetails', 'exception', 'description')
+                          else
+                            params.dig('exceptionDetails', 'text')
+                          end
+
             event = DevTools::ExceptionEvent.new(
-              description: params.dig('exceptionDetails', 'exception', 'description'),
+              description: description,
               timestamp: params['timestamp'],
               stacktrace: params.dig('exceptionDetails', 'stackTrace', 'callFrames')
             )

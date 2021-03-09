@@ -17,18 +17,22 @@
 
 package org.openqa.selenium.safari;
 
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.remote.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.UnitTests;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toSet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Category(UnitTests.class)
 public class SafariOptionsTest {
@@ -97,11 +101,21 @@ public class SafariOptionsTest {
     Map<String, Object> options = new SafariOptions().asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> options.put("browserType", "chrome"));
-
-    Map<String, Object> safariOptions = (Map<String, Object>) options.get(SafariOptions.CAPABILITY);
-    assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> safariOptions.put("x", true));
   }
 
+  @Test
+  public void isW3CSafe() {
+    Map<String, Object> converted = new SafariOptions()
+      .setUseTechnologyPreview(true)
+      .setAutomaticInspection(true)
+      .setAutomaticProfiling(true)
+      .asMap();
 
+    Predicate<String> badKeys = new AcceptedW3CCapabilityKeys().negate();
+    Set<String> seen = converted.keySet().stream()
+      .filter(badKeys)
+      .collect(toSet());
+
+    assertThat(seen).isEmpty();
+  }
 }

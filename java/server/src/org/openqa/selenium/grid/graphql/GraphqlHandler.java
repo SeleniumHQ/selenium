@@ -173,15 +173,14 @@ public class GraphqlHandler implements HttpHandler {
   }
 
   private RuntimeWiring buildRuntimeWiring() {
+    GridData gridData = new GridData(distributor, newSessionQueuer, publicUri, version);
     return RuntimeWiring.newRuntimeWiring()
       .scalar(Types.Uri)
       .scalar(Types.Url)
       .type("GridQuery", typeWiring -> typeWiring
-        .dataFetcher("grid", new GridData(
-          distributor,
-          newSessionQueuer,
-          publicUri,
-          version))
+        .dataFetcher("grid", gridData)
+        .dataFetcher("sessionsInfo", gridData)
+        .dataFetcher("nodesInfo", gridData)
         .dataFetcher("session", new SessionData(distributor)))
       .build();
   }

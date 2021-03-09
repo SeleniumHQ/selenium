@@ -28,7 +28,11 @@ module Selenium
 
       class Driver < WebDriver::Driver
         include DriverExtensions::HasAddons
+        include DriverExtensions::HasDevTools
+        include DriverExtensions::HasLogEvents
+        include DriverExtensions::HasNetworkInterception
         include DriverExtensions::HasWebStorage
+        include DriverExtensions::PrintsPage
 
         def browser
           :firefox
@@ -38,10 +42,14 @@ module Selenium
           Bridge
         end
 
-        def print_page(**options)
-          options[:page_ranges] &&= Array(options[:page_ranges])
+        private
 
-          @bridge.print_page(options)
+        def devtools_version
+          DEVTOOLS_VERSION
+        end
+
+        def devtools_debugger_address
+          capabilities['moz:debuggerAddress']
         end
       end # Driver
     end # Firefox

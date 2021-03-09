@@ -52,14 +52,14 @@ module Selenium
           end
         end
 
-        # it 'should be able to run in headless mode with #headless!' do
-        #   options.headless!
-        #
-        #   create_driver!(capabilities: options) do |driver|
-        #     ua = driver.execute_script 'return window.navigator.userAgent'
-        #     expect(ua).to match(/HeadlessChrome/)
-        #   end
-        # end
+        it 'should be able to run in headless mode with #headless!' do
+          options.headless!
+
+          create_driver!(capabilities: options) do |driver|
+            ua = driver.execute_script 'return window.navigator.userAgent'
+            expect(ua).to match(/HeadlessChrome/)
+          end
+        end
       end
     end # Edge
   end # WebDriver

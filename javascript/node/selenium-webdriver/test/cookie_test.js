@@ -64,7 +64,7 @@ suite(function (env) {
       return assertHasCookies(cookie1, cookie2)
     })
 
-    ignore(env.browsers(Browser.IE)).it(
+    ignore(env.browsers(Browser.INTERNET_EXPLORER)).it(
       'only returns cookies visible to the current page',
       async function () {
         const cookie1 = createCookieSpec()
@@ -166,7 +166,7 @@ suite(function (env) {
       await assertHasCookies()
     })
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.IE)).it(
+    ignore(env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER)).it(
       'should retain cookie expiry',
       async function () {
         let expirationDelay = 5 * 1000
@@ -189,7 +189,7 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.IE, Browser.SAFARI)).it(
+    ignore(env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
       'can add same site cookie property to `Strict`',
       async function () {
         let cookie = createSameSiteCookieSpec('Strict')
@@ -201,7 +201,7 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.FIREFOX, Browser.IE, Browser.SAFARI)).it(
+    ignore(env.browsers(Browser.FIREFOX, Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
       'can add same site cookie property to `Lax`',
       async function () {
         let cookie = createSameSiteCookieSpec('Lax')
@@ -213,7 +213,7 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
+    ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
       'can add same site cookie property to `None` when cookie is Secure',
       async function () {
         let cookie = createSameSiteCookieSpec('None', {
@@ -228,7 +228,7 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
+    ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
       'throws an error if same site is set to `None` and the cookie is not Secure',
       async function () {
         let cookie = createSameSiteCookieSpec('None')
@@ -244,7 +244,7 @@ suite(function (env) {
       }
     )
 
-    ignore(env.browsers(Browser.IE, Browser.SAFARI)).it(
+    ignore(env.browsers(Browser.INTERNET_EXPLORER, Browser.SAFARI)).it(
       'throws an error if same site cookie property is invalid',
       async function () {
         let cookie = createSameSiteCookieSpec('Foo')

@@ -17,13 +17,6 @@
 
 package org.openqa.selenium.grid.sessionqueue.remote;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_ID_HEADER;
-import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -45,16 +38,21 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_ID_HEADER;
+import static org.openqa.selenium.grid.sessionqueue.NewSessionQueue.SESSIONREQUEST_TIMESTAMP_HEADER;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteNewSessionQueuer extends NewSessionQueuer {
 
-  private static final Logger LOG = Logger.getLogger(RemoteNewSessionQueuer.class.getName());
+  private static final String timestampHeader = SESSIONREQUEST_TIMESTAMP_HEADER;
+  private static final String reqIdHeader = SESSIONREQUEST_ID_HEADER;
   private final HttpClient client;
-  private static final String timestampHeader= SESSIONREQUEST_TIMESTAMP_HEADER;
-  private static final String reqIdHeader= SESSIONREQUEST_ID_HEADER;
   private final Filter addSecret;
 
   public RemoteNewSessionQueuer(Tracer tracer, HttpClient client, Secret registrationSecret) {
@@ -131,11 +129,11 @@ public class RemoteNewSessionQueuer extends NewSessionQueuer {
   }
 
   @Override
-  public Map<String, Object> getQueueContents() {
+  public List<Object> getQueueContents() {
     HttpRequest upstream = new HttpRequest(GET, "/se/grid/newsessionqueuer/queue");
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.execute(upstream);
-    return Values.get(response, Map.class);
+    return Values.get(response, List.class);
   }
 
   @Override

@@ -67,7 +67,9 @@ import java.util.stream.Collectors;
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
  * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
+ * @deprecated Use {@link EventFiringDecorator} and {@link WebDriverListener} instead
  */
+@Deprecated
 public class EventFiringWebDriver implements
   WebDriver,
   JavascriptExecutor,
@@ -685,6 +687,11 @@ public class EventFiringWebDriver implements
       return this;
     }
 
+    @Override
+    public Duration getImplicitWaitTimeout() {
+      return timeouts.getImplicitWaitTimeout();
+    }
+
     @Deprecated
     @Override
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
@@ -697,6 +704,11 @@ public class EventFiringWebDriver implements
       return this;
     }
 
+    @Override
+    public Duration getScriptTimeout() {
+      return timeouts.getScriptTimeout();
+    }
+
     @Deprecated
     @Override
     public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
@@ -707,6 +719,11 @@ public class EventFiringWebDriver implements
     public Timeouts pageLoadTimeout(Duration duration) {
       timeouts.pageLoadTimeout(duration);
       return this;
+    }
+
+    @Override
+    public Duration getPageLoadTimeout() {
+      return timeouts.getPageLoadTimeout();
     }
   }
 

@@ -1,3 +1,83 @@
+v4.0.0b1
+========
+ * Added ability to listen for JavaScript exceptions and callbacks for
+   browsers implementing the Chromium DevTools Protocol.
+ * Added the ability of a user to intercept and manipulate network traffic
+   between the browser and the web site being automated. To use this feature
+   at present, the browser being automated must support the Chromium DevTools
+   Protocol, and the driver instance must implement the IDevTools interface.
+   Attempting to use these features will cause an exception to be thrown at
+   runtime if the driver is not capable of this communication. To access this
+   feature, use the following code:
+
+        // Assume "driver" is a valid IWebDriver instance
+        INetwork network = driver.Manage().Network;
+
+        // Set up monitoring information by adding handlers
+        // and subscribing to events.
+
+        // Begin monitoring by starting the monitor.
+        await network.StartMonitoring();
+
+   With this new functionality, users can do the following:
+    * Monitor HTTP requests and responses between browser and web server
+    * Add handlers to modify requests that meet user-defined criteria
+    * Add handlers to supply responses for requests that meet user-defined
+      criteria
+    * Add handlers to supply authentication credentials for sites using
+      basic and digest authentication
+ * Added ISupportsPrint interface to .NET to allow use of Print method.
+ * Exposed command executor on .NET RemoteWebDriver via IHasCommandExecutor
+   interface.
+ * Added support for full-page screenshot command to .NET Firefox driver.
+ * Added support for environment capability to .NET FirefoxOptions.
+ * Added spec-compliant properties and methods to .NET IWebElement. The W3C
+   WebDriver Specification defines additional commands for web elements. This
+   change introduces properties and methods for execution of those commands in
+   the .NET language bindings. The added items on IWebElement are:
+
+    * ComputedAccessibleLabel property: Allows the user to get the result of
+      the accessible name and description computation for the accessible
+      name of the element.
+    * ComputedAccessibleRole property: Allows the user to get the result of
+      the computation of the ARIA role for this element. Note that this
+      property is subject to change its return type, as the specification
+      needs clarification as to the return type.
+    * GetDomProperty method: Allows the user to get the value of an
+      IDL-defined property of the element. These properties are usually
+      accessed via JavaScript. This method replaces the GetProperty method,
+      which is now marked as obsolete, as it is being renamed to
+      GetDomProperty for consistency in the Selenium API.
+    * GetDomAttribute method: Allows the user to get the value of an
+      attribute declared in the HTML markup of the element. This differs
+      from the GetAttribute method, in that it _only_ returns declared
+      attributes, whereas the GetAttribute method will return one of either
+      a declared attribute or an IDL property of the element, without
+      distinction between the two.
+ * Added support for CDP versions 86, 87, 88, and v89.
+ * (on behalf of elgatov) Enabled caching IWebElement before checking TagName
+   is correct. When creating a SelectElement we must first check the
+   WrappedElement tag is a <select> element and throw a
+   UnexpectedTagNameException otherwise. Previously the WrappedElement was not
+   cached so WebDriver API could be called up to three times: first to check
+   the tag is not null, second to check it's value is select (ignoring case)
+   and a third time as a parameter of UnexpectedTagNameException if any of the
+   previous conditions failed. Fixes issue #8904.
+ * Added Content-Type header to POST requests for .NET bindings
+ * Added support for .NET 5
+ * Enabled allowing the user to specify DevTools Protocol verison. his change
+   introduces an overload to the `CreateDevToolsSession` method that will allow
+   a user to request a specific version of the protocol to use instead of
+   automatically detecting the version used by the browser being automated.
+   While using this overload can in theory help a user avoid code changes with
+   every browser update when their code relies on the concrete, browser-
+   specific protocol domains, using this overload is still fraught with peril,
+   and should be avoided in favor of the version-independent API the Selenium
+   library provides. This change also cleans up some API details, removing,
+   among other things, the `Start` method of the DevToolsSession object from
+   the public-facing API. When the `CreateDevToolsSession` method is called,
+   there is no need to start the session, as it is already started.
+
 v4.0.0a7
 ========
  * 4.0.0a6 was skipped for the .NET bindings and not released publicly.
@@ -2052,5 +2132,5 @@ v2.2.0
   * Adding first pass at .NET implementation of proxy management.
   * Modifying .NET build process to sign assemblies. Building the .NET bindings
     through the IDE or through the command line will now produce signed
-	assemblies.
+  assemblies.
   * Updating .NET bindings JSON.NET from 3.5 to 4.0.

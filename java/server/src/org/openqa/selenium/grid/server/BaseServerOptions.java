@@ -20,12 +20,12 @@ package org.openqa.selenium.grid.server;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.server.jmx.JMXHelper;
-import org.openqa.selenium.remote.server.jmx.ManagedAttribute;
-import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import java.io.File;
 import java.net.URI;
@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=Config,name=BaseServerConfig",
-    description = "Server config")
+  description = "Server config")
 public class BaseServerOptions {
 
   private static final String SERVER_SECTION = "server";
@@ -49,14 +49,14 @@ public class BaseServerOptions {
   }
 
   public Optional<String> getHostname() {
-    return config.get(SERVER_SECTION, "hostname");
+    return config.get(SERVER_SECTION, "host");
   }
 
   @ManagedAttribute(name = "Port")
   public int getPort() {
     if (port == -1) {
       int newPort = config.getInt(SERVER_SECTION, "port")
-          .orElseGet(PortProber::findFreePort);
+        .orElseGet(PortProber::findFreePort);
 
       if (newPort < 0) {
         throw new ConfigException("Port cannot be less than 0: " + newPort);
@@ -71,7 +71,7 @@ public class BaseServerOptions {
   @ManagedAttribute(name = "MaxServerThreads")
   public int getMaxServerThreads() {
     int count = config.getInt(SERVER_SECTION, "max-threads")
-        .orElse(200);
+      .orElse(Runtime.getRuntime().availableProcessors() * 3);
 
     if (count < 0) {
       throw new ConfigException("Maximum number of server threads cannot be less than 0: " + count);
@@ -84,15 +84,15 @@ public class BaseServerOptions {
   public URI getExternalUri() {
     // Assume the host given is addressable if it's been set
     String host = getHostname()
-        .orElseGet(() -> {
-          try {
-            return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
-          } catch (WebDriverException e) {
-            String name = HostIdentifier.getHostName();
-            LOG.info("No network connection, guessing name: " + name);
-            return name;
-          }
-        });
+      .orElseGet(() -> {
+        try {
+          return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+        } catch (WebDriverException e) {
+          String name = HostIdentifier.getHostName();
+          LOG.info("No network connection, guessing name: " + name);
+          return name;
+        }
+      });
 
     int port = getPort();
 

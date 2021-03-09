@@ -26,6 +26,7 @@ import org.openqa.selenium.WebElement;
  * Use this class as base class, if you want to implement a {@link WebDriverEventListener} and are
  * only interested in some events. All methods provided by this class have an empty method body.
  */
+@Deprecated
 public abstract class AbstractWebDriverEventListener implements WebDriverEventListener {
 
   @Override

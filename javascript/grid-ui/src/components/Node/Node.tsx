@@ -1,255 +1,111 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 import {
   Box,
-  Button,
   Card,
   CardContent,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
+  createStyles,
   Grid,
-  GridSize,
-  IconButton,
-  makeStyles,
-  Typography
-} from '@material-ui/core';
-import * as React from 'react';
-import InfoIcon from '@material-ui/icons/Info';
-import NodeType from "../../models/node";
-import LinearProgress, {LinearProgressProps} from '@material-ui/core/LinearProgress';
-import browserLogo from "../../util/browser-logo";
-import osLogo from "../../util/os-logo";
-import browserVersion from "../../util/browser-version";
+  Theme,
+  Typography,
+  withStyles
+} from '@material-ui/core'
+import React, { ReactNode } from 'react'
+import NodeInfo from '../../models/node-info'
+import NodeDetailsDialog from './NodeDetailsDialog'
+import NodeLoad from './NodeLoad'
+import Stereotypes from './Stereotypes'
+import clsx from 'clsx'
+import OsLogo from '../common/OsLogo'
+import { StyleRules } from '@material-ui/core/styles'
 
-const useStyles = makeStyles({
-  root: {
-    height: '100%',
-    flexGrow: 1,
-  },
-  paddingContent: {
-    paddingRight: 10,
-    paddingLeft: 10,
-  },
-  osLogo: {
-    width: 32,
-    height: 32,
-    marginRight: 5,
-  },
-  browserLogo: {
-    width: 24,
-    height: 24,
-    marginBottom: 5,
-    marginRight: 5,
-  },
-  buttonMargin: {
-    padding: 1,
-  }
-});
+const useStyles = (theme: Theme): StyleRules => createStyles(
+  {
+    root: {
+      height: '100%',
+      flexGrow: 1
+    },
+    paddingContent: {
+      paddingRight: 10,
+      paddingLeft: 10
+    },
+    osLogo: {
+      width: 32,
+      height: 32,
+      marginRight: 5
+    },
+    up: {},
+    down: {
+      backgroundColor: theme.palette.grey.A100
+    }
+  })
 
-function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
-  return (
-      <Box display="flex" alignItems="center">
-        <Box width="100%" mr={1}>
-          <LinearProgress variant="determinate" {...props} />
-        </Box>
-        <Box minWidth={35}>
-          <Typography variant="body2" color="textSecondary">{`${Math.round(
-              props.value,
-          )}%`}</Typography>
-        </Box>
-      </Box>
-  );
+interface NodeProps {
+  node: NodeInfo
+  classes: any
 }
 
-export default function Node(props) {
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const handleDialogOpen = () => {
-    setOpen(true);
-  };
-  const handleDialogClose = () => {
-    setOpen(false);
-  };
-  const nodeInfo: NodeType = props.node;
-  const sessionCount = nodeInfo.sessionCount ?? 0;
-  const currentLoad = sessionCount === 0 ? 0 :
-      Math.min(((sessionCount / nodeInfo.maxSession) * 100), 100).toFixed(2);
-  // Assuming we will put 3 stereotypes per column.
-  const stereotypeColumns = Math.round(nodeInfo.slotStereotypes.length / 3);
-  // Then we need to know how many columns we will display.
-  const columnWidth: GridSize = 12 / stereotypeColumns as any;
+class Node extends React.Component<NodeProps, {}> {
+  render (): ReactNode {
+    const { node, classes } = this.props
+    const nodeStatusClass = node.status === 'UP' ? classes.up : classes.down
 
-  return (
-      <Card
-          className={classes.root}
-      >
+    return (
+      <Card className={clsx(classes.root, nodeStatusClass)}>
         <CardContent className={classes.paddingContent}>
           <Grid
-              container
-              justify="space-between"
-              spacing={1}
+            container
+            justify='space-between'
+            spacing={1}
           >
             <Grid item xs={10}>
               <Typography
-                  color="textPrimary"
-                  gutterBottom
-                  variant="h6"
+                color='textPrimary'
+                gutterBottom
+                variant='h6'
               >
-                <Box fontWeight="fontWeightBold" mr={1} display='inline'>
+                <Box fontWeight='fontWeightBold' mr={1} display='inline'>
                   URI:
                 </Box>
-                {nodeInfo.uri}
+                {node.uri}
               </Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography
-                  color="textPrimary"
-                  gutterBottom
-                  variant="h6"
+                color='textPrimary'
+                gutterBottom
+                variant='h6'
               >
-                <img
-                  src={osLogo(nodeInfo.osInfo.name)}
-                  className={classes.osLogo}
-                  alt="OS Logo"
-                />
-                <IconButton className={classes.buttonMargin} onClick={handleDialogOpen}>
-                  <InfoIcon/>
-                </IconButton>
-                <Dialog onClose={handleDialogClose} aria-labelledby="node-info-dialog" open={open}>
-                  <DialogTitle id="node-info-dialog">
-                    <img
-                      src={osLogo(nodeInfo.osInfo.name)}
-                      className={classes.osLogo}
-                      alt="OS Logo"
-                    />
-                    <Box fontWeight="fontWeightBold" mr={1} display='inline'>
-                      URI:
-                    </Box>
-                    {nodeInfo.uri}
-                  </DialogTitle>
-                  <DialogContent dividers>
-                    <Typography gutterBottom>
-                      Node Id: {nodeInfo.id}
-                    </Typography>
-                    <Typography gutterBottom>
-                      OS Arch: {nodeInfo.osInfo.arch}
-                    </Typography>
-                    <Typography gutterBottom>
-                      OS Name: {nodeInfo.osInfo.name}
-                    </Typography>
-                    <Typography gutterBottom>
-                      OS Version: {nodeInfo.osInfo.version}
-                    </Typography>
-                    <Typography gutterBottom>
-                      Total slots: {nodeInfo.slotCount}
-                    </Typography>
-                    <Typography gutterBottom>
-                      Grid version: {nodeInfo.version}
-                    </Typography>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary" variant="outlined">
-                      Close
-                    </Button>
-                  </DialogActions>
-                </Dialog>
+                <OsLogo osName={node.osInfo.name} />
+                <NodeDetailsDialog node={node} />
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography
-                  color="textPrimary"
-                  gutterBottom
-                  variant="h6"
-              >
-                <Box fontWeight="fontWeightBold" mr={1} display='inline'>
-                  Stereotypes
-                </Box>
-              </Typography>
-              <Grid
-                  container
-                  justify="space-between"
-                  spacing={2}
-              >
-                {
-                  Array.from(Array(stereotypeColumns).keys()).map((index) => {
-                    return (
-                        <Grid item xs={columnWidth} key={index}>
-                          {
-                            nodeInfo.slotStereotypes
-                                .slice(index * 3, Math.min((index * 3) + 3, nodeInfo.slotStereotypes.length))
-                                .map((slotStereotype: any, idx) => {
-                                  return (<Typography
-                                      color="textPrimary"
-                                      variant="h6"
-                                      key={idx}
-                                    >
-                                      <img
-                                        src={browserLogo(slotStereotype.stereotype.browserName)}
-                                        className={classes.browserLogo}
-                                        alt="Browser Logo"
-                                      />
-                                      {slotStereotype.slots}
-                                      {
-                                        browserVersion(
-                                          slotStereotype.stereotype.browserVersion ??
-                                          slotStereotype.stereotype.version
-                                        )
-                                      }
-                                    </Typography>
-                                  )
-                                })}
-                        </Grid>
-                    )
-                  })
-                }
-              </Grid>
-              <Grid
-                  container
-                  justify="space-between"
-                  spacing={2}
-              >
-                <Grid item xs={3}
-                >
-                  <Box pt={1} mt={2}>
-                    <Typography
-                        variant="body2"
-                        gutterBottom
-                    >
-                      Sessions: {sessionCount}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={4}>
-                  <Box pt={1} mt={2}>
-                    <Typography
-                        variant="body2"
-                        gutterBottom
-                    >
-                      Max. Concurrency: {props.node.maxSession}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={5}>
-                  <Box pt={1} mt={2}>
-                    <Typography
-                        color="textPrimary"
-                        gutterBottom
-                        variant="caption"
-                    >
-                      {props.node.version}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12}
-                >
-                  <LinearProgressWithLabel value={currentLoad as any}/>
-                </Grid>
-              </Grid>
+              <Stereotypes stereotypes={node.slotStereotypes} />
+            </Grid>
+            <Grid item xs={12}>
+              <NodeLoad node={node} />
             </Grid>
           </Grid>
         </CardContent>
       </Card>
-  );
+    )
+  }
 }
 
-
+export default withStyles(useStyles)(Node)

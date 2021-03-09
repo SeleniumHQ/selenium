@@ -3,7 +3,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
     netty_version = "4.1.58.Final"
-    opentelemetry_version = "0.14.1"
+    opentelemetry_version = "0.16.0"
 
     maven_install(
         artifacts = [
@@ -23,7 +23,6 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service:1.0-rc7",
             "com.google.auto.service:auto-service-annotations:1.0-rc7",
             "com.graphql-java:graphql-java:16.1",
-            "com.typesafe.netty:netty-reactive-streams:2.0.5",
             "io.grpc:grpc-context:1.35.0",
             "io.lettuce:lettuce-core:6.0.2.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
@@ -42,16 +41,14 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-api:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-context:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-exporter-logging:%s" % opentelemetry_version,
-            "io.opentelemetry:opentelemetry-semconv:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-semconv:%s" % opentelemetry_version + "-alpha",
             "io.opentelemetry:opentelemetry-sdk:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk-common:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:0.16.0-alpha",
             "io.opentelemetry:opentelemetry-sdk-testing:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk-trace:%s" % opentelemetry_version,
             "io.ous:jtoml:2.0.0",
             "it.ozimov:embedded-redis:0.7.3",
-            "io.projectreactor:reactor-core:3.4.2",
-            "io.projectreactor.netty:reactor-netty:1.0.3",
-            "io.projectreactor.netty:reactor-netty-http:1.0.3",
             "javax.servlet:javax.servlet-api:4.0.1",
             maven.artifact(
                 group = "junit",
@@ -95,7 +92,6 @@ def selenium_java_deps():
         strict_visibility = True,
         repositories = [
             "https://repo1.maven.org/maven2",
-            "https://jcenter.bintray.com/",
             "https://maven.google.com",
         ],
         maven_install_json = "@selenium//java:maven_install.json",

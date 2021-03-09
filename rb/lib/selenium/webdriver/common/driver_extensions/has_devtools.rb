@@ -29,8 +29,16 @@ module Selenium
         #
 
         def devtools
-          version = Integer(capabilities.browser_version.split('.').first)
-          @devtools ||= DevTools.new(url: debugger_address, version: version)
+          @devtools ||= DevTools.new(url: devtools_url, version: devtools_version)
+        end
+
+        private
+
+        def devtools_url
+          uri = URI("http://#{devtools_debugger_address}")
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
         end
 
       end # HasDevTools

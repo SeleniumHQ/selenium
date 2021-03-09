@@ -100,7 +100,7 @@ py_wheel(
     ],
     description_file = "README.rst",
     distribution = "selenium",
-    homepage = "www.selenium.dev",
+    homepage = "https://www.selenium.dev",
     license = "Apache 2.0",
     python_requires = "~=3.7",
     python_tag = "py3",
@@ -112,7 +112,7 @@ py_wheel(
     strip_path_prefixes = [
         "py",
     ],
-    version = "4.0.0.a7",
+    version = "4.0.0.b1",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium-pkg",
@@ -143,6 +143,7 @@ py_library(
     data = [
         "pytest.ini",
         "setup.cfg",
+        "test/selenium/webdriver/common/test_file.txt"
     ],
     imports = ["."],
     deps = [

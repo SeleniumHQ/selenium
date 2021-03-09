@@ -22,7 +22,7 @@ import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.LEGACY_FIREFOX_XPI;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -44,7 +44,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
-  @Ignore(value = EDGIUM, reason = "Legacy behaviour, not W3C conformant")
+  @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canAcceptUnhandledAlert() {
@@ -54,7 +54,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
-  @Ignore(value = EDGIUM, reason = "Legacy behaviour, not W3C conformant")
+  @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canSilentlyAcceptUnhandledAlert() {
@@ -63,7 +63,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
-  @Ignore(value = EDGIUM, reason = "Unstable Chrome behavior")
+  @Ignore(value = EDGE, reason = "Unstable Chrome behavior")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canDismissUnhandledAlert() {
@@ -73,7 +73,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = LEGACY_FIREFOX_XPI, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
-  @Ignore(value = EDGIUM, reason = "Legacy behaviour, not W3C conformant")
+  @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canSilentlyDismissUnhandledAlert() {
@@ -82,7 +82,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
-  @Ignore(value = EDGIUM, reason = "Edge uses IGNORE mode by default")
+  @Ignore(value = EDGE, reason = "Edge uses IGNORE mode by default")
   @NoDriverBeforeTest
   public void canDismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null", false);
@@ -90,7 +90,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
-  @Ignore(value = EDGIUM, reason = "Unstable Chrome behavior")
+  @Ignore(value = EDGE, reason = "Unstable Chrome behavior")
   @NoDriverBeforeTest
   public void canIgnoreUnhandledAlert() {
     assertThatExceptionOfType(UnhandledAlertException.class).isThrownBy(

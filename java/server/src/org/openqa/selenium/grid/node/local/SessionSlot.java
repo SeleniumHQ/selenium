@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node.local;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
@@ -33,17 +34,19 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.StreamSupport;
 
 public class SessionSlot implements
-    HttpHandler,
-    Function<CreateSessionRequest, Optional<ActiveSession>>,
-    Predicate<Capabilities>  {
+  HttpHandler,
+  Function<CreateSessionRequest, Optional<ActiveSession>>,
+  Predicate<Capabilities> {
 
   private static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
   private final EventBus bus;
@@ -51,6 +54,7 @@ public class SessionSlot implements
   private final Capabilities stereotype;
   private final SessionFactory factory;
   private final AtomicBoolean reserved = new AtomicBoolean(false);
+  private final boolean supportingCdp;
   private ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
@@ -58,6 +62,7 @@ public class SessionSlot implements
     this.id = UUID.randomUUID();
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.factory = Require.nonNull("Session factory", factory);
+    this.supportingCdp = isSlotSupportingCdp(this.stereotype);
   }
 
   public UUID getId() {
@@ -138,5 +143,15 @@ public class SessionSlot implements
       LOG.log(Level.WARNING, "Unable to create session", e);
       return Optional.empty();
     }
+  }
+
+  public boolean isSupportingCdp() {
+    return supportingCdp;
+  }
+
+  private boolean isSlotSupportingCdp(Capabilities stereotype) {
+    return StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+      .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
+      .anyMatch(WebDriverInfo::isSupportingCdp);
   }
 }

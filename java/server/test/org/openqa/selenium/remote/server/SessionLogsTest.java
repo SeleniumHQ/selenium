@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGIUM;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -54,7 +54,7 @@ import java.util.Set;
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(CHROME)
-@Ignore(EDGIUM)
+@Ignore(EDGE)
 @Ignore(SAFARI)
 public class SessionLogsTest extends JUnit4TestBase {
 

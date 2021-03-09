@@ -17,23 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# TODO: Deprecated; Delete after 4.0 release
 module Selenium
   module WebDriver
     module DriverExtensions
       module HasLocation
         def location
-          @bridge.location
+          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting location'
         end
 
-        def location=(loc)
-          raise TypeError, "expected #{Location}, got #{loc.inspect}:#{loc.class}" unless loc.is_a?(Location)
-
-          @bridge.set_location loc.latitude, loc.longitude, loc.altitude
+        def location=(*)
+          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting location'
         end
+        alias_method :set_location, :location
 
-        def set_location(lat, lon, alt)
-          self.location = Location.new(Float(lat), Float(lon), Float(alt))
-        end
       end # HasLocation
     end # DriverExtensions
   end # WebDriver

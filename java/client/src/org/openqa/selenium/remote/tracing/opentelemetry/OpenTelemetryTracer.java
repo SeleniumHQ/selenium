@@ -17,21 +17,62 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
+import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
-import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.autoconfigure.OpenTelemetrySdkAutoConfiguration;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
 
+import java.util.logging.Logger;
+
 public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.Tracer {
+
+  private static final Logger LOG = Logger.getLogger(OpenTelemetryTracer.class.getName());
+
+  // We obtain the underlying tracer instance from the singleton instance
+  // that OpenTelemetry maintains. If we blindly grabbed the tracing provider
+  // and configured it, then subsequent calls would add duplicate exporters.
+  // To avoid this, stash the configured tracer on a static and weep for
+  // humanity. This implies that we're never going to need to configure
+  // tracing more than once for the entire JVM, so we're never going to be
+  // adding unit tests for this.
+  private static volatile OpenTelemetryTracer singleton;
+
+  public static OpenTelemetryTracer getInstance() {
+    OpenTelemetryTracer localTracer = singleton;
+    if (localTracer == null) {
+      synchronized (OpenTelemetryTracer.class) {
+        localTracer = singleton;
+        if (localTracer == null) {
+          localTracer = createTracer();
+          singleton = localTracer;
+        }
+      }
+    }
+    return localTracer;
+  }
+
+  private static OpenTelemetryTracer createTracer() {
+    LOG.info("Using OpenTelemetry for tracing");
+
+    OpenTelemetrySdk autoConfiguredSdk = OpenTelemetrySdkAutoConfiguration.initialize();
+
+    return new OpenTelemetryTracer(
+      autoConfiguredSdk.getTracer("default"),
+      autoConfiguredSdk.getPropagators().getTextMapPropagator());
+  }
+
   private final Tracer tracer;
   private final OpenTelemetryPropagator telemetryPropagator;
 
-  public OpenTelemetryTracer(Tracer tracer, TextMapPropagator textMapPropagator) {
+  public OpenTelemetryTracer(Tracer tracer, TextMapPropagator propagator) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.telemetryPropagator = new OpenTelemetryPropagator(
-        tracer, Require.nonNull("Formatter", textMapPropagator));
+      tracer,
+      Require.nonNull("Formatter", propagator));
   }
 
   @Override

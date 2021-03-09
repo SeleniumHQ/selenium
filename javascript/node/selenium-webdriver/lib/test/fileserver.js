@@ -46,6 +46,7 @@ const Pages = (function () {
 
   addPage('ajaxyPage', 'ajaxy_page.html')
   addPage('alertsPage', 'alerts.html')
+  addPage('basicAuth', 'basicAuth')
   addPage('bodyTypingPage', 'bodyTypingTest.html')
   addPage('booleanAttributes', 'booleanAttributes.html')
   addPage('childPage', 'child/childPage.html')
@@ -135,6 +136,7 @@ app
   .get(Path.PAGE + '/*', sendInifinitePage)
   .get(Path.REDIRECT, redirectToResultPage)
   .get(Path.SLEEP, sendDelayedResponse)
+  .get(Path.BASIC_AUTH, sendBasicAuth)
 
 if (isDevMode()) {
   var closureDir = resources.locate('third_party/closure/goog')
@@ -174,6 +176,31 @@ function sendInifinitePage(request, response) {
     'Content-Type': 'text/html; charset=utf-8',
   })
   response.end(body)
+}
+
+function sendBasicAuth(request, response) {
+  const denyAccess = function () {
+    response.writeHead(401, { 'WWW-Authenticate': 'Basic realm="test"' })
+    response.end('Access denied')
+  }
+
+  const basicAuthRegExp = /^\s*basic\s+([a-z0-9\-._~+/]+)=*\s*$/i
+  const auth = request.headers.authorization
+  const match = basicAuthRegExp.exec(auth || '')
+  if (!match) {
+    denyAccess()
+    return
+  }
+
+  const userNameAndPass = Buffer.from(match[1], 'base64').toString()
+  const parts = userNameAndPass.split(':', 2)
+  if (parts[0] !== 'genie' && parts[1] !== 'bottle') {
+    denyAccess()
+    return
+  }
+
+  response.writeHead(200, { 'content-type': 'text/plain' })
+  response.end('Access granted!')
 }
 
 function sendDelayedResponse(request, response) {

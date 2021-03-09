@@ -20,17 +20,14 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.firefox.GeckoDriverInfo;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -68,7 +65,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -96,11 +92,6 @@ public class NewSessionCreationTest {
 
   @Test
   public void ensureJsCannotCreateANewSession() throws URISyntaxException {
-    ChromeDriverInfo chromeDriverInfo = new ChromeDriverInfo();
-    assumeThat(chromeDriverInfo.isAvailable()).isTrue();
-    GeckoDriverInfo geckoDriverInfo = new GeckoDriverInfo();
-    assumeThat(geckoDriverInfo.isAvailable()).isTrue();
-
     SessionMap sessions = new LocalSessionMap(tracer, events);
     LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
       tracer,
@@ -145,28 +136,28 @@ public class NewSessionCreationTest {
       .build();
     distributor.add(node);
 
-    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
+      // Attempt to create a session with an origin header but content type set
+      HttpResponse res = client.execute(
+        new HttpRequest(POST, "/session")
+          .addHeader("Content-Type", JSON_UTF_8)
+          .addHeader("Origin", "localhost")
+          .setContent(Contents.asJson(ImmutableMap.of(
+            "capabilities", ImmutableMap.of(
+              "alwaysMatch", Browser.detect().getCapabilities())))));
 
-    // Attempt to create a session with an origin header but content type set
-    HttpResponse res = client.execute(
-      new HttpRequest(POST, "/session")
-        .addHeader("Content-Type", JSON_UTF_8)
-        .addHeader("Origin", "localhost")
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "capabilities", ImmutableMap.of(
-            "alwaysMatch", Browser.detect().getCapabilities())))));
+      assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
 
-    assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+      // And now make sure the session is just fine
+      res = client.execute(
+        new HttpRequest(POST, "/session")
+          .addHeader("Content-Type", JSON_UTF_8)
+          .setContent(Contents.asJson(ImmutableMap.of(
+            "capabilities", ImmutableMap.of(
+              "alwaysMatch", Browser.detect().getCapabilities())))));
 
-    // And now make sure the session is just fine
-    res = client.execute(
-      new HttpRequest(POST, "/session")
-        .addHeader("Content-Type", JSON_UTF_8)
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "capabilities", ImmutableMap.of(
-            "alwaysMatch", Browser.detect().getCapabilities())))));
-
-    assertThat(res.isSuccessful()).isTrue();
+      assertThat(res.isSuccessful()).isTrue();
+    }
   }
 
   @Test
@@ -237,9 +228,10 @@ public class NewSessionCreationTest {
         "capabilities", ImmutableMap.of(
           "alwaysMatch", capabilities))));
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
-    HttpResponse httpResponse = client.execute(request);
-    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
+    try (HttpClient client = clientFactory.createClient(server.getUrl())) {
+      HttpResponse httpResponse = client.execute(request);
+      assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
+    }
   }
 
 }

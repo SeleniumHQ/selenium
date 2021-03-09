@@ -45,6 +45,7 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
@@ -209,6 +210,7 @@ public class DefaultSlotSelectorTest {
       count,
       ImmutableSet.copyOf(slots),
       UP,
+      Duration.ofSeconds(10),
       "4.0.0",
       ImmutableMap.of(
         "name", "Max OS X",

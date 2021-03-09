@@ -19,6 +19,9 @@ package org.openqa.selenium.remote.session;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,12 +29,12 @@ public class SafariFilter implements CapabilitiesFilter {
   @Override
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     ImmutableMap<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
-        .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && "safari".equals(entry.getValue())) ||
-                    "safari.options".equals(entry.getKey()))
-        .distinct()
-        .filter(entry -> Objects.nonNull(entry.getValue()))
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+      .filter(entry ->
+                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && BrowserType.SAFARI.equals(entry.getValue())) ||
+                "safari.options".equals(entry.getKey()))
+      .distinct()
+      .filter(entry -> Objects.nonNull(entry.getValue()))
+      .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     return caps.isEmpty() ? null : caps;
   }

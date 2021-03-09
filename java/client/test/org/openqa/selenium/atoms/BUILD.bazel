@@ -18,8 +18,8 @@ java_library(
     name = "lib",
     srcs = ["JavaScriptLoader.java"],
     deps = [
+        artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
-        artifact("org.hamcrest:hamcrest"),
         artifact("junit:junit"),
     ],
 )

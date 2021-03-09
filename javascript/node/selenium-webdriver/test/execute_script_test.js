@@ -116,7 +116,7 @@ suite(function (env) {
         return execute('return [[1, 2, [3]]]').then(verifyJson([[1, 2, [3]]]))
       })
 
-      ignore(env.browsers(Browser.IE)).it(
+      ignore(env.browsers(Browser.INTERNET_EXPLORER)).it(
         'can return empty object literal',
         function () {
           return execute('return {}').then(verifyJson({}))

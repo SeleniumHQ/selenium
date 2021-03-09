@@ -30,12 +30,7 @@ module Selenium
             'User-Agent' => "selenium/#{WebDriver::VERSION} (ruby #{Platform.os})"
           }.freeze
 
-          attr_accessor :timeout
           attr_writer :server_url
-
-          def initialize
-            @timeout = nil
-          end
 
           def quit_errors
             [IOError]

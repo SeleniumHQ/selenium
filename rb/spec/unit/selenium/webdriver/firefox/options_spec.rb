@@ -67,10 +67,20 @@ module Selenium
           end
         end
 
-        describe '#binary=' do
+        describe 'accessors' do
+          it 'adds a command-line argument' do
+            options.args << 'foo'
+            expect(options.args).to eq(['foo'])
+          end
+
           it 'sets the binary path' do
             options.binary = '/foo/bar'
             expect(options.binary).to eq('/foo/bar')
+          end
+
+          it 'adds a preference' do
+            options.prefs[:foo] = 'bar'
+            expect(options.prefs[:foo]).to eq('bar')
           end
         end
 
@@ -94,8 +104,8 @@ module Selenium
             profile = Profile.new
             allow(profile).to receive(:encoded).and_return('encoded_profile')
 
-            allow(Profile).to receive(:from_name).with('foo').and_return(profile)
-            options.profile = 'foo'
+            allow(Profile).to receive(:from_name).with('custom_profile_name').and_return(profile)
+            options.profile = 'custom_profile_name'
             expect(options.profile).to eq(profile)
           end
         end

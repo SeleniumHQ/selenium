@@ -1,3 +1,36 @@
+Selenium 4.0 Beta 1
+
+* Deprecate all but `Options` and `Service` arguments in driver instantiation. (#9125,#9128)
+* Upgrade Bazel rules_python to latest
+* Deprecate w3c checks in python bindings (#9109)
+* Remove legacy WebElement key `ELEMENT` (#9102, #9110)
+* Improve how desired_capabilities and options are merged
+* Use weakreferences for driver in switch and mobile classes (#2425)
+* Fix 'webview2' browser name for Edge py options. (#9090)
+* Add python type hinting
+* Improved alias for Keys (#9076)
+* Improve comment about using importlib_resources
+* Add mozdebugger capability to use CDP Features with Firefox
+* Refactor bidi APIs for logging to be on their own class
+* Make sure we are checking a string for local file detector
+* Add Ignored Exception to wait in Bidi Tests
+* Update tests
+* Adding Github Actions workflow for Python (#9031)
+* Fix WebDriver.start_session docstring to remove incorrect arguments (#9021)
+* Add Mutation Logging support
+* Pin Firefox bidi support to use the generated code for CDP 85
+* Fix handling of generated code put into wheels
+* Modernise the python code around imports and conditionals
+* Support for float types in text fields (#8936)
+* Add print page command to python binding (#8903)
+* Add Chrome v88 to bidi support
+* Fix pytest macro to allow --test_args to pass through
+* Remove thread.join in testing webserver due to chromedriver issue 3654
+* Fix grammar typos in exceptions.py (#8876)
+* Enforce python version in wheel when created. fixes #8863
+* Correct proxy tests
+* Include readme in Wheel so it's rendered on Pypi
+
 Selenium 4.0 Alpha 7
 
 * BREAKING CHANGE: Dropped support for python < 3.7
@@ -811,4 +844,5 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+
 
