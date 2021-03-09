@@ -28,6 +28,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.events.EventBus;
@@ -51,6 +52,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -1190,30 +1192,6 @@ public class DistributorTest {
       System.out.println("*************");
       System.out.println("" + nodes.size());
       nodes.forEach(node -> System.out.println("" + node.hasCapacity()));
-    }
-  }
-
-  private static class EitherAssert<A, B> extends AbstractAssert<EitherAssert<A, B>, Either<A, B>> {
-    public EitherAssert(Either<A, B> actual) {
-      super(actual, EitherAssert.class);
-    }
-
-    public EitherAssert<A, B> isLeft() {
-      isNotNull();
-      if (actual.isRight()) {
-        failWithMessage(
-          "Expected Either to be left but it is right: %s", actual.right());
-      }
-      return this;
-    }
-
-    public EitherAssert<A, B> isRight() {
-      isNotNull();
-      if (actual.isLeft()) {
-        failWithMessage(
-          "Expected Either to be right but it is left: %s", actual.left());
-      }
-      return this;
     }
   }
 
