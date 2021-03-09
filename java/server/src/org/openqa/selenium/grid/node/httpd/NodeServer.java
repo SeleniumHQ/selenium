@@ -199,7 +199,6 @@ public class NodeServer extends TemplateGridServerCommand {
         Executors.newSingleThreadExecutor().submit(() -> {
           Failsafe.with(registrationPolicy).run(
             () -> {
-              LOG.info("Sending registration event...");
               HealthCheck.Result check = node.getHealthCheck().check();
               if (DOWN.equals(check.getAvailability())) {
                 LOG.severe("Node is not alive: " + check.getMessage());
@@ -210,6 +209,7 @@ public class NodeServer extends TemplateGridServerCommand {
               if (nodeRegistered.get()) {
                 throw new InterruptedException("Stopping registration thread.");
               }
+              LOG.info("Sending registration event...");
             }
           );
         });
