@@ -66,7 +66,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     ChromeDriverInfo chromeDriverInfo = new ChromeDriverInfo();
@@ -90,7 +90,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     assertThat(reported).is(supporting("chrome"));
@@ -112,7 +112,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     // There may be more drivers available, but we know that these are meant to be here.
@@ -126,7 +126,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     assertThat(reported).isEmpty();
@@ -144,7 +144,7 @@ public class NodeOptionsTest {
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
         reported.add(caps);
-        return Collections.emptySet();
+        return Collections.singleton(HelperFactory.create(config, caps));
       });
       fail("Should have not executed 'getSessionFactories' successfully");
     } catch (ConfigException e) {
@@ -161,7 +161,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, caps));
     });
 
     assertThat(reported).isNotEmpty();
@@ -221,7 +221,7 @@ public class NodeOptionsTest {
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(capabilities -> {
       reported.add(capabilities);
-      return Collections.emptySet();
+      return Collections.singleton(HelperFactory.create(config, capabilities));
     });
 
     assertThat(reported).is(supporting("chrome"));
@@ -269,7 +269,7 @@ public class NodeOptionsTest {
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
         reported.add(caps);
-        return Collections.emptySet();
+        return Collections.singleton(HelperFactory.create(config, caps));
       });
       fail("Should have not executed 'getSessionFactories' successfully because driver config " +
            "needs the stereotype field");
@@ -288,7 +288,6 @@ public class NodeOptionsTest {
   }
 
   public static class HelperFactory {
-
     public static SessionFactory create(Config config, Capabilities caps) {
       return new SessionFactory() {
         @Override
