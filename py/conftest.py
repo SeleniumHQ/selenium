@@ -31,15 +31,15 @@ from test.selenium.webdriver.common.network import get_lan_ip
 from urllib.request import urlopen
 
 drivers = (
-    'Chrome',
-    'Edge',
-    'Firefox',
-    'Ie',
-    'Remote',
-    'Safari',
-    'WebKitGTK',
-    'ChromiumEdge',
-    'WPEWebKit',
+    'chrome',
+    'edge',
+    'firefox',
+    'ie',
+    'remote',
+    'safari',
+    'webkitgtk',
+    'chromiumedge',
+    'wpewebkit',
 )
 
 
@@ -74,7 +74,7 @@ def driver(request):
     kwargs = {}
 
     try:
-        driver_class = request.param
+        driver_class = request.param.capitalize()
     except AttributeError:
         raise Exception('This test requires a --driver to be specified.')
 
@@ -130,6 +130,9 @@ def driver(request):
             kwargs['executable_path'] = driver_path
         if options is not None:
             kwargs['options'] = options
+
+        print(f"The driver class is {driver_class}")
+        print(f"The kwargs is {kwargs}")
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
 
