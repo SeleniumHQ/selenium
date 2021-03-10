@@ -44,8 +44,9 @@ import java.util.Set;
 public class NodeFlags implements HasRoles {
 
   @Parameter(
-    names = "--max-sessions. Default value is the number of available processors.",
-    description = "Maximum number of concurrent sessions.")
+    names = {"--max-sessions"},
+    description = "Maximum number of concurrent sessions. Default value is the number "
+                  + "of available processors.")
   @ConfigValue(section = NODE_SECTION, name = "max-sessions", example = "8")
   public int maxSessions = DEFAULT_MAX_SESSIONS;
 
