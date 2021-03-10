@@ -3,6 +3,7 @@ load("@rules_python//experimental/python:wheel.bzl", "py_package", "py_wheel")
 load("@dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
+load("//py/private:browsers.bzl", "BROWSERS")
 
 BROWSER_VERSIONS = [
     "v85",
@@ -143,7 +144,7 @@ py_library(
     data = [
         "pytest.ini",
         "setup.cfg",
-        "test/selenium/webdriver/common/test_file.txt"
+        "test/selenium/webdriver/common/test_file.txt",
     ],
     imports = ["."],
     deps = [
@@ -215,6 +216,50 @@ py_library(
     ],
     deps = [],
 )
+
+[
+    py_test_suite(
+        name = "auto-%s" % browser,
+        size = "large",
+        srcs = glob(
+            [
+                "test/selenium/webdriver/common/**/*.py",
+                "test/selenium/webdriver/support/**/*.py",
+            ],
+            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
+        ),
+        args = [
+            "--instafail",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        tags = [
+            "no-sandbox",
+        ] + BROWSERS[browser]["tags"],
+        deps = [
+            ":init-tree",
+            ":selenium",
+            ":webserver",
+            requirement("attrs"),
+            requirement("debugpy"),
+            requirement("idna"),
+            requirement("iniconfig"),
+            requirement("importlib_metadata"),
+            requirement("h11"),
+            requirement("more_itertools"),
+            requirement("multidict"),
+            requirement("outcome"),
+            requirement("pluggy"),
+            requirement("py"),
+            requirement("pytest"),
+            requirement("pytest-instafail"),
+            requirement("pytest-trio"),
+            requirement("sortedcontainers"),
+            requirement("sniffio"),
+            requirement("zipp"),
+        ],
+    )
+    for browser in BROWSERS.keys()
+]
 
 py_test_suite(
     name = "test-chrome",
