@@ -60,6 +60,7 @@ public class NodeOptions {
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final int DEFAULT_HEARTBEAT_PERIOD = 60;
   static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
+  static final int DEFAULT_SESSION_TIMEOUT = 300;
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
 
@@ -135,6 +136,14 @@ public class NodeOptions {
     return Math.min(
       config.getInt(NODE_SECTION, "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
       DEFAULT_MAX_SESSIONS);
+  }
+
+  public Duration getSessionTimeout() {
+    // If the user sets 0 or less, we default to 10s.
+    int seconds = Math.max(
+      config.getInt(NODE_SECTION, "session-timeout").orElse(DEFAULT_SESSION_TIMEOUT),
+      10);
+    return Duration.ofSeconds(seconds);
   }
 
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities,
