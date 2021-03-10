@@ -49,15 +49,13 @@ RSpec.configure do |c|
   c.filter_run focus: true if ENV['focus']
 
   c.before do |example|
-    guards = WebDriver::Support::Guards.new(example)
+    guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
+    guards.add_condition(:driver) { |guarded| guarded.include?(GlobalTestEnv.driver) }
+    guards.add_condition(:browser) { |guarded| guarded.include?(GlobalTestEnv.browser) }
+    guards.add_condition(:platform) { |guarded| guarded.include?(WebDriver::Platform.os) }
+    guards.add_condition(:window_manager) { |bool| bool.first == !WebDriver::Platform.linux? || !!ENV['DESKTOP_SESSION'] }
 
-    skip_guard = guards.exclusive.unsatisfied.first || guards.exclude.satisfied.first
-    skip skip_guard.message if skip_guard
-
-    matching_guard = guards.except.satisfied.first || guards.only.unsatisfied.first
-    if matching_guard
-      ENV['SKIP_PENDING'] ? skip(matching_guard.message) : pending(matching_guard.message)
-    end
+    guards.disposition.tap { |results| send(*results) if results }
   end
 
   c.after do |example|

@@ -17,10 +17,32 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'pathname'
-require 'selenium/server'
-require_relative 'spec_support/test_environment'
-require 'selenium/webdriver/support/guards'
-require_relative 'spec_support/helpers'
-require_relative 'spec_support/rack_server'
-require_relative 'spec_support/shared_examples/concurrent_driver'
+module Selenium
+  module WebDriver
+    module Support
+      class Guards
+
+        #
+        # Guard derived from RSpec example metadata.
+        # @api private
+        #
+
+        class GuardCondition
+          attr_accessor :name, :execution
+
+          def initialize(name, condition = nil, &blk)
+            @name = name
+            @execution = proc(&blk)
+          end
+
+          def satisfied?(guard)
+            list = Array(guard.guarded[@name])
+
+            list.empty? || @execution.call(list)
+          end
+
+        end # GuardCondition
+      end # Guards
+    end # Support
+  end # WebDriver
+end # Selenium

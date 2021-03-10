@@ -17,47 +17,46 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'guards/guard_condition'
+require_relative 'guards/guard'
+
 module Selenium
   module WebDriver
     module Support
       class Guards
-        include Enumerable
-
-        MESSAGES = {unk: 'TODO: Investigate why this is failing and file bug'}.freeze
-
         GUARD_TYPES = %i[except only exclude exclusive].freeze
 
-        def initialize(example, guards = nil)
+        attr_reader :messages
+        attr_accessor :bug_tracker
+
+        def initialize(example, bug_tracker: '', conditions: nil)
           @example = example
-          @guards = guards || collect_example_guards
+          @bug_tracker = bug_tracker
+          @guard_conditions = conditions || []
+          @guards = collect_example_guards
+          @messages = {}
         end
 
-        def each(&block)
-          @guards.each(&block)
+        def add_condition(name, &blk)
+          @guard_conditions << GuardCondition.new(name, &blk)
         end
 
-        def except
-          self.class.new(@example, @guards.select(&:except?))
+        def add_message(name, message)
+          @messages[name] = message
         end
 
-        def only
-          self.class.new(@example, @guards.select(&:only?))
+        def disposition
+          if !skipping_guard.nil?
+            [:skip, skipping_guard.message]
+          elsif !pending_guard.nil? && ENV['SKIP_PENDING']
+            [:skip, pending_guard.message]
+          elsif !pending_guard.nil?
+            [:pending, pending_guard.message]
+          end
         end
 
-        def exclude
-          self.class.new(@example, @guards.select(&:exclude?))
-        end
-
-        def exclusive
-          self.class.new(@example, @guards.select(&:exclusive?))
-        end
-
-        def satisfied
-          self.class.new(@example, @guards.select(&:satisfied?))
-        end
-
-        def unsatisfied
-          self.class.new(@example, @guards.reject(&:satisfied?))
+        def satisfied?(guard)
+          @guard_conditions.all? { |condition| condition.satisfied?(guard) }
         end
 
         private
@@ -74,11 +73,21 @@ module Selenium
             end
 
             example_guards.flatten.uniq.compact.each do |example_guard|
-              guards << Guard.new(example_guard, guard_type)
+              guards << Guard.new(example_guard, guard_type, self)
             end
           end
 
           guards
+        end
+
+        def skipping_guard
+          @guards.select(&:exclusive?).find { |guard| !satisfied?(guard) } ||
+            @guards.select(&:exclude?).find { |guard| satisfied?(guard) }
+        end
+
+        def pending_guard
+          @guards.select(&:except?).find { |guard| satisfied?(guard) } ||
+            @guards.select(&:only?).find { |guard| !satisfied?(guard) }
         end
       end # Guards
     end # Support

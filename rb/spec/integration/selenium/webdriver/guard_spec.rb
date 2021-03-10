@@ -106,13 +106,18 @@ module Selenium
         end
 
         it 'Creates message from Integer' do
-          guard = Guards::Guard.new({reason: 1}, :except)
-          expect(guard.message).to eq 'Test guarded; Bug Filed: https://github.com/SeleniumHQ/selenium/issues/1'
+          bug_tracker = 'https://github.com/SeleniumHQ/selenium/issues'
+          guards = instance_double(Guards, bug_tracker: bug_tracker, messages: {})
+
+          guard = Guards::Guard.new({reason: 1}, :except, guards)
+          expect(guard.message).to eq "Test guarded; Bug Filed: #{bug_tracker}/1"
         end
 
         it 'Creates message from Symbol' do
-          guard = Guards::Guard.new({reason: :unk}, :except)
-          expect(guard.message).to eq 'Test guarded; TODO: Investigate why this is failing and file bug'
+          guards = instance_double(Guards, bug_tracker: '', messages: {})
+
+          guard = Guards::Guard.new({reason: :unknown}, :except, guards)
+          expect(guard.message).to eq 'Test guarded; TODO: Investigate why this is failing and file a bug report'
         end
 
         it 'Creates message from String' do
