@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Edge
     /// </summary>
     public sealed class EdgeDriverService : ChromiumDriverService
     {
-        private const string MicrosoftWebDriverServiceFileName = "MicrosoftWebDriver.exe";
+        private const string MicrosoftWebDriverServiceFileName = "msedgedriver.exe";
         private const string MSEdgeDriverServiceFileName = "msedgedriver";
 
         private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
