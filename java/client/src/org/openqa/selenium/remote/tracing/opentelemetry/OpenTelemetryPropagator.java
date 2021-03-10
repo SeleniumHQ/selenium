@@ -18,9 +18,11 @@
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
 import io.opentelemetry.context.Context;
+import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.context.propagation.TextMapSetter;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
@@ -44,7 +46,7 @@ class OpenTelemetryPropagator implements Propagator {
     Require.nonNull("Setter", setter);
     Require.argument("Trace context", toInject).instanceOf(OpenTelemetryContext.class);
 
-    TextMapPropagator.Setter<C> propagatorSetter = setter::set;
+    TextMapSetter<C> propagatorSetter = setter::set;
 
     httpTextFormat.inject(((OpenTelemetryContext) toInject).getContext(), carrier, propagatorSetter);
   }
@@ -57,7 +59,7 @@ class OpenTelemetryPropagator implements Propagator {
     Require.nonNull("Getter", getter);
     Require.argument("Trace context", existing).instanceOf(OpenTelemetryContext.class);
 
-    TextMapPropagator.Getter<C> propagatorGetter = new TextMapPropagator.Getter<C>() {
+    TextMapGetter<C> propagatorGetter = new TextMapGetter<C>() {
 
       @Override
       public Iterable<String> keys(C carrier) {

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.assertj.core.api.AbstractAssert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.events.EventBus;
@@ -35,6 +37,7 @@ import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeHeartBeatEvent;
 import org.openqa.selenium.grid.data.NodeRemovedEvent;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
@@ -49,6 +52,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueuer;
+import org.openqa.selenium.grid.testing.EitherAssert;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -81,6 +85,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -146,6 +151,56 @@ public class DistributorTest {
         local.newSession(createRequest(payload));
       assertThatEither(result).isLeft();
     }
+  }
+
+  @Test
+  public void shouldStartHeartBeatOnNodeRegistration() {
+    EventBus bus = new GuavaEventBus();
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    LocalNewSessionQueue localNewSessionQueue = new LocalNewSessionQueue(
+      tracer,
+      bus,
+      Duration.ofSeconds(2),
+      Duration.ofSeconds(2));
+    LocalNewSessionQueuer queuer = new LocalNewSessionQueuer(
+      tracer,
+      bus,
+      localNewSessionQueue,
+      registrationSecret);
+    LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
+      .add(
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .build();
+
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      new PassthroughHttpClient.Factory(node),
+      sessions,
+      queuer,
+      registrationSecret);
+    distributor.add(node);
+
+    AtomicBoolean heartbeatStarted = new AtomicBoolean();
+    CountDownLatch latch = new CountDownLatch(1);
+
+    bus.addListener(NodeHeartBeatEvent.listener(nodeId -> {
+      latch.countDown();
+      if (node.getId().equals(nodeId)) {
+        heartbeatStarted.set(true);
+      }
+    }));
+    waitToHaveCapacity(distributor);
+    boolean eventFired = false;
+    try {
+      eventFired = latch.await(30, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      Assert.fail("Thread Interrupted");
+    }
+
+    assertThat(eventFired).isTrue();
+    assertThat(heartbeatStarted).isTrue();
   }
 
   @Test
@@ -1137,30 +1192,6 @@ public class DistributorTest {
       System.out.println("*************");
       System.out.println("" + nodes.size());
       nodes.forEach(node -> System.out.println("" + node.hasCapacity()));
-    }
-  }
-
-  private static class EitherAssert<A, B> extends AbstractAssert<EitherAssert<A, B>, Either<A, B>> {
-    public EitherAssert(Either<A, B> actual) {
-      super(actual, EitherAssert.class);
-    }
-
-    public EitherAssert<A, B> isLeft() {
-      isNotNull();
-      if (actual.isRight()) {
-        failWithMessage(
-          "Expected Either to be left but it is right: %s", actual.right());
-      }
-      return this;
-    }
-
-    public EitherAssert<A, B> isRight() {
-      isNotNull();
-      if (actual.isLeft()) {
-        failWithMessage(
-          "Expected Either to be right but it is left: %s", actual.left());
-      }
-      return this;
     }
   }
 

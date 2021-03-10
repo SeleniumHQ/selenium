@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -123,9 +124,9 @@ public class NodeOptions {
       ImmutableMultimap.builder();
 
     addDriverFactoriesFromConfig(sessionFactories);
+    addDriverConfigs(factoryFactory, sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
-    addDriverConfigs(factoryFactory, sessionFactories);
 
     return sessionFactories.build().asMap();
   }
@@ -277,13 +278,22 @@ public class NodeOptions {
       .forEach(
         entry ->
           sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+
+    if (sessionFactories.build().size() == 0) {
+      String logMessage = "No drivers have been configured or have been found on PATH";
+      LOG.warning(logMessage);
+      throw new ConfigException(logMessage);
+    }
   }
 
   private void addSpecificDrivers(
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS) &&
-        config.getAll(NODE_SECTION, "driver-implementation").isPresent()) {
+    if (!config.getAll(NODE_SECTION, "driver-implementation").isPresent()) {
+      return;
+    }
+
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       String logMessage = "Specific drivers cannot be added if 'detect-drivers' is set to false";
       LOG.warning(logMessage);
       throw new ConfigException(logMessage);
@@ -292,8 +302,24 @@ public class NodeOptions {
     List<String> drivers = config.getAll(NODE_SECTION, "driver-implementation")
       .orElse(new ArrayList<>())
       .stream()
+      .distinct()
       .map(String::toLowerCase)
+      .peek(driver -> {
+        boolean noneMatch = allDrivers
+          .entrySet()
+          .stream()
+          .noneMatch(entry -> entry.getKey().getDisplayName().equalsIgnoreCase(driver));
+        if (noneMatch) {
+          LOG.log(Level.WARNING, "Could not find {0} driver on PATH.", driver);
+        }
+      })
       .collect(Collectors.toList());
+
+    allDrivers.entrySet().stream()
+      .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
+      .findFirst()
+      .orElseThrow(() ->
+                     new ConfigException("No drivers were found for %s", drivers.toString()));
 
     allDrivers.entrySet().stream()
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
@@ -317,6 +343,8 @@ public class NodeOptions {
         .filter(WebDriverInfo::isAvailable)
         .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
         .collect(Collectors.toList());
+
+    LOG.log(Level.INFO,"Discovered {0} driver(s)", infos.size());
 
     // Same
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
