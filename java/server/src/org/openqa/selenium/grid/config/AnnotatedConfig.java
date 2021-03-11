@@ -22,6 +22,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.primitives.Primitives;
 
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.internal.Require;
 
 import java.lang.reflect.Field;
@@ -75,7 +77,10 @@ public class AnnotatedConfig implements Config {
       }
 
       ConfigValue annotation = field.getAnnotation(ConfigValue.class);
-      if (cliArgs.size() > 0 && !cliArgs.contains(annotation.name())) {
+      Parameter cliAnnotation = field.getAnnotation(Parameter.class);
+      boolean containsCliArg = cliAnnotation != null &&
+                               Arrays.stream(cliAnnotation.names()).anyMatch(cliArgs::contains);
+      if (cliArgs.size() > 0 && !containsCliArg) {
         // Only getting config values for args entered by the user.
         continue;
       }

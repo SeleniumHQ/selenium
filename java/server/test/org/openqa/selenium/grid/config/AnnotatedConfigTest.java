@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import com.beust.jcommander.Parameter;
+
 import org.junit.Test;
 
 import java.util.List;
@@ -157,17 +159,22 @@ public class AnnotatedConfigTest {
   public void shouldUseSetToFilterFields() {
     class TypesToBeFiltered {
 
-      @ConfigValue(section = "types", name = "bool", example = "false")
+      @Parameter(names = {"--bool"})
+      @ConfigValue(section = "types", name = "boolean", example = "false")
       private final boolean boolField = true;
+      @Parameter(names = {"--string"})
       @ConfigValue(section = "types", name = "string", example = "N/A")
       private final String stringField = "A String";
-      @ConfigValue(section = "types", name = "int", example = "0")
+      @Parameter(names = {"--int"})
+      @ConfigValue(section = "types", name = "integer", example = "0")
       private final int intField = 42;
     }
 
-    Config config = new AnnotatedConfig(new TypesToBeFiltered(), ImmutableSet.of("string", "bool"));
-    assertEquals(Optional.of(true), config.getBool("types", "bool"));
+    Config config = new AnnotatedConfig(
+      new TypesToBeFiltered(),
+      ImmutableSet.of("--string", "--bool"));
+    assertEquals(Optional.of(true), config.getBool("types", "boolean"));
     assertEquals(Optional.of("A String"), config.get("types", "string"));
-    assertEquals(Optional.empty(), config.getInt("types", "int"));
+    assertEquals(Optional.empty(), config.getInt("types", "integer"));
   }
 }
