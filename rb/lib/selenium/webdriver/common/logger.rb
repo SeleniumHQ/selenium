@@ -108,10 +108,11 @@ module Selenium
       #
       # @param [String] old
       # @param [String, nil] new
-      # @param [Symbol, Array<Sybmol>] id
+      # @param [Symbol, Array<Symbol>] id
+      # @param [String] reference
       # @yield appends additional message to end of provided template
       #
-      def deprecate(old, new = nil, id: [], &block)
+      def deprecate(old, new = nil, id: [], reference: '', &block)
         id = Array(id)
         return if @ignored.include?(:deprecations) || (@ignored & id).any?
 
@@ -123,6 +124,8 @@ module Selenium
                    else
                      ' and will be removed in a future release.'
                    end
+        message << " See explanation for this deprecation: #{reference}." unless reference.empty?
+
         warn message, &block
       end
 

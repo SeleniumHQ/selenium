@@ -57,9 +57,7 @@ BROWSERS = {
     },
 }
 
-def selenium_test(name, test_class, size = "medium", browsers = None, **kwargs):
-    if browsers == None:
-        browsers = BROWSERS.keys()
+def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() , **kwargs):
 
     if len(browsers) == 0:
         fail("At least one browser must be specified.")

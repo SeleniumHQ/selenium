@@ -185,11 +185,11 @@ class WebDriver(BaseWebDriver):
         self.caps = {}
         self.pinned_scripts = {}
         self.error_handler = ErrorHandler()
-        self.start_client()
-        self.start_session(capabilities, browser_profile)
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
         self.file_detector = file_detector or LocalFileDetector()
+        self.start_client()
+        self.start_session(capabilities, browser_profile)
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
