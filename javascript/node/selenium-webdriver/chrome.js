@@ -284,6 +284,7 @@ function getDefaultService() {
 Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'
 Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
 Driver.getDefaultService = getDefaultService
+Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
 exports.Driver = Driver

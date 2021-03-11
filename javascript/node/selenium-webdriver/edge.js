@@ -212,6 +212,7 @@ function locateSynchronously() {
 
 Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
 Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions'
+Driver.prototype.VENDOR_CAPABILITY_PREFIX = 'ms'
 
 // PUBLIC API
 
