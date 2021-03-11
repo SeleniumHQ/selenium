@@ -33,8 +33,8 @@ class WebDriver(ChromiumDriver):
     https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
     """
 
-    def __init__(self, executable_path='MicrosoftWebDriver.exe', port=DEFAULT_PORT,
-                 options: Options = None, service_args=None,
+    def __init__(self, executable_path='msedgedriver', port=DEFAULT_PORT,
+                 options: Options = Options(), service_args=None,
                  capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  service: Service = None, keep_alive=False, verbose=False):
         """
@@ -52,7 +52,7 @@ class WebDriver(ChromiumDriver):
          - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
          - verbose - whether to set verbose logging in the service.
          """
-        if executable_path != 'MicrosoftWebDriver.exe':
+        if executable_path != 'msedgedriver':
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 

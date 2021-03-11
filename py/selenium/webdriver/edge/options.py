@@ -24,7 +24,7 @@ class Options(ChromiumOptions):
 
     def __init__(self):
         super(Options, self).__init__()
-        self._use_chromium = False
+        self._use_chromium = True
         self._use_webview = False
 
     @property
