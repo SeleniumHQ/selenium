@@ -52,10 +52,10 @@ public class NodeFlags implements HasRoles {
   public int maxSessions = DEFAULT_MAX_SESSIONS;
 
   @Parameter(
-    names = {"--timeout","--session-timeout"},
-    description = "Let X be the session-timeout in seconds. " +
-      "The Node will automatically kill a session that has not had any activity in the last X seconds." +
-      "This will release the slot for other tests.")
+    names = {"--session-timeout"},
+    description = "Let X be the session-timeout in seconds. The Node will automatically kill "
+                  + "a session that has not had any activity in the last X seconds. " +
+                  "This will release the slot for other tests.")
   @ConfigValue(section = NODE_SECTION, name = "session-timeout", example = "60")
   public int sessionTimeout = DEFAULT_SESSION_TIMEOUT;
 

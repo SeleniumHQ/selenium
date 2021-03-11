@@ -65,6 +65,7 @@ import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -553,11 +554,11 @@ public class LocalNode extends Node {
     private final URI gridUri;
     private final Secret registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
-    private int maxCount = Runtime.getRuntime().availableProcessors();
+    private int maxCount = NodeOptions.DEFAULT_MAX_SESSIONS;
     private Ticker ticker = Ticker.systemTicker();
-    private Duration sessionTimeout = Duration.ofMinutes(5);
+    private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
-    private Duration heartbeatPeriod = Duration.ofSeconds(10);
+    private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
 
     private Builder(
       Tracer tracer,
