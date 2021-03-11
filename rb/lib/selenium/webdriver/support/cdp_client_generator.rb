@@ -77,7 +77,11 @@ module Selenium
         end
 
         def require_file
-          require_all = "Dir.glob('#{@version}/devtools/*', &method(:require))"
+          # rubocop:disable Lint/InterpolationCheck
+          dynamic_location = '#{File.dirname(File.absolute_path(__FILE__))}'
+          # rubocop:enable Lint/InterpolationCheck
+
+          require_all = "Dir.glob(\"#{dynamic_location}/#{@version}/*\", &method(:require))"
           File.open("#{@output_dir}/#{@version}.rb", 'w') { |file| file.write(require_all) }
         end
       end

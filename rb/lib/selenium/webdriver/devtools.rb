@@ -25,14 +25,11 @@ module Selenium
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
       autoload :Request, 'selenium/webdriver/devtools/request'
 
-      SUPPORTED_VERSIONS = [85, 86, 87, 88].freeze
-
-      def initialize(url:, version:)
+      def initialize(url:)
         @messages = []
         @session_id = nil
         @url = url
 
-        load_devtools_version(version)
         process_handshake
         attach_socket_listener
         start_session
@@ -61,15 +58,25 @@ module Selenium
         message
       end
 
-      private
+      def method_missing(method, *_args)
+        desired_class = "Selenium::DevTools::V89::#{method.capitalize}"
+        return unless Object.const_defined?(desired_class)
 
-      def load_devtools_version(version)
-        closest_version = SUPPORTED_VERSIONS.min_by { |v| (version - v).abs }
-        WebDriver.logger.info("Loading DevTools::V#{closest_version} for #{version}.")
-        Dir["#{__dir__}/devtools/v#{closest_version}/*"].sort.each do |f|
-          require f
+        self.class.class_eval do
+          define_method(method) do
+            Object.const_get(desired_class).new(self)
+          end
         end
+
+        send(method)
       end
+
+      def respond_to_missing?(method, *_args)
+        desired_class = "Selenium::DevTools::#{method.capitalize}"
+        Object.const_defined?(desired_class)
+      end
+
+      private
 
       def process_handshake
         socket.print(ws.to_s)
