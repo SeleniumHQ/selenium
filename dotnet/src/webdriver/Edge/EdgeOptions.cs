@@ -76,6 +76,7 @@ namespace OpenQA.Selenium.Edge
             this.AddKnownCapabilityName(UseInPrivateBrowsingCapability, "UseInPrivateBrowsing property");
             this.AddKnownCapabilityName(StartPageCapability, "StartPage property");
             this.AddKnownCapabilityName(ExtensionPathsCapability, "AddExtensionPaths method");
+            this.UseChromium = true;
         }
 
         /// <summary>
