@@ -23,6 +23,7 @@ import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_HEARTBEAT
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_MAX_SESSIONS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
 
 import com.google.auto.service.AutoService;
@@ -49,6 +50,14 @@ public class NodeFlags implements HasRoles {
                   + "of available processors.")
   @ConfigValue(section = NODE_SECTION, name = "max-sessions", example = "8")
   public int maxSessions = DEFAULT_MAX_SESSIONS;
+
+  @Parameter(
+    names = {"--timeout","--session-timeout"},
+    description = "Let X be the session-timeout in seconds. " +
+      "The Node will automatically kill a session that has not had any activity in the last X seconds." +
+      "This will release the slot for other tests.")
+  @ConfigValue(section = NODE_SECTION, name = "session-timeout", example = "60")
+  public int sessionTimeout = DEFAULT_SESSION_TIMEOUT;
 
   @Parameter(
     names = {"--detect-drivers"}, arity = 1,
