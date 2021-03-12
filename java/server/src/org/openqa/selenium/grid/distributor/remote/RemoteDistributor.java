@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -29,6 +30,7 @@ import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.sessionmap.NullSessionMap;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -40,7 +42,6 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.Contents.asJson;
@@ -129,7 +130,7 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  protected Supplier<CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request) {
+  protected Either<SessionNotCreatedException, CreateSessionResponse> reserve(SlotId slot, CreateSessionRequest request) {
     throw new UnsupportedOperationException("reserve is not required for remote sessions");
   }
 }

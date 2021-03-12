@@ -92,7 +92,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -330,7 +329,7 @@ public class LocalDistributor extends Distributor {
   }
 
   @Override
-  protected Supplier<CreateSessionResponse> reserve(SlotId slotId, CreateSessionRequest request) {
+  protected Either<SessionNotCreatedException, CreateSessionResponse> reserve(SlotId slotId, CreateSessionRequest request) {
     Require.nonNull("Slot ID", slotId);
     Require.nonNull("New Session request", request);
 
@@ -339,25 +338,27 @@ public class LocalDistributor extends Distributor {
     try {
       Node node = nodes.get(slotId.getOwningNodeId());
       if (node == null) {
-        return () -> {
-          throw new RetrySessionRequestException("Unable to find node. Try a different node");
-        };
+        return Either.left(new RetrySessionRequestException(
+          "Unable to find node. Try a different node"));
       }
 
       model.reserve(slotId);
 
-      return () -> {
-        Either<WebDriverException, CreateSessionResponse> response = node.newSession(request);
+      Either<WebDriverException, CreateSessionResponse> response = node.newSession(request);
 
-        if (response.isLeft()) {
-          model.setSession(slotId, null);
-          throw response.left();
-        }
-
+      if (response.isRight()) {
         model.setSession(slotId, response.right().getSession());
+        return Either.right(response.right());
+      } else {
+        model.setSession(slotId, null);
 
-        return response.right();
-      };
+        WebDriverException exception = response.left();
+        if (exception instanceof RetrySessionRequestException) {
+          return Either.left(new RetrySessionRequestException(exception.getMessage()));
+        } else {
+          return Either.left(new SessionNotCreatedException(exception.getMessage()));
+        }
+      }
 
     } finally {
       writeLock.unlock();
