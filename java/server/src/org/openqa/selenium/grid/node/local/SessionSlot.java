@@ -37,7 +37,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -136,17 +135,18 @@ public class SessionSlot implements
     }
 
     if (!test(sessionRequest.getCapabilities())) {
-      return Either.left(new SessionNotCreatedException("New session request capabilities does match the stereotype."));
+      return Either.left(new SessionNotCreatedException("New session request capabilities do not "
+                                                        + "match the stereotype."));
     }
 
     try {
-      Optional<ActiveSession> possibleSession = factory.apply(sessionRequest);
-      if(possibleSession.isPresent()) {
-        ActiveSession session = possibleSession.get();
+      Either<WebDriverException, ActiveSession> possibleSession = factory.apply(sessionRequest);
+      if (possibleSession.isRight()) {
+        ActiveSession session = possibleSession.right();
         currentSession = session;
         return Either.right(session);
       } else {
-        return Either.left(new SessionNotCreatedException("Error while creating session with the driver service."));
+        return Either.left(possibleSession.left());
       }
     } catch (Exception e) {
       LOG.log(Level.WARNING, "Unable to create session", e);
