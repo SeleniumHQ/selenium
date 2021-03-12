@@ -303,7 +303,7 @@ public class LocalNode extends Node {
 
       // Identify possible slots to use as quickly as possible to enable concurrent session starting
       SessionSlot slotToUse = null;
-      synchronized(factories) {
+      synchronized (factories) {
         for (SessionSlot factory : factories) {
           if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
             continue;
@@ -323,36 +323,35 @@ public class LocalNode extends Node {
           new RetrySessionRequestException("No slot matched the requested capabilities. All slots are busy."));
       }
 
-      Optional<ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
+      Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
 
-      if (!possibleSession.isPresent()) {
+      if (possibleSession.isRight()) {
+        ActiveSession session = possibleSession.right();
+        currentSessions.put(session.getId(), slotToUse);
+
+        SessionId sessionId = session.getId();
+        Capabilities caps = session.getCapabilities();
+        SESSION_ID.accept(span, sessionId);
+        CAPABILITIES.accept(span, caps);
+        String downstream = session.getDownstreamDialect().toString();
+        String upstream = session.getUpstreamDialect().toString();
+        String sessionUri = session.getUri().toString();
+        span.setAttribute(AttributeKey.DOWNSTREAM_DIALECT.getKey(), downstream);
+        span.setAttribute(AttributeKey.UPSTREAM_DIALECT.getKey(), upstream);
+        span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
+
+        // The session we return has to look like it came from the node, since we might be dealing
+        // with a webdriver implementation that only accepts connections from localhost
+        Session externalSession = createExternalSession(session, externalUri, slotToUse.isSupportingCdp());
+        return Either.right(new CreateSessionResponse(
+          externalSession,
+          getEncoder(session.getDownstreamDialect()).apply(externalSession)));
+      } else {
         slotToUse.release();
         span.setAttribute("error", true);
-        span.setStatus(Status.NOT_FOUND);
         span.addEvent("Unable to create session with the driver", attributeMap);
-        return Either.left(new SessionNotCreatedException("Unable to create session with the driver"));
+        return Either.left(possibleSession.left());
       }
-
-      ActiveSession session = possibleSession.get();
-      currentSessions.put(session.getId(), slotToUse);
-
-      SessionId sessionId = session.getId();
-      Capabilities caps = session.getCapabilities();
-      SESSION_ID.accept(span, sessionId);
-      CAPABILITIES.accept(span, caps);
-      String downstream = session.getDownstreamDialect().toString();
-      String upstream = session.getUpstreamDialect().toString();
-      String sessionUri = session.getUri().toString();
-      span.setAttribute(AttributeKey.DOWNSTREAM_DIALECT.getKey(), downstream);
-      span.setAttribute(AttributeKey.UPSTREAM_DIALECT.getKey(), upstream);
-      span.setAttribute(AttributeKey.SESSION_URI.getKey(), sessionUri);
-
-      // The session we return has to look like it came from the node, since we might be dealing
-      // with a webdriver implementation that only accepts connections from localhost
-      Session externalSession = createExternalSession(session, externalUri, slotToUse.isSupportingCdp());
-      return Either.right(new CreateSessionResponse(
-        externalSession,
-        getEncoder(session.getDownstreamDialect()).apply(externalSession)));
     }
   }
 
