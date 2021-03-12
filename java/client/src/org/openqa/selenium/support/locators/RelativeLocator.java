@@ -72,6 +72,7 @@ public class RelativeLocator {
 
   private static final Json JSON = new Json();
   private static final String FIND_ELEMENTS;
+
   static {
     try {
       String location = String.format(
@@ -87,6 +88,7 @@ public class RelativeLocator {
       throw new UncheckedIOException(e);
     }
   }
+
   private static final int CLOSE_IN_PIXELS = 100;
 
   /**
@@ -95,6 +97,16 @@ public class RelativeLocator {
   public static RelativeBy withTagName(String tagName) {
     Require.nonNull("Tag name to look for", tagName);
     return new RelativeBy(By.tagName(tagName));
+  }
+
+  public static RelativeBy withXpath(String xpathExpression) {
+    Require.nonNull("xpath to look for", xpathExpression);
+    return new RelativeBy(By.xpath(xpathExpression));
+  }
+
+  public static RelativeBy withCssSelector(String cssSelector) {
+    Require.nonNull("css selector  to look for", cssSelector);
+    return new RelativeBy(By.cssSelector(cssSelector));
   }
 
   public static class RelativeBy extends By implements By.Remotable {
