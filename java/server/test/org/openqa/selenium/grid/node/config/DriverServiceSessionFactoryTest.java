@@ -17,8 +17,20 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -26,6 +38,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -38,19 +51,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.function.Predicate;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 public class DriverServiceSessionFactoryTest {
 
@@ -86,10 +87,10 @@ public class DriverServiceSessionFactoryTest {
   public void shouldNotInstantiateSessionIfNoDialectSpecifiedInARequest() {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
-    Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
-        ImmutableSet.of(), toPayload("chrome"), ImmutableMap.of()));
+    Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
+      ImmutableSet.of(), toPayload("chrome"), ImmutableMap.of()));
 
-    assertThat(session).isEmpty();
+    assertThat(session.isLeft()).isTrue();
     verifyNoInteractions(builder);
   }
 
@@ -97,10 +98,10 @@ public class DriverServiceSessionFactoryTest {
   public void shouldNotInstantiateSessionIfCapabilitiesDoNotMatch() {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
-    Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
-        ImmutableSet.of(Dialect.W3C), toPayload("firefox"), ImmutableMap.of()));
+    Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
+      ImmutableSet.of(Dialect.W3C), toPayload("firefox"), ImmutableMap.of()));
 
-    assertThat(session).isEmpty();
+    assertThat(session.isLeft()).isTrue();
     verifyNoInteractions(builder);
   }
 
@@ -110,10 +111,10 @@ public class DriverServiceSessionFactoryTest {
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
-    Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
-        ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+    Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
+      ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
 
-    assertThat(session).isEmpty();
+    assertThat(session.isLeft()).isTrue();
     verify(builder, times(1)).build();
     verifyNoMoreInteractions(builder);
   }
@@ -128,10 +129,10 @@ public class DriverServiceSessionFactoryTest {
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
-    Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
-        ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+    Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
+      ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
 
-    assertThat(session).isEmpty();
+    assertThat(session.isLeft()).isTrue();
 
     verify(builder, times(1)).build();
     verifyNoMoreInteractions(builder);
@@ -151,10 +152,10 @@ public class DriverServiceSessionFactoryTest {
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
-    Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
-        ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+    Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
+      ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
 
-    assertThat(session).isNotEmpty();
+    assertThat(session.isRight()).isTrue();
 
     verify(builder, times(1)).build();
     verifyNoMoreInteractions(builder);
