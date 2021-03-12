@@ -23,6 +23,7 @@ import org.openqa.selenium.grid.distributor.Distributor;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Optional;
 
 public class DistributorOptions {
@@ -30,6 +31,8 @@ public class DistributorOptions {
   static final String DISTRIBUTOR_SECTION = "distributor";
   static final String DEFAULT_DISTRIBUTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.local.LocalDistributor";
+
+  public static final int DEFAULT_HEALTHCHECK_INTERVAL = 300;
 
   private final Config config;
 
@@ -72,6 +75,14 @@ public class DistributorOptions {
           hostname.get(),
           port.get());
     }
+  }
+
+  public Duration getHealthCheckInterval() {
+    // If the user sets 0s or less, we default to 10s.
+    int seconds = Math.max(
+      config.getInt(DISTRIBUTOR_SECTION, "healthcheck-interval").orElse(DEFAULT_HEALTHCHECK_INTERVAL),
+      10);
+    return Duration.ofSeconds(seconds);
   }
 
   public Distributor getDistributor() {

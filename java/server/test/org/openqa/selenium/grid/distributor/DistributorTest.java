@@ -138,7 +138,8 @@ public class DistributorTest {
       HttpClient.Factory.createDefault(),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
   }
@@ -179,7 +180,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
 
     AtomicBoolean heartbeatStarted = new AtomicBoolean();
@@ -228,7 +230,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -270,7 +273,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -313,7 +317,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     Distributor distributor = new RemoteDistributor(
       tracer,
       new PassthroughHttpClient.Factory(local),
@@ -354,7 +359,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -394,7 +400,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -441,7 +448,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -490,7 +498,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -565,7 +574,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret)
+      registrationSecret,
+      Duration.ofMinutes(5))
       .add(heavy)
       .add(medium)
       .add(lightest)
@@ -608,7 +618,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret)
+      registrationSecret,
+      Duration.ofMinutes(5))
       .add(leastRecent);
     waitToHaveCapacity(distributor);
 
@@ -711,7 +722,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
 
@@ -756,7 +768,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
 
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -801,7 +814,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -860,7 +874,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -903,7 +918,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -950,7 +966,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -1019,7 +1036,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
     //Create all three Capability types

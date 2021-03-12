@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
@@ -65,7 +66,7 @@ public class DistributorServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_MAP_ROLE, SESSION_QUEUER_ROLE);
+    return ImmutableSet.of(DISTRIBUTOR_ROLE, EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_MAP_ROLE, SESSION_QUEUER_ROLE);
   }
 
   @Override
