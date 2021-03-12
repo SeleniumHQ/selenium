@@ -45,8 +45,6 @@ import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
-  private static final HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
-
   private final URL remoteServer;
   private final HttpClient client;
   private final HttpClient.Factory httpClientFactory;
@@ -56,14 +54,22 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private LocalLogs logs = LocalLogs.getNullLogger();
 
+  private static class DefaultClientFactoryHolder {
+    static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
+  }
+
+  public static HttpClient.Factory getDefaultClientFactory() {
+    return DefaultClientFactoryHolder.defaultClientFactory;
+  }
+
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     this(emptyMap(), Require.nonNull("Server URL", addressOfRemoteServer));
   }
 
   public HttpCommandExecutor(ClientConfig config) {
     this(emptyMap(),
-         Require.nonNull("HTTP client configuration", config),
-         defaultClientFactory);
+      Require.nonNull("HTTP client configuration", config),
+      getDefaultClientFactory());
   }
 
   /**
@@ -78,8 +84,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     URL addressOfRemoteServer)
   {
     this(Require.nonNull("Additional commands", additionalCommands),
-         Require.nonNull("Server URL", addressOfRemoteServer),
-         defaultClientFactory);
+      Require.nonNull("Server URL", addressOfRemoteServer),
+      getDefaultClientFactory());
   }
 
   public HttpCommandExecutor(

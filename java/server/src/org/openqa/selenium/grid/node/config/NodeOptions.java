@@ -21,6 +21,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
@@ -47,6 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -54,7 +56,13 @@ import java.util.stream.StreamSupport;
 
 public class NodeOptions {
 
-  private static final String NODE_SECTION = "node";
+  public static final int DEFAULT_MAX_SESSIONS = Runtime.getRuntime().availableProcessors();
+  public static final int DEFAULT_HEARTBEAT_PERIOD = 60;
+  public static final int DEFAULT_SESSION_TIMEOUT = 300;
+  static final String NODE_SECTION = "node";
+  static final boolean DEFAULT_DETECT_DRIVERS = true;
+  static final int DEFAULT_REGISTER_CYCLE = 10;
+  static final int DEFAULT_REGISTER_PERIOD = 120;
 
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
@@ -82,19 +90,25 @@ public class NodeOptions {
 
   public Duration getRegisterCycle() {
     // If the user sets 0 or less, we default to 1s.
-    int seconds = Math.max(config.getInt(NODE_SECTION, "register-cycle").orElse(10), 1);
+    int seconds = Math.max(
+      config.getInt(NODE_SECTION, "register-cycle").orElse(DEFAULT_REGISTER_CYCLE),
+      1);
     return Duration.ofSeconds(seconds);
   }
 
   public Duration getRegisterPeriod() {
     // If the user sets 0 or less, we default to 1s.
-    int seconds = Math.max(config.getInt(NODE_SECTION, "register-period").orElse(120), 1);
+    int seconds = Math.max(
+      config.getInt(NODE_SECTION, "register-period").orElse(DEFAULT_REGISTER_PERIOD),
+      1);
     return Duration.ofSeconds(seconds);
   }
 
   public Duration getHeartbeatPeriod() {
     // If the user sets 0 or less, we default to 1s.
-    int seconds = Math.max(config.getInt(NODE_SECTION, "heartbeat-period").orElse(10), 1);
+    int seconds = Math.max(
+      config.getInt(NODE_SECTION, "heartbeat-period").orElse(DEFAULT_HEARTBEAT_PERIOD),
+      1);
     return Duration.ofSeconds(seconds);
   }
 
@@ -111,18 +125,25 @@ public class NodeOptions {
       ImmutableMultimap.builder();
 
     addDriverFactoriesFromConfig(sessionFactories);
+    addDriverConfigs(factoryFactory, sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
-    addDriverConfigs(factoryFactory, sessionFactories);
 
     return sessionFactories.build().asMap();
   }
 
   public int getMaxSessions() {
     return Math.min(
-      config.getInt(NODE_SECTION, "max-concurrent-sessions")
-        .orElse(Runtime.getRuntime().availableProcessors()),
-      Runtime.getRuntime().availableProcessors());
+      config.getInt(NODE_SECTION, "max-sessions").orElse(DEFAULT_MAX_SESSIONS),
+      DEFAULT_MAX_SESSIONS);
+  }
+
+  public Duration getSessionTimeout() {
+    // If the user sets 10s or less, we default to 10s.
+    int seconds = Math.max(
+      config.getInt(NODE_SECTION, "session-timeout").orElse(DEFAULT_SESSION_TIMEOUT),
+      10);
+    return Duration.ofSeconds(seconds);
   }
 
   private void addDriverFactoriesFromConfig(ImmutableMultimap.Builder<Capabilities,
@@ -251,12 +272,12 @@ public class NodeOptions {
   private void addDetectedDrivers(
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true)) {
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       return;
     }
 
     // Only specified drivers should be added, not all the detected ones
-    if (config.getAll(NODE_SECTION, "drivers").isPresent()) {
+    if (config.getAll(NODE_SECTION, "driver-implementation").isPresent()) {
       return;
     }
 
@@ -266,22 +287,48 @@ public class NodeOptions {
       .forEach(
         entry ->
           sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+
+    if (sessionFactories.build().size() == 0) {
+      String logMessage = "No drivers have been configured or have been found on PATH";
+      LOG.warning(logMessage);
+      throw new ConfigException(logMessage);
+    }
   }
 
   private void addSpecificDrivers(
     Map<WebDriverInfo, Collection<SessionFactory>> allDrivers,
     ImmutableMultimap.Builder<Capabilities, SessionFactory> sessionFactories) {
-    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true) &&
-        config.getAll(NODE_SECTION, "drivers").isPresent()) {
+    if (!config.getAll(NODE_SECTION, "driver-implementation").isPresent()) {
+      return;
+    }
+
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       String logMessage = "Specific drivers cannot be added if 'detect-drivers' is set to false";
       LOG.warning(logMessage);
       throw new ConfigException(logMessage);
     }
 
-    List<String> drivers = config.getAll(NODE_SECTION, "drivers").orElse(new ArrayList<>())
+    List<String> drivers = config.getAll(NODE_SECTION, "driver-implementation")
+      .orElse(new ArrayList<>())
       .stream()
+      .distinct()
       .map(String::toLowerCase)
+      .peek(driver -> {
+        boolean noneMatch = allDrivers
+          .entrySet()
+          .stream()
+          .noneMatch(entry -> entry.getKey().getDisplayName().equalsIgnoreCase(driver));
+        if (noneMatch) {
+          LOG.log(Level.WARNING, "Could not find {0} driver on PATH.", driver);
+        }
+      })
       .collect(Collectors.toList());
+
+    allDrivers.entrySet().stream()
+      .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
+      .findFirst()
+      .orElseThrow(() ->
+                     new ConfigException("No drivers were found for %s", drivers.toString()));
 
     allDrivers.entrySet().stream()
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
@@ -295,7 +342,7 @@ public class NodeOptions {
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
     int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
-    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(true)) {
+    if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
       return ImmutableMap.of();
     }
 
@@ -305,6 +352,8 @@ public class NodeOptions {
         .filter(WebDriverInfo::isAvailable)
         .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
         .collect(Collectors.toList());
+
+    LOG.log(Level.INFO,"Discovered {0} driver(s)", infos.size());
 
     // Same
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();

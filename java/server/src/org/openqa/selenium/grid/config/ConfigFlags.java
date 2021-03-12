@@ -17,10 +17,14 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.beust.jcommander.Parameter;
+import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
+
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.json.Json;
 
 import java.io.PrintStream;
@@ -31,19 +35,25 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
-
 public class ConfigFlags implements HasRoles {
 
-  private static final ImmutableSet<String> IGNORED_SECTIONS = ImmutableSet.of("java", "lc", "term");
+  private static final ImmutableSet<String> IGNORED_SECTIONS =
+    ImmutableSet.of("java", "lc", "term");
 
-  @Parameter(names = "--config", description = "Config file to read from (may be specified more than once)")
+  @Parameter(
+    names = "--config",
+    description = "Config file to read from (may be specified more than once)")
   private List<Path> configFiles;
 
-  @Parameter(names = "--dump-config", description = "Dump the config of the server as JSON.", hidden = true)
+  @Parameter(
+    names = "--dump-config",
+    description = "Dump the config of the server as JSON.",
+    hidden = true)
   private boolean dumpConfig;
 
-  @Parameter(names = "--config-help", description = "Output detailed information about config options")
+  @Parameter(
+    names = "--config-help",
+    description = "Output detailed information about config options")
   private boolean dumpConfigHelp;
 
   @Override
@@ -98,13 +108,18 @@ public class ConfigFlags implements HasRoles {
         (l, r) -> ImmutableSortedSet.<DescribedOption>naturalOrder().addAll(l).addAll(r).build()));
 
     StringBuilder demoToml = new StringBuilder();
+    demoToml.append("Configuration help for Toml config file").append("\n\n");
     allOptions.forEach((section, options) -> {
       demoToml.append("[").append(section).append("]\n");
-      options.forEach(option -> {
+      options.stream().filter(option -> !option.hidden).forEach(option -> {
         if (!option.optionName.isEmpty()) {
           demoToml.append("# ").append(option.description).append("\n");
         }
         demoToml.append("# Type: ").append(option.type).append("\n");
+        if (!option.defaultValue.isEmpty()) {
+          demoToml.append("# Default: ").append(option.defaultValue).append("\n");
+        }
+        demoToml.append("# Example: ").append("\n");
         if (option.prefixed) {
           demoToml.append("[[")
             .append(section)

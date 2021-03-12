@@ -270,8 +270,8 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
         EventAttribute.setValue("Unable to create session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
-      SessionNotCreatedException exception = new RetrySessionRequestException(e.getMessage());
-      return Either.left(exception);
+
+      return Either.left(e);
     } catch (IOException e) {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.UNKNOWN);
