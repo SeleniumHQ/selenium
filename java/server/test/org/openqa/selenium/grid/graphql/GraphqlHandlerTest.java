@@ -129,7 +129,8 @@ public class GraphqlHandlerTest {
       clientFactory,
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
   }
 
   @Test
