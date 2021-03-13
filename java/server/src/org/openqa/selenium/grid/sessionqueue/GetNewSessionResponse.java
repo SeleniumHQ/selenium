@@ -143,7 +143,7 @@ public class GetNewSessionResponse {
   private HttpResponse internalErrorResponse(String message) {
     return new HttpResponse()
       .setStatus(HTTP_INTERNAL_ERROR)
-      .setContent(asJson(singletonMap("message", message)));
+      .setContent(asJson(singletonMap("value", singletonMap("message", message))));
   }
 
   private void removeRequest(RequestId id) {
