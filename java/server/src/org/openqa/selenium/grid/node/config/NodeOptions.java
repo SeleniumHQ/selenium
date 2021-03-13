@@ -23,6 +23,8 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverInfo;
@@ -67,6 +69,9 @@ public class NodeOptions {
   private static final Logger LOG = Logger.getLogger(NodeOptions.class.getName());
   private static final Json JSON = new Json();
   private static final String DEFAULT_IMPL = "org.openqa.selenium.grid.node.local.LocalNodeFactory";
+  private static final ImmutableCapabilities CURRENT_PLATFORM =
+    new ImmutableCapabilities("platformName", Platform.getCurrent());
+
 
   private final Config config;
 
@@ -285,8 +290,11 @@ public class NodeOptions {
       .stream()
       .peek(this::report)
       .forEach(
-        entry ->
-          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+        entry -> {
+          Capabilities capabilities = entry.getKey()
+            .getCanonicalCapabilities().merge(CURRENT_PLATFORM);
+          sessionFactories.putAll(capabilities, entry.getValue());
+        });
 
     if (sessionFactories.build().size() == 0) {
       String logMessage = "No drivers have been configured or have been found on PATH";
@@ -335,8 +343,11 @@ public class NodeOptions {
       .sorted(Comparator.comparing(entry -> entry.getKey().getDisplayName().toLowerCase()))
       .peek(this::report)
       .forEach(
-        entry ->
-          sessionFactories.putAll(entry.getKey().getCanonicalCapabilities(), entry.getValue()));
+        entry -> {
+          Capabilities capabilities = entry.getKey()
+            .getCanonicalCapabilities().merge(CURRENT_PLATFORM);
+          sessionFactories.putAll(capabilities, entry.getValue());
+        });
   }
 
   private Map<WebDriverInfo, Collection<SessionFactory>> discoverDrivers(
@@ -353,7 +364,7 @@ public class NodeOptions {
         .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
         .collect(Collectors.toList());
 
-    LOG.log(Level.INFO,"Discovered {0} driver(s)", infos.size());
+    LOG.log(Level.INFO, "Discovered {0} driver(s)", infos.size());
 
     // Same
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
@@ -361,7 +372,7 @@ public class NodeOptions {
 
     Multimap<WebDriverInfo, SessionFactory> toReturn = HashMultimap.create();
     infos.forEach(info -> {
-      Capabilities caps = info.getCanonicalCapabilities();
+      Capabilities caps = info.getCanonicalCapabilities().merge(CURRENT_PLATFORM);
       builders.stream()
         .filter(builder -> builder.score(caps) > 0)
         .forEach(builder -> {
@@ -419,7 +430,11 @@ public class NodeOptions {
     StringBuilder caps = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(caps)) {
       out.setPrettyPrint(false);
-      out.write(entry.getKey().getCanonicalCapabilities());
+      Capabilities capabilities = entry.getKey().getCanonicalCapabilities();
+      if (capabilities.getPlatformName() == null) {
+        capabilities = capabilities.merge(CURRENT_PLATFORM);
+      }
+      out.write(capabilities);
     }
 
     LOG.info(String.format(
