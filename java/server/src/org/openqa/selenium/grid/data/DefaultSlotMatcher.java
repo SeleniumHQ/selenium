@@ -51,7 +51,13 @@ public class DefaultSlotMatcher implements SlotMatcher {
       .filter(name -> !name.contains(":"))
       .map(name -> {
         Object value = capabilities.getCapability(name);
-        return value == null || Objects.equals(stereotype.getCapability(name), value);
+        boolean matches;
+        if (value instanceof String) {
+          matches = stereotype.getCapability(name).toString().equalsIgnoreCase(value.toString());
+        } else {
+          matches = value == null || Objects.equals(stereotype.getCapability(name), value);
+        }
+        return matches;
       })
       .reduce(Boolean::logicalAnd)
       .orElse(false);

@@ -104,12 +104,13 @@ public class NewSessionCreationTest {
       registrationSecret);
 
     Distributor distributor = new LocalDistributor(
-        tracer,
-        events,
-        clientFactory,
-        sessions,
-        queuer,
-        registrationSecret);
+      tracer,
+      events,
+      clientFactory,
+      sessions,
+      queuer,
+      registrationSecret,
+      Duration.ofMinutes(5));
 
     Routable router = new Router(tracer, clientFactory, sessions, queuer, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
@@ -185,7 +186,8 @@ public class NewSessionCreationTest {
       clientFactory,
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
     AtomicInteger count = new AtomicInteger();

@@ -116,7 +116,8 @@ public class SessionQueueGridTest {
       clientFactory,
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)

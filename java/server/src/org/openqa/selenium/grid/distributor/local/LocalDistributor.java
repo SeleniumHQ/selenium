@@ -51,6 +51,7 @@ import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.data.SlotId;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
@@ -108,6 +109,7 @@ public class LocalDistributor extends Distributor {
   private final Map<NodeId, Runnable> allChecks = new HashMap<>();
   private final Queue<RequestId> requestIds = new ConcurrentLinkedQueue<>();
   private final ScheduledExecutorService executorService;
+  private final Duration healthcheckInterval;
 
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final GridModel model;
@@ -121,7 +123,8 @@ public class LocalDistributor extends Distributor {
     HttpClient.Factory clientFactory,
     SessionMap sessions,
     NewSessionQueuer sessionRequests,
-    Secret registrationSecret) {
+    Secret registrationSecret,
+    Duration healthcheckInterval) {
     super(tracer, clientFactory, new DefaultSlotSelector(), sessions, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -131,6 +134,7 @@ public class LocalDistributor extends Distributor {
     this.nodes = new HashMap<>();
     this.sessionRequests = Require.nonNull("New Session Request Queue", sessionRequests);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
+    this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
 
     bus.addListener(NodeStatusEvent.listener(this::register));
     bus.addListener(NodeStatusEvent.listener(model::refresh));
@@ -157,6 +161,7 @@ public class LocalDistributor extends Distributor {
   public static Distributor create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     EventBus bus = new EventBusOptions(config).getEventBus();
+    DistributorOptions distributorOptions = new DistributorOptions(config);
     HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
     SessionMap sessions = new SessionMapOptions(config).getSessionMap();
     SecretOptions secretOptions = new SecretOptions(config);
@@ -169,7 +174,8 @@ public class LocalDistributor extends Distributor {
       clientFactory,
       sessions,
       sessionRequests,
-      secretOptions.getRegistrationSecret());
+      secretOptions.getRegistrationSecret(),
+      distributorOptions.getHealthCheckInterval());
   }
 
   @Override
@@ -225,7 +231,7 @@ public class LocalDistributor extends Distributor {
     // Extract the health check
     Runnable runnableHealthCheck = asRunnableHealthCheck(node);
     allChecks.put(node.getId(), runnableHealthCheck);
-    hostChecker.submit(runnableHealthCheck, Duration.ofMinutes(5), Duration.ofSeconds(30));
+    hostChecker.submit(runnableHealthCheck, healthcheckInterval, Duration.ofSeconds(30));
 
     bus.fire(new NodeAddedEvent(node.getId()));
 
