@@ -17,13 +17,19 @@
 
 package org.openqa.selenium.grid.testing;
 
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.BaseActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -34,13 +40,8 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
-
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class TestSessionFactory implements SessionFactory {
 
@@ -57,7 +58,7 @@ public class TestSessionFactory implements SessionFactory {
   }
 
   @Override
-  public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
     SessionId id = new SessionId(UUID.randomUUID());
     Session session = sessionGenerator.apply(id, sessionRequest.getCapabilities());
 
@@ -92,11 +93,12 @@ public class TestSessionFactory implements SessionFactory {
           return ((HttpHandler) session).execute(req);
         } else {
           // Do nothing.
-          return new HttpResponse().setStatus(HTTP_NOT_FOUND).setContent(utf8String("No handler found for " + req));
+          return new HttpResponse().setStatus(HTTP_NOT_FOUND)
+            .setContent(utf8String("No handler found for " + req));
         }
       }
     };
-    return Optional.of(activeSession);
+    return Either.right(activeSession);
   }
 
   @Override

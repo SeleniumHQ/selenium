@@ -26,6 +26,7 @@ import org.openqa.selenium.grid.TemplateGridServerCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.graphql.GraphqlHandler;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -64,6 +65,7 @@ import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
@@ -89,6 +91,7 @@ public class Hub extends TemplateGridServerCommand {
   @Override
   public Set<Role> getConfigurableRoles() {
     return ImmutableSet.of(
+      DISTRIBUTOR_ROLE,
       EVENT_BUS_ROLE,
       HTTPD_ROLE,
       SESSION_QUEUE_ROLE,
@@ -150,13 +153,15 @@ public class Hub extends TemplateGridServerCommand {
     NewSessionQueuer queuer = new LocalNewSessionQueuer(tracer, bus, sessionRequests, secret);
     handler.addHandler(queuer);
 
+    DistributorOptions distributorOptions = new DistributorOptions(config);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
       sessions,
       queuer,
-      secret);
+      secret,
+      distributorOptions.getHealthCheckInterval());
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, queuer, distributor);
