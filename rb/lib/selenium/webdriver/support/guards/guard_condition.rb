@@ -32,7 +32,11 @@ module Selenium
 
           def initialize(name, condition = nil, &blk)
             @name = name
-            @execution = proc(&blk)
+            @execution = if block_given?
+                           proc(&blk)
+                         else
+                           proc { |guarded| guarded.include?(condition) }
+                         end
           end
 
           def satisfied?(guard)

@@ -50,12 +50,14 @@ RSpec.configure do |c|
 
   c.before do |example|
     guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
-    guards.add_condition(:driver) { |guarded| guarded.include?(GlobalTestEnv.driver) }
-    guards.add_condition(:browser) { |guarded| guarded.include?(GlobalTestEnv.browser) }
-    guards.add_condition(:platform) { |guarded| guarded.include?(WebDriver::Platform.os) }
-    guards.add_condition(:window_manager) { |bool| bool.first == !WebDriver::Platform.linux? || !!ENV['DESKTOP_SESSION'] }
+    guards.add_condition(:driver, GlobalTestEnv.driver)
+    guards.add_condition(:browser, GlobalTestEnv.browser)
+    guards.add_condition(:platform, WebDriver::Platform.os)
+    window_manager = !WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?
+    guards.add_condition(:window_manager, window_manager)
 
-    guards.disposition.tap { |results| send(*results) if results }
+    results = guards.disposition
+    send(*results) if results
   end
 
   c.after do |example|
