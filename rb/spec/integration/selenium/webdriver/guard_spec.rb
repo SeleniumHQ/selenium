@@ -29,13 +29,13 @@ module Selenium
           end
 
           it 'skips without running', exclude: {browser: :chrome} do
-            puts "This code will not get executed"
+            fail 'This code will not get executed so it will not fail'
           end
         end
 
         describe '#exclusive' do
           it 'skips without running if it does not match', exclusive: {browser: :not_chrome} do
-            puts "This code will not get executed"
+            fail 'This code will not get executed so it will not fail'
           end
 
           it 'does not guard if it does match', exclusive: {browser: :chrome} do
@@ -45,7 +45,7 @@ module Selenium
 
         describe '#only' do
           it 'guards when value does not match', only: {browser: :not_chrome} do
-            fail
+            fail 'This code is executed but expected to fail'
           end
 
           it 'does not guard when value matches', only: {browser: :chrome} do
@@ -55,7 +55,7 @@ module Selenium
 
         describe '#except' do
           it 'guards when value matches and test fails', except: {browser: :chrome} do
-            fail
+            fail 'This code is executed but expected to fail'
           end
 
           it 'does not guard when value does not match and test passes', except: {browser: :not_chrome} do
@@ -66,17 +66,17 @@ module Selenium
         context 'when multiple guards' do
           it 'guards if neither only nor except match and test fails', only: {browser: :not_chrome},
                                                                        except: {browser: :not_chrome} do
-            fail
+            fail 'This code is executed but expected to fail'
           end
 
           it 'guards if both only and except match', only: {browser: :chrome},
                                                      except: {browser: :chrome} do
-            fail
+            fail 'This code is executed but expected to fail'
           end
 
           it 'guards if except matches and only does not', only: {browser: :not_chrome},
                                                            except: {browser: :chrome} do
-            fail
+            fail 'This code is executed but expected to fail'
           end
 
           it 'does not guard if only matches and except does not', only: {browser: :chrome},
@@ -87,52 +87,15 @@ module Selenium
 
         context 'when array of hashes' do
           it 'guards if any Hash value is satisfied', only: [{browser: :chrome}, {browser: :not_chrome}] do
-            fail
+            fail 'This code is executed but expected to fail'
           end
         end
 
         context 'guard messages' do
           it 'gives correct reason with single only excludes', except: [{browser: :chrome, reason: 'bug1'},
                                                                         {browser: :not_chrome, reason: 'bug2'}] do
-            fail
+            fail 'This code is executed but expected to fail'
           end
-        end
-      end
-
-      describe Guards::Guard do
-        it 'Uses default message' do
-          guard = Guards::Guard.new({}, :except)
-          expect(guard.message).to eq 'Test guarded; no reason given'
-        end
-
-        it 'Creates message from Integer' do
-          bug_tracker = 'https://github.com/SeleniumHQ/selenium/issues'
-          guards = instance_double(Guards, bug_tracker: bug_tracker, messages: {})
-
-          guard = Guards::Guard.new({reason: 1}, :except, guards)
-          expect(guard.message).to eq "Test guarded; Bug Filed: #{bug_tracker}/1"
-        end
-
-        it 'Creates message from Symbol' do
-          guards = instance_double(Guards, bug_tracker: '', messages: {})
-
-          guard = Guards::Guard.new({reason: :unknown}, :except, guards)
-          expect(guard.message).to eq 'Test guarded; TODO: Investigate why this is failing and file a bug report'
-        end
-
-        it 'Creates message from String' do
-          guard = Guards::Guard.new({reason: "Foo is bad"}, :except)
-          expect(guard.message).to eq 'Test guarded; Foo is bad'
-        end
-
-        it 'Uses correct message for exclusive' do
-          guard = Guards::Guard.new({reason: "Foo is bad"}, :exclusive)
-          expect(guard.message).to eq 'Test does not apply to this configuration; Foo is bad'
-        end
-
-        it 'Uses correct message for exclude' do
-          guard = Guards::Guard.new({reason: "Foo is bad"}, :exclude)
-          expect(guard.message).to eq 'Test not guarded because it breaks test run; Foo is bad'
         end
       end
     end # Support
