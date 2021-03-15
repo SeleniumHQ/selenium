@@ -98,7 +98,21 @@ public enum Browser {
   },
   HTMLUNIT(new ImmutableCapabilities(BROWSER_NAME, BrowserType.HTMLUNIT), "HtmlUnit", false),
   LEGACY_FIREFOX_XPI(new FirefoxOptions().setLegacy(true), new XpiDriverInfo().getDisplayName(), false),
-  IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false),
+  IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false) {
+    @Override
+    public Capabilities getCapabilities() {
+      InternetExplorerOptions options = new InternetExplorerOptions();
+
+      if (Boolean.getBoolean("selenium.ie.disable_native_events")) {
+        options.disableNativeEvents();
+      }
+      if (Boolean.getBoolean("selenium.ie.require_window_focus")) {
+        options.requireWindowFocus();
+      }
+
+      return options;
+    }
+  },
   FIREFOX(new FirefoxOptions(), new GeckoDriverInfo().getDisplayName(), false) {
     @Override
     public Capabilities getCapabilities() {
