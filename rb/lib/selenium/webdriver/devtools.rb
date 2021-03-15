@@ -59,7 +59,7 @@ module Selenium
       end
 
       def method_missing(method, *_args)
-        desired_class = "Selenium::DevTools::V89::#{method.capitalize}"
+        desired_class = "Selenium::DevTools::V#{Selenium::DevTools.version}::#{method.capitalize}"
         return unless Object.const_defined?(desired_class)
 
         self.class.class_eval do
@@ -72,7 +72,7 @@ module Selenium
       end
 
       def respond_to_missing?(method, *_args)
-        desired_class = "Selenium::DevTools::#{method.capitalize}"
+        desired_class = "Selenium::DevTools::V#{Selenium::DevTools.version}::#{method.capitalize}"
         Object.const_defined?(desired_class)
       end
 

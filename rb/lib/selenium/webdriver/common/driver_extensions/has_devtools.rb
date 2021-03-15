@@ -29,9 +29,12 @@ module Selenium
         #
 
         def devtools
-          require 'selenium/devtools/v89'
-
-          @devtools ||= DevTools.new(url: devtools_url)
+          @devtools ||= begin
+            require 'selenium/devtools'
+            Selenium::DevTools.version ||= devtools_version
+            Selenium::DevTools.load_version
+            Selenium::WebDriver::DevTools.new(url: devtools_url)
+          end
         end
 
         private
