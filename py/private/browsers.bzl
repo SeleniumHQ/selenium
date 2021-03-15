@@ -32,7 +32,7 @@ edge_args = select({
     "@selenium//common:use_pinned_macos_edge": [
         "--driver-binary=$(location @mac_edgedriver//:msedgedriver)",
         "--browser-binary",
-        "$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge Beta",
+        "$(location @mac_edge//:Edge.app)/Contents/MacOS/Microsoft Edge",
     ],
     "@selenium//common:use_local_msedgedriver": [
         "-Dwebdriver.edge.driver=$(location @selenium//common:msedgedriver)",
