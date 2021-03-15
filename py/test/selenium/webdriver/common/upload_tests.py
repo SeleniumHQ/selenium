@@ -39,9 +39,7 @@ def test_can_upload_two_files(driver, pages):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     driver.find_element(By.ID, 'upload')\
         .send_keys(
-            os.path.join(current_dir, "test_file.txt") +
-            "\n" +
-            os.path.join(current_dir, "test_file2.txt")
+            os.path.join(current_dir, "test_file.txt") + "\n" + os.path.join(current_dir, "test_file2.txt")
     )
     driver.find_element(By.ID, 'go').click()
     driver.switch_to.frame(driver.find_element(By.ID, "upload_target"))
