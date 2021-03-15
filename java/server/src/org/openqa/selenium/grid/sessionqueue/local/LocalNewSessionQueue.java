@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.NewSessionErrorResponse;
@@ -79,6 +80,11 @@ public class LocalNewSessionQueue extends NewSessionQueue {
     super(tracer, retryInterval, requestTimeout);
     this.bus = Require.nonNull("Event bus", bus);
     Runtime.getRuntime().addShutdownHook(shutdownHook);
+
+    Regularly regularly = new Regularly("New Session Queue Clean up");
+    regularly.submit(this::purgeTimedOutRequests, Duration.ofSeconds(60),
+      Duration.ofSeconds(30));
+
     new JMXHelper().register(this);
   }
 
@@ -267,6 +273,25 @@ public class LocalNewSessionQueue extends NewSessionQueue {
         bus.fire(new NewSessionRejectedEvent(errorResponse));
       }
       return count;
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  private void purgeTimedOutRequests() {
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Iterator<SessionRequest> iterator = sessionRequests.iterator();
+      while (iterator.hasNext()) {
+        SessionRequest sessionRequest = iterator.next();
+        if (hasRequestTimedOut(sessionRequest.getHttpRequest())) {
+          iterator.remove();
+          bus.fire(new NewSessionRejectedEvent(
+            new NewSessionErrorResponse(sessionRequest.getRequestId(), String.format(
+              "New session request rejected after being in the queue for more than %s", requestTimeout))));
+        }
+      }
     } finally {
       writeLock.unlock();
     }
