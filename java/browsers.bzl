@@ -1,16 +1,3 @@
-chrome_data = select({
-    "@selenium//common:use_pinned_linux_chrome": [
-        "@linux_chromedriver//:chromedriver",
-        "@linux_chrome//:chrome-linux",
-    ],
-    "@selenium//common:use_pinned_macos_chrome": [
-        "@mac_chromedriver//:chromedriver",
-        "@mac_chrome//:Chromium.app",
-    ],
-    "@selenium//common:use_local_chromedriver": ["@selenium//common:chromedriver"],
-    "//conditions:default": [],
-})
-
 chrome_jvm_flags = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
@@ -33,15 +20,6 @@ chrome_jvm_flags = select({
     "//conditions:default": [],
 })
 
-edge_data = select({
-    "@selenium//common:use_pinned_macos_chrome": [
-        "@mac_edgedriver//:msedgedriver",
-        "@mac_edge//:Edge.app",
-    ],
-    "@selenium//common:use_local_msedgedriver": ["@selenium//common:msedgedriver"],
-    "//conditions:default": [],
-})
-
 edge_jvm_flags = select({
     "@selenium//common:use_pinned_macos_edge": [
         "-Dwebdriver.edge.driver=$(location @mac_edgedriver//:msedgedriver)",
@@ -57,19 +35,6 @@ edge_jvm_flags = select({
     "@selenium//common:use_headless_browser": [
         "-Dwebdriver.headless=true",
     ],
-    "//conditions:default": [],
-})
-
-firefox_data = select({
-    "@selenium//common:use_pinned_linux_firefox": [
-        "@linux_geckodriver//:geckodriver",
-        "@linux_firefox//:firefox",
-    ],
-    "@selenium//common:use_pinned_macos_firefox": [
-        "@mac_geckodriver//:geckodriver",
-        "@mac_firefox//:Firefox.app",
-    ],
-    "@selenium//common:use_local_geckodriver": ["@selenium//common:geckodriver"],
     "//conditions:default": [],
 })
 

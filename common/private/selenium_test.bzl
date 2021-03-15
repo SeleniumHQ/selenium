@@ -1,10 +1,13 @@
 load(
-    "//java:browsers.bzl",
+    "//common:browsers.bzl",
     "chrome_data",
-    "chrome_jvm_flags",
     "edge_data",
-    "edge_jvm_flags",
     "firefox_data",
+)
+load(
+    "//java:browsers.bzl",
+    "chrome_jvm_flags",
+    "edge_jvm_flags",
     "firefox_jvm_flags",
 )
 
