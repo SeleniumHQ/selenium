@@ -55,7 +55,7 @@ def java_export(
 
     java_module(
         name = "%s-module" % name,
-        target = "%s-project" % name,
+        target = ":%s-project" % name,
         deps = kwargs.get("deps", []) + kwargs.get("runtime_deps", []),
         exports = exports,
         opens_to = opens_to,

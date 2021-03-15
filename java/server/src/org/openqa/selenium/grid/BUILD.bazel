@@ -134,9 +134,10 @@ javadoc(
     third_party_prefixes = [
         "@maven//",
         "//third_party",
-    ],
+    ] + CDP_DEPS,
     transitive = True,
     deps = [
         ":grid",
+        "//java/client/src/org/openqa/selenium:client-combined",
     ],
 )
