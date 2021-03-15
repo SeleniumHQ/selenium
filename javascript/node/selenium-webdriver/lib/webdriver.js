@@ -649,6 +649,7 @@ function filterNonW3CCaps(capabilities) {
  * @implements {IWebDriver}
  */
 class WebDriver {
+
   /**
    * @param {!(./session.Session|IThenable<!./session.Session>)} session Either
    *     a known session or a promise that will be resolved to a session.
@@ -1163,8 +1164,9 @@ class WebDriver {
     const seCdp = caps['map_'].get('se:cdp')
     const vendorInfo =
       caps['map_'].get(this.VENDOR_COMMAND_PREFIX + ':chromeOptions') ||
+      caps['map_'].get(this.VENDOR_CAPABILITY_PREFIX + ':edgeOptions') ||
       caps['map_'].get('moz:debuggerAddress') ||
-      new Map()
+      new Map();
     const debuggerUrl = seCdp || vendorInfo['debuggerAddress'] || vendorInfo
     this._wsUrl = await this.getWsUrl(debuggerUrl, target)
 

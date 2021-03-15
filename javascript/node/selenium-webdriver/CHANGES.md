@@ -1,3 +1,7 @@
+## v4.0.0-beta.2
+
+* Removed support for Edge legacy.
+
 ## v4.0.0-beta.1
 
 * JS Binding support for WebDriver Bidi in Firefox
