@@ -1,3 +1,9 @@
+COMMON_TAGS = [
+    "browser-test",
+    "no-sandbox",
+    "requires-network",
+]
+
 chrome_data = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "@linux_chromedriver//:chromedriver",

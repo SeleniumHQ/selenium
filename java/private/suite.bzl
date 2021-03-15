@@ -1,4 +1,4 @@
-load("//common/private:selenium_test.bzl", "BROWSERS", "DEFAULT_BROWSER", "selenium_test")
+load(":selenium_test.bzl", "BROWSERS", "DEFAULT_BROWSER", "selenium_test")
 load(":package.bzl", "package_name")
 
 def _test_class_name(src_file):
