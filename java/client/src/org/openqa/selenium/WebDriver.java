@@ -669,6 +669,18 @@ public interface WebDriver extends SearchContext {
 
   @Beta
   interface Window {
+
+    /**
+     * Get the size of the current window. This will return the outer window dimension, not just
+     * the view port.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver specification</a>
+     * for more details.
+     *
+     * @return The current window size.
+     */
+    Dimension getSize();
+
     /**
      * Set the size of the current window. This will change the outer window dimension,
      * not just the view port, synonymous to window.resizeTo() in JS.
@@ -679,6 +691,16 @@ public interface WebDriver extends SearchContext {
      * @param targetSize The target size.
      */
     void setSize(Dimension targetSize);
+
+    /**
+     * Get the position of the current window, relative to the upper left corner of the screen.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver specification</a>
+     * for more details.
+     *
+     * @return The current window position.
+     */
+    Point getPosition();
 
     /**
      * Set the position of the current window. This is relative to the upper left corner of the
