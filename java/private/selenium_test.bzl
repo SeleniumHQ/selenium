@@ -76,7 +76,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() 
         if not browser in BROWSERS:
             fail("Unrecognized browser: " + browser)
 
-        test = "%s-%s" % (name, browser)
+        test = name if browser == default_browser else "%s-%s" % (name, browser)
 
         native.java_test(
             name = test,
@@ -88,7 +88,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() 
             **stripped_args
         )
 
-        if not "no-remote" in tags:
+        if "selenium-remote" in tags:
             native.java_test(
                 name = "%s-remote" % test,
                 test_class = test_class,
@@ -105,4 +105,4 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() 
             )
 
     # Handy way to run everything
-    native.test_suite(name = name, tests = [":%s-%s" % (name, default_browser)], tags = tags + ["manual"])
+    native.test_suite(name = "%s-all-browsers" % name, tests = [":%s-%s" % (name, default_browser)], tags = tags + ["manual"])
