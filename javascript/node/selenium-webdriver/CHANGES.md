@@ -1,6 +1,14 @@
 ## v4.0.0-beta.2
 
 * Removed support for Edge legacy.
+* Make the build silent for WebDriver Bidi generated code
+* resolve file path correctly (#9223)
+* Update example in edge.js (#9231)
+* Use a flat namespace for selenium options for finding WebDriver Bidi endpoint
+* Removing duplicate license text updated by update_copyright.js
+* Updating copyright text
+* Minor code cleanup
+* Removing duplicate variable declaration of IE from capabilities
 
 ## v4.0.0-beta.1
 
@@ -1094,3 +1102,81 @@ available separately)
 * Initial release for npm:
 
         npm install selenium-webdriver
+commit 84b65b1641ef870db1d68e43014730d31081b8f7
+Author: Sri Harsha <12621691+JS31096@users.noreply.github.com>
+Date:   Mon Mar 15 19:58:28 2021 +0530
+
+    [JS] Remove support for Edge HTML (#9239)
+
+    * [js] Removes support for edge legacy
+
+    * [js] Adding edge chromium test
+
+    * Modify: Replacing VENDOR_CAPABILITY_PREFIX prototype in chrome and edge
+
+    Co-authored-by: David Burns <david.burns@theautomatedtester.co.uk>
+
+commit 278d17a795c20dd6fe23e32f9f95a7cbecc5b674
+Author: Simon Stewart <simon.m.stewart@gmail.com>
+Date:   Mon Mar 15 10:38:21 2021 +0000
+
+    [cdp + js] Make the build silent
+
+commit 4464ac4f8230150824f6bf2e4075cd1f53a648c7
+Author: Sri Harsha <12621691+JS31096@users.noreply.github.com>
+Date:   Wed Mar 3 13:17:20 2021 +0530
+
+    [js] resolve file path (#9223)
+
+    🐢
+
+commit bd468dd842b0b2b1da3a7bf3ba99e6405bab216f
+Author: hectorhon <hon.lianhung@gmail.com>
+Date:   Wed Mar 3 02:07:23 2021 +0800
+
+    Update example in edge.js (#9231)[skip ci]
+
+    In particular, change options.useEdgeChromium(true) to options.setEdgeChromium(true).
+
+    Co-authored-by: Sri Harsha <12621691+JS31096@users.noreply.github.com>
+
+commit 9ea195303e6dee599395accbee86105184596d35
+Author: Simon Stewart <simon.m.stewart@gmail.com>
+Date:   Tue Feb 23 17:05:09 2021 +0000
+
+    [cdp] Use a flat namespace for selenium options
+
+    This means that rather than having `se:options = {cdp: uri}` we now
+    just have `se:cdp = uri`. Other capabilities that were stored in
+    `se:options` have also been extracted and placed into a flat
+    namespace.
+
+    This change makes it easier to extract the information we need
+    (trivially: we remove one lookup in a dictionary), and means that we
+    can now easily merge capabilities with these options set without
+    needing to do any additional work. Previously, we'd need to be aware
+    of `se:options` and do "deep merging", which is easy to overlook.
+
+commit 88279c820e2b8020d9209c11c4ac800bc70fb591
+Author: Sri Harsha <sri_harsha509@hotmail.com>
+Date:   Tue Feb 16 13:37:03 2021 +0530
+
+    [JS] Removing duplicate license text updated by update_copyright.js
+
+commit e0e668f28b7a5e6371046e1ad8324a409945d544
+Author: Sri Harsha <sri_harsha509@hotmail.com>
+Date:   Tue Feb 16 13:31:24 2021 +0530
+
+    [js] Updating copyright text
+
+commit dcfc4375615cb0a2ecc507719bab5df9b8a4a400
+Author: Sri Harsha <sri_harsha509@hotmail.com>
+Date:   Tue Feb 16 11:53:41 2021 +0530
+
+    [JS] Minor code cleanup
+
+commit dccf4dd92d38e95a7966cf92e5cc7f5558b4ea6f
+Author: Sri Harsha <sri_harsha509@hotmail.com>
+Date:   Tue Feb 16 11:13:25 2021 +0530
+
+    [JS] Removing duplicate variable declaration of IE from capabilities
