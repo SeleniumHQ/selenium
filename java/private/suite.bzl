@@ -1,4 +1,4 @@
-load(":library.bzl", "java_library")
+load(":library.bzl", "java_library", "java_test")
 load(":selenium_test.bzl", "BROWSERS", "DEFAULT_BROWSER", "selenium_test")
 load(":package.bzl", "package_name")
 
@@ -85,7 +85,7 @@ def _create_java_test_target(
         test_class,
         tags = [],
         **kwargs):
-    native.java_test(
+    java_test(
         name = name,
         tags = tags,
         test_class = test_class,

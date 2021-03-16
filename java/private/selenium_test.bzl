@@ -11,6 +11,7 @@ load(
     "edge_jvm_flags",
     "firefox_jvm_flags",
 )
+load("//java/private:library.bzl", "add_lint_tests")
 
 DEFAULT_BROWSER = "firefox"
 
@@ -106,3 +107,4 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() 
 
     # Handy way to run everything
     native.test_suite(name = "%s-all-browsers" % name, tests = [":%s-%s" % (name, default_browser)], tags = tags + ["manual"])
+    add_lint_tests(name, **kwargs)
