@@ -1,3 +1,25 @@
+Selenium 4 beta 2
+
+* Set up python for pinned browsers
+* Add Multiple file upload test
+* Fix using arguments in Chrome Option. Fixes  #9281
+* Deprecate arguments in remote webdriver instantiation
+* Improve proxy via options test for Firefox
+* Set Chromium Edge to be the default for Edge browsers
+* Move code so that it is reachable
+* Fix usage of options to RemoteWebDriver (#9240)
+* Deprecate using a Firefox profile in Options
+* use attribute endpoint to evaluate multiple selects
+* implement get_dom_attribute
+* Add attribute_to_be_include method to expected_conditions when the at… (#9200)
+* Additional Python type hints (#9192)
+* Correct Type Hinting on option method. Fixes #9210
+* Use a flat namespace for selenium options
+* remove unused imports
+* Add ARIA APIs for getting the role and label of an Element
+* Fix homepage attribute in wheel target
+* Avoid using bazel native python rules
+
 Selenium 4.0 Beta 1
 
 * Deprecate all but `Options` and `Service` arguments in driver instantiation. (#9125,#9128)
@@ -844,5 +866,6 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+
 
 
