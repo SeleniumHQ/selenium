@@ -1199,12 +1199,21 @@ class WebDriver {
     if (target && cdpTargets.indexOf(target.toLowerCase()) === -1) {
       throw new error.InvalidArgumentError('invalid target value')
     }
-    let path = '/json/version'
-
+    let path
+    if (target === 'page') {
+      path = '/json'
+    } else {
+      path = '/json/version'
+    }
     let request = new http.Request('GET', path)
     let client = new http.HttpClient('http://' + debuggerAddress)
     let response = await client.send(request)
-    let url = JSON.parse(response.body)['webSocketDebuggerUrl']
+    let url
+    if (target.toLowerCase() === 'page') {
+      url = JSON.parse(response.body)[0]['webSocketDebuggerUrl']
+    } else {
+      url = JSON.parse(response.body)['webSocketDebuggerUrl']
+    }
 
     return url
   }
@@ -1365,7 +1374,7 @@ class WebDriver {
         .toString()
     } catch {
       mutationListener = fs
-        .readFileSync(path.resolve(__dirname,'./atoms/mutation-listener.js'), 'utf-8')
+        .readFileSync(path.resolve(__dirname, './atoms/mutation-listener.js'), 'utf-8')
         .toString()
     }
 
@@ -1384,6 +1393,7 @@ class WebDriver {
       const params = JSON.parse(message)
       if (params.method === 'Runtime.bindingCalled') {
         let payload = JSON.parse(params['params']['payload'])
+        debugger;
         let elements = await this.findElements({
           css: '*[data-__webdriver_id=' + payload['target'],
         })
