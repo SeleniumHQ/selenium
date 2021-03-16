@@ -1393,7 +1393,6 @@ class WebDriver {
       const params = JSON.parse(message)
       if (params.method === 'Runtime.bindingCalled') {
         let payload = JSON.parse(params['params']['payload'])
-        debugger;
         let elements = await this.findElements({
           css: '*[data-__webdriver_id=' + payload['target'],
         })
