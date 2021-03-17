@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Driver, exclusive: {driver: :chrome} do
+      describe Driver, exclusive: {browser: :chrome} do
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(
@@ -39,7 +39,7 @@ module Selenium
           # at least it doesn't crash
         end
 
-        it 'can execute CDP commands' do
+        it 'can execute CDP commands', only: {driver: :chrome} do
           res = driver.execute_cdp('Page.addScriptToEvaluateOnNewDocument', source: 'window.was_here="TW";')
           expect(res).to have_key('identifier')
 

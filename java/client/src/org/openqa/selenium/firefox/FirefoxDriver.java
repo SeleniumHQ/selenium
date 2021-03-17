@@ -83,8 +83,7 @@ import java.util.stream.StreamSupport;
  * </pre>
  */
 public class FirefoxDriver extends RemoteWebDriver
-  implements WebStorage, HasExtensions, HasDevTools
-{
+  implements WebStorage, HasExtensions, HasDevTools {
 
   public static final class SystemProperty {
 

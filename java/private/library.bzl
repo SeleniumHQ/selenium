@@ -8,7 +8,7 @@ load(
 load(":export.bzl", _java_export = "java_export")
 load(":spotbugs.bzl", "spotbugs_test")
 
-def _add_lint_tests(name, **kwargs):
+def add_lint_tests(name, **kwargs):
     srcs = kwargs.get("srcs", [])
 
     if len(srcs) == 0:
@@ -31,9 +31,13 @@ def _add_lint_tests(name, **kwargs):
         )
 
 def java_export(name, **kwargs):
-    _add_lint_tests(name, **kwargs)
+    add_lint_tests(name, **kwargs)
     _java_export(name = name, **kwargs)
 
 def java_library(name, **kwargs):
-    _add_lint_tests(name, **kwargs)
+    add_lint_tests(name, **kwargs)
     _java_library(name = name, **kwargs)
+
+def java_test(name, **kwargs):
+    add_lint_tests(name, **kwargs)
+    _java_test(name = name, **kwargs)

@@ -17,35 +17,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chrome/features'
+
 module Selenium
   module WebDriver
-    module Safari
-      class Bridge < WebDriver::Remote::Bridge
+    module Edge
+      module Features
 
-        # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
-        COMMANDS = {
-          get_permissions: [:get, 'session/:session_id/apple/permissions'],
-          set_permissions: [:post, 'session/:session_id/apple/permissions'],
-          attach_debugger: [:post, 'session/:session_id/apple/attach_debugger']
+        include WebDriver::Chrome::Features
+
+        EDGE_COMMANDS = {
+          send_command: [:post, 'session/:session_id/ms/cdp/execute']
         }.freeze
 
         def commands(command)
-          COMMANDS[command] || super
+          EDGE_COMMANDS[command] || Chrome::Features::CHROME_COMMANDS[command] || self.class::COMMANDS[command]
         end
-
-        def permissions
-          execute(:get_permissions)['permissions']
-        end
-
-        def permissions=(permissions)
-          execute :set_permissions, {}, {permissions: permissions}
-        end
-
-        def attach_debugger
-          execute :attach_debugger, {}, {}
-        end
-
       end # Bridge
-    end # Safari
+    end # Edge
   end # WebDriver
 end # Selenium

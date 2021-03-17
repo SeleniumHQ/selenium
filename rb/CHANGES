@@ -1,3 +1,27 @@
+4.0.0.beta2 (2021-03-16)
+=========================
+
+DevTools:
+  * Separated out DevTools methods into selenium-devtools gem to better manage versioning
+  * Updated supported versions to 85-89
+  * Add support for intercepting browser requests
+
+Firefox:
+  * Add support for using DevTools commands with Firefox Nightly
+
+Remote:
+  * Provide access to browser specific driver extensions as appropriate for designated browser
+  * Add support for using DevTools commands via Grid
+
+Ruby:
+  * Spec Guard implementation moved into lib directory for other projects to use
+  * Implemented `Element#dom_attribute` to obtain attribute value as defined by w3c specification
+  * Implemented `Options#eq?`
+  * Allow Options subclass instances to be created from class methods in superclass
+
+Safari:
+  * Fix bug that prevented usage of Safari Technology Preview
+
 4.0.0.beta1 (2021-02-15)
 =========================
 

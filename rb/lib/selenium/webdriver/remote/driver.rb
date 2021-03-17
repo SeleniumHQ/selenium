@@ -30,11 +30,6 @@ module Selenium
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
         include DriverExtensions::HasRemoteStatus
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasDevTools
-        include DriverExtensions::HasAuthentication
-        include DriverExtensions::HasLogEvents
-        include DriverExtensions::HasNetworkInterception
 
         def initialize(bridge: nil, listener: nil, **opts)
           desired_capabilities = opts[:desired_capabilities]
@@ -57,13 +52,7 @@ module Selenium
 
         private
 
-        def devtools_version
-          return Firefox::DEVTOOLS_VERSION if browser == :firefox
-
-          Integer(capabilities.browser_version.split('.').first)
-        end
-
-        def devtools_url
+        def devtools_address
           capabilities['se:cdp']
         end
       end # Driver

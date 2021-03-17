@@ -120,11 +120,6 @@ function getAvailableBrowsers() {
   let targets = [
     [chrome.locateSynchronously, Browser.CHROME],
     [edge.locateSynchronously, Browser.EDGE],
-    [
-      () => edge.locateSynchronously('msedge'),
-      Browser.EDGE,
-      { 'ms:edgeChromium': true },
-    ],
     [firefox.locateSynchronously, Browser.FIREFOX],
     [ie.locateSynchronously, Browser.INTERNET_EXPLORER],
     [safari.locateSynchronously, Browser.SAFARI],

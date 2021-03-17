@@ -27,7 +27,7 @@ module Selenium
       autoload :Extension, 'selenium/webdriver/firefox/extension'
       autoload :ProfilesIni, 'selenium/webdriver/firefox/profiles_ini'
       autoload :Profile, 'selenium/webdriver/firefox/profile'
-      autoload :Bridge, 'selenium/webdriver/firefox/bridge'
+      autoload :Features, 'selenium/webdriver/firefox/features'
       autoload :Driver, 'selenium/webdriver/firefox/driver'
       autoload :Options, 'selenium/webdriver/firefox/options'
       autoload :Service, 'selenium/webdriver/firefox/service'

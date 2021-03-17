@@ -19,29 +19,34 @@
 
 module Selenium
   module WebDriver
-    module Firefox
-      class Bridge < WebDriver::Remote::Bridge
+    module Support
+      class Guards
 
-        COMMANDS = {
-          install_addon: [:post, 'session/:session_id/moz/addon/install'],
-          uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall']
-        }.freeze
+        #
+        # Guard derived from RSpec example metadata.
+        # @api private
+        #
 
-        def commands(command)
-          COMMANDS[command] || super
-        end
+        class GuardCondition
+          attr_accessor :name, :execution
 
-        def install_addon(path, temporary)
-          payload = {path: path}
-          payload[:temporary] = temporary unless temporary.nil?
-          execute :install_addon, {}, payload
-        end
+          def initialize(name, condition = nil, &blk)
+            @name = name
+            @execution = if block_given?
+                           proc(&blk)
+                         else
+                           proc { |guarded| guarded.include?(condition) }
+                         end
+          end
 
-        def uninstall_addon(id)
-          execute :uninstall_addon, {}, {id: id}
-        end
+          def satisfied?(guard)
+            list = Array(guard.guarded[@name])
 
-      end # Bridge
-    end # Firefox
+            list.empty? || @execution.call(list)
+          end
+
+        end # GuardCondition
+      end # Guards
+    end # Support
   end # WebDriver
 end # Selenium

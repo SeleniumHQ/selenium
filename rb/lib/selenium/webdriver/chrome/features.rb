@@ -20,9 +20,9 @@
 module Selenium
   module WebDriver
     module Chrome
-      class Bridge < WebDriver::Remote::Bridge
+      module Features
 
-        COMMANDS = {
+        CHROME_COMMANDS = {
           get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],
           set_network_conditions: [:post, 'session/:session_id/chromium/network_conditions'],
           send_command: [:post, 'session/:session_id/goog/cdp/execute'],
@@ -31,7 +31,7 @@ module Selenium
         }.freeze
 
         def commands(command)
-          COMMANDS[command] || super
+          CHROME_COMMANDS[command] || self.class::COMMANDS[command]
         end
 
         def network_conditions

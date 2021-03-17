@@ -57,42 +57,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     shutdownActions.add(action);
   }
 
-  private static final Map<Browser, Function<Capabilities, Capabilities>> capabilitySuppliers =
-    new ImmutableMap.Builder<Browser, Function<Capabilities, Capabilities>>()
-      .put(Browser.CHROME, original -> new ChromeOptions().merge(original)
-           .setHeadless(Boolean.getBoolean("webdriver.chrome.headless"))
-      )
-      .put(Browser.LEGACY_FIREFOX_XPI, original -> new FirefoxOptions(original)
-        .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
-      .put(Browser.FIREFOX, original -> new FirefoxOptions(original)
-        .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false")))
-      )
-      .put(Browser.IE, original -> {
-        InternetExplorerOptions options = new InternetExplorerOptions(original);
-        if (Boolean.getBoolean("selenium.ie.disable_native_events")) {
-          options.disableNativeEvents();
-        }
-        if (Boolean.getBoolean("selenium.ie.require_window_focus")) {
-          options.requireWindowFocus();
-        }
-        return options;
-      })
-      .put(Browser.EDGE, original -> new EdgeOptions().merge(original))
-      .put(Browser.HTMLUNIT, original -> new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY).merge(original))
-      .put(Browser.OPERA, original -> new OperaOptions().merge(original))
-      .put(Browser.SAFARI, original -> {
-        SafariOptions options = new SafariOptions(original);
-        if (Boolean.getBoolean("selenium.safari.tp")) {
-          options.setUseTechnologyPreview(true);
-        }
-        return options;
-      })
-      .build();
-
-  public static Capabilities getStandardCapabilitiesFor(Browser toBuild) {
-    return capabilitySuppliers.getOrDefault(toBuild, ImmutableCapabilities::new).apply(new ImmutableCapabilities());
-  }
-
   private final Browser toBuild;
 
   public WebDriverBuilder() {
@@ -109,9 +73,8 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   }
 
   public WebDriver get(Capabilities desiredCapabilities) {
-    Capabilities desiredCaps = capabilitySuppliers
-      .getOrDefault(toBuild, ImmutableCapabilities::new)
-      .apply(desiredCapabilities);
+    Objects.requireNonNull(desiredCapabilities, "Capabilities to use must be set");
+    Capabilities desiredCaps = Objects.requireNonNull(Browser.detect()).getCapabilities().merge(desiredCapabilities);
 
     WebDriver driver =
       Stream.of(new ExternalDriverSupplier(desiredCaps),

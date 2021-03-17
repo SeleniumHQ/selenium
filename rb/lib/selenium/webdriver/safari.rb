@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Safari
-      autoload :Bridge, 'selenium/webdriver/safari/bridge'
+      autoload :Features, 'selenium/webdriver/safari/features'
       autoload :Driver, 'selenium/webdriver/safari/driver'
       autoload :Options, 'selenium/webdriver/safari/options'
       autoload :Service, 'selenium/webdriver/safari/service'

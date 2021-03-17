@@ -29,7 +29,6 @@ var __spreadArrays =
 exports.__esModule = true
 var fs = require('fs')
 var path = require('path')
-console.log(process.argv)
 // TODO: @noj validate this via https://github.com/andischerer/typescript-json-typesafe against protocol-schema.d.ts
 var jsProtocol = JSON.parse(fs.readFileSync(process.argv[3]))
 var browserProtocol = JSON.parse(fs.readFileSync(process.argv[2]))
@@ -426,7 +425,6 @@ var emitApi = function (moduleName, protocolModuleName, domains) {
   emitLine('export default ' + moduleName + ';')
 }
 var flushEmitToFile = function (path) {
-  console.log('Writing to ' + path)
   fs.writeFileSync(path, emitStr, { encoding: 'utf-8' })
   numIndents = 0
   emitStr = ''

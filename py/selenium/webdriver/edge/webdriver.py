@@ -56,9 +56,6 @@ class WebDriver(ChromiumDriver):
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 
-        if options and options.use_chromium:
-            executable_path = "msedgedriver"
-
         if not service:
             service = Service(executable_path, port, service_args, service_log_path)
 
