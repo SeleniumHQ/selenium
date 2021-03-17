@@ -15,6 +15,7 @@ BROWSER_VERSIONS = [
 
 TEST_DEPS = [
     requirement("attrs"),
+    requirement("debugpy"),
     requirement("idna"),
     requirement("iniconfig"),
     requirement("importlib_metadata"),
@@ -261,7 +262,7 @@ py_test_suite(
     ),
     args = [
         "--instafail",
-        "--driver=Chrome",
+        "--driver=chrome",
     ],
     tags = [
         "no-sandbox",
@@ -285,7 +286,7 @@ py_test_suite(
     ),
     args = [
         "--instafail",
-        "--driver=Chrome",
+        "--driver=chrome",
         "--headless=true",
     ],
     tags = [
@@ -321,28 +322,6 @@ py_test_suite(
 )
 
 py_test_suite(
-    name = "test-edge-chromium",
-    size = "large",
-    srcs = glob([
-        "test/selenium/webdriver/edge/**/*.py",
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
-    ]),
-    args = [
-        "--instafail",
-        "--driver=ChromiumEdge",
-    ],
-    tags = [
-        "no-sandbox",
-    ],
-    deps = [
-        ":init-tree",
-        ":selenium",
-        ":webserver",
-    ] + TEST_DEPS,
-)
-
-py_test_suite(
     name = "test-firefox",
     size = "large",
     srcs = glob([
@@ -353,7 +332,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Firefox",
+        "--driver=firefox",
     ],
     tags = [
         "no-sandbox",
@@ -374,7 +353,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Remote",
+        "--driver=remote",
     ],
     data = [
         "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
@@ -399,7 +378,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Ie",
+        "--driver=ie",
     ],
     tags = [
         "no-sandbox",
@@ -421,7 +400,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Safari",
+        "--driver=safari",
     ],
     tags = [
         "exclusive",
@@ -443,7 +422,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=WebKitGTK",
+        "--driver=webkitgtk",
         "--browser-binary=MiniBrowser",
         "--browser-args=--automation",
     ],
