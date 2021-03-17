@@ -52,6 +52,7 @@ body {
   background: #fff;
   padding: 1.2em;
   padding-top: 0.2em;
+  box-sizing: border-box;
 }
 
 @media (max-width: 920px) {

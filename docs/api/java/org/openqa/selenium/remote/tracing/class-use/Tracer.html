@@ -191,14 +191,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.remote.tracing">org.openqa.selenium.remote.tracing</a></th>
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.remote.tracing.empty">org.openqa.selenium.remote.tracing.empty</a></th>
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.remote.tracing">org.openqa.selenium.remote.tracing</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<th class="colFirst" scope="row"><a href="#org.openqa.selenium.remote.tracing.empty">org.openqa.selenium.remote.tracing.empty</a></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.remote.tracing.opentelemetry">org.openqa.selenium.remote.tracing.opentelemetry</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -236,7 +240,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/distributor/Distributor.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.distributor.selector.SlotSelector,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.security.Secret)">Distributor</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-           org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;httpClientFactory,
+           <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;httpClientFactory,
            <a href="../../../grid/distributor/selector/SlotSelector.html" title="interface in org.openqa.selenium.grid.distributor.selector">SlotSelector</a>&nbsp;slotSelector,
            <a href="../../../grid/sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
            <a href="../../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret)</code></th>
@@ -259,12 +263,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/distributor/local/LocalDistributor.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueuer,org.openqa.selenium.grid.security.Secret)">LocalDistributor</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/distributor/local/LocalDistributor.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.events.EventBus,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueuer,org.openqa.selenium.grid.security.Secret,java.time.Duration)">LocalDistributor</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
                 <a href="../../../events/EventBus.html" title="interface in org.openqa.selenium.events">EventBus</a>&nbsp;bus,
-                org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
+                <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
                 <a href="../../../grid/sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
                 <a href="../../../grid/sessionqueue/NewSessionQueuer.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueuer</a>&nbsp;sessionRequests,
-                <a href="../../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret)</code></th>
+                <a href="../../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
+                java.time.Duration&nbsp;healthcheckInterval)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -285,7 +290,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/distributor/remote/RemoteDistributor.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,java.net.URL,org.openqa.selenium.grid.security.Secret)">RemoteDistributor</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                 org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;factory,
+                 <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;factory,
                  java.net.URL&nbsp;url,
                  <a href="../../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -308,9 +313,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>java.util.Map&lt;org.openqa.selenium.Capabilities,&#8203;java.util.Collection&lt;<a href="../../../grid/node/SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
+<td class="colFirst"><code>java.util.Map&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.util.Collection&lt;<a href="../../../grid/node/SessionFactory.html" title="interface in org.openqa.selenium.grid.node">SessionFactory</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">DockerOptions.</span><code><span class="memberNameLink"><a href="../../../grid/docker/DockerOptions.html#getDockerSessionFactories(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory)">getDockerSessionFactories</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                         org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory)</code></th>
+                         <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -324,11 +329,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/docker/DockerSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.docker.Docker,java.net.URI,org.openqa.selenium.docker.Image,org.openqa.selenium.Capabilities,org.openqa.selenium.docker.Image,org.openqa.selenium.grid.docker.DockerAssetsPath)">DockerSessionFactory</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                    org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
+                    <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
                     <a href="../../../docker/Docker.html" title="class in org.openqa.selenium.docker">Docker</a>&nbsp;docker,
                     java.net.URI&nbsp;dockerUri,
                     <a href="../../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;browserImage,
-                    org.openqa.selenium.Capabilities&nbsp;stereotype,
+                    <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
                     <a href="../../../docker/Image.html" title="class in org.openqa.selenium.docker">Image</a>&nbsp;videoImage,
                     <a href="../../../grid/docker/DockerAssetsPath.html" title="class in org.openqa.selenium.grid.docker">DockerAssetsPath</a>&nbsp;assetsPath)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -419,13 +424,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="rowColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/node/ProtocolConvertingSession.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient,org.openqa.selenium.remote.SessionId,java.net.URL,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect,org.openqa.selenium.Capabilities,org.openqa.selenium.Capabilities,java.time.Instant)">ProtocolConvertingSession</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                         org.openqa.selenium.remote.http.HttpClient&nbsp;client,
-                         org.openqa.selenium.remote.SessionId&nbsp;id,
+                         <a href="../../http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client,
+                         <a href="../../SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;id,
                          java.net.URL&nbsp;url,
-                         org.openqa.selenium.remote.Dialect&nbsp;downstream,
-                         org.openqa.selenium.remote.Dialect&nbsp;upstream,
-                         org.openqa.selenium.Capabilities&nbsp;stereotype,
-                         org.openqa.selenium.Capabilities&nbsp;capabilities,
+                         <a href="../../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
+                         <a href="../../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream,
+                         <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
+                         <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
                          java.time.Instant&nbsp;startTime)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -447,10 +452,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/node/config/DriverServiceSessionFactory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.Capabilities,java.util.function.Predicate,org.openqa.selenium.remote.service.DriverService.Builder)">DriverServiceSessionFactory</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                           org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
-                           org.openqa.selenium.Capabilities&nbsp;stereotype,
-                           java.util.function.Predicate&lt;org.openqa.selenium.Capabilities&gt;&nbsp;predicate,
-                           org.openqa.selenium.remote.service.DriverService.Builder&nbsp;builder)</code></th>
+                           <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
+                           <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;stereotype,
+                           java.util.function.Predicate&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;predicate,
+                           <a href="../../service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&nbsp;builder)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -497,11 +502,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/node/remote/RemoteNode.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.data.NodeId,java.net.URI,org.openqa.selenium.grid.security.Secret,java.util.Collection)">RemoteNode</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-          org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
+          <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
           <a href="../../../grid/data/NodeId.html" title="class in org.openqa.selenium.grid.data">NodeId</a>&nbsp;id,
           java.net.URI&nbsp;externalUri,
           <a href="../../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret,
-          java.util.Collection&lt;org.openqa.selenium.Capabilities&gt;&nbsp;capabilities)</code></th>
+          java.util.Collection&lt;<a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -522,7 +527,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/router/Router.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory,org.openqa.selenium.grid.sessionmap.SessionMap,org.openqa.selenium.grid.sessionqueue.NewSessionQueuer,org.openqa.selenium.grid.distributor.Distributor)">Router</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-      org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;clientFactory,
+      <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;clientFactory,
       <a href="../../../grid/sessionmap/SessionMap.html" title="class in org.openqa.selenium.grid.sessionmap">SessionMap</a>&nbsp;sessions,
       <a href="../../../grid/sessionqueue/NewSessionQueuer.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueuer</a>&nbsp;queuer,
       <a href="../../../grid/distributor/Distributor.html" title="class in org.openqa.selenium.grid.distributor">Distributor</a>&nbsp;distributor)</code></th>
@@ -546,7 +551,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><code>org.openqa.selenium.remote.http.HttpClient.Factory</code></td>
+<td class="colFirst"><code><a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">NetworkOptions.</span><code><span class="memberNameLink"><a href="../../../grid/server/NetworkOptions.html#getHttpClientFactory(org.openqa.selenium.remote.tracing.Tracer)">getHttpClientFactory</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -628,7 +633,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/sessionmap/remote/RemoteSessionMap.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient)">RemoteSessionMap</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                org.openqa.selenium.remote.http.HttpClient&nbsp;client)</code></th>
+                <a href="../../http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -732,7 +737,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/sessionqueue/remote/RemoteNewSessionQueuer.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient,org.openqa.selenium.grid.security.Secret)">RemoteNewSessionQueuer</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                      org.openqa.selenium.remote.http.HttpClient&nbsp;client,
+                      <a href="../../http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client,
                       <a href="../../../grid/security/Secret.html" title="class in org.openqa.selenium.grid.security">Secret</a>&nbsp;registrationSecret)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -754,14 +759,35 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/web/ProtocolConverter.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient,org.openqa.selenium.remote.Dialect,org.openqa.selenium.remote.Dialect)">ProtocolConverter</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                 org.openqa.selenium.remote.http.HttpClient&nbsp;client,
-                 org.openqa.selenium.remote.Dialect&nbsp;downstream,
-                 org.openqa.selenium.remote.Dialect&nbsp;upstream)</code></th>
+                 <a href="../../http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client,
+                 <a href="../../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;downstream,
+                 <a href="../../Dialect.html" title="enum in org.openqa.selenium.remote">Dialect</a>&nbsp;upstream)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../grid/web/ReverseProxyHandler.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient)">ReverseProxyHandler</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                   org.openqa.selenium.remote.http.HttpClient&nbsp;httpClient)</code></th>
+                   <a href="../../http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;httpClient)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</section>
+</li>
+<li class="blockList">
+<section role="region"><a id="org.openqa.selenium.remote">
+<!--   -->
+</a>
+<h3>Uses of <a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a> in <a href="../../package-summary.html">org.openqa.selenium.remote</a></h3>
+<table class="useSummary">
+<caption><span>Constructors in <a href="../../package-summary.html">org.openqa.selenium.remote</a> with parameters of type <a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../TracedCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.CommandExecutor,org.openqa.selenium.remote.tracing.Tracer)">TracedCommandExecutor</a></span>&#8203;(<a href="../../CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>&nbsp;delegate,
+                     <a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -785,13 +811,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">HttpTracing.</span><code><span class="memberNameLink"><a href="../HttpTracing.html#inject(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.tracing.TraceContext,org.openqa.selenium.remote.http.HttpRequest)">inject</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
       <a href="../TraceContext.html" title="interface in org.openqa.selenium.remote.tracing">TraceContext</a>&nbsp;context,
-      org.openqa.selenium.remote.http.HttpRequest&nbsp;request)</code></th>
+      <a href="../../http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="../Span.html" title="interface in org.openqa.selenium.remote.tracing">Span</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">HttpTracing.</span><code><span class="memberNameLink"><a href="../HttpTracing.html#newSpanAsChildOf(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpRequest,java.lang.String)">newSpanAsChildOf</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                org.openqa.selenium.remote.http.HttpRequest&nbsp;request,
+                <a href="../../http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
                 java.lang.String&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -806,24 +832,24 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../TracedHttpClient.Factory.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,org.openqa.selenium.remote.http.HttpClient.Factory)">Factory</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-       org.openqa.selenium.remote.http.HttpClient.Factory&nbsp;delegate)</code></th>
+       <a href="../../http/HttpClient.Factory.html" title="interface in org.openqa.selenium.remote.http">HttpClient.Factory</a>&nbsp;delegate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../SpanDecorator.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,java.util.function.Function)">SpanDecorator</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-             java.util.function.Function&lt;org.openqa.selenium.remote.http.HttpRequest,&#8203;java.lang.String&gt;&nbsp;namer)</code></th>
+             java.util.function.Function&lt;<a href="../../http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>,&#8203;java.lang.String&gt;&nbsp;namer)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../SpanWrappedHttpHandler.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,java.util.function.Function,org.openqa.selenium.remote.http.HttpHandler)">SpanWrappedHttpHandler</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                      java.util.function.Function&lt;org.openqa.selenium.remote.http.HttpRequest,&#8203;java.lang.String&gt;&nbsp;namer,
-                      org.openqa.selenium.remote.http.HttpHandler&nbsp;delegate)</code></th>
+                      java.util.function.Function&lt;<a href="../../http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>,&#8203;java.lang.String&gt;&nbsp;namer,
+                      <a href="../../http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&nbsp;delegate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../SpanWrappedRoutable.html#%3Cinit%3E(org.openqa.selenium.remote.tracing.Tracer,java.util.function.Function,org.openqa.selenium.remote.http.Routable)">SpanWrappedRoutable</a></span>&#8203;(<a href="../Tracer.html" title="interface in org.openqa.selenium.remote.tracing">Tracer</a>&nbsp;tracer,
-                   java.util.function.Function&lt;org.openqa.selenium.remote.http.HttpRequest,&#8203;java.lang.String&gt;&nbsp;namer,
-                   org.openqa.selenium.remote.http.Routable&nbsp;delegate)</code></th>
+                   java.util.function.Function&lt;<a href="../../http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>,&#8203;java.lang.String&gt;&nbsp;namer,
+                   <a href="../../http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a>&nbsp;delegate)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>

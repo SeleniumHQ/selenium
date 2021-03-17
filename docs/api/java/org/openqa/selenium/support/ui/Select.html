@@ -137,12 +137,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code>, <code>org.openqa.selenium.WrapsElement</code></dd>
+<dd><code><a href="ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code>, <code><a href="../../WrapsElement.html" title="interface in org.openqa.selenium">WrapsElement</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">Select</span>
 extends java.lang.Object
-implements <a href="ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a>, org.openqa.selenium.WrapsElement</pre>
+implements <a href="ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a>, <a href="../../WrapsElement.html" title="interface in org.openqa.selenium">WrapsElement</a></pre>
 <div class="block">Models a SELECT tag, providing helper methods to select and deselect options.</div>
 </li>
 </ul>
@@ -164,7 +164,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.WebElement)">Select</a></span>&#8203;(org.openqa.selenium.WebElement&nbsp;element)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.WebElement)">Select</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</code></th>
 <td class="colLast">
 <div class="block">Constructor.</div>
 </td>
@@ -221,22 +221,22 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;org.openqa.selenium.WebElement&gt;</code></td>
+<td class="colFirst"><code>java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAllSelectedOptions()">getAllSelectedOptions</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>org.openqa.selenium.WebElement</code></td>
+<td class="colFirst"><code><a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFirstSelectedOption()">getFirstSelectedOption</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;org.openqa.selenium.WebElement&gt;</code></td>
+<td class="colFirst"><code>java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getOptions()">getOptions</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>org.openqa.selenium.WebElement</code></td>
+<td class="colFirst"><code><a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getWrappedElement()">getWrappedElement</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -301,7 +301,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Select</h4>
-<pre>public&nbsp;Select&#8203;(org.openqa.selenium.WebElement&nbsp;element)</pre>
+<pre>public&nbsp;Select&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</pre>
 <div class="block">Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,
  then an UnexpectedTagNameException is thrown.</div>
 <dl>
@@ -328,10 +328,10 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <ul class="blockList">
 <li class="blockList">
 <h4>getWrappedElement</h4>
-<pre class="methodSignature">public&nbsp;org.openqa.selenium.WebElement&nbsp;getWrappedElement()</pre>
+<pre class="methodSignature">public&nbsp;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;getWrappedElement()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code>getWrappedElement</code>&nbsp;in interface&nbsp;<code>org.openqa.selenium.WrapsElement</code></dd>
+<dd><code><a href="../../WrapsElement.html#getWrappedElement()">getWrappedElement</a></code>&nbsp;in interface&nbsp;<code><a href="../../WrapsElement.html" title="interface in org.openqa.selenium">WrapsElement</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -357,7 +357,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <ul class="blockList">
 <li class="blockList">
 <h4>getOptions</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;org.openqa.selenium.WebElement&gt;&nbsp;getOptions()</pre>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;getOptions()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="ISelect.html#getOptions()">getOptions</a></code>&nbsp;in interface&nbsp;<code><a href="ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
@@ -372,7 +372,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllSelectedOptions</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;org.openqa.selenium.WebElement&gt;&nbsp;getAllSelectedOptions()</pre>
+<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;getAllSelectedOptions()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="ISelect.html#getAllSelectedOptions()">getAllSelectedOptions</a></code>&nbsp;in interface&nbsp;<code><a href="ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
@@ -387,7 +387,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <ul class="blockList">
 <li class="blockList">
 <h4>getFirstSelectedOption</h4>
-<pre class="methodSignature">public&nbsp;org.openqa.selenium.WebElement&nbsp;getFirstSelectedOption()</pre>
+<pre class="methodSignature">public&nbsp;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;getFirstSelectedOption()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="ISelect.html#getFirstSelectedOption()">getFirstSelectedOption</a></code>&nbsp;in interface&nbsp;<code><a href="ISelect.html" title="interface in org.openqa.selenium.support.ui">ISelect</a></code></dd>
@@ -395,7 +395,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <dd>The first selected option in this select tag (or the currently selected option in a
          normal select)</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.openqa.selenium.NoSuchElementException</code> - If no option is selected</dd>
+<dd><code><a href="../../NoSuchElementException.html" title="class in org.openqa.selenium">NoSuchElementException</a></code> - If no option is selected</dd>
 </dl>
 </li>
 </ul>
@@ -416,7 +416,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>text</code> - The visible text to match against</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.openqa.selenium.NoSuchElementException</code> - If no matching option elements are found</dd>
+<dd><code><a href="../../NoSuchElementException.html" title="class in org.openqa.selenium">NoSuchElementException</a></code> - If no matching option elements are found</dd>
 </dl>
 </li>
 </ul>
@@ -435,7 +435,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>index</code> - The option at this index will be selected</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.openqa.selenium.NoSuchElementException</code> - If no matching option elements are found</dd>
+<dd><code><a href="../../NoSuchElementException.html" title="class in org.openqa.selenium">NoSuchElementException</a></code> - If no matching option elements are found</dd>
 </dl>
 </li>
 </ul>
@@ -456,7 +456,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - The value to match against</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.openqa.selenium.NoSuchElementException</code> - If no matching option elements are found</dd>
+<dd><code><a href="../../NoSuchElementException.html" title="class in org.openqa.selenium">NoSuchElementException</a></code> - If no matching option elements are found</dd>
 </dl>
 </li>
 </ul>
@@ -493,7 +493,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - The value to match against</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.openqa.selenium.NoSuchElementException</code> - If no matching option elements are found</dd>
+<dd><code><a href="../../NoSuchElementException.html" title="class in org.openqa.selenium">NoSuchElementException</a></code> - If no matching option elements are found</dd>
 <dd><code>java.lang.UnsupportedOperationException</code> - If the SELECT does not support multiple selections</dd>
 </dl>
 </li>
@@ -513,7 +513,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>index</code> - The option at this index will be deselected</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.openqa.selenium.NoSuchElementException</code> - If no matching option elements are found</dd>
+<dd><code><a href="../../NoSuchElementException.html" title="class in org.openqa.selenium">NoSuchElementException</a></code> - If no matching option elements are found</dd>
 <dd><code>java.lang.UnsupportedOperationException</code> - If the SELECT does not support multiple selections</dd>
 </dl>
 </li>
@@ -535,7 +535,7 @@ implements <a href="ISelect.html" title="interface in org.openqa.selenium.suppor
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>text</code> - The visible text to match against</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>org.openqa.selenium.NoSuchElementException</code> - If no matching option elements are found</dd>
+<dd><code><a href="../../NoSuchElementException.html" title="class in org.openqa.selenium">NoSuchElementException</a></code> - If no matching option elements are found</dd>
 <dd><code>java.lang.UnsupportedOperationException</code> - If the SELECT does not support multiple selections</dd>
 </dl>
 </li>

@@ -103,6 +103,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul>
 <li><a href="#interface">Interfaces</a></li>
 <li><a href="#class">Classes</a></li>
+<li><a href="#field">Fields</a></li>
 <li><a href="#method">Methods</a></li>
 <li><a href="#constructor">Constructors</a></li>
 </ul>
@@ -120,6 +121,32 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">org.openqa.selenium.interactions.HasInputDevices</a></th>
+<td class="colLast"></td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">org.openqa.selenium.interactions.HasTouchScreen</a></th>
+<td class="colLast"></td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">org.openqa.selenium.interactions.Keyboard</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions"><code>Actions</code></a> and <a href="org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions"><code>KeyInput</code></a> instead.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">org.openqa.selenium.interactions.Mouse</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions"><code>Actions</code></a> and the <a href="org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions"><code>PointerInput</code></a> instead.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">org.openqa.selenium.interactions.TouchScreen</a></th>
+<td class="colLast">
+<div class="deprecationComment">Replaced by <a href="org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions"><code>Actions</code></a> and <a href="org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions"><code>PointerInput</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">org.openqa.selenium.support.events.WebDriverEventListener</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/support/events/EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a> and <a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a> instead</div>
@@ -142,109 +169,201 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/console/Console.html" title="class in org.openqa.selenium.devtools.v86.console">org.openqa.selenium.devtools.v86.console.Console</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/xpi/XpiDriverInfo.html" title="class in org.openqa.selenium.firefox.xpi">org.openqa.selenium.firefox.xpi.XpiDriverInfo</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/network/model/RequestIntercepted.html" title="class in org.openqa.selenium.devtools.v86.network.model">org.openqa.selenium.devtools.v86.network.model.RequestIntercepted</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/xpi/XpiDriverService.html" title="class in org.openqa.selenium.firefox.xpi">org.openqa.selenium.firefox.xpi.XpiDriverService</a></th>
+<td class="colLast">
+<div class="deprecationComment">This class will not be replaced.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ButtonReleaseAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#release()"><code>Actions.release()</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/ClickAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ClickAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#click(org.openqa.selenium.WebElement)"><code>Actions.click(WebElement)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/ClickAndHoldAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ClickAndHoldAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#clickAndHold(org.openqa.selenium.WebElement)"><code>Actions.clickAndHold(WebElement)</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/ContextClickAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ContextClickAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#contextClick(org.openqa.selenium.WebElement)"><code>Actions.contextClick(WebElement)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/DoubleClickAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.DoubleClickAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#doubleClick(org.openqa.selenium.WebElement)"><code>Actions.doubleClick(WebElement)</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/internal/BaseAction.html" title="class in org.openqa.selenium.interactions.internal">org.openqa.selenium.interactions.internal.BaseAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/model/FrameScheduledNavigation.html" title="class in org.openqa.selenium.devtools.v86.page.model">org.openqa.selenium.devtools.v86.page.model.FrameScheduledNavigation</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/internal/DisplayAction.html" title="class in org.openqa.selenium.interactions.internal">org.openqa.selenium.interactions.internal.DisplayAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/schema/Schema.html" title="class in org.openqa.selenium.devtools.v86.schema">org.openqa.selenium.devtools.v86.schema.Schema</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/internal/KeysRelatedAction.html" title="class in org.openqa.selenium.interactions.internal">org.openqa.selenium.interactions.internal.KeysRelatedAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/security/model/CertificateError.html" title="class in org.openqa.selenium.devtools.v86.security.model">org.openqa.selenium.devtools.v86.security.model.CertificateError</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/internal/MouseAction.html" title="class in org.openqa.selenium.interactions.internal">org.openqa.selenium.interactions.internal.MouseAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/security/model/InsecureContentStatus.html" title="class in org.openqa.selenium.devtools.v86.security.model">org.openqa.selenium.devtools.v86.security.model.InsecureContentStatus</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/internal/SingleKeyAction.html" title="class in org.openqa.selenium.interactions.internal">org.openqa.selenium.interactions.internal.SingleKeyAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/console/Console.html" title="class in org.openqa.selenium.devtools.v87.console">org.openqa.selenium.devtools.v87.console.Console</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/internal/TouchAction.html" title="class in org.openqa.selenium.interactions.internal">org.openqa.selenium.interactions.internal.TouchAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/network/model/RequestIntercepted.html" title="class in org.openqa.selenium.devtools.v87.network.model">org.openqa.selenium.devtools.v87.network.model.RequestIntercepted</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/KeyDownAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.KeyDownAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#keyDown(org.openqa.selenium.WebElement,java.lang.CharSequence)"><code>Actions.keyDown(WebElement, CharSequence)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/KeyUpAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.KeyUpAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#keyUp(java.lang.CharSequence)"><code>Actions.keyUp(CharSequence)</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/MoveMouseAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.MoveMouseAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#moveToElement(org.openqa.selenium.WebElement)"><code>Actions.moveToElement(WebElement)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.MoveToOffsetAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#moveToElement(org.openqa.selenium.WebElement,int,int)"><code>Actions.moveToElement(WebElement, int, int)</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/PauseAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.PauseAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">'Pause' is considered to be a bad design practice.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/SendKeysAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.SendKeysAction</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#sendKeys(org.openqa.selenium.WebElement,java.lang.CharSequence...)"><code>Actions.sendKeys(WebElement, CharSequence...)</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/touch/DoubleTapAction.html" title="class in org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch.DoubleTapAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/model/FrameScheduledNavigation.html" title="class in org.openqa.selenium.devtools.v87.page.model">org.openqa.selenium.devtools.v87.page.model.FrameScheduledNavigation</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/touch/DownAction.html" title="class in org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch.DownAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/schema/Schema.html" title="class in org.openqa.selenium.devtools.v87.schema">org.openqa.selenium.devtools.v87.schema.Schema</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/touch/FlickAction.html" title="class in org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch.FlickAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/security/model/CertificateError.html" title="class in org.openqa.selenium.devtools.v87.security.model">org.openqa.selenium.devtools.v87.security.model.CertificateError</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/touch/LongPressAction.html" title="class in org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch.LongPressAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/security/model/InsecureContentStatus.html" title="class in org.openqa.selenium.devtools.v87.security.model">org.openqa.selenium.devtools.v87.security.model.InsecureContentStatus</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/touch/MoveAction.html" title="class in org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch.MoveAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/console/Console.html" title="class in org.openqa.selenium.devtools.v88.console">org.openqa.selenium.devtools.v88.console.Console</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/touch/ScrollAction.html" title="class in org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch.ScrollAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/network/model/RequestIntercepted.html" title="class in org.openqa.selenium.devtools.v88.network.model">org.openqa.selenium.devtools.v88.network.model.RequestIntercepted</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/touch/SingleTapAction.html" title="class in org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch.SingleTapAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/model/FrameScheduledNavigation.html" title="class in org.openqa.selenium.devtools.v88.page.model">org.openqa.selenium.devtools.v88.page.model.FrameScheduledNavigation</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/touch/UpAction.html" title="class in org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch.UpAction</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/schema/Schema.html" title="class in org.openqa.selenium.devtools.v88.schema">org.openqa.selenium.devtools.v88.schema.Schema</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/security/model/CertificateError.html" title="class in org.openqa.selenium.devtools.v88.security.model">org.openqa.selenium.devtools.v88.security.model.CertificateError</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/security/model/InsecureContentStatus.html" title="class in org.openqa.selenium.devtools.v88.security.model">org.openqa.selenium.devtools.v88.security.model.InsecureContentStatus</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/console/Console.html" title="class in org.openqa.selenium.devtools.v89.console">org.openqa.selenium.devtools.v89.console.Console</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/network/model/RequestIntercepted.html" title="class in org.openqa.selenium.devtools.v89.network.model">org.openqa.selenium.devtools.v89.network.model.RequestIntercepted</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/model/FrameScheduledNavigation.html" title="class in org.openqa.selenium.devtools.v89.page.model">org.openqa.selenium.devtools.v89.page.model.FrameScheduledNavigation</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/schema/Schema.html" title="class in org.openqa.selenium.devtools.v89.schema">org.openqa.selenium.devtools.v89.schema.Schema</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/security/model/CertificateError.html" title="class in org.openqa.selenium.devtools.v89.security.model">org.openqa.selenium.devtools.v89.security.model.CertificateError</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/security/model/InsecureContentStatus.html" title="class in org.openqa.selenium.devtools.v89.security.model">org.openqa.selenium.devtools.v89.security.model.InsecureContentStatus</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/support/events/AbstractWebDriverEventListener.html" title="class in org.openqa.selenium.support.events">org.openqa.selenium.support.events.AbstractWebDriverEventListener</a></th>
 <td class="colLast"></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">org.openqa.selenium.support.events.EventFiringWebDriver</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/support/events/EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a> and <a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a> instead</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a id="field">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Field</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#BINARY">org.openqa.selenium.firefox.FirefoxDriver.BINARY</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxDriver.Capability.html#BINARY"><code>FirefoxDriver.Capability.BINARY</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#MARIONETTE">org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxDriver.Capability.html#MARIONETTE"><code>FirefoxDriver.Capability.MARIONETTE</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#PROFILE">org.openqa.selenium.firefox.FirefoxDriver.PROFILE</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxDriver.Capability.html#PROFILE"><code>FirefoxDriver.Capability.PROFILE</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PRE_PROCESS_PROXY">org.openqa.selenium.ie.InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PER_PROCESS_PROXY"><code>InternetExplorerDriver.IE_USE_PER_PROCESS_PROXY</code></a> (the one without the typo);</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/BrowserType.html#OPERA_BLINK">org.openqa.selenium.remote.BrowserType.OPERA_BLINK</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/remote/BrowserType.html#OPERA"><code>BrowserType.OPERA</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#PLATFORM">org.openqa.selenium.remote.CapabilityType.PLATFORM</a></th>
+<td class="colLast"></td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/safari/SafariOptions.html#CAPABILITY">org.openqa.selenium.safari.SafariOptions.CAPABILITY</a></th>
+<td class="colLast">
+<div class="deprecationComment">No replacement. Use the methods on this class</div>
 </td>
 </tr>
 </tbody>
@@ -264,548 +383,150 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/debugger/Debugger.html#getWasmBytecode(org.openqa.selenium.devtools.v86.runtime.model.ScriptId)">org.openqa.selenium.devtools.v86.debugger.Debugger.getWasmBytecode&#8203;(ScriptId)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/debugger/Debugger.html#pauseOnAsyncCall(org.openqa.selenium.devtools.v86.runtime.model.StackTraceId)">org.openqa.selenium.devtools.v86.debugger.Debugger.pauseOnAsyncCall&#8203;(StackTraceId)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/debugger/model/Paused.html#getAsyncCallStackTraceId()">org.openqa.selenium.devtools.v86.debugger.model.Paused.getAsyncCallStackTraceId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/dom/DOM.html#getFlattenedDocument(java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v86.dom.DOM.getFlattenedDocument&#8203;(Optional&lt;Integer&gt;, Optional&lt;Boolean&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/domsnapshot/DOMSnapshot.html#getSnapshot(java.util.List,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v86.domsnapshot.DOMSnapshot.getSnapshot&#8203;(List&lt;String&gt;, Optional&lt;Boolean&gt;, Optional&lt;Boolean&gt;, Optional&lt;Boolean&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/emulation/Emulation.html#setNavigatorOverrides(java.lang.String)">org.openqa.selenium.devtools.v86.emulation.Emulation.setNavigatorOverrides&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/emulation/Emulation.html#setVisibleSize(java.lang.Integer,java.lang.Integer)">org.openqa.selenium.devtools.v86.emulation.Emulation.setVisibleSize&#8203;(Integer, Integer)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/network/Network.html#canClearBrowserCache()">org.openqa.selenium.devtools.v86.network.Network.canClearBrowserCache()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/network/Network.html#canClearBrowserCookies()">org.openqa.selenium.devtools.v86.network.Network.canClearBrowserCookies()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/network/Network.html#canEmulateNetworkConditions()">org.openqa.selenium.devtools.v86.network.Network.canEmulateNetworkConditions()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/network/Network.html#continueInterceptedRequest(org.openqa.selenium.devtools.v86.network.model.InterceptionId,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v86.network.Network.continueInterceptedRequest&#8203;(InterceptionId, Optional&lt;ErrorReason&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;Headers&gt;, Optional&lt;AuthChallengeResponse&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/network/Network.html#setRequestInterception(java.util.List)">org.openqa.selenium.devtools.v86.network.Network.setRequestInterception&#8203;(List&lt;RequestPattern&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/overlay/model/GridHighlightConfig.html#getCellBorderColor()">org.openqa.selenium.devtools.v86.overlay.model.GridHighlightConfig.getCellBorderColor()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/overlay/model/GridHighlightConfig.html#getCellBorderDash()">org.openqa.selenium.devtools.v86.overlay.model.GridHighlightConfig.getCellBorderDash()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#addScriptToEvaluateOnLoad(java.lang.String)">org.openqa.selenium.devtools.v86.page.Page.addScriptToEvaluateOnLoad&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#clearDeviceMetricsOverride()">org.openqa.selenium.devtools.v86.page.Page.clearDeviceMetricsOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#clearDeviceOrientationOverride()">org.openqa.selenium.devtools.v86.page.Page.clearDeviceOrientationOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#clearGeolocationOverride()">org.openqa.selenium.devtools.v86.page.Page.clearGeolocationOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#deleteCookie(java.lang.String,java.lang.String)">org.openqa.selenium.devtools.v86.page.Page.deleteCookie&#8203;(String, String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#getCookies()">org.openqa.selenium.devtools.v86.page.Page.getCookies()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#removeScriptToEvaluateOnLoad(org.openqa.selenium.devtools.v86.page.model.ScriptIdentifier)">org.openqa.selenium.devtools.v86.page.Page.removeScriptToEvaluateOnLoad&#8203;(ScriptIdentifier)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#setDeviceMetricsOverride(java.lang.Integer,java.lang.Integer,java.lang.Number,java.lang.Boolean,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v86.page.Page.setDeviceMetricsOverride&#8203;(Integer, Integer, Number, Boolean, Optional&lt;Number&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Boolean&gt;, Optional&lt;ScreenOrientation&gt;, Optional&lt;Viewport&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#setDeviceOrientationOverride(java.lang.Number,java.lang.Number,java.lang.Number)">org.openqa.selenium.devtools.v86.page.Page.setDeviceOrientationOverride&#8203;(Number, Number, Number)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#setDownloadBehavior(org.openqa.selenium.devtools.v86.page.Page.SetDownloadBehaviorBehavior,java.util.Optional)">org.openqa.selenium.devtools.v86.page.Page.setDownloadBehavior&#8203;(Page.SetDownloadBehaviorBehavior, Optional&lt;String&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#setGeolocationOverride(java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v86.page.Page.setGeolocationOverride&#8203;(Optional&lt;Number&gt;, Optional&lt;Number&gt;, Optional&lt;Number&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/page/Page.html#setTouchEmulationEnabled(java.lang.Boolean,java.util.Optional)">org.openqa.selenium.devtools.v86.page.Page.setTouchEmulationEnabled&#8203;(Boolean, Optional&lt;Page.SetTouchEmulationEnabledConfiguration&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/performance/Performance.html#setTimeDomain(org.openqa.selenium.devtools.v86.performance.Performance.SetTimeDomainTimeDomain)">org.openqa.selenium.devtools.v86.performance.Performance.setTimeDomain&#8203;(Performance.SetTimeDomainTimeDomain)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/security/model/SecurityStateChanged.html#getInsecureContentStatus()">org.openqa.selenium.devtools.v86.security.model.SecurityStateChanged.getInsecureContentStatus()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/security/model/SecurityStateChanged.html#getSchemeIsCryptographic()">org.openqa.selenium.devtools.v86.security.model.SecurityStateChanged.getSchemeIsCryptographic()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/security/Security.html#handleCertificateError(java.lang.Integer,org.openqa.selenium.devtools.v86.security.model.CertificateErrorAction)">org.openqa.selenium.devtools.v86.security.Security.handleCertificateError&#8203;(Integer, CertificateErrorAction)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/security/Security.html#setOverrideCertificateErrors(java.lang.Boolean)">org.openqa.selenium.devtools.v86.security.Security.setOverrideCertificateErrors&#8203;(Boolean)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/target/model/DetachedFromTarget.html#getTargetId()">org.openqa.selenium.devtools.v86.target.model.DetachedFromTarget.getTargetId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/target/model/ReceivedMessageFromTarget.html#getTargetId()">org.openqa.selenium.devtools.v86.target.model.ReceivedMessageFromTarget.getTargetId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v86/target/Target.html#sendMessageToTarget(java.lang.String,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v86.target.Target.sendMessageToTarget&#8203;(String, Optional&lt;SessionID&gt;, Optional&lt;TargetID&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/debugger/Debugger.html#getWasmBytecode(org.openqa.selenium.devtools.v87.runtime.model.ScriptId)">org.openqa.selenium.devtools.v87.debugger.Debugger.getWasmBytecode&#8203;(ScriptId)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/debugger/Debugger.html#pauseOnAsyncCall(org.openqa.selenium.devtools.v87.runtime.model.StackTraceId)">org.openqa.selenium.devtools.v87.debugger.Debugger.pauseOnAsyncCall&#8203;(StackTraceId)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/debugger/model/Paused.html#getAsyncCallStackTraceId()">org.openqa.selenium.devtools.v87.debugger.model.Paused.getAsyncCallStackTraceId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/dom/DOM.html#getFlattenedDocument(java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v87.dom.DOM.getFlattenedDocument&#8203;(Optional&lt;Integer&gt;, Optional&lt;Boolean&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/domsnapshot/DOMSnapshot.html#getSnapshot(java.util.List,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v87.domsnapshot.DOMSnapshot.getSnapshot&#8203;(List&lt;String&gt;, Optional&lt;Boolean&gt;, Optional&lt;Boolean&gt;, Optional&lt;Boolean&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/emulation/Emulation.html#setNavigatorOverrides(java.lang.String)">org.openqa.selenium.devtools.v87.emulation.Emulation.setNavigatorOverrides&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/emulation/Emulation.html#setVisibleSize(java.lang.Integer,java.lang.Integer)">org.openqa.selenium.devtools.v87.emulation.Emulation.setVisibleSize&#8203;(Integer, Integer)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/network/Network.html#canClearBrowserCache()">org.openqa.selenium.devtools.v87.network.Network.canClearBrowserCache()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/network/Network.html#canClearBrowserCookies()">org.openqa.selenium.devtools.v87.network.Network.canClearBrowserCookies()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/network/Network.html#canEmulateNetworkConditions()">org.openqa.selenium.devtools.v87.network.Network.canEmulateNetworkConditions()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/network/Network.html#continueInterceptedRequest(org.openqa.selenium.devtools.v87.network.model.InterceptionId,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v87.network.Network.continueInterceptedRequest&#8203;(InterceptionId, Optional&lt;ErrorReason&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;Headers&gt;, Optional&lt;AuthChallengeResponse&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/network/Network.html#setRequestInterception(java.util.List)">org.openqa.selenium.devtools.v87.network.Network.setRequestInterception&#8203;(List&lt;RequestPattern&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/overlay/model/GridHighlightConfig.html#getCellBorderColor()">org.openqa.selenium.devtools.v87.overlay.model.GridHighlightConfig.getCellBorderColor()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/overlay/model/GridHighlightConfig.html#getCellBorderDash()">org.openqa.selenium.devtools.v87.overlay.model.GridHighlightConfig.getCellBorderDash()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#addScriptToEvaluateOnLoad(java.lang.String)">org.openqa.selenium.devtools.v87.page.Page.addScriptToEvaluateOnLoad&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#clearDeviceMetricsOverride()">org.openqa.selenium.devtools.v87.page.Page.clearDeviceMetricsOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#clearDeviceOrientationOverride()">org.openqa.selenium.devtools.v87.page.Page.clearDeviceOrientationOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#clearGeolocationOverride()">org.openqa.selenium.devtools.v87.page.Page.clearGeolocationOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#deleteCookie(java.lang.String,java.lang.String)">org.openqa.selenium.devtools.v87.page.Page.deleteCookie&#8203;(String, String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#getCookies()">org.openqa.selenium.devtools.v87.page.Page.getCookies()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#removeScriptToEvaluateOnLoad(org.openqa.selenium.devtools.v87.page.model.ScriptIdentifier)">org.openqa.selenium.devtools.v87.page.Page.removeScriptToEvaluateOnLoad&#8203;(ScriptIdentifier)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#setDeviceMetricsOverride(java.lang.Integer,java.lang.Integer,java.lang.Number,java.lang.Boolean,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v87.page.Page.setDeviceMetricsOverride&#8203;(Integer, Integer, Number, Boolean, Optional&lt;Number&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Boolean&gt;, Optional&lt;ScreenOrientation&gt;, Optional&lt;Viewport&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#setDeviceOrientationOverride(java.lang.Number,java.lang.Number,java.lang.Number)">org.openqa.selenium.devtools.v87.page.Page.setDeviceOrientationOverride&#8203;(Number, Number, Number)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#setDownloadBehavior(org.openqa.selenium.devtools.v87.page.Page.SetDownloadBehaviorBehavior,java.util.Optional)">org.openqa.selenium.devtools.v87.page.Page.setDownloadBehavior&#8203;(Page.SetDownloadBehaviorBehavior, Optional&lt;String&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#setGeolocationOverride(java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v87.page.Page.setGeolocationOverride&#8203;(Optional&lt;Number&gt;, Optional&lt;Number&gt;, Optional&lt;Number&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/page/Page.html#setTouchEmulationEnabled(java.lang.Boolean,java.util.Optional)">org.openqa.selenium.devtools.v87.page.Page.setTouchEmulationEnabled&#8203;(Boolean, Optional&lt;Page.SetTouchEmulationEnabledConfiguration&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/performance/Performance.html#setTimeDomain(org.openqa.selenium.devtools.v87.performance.Performance.SetTimeDomainTimeDomain)">org.openqa.selenium.devtools.v87.performance.Performance.setTimeDomain&#8203;(Performance.SetTimeDomainTimeDomain)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/security/model/SecurityStateChanged.html#getInsecureContentStatus()">org.openqa.selenium.devtools.v87.security.model.SecurityStateChanged.getInsecureContentStatus()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/security/model/SecurityStateChanged.html#getSchemeIsCryptographic()">org.openqa.selenium.devtools.v87.security.model.SecurityStateChanged.getSchemeIsCryptographic()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/security/Security.html#handleCertificateError(java.lang.Integer,org.openqa.selenium.devtools.v87.security.model.CertificateErrorAction)">org.openqa.selenium.devtools.v87.security.Security.handleCertificateError&#8203;(Integer, CertificateErrorAction)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/security/Security.html#setOverrideCertificateErrors(java.lang.Boolean)">org.openqa.selenium.devtools.v87.security.Security.setOverrideCertificateErrors&#8203;(Boolean)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/target/model/DetachedFromTarget.html#getTargetId()">org.openqa.selenium.devtools.v87.target.model.DetachedFromTarget.getTargetId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/target/model/ReceivedMessageFromTarget.html#getTargetId()">org.openqa.selenium.devtools.v87.target.model.ReceivedMessageFromTarget.getTargetId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v87/target/Target.html#sendMessageToTarget(java.lang.String,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v87.target.Target.sendMessageToTarget&#8203;(String, Optional&lt;SessionID&gt;, Optional&lt;TargetID&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/debugger/Debugger.html#getWasmBytecode(org.openqa.selenium.devtools.v88.runtime.model.ScriptId)">org.openqa.selenium.devtools.v88.debugger.Debugger.getWasmBytecode&#8203;(ScriptId)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/debugger/Debugger.html#pauseOnAsyncCall(org.openqa.selenium.devtools.v88.runtime.model.StackTraceId)">org.openqa.selenium.devtools.v88.debugger.Debugger.pauseOnAsyncCall&#8203;(StackTraceId)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/debugger/model/Paused.html#getAsyncCallStackTraceId()">org.openqa.selenium.devtools.v88.debugger.model.Paused.getAsyncCallStackTraceId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/dom/DOM.html#getFlattenedDocument(java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v88.dom.DOM.getFlattenedDocument&#8203;(Optional&lt;Integer&gt;, Optional&lt;Boolean&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/domsnapshot/DOMSnapshot.html#getSnapshot(java.util.List,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v88.domsnapshot.DOMSnapshot.getSnapshot&#8203;(List&lt;String&gt;, Optional&lt;Boolean&gt;, Optional&lt;Boolean&gt;, Optional&lt;Boolean&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/emulation/Emulation.html#setNavigatorOverrides(java.lang.String)">org.openqa.selenium.devtools.v88.emulation.Emulation.setNavigatorOverrides&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/emulation/Emulation.html#setVisibleSize(java.lang.Integer,java.lang.Integer)">org.openqa.selenium.devtools.v88.emulation.Emulation.setVisibleSize&#8203;(Integer, Integer)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/network/Network.html#canClearBrowserCache()">org.openqa.selenium.devtools.v88.network.Network.canClearBrowserCache()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/network/Network.html#canClearBrowserCookies()">org.openqa.selenium.devtools.v88.network.Network.canClearBrowserCookies()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/network/Network.html#canEmulateNetworkConditions()">org.openqa.selenium.devtools.v88.network.Network.canEmulateNetworkConditions()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/network/Network.html#continueInterceptedRequest(org.openqa.selenium.devtools.v88.network.model.InterceptionId,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v88.network.Network.continueInterceptedRequest&#8203;(InterceptionId, Optional&lt;ErrorReason&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;Headers&gt;, Optional&lt;AuthChallengeResponse&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/network/Network.html#setRequestInterception(java.util.List)">org.openqa.selenium.devtools.v88.network.Network.setRequestInterception&#8203;(List&lt;RequestPattern&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/overlay/model/GridHighlightConfig.html#getCellBorderColor()">org.openqa.selenium.devtools.v88.overlay.model.GridHighlightConfig.getCellBorderColor()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/overlay/model/GridHighlightConfig.html#getCellBorderDash()">org.openqa.selenium.devtools.v88.overlay.model.GridHighlightConfig.getCellBorderDash()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#addScriptToEvaluateOnLoad(java.lang.String)">org.openqa.selenium.devtools.v88.page.Page.addScriptToEvaluateOnLoad&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#clearDeviceMetricsOverride()">org.openqa.selenium.devtools.v88.page.Page.clearDeviceMetricsOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#clearDeviceOrientationOverride()">org.openqa.selenium.devtools.v88.page.Page.clearDeviceOrientationOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#clearGeolocationOverride()">org.openqa.selenium.devtools.v88.page.Page.clearGeolocationOverride()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#deleteCookie(java.lang.String,java.lang.String)">org.openqa.selenium.devtools.v88.page.Page.deleteCookie&#8203;(String, String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#getCookies()">org.openqa.selenium.devtools.v88.page.Page.getCookies()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#removeScriptToEvaluateOnLoad(org.openqa.selenium.devtools.v88.page.model.ScriptIdentifier)">org.openqa.selenium.devtools.v88.page.Page.removeScriptToEvaluateOnLoad&#8203;(ScriptIdentifier)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#setDeviceMetricsOverride(java.lang.Integer,java.lang.Integer,java.lang.Number,java.lang.Boolean,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v88.page.Page.setDeviceMetricsOverride&#8203;(Integer, Integer, Number, Boolean, Optional&lt;Number&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Boolean&gt;, Optional&lt;ScreenOrientation&gt;, Optional&lt;Viewport&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#setDeviceOrientationOverride(java.lang.Number,java.lang.Number,java.lang.Number)">org.openqa.selenium.devtools.v88.page.Page.setDeviceOrientationOverride&#8203;(Number, Number, Number)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#setDownloadBehavior(org.openqa.selenium.devtools.v88.page.Page.SetDownloadBehaviorBehavior,java.util.Optional)">org.openqa.selenium.devtools.v88.page.Page.setDownloadBehavior&#8203;(Page.SetDownloadBehaviorBehavior, Optional&lt;String&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#setGeolocationOverride(java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v88.page.Page.setGeolocationOverride&#8203;(Optional&lt;Number&gt;, Optional&lt;Number&gt;, Optional&lt;Number&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/page/Page.html#setTouchEmulationEnabled(java.lang.Boolean,java.util.Optional)">org.openqa.selenium.devtools.v88.page.Page.setTouchEmulationEnabled&#8203;(Boolean, Optional&lt;Page.SetTouchEmulationEnabledConfiguration&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/performance/Performance.html#setTimeDomain(org.openqa.selenium.devtools.v88.performance.Performance.SetTimeDomainTimeDomain)">org.openqa.selenium.devtools.v88.performance.Performance.setTimeDomain&#8203;(Performance.SetTimeDomainTimeDomain)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/security/model/SecurityStateChanged.html#getInsecureContentStatus()">org.openqa.selenium.devtools.v88.security.model.SecurityStateChanged.getInsecureContentStatus()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/security/model/SecurityStateChanged.html#getSchemeIsCryptographic()">org.openqa.selenium.devtools.v88.security.model.SecurityStateChanged.getSchemeIsCryptographic()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/security/Security.html#handleCertificateError(java.lang.Integer,org.openqa.selenium.devtools.v88.security.model.CertificateErrorAction)">org.openqa.selenium.devtools.v88.security.Security.handleCertificateError&#8203;(Integer, CertificateErrorAction)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/security/Security.html#setOverrideCertificateErrors(java.lang.Boolean)">org.openqa.selenium.devtools.v88.security.Security.setOverrideCertificateErrors&#8203;(Boolean)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/target/model/DetachedFromTarget.html#getTargetId()">org.openqa.selenium.devtools.v88.target.model.DetachedFromTarget.getTargetId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/target/model/ReceivedMessageFromTarget.html#getTargetId()">org.openqa.selenium.devtools.v88.target.model.ReceivedMessageFromTarget.getTargetId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v88/target/Target.html#sendMessageToTarget(java.lang.String,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v88.target.Target.sendMessageToTarget&#8203;(String, Optional&lt;SessionID&gt;, Optional&lt;TargetID&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/debugger/Debugger.html#getWasmBytecode(org.openqa.selenium.devtools.v89.runtime.model.ScriptId)">org.openqa.selenium.devtools.v89.debugger.Debugger.getWasmBytecode&#8203;(ScriptId)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/debugger/Debugger.html#pauseOnAsyncCall(org.openqa.selenium.devtools.v89.runtime.model.StackTraceId)">org.openqa.selenium.devtools.v89.debugger.Debugger.pauseOnAsyncCall&#8203;(StackTraceId)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/debugger/model/Paused.html#getAsyncCallStackTraceId()">org.openqa.selenium.devtools.v89.debugger.model.Paused.getAsyncCallStackTraceId()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/dom/DOM.html#getFlattenedDocument(java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v89.dom.DOM.getFlattenedDocument&#8203;(Optional&lt;Integer&gt;, Optional&lt;Boolean&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/domsnapshot/DOMSnapshot.html#getSnapshot(java.util.List,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v89.domsnapshot.DOMSnapshot.getSnapshot&#8203;(List&lt;String&gt;, Optional&lt;Boolean&gt;, Optional&lt;Boolean&gt;, Optional&lt;Boolean&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/emulation/Emulation.html#setNavigatorOverrides(java.lang.String)">org.openqa.selenium.devtools.v89.emulation.Emulation.setNavigatorOverrides&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/emulation/Emulation.html#setVisibleSize(java.lang.Integer,java.lang.Integer)">org.openqa.selenium.devtools.v89.emulation.Emulation.setVisibleSize&#8203;(Integer, Integer)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/network/Network.html#canClearBrowserCache()">org.openqa.selenium.devtools.v89.network.Network.canClearBrowserCache()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/network/Network.html#canClearBrowserCookies()">org.openqa.selenium.devtools.v89.network.Network.canClearBrowserCookies()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/network/Network.html#canEmulateNetworkConditions()">org.openqa.selenium.devtools.v89.network.Network.canEmulateNetworkConditions()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/network/Network.html#continueInterceptedRequest(org.openqa.selenium.devtools.v89.network.model.InterceptionId,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v89.network.Network.continueInterceptedRequest&#8203;(InterceptionId, Optional&lt;ErrorReason&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;String&gt;, Optional&lt;Headers&gt;, Optional&lt;AuthChallengeResponse&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/network/Network.html#setRequestInterception(java.util.List)">org.openqa.selenium.devtools.v89.network.Network.setRequestInterception&#8203;(List&lt;RequestPattern&gt;)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/overlay/model/GridHighlightConfig.html#getCellBorderColor()">org.openqa.selenium.devtools.v89.overlay.model.GridHighlightConfig.getCellBorderColor()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/overlay/model/GridHighlightConfig.html#getCellBorderDash()">org.openqa.selenium.devtools.v89.overlay.model.GridHighlightConfig.getCellBorderDash()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#addScriptToEvaluateOnLoad(java.lang.String)">org.openqa.selenium.devtools.v89.page.Page.addScriptToEvaluateOnLoad&#8203;(String)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Capabilities.html#getPlatform()">org.openqa.selenium.Capabilities.getPlatform()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/Capabilities.html#getPlatformName()"><code>Capabilities.getPlatformName()</code></a></div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#clearDeviceMetricsOverride()">org.openqa.selenium.devtools.v89.page.Page.clearDeviceMetricsOverride()</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Capabilities.html#getVersion()">org.openqa.selenium.Capabilities.getVersion()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/Capabilities.html#getBrowserVersion()"><code>Capabilities.getBrowserVersion()</code></a></div>
+</td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#clearDeviceOrientationOverride()">org.openqa.selenium.devtools.v89.page.Page.clearDeviceOrientationOverride()</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#isLegacy()">org.openqa.selenium.firefox.FirefoxOptions.isLegacy()</a></th>
+<td class="colLast">
+<div class="deprecationComment">This method will be deleted and will not be replaced.</div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#clearGeolocationOverride()">org.openqa.selenium.devtools.v89.page.Page.clearGeolocationOverride()</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#setLegacy(boolean)">org.openqa.selenium.firefox.FirefoxOptions.setLegacy&#8203;(boolean)</a></th>
+<td class="colLast">
+<div class="deprecationComment">This method will be deleted and will not be replaced.</div>
+</td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#deleteCookie(java.lang.String,java.lang.String)">org.openqa.selenium.devtools.v89.page.Page.deleteCookie&#8203;(String, String)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Point.html#move(int,int)">org.openqa.selenium.Point.move&#8203;(int, int)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use {<a href="org/openqa/selenium/Point.html#moveBy(int,int)"><code>Point.moveBy(int, int)</code></a> instead}</div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#getCookies()">org.openqa.selenium.devtools.v89.page.Page.getCookies()</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setHeight(int)">org.openqa.selenium.Rectangle.setHeight&#8203;(int)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
+</td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#removeScriptToEvaluateOnLoad(org.openqa.selenium.devtools.v89.page.model.ScriptIdentifier)">org.openqa.selenium.devtools.v89.page.Page.removeScriptToEvaluateOnLoad&#8203;(ScriptIdentifier)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setWidth(int)">org.openqa.selenium.Rectangle.setWidth&#8203;(int)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#setDeviceMetricsOverride(java.lang.Integer,java.lang.Integer,java.lang.Number,java.lang.Boolean,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v89.page.Page.setDeviceMetricsOverride&#8203;(Integer, Integer, Number, Boolean, Optional&lt;Number&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Integer&gt;, Optional&lt;Boolean&gt;, Optional&lt;ScreenOrientation&gt;, Optional&lt;Viewport&gt;)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setX(int)">org.openqa.selenium.Rectangle.setX&#8203;(int)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
+</td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#setDeviceOrientationOverride(java.lang.Number,java.lang.Number,java.lang.Number)">org.openqa.selenium.devtools.v89.page.Page.setDeviceOrientationOverride&#8203;(Number, Number, Number)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setY(int)">org.openqa.selenium.Rectangle.setY&#8203;(int)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#setDownloadBehavior(org.openqa.selenium.devtools.v89.page.Page.SetDownloadBehaviorBehavior,java.util.Optional)">org.openqa.selenium.devtools.v89.page.Page.setDownloadBehavior&#8203;(Page.SetDownloadBehaviorBehavior, Optional&lt;String&gt;)</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DesiredCapabilities.html#htmlUnit()">org.openqa.selenium.remote.DesiredCapabilities.htmlUnit()</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#setGeolocationOverride(java.util.Optional,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v89.page.Page.setGeolocationOverride&#8203;(Optional&lt;Number&gt;, Optional&lt;Number&gt;, Optional&lt;Number&gt;)</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DriverCommand.html#SET_IMPLICIT_WAIT_TIMEOUT(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/page/Page.html#setTouchEmulationEnabled(java.lang.Boolean,java.util.Optional)">org.openqa.selenium.devtools.v89.page.Page.setTouchEmulationEnabled&#8203;(Boolean, Optional&lt;Page.SetTouchEmulationEnabledConfiguration&gt;)</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DriverCommand.html#SET_PAGE_LOAD_TIMEOUT(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.DriverCommand.SET_PAGE_LOAD_TIMEOUT&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/performance/Performance.html#setTimeDomain(org.openqa.selenium.devtools.v89.performance.Performance.SetTimeDomainTimeDomain)">org.openqa.selenium.devtools.v89.performance.Performance.setTimeDomain&#8203;(Performance.SetTimeDomainTimeDomain)</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DriverCommand.html#SET_SCRIPT_TIMEOUT(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/security/model/SecurityStateChanged.html#getInsecureContentStatus()">org.openqa.selenium.devtools.v89.security.model.SecurityStateChanged.getInsecureContentStatus()</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebDriver.findElement&#8203;(String, String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
+</td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/security/model/SecurityStateChanged.html#getSchemeIsCryptographic()">org.openqa.selenium.devtools.v89.security.model.SecurityStateChanged.getSchemeIsCryptographic()</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebDriver.findElements&#8203;(String, String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/security/Security.html#handleCertificateError(java.lang.Integer,org.openqa.selenium.devtools.v89.security.model.CertificateErrorAction)">org.openqa.selenium.devtools.v89.security.Security.handleCertificateError&#8203;(Integer, CertificateErrorAction)</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.implicitlyWait&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/security/Security.html#setOverrideCertificateErrors(java.lang.Boolean)">org.openqa.selenium.devtools.v89.security.Security.setOverrideCertificateErrors&#8203;(Boolean)</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.pageLoadTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/target/model/DetachedFromTarget.html#getTargetId()">org.openqa.selenium.devtools.v89.target.model.DetachedFromTarget.getTargetId()</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.setScriptTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/target/model/ReceivedMessageFromTarget.html#getTargetId()">org.openqa.selenium.devtools.v89.target.model.ReceivedMessageFromTarget.getTargetId()</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebElement.html#findElement(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebElement.findElement&#8203;(String, String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/devtools/v89/target/Target.html#sendMessageToTarget(java.lang.String,java.util.Optional,java.util.Optional)">org.openqa.selenium.devtools.v89.target.Target.sendMessageToTarget&#8203;(String, Optional&lt;SessionID&gt;, Optional&lt;TargetID&gt;)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebElement.html#findElements(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebElement.findElements&#8203;(String, String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.implicitlyWait&#8203;(long, TimeUnit)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a>
+
+ Specifies the amount of time the driver should wait when searching for an element if it is
+ not immediately present.
+ <p>
+ When searching for a single element, the driver should poll the page until the element has
+ been found, or this timeout expires before throwing a <a href="org/openqa/selenium/NoSuchElementException.html" title="class in org.openqa.selenium"><code>NoSuchElementException</code></a>. When
+ searching for multiple elements, the driver should poll the page until at least one element
+ has been found or this timeout has expired.
+ <p>
+ Increasing the implicit wait timeout should be used judiciously as it will have an adverse
+ effect on test run time, especially when used with slower location strategies like XPath.
+ <p>
+ If the timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid
+ argument will be returned.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.pageLoadTimeout&#8203;(long, TimeUnit)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a>
+
+ Sets the amount of time to wait for a page load to complete before throwing an error.
+ If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
+ invalid argument will be returned.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.setScriptTimeout&#8203;(long, TimeUnit)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(Duration)</code></a>
+
+ Sets the amount of time to wait for an asynchronous script to finish execution before
+ throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+ error code with invalid argument will be returned.</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -824,9 +545,43 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriver.html#%3Cinit%3E(org.openqa.selenium.Capabilities)">org.openqa.selenium.chrome.ChromeDriver&#8203;(Capabilities)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/chrome/ChromeDriver.html#%3Cinit%3E(org.openqa.selenium.chrome.ChromeOptions)"><code>ChromeDriver(org.openqa.selenium.chrome.ChromeOptions)</code></a> instead.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/edge/EdgeDriver.html#%3Cinit%3E(org.openqa.selenium.Capabilities)">org.openqa.selenium.edge.EdgeDriver&#8203;(Capabilities)</a></th>
+<td class="colLast"></td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#%3Cinit%3E(org.openqa.selenium.Capabilities)">org.openqa.selenium.firefox.FirefoxDriver&#8203;(Capabilities)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxDriver.html#%3Cinit%3E(org.openqa.selenium.firefox.FirefoxOptions)"><code>FirefoxDriver(FirefoxOptions)</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#%3Cinit%3E(org.openqa.selenium.Capabilities)">org.openqa.selenium.ie.InternetExplorerDriver&#8203;(Capabilities)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/ie/InternetExplorerDriver.html#%3Cinit%3E(org.openqa.selenium.ie.InternetExplorerOptions)"><code>InternetExplorerDriver(InternetExplorerOptions)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/opera/OperaDriver.html#%3Cinit%3E(org.openqa.selenium.Capabilities)">org.openqa.selenium.opera.OperaDriver&#8203;(Capabilities)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/opera/OperaDriver.html#%3Cinit%3E(org.openqa.selenium.opera.OperaOptions)"><code>OperaDriver(OperaOptions)</code></a> instead.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/os/CommandLine.html#%3Cinit%3E(java.lang.String%5B%5D)">org.openqa.selenium.os.CommandLine&#8203;(String[])</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/os/CommandLine.html#%3Cinit%3E(java.lang.String,java.lang.String...)"><code>CommandLine(String, String...)</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/safari/SafariDriver.html#%3Cinit%3E(org.openqa.selenium.Capabilities)">org.openqa.selenium.safari.SafariDriver&#8203;(Capabilities)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/safari/SafariDriver.html#%3Cinit%3E(org.openqa.selenium.safari.SafariOptions)"><code>SafariDriver(org.openqa.selenium.safari.SafariOptions)</code></a> instead.</div>
 </td>
 </tr>
 <tr class="rowColor">
