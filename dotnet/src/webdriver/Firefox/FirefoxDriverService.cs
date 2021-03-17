@@ -125,14 +125,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets a value indicating the time to wait for an initial connection before timing out.
-        /// </summary>
-        protected override TimeSpan InitializationTimeout
-        {
-            get { return TimeSpan.FromSeconds(2); }
-        }
-
-        /// <summary>
         /// Gets a value indicating the time to wait for the service to terminate before forcing it to terminate.
         /// </summary>
         protected override TimeSpan TerminationTimeout

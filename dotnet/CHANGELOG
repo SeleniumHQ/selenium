@@ -6,6 +6,8 @@ v4.0.0b2
    Nightly. To use this feature, set the EnableDevToolsProtocol property of
    FirefoxOptions to true.
  * Fixed network interception for use with browsers that support CDP.
+ * Made DriverService.InitializationTimeout a public settable property. Fixes
+   issue #9150.
 
 v4.0.0b1
 ========
