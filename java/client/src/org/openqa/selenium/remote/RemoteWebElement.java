@@ -391,7 +391,6 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
 
   public Map<String, Object> toJson() {
     return ImmutableMap.of(
-      Dialect.OSS.getEncodedElementKey(), getId(),
       Dialect.W3C.getEncodedElementKey(), getId());
   }
 }
