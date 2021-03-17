@@ -27,6 +27,7 @@ TEST_DEPS = [
     requirement("pytest"),
     requirement("pytest-instafail"),
     requirement("pytest-trio"),
+    requirement("pytest-mock"),
     requirement("sortedcontainers"),
     requirement("sniffio"),
     requirement("zipp")
