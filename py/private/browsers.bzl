@@ -16,7 +16,7 @@ headless_args = select({
 chrome_args = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "--driver-binary=$(location @linux_chromedriver//:chromedriver)",
-        "--browser-binary=$(location @linux_chrome//:chrome-linux)/linux-chrome/chrome",
+        "--browser-binary=$(location @linux_chrome//:chrome-linux)/chrome",
     ],
     "@selenium//common:use_pinned_macos_chrome": [
         "--driver-binary=$(location @mac_chromedriver//:chromedriver)",
