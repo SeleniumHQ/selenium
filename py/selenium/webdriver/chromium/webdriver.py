@@ -16,8 +16,10 @@
 # under the License.
 
 from typing import NoReturn
-from selenium.webdriver.edge.options import Options
-from selenium.webdriver.edge.service import Service
+from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.service import Service
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 import warnings
 
 from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
@@ -34,7 +36,7 @@ class ChromiumDriver(RemoteWebDriver):
     """
 
     def __init__(self, browser_name, vendor_prefix,
-                 port=DEFAULT_PORT, options: Options = None, service_args=None,
+                 port=DEFAULT_PORT, options: BaseOptions = None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  service: Service = None, keep_alive=DEFAULT_KEEP_ALIVE):
         """
@@ -68,6 +70,8 @@ class ChromiumDriver(RemoteWebDriver):
         else:
             keep_alive = True
 
+        self.vendor_prefix = vendor_prefix
+
         _ignore_proxy = None
         if not options:
             options = self.create_options()
@@ -78,8 +82,6 @@ class ChromiumDriver(RemoteWebDriver):
 
         if options._ignore_local_proxy:
             _ignore_proxy = options._ignore_local_proxy
-
-        self.vendor_prefix = vendor_prefix
 
         if not service:
             raise AttributeError('service cannot be None')
@@ -209,5 +211,8 @@ class ChromiumDriver(RemoteWebDriver):
         finally:
             self.service.stop()
 
-    def create_options(self) -> Options:
-        return Options()
+    def create_options(self) -> BaseOptions:
+        if self.vendor_prefix == "ms":
+            return EdgeOptions()
+        else:
+            return ChromeOptions()
