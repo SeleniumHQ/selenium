@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -179,11 +180,12 @@ public class Hub extends TemplateGridServerCommand {
     };
 
     Routable ui = new GridUiRoute();
+    Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
     HttpHandler httpHandler = combine(
       ui,
-      router.with(networkOptions.getSpecComplianceChecks()),
-      Route.prefix("/wd/hub").to(combine(router.with(networkOptions.getSpecComplianceChecks()))),
+      routerWithSpecChecks,
+      Route.prefix("/wd/hub").to(combine(routerWithSpecChecks)),
       Route.options("/graphql").to(() -> graphqlHandler),
       Route.post("/graphql").to(() -> graphqlHandler),
       Route.get("/readyz").to(() -> readinessCheck));
