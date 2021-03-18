@@ -1,0 +1,749 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.remote.command &#8212; Selenium 3.141 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 3.141 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-selenium.webdriver.remote.command">
+<span id="selenium-webdriver-remote-command"></span><h1>selenium.webdriver.remote.command<a class="headerlink" href="#module-selenium.webdriver.remote.command" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="selenium.webdriver.remote.command.Command">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.remote.command.</code><code class="descname">Command</code><a class="reference internal" href="../_modules/selenium/webdriver/remote/command.html#Command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.command.Command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines constants for the standard WebDriver commands.</p>
+<p>While these constants have no meaning in and of themselves, they are
+used to marshal commands through a service that implements WebDriver’s
+remote wire protocol:</p>
+<blockquote>
+<div><a class="reference external" href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol</a></div></blockquote>
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.ACCEPT_ALERT">
+<code class="descname">ACCEPT_ALERT</code><em class="property"> = 'acceptAlert'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ACCEPT_ALERT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.ADD_COOKIE">
+<code class="descname">ADD_COOKIE</code><em class="property"> = 'addCookie'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ADD_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CLEAR_APP_CACHE">
+<code class="descname">CLEAR_APP_CACHE</code><em class="property"> = 'clearAppCache'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLEAR_APP_CACHE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CLEAR_ELEMENT">
+<code class="descname">CLEAR_ELEMENT</code><em class="property"> = 'clearElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLEAR_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CLEAR_LOCAL_STORAGE">
+<code class="descname">CLEAR_LOCAL_STORAGE</code><em class="property"> = 'clearLocalStorage'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLEAR_LOCAL_STORAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CLEAR_SESSION_STORAGE">
+<code class="descname">CLEAR_SESSION_STORAGE</code><em class="property"> = 'clearSessionStorage'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLEAR_SESSION_STORAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CLICK">
+<code class="descname">CLICK</code><em class="property"> = 'mouseClick'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLICK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CLICK_ELEMENT">
+<code class="descname">CLICK_ELEMENT</code><em class="property"> = 'clickElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLICK_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CLOSE">
+<code class="descname">CLOSE</code><em class="property"> = 'close'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CLOSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CONTEXT_HANDLES">
+<code class="descname">CONTEXT_HANDLES</code><em class="property"> = 'getContextHandles'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CONTEXT_HANDLES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.CURRENT_CONTEXT_HANDLE">
+<code class="descname">CURRENT_CONTEXT_HANDLE</code><em class="property"> = 'getCurrentContextHandle'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.CURRENT_CONTEXT_HANDLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.DELETE_ALL_COOKIES">
+<code class="descname">DELETE_ALL_COOKIES</code><em class="property"> = 'deleteAllCookies'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_ALL_COOKIES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.DELETE_COOKIE">
+<code class="descname">DELETE_COOKIE</code><em class="property"> = 'deleteCookie'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.DELETE_SESSION">
+<code class="descname">DELETE_SESSION</code><em class="property"> = 'deleteSession'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DELETE_SESSION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.DISMISS_ALERT">
+<code class="descname">DISMISS_ALERT</code><em class="property"> = 'dismissAlert'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DISMISS_ALERT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.DOUBLE_CLICK">
+<code class="descname">DOUBLE_CLICK</code><em class="property"> = 'mouseDoubleClick'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DOUBLE_CLICK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.DOUBLE_TAP">
+<code class="descname">DOUBLE_TAP</code><em class="property"> = 'touchDoubleTap'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.DOUBLE_TAP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.ELEMENT_SCREENSHOT">
+<code class="descname">ELEMENT_SCREENSHOT</code><em class="property"> = 'elementScreenshot'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.ELEMENT_SCREENSHOT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.EXECUTE_ASYNC_SCRIPT">
+<code class="descname">EXECUTE_ASYNC_SCRIPT</code><em class="property"> = 'executeAsyncScript'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.EXECUTE_ASYNC_SCRIPT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.EXECUTE_SCRIPT">
+<code class="descname">EXECUTE_SCRIPT</code><em class="property"> = 'executeScript'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.EXECUTE_SCRIPT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.EXECUTE_SQL">
+<code class="descname">EXECUTE_SQL</code><em class="property"> = 'executeSql'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.EXECUTE_SQL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENT">
+<code class="descname">FIND_CHILD_ELEMENT</code><em class="property"> = 'findChildElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENTS">
+<code class="descname">FIND_CHILD_ELEMENTS</code><em class="property"> = 'findChildElements'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_CHILD_ELEMENTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.FIND_ELEMENT">
+<code class="descname">FIND_ELEMENT</code><em class="property"> = 'findElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.FIND_ELEMENTS">
+<code class="descname">FIND_ELEMENTS</code><em class="property"> = 'findElements'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FIND_ELEMENTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.FLICK">
+<code class="descname">FLICK</code><em class="property"> = 'touchFlick'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FLICK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.FULLSCREEN_WINDOW">
+<code class="descname">FULLSCREEN_WINDOW</code><em class="property"> = 'fullscreenWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.FULLSCREEN_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET">
+<code class="descname">GET</code><em class="property"> = 'get'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ACTIVE_ELEMENT">
+<code class="descname">GET_ACTIVE_ELEMENT</code><em class="property"> = 'getActiveElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ACTIVE_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ALERT_TEXT">
+<code class="descname">GET_ALERT_TEXT</code><em class="property"> = 'getAlertText'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ALERT_TEXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ALL_COOKIES">
+<code class="descname">GET_ALL_COOKIES</code><em class="property"> = 'getCookies'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ALL_COOKIES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ALL_SESSIONS">
+<code class="descname">GET_ALL_SESSIONS</code><em class="property"> = 'getAllSessions'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ALL_SESSIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_APP_CACHE">
+<code class="descname">GET_APP_CACHE</code><em class="property"> = 'getAppCache'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_APP_CACHE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_APP_CACHE_STATUS">
+<code class="descname">GET_APP_CACHE_STATUS</code><em class="property"> = 'getAppCacheStatus'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_APP_CACHE_STATUS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES">
+<code class="descname">GET_AVAILABLE_LOG_TYPES</code><em class="property"> = 'getAvailableLogTypes'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_AVAILABLE_LOG_TYPES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_COOKIE">
+<code class="descname">GET_COOKIE</code><em class="property"> = 'getCookie'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_COOKIE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_CURRENT_URL">
+<code class="descname">GET_CURRENT_URL</code><em class="property"> = 'getCurrentUrl'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_CURRENT_URL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_CURRENT_WINDOW_HANDLE">
+<code class="descname">GET_CURRENT_WINDOW_HANDLE</code><em class="property"> = 'getCurrentWindowHandle'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_CURRENT_WINDOW_HANDLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL">
+<code class="descname">GET_ELEMENT_ARIA_LABEL</code><em class="property"> = 'getElementAriaLabel'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_LABEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE">
+<code class="descname">GET_ELEMENT_ARIA_ROLE</code><em class="property"> = 'getElementAriaRole'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ARIA_ROLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE">
+<code class="descname">GET_ELEMENT_ATTRIBUTE</code><em class="property"> = 'getElementAttribute'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_ATTRIBUTE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_LOCATION">
+<code class="descname">GET_ELEMENT_LOCATION</code><em class="property"> = 'getElementLocation'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_LOCATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW">
+<code class="descname">GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW</code><em class="property"> = 'getElementLocationOnceScrolledIntoView'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY">
+<code class="descname">GET_ELEMENT_PROPERTY</code><em class="property"> = 'getElementProperty'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_PROPERTY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT">
+<code class="descname">GET_ELEMENT_RECT</code><em class="property"> = 'getElementRect'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_RECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_SIZE">
+<code class="descname">GET_ELEMENT_SIZE</code><em class="property"> = 'getElementSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME">
+<code class="descname">GET_ELEMENT_TAG_NAME</code><em class="property"> = 'getElementTagName'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_TAG_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT">
+<code class="descname">GET_ELEMENT_TEXT</code><em class="property"> = 'getElementText'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_TEXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE">
+<code class="descname">GET_ELEMENT_VALUE</code><em class="property"> = 'getElementValue'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY">
+<code class="descname">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</code><em class="property"> = 'getElementValueOfCssProperty'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_LOCAL_STORAGE_ITEM">
+<code class="descname">GET_LOCAL_STORAGE_ITEM</code><em class="property"> = 'getLocalStorageItem'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_LOCAL_STORAGE_ITEM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_LOCAL_STORAGE_KEYS">
+<code class="descname">GET_LOCAL_STORAGE_KEYS</code><em class="property"> = 'getLocalStorageKeys'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_LOCAL_STORAGE_KEYS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_LOCAL_STORAGE_SIZE">
+<code class="descname">GET_LOCAL_STORAGE_SIZE</code><em class="property"> = 'getLocalStorageSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_LOCAL_STORAGE_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_LOCATION">
+<code class="descname">GET_LOCATION</code><em class="property"> = 'getLocation'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_LOCATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_LOG">
+<code class="descname">GET_LOG</code><em class="property"> = 'getLog'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_LOG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION">
+<code class="descname">GET_NETWORK_CONNECTION</code><em class="property"> = 'getNetworkConnection'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_NETWORK_CONNECTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE">
+<code class="descname">GET_PAGE_SOURCE</code><em class="property"> = 'getPageSource'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_PAGE_SOURCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION">
+<code class="descname">GET_SCREEN_ORIENTATION</code><em class="property"> = 'getScreenOrientation'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_SCREEN_ORIENTATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_SESSION_STORAGE_ITEM">
+<code class="descname">GET_SESSION_STORAGE_ITEM</code><em class="property"> = 'getSessionStorageItem'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_SESSION_STORAGE_ITEM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_SESSION_STORAGE_KEYS">
+<code class="descname">GET_SESSION_STORAGE_KEYS</code><em class="property"> = 'getSessionStorageKeys'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_SESSION_STORAGE_KEYS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_SESSION_STORAGE_SIZE">
+<code class="descname">GET_SESSION_STORAGE_SIZE</code><em class="property"> = 'getSessionStorageSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_SESSION_STORAGE_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_TIMEOUTS">
+<code class="descname">GET_TIMEOUTS</code><em class="property"> = 'getTimeouts'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_TIMEOUTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_TITLE">
+<code class="descname">GET_TITLE</code><em class="property"> = 'getTitle'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_TITLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_WINDOW_HANDLES">
+<code class="descname">GET_WINDOW_HANDLES</code><em class="property"> = 'getWindowHandles'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_HANDLES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_WINDOW_POSITION">
+<code class="descname">GET_WINDOW_POSITION</code><em class="property"> = 'getWindowPosition'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_POSITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_WINDOW_RECT">
+<code class="descname">GET_WINDOW_RECT</code><em class="property"> = 'getWindowRect'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_RECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_WINDOW_SIZE">
+<code class="descname">GET_WINDOW_SIZE</code><em class="property"> = 'getWindowSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GO_BACK">
+<code class="descname">GO_BACK</code><em class="property"> = 'goBack'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GO_BACK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GO_FORWARD">
+<code class="descname">GO_FORWARD</code><em class="property"> = 'goForward'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GO_FORWARD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.IMPLICIT_WAIT">
+<code class="descname">IMPLICIT_WAIT</code><em class="property"> = 'implicitlyWait'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.IMPLICIT_WAIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.IS_ELEMENT_DISPLAYED">
+<code class="descname">IS_ELEMENT_DISPLAYED</code><em class="property"> = 'isElementDisplayed'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_DISPLAYED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED">
+<code class="descname">IS_ELEMENT_ENABLED</code><em class="property"> = 'isElementEnabled'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_ENABLED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED">
+<code class="descname">IS_ELEMENT_SELECTED</code><em class="property"> = 'isElementSelected'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.IS_ELEMENT_SELECTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.LONG_PRESS">
+<code class="descname">LONG_PRESS</code><em class="property"> = 'touchLongPress'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.LONG_PRESS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.MAXIMIZE_WINDOW">
+<code class="descname">MAXIMIZE_WINDOW</code><em class="property"> = 'windowMaximize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.MAXIMIZE_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.MINIMIZE_WINDOW">
+<code class="descname">MINIMIZE_WINDOW</code><em class="property"> = 'minimizeWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.MINIMIZE_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.MOUSE_DOWN">
+<code class="descname">MOUSE_DOWN</code><em class="property"> = 'mouseButtonDown'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.MOUSE_DOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.MOUSE_UP">
+<code class="descname">MOUSE_UP</code><em class="property"> = 'mouseButtonUp'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.MOUSE_UP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.MOVE_TO">
+<code class="descname">MOVE_TO</code><em class="property"> = 'mouseMoveTo'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.MOVE_TO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.NEW_SESSION">
+<code class="descname">NEW_SESSION</code><em class="property"> = 'newSession'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.NEW_SESSION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.NEW_WINDOW">
+<code class="descname">NEW_WINDOW</code><em class="property"> = 'newWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.NEW_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.PRINT_PAGE">
+<code class="descname">PRINT_PAGE</code><em class="property"> = 'printPage'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.PRINT_PAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.QUIT">
+<code class="descname">QUIT</code><em class="property"> = 'quit'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.QUIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.REFRESH">
+<code class="descname">REFRESH</code><em class="property"> = 'refresh'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REFRESH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.REMOVE_LOCAL_STORAGE_ITEM">
+<code class="descname">REMOVE_LOCAL_STORAGE_ITEM</code><em class="property"> = 'removeLocalStorageItem'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REMOVE_LOCAL_STORAGE_ITEM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.REMOVE_SESSION_STORAGE_ITEM">
+<code class="descname">REMOVE_SESSION_STORAGE_ITEM</code><em class="property"> = 'removeSessionStorageItem'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.REMOVE_SESSION_STORAGE_ITEM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SCREENSHOT">
+<code class="descname">SCREENSHOT</code><em class="property"> = 'screenshot'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SCREENSHOT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ACTIVE_ELEMENT">
+<code class="descname">SEND_KEYS_TO_ACTIVE_ELEMENT</code><em class="property"> = 'sendKeysToActiveElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ACTIVE_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ELEMENT">
+<code class="descname">SEND_KEYS_TO_ELEMENT</code><em class="property"> = 'sendKeysToElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SEND_KEYS_TO_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_ALERT_CREDENTIALS">
+<code class="descname">SET_ALERT_CREDENTIALS</code><em class="property"> = 'setAlertCredentials'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_ALERT_CREDENTIALS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_ALERT_VALUE">
+<code class="descname">SET_ALERT_VALUE</code><em class="property"> = 'setAlertValue'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_ALERT_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_ELEMENT_SELECTED">
+<code class="descname">SET_ELEMENT_SELECTED</code><em class="property"> = 'setElementSelected'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_ELEMENT_SELECTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_LOCAL_STORAGE_ITEM">
+<code class="descname">SET_LOCAL_STORAGE_ITEM</code><em class="property"> = 'setLocalStorageItem'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_LOCAL_STORAGE_ITEM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_LOCATION">
+<code class="descname">SET_LOCATION</code><em class="property"> = 'setLocation'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_LOCATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_NETWORK_CONNECTION">
+<code class="descname">SET_NETWORK_CONNECTION</code><em class="property"> = 'setNetworkConnection'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_NETWORK_CONNECTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_SCREEN_ORIENTATION">
+<code class="descname">SET_SCREEN_ORIENTATION</code><em class="property"> = 'setScreenOrientation'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_SCREEN_ORIENTATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_SCRIPT_TIMEOUT">
+<code class="descname">SET_SCRIPT_TIMEOUT</code><em class="property"> = 'setScriptTimeout'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_SCRIPT_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_SESSION_STORAGE_ITEM">
+<code class="descname">SET_SESSION_STORAGE_ITEM</code><em class="property"> = 'setSessionStorageItem'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_SESSION_STORAGE_ITEM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_TIMEOUTS">
+<code class="descname">SET_TIMEOUTS</code><em class="property"> = 'setTimeouts'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_TIMEOUTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_WINDOW_POSITION">
+<code class="descname">SET_WINDOW_POSITION</code><em class="property"> = 'setWindowPosition'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_WINDOW_POSITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_WINDOW_RECT">
+<code class="descname">SET_WINDOW_RECT</code><em class="property"> = 'setWindowRect'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_WINDOW_RECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_WINDOW_SIZE">
+<code class="descname">SET_WINDOW_SIZE</code><em class="property"> = 'setWindowSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_WINDOW_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SINGLE_TAP">
+<code class="descname">SINGLE_TAP</code><em class="property"> = 'touchSingleTap'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SINGLE_TAP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.STATUS">
+<code class="descname">STATUS</code><em class="property"> = 'status'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.STATUS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SUBMIT_ELEMENT">
+<code class="descname">SUBMIT_ELEMENT</code><em class="property"> = 'submitElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SUBMIT_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SWITCH_TO_CONTEXT">
+<code class="descname">SWITCH_TO_CONTEXT</code><em class="property"> = 'switchToContext'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_CONTEXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SWITCH_TO_FRAME">
+<code class="descname">SWITCH_TO_FRAME</code><em class="property"> = 'switchToFrame'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_FRAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SWITCH_TO_PARENT_FRAME">
+<code class="descname">SWITCH_TO_PARENT_FRAME</code><em class="property"> = 'switchToParentFrame'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_PARENT_FRAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SWITCH_TO_WINDOW">
+<code class="descname">SWITCH_TO_WINDOW</code><em class="property"> = 'switchToWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SWITCH_TO_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.TOUCH_DOWN">
+<code class="descname">TOUCH_DOWN</code><em class="property"> = 'touchDown'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.TOUCH_DOWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.TOUCH_MOVE">
+<code class="descname">TOUCH_MOVE</code><em class="property"> = 'touchMove'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.TOUCH_MOVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.TOUCH_SCROLL">
+<code class="descname">TOUCH_SCROLL</code><em class="property"> = 'touchScroll'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.TOUCH_SCROLL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.TOUCH_UP">
+<code class="descname">TOUCH_UP</code><em class="property"> = 'touchUp'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.TOUCH_UP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.UPLOAD_FILE">
+<code class="descname">UPLOAD_FILE</code><em class="property"> = 'uploadFile'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.UPLOAD_FILE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT">
+<code class="descname">W3C_ACCEPT_ALERT</code><em class="property"> = 'w3cAcceptAlert'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_ACTIONS">
+<code class="descname">W3C_ACTIONS</code><em class="property"> = 'actions'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_ACTIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS">
+<code class="descname">W3C_CLEAR_ACTIONS</code><em class="property"> = 'clearActionState'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT">
+<code class="descname">W3C_DISMISS_ALERT</code><em class="property"> = 'w3cDismissAlert'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT">
+<code class="descname">W3C_EXECUTE_SCRIPT</code><em class="property"> = 'w3cExecuteScript'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC">
+<code class="descname">W3C_EXECUTE_SCRIPT_ASYNC</code><em class="property"> = 'w3cExecuteScriptAsync'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT">
+<code class="descname">W3C_GET_ACTIVE_ELEMENT</code><em class="property"> = 'w3cGetActiveElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT">
+<code class="descname">W3C_GET_ALERT_TEXT</code><em class="property"> = 'w3cGetAlertText'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE">
+<code class="descname">W3C_GET_CURRENT_WINDOW_HANDLE</code><em class="property"> = 'w3cGetCurrentWindowHandle'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES">
+<code class="descname">W3C_GET_WINDOW_HANDLES</code><em class="property"> = 'w3cGetWindowHandles'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_POSITION">
+<code class="descname">W3C_GET_WINDOW_POSITION</code><em class="property"> = 'w3cGetWindowPosition'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_POSITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_SIZE">
+<code class="descname">W3C_GET_WINDOW_SIZE</code><em class="property"> = 'w3cGetWindowSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW">
+<code class="descname">W3C_MAXIMIZE_WINDOW</code><em class="property"> = 'w3cMaximizeWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE">
+<code class="descname">W3C_SET_ALERT_VALUE</code><em class="property"> = 'w3cSetAlertValue'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_SET_WINDOW_POSITION">
+<code class="descname">W3C_SET_WINDOW_POSITION</code><em class="property"> = 'w3cSetWindowPosition'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_SET_WINDOW_POSITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_SET_WINDOW_SIZE">
+<code class="descname">W3C_SET_WINDOW_SIZE</code><em class="property"> = 'w3cSetWindowSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_SET_WINDOW_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver_remote/selenium.webdriver.remote.command.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 3.141 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

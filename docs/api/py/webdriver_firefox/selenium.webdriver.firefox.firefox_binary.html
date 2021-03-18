@@ -1,0 +1,142 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.firefox.firefox_binary &#8212; Selenium 3.141 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 3.141 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-selenium.webdriver.firefox.firefox_binary">
+<span id="selenium-webdriver-firefox-firefox-binary"></span><h1>selenium.webdriver.firefox.firefox_binary<a class="headerlink" href="#module-selenium.webdriver.firefox.firefox_binary" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.firefox.firefox_binary.</code><code class="descname">FirefoxBinary</code><span class="sig-paren">(</span><em>firefox_path=None</em>, <em>log_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new instance of Firefox binary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.</li>
+<li><dl class="first docutils">
+<dt>log_file - A file object to redirect the firefox process output to. It can be sys.stdout.</dt>
+<dd>Please note that with parallel run the output won’t be synchronous.
+By default, it will be redirected to /dev/null.</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.NO_FOCUS_LIBRARY_NAME">
+<code class="descname">NO_FOCUS_LIBRARY_NAME</code><em class="property"> = 'x_ignore_nofocus.so'</em><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.NO_FOCUS_LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.add_command_line_options">
+<code class="descname">add_command_line_options</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary.add_command_line_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.add_command_line_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.kill">
+<code class="descname">kill</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary.kill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.kill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kill the browser.</p>
+<p>This is useful when the browser is stuck.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.launch_browser">
+<code class="descname">launch_browser</code><span class="sig-paren">(</span><em>profile</em>, <em>timeout=30</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary.launch_browser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.launch_browser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches the browser for the given profile name.
+It is assumed the profile already exists.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.which">
+<code class="descname">which</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary.which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.which" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the fully qualified path by searching Path of the given
+name</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver_firefox/selenium.webdriver.firefox.firefox_binary.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 3.141 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

@@ -1,0 +1,285 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 3.141 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 3.141 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-selenium.webdriver.chromium.webdriver">
+<span id="selenium-webdriver-chromium-webdriver"></span><h1>selenium.webdriver.chromium.webdriver<a class="headerlink" href="#module-selenium.webdriver.chromium.webdriver" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver">
+<em class="property">class </em><code class="descclassname">selenium.webdriver.chromium.webdriver.</code><code class="descname">ChromiumDriver</code><span class="sig-paren">(</span><em>browser_name</em>, <em>vendor_prefix</em>, <em>port=0</em>, <em>options: selenium.webdriver.common.options.BaseOptions = None</em>, <em>service_args=None</em>, <em>desired_capabilities=None</em>, <em>service_log_path=None</em>, <em>service: selenium.webdriver.common.service.Service = None</em>, <em>keep_alive=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the WebDriver instance of ChromiumDriver and allows you to drive the browser.</p>
+<p>Creates a new WebDriver instance of the ChromiumDriver.
+Starts the service and then creates new WebDriver instance of ChromiumDriver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>browser_name - Browser name used when matching capabilities.</li>
+<li>vendor_prefix - Company prefix to apply to vendor-specific WebDriver extension commands.</li>
+<li>port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.</li>
+<li>options - this takes an instance of ChromiumOptions</li>
+<li>service_args - Deprecated: List of args to pass to the driver service</li>
+<li>desired_capabilities - Deprecated: Dictionary object with non-browser specific
+capabilities only, such as “proxy” or “loggingPref”.</li>
+<li>service_log_path - Deprecated: Where to log information from the driver.</li>
+<li>keep_alive - Deprecated: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.create_options">
+<code class="descname">create_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.options.BaseOptions<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.create_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.create_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_cdp_cmd">
+<code class="descname">execute_cdp_cmd</code><span class="sig-paren">(</span><em>cmd: str</em>, <em>cmd_args: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.execute_cdp_cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_cdp_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute Chrome Devtools Protocol command and get returned result
+The command and command args should follow chrome devtools protocol domains/commands, refer to link
+<a class="reference external" href="https://chromedevtools.github.io/devtools-protocol/">https://chromedevtools.github.io/devtools-protocol/</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>cmd: A str, command name</li>
+<li>cmd_args: A dict, command args. empty dict {} if there is no command args</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><dl class="first docutils">
+<dt>::</dt>
+<dd><p class="first last">driver.execute_cdp_cmd(‘Network.getResponseBody’, {‘requestId’: requestId})</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dict, empty dict {} if there is no result to return.
+For example to getResponseBody:
+{‘base64Encoded’: False, ‘body’: ‘response body string’}</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_issue_message">
+<code class="descname">get_issue_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.get_issue_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_issue_message" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An error message when there is any issue in a Cast session.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_network_conditions">
+<code class="descname">get_network_conditions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.get_network_conditions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_network_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets Chromium network emulation settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dict. For example:
+{‘latency’: 4, ‘download_throughput’: 2, ‘upload_throughput’: 2,
+‘offline’: False}</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_sinks">
+<code class="descname">get_sinks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.get_sinks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_sinks" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of sinks avaliable for Cast.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.launch_app">
+<code class="descname">launch_app</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.launch_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.launch_app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches Chromium app specified by id.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.quit">
+<code class="descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; NoReturn<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the browser and shuts down the ChromiumDriver executable
+that is started when starting the ChromiumDriver</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_network_conditions">
+<code class="descname">set_network_conditions</code><span class="sig-paren">(</span><em>**network_conditions</em><span class="sig-paren">)</span> &#x2192; NoReturn<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.set_network_conditions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_network_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets Chromium network emulation settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>network_conditions: A dict with conditions specification.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">set_network_conditions</span><span class="p">(</span>
+    <span class="n">offline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">latency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>  <span class="c1"># additional latency (ms)</span>
+    <span class="n">download_throughput</span><span class="o">=</span><span class="mi">500</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>  <span class="c1"># maximal throughput</span>
+    <span class="n">upload_throughput</span><span class="o">=</span><span class="mi">500</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>  <span class="c1"># maximal throughput</span>
+</pre></div>
+</div>
+<p class="last">Note: ‘throughput’ can be used to set both (for download and upload).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_sink_to_use">
+<code class="descname">set_sink_to_use</code><span class="sig-paren">(</span><em>sink_name: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.set_sink_to_use"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_sink_to_use" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a specific sink, using its name, as a Cast session receiver target.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>sink_name: Name of the sink to use as the target.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.start_tab_mirroring">
+<code class="descname">start_tab_mirroring</code><span class="sig-paren">(</span><em>sink_name: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.start_tab_mirroring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_tab_mirroring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a tab mirroring session on a specific receiver target.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>sink_name: Name of the sink to use as the target.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.stop_casting">
+<code class="descname">stop_casting</code><span class="sig-paren">(</span><em>sink_name: str</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.stop_casting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.stop_casting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the existing Cast session on a specific receiver target.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>sink_name: Name of the sink to stop the Cast session.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/webdriver_chromium/selenium.webdriver.chromium.webdriver.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 3.141 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>
