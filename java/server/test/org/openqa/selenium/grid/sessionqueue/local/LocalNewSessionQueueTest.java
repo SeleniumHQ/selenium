@@ -23,6 +23,8 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.data.NewSessionErrorResponse;
+import org.openqa.selenium.grid.data.NewSessionRejectedEvent;
 import org.openqa.selenium.grid.data.NewSessionRequestEvent;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
@@ -257,6 +259,27 @@ public class LocalNewSessionQueueTest {
 
     assertEquals(chromeCaps, response.get(0));
     assertEquals(firefoxCaps, response.get(1));
+  }
+
+  @Test
+  public void shouldBeAbleToRemoveRequestsOnTimeout() throws InterruptedException {
+    NewSessionQueue localSessionQueue = new LocalNewSessionQueue(
+      DefaultTestTracer.createTracer(),
+      bus,
+      Duration.ofSeconds(30),
+      Duration.ofSeconds(1));
+
+    CountDownLatch latch = new CountDownLatch(1);
+
+    bus.addListener(NewSessionRejectedEvent.listener(reqId -> latch.countDown()));
+
+    boolean added = localSessionQueue.offerLast(expectedSessionRequest, requestId);
+    assertTrue(added);
+
+    boolean requestExpired = latch.await(2, TimeUnit.MINUTES);
+
+    assertThat(requestExpired).isTrue();
+    assertThat(localSessionQueue.getQueueSize()).isZero();
   }
 
   private HttpRequest createRequest(NewSessionPayload payload, HttpMethod httpMethod, String uri) {
