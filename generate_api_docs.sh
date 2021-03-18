@@ -2,7 +2,7 @@
 ./go javadocs || exit
 
 # Python
-./go //py:setup //py:init //py:docs || exit
+tox -c py/tox.ini -e docs || exit
 
 # Ruby
 cd rb
