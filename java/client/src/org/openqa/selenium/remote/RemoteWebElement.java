@@ -295,6 +295,9 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
     Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED(id))
       .getValue();
     try {
+      if (value == null) {
+        return false;
+      }
       return (Boolean) value;
     } catch (ClassCastException ex) {
       throw new WebDriverException("Returned value cannot be converted to Boolean: " + value, ex);
