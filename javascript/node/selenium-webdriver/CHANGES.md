@@ -1,3 +1,15 @@
+## v4.0.0-beta.2
+
+* Removed support for Edge legacy.
+* Make the build silent for WebDriver Bidi generated code
+* resolve file path correctly (#9223)
+* Update example in edge.js (#9231)
+* Use a flat namespace for selenium options for finding WebDriver Bidi endpoint
+* Removing duplicate license text updated by update_copyright.js
+* Updating copyright text
+* Minor code cleanup
+* Removing duplicate variable declaration of IE from capabilities
+
 ## v4.0.0-beta.1
 
 * JS Binding support for WebDriver Bidi in Firefox

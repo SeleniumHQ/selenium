@@ -95,7 +95,7 @@ public abstract class TemplateGridCommand implements CliCommand {
         .values()
         .stream()
         .filter(ParameterDescription::isAssigned)
-        .map(parameterDescription -> parameterDescription.getLongestName().replaceFirst("--", ""))
+        .map(ParameterDescription::getLongestName)
         .collect(Collectors.toSet());
       if (cliArgs.size() > 0) {
         allFlags.forEach(flags -> allConfigs.add(new AnnotatedConfig(flags, cliArgs)));

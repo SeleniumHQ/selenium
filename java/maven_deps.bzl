@@ -88,6 +88,7 @@ def selenium_java_deps():
             "org.seleniumhq.selenium:selenium-support": "@//java/client/src/org/openqa/selenium/support",
         },
         fail_on_missing_checksum = True,
+        fail_if_repin_required = True,
         fetch_sources = True,
         strict_visibility = True,
         repositories = [

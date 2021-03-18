@@ -45,6 +45,7 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException)
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.timeouts import Timeouts
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.support.relative_locator import RelativeBy
@@ -146,7 +147,7 @@ class WebDriver(BaseWebDriver):
 
     def __init__(self, command_executor='http://127.0.0.1:4444',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=True, file_detector=None, options=None):
+                 keep_alive=True, file_detector=None, options: BaseOptions = None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -165,6 +166,30 @@ class WebDriver(BaseWebDriver):
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
         """
+        if desired_capabilities:
+            warnings.warn(
+                "desired_capabilities has been deprecated, please pass in an Options object with options kwarg",
+                DeprecationWarning,
+                stacklevel=2
+            )
+        if browser_profile:
+            warnings.warn(
+                "browser_profile has been deprecated, please pass in an Firefox Options object with options kwarg",
+                DeprecationWarning,
+                stacklevel=2
+            )
+        if proxy:
+            warnings.warn(
+                "proxy has been deprecated, please pass in an Options object with options kwarg",
+                DeprecationWarning,
+                stacklevel=2
+            )
+        if not keep_alive:
+            warnings.warn(
+                "keep_alive has been deprecated. We will be using True as the default value as we start removing it.",
+                DeprecationWarning,
+                stacklevel=2
+            )
         capabilities = {}
         _ignore_local_proxy = False
         if options:

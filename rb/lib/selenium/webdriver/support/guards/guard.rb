@@ -21,29 +21,32 @@ module Selenium
   module WebDriver
     module Support
       class Guards
+
+        #
+        # Guard derived from RSpec example metadata.
+        # @api private
+        #
+
         class Guard
 
-          def initialize(guard, type)
+          attr_reader :guarded, :type, :messages, :reason
+
+          def initialize(guarded, type, guards = nil)
+            @guarded = guarded
+            @tracker = guards&.bug_tracker || ''
+            @messages = guards&.messages || {}
+            @messages[:unknown] = 'TODO: Investigate why this is failing and file a bug report'
             @type = type
 
-            @reason = guard.delete(:reason)
-
-            @drivers = []
-            @browsers = []
-            @platforms = []
-
-            expand_window_manager(guard)
-            expand_drivers(guard)
-            expand_browsers(guard)
-            expand_platforms(guard)
+            @reason = @guarded.delete(:reason)
           end
 
           def message
             details = case @reason
                       when Integer
-                        "Bug Filed: https://github.com/SeleniumHQ/selenium/issues/#{@reason}"
+                        "Bug Filed: #{@tracker}/#{@reason}"
                       when Symbol
-                        Guards::MESSAGES[@reason]
+                        @messages[@reason]
                       when String
                         @reason
                       else
@@ -78,53 +81,6 @@ module Selenium
           # Test only applies to configurations specified
           def exclusive?
             @type == :exclusive
-          end
-
-          def satisfied?
-            satisfies_driver? && satisfies_browser? && satisfies_platform? && satisfies_window_manager?
-          end
-
-          private
-
-          def expand_window_manager(guard)
-            return unless guard.key?(:window_manager)
-
-            @window_manager = guard[:window_manager]
-          end
-
-          def expand_drivers(guard)
-            return unless guard[:driver]
-
-            @drivers += Array(guard[:driver])
-          end
-
-          def expand_browsers(guard)
-            return unless guard[:browser]
-
-            @browsers += Array(guard[:browser])
-          end
-
-          def expand_platforms(guard)
-            return unless guard[:platform]
-
-            @platforms += Array(guard[:platform])
-          end
-
-          def satisfies_driver?
-            @drivers.empty? || @drivers.include?(GlobalTestEnv.driver)
-          end
-
-          def satisfies_browser?
-            @browsers.empty? || @browsers.include?(GlobalTestEnv.browser)
-          end
-
-          def satisfies_platform?
-            @platforms.empty? || @platforms.include?(Platform.os)
-          end
-
-          def satisfies_window_manager?
-            (!defined?(@window_manager) || @window_manager.nil?) ||
-              (@window_manager == (!Selenium::WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?))
           end
         end # Guard
       end # Guards

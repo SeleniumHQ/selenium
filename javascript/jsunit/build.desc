@@ -1,4 +1,0 @@
-
-rake_file(
-  name = "jsunit",
-  src = ".")

@@ -53,14 +53,10 @@ java_export(
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
     ] + CDP_DEPS,
+    visibility = [
+        "//visibility:public",
+    ],
 )
-
-#javadoc(
-#    name = "core-docs",
-#    deps = [
-#        ":core",
-#    ],
-#)
 
 java_dist_zip(
     name = "client-zip",
@@ -82,7 +78,7 @@ javadoc(
     third_party_prefixes = [
         "@maven//",
         "//third_party",
-    ],
+    ] + CDP_DEPS,
     transitive = True,
     deps = [
         ":client-combined",

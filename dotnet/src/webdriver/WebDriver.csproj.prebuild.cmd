@@ -20,6 +20,13 @@ if not exist  "%1..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js"
   popd
 )
 
+if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v85\DevToolsSessionDomains.cs" (
+  echo Generating CDP code for version 85
+  pushd "%1..\..\.."
+  bazel build //dotnet/src/webdriver/cdp:generate-v85
+  popd
+)
+
 if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v86\DevToolsSessionDomains.cs" (
   echo Generating CDP code for version 86
   pushd "%1..\..\.."

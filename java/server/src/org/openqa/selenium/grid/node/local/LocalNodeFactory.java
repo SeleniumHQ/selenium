@@ -61,6 +61,7 @@ public class LocalNodeFactory {
       nodeOptions.getPublicGridUri().orElseGet(serverOptions::getExternalUri),
       secretOptions.getRegistrationSecret())
       .maximumConcurrentSessions(nodeOptions.getMaxSessions())
+      .sessionTimeout(nodeOptions.getSessionTimeout())
       .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
 
 

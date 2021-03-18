@@ -44,9 +44,6 @@ java_selenium_test_suite(
         "--release",
         "11",
     ],
-    tags = [
-        "no-remote",
-    ],
     deps = [
         ":support",
         "//java/client/src/org/openqa/selenium/chrome",

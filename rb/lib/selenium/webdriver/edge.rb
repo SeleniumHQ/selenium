@@ -22,7 +22,7 @@ require 'net/http'
 module Selenium
   module WebDriver
     module Edge
-      autoload :Bridge, 'selenium/webdriver/edge/bridge'
+      autoload :Features, 'selenium/webdriver/edge/features'
       autoload :Driver, 'selenium/webdriver/edge/driver'
       autoload :Profile, 'selenium/webdriver/edge/profile'
       autoload :Options, 'selenium/webdriver/edge/options'

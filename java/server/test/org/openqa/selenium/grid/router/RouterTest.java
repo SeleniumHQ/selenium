@@ -99,7 +99,8 @@ public class RouterTest {
       clientFactory,
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, queuer, distributor);

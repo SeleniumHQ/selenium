@@ -17,14 +17,21 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDevToolsLocator;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Dialect;
@@ -49,10 +56,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
@@ -83,13 +86,14 @@ public class DriverServiceSessionFactory implements SessionFactory {
   }
 
   @Override
-  public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
     if (sessionRequest.getDownstreamDialects().isEmpty()) {
-      return Optional.empty();
+      return Either.left(new SessionNotCreatedException("No downstream dialects were found."));
     }
 
     if (!test(sessionRequest.getCapabilities())) {
-      return Optional.empty();
+      return Either.left(new SessionNotCreatedException("New session request capabilities do not "
+                                                        + "match the stereotype."));
     }
 
     try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
@@ -137,7 +141,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
         }
 
         span.addEvent("Driver service created session", attributeMap);
-        return Optional.of(
+        return Either.right(
           new ProtocolConvertingSession(
             tracer,
             client,
@@ -158,14 +162,16 @@ public class DriverServiceSessionFactory implements SessionFactory {
         span.setAttribute("error", true);
         span.setStatus(Status.CANCELLED);
         EXCEPTION.accept(attributeMap, e);
+        String errorMessage = "Error while creating session with the driver service. "
+                              + "Stopping driver service: " + e.getMessage();
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Error while creating session with the driver service. Stopping driver service: " + e.getMessage()));
+                         EventAttribute.setValue(errorMessage));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         service.stop();
-        return Optional.empty();
+        return Either.left(new SessionNotCreatedException(errorMessage));
       }
     } catch (Exception e) {
-      return Optional.empty();
+      return Either.left(new SessionNotCreatedException(e.getMessage()));
     }
   }
 

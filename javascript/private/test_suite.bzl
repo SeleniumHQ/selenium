@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//common:defs.bzl", "selenium_test")
+load("//java:defs.bzl", "selenium_test")
 
 def closure_test_suite(name, data = [], browsers = None):
     data = data + [

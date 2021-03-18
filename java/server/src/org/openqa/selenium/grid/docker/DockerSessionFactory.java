@@ -17,11 +17,20 @@
 
 package org.openqa.selenium.grid.docker;
 
+import static java.util.Optional.ofNullable;
+import static org.openqa.selenium.docker.ContainerConfig.image;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerInfo;
 import org.openqa.selenium.docker.Docker;
@@ -30,6 +39,7 @@ import org.openqa.selenium.docker.Port;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
@@ -70,13 +80,6 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.util.Optional.ofNullable;
-import static org.openqa.selenium.docker.ContainerConfig.image;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DockerSessionFactory implements SessionFactory {
 
@@ -122,7 +125,7 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   @Override
-  public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
     LOG.info("Starting session for " + sessionRequest.getCapabilities());
     int port = PortProber.findFreePort();
     URL remoteAddress = getUrl(port);
@@ -158,9 +161,10 @@ public class DockerSessionFactory implements SessionFactory {
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
-        LOG.warning(String.format(
-            "Unable to connect to docker server (container id: %s)", container.getId()));
-        return Optional.empty();
+        String message = String.format(
+          "Unable to connect to docker server (container id: %s)", container.getId());
+        LOG.warning(message);
+        return Either.left(new RetrySessionRequestException(message));
       }
       LOG.info(String.format("Server is ready (container id: %s)", container.getId()));
 
@@ -187,8 +191,9 @@ public class DockerSessionFactory implements SessionFactory {
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
         container.stop(Duration.ofMinutes(1));
-        LOG.log(Level.WARNING, "Unable to create session: " + e.getMessage(), e);
-        return Optional.empty();
+        String message = "Unable to create session: " + e.getMessage();
+        LOG.log(Level.WARNING, message, e);
+        return Either.left(new SessionNotCreatedException(message));
       }
 
       SessionId id = new SessionId(response.getSessionId());
@@ -221,7 +226,7 @@ public class DockerSessionFactory implements SessionFactory {
           id,
           capabilities,
           container.getId()));
-      return Optional.of(new DockerSession(
+      return Either.right(new DockerSession(
         container,
         videoContainer,
         tracer,

@@ -3,7 +3,7 @@ load("//common/private:dmg_archive.bzl", "dmg_archive")
 load("//common/private:drivers.bzl", "local_drivers")
 load("//common/private:pkg_archive.bzl", "pkg_archive")
 
-_edge_version = "89.0.774.27"
+_edge_version = "89.0.774.54"
 
 _versions = {
     # The chrome version number is found by visiting http://omahaproxy.appspot.com,
@@ -47,8 +47,8 @@ _versions = {
             "sha256": None,
         },
         "mac": {
-            "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdgeBeta-89.0.774.27.pkg?platform=Mac&Consent=0&channel=Beta",
-            "sha256": "c5f47bf3421764fad659eabd3e2479aa041238dbf77c43cfb785fd26dd907118",
+            "url": "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-%s.pkg?platform=Mac&Consent=0&channel=Stable" % _edge_version,
+            "sha256": "23541c9d9e31c5a4221957a56906749b4ddcb422a22d178b4dd5adf833230838",
         },
         "windows": {
             "url": None,
@@ -58,15 +58,15 @@ _versions = {
     # Versions found by visiting https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
     "edgedriver": {
         "linux": {
-            "url": None,
-            "sha256": "d498eaacc414adbaf638333b59390cdfea5d780f941f57f41fd90280df78b159",
+            "url": "",
+            "sha256": None,
         },
         "mac": {
             "url": "https://msedgedriver.azureedge.net/%s/edgedriver_mac64.zip" % _edge_version,
-            "sha256": "ac3001b0d48b5f4fcefa596c36bc9e2e7f1cbdf480c91d98020f7ca6a10ace41",
+            "sha256": "c8eab921ccaaec552f1380d3ca95f91e947fda1866c84d7f47da0198b9b52645",
         },
         "windows": {
-            "url": "https://msedgedriver.azureedge.net/87.0.669.0/edgedriver_win64.zip",
+            "url": "https://msedgedriver.azureedge.net/%s/edgedriver_win64.zip" % _edge_version,
             "sha256": None,
         },
     },
@@ -145,7 +145,7 @@ def _edge():
         url = _versions["edge"]["mac"]["url"],
         sha256 = _versions["edge"]["mac"]["sha256"],
         move = {
-            "MicrosoftEdgeBeta-%s.pkg/Payload/Microsoft Edge Beta.app" % _edge_version: "Edge.app",
+            "MicrosoftEdge-%s.pkg/Payload/Microsoft Edge.app" % _edge_version: "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )

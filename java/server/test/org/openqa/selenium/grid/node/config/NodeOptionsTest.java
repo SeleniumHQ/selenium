@@ -32,6 +32,8 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -42,6 +44,7 @@ import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 
 import java.io.StringReader;
@@ -50,7 +53,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -291,8 +293,9 @@ public class NodeOptionsTest {
     public static SessionFactory create(Config config, Capabilities caps) {
       return new SessionFactory() {
         @Override
-        public Optional<ActiveSession> apply(CreateSessionRequest createSessionRequest) {
-          return Optional.empty();
+        public Either<WebDriverException, ActiveSession> apply(
+          CreateSessionRequest createSessionRequest) {
+          return Either.left(new SessionNotCreatedException("HelperFactory for testing"));
         }
 
         @Override

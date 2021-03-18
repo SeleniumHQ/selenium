@@ -317,6 +317,9 @@ public interface WebDriver extends SearchContext {
      * <p>
      * Increasing the implicit wait timeout should be used judiciously as it will have an adverse
      * effect on test run time, especially when used with slower location strategies like XPath.
+     * <p>
+     * If the timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid
+     * argument will be returned.
      *
      * @param time The amount of time to wait.
      * @param unit The unit of measure for {@code time}.
@@ -336,6 +339,9 @@ public interface WebDriver extends SearchContext {
      * <p>
      * Increasing the implicit wait timeout should be used judiciously as it will have an adverse
      * effect on test run time, especially when used with slower location strategies like XPath.
+     * <p>
+     * If the timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid
+     * argument will be returned.
      *
      * @param duration The duration to wait.
      * @return A self reference.
@@ -359,25 +365,29 @@ public interface WebDriver extends SearchContext {
      * @deprecated Use {@link #setScriptTimeout(Duration)}
      *
      * Sets the amount of time to wait for an asynchronous script to finish execution before
-     * throwing an error. If the timeout is negative, then the script will be allowed to run
-     * indefinitely.
+     * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+     * error code with invalid argument will be returned.
      *
      * @param time The timeout value.
      * @param unit The unit of time.
      * @return A self reference.
      * @see JavascriptExecutor#executeAsyncScript(String, Object...)
+     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
     @Deprecated
     Timeouts setScriptTimeout(long time, TimeUnit unit);
 
     /**
      * Sets the amount of time to wait for an asynchronous script to finish execution before
-     * throwing an error. If the timeout is negative, then the script will be allowed to run
-     * indefinitely.
+     * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+     * error code with invalid argument will be returned.
      *
      * @param duration The timeout value.
      * @return A self reference.
      * @see JavascriptExecutor#executeAsyncScript(String, Object...)
+     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
     default Timeouts setScriptTimeout(Duration duration) {
       return setScriptTimeout(duration.toMillis(), TimeUnit.MILLISECONDS);
@@ -385,35 +395,41 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Gets the amount of time to wait for an asynchronous script to finish execution before
-     * throwing an error. If the timeout is negative, then the script will be allowed to run
-     * indefinitely.
+     * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+     * error code with invalid argument will be returned.
      *
      * @return The amount of time to wait for an asynchronous script to finish execution.
      * @see <a href="https://www.w3.org/TR/webdriver/#get-timeouts">W3C WebDriver</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
     default Duration getScriptTimeout() {
       throw new UnsupportedCommandException();
     }
 
     /**
-     * @deprecated Use {@link #pageLoadTimeout(Duration)}
-     *
-     * Sets the amount of time to wait for a page load to complete before throwing an error.
-     * The timeout value specified should be a positive number.
-     *
      * @param time The timeout value.
      * @param unit The unit of time.
      * @return A Timeouts interface.
+     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
+     * @deprecated Use {@link #pageLoadTimeout(Duration)}
+     *
+     * Sets the amount of time to wait for a page load to complete before throwing an error.
+     * If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
+     * invalid argument will be returned.
      */
     @Deprecated
     Timeouts pageLoadTimeout(long time, TimeUnit unit);
 
     /**
      * Sets the amount of time to wait for a page load to complete before throwing an error.
-     * If the timeout is negative, page loads can be indefinite.
+     * If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
+     * invalid argument will be returned.
      *
      * @param duration The timeout value.
      * @return A Timeouts interface.
+     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
     default Timeouts pageLoadTimeout(Duration duration) {
       return pageLoadTimeout(duration.toMillis(), TimeUnit.MILLISECONDS);
@@ -421,10 +437,12 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Gets the amount of time to wait for a page load to complete before throwing an error.
-     * If the timeout is negative, page loads can be indefinite.
+     * If the timeout is negative, not null, or greater than 2e16 - 1, an error code with
+     * invalid argument will be returned.
      *
      * @return The amount of time to wait for a page load to complete.
      * @see <a href="https://www.w3.org/TR/webdriver/#get-timeouts">W3C WebDriver</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
     default Duration getPageLoadTimeout() {
       throw new UnsupportedCommandException();
@@ -651,27 +669,6 @@ public interface WebDriver extends SearchContext {
 
   @Beta
   interface Window {
-    /**
-     * Set the size of the current window. This will change the outer window dimension,
-     * not just the view port, synonymous to window.resizeTo() in JS.
-     * <p>
-     * See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
-     * for more details.
-     *
-     * @param targetSize The target size.
-     */
-    void setSize(Dimension targetSize);
-
-    /**
-     * Set the position of the current window. This is relative to the upper left corner of the
-     * screen, synonymous to window.moveTo() in JS.
-     * <p>
-     * See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
-     * for more details.
-     *
-     * @param targetPosition The target position of the window.
-     */
-    void setPosition(Point targetPosition);
 
     /**
      * Get the size of the current window. This will return the outer window dimension, not just
@@ -685,6 +682,17 @@ public interface WebDriver extends SearchContext {
     Dimension getSize();
 
     /**
+     * Set the size of the current window. This will change the outer window dimension,
+     * not just the view port, synonymous to window.resizeTo() in JS.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
+     * for more details.
+     *
+     * @param targetSize The target size.
+     */
+    void setSize(Dimension targetSize);
+
+    /**
      * Get the position of the current window, relative to the upper left corner of the screen.
      * <p>
      * See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver specification</a>
@@ -693,6 +701,17 @@ public interface WebDriver extends SearchContext {
      * @return The current window position.
      */
     Point getPosition();
+
+    /**
+     * Set the position of the current window. This is relative to the upper left corner of the
+     * screen, synonymous to window.moveTo() in JS.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
+     * for more details.
+     *
+     * @param targetPosition The target position of the window.
+     */
+    void setPosition(Point targetPosition);
 
     /**
      * Maximizes the current window if it is not already maximized

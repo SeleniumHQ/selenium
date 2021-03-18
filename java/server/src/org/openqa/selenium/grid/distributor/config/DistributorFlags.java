@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor.config;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DISTRIBUTOR_SECTION;
 
 import com.google.auto.service.AutoService;
@@ -62,6 +63,13 @@ public class DistributorFlags implements HasRoles {
     name = "implementation",
     example = DEFAULT_DISTRIBUTOR_IMPLEMENTATION)
   private String implementation = DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
+
+  @Parameter(
+    names = {"--healthcheck-interval"},
+    description = "How often, in seconds, will the health check run for all Nodes." +
+      "This ensures the server can ping all the Nodes successfully.")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "healthcheck-interval", example = "60")
+  public int healthcheckInterval =  DEFAULT_HEALTHCHECK_INTERVAL;
 
 
   @Override

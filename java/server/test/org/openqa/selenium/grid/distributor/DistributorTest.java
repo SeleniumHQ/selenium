@@ -17,9 +17,18 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import org.assertj.core.api.AbstractAssert;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,7 +37,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.RetrySessionRequestException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.events.EventBus;
@@ -90,15 +98,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 public class DistributorTest {
 
   private static final Logger LOG = Logger.getLogger("Distributor Test");
@@ -139,7 +138,8 @@ public class DistributorTest {
       HttpClient.Factory.createDefault(),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
   }
@@ -171,6 +171,7 @@ public class DistributorTest {
       .add(
         caps,
         new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
+      .heartbeatPeriod(Duration.ofSeconds(10))
       .build();
 
     Distributor distributor = new LocalDistributor(
@@ -179,7 +180,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
 
     AtomicBoolean heartbeatStarted = new AtomicBoolean();
@@ -228,7 +230,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -270,7 +273,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -313,7 +317,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     Distributor distributor = new RemoteDistributor(
       tracer,
       new PassthroughHttpClient.Factory(local),
@@ -354,7 +359,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -394,7 +400,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -441,7 +448,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -490,7 +498,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -565,7 +574,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret)
+      registrationSecret,
+      Duration.ofMinutes(5))
       .add(heavy)
       .add(medium)
       .add(lightest)
@@ -608,7 +618,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret)
+      registrationSecret,
+      Duration.ofMinutes(5))
       .add(leastRecent);
     waitToHaveCapacity(distributor);
 
@@ -711,7 +722,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
 
@@ -756,7 +768,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
 
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -801,7 +814,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -860,7 +874,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -903,7 +918,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(node),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -950,7 +966,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -1019,7 +1036,8 @@ public class DistributorTest {
       new PassthroughHttpClient.Factory(handler),
       sessions,
       queuer,
-      registrationSecret);
+      registrationSecret,
+      Duration.ofMinutes(5));
     handler.addHandler(distributor);
 
     //Create all three Capability types

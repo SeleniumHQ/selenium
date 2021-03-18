@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Driver, exclusive: {driver: :firefox} do
+      describe Driver, exclusive: {browser: :firefox} do
         describe '#print_options' do
           let(:magic_number) { 'JVBER' }
 

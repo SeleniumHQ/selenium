@@ -3,12 +3,35 @@ load("@rules_python//experimental/python:wheel.bzl", "py_package", "py_wheel")
 load("@dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
+load("//py/private:browsers.bzl", "BROWSERS")
 
 BROWSER_VERSIONS = [
     "v85",
     "v86",
     "v87",
     "v88",
+    "v89"
+]
+
+TEST_DEPS = [
+    requirement("attrs"),
+    requirement("debugpy"),
+    requirement("idna"),
+    requirement("iniconfig"),
+    requirement("importlib_metadata"),
+    requirement("h11"),
+    requirement("more_itertools"),
+    requirement("multidict"),
+    requirement("outcome"),
+    requirement("pluggy"),
+    requirement("py"),
+    requirement("pytest"),
+    requirement("pytest-instafail"),
+    requirement("pytest-trio"),
+    requirement("pytest-mock"),
+    requirement("sortedcontainers"),
+    requirement("sniffio"),
+    requirement("zipp")
 ]
 
 copy_file(
@@ -112,7 +135,7 @@ py_wheel(
     strip_path_prefixes = [
         "py",
     ],
-    version = "4.0.0.b1",
+    version = "4.0.0.b2.post1",
     visibility = ["//visibility:public"],
     deps = [
         ":selenium-pkg",
@@ -143,7 +166,7 @@ py_library(
     data = [
         "pytest.ini",
         "setup.cfg",
-        "test/selenium/webdriver/common/test_file.txt"
+        "test/selenium/webdriver/common/test_file.txt",
     ],
     imports = ["."],
     deps = [
@@ -183,24 +206,7 @@ py_test_suite(
     deps = [
         ":init-tree",
         ":selenium",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-mock"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_library(
@@ -216,6 +222,33 @@ py_library(
     deps = [],
 )
 
+[
+    py_test_suite(
+        name = "auto-%s" % browser,
+        size = "large",
+        srcs = glob(
+            [
+                "test/selenium/webdriver/common/**/*.py",
+                "test/selenium/webdriver/support/**/*.py",
+            ],
+            exclude = ["test/selenium/webdriver/common/print_pdf_tests.py"],
+        ),
+        args = [
+            "--instafail",
+        ] + BROWSERS[browser]["args"],
+        data = BROWSERS[browser]["data"],
+        tags = [
+            "no-sandbox",
+        ] + BROWSERS[browser]["tags"],
+        deps = [
+            ":init-tree",
+            ":selenium",
+            ":webserver",
+        ] + TEST_DEPS,
+    )
+    for browser in BROWSERS.keys()
+]
+
 py_test_suite(
     name = "test-chrome",
     size = "large",
@@ -229,7 +262,7 @@ py_test_suite(
     ),
     args = [
         "--instafail",
-        "--driver=Chrome",
+        "--driver=chrome",
     ],
     tags = [
         "no-sandbox",
@@ -238,23 +271,7 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_test_suite(
@@ -269,7 +286,7 @@ py_test_suite(
     ),
     args = [
         "--instafail",
-        "--driver=Chrome",
+        "--driver=chrome",
         "--headless=true",
     ],
     tags = [
@@ -279,23 +296,7 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_test_suite(
@@ -317,61 +318,7 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
-)
-
-py_test_suite(
-    name = "test-edge-chromium",
-    size = "large",
-    srcs = glob([
-        "test/selenium/webdriver/edge/**/*.py",
-        "test/selenium/webdriver/common/**/*.py",
-        "test/selenium/webdriver/support/**/*.py",
-    ]),
-    args = [
-        "--instafail",
-        "--driver=ChromiumEdge",
-    ],
-    tags = [
-        "no-sandbox",
-    ],
-    deps = [
-        ":init-tree",
-        ":selenium",
-        ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_test_suite(
@@ -385,7 +332,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Firefox",
+        "--driver=firefox",
     ],
     tags = [
         "no-sandbox",
@@ -394,23 +341,7 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_test_suite(
@@ -422,7 +353,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Remote",
+        "--driver=remote",
     ],
     data = [
         "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
@@ -434,23 +365,7 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_test_suite(
@@ -463,7 +378,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Ie",
+        "--driver=ie",
     ],
     tags = [
         "no-sandbox",
@@ -472,23 +387,7 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_test_suite(
@@ -501,7 +400,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=Safari",
+        "--driver=safari",
     ],
     tags = [
         "exclusive",
@@ -511,23 +410,7 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_test_suite(
@@ -539,7 +422,7 @@ py_test_suite(
     ]),
     args = [
         "--instafail",
-        "--driver=WebKitGTK",
+        "--driver=webkitgtk",
         "--browser-binary=MiniBrowser",
         "--browser-args=--automation",
     ],
@@ -551,23 +434,7 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
 
 py_test_suite(
@@ -591,21 +458,5 @@ py_test_suite(
         ":init-tree",
         ":selenium",
         ":webserver",
-        requirement("attrs"),
-        requirement("idna"),
-        requirement("iniconfig"),
-        requirement("importlib_metadata"),
-        requirement("h11"),
-        requirement("more_itertools"),
-        requirement("multidict"),
-        requirement("outcome"),
-        requirement("pluggy"),
-        requirement("py"),
-        requirement("pytest"),
-        requirement("pytest-instafail"),
-        requirement("pytest-trio"),
-        requirement("sortedcontainers"),
-        requirement("sniffio"),
-        requirement("zipp"),
-    ],
+    ] + TEST_DEPS,
 )
