@@ -19,7 +19,7 @@ import time
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchWindowException, TimeoutException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidElementStateException
@@ -212,7 +212,13 @@ def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages)
         WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
     driver.execute_script("setTimeout(function(){var f = document.createElement('iframe'); f.id='myFrame'; f.src = '" + pages.url('iframeWithAlert.html') + "'; document.body.appendChild(f)}, 200)")
     WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
-    assert 'click me' == driver.find_element(By.ID, 'alertInFrame').text
+    try:
+        assert 'click me' == driver.find_element(By.ID, 'alertInFrame').text
+    except NoSuchWindowException:
+        # In Firefox 86 (https://bugzilla.mozilla.org/show_bug.cgi?id=1691348) we
+        # sometimes get a NoSuchWindowException. This is just retrying it.
+        driver.switch_to.frame(driver.find_element(By.ID, 'myFrame'))
+        assert 'click me' == driver.find_element(By.ID, 'alertInFrame').text
 
 
 def testExpectedConditionInvisiblityOfElement(driver, pages):
