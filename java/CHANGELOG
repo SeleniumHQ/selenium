@@ -1,3 +1,20 @@
+v4.0.0-beta-2
+=============
+
+* Use `opera` for Blink-based Opera versions
+* Updated OpenTelemetry to 1.0.0
+* Use standard OpenTelemetry mechanisms for configuring tracing.
+* Make better use of `getDomAttribute` in `Select`
+* [cdp] Added support for Firefox Nightly
+* [cdp] Use `se:cdp` to report CDP endpoint
+* [grid] Close resources leaks caused by http client not being
+  properly closed.
+* [grid] Nodes will auto-detect their platform
+* [grid] Make health check interval a configurable option for
+  Distributor role (#9272)
+* [grid] Correctly propagate startup errors to the client
+* [grid] Make session timeout configurable option for Node role
+
 v4.0.0-beta-1
 =============
 

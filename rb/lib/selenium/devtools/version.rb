@@ -17,21 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/bridge'
-
 module Selenium
-  module WebDriver
-    module Edge
-      class Bridge < WebDriver::Chrome::Bridge
-
-        COMMANDS = WebDriver::Chrome::Bridge::COMMANDS.merge(
-          send_command: [:post, 'session/:session_id/ms/cdp/execute']
-        ).freeze
-
-        def commands(command)
-          COMMANDS[command] || super
-        end
-      end # Bridge
-    end # Edge
-  end # WebDriver
+  module DevTools
+    VERSION = '0.89.0'
+  end # DevTools
 end # Selenium

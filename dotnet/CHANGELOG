@@ -1,3 +1,14 @@
+v4.0.0b2
+========
+ * (on behalf of Artur Nebot) Set EdgeOptions to start Chromium-based Edge
+   by default. Fixes issue #9262.
+ * Added support for CDP in Firefox. This currently only works for Firefox
+   Nightly. To use this feature, set the EnableDevToolsProtocol property of
+   FirefoxOptions to true.
+ * Fixed network interception for use with browsers that support CDP.
+ * Made DriverService.InitializationTimeout a public settable property. Fixes
+   issue #9150.
+
 v4.0.0b1
 ========
  * Added ability to listen for JavaScript exceptions and callbacks for

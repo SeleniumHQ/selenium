@@ -288,8 +288,16 @@ namespace OpenQA.Selenium.DevTools
 
             await this.domains.Target.SetAutoAttach();
             LogTrace("AutoAttach is set.", targetId);
-            await this.domains.Log.Clear();
-            LogTrace("Log cleared.", targetId);
+            try
+            {
+                // Wrap this in a try-catch, because it's not the end of the
+                // world if clearing the log doesn't work.
+                await this.domains.Log.Clear();
+                LogTrace("Log cleared.", targetId);
+            }
+            catch (WebDriverException)
+            {
+            }
         }
 
         private async Task OpenSessionConnection(CancellationToken cancellationToken)

@@ -1,39 +1,38 @@
 load(
-    "//java:browsers.bzl",
+    "//common:browsers.bzl",
+    "COMMON_TAGS",
     "chrome_data",
-    "chrome_jvm_flags",
     "edge_data",
-    "edge_jvm_flags",
     "firefox_data",
+)
+load(
+    "//java:browsers.bzl",
+    "chrome_jvm_flags",
+    "edge_jvm_flags",
     "firefox_jvm_flags",
 )
+load("//java/private:library.bzl", "add_lint_tests")
 
 DEFAULT_BROWSER = "firefox"
-
-_COMMON_TAGS = [
-    "browser-test",
-    "no-sandbox",
-    "requires-network",
-]
 
 BROWSERS = {
     "chrome": {
         "deps": ["//java/client/src/org/openqa/selenium/chrome"],
         "jvm_flags": ["-Dselenium.browser=chrome"] + chrome_jvm_flags,
         "data": chrome_data,
-        "tags": _COMMON_TAGS + ["chrome"],
+        "tags": COMMON_TAGS + ["chrome"],
     },
     "edge": {
         "deps": ["//java/client/src/org/openqa/selenium/edge"],
         "jvm_flags": ["-Dselenium.browser=edge"] + edge_jvm_flags,
         "data": edge_data,
-        "tags": _COMMON_TAGS + ["edge"],
+        "tags": COMMON_TAGS + ["edge"],
     },
     "firefox": {
         "deps": ["//java/client/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"] + firefox_jvm_flags,
         "data": firefox_data,
-        "tags": _COMMON_TAGS + ["firefox"],
+        "tags": COMMON_TAGS + ["firefox"],
     },
     "ie": {
         "deps": ["//java/client/src/org/openqa/selenium/ie"],
@@ -43,7 +42,7 @@ BROWSERS = {
                          "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
-        "tags": _COMMON_TAGS + ["exclusive", "ie"],
+        "tags": COMMON_TAGS + ["exclusive", "ie"],
     },
     "safari": {
         "deps": ["//java/client/src/org/openqa/selenium/safari"],
@@ -53,12 +52,11 @@ BROWSERS = {
                          "@selenium//conditions:default": ["-Dselenium.skiptest=true"],
                      }),
         "data": [],
-        "tags": _COMMON_TAGS + ["exclusive", "safari"],
+        "tags": COMMON_TAGS + ["exclusive", "safari"],
     },
 }
 
 def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() , **kwargs):
-
     if len(browsers) == 0:
         fail("At least one browser must be specified.")
 
@@ -79,7 +77,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() 
         if not browser in BROWSERS:
             fail("Unrecognized browser: " + browser)
 
-        test = "%s-%s" % (name, browser)
+        test = name if browser == default_browser else "%s-%s" % (name, browser)
 
         native.java_test(
             name = test,
@@ -91,7 +89,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() 
             **stripped_args
         )
 
-        if not "no-remote" in tags:
+        if "selenium-remote" in tags:
             native.java_test(
                 name = "%s-remote" % test,
                 test_class = test_class,
@@ -108,4 +106,5 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys() 
             )
 
     # Handy way to run everything
-    native.test_suite(name = name, tests = [":%s-%s" % (name, default_browser)], tags = tags + ["manual"])
+    native.test_suite(name = "%s-all-browsers" % name, tests = [":%s-%s" % (name, default_browser)], tags = tags + ["manual"])
+    add_lint_tests(name, **kwargs)

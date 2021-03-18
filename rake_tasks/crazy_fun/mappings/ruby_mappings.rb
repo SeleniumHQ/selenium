@@ -26,6 +26,7 @@ module CrazyFun
 
         fun.add_mapping "rubydocs", RubyDocs.new
         fun.add_mapping "rubygem", RubyGem.new
+        fun.add_mapping "rubydevtoolsgem", RubyGem.new
 
         fun.add_mapping "ruby_class_call", RubyClassCall.new
       end

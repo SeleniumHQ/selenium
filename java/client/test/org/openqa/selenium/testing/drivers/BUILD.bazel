@@ -31,6 +31,10 @@ java_library(
         "OutOfProcessSeleniumServer.java",
         "WebDriverBuilder.java",
     ],
+    javacopts = [
+        "--release",
+        "11",
+    ],
     visibility = [
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
