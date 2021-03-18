@@ -295,6 +295,7 @@ public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreensho
     Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED(id))
       .getValue();
     try {
+      // See https://github.com/SeleniumHQ/selenium/issues/9266
       if (value == null) {
         return false;
       }
