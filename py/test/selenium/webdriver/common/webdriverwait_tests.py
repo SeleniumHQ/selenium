@@ -19,7 +19,7 @@ import time
 
 import pytest
 
-from selenium.common.exceptions import NoSuchWindowException, TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidElementStateException
