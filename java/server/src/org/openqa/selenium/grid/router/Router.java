@@ -18,11 +18,11 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueuer;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -62,8 +62,7 @@ public class Router implements HasReadyState, Routable {
 
     routes =
       combine(
-        get("/status")
-          .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
+        get("/status").to(() -> new GridStatusHandler(tracer, distributor)),
         sessions.with(new SpanDecorator(tracer, req -> "session_map")),
         queuer.with(new SpanDecorator(tracer, req -> "session_queuer")),
         distributor.with(new SpanDecorator(tracer, req -> "distributor")),
