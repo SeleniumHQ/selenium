@@ -42,6 +42,7 @@ import java.util.concurrent.TimeoutException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
@@ -120,7 +121,9 @@ class GridStatusHandler implements HttpHandler {
         return response;
       }
 
-      boolean ready = status.hasCapacity();
+      boolean ready = status.getNodes()
+        .stream()
+        .anyMatch(nodeStatus -> UP.equals(nodeStatus.getAvailability()));
 
       List<Map<String, Object>> nodeResults = status.getNodes().stream()
         .map(node -> new ImmutableMap.Builder<String, Object>()
