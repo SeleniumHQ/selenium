@@ -56,11 +56,11 @@ def release_version
 end
 
 def google_storage_version
-  '4.0-beta-2'
+  '4.0-beta-3'
 end
 
 def version
-  "#{release_version}.0-beta-2"
+  "#{release_version}.0-beta-3"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
