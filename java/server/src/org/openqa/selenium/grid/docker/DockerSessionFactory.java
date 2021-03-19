@@ -149,7 +149,10 @@ public class DockerSessionFactory implements SessionFactory {
       attributeMap.put("container.ip", EventAttribute.setValue(containerInfo.getIp()));
       attributeMap.put("docker.server.url", EventAttribute.setValue(remoteAddress.toString()));
 
-      LOG.info(String.format("Waiting for server to start (container id: %s)", container.getId()));
+      LOG.info(
+        String.format("Waiting for server to start (container id: %s, url %s)",
+                      container.getId(),
+                      remoteAddress));
       try {
         waitForServerToStart(client, Duration.ofMinutes(1));
       } catch (TimeoutException e) {
