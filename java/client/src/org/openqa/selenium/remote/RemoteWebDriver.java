@@ -88,7 +88,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;

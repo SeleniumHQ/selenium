@@ -43,8 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 public class RemoteWebElement implements WebElement, WrapsDriver, TakesScreenshot, Locatable {
 
   private String foundBy;
