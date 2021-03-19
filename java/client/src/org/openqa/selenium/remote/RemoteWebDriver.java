@@ -358,8 +358,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       String base64EncodedPng = (String) result;
       return outputType.convertFromBase64Png(base64EncodedPng);
     } else if (result instanceof byte[]) {
-      String base64EncodedPng = new String((byte[]) result, UTF_8);
-      return outputType.convertFromBase64Png(base64EncodedPng);
+      return outputType.convertFromPngBytes((byte[]) result);
     } else {
       throw new RuntimeException(String.format("Unexpected result for %s command: %s",
           DriverCommand.SCREENSHOT,
