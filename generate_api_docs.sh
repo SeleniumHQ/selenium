@@ -24,7 +24,7 @@ mv build/docs/api/rb docs/api/rb
 
 git add -A docs/api
 
-read -p "Do you want to commit the chages? (Y/n):" changes </dev/tty
+read -p "Do you want to commit the changes? (Y/n):" changes </dev/tty
 
 if [ -z $changes ]; then
   changes=Y
@@ -36,8 +36,8 @@ case "$changes" in
   *) exit;;
 esac
 
-echo "Commiting changes"
-git commit -am "updating javadoc and py docs"
+echo "Committing changes"
+git commit -am "updating API docs"
 
 echo "pushing to origin gh-pages"
 git push origin gh-pages
