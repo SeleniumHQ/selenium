@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.docker;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -51,12 +49,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
 public class DockerOptions {
 
   static final String DOCKER_SECTION = "docker";
   static final String DEFAULT_ASSETS_PATH = "/opt/selenium/assets";
   static final String DEFAULT_DOCKER_URL = "unix:/var/run/docker.sock";
   static final String DEFAULT_VIDEO_IMAGE = "selenium/video:latest";
+  private static final String DEFAULT_DOCKER_NETWORK = "bridge";
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
   private final Config config;
@@ -143,6 +144,7 @@ public class DockerOptions {
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
     loadImages(docker, videoImage.getName());
+    String networkName = getDockerNetworkName(docker);
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
     ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
@@ -159,13 +161,14 @@ public class DockerOptions {
             image,
             caps,
             videoImage,
-            assetsPath));
+            assetsPath,
+            networkName));
       }
       LOG.info(String.format(
-          "Mapping %s to docker image %s %d times",
-          caps,
-          name,
-          maxContainerCount));
+        "Mapping %s to docker image %s %d times",
+        caps,
+        name,
+        maxContainerCount));
     });
     return factories.build().asMap();
   }
@@ -173,6 +176,18 @@ public class DockerOptions {
   private Image getVideoImage(Docker docker) {
     String videoImage = config.get(DOCKER_SECTION, "video-image").orElse(DEFAULT_VIDEO_IMAGE);
     return docker.getImage(videoImage);
+  }
+
+  private String getDockerNetworkName(Docker docker) {
+    // Selenium Server is running inside a Docker container, we will inspect that container
+    // to get the mounted volume and use that. If no volume was mounted, no assets will be saved.
+    // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
+    String hostname = HostIdentifier.getHostName();
+    Optional<ContainerInfo> info = docker.inspect(new ContainerId(hostname));
+    if (info.isPresent()) {
+      return info.get().getNetworkName();
+    }
+    return DEFAULT_DOCKER_NETWORK;
   }
 
   private DockerAssetsPath getAssetsPath(Docker docker) {
