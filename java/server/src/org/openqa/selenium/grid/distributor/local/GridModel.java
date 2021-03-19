@@ -63,10 +63,6 @@ public class GridModel {
     this.events = Require.nonNull("Event bus", events);
 
     this.events.addListener(NodeDrainStarted.listener(nodeId -> setAvailability(nodeId, DRAINING)));
-    this.events.addListener(NodeDrainComplete.listener(this::remove));
-    this.events.addListener(NodeRemovedEvent.listener(this::remove));
-    this.events.addListener(NodeStatusEvent.listener(this::refresh));
-
     this.events.addListener(SessionClosedEvent.listener(this::release));
   }
 
