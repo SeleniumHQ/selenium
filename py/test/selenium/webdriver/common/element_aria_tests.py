@@ -22,6 +22,7 @@ import pytest
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
+@pytest.mark.xfail_remote
 def test_should_return_explicitly_specified_role(driver):
     driver.get("data:text/html,<div role='heading' aria-level='1'>Level 1 Header</div>")
     header1 = driver.find_element(By.CSS_SELECTOR, "div")
