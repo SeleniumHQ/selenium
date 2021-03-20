@@ -40,22 +40,24 @@ public class RelativeLocatorTest extends JUnit4TestBase {
 
     WebElement lowest = driver.findElement(By.id("below"));
 
-    List<WebElement> elements = driver.findElements(withTagName("p").above(lowest));
+    List<WebElement> elements = driver.findElements(with(tagName("p")).above(lowest));
     List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
     assertThat(ids).containsExactly("mid", "above");
+
   }
 
   @Test
   public void shouldBeAbleToFindElementsAboveAnotherWithXpath() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    WebElement lowest = driver.findElement(By.id("below"));
+    WebElement lowest = driver.findElement(By.id("seventh"));
 
-    List<WebElement> elements = driver.findElements(withXpath("//p").above(lowest));
-    List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+    List<WebElement> seen = driver.findElements(with(xpath("//td[1]")).above(lowest));
 
-    assertThat(ids).containsExactly("mid", "above");
+    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+    assertThat(ids).containsExactly("fourth", "first");
   }
 
   @Test
@@ -64,19 +66,21 @@ public class RelativeLocatorTest extends JUnit4TestBase {
 
     WebElement lowest = driver.findElement(By.id("below"));
 
-    List<WebElement> elements = driver.findElements(withCssSelector("p").above(lowest));
+    List<WebElement> elements = driver.findElements(with(cssSelector("p")).above(lowest));
     List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
     assertThat(ids).containsExactly("mid", "above");
+
   }
 
   @Test
   public void shouldBeAbleToCombineFilters() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    List<WebElement> seen = driver.findElements(withTagName("td").above(By.id("center")).toRightOf(By.id("second")));
+    List<WebElement> seen = driver.findElements(with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
     assertThat(ids).containsExactly("third");
   }
 
@@ -84,19 +88,23 @@ public class RelativeLocatorTest extends JUnit4TestBase {
   public void shouldBeAbleToCombineFiltersWithXpath() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    List<WebElement> seen = driver.findElements(withXpath("//td").above(By.id("center")).toRightOf(By.id("second")));
+    List<WebElement> seen = driver.findElements(with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-    assertThat(ids).containsExactly("third");
+
+    assertThat(ids).containsExactly("fourth");
+
   }
 
   @Test
   public void shouldBeAbleToCombineFiltersWithCssSelector() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    List<WebElement> seen = driver.findElements(withCssSelector("td").above(By.id("center")).toRightOf(By.id("second")));
+
+    List<WebElement> seen = driver.findElements(with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("second")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
     assertThat(ids).containsExactly("third");
   }
 
@@ -104,7 +112,7 @@ public class RelativeLocatorTest extends JUnit4TestBase {
   public void exerciseNearLocatorWithTagName() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    List<WebElement> seen = driver.findElements(withTagName("td").near(By.id("center")));
+    List<WebElement> seen = driver.findElements(with(tagName("td")).near(By.id("center")));
 
     // Elements are sorted by proximity and then DOM insertion order.
     // Proximity is determined using distance from center points, so
@@ -118,11 +126,12 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
     assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
   }
+
   @Test
   public void exerciseNearLocatorWithXpath() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    List<WebElement> seen = driver.findElements(withXpath("//td").near(By.id("center")));
+    List<WebElement> seen = driver.findElements(with(xpath("//td")).near(By.id("center")));
 
     // Elements are sorted by proximity and then DOM insertion order.
     // Proximity is determined using distance from center points, so
@@ -134,13 +143,15 @@ public class RelativeLocatorTest extends JUnit4TestBase {
     // 5-8. Diagonally close (pythagorus sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
     assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
   }
+
   @Test
   public void exerciseNearLocatorWithCssSelector() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    List<WebElement> seen = driver.findElements(withCssSelector("td").near(By.id("center")));
+    List<WebElement> seen = driver.findElements(with(cssSelector("td")).near(By.id("center")));
 
     // Elements are sorted by proximity and then DOM insertion order.
     // Proximity is determined using distance from center points, so

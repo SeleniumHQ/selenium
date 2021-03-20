@@ -94,19 +94,25 @@ public class RelativeLocator {
   /**
    * Start of a relative locator, finding elements by tag name.
    */
-  public static RelativeBy withTagName(String tagName) {
+
+  public static RelativeBy with(By by) {
+    Require.nonNull("By to look for", by);
+    return new RelativeBy(by);
+  }
+
+  public static By tagName(String tagName) {
     Require.nonNull("Tag name to look for", tagName);
-    return new RelativeBy(By.tagName(tagName));
+    return By.tagName(tagName);
   }
 
-  public static RelativeBy withXpath(String xpathExpression) {
+  public static By xpath(String xpathExpression) {
     Require.nonNull("xpath to look for", xpathExpression);
-    return new RelativeBy(By.xpath(xpathExpression));
+    return By.xpath(xpathExpression);
   }
 
-  public static RelativeBy withCssSelector(String cssSelector) {
-    Require.nonNull("css selector  to look for", cssSelector);
-    return new RelativeBy(By.cssSelector(cssSelector));
+  public static By cssSelector(String cssSelectorExpression) {
+    Require.nonNull("css selector  to look for", cssSelectorExpression);
+    return By.cssSelector(cssSelectorExpression);
   }
 
   public static class RelativeBy extends By implements By.Remotable {
