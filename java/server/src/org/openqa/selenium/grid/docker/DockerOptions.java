@@ -124,8 +124,6 @@ public class DockerOptions {
       throw new DockerException("Unable to reach the Docker daemon at " + getDockerUri());
     }
 
-    DockerAssetsPath assetsPath = getAssetsPath(docker);
-
     List<String> allConfigs = config.getAll(DOCKER_SECTION, "configs")
         .orElseThrow(() -> new DockerException("Unable to find docker configs"));
 
@@ -141,10 +139,18 @@ public class DockerOptions {
       kinds.put(imageName, stereotype);
     }
 
+    // If Selenium Server is running inside a Docker container, we can inspect that container
+    // to get the information from it.
+    // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
+    String hostname = HostIdentifier.getHostName();
+    Optional<ContainerInfo> info = docker.inspect(new ContainerId(hostname));
+
+    DockerAssetsPath assetsPath = getAssetsPath(info);
+    String networkName = getDockerNetworkName(info);
+
     loadImages(docker, kinds.keySet().toArray(new String[0]));
     Image videoImage = getVideoImage(docker);
     loadImages(docker, videoImage.getName());
-    String networkName = getDockerNetworkName(docker);
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
     ImmutableMultimap.Builder<Capabilities, SessionFactory> factories = ImmutableMultimap.builder();
@@ -162,7 +168,8 @@ public class DockerOptions {
             caps,
             videoImage,
             assetsPath,
-            networkName));
+            networkName,
+            info.isPresent()));
       }
       LOG.info(String.format(
         "Mapping %s to docker image %s %d times",
@@ -178,53 +185,40 @@ public class DockerOptions {
     return docker.getImage(videoImage);
   }
 
-  private String getDockerNetworkName(Docker docker) {
-    // Selenium Server is running inside a Docker container, we will inspect that container
-    // to get the mounted volume and use that. If no volume was mounted, no assets will be saved.
-    // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
-    String hostname = HostIdentifier.getHostName();
-    Optional<ContainerInfo> info = docker.inspect(new ContainerId(hostname));
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private String getDockerNetworkName(Optional<ContainerInfo> info) {
     if (info.isPresent()) {
       return info.get().getNetworkName();
     }
     return DEFAULT_DOCKER_NETWORK;
   }
 
-  private DockerAssetsPath getAssetsPath(Docker docker) {
+  @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+  private DockerAssetsPath getAssetsPath(Optional<ContainerInfo> info) {
+    if (info.isPresent()) {
+      Optional<Map<String, Object>> mountedVolume = info.get().getMountedVolumes()
+        .stream()
+        .filter(
+          mounted ->
+            DEFAULT_ASSETS_PATH.equalsIgnoreCase(String.valueOf(mounted.get("Destination"))))
+        .findFirst();
+
+      if (mountedVolume.isPresent()) {
+        String hostPath = String.valueOf(mountedVolume.get().get("Source"));
+        return new DockerAssetsPath(hostPath, DEFAULT_ASSETS_PATH);
+      }
+    }
+
     Optional<String> assetsPath = config.get(DOCKER_SECTION, "assets-path");
-    if (assetsPath.isPresent()) {
-      // We assume the user is not running the Selenium Server inside a Docker container
-      // Therefore, we have access to the assets path on the host
-      return new DockerAssetsPath(assetsPath.get(), assetsPath.get());
-    }
-    // Selenium Server is running inside a Docker container, we will inspect that container
-    // to get the mounted volume and use that. If no volume was mounted, no assets will be saved.
-    // Since Docker 1.12, the env var HOSTNAME has the container id (unless the user overwrites it)
-    String hostname = HostIdentifier.getHostName();
+    // We assume the user is not running the Selenium Server inside a Docker container
+    // Therefore, we have access to the assets path on the host
+    return assetsPath.map(path -> new DockerAssetsPath(path, path)).orElse(null);
 
-    Optional<ContainerInfo> info = docker.inspect(new ContainerId(hostname));
-    if (!info.isPresent()) {
-      return null;
-    }
-
-    Optional<Map<String, Object>> mountedVolume = info.get().getMountedVolumes()
-      .stream()
-      .filter(
-        mounted ->
-          DEFAULT_ASSETS_PATH.equalsIgnoreCase(String.valueOf(mounted.get("Destination"))))
-      .findFirst();
-
-    if (mountedVolume.isPresent()) {
-      String hostPath = String.valueOf(mountedVolume.get().get("Source"));
-      return new DockerAssetsPath(hostPath, DEFAULT_ASSETS_PATH);
-    }
-
-    return null;
   }
 
   private void loadImages(Docker docker, String... imageNames) {
     CompletableFuture<Void> cd = CompletableFuture.allOf(
-        Arrays.stream(imageNames)
+      Arrays.stream(imageNames)
             .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name)))
           .toArray(CompletableFuture[]::new));
 
